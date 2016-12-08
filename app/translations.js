@@ -748,6 +748,7 @@ const translations = {
     'platform-short': 'Plat.',
     'footer-feedback': 'Donner votre avis',
     'footer-link-to-old': 'Utiliser l\'ancien planificateur d\'itinéraires',
+    'agency': 'Transporteur',
   },
 };
 
