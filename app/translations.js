@@ -570,6 +570,7 @@ const translations = {
     'route-page.description': 'Ligne {route_short_name} - {route_long_name}',
     'itinerary-page.title': 'Itinéraire',
     'itinerary-page.description': 'Itinéraire',
+    'itinerary-hide-stops': 'Masquer les arrêts',
     'trip-page.title': 'Ligne {route_short_name}',
     'trip-page.description': 'Ligne {route_short_name} - {route_long_name}',
     'itinerary-summary-page.title': 'Itinéraire proposé',
