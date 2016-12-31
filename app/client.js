@@ -15,7 +15,6 @@ import {
   gqErrorsMiddleware,
   retryMiddleware,
 } from 'react-relay-network-layer';
-import 'regenerator-runtime/runtime';
 import OfflinePlugin from 'offline-plugin/runtime';
 
 import Raven from './util/Raven';
@@ -59,8 +58,8 @@ const ravenPlugin = {
 };
 
 if (process.env.NODE_ENV === 'development') {
-  // eslint-disable-next-line global-require, prefer-template, import/no-dynamic-require
-  require('../sass/themes/' + config.CONFIG + '/main.scss');
+  // eslint-disable-next-line global-require, import/no-dynamic-require
+  require(`../sass/themes/${config.CONFIG}/main.scss`);
 }
 
 window.debug = debug; // Allow _debug.enable('*') in browser console
@@ -127,27 +126,30 @@ const callback = () => app.rehydrate(window.state, (err, context) => {
     raven: React.PropTypes.object,
   });
 
-  // force init of ServiceStore so that mock get's a chance to initialize
-  context.getComponentContext().getStore('ServiceStore');
-
-  ReactDOM.render(
-    <ContextProvider translations={translations} context={context.getComponentContext()}>
-      <MuiThemeProvider muiTheme={getMuiTheme(MUITheme, { userAgent: navigator.userAgent })}>
-        <Router
-          history={history}
-          environment={Relay.Store}
-          render={applyRouterMiddleware(useRelay)}
-          onUpdate={track}
-        >
-          {app.getComponent()}
-        </Router>
-      </MuiThemeProvider>
-    </ContextProvider>
-    , document.getElementById('app'),
-  );
-
   // init geolocation handling
-  context.executeAction(initGeolocation);
+  context.executeAction(initGeolocation).then(() => {
+    ReactDOM.render(
+      <ContextProvider translations={translations} context={context.getComponentContext()}>
+        <MuiThemeProvider muiTheme={getMuiTheme(MUITheme, { userAgent: navigator.userAgent })}>
+          <Router
+            history={history}
+            environment={Relay.Store}
+            render={applyRouterMiddleware(useRelay)}
+            onUpdate={track}
+          >
+            {app.getComponent()}
+          </Router>
+        </MuiThemeProvider>
+      </ContextProvider>,
+      document.getElementById('app'),
+      () => {
+        // Run only in production mode and when built in a docker container
+        if (process.env.NODE_ENV === 'production' && BUILD_TIME !== 'unset') {
+          OfflinePlugin.install();
+        }
+      },
+    );
+  });
 
   // Listen for Web App Install Banner events
   window.addEventListener('beforeinstallprompt', (e) => {
@@ -167,11 +169,6 @@ const callback = () => app.rehydrate(window.state, (err, context) => {
   // and started positioning
   piwik.setCustomVariable(4, 'commit_id', COMMIT_ID, 'visit');
   piwik.setCustomVariable(5, 'build_time', BUILD_TIME, 'visit');
-
-  // Roun only in production mode and when built in a docker container
-  if (process.env.NODE_ENV === 'production' && BUILD_TIME !== 'unset') {
-    OfflinePlugin.install();
-  }
 });
 
 // Guard againist Samsung et.al. which are not properly polyfilled by polyfill-service

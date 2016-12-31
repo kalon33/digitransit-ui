@@ -1,8 +1,6 @@
 const CONFIG = process.env.CONFIG || 'hsl';
 const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
-const APP_DESCRIPTION =
-  'HSL:n Reittiopas.fi uudistuu. Apuasi kaivataan kehitystyössä. ' +
-  'Tule palvelun testaajaksi tai tee siitä saman tien parempi.';
+const APP_DESCRIPTION = 'HSL:n uuden Reittioppaan kokeiluversio.';
 
 export default {
   CONFIG,
@@ -65,6 +63,10 @@ export default {
 
   appBarLink: { name: 'HSL.fi', href: 'https://www.hsl.fi/' },
 
+  agency: {
+    show: false,
+  },
+
   socialMedia: {
     title: 'Uusi Reittiopas',
     description: APP_DESCRIPTION,
@@ -101,7 +103,7 @@ export default {
     content: [
       { label: (function () { return `© HSL ${(1900 + new Date().getYear())}`; }()) },
       {},
-      { name: 'footer-feedback', nameEn: 'Send feedback', type: 'feedback', icon: 'icon-icon_speech-bubble' },
+      { name: 'footer-feedback', nameEn: 'Send feedback', href: 'https://www.hsl.fi/palaute', icon: 'icon-icon_speech-bubble' },
       { name: 'about-this-service', nameEn: 'About this service', route: '/tietoja-palvelusta', icon: 'icon-icon_info' },
       { name: 'footer-link-to-old', nameEn: 'Use old Journey planner', href: 'http://www.reittiopas.fi/' },
     ],
@@ -118,6 +120,8 @@ export default {
     { icon: 'icon-icon_airplane', label: 'Lentoasema, Vantaa', lat: 60.317429, lon: 24.9690395 },
     { icon: 'icon-icon_bus', label: 'Kampin bussiterminaali, Helsinki', lat: 60.16902, lon: 24.931702 },
   ],
+
+  shouldShowIntro: true,
 
   /* eslint-disable max-len*/
   aboutThisService: {

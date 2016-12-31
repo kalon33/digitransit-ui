@@ -35,7 +35,7 @@ function mapRoutes(res) {
       properties: {
         ...item,
         layer: `route-${item.mode}`,
-        link: `/linjat/${item.gtfsId}`,
+        link: `/linjat/${item.gtfsId}/pysakit/${item.patterns[0].code}`,
       },
       geometry: {
         coordinates: null,
@@ -66,15 +66,16 @@ function filterMatchingToInput(list, input, fields) {
       const parts = fields.map(pName => get(item, pName));
 
       const test = parts.join(' ').toLowerCase();
-      return test.indexOf(input.toLowerCase()) > -1;
+      return test.includes(input.toLowerCase());
     });
   }
 
   return list;
 }
 
-function getCurrentPositionIfEmpty(input, useCurrentPosition) {
-  if (!useCurrentPosition && (typeof input !== 'string' || input.length === 0)) {
+
+function getCurrentPositionIfEmpty(input) {
+  if (typeof input !== 'string' || input.length === 0) {
     return Promise.resolve([{
       type: 'CurrentLocation',
       properties: { labelId: 'own-position', layer: 'currentPosition' },
@@ -84,8 +85,8 @@ function getCurrentPositionIfEmpty(input, useCurrentPosition) {
   return Promise.resolve([]);
 }
 
-function getOldSearches(oldSearches, input) {
-  const matchingOldSearches =
+function getOldSearches(oldSearches, input, dropLayers) {
+  let matchingOldSearches =
     filterMatchingToInput(oldSearches, input, [
       'properties.name',
       'properties.label',
@@ -94,6 +95,12 @@ function getOldSearches(oldSearches, input) {
       'properties.name',
       'properties.desc',
     ]);
+
+  if (dropLayers) { // don't want these
+    matchingOldSearches = matchingOldSearches.filter(
+      item => (!dropLayers.includes(item.properties.layer)),
+    );
+  }
 
   return Promise.resolve(
     take(matchingOldSearches, 10).map(item => ({
@@ -143,6 +150,7 @@ function getFavouriteRoutes(favourites, input) {
         shortName
         mode
         longName
+        patterns { code }
       }
     }`, { ids: favourites },
   );
@@ -211,6 +219,7 @@ function getRoutes(input) {
           shortName
           mode
           longName
+          patterns { code }
         }
       }
     }`, { name: input },
@@ -258,29 +267,48 @@ function getStops(input, origin) {
   )).then(suggestions => take(suggestions, 10));
 }
 
-export function executeSearchImmediate(getStore, { input, type }, callback) {
+export const getAllEndpointLayers = () => (
+  ['CurrentPosition', 'FavouritePlace', 'OldSearch', 'Geocoding']
+);
+
+
+export function executeSearchImmediate(getStore, { input, type, layers }, callback) {
   const position = getStore('PositionStore').getLocationState();
-  let endpoitSearches = [];
+  let endpointSearches = [];
   let searchSearches = [];
+  const endpointLayers = layers || getAllEndpointLayers();
 
   if (type === 'endpoint' || type === 'all') {
-    const origin = getStore('EndpointStore').getOrigin();
     const favouriteLocations = getStore('FavouriteLocationStore').getLocations();
     const oldSearches = getStore('OldSearchesStore').getOldSearches('endpoint');
     const language = getStore('PreferencesStore').getLanguage();
+    const searchComponents = [];
 
-    endpoitSearches = Promise.all([
-      getCurrentPositionIfEmpty(input, origin.useCurrentPosition),
-      getFavouriteLocations(favouriteLocations, input),
-      getOldSearches(oldSearches, input),
-      getGeocodingResult(input, position, language),
-    ])
+    if (endpointLayers.includes('CurrentPosition') && position.hasLocation) {
+      searchComponents.push(getCurrentPositionIfEmpty(input));
+    }
+    if (endpointLayers.includes('FavouritePlace')) {
+      searchComponents.push(getFavouriteLocations(favouriteLocations, input));
+    }
+    if (endpointLayers.includes('OldSearch')) {
+      let dropLayers;
+      // old searches should also obey the layers definition
+      if (!endpointLayers.includes('FavouritePlace')) {
+        dropLayers = ['favouritePlace'];
+      }
+      searchComponents.push(getOldSearches(oldSearches, input, dropLayers));
+    }
+    if (endpointLayers.includes('Geocoding')) {
+      searchComponents.push(getGeocodingResult(input, position, language));
+    }
+
+    endpointSearches = Promise.all(searchComponents)
     .then(flatten)
     .then(uniqByLabel)
     .catch(err => console.error(err)); // eslint-disable-line no-console
 
     if (type === 'endpoint') {
-      endpoitSearches.then(callback);
+      endpointSearches.then(callback);
       return;
     }
   }
@@ -309,7 +337,7 @@ export function executeSearchImmediate(getStore, { input, type }, callback) {
     }
   }
 
-  Promise.all([endpoitSearches, searchSearches])
+  Promise.all([endpointSearches, searchSearches])
     .then(([endpoints, search]) => callback([
       { name: 'endpoint', items: endpoints },
       { name: 'search', items: search },

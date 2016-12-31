@@ -138,10 +138,10 @@ module.exports = {
       selector: '.search-result.CurrentLocation',
     },
     geolocationSelected: {
-      selector: '.geolocation-selected',
+      selector: '.search-current-origin-tip svg.icon',
     },
     closeSearchButton: {
-      selector: '#closeSearchButton',
+      selector: '#close-search-button-container > button',
     },
   },
 };

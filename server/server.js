@@ -6,9 +6,8 @@
 const path = require('path');
 
 require('babel-core/register')({
-  presets: ['modern-node', 'stage-2', 'react'], // eslint-disable-line prefer-template
+  presets: [['env', { targets: { node: 'current' } }], 'stage-2', 'react'],
   plugins: [
-    'transform-es2015-modules-commonjs',
     'transform-system-import-commonjs',
     path.join(process.cwd(), 'build/babelRelayPlugin'),
   ],
@@ -24,14 +23,16 @@ global.self = { fetch: global.fetch };
 
 const config = require('../app/config').default;
 
-let raven;
+let Raven;
 
 if (process.env.NODE_ENV === 'production') {
-  raven = require('raven');
+  Raven = require('raven');
+  Raven.config(process.env.SENTRY_SECRET_DSN, { captureUnhandledRejections: true }).install();
 }
 
 /* ********* Server **********/
 const express = require('express');
+const expressStaticGzip = require('express-static-gzip');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
@@ -44,7 +45,9 @@ function setUpStaticFolders() {
   const staticFolder = path.join(process.cwd(), '_static');
   // Sert cache for 1 week
   const oneDay = 86400000;
-  app.use(config.APP_PATH, express.static(staticFolder, {
+  app.use(config.APP_PATH, expressStaticGzip(staticFolder, {
+    enableBrotli: true,
+    indexFromEmptyFile: false,
     maxAge: 30 * oneDay,
     setHeaders(res, reqPath) {
       if (
@@ -69,13 +72,13 @@ function onError(err, req, res) {
 
 function setupRaven() {
   if (process.env.NODE_ENV === 'production') {
-    app.use(raven.middleware.express.requestHandler(process.env.SENTRY_SECRET_DSN));
+    app.use(Raven.requestHandler());
   }
 }
 
 function setupErrorHandling() {
   if (process.env.NODE_ENV === 'production') {
-    app.use(raven.middleware.express.errorHandler(process.env.SENTRY_SECRET_DSN));
+    app.use(Raven.errorHandler());
   }
 
   app.use(onError);

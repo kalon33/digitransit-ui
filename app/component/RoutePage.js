@@ -7,6 +7,7 @@ import cx from 'classnames';
 import Icon from './Icon';
 import FavouriteRouteContainer from './FavouriteRouteContainer';
 import RoutePatternSelect from './RoutePatternSelect';
+import RouteAgencyInfo from './RouteAgencyInfo';
 import RouteNumber from './RouteNumber';
 import { startRealTimeClient, stopRealTimeClient } from '../action/realTimeClientAction';
 import NotFound from './404';
@@ -88,7 +89,13 @@ class RoutePage extends React.Component {
               <FormattedMessage id="timetable" defaultMessage="Timetable" />
             </div>
           </Link>
-          <Link to={`/linjat/${this.props.route.gtfsId}/hairiot`} activeClassName="is-active">
+          <Link
+            to={`/linjat/${this.props.route.gtfsId}/hairiot`}
+            activeClassName="is-active"
+            className={cx({
+              activeAlert: this.props.route.alerts && this.props.route.alerts.length > 0,
+            })}
+          >
             <div>
               <Icon img="icon-icon_caution" />
               <FormattedMessage id="disruptions" defaultMessage="Disruptions" />
@@ -105,6 +112,7 @@ class RoutePage extends React.Component {
           onSelectChange={this.onPatternChange}
           className={cx({ 'bp-large': this.context.breakpoint === 'large' })}
         />}
+        <RouteAgencyInfo route={this.props.route} />
       </div>
     );
   }
@@ -119,7 +127,9 @@ export default Relay.createContainer(RoutePage, {
         shortName
         longName
         mode
+        ${RouteAgencyInfo.getFragment('route')}
         ${RoutePatternSelect.getFragment('route')}
+        alerts
       }
     `,
   },

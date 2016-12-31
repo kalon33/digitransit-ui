@@ -1,6 +1,4 @@
-$small-map-height: 100px;
-$medium-map-height: 300px;
-$large-map-height: 500px;
+$small-map-height: 10rem;
 $stop-thin-opacity: 0.2;
 
 div.map {
@@ -139,7 +137,7 @@ div.leaflet-marker-icon.vehicle-icon.small-map-icon  {
   z-index: 802;
   bottom: 18px;
   left: 12px;
-  background-color: $background-color;
+  background-color: $white;
   padding: 6px;
   border-radius: $border-radius;
   line-height: 0.5;
@@ -157,6 +155,7 @@ div.leaflet-marker-icon.vehicle-icon.small-map-icon  {
 }
 
 .popup {
+  left: -21px !important;
   .route-header {
     height:auto;
     border: none;
@@ -176,9 +175,11 @@ div.leaflet-marker-icon.vehicle-icon.small-map-icon  {
     border-radius: $border-radius;
     padding: 0;
     margin-bottom: 5px;
+    outline: 1px solid rgba(0,0,0,0.10);
   }
   .leaflet-popup-content {
     margin: 0;
+    width: 18rem !important;
   }
   .card {
     border: none;
@@ -203,7 +204,7 @@ div.leaflet-marker-icon.vehicle-icon.small-map-icon  {
     @include font-medium;
     font-size: $font-size-small;
     line-height: $line-height-normal;
-    color: $gray;
+    color: $primary-color;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -216,6 +217,7 @@ div.leaflet-marker-icon.vehicle-icon.small-map-icon  {
     div {
       padding: 0.5em 12px;
       flex-grow: 1;
+      text-align: center;
 
       &:first-child {
         border-right: 1px solid $light-gray;
@@ -241,6 +243,8 @@ div.leaflet-marker-icon.vehicle-icon.small-map-icon  {
 div.origin-popup {
   font-size: $font-size-xxsmall;
   cursor: pointer;
+  width: 12.5em;
+  left: -21px !important;
 
   .origin-popup-header {
     @include font-bold;
@@ -257,9 +261,9 @@ div.origin-popup {
   .leaflet-popup-content-wrapper {
     border-radius: $border-radius;
     padding: 0;
-    width: 140px;
-    border: 1px solid $gray;
     overflow: hidden;
+    outline: 1px solid rgba(0,0,0,0.10);
+
     .leaflet-popup-content {
       margin:8px;
       svg.right-arrow {
@@ -267,11 +271,15 @@ div.origin-popup {
       }
     }
   }
+  
   .origin-popup-name {
-      @include font-book;
-      text-transform: none;
-      color: $black;
-      font-size: $font-size-small;
+    @include font-book;
+    height: 1.3em;
+    width:200px;
+    text-transform: none;
+    color: $black;
+    font-size: $font-size-small;
+    overflow: hidden;
   }
 
   .shade-to-white {
@@ -281,11 +289,6 @@ div.origin-popup {
     position: absolute;
     right: 1px;
     top: 2em;
-  }
-
-  .origin-popup-name {
-    height: 1.3em;
-    width:200px;
   }
 
   .leaflet-popup-tip-container {

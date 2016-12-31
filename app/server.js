@@ -43,8 +43,6 @@ function getStringOrArrayElement(arrayOrString, index) {
 // Look up paths for various asset files
 const appRoot = `${process.cwd()}/`;
 
-const geolocationStarter = fs.readFileSync(`${appRoot}_static/geolocation.js`).toString();
-
 const networkLayer = new RelayNetworkLayer([
   retryMiddleware({ fetchTimeout: 1000, retryDelays: [] }),
   urlMiddleware({
@@ -78,8 +76,6 @@ if (process.env.NODE_ENV !== 'development') {
       }`}
     />,
   ];
-
-  console.log(find(stats.modules, { issuer: `multi ${config.CONFIG}_sprite` }).assets[0]);
 
   svgSprite = (
     <script
@@ -116,16 +112,14 @@ function getPolyfills(userAgent) {
   }
 
   const features = {
-    'Array.prototype.includes': { flags: ['gated'] },
+    'caniuse:console-basic': { flags: ['gated'] },
     default: { flags: ['gated'] },
     es5: { flags: ['gated'] },
     es6: { flags: ['gated'] },
+    es7: { flags: ['gated'] },
     fetch: { flags: ['gated'] },
     Intl: { flags: ['gated'] },
     matchMedia: { flags: ['gated'] },
-    setImmediate: { flags: ['gated'] },
-    Symbol: { flags: ['gated'] },
-    'Symbol.iterator': { flags: ['gated'] },
   };
 
   config.availableLanguages.forEach((language) => {
@@ -190,10 +184,10 @@ function getHtml(context, locale, [polyfills, relayData], req) {
       // content={content}
       polyfill={polyfills}
       state={`window.state=${serialize(application.dehydrate(context))};`}
-      locale={locale} scripts={getScripts(req)}
+      locale={locale}
+      scripts={getScripts(req)}
       fonts={config.URL.FONT}
       config={`window.config=${JSON.stringify(config)}`}
-      geolocationStarter={geolocationStarter}
       relayData={relayData != null ? relayData.data : []}
       head={head}
     />,
