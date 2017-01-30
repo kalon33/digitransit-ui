@@ -1,6 +1,9 @@
+/* eslint-disable react/no-array-index-key */
+
 import React from 'react';
 import Relay from 'react-relay';
 import polyUtil from 'polyline-encoded';
+import get from 'lodash/get';
 
 import StopMarker from './non-tile-layer/StopMarker';
 import LegMarker from './non-tile-layer/LegMarker';
@@ -8,6 +11,17 @@ import Line from './Line';
 import CityBikeMarker from './non-tile-layer/CityBikeMarker';
 import { getMiddleOf } from '../../util/geo-utils';
 import { isBrowser } from '../../util/browser';
+
+const getLegText = (leg, config) => {
+  if (!leg.route) return '';
+  const showAgency = get(config, 'agency.show', false);
+  if (leg.transitLeg && leg.route.shortName) {
+    return leg.route.shortName;
+  } else if (showAgency && leg.route.agency) {
+    return leg.route.agency.name;
+  }
+  return '';
+};
 
 class ItineraryLine extends React.Component {
   static contextTypes = {
@@ -75,10 +89,7 @@ class ItineraryLine extends React.Component {
               station={leg.from.bikeRentalStation}
             />);
         } else if (leg.transitLeg) {
-          let name = leg.route && leg.route.shortName;
-          if (mode === 'SUBWAY' && !name) {
-            name = 'M';
-          }
+          const name = getLegText(leg, this.context.config);
           objs.push(
             <LegMarker
               key={`${i},${leg.mode}legmarker`}
@@ -142,6 +153,10 @@ ItineraryLine.propTypes = {
   showIntermediateStops: React.PropTypes.bool,
 };
 
+ItineraryLine.contextTypes = {
+  config: React.PropTypes.object.isRequired,
+};
+
 export default Relay.createContainer(ItineraryLine, {
   fragments: {
     legs: () => Relay.QL`
@@ -154,6 +169,9 @@ export default Relay.createContainer(ItineraryLine, {
         transitLeg
         route {
           shortName
+          agency {
+            name
+          }
         }
         from {
           lat

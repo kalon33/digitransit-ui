@@ -29,9 +29,7 @@ require('babel-core/register')({
 
 const port = process.env.HOT_LOAD_PORT || 9000;
 
-const devBrowsers = ['edge 14', 'last 1 chrome version', 'Firefox ESR', 'safari 9'];
-
-const prodBrowsers = ['IE 10', '> 0.3% in FI', 'last 2 versions'];
+const prodBrowsers = ['IE 11', '> 0.3% in FI', 'last 2 versions'];
 
 function getRulesConfig(env) {
   if (env === 'development') {
@@ -44,7 +42,7 @@ function getRulesConfig(env) {
         exclude: /node_modules/,
         options: {
           presets: [
-            ['env', { targets: { browsers: devBrowsers }, modules: false }],
+            ['env', { targets: { browsers: prodBrowsers }, modules: false }],
             'react',
             'stage-2',
           ],
@@ -96,10 +94,9 @@ function getRulesConfig(env) {
 }
 
 function getAllPossibleLanguages() {
-  const srcDirectory = 'app';
+  const srcDirectory = 'app/configurations';
   return fs.readdirSync(srcDirectory)
     .filter(file => /^config\.\w+\.js$/.test(file))
-    .filter(file => !/^config\.client\.js$/.test(file))
     .map(file => require('./' + srcDirectory + '/' + file).default.availableLanguages)
     .reduce((languages, languages2) => languages.concat(languages2))
     .filter((language, position, languages) => languages.indexOf(language) === position);
@@ -135,10 +132,10 @@ function getPluginsConfig(env) {
       new webpack.LoaderOptionsPlugin({
         debug: true,
         options: {
-          postcss: () => [autoprefixer({ browsers: devBrowsers })],
+          postcss: () => [autoprefixer({ browsers: prodBrowsers })],
         },
       }),
-      new webpack.NoErrorsPlugin(),
+      new webpack.NoEmitOnErrorsPlugin(),
     ]);
   }
   return ([
@@ -191,13 +188,10 @@ function getPluginsConfig(env) {
         additional: [
           ':externals:',
           'js/+([a-z0-9]).js',
-          // TODO: move the ones below back to optional after caching has been fixed.
-          'css/*.css',
-          '*.svg',
         ],
-        optional: ['js/*_theme.*.js', 'js/*_sprite.*.js', '*.png'],
+        optional: ['js/*_theme.*.js', 'js/*_sprite.*.js', '*.png', 'css/*.css', '*.svg'],
       },
-      externals: ['/'],
+      externals: [/* '/' Can be re-added later when we want to cache index page */],
       safeToUseOptionalCaches: true,
       ServiceWorker: {
         entry: './app/util/font-sw.js',
@@ -217,7 +211,7 @@ function getPluginsConfig(env) {
       test: /\.(js|css|html|svg)$/,
       minRatio: 0.95,
     }),
-    new webpack.NoErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
   ]);
 }
 

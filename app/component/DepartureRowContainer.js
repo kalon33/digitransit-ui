@@ -3,11 +3,10 @@ import Relay from 'react-relay';
 import { Link } from 'react-router';
 import filter from 'lodash/filter';
 
+import RouteNumberContainer from './RouteNumberContainer';
 import Distance from './Distance';
-import RouteNumber from './RouteNumber';
 import RouteDestination from './RouteDestination';
 import DepartureTime from './DepartureTime';
-import config from '../config';
 import ComponentUsageExample from './ComponentUsageExample';
 
 const departureRowContainerFragment = () => Relay.QL`
@@ -23,6 +22,9 @@ const departureRowContainerFragment = () => Relay.QL`
           id
           effectiveStartDate
           effectiveEndDate
+        }
+        agency {
+          name
         }
       }
       code
@@ -80,9 +82,8 @@ const DepartureRow = (props) => {
         key={departure.pattern.code}
       >
         <Distance distance={props.distance} />
-        <RouteNumber
-          mode={departure.pattern.route.mode}
-          text={departure.pattern.route.shortName}
+        <RouteNumberContainer
+          route={departure.pattern.route}
           hasDisruption={hasActiveDisruption(props.currentTime, departure.pattern.route.alerts)}
         />
         <RouteDestination
@@ -101,6 +102,7 @@ DepartureRow.propTypes = {
   departure: React.PropTypes.object.isRequired,
   distance: React.PropTypes.number.isRequired,
   currentTime: React.PropTypes.number.isRequired,
+  timeRange: React.PropTypes.number.isRequired,
 };
 
 const exampleDeparture1 = {
@@ -152,7 +154,7 @@ const exampleDeparture2 = {
   ],
 };
 
-DepartureRow.description = (
+DepartureRow.description = () =>
   <div>
     <ComponentUsageExample description="example">
       <DepartureRow
@@ -168,8 +170,8 @@ DepartureRow.description = (
         currentTime={1473676196}
       />
     </ComponentUsageExample>
-  </div>
-);
+  </div>;
+
 
 export { DepartureRow };
 
@@ -180,6 +182,6 @@ export default Relay.createContainer(DepartureRow, {
 
   initialVariables: {
     currentTime: 0,
-    timeRange: config.nearbyRoutes.timeRange || 7200,
+    timeRange: 0,
   },
 });
