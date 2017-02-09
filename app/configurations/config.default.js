@@ -1,12 +1,12 @@
 const CONFIG = process.env.CONFIG || 'default';
-const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
+const API_URL = process.env.API_URL || 'https://paris.acolytesanonymes.org';
 const MAP_URL = process.env.MAP_URL || 'https://{s}-dev-api.digitransit.fi';
 const APP_PATH = process.env.APP_CONTEXT || '';
 const PIWIK_ADDRESS = process.env.PIWIK_ADDRESS || '';
 const PIWIK_ID = process.env.PIWIK_ID || '';
 const SENTRY_DSN = process.env.SENTRY_DSN || '';
-const PORT = process.env.PORT || 8080;
-const APP_DESCRIPTION = 'Digitransit journey planning UI';
+const PORT = process.env.PORT || 7812;
+const APP_DESCRIPTION = 'Planificateur d\'itinéraires Digitransit for Paris';
 
 export default {
   PIWIK_ADDRESS,
@@ -17,28 +17,27 @@ export default {
 
   URL: {
     API_URL,
-    OTP: `${API_URL}/routing/v1/routers/finland/`,
+    OTP: `https://paris.acolytesanonymes.org/otp/routers/paris/`,
     MAP: {
-      default: `${MAP_URL}/map/v1/hsl-map/`,
-      sv: `${MAP_URL}/map/v1/hsl-map-sv/`,
+      default: `https://{s}.tile.thunderforest.com/transport/`,
     },
-    STOP_MAP: `${API_URL}/map/v1/finland-stop-map/`,
-    CITYBIKE_MAP: `${API_URL}/map/v1/hsl-citybike-map/`,
-    MQTT: 'wss://dev.hsl.fi/mqtt-proxy',
-    ALERTS: `${API_URL}/realtime/service-alerts/v1`,
+    STOP_MAP: ``,
+    CITYBIKE_MAP: ``,
+    MQTT: '',
+    ALERTS: ``,
     FONT: 'https://fonts.googleapis.com/css?family=Lato:300,400,900%7CPT+Sans+Narrow:400,700',
-    REALTIME: `${API_URL}/realtime/vehicle-positions/v1`,
-    PELIAS: `${API_URL}/geocoding/v1/search`,
-    PELIAS_REVERSE_GEOCODER: `${API_URL}/geocoding/v1/reverse`,
+    REALTIME: ``,
+    PELIAS: `https://search.mapzen.com/v1/search?boundary.country=fr&api_key=****`,
+    PELIAS_REVERSE_GEOCODER: `https://search.mapzen.com/v1/reverse?api_key=****`,
   },
 
   APP_PATH: `${APP_PATH}`,
-  title: 'Reittihaku',
+  title: 'Digitransit for Paris',
 
   contactName: {
     sv: 'Digitransit',
     fi: 'Digitransit',
-    default: "Digitransit's",
+    default: "Kalon33",
   },
 
   // Default labels for manifest creation
@@ -49,7 +48,7 @@ export default {
 
   search: {
     suggestions: {
-      useTransportIcons: false,
+      useTransportIcons: true,
     },
   },
 
@@ -60,19 +59,18 @@ export default {
 
   maxWalkDistance: 10000,
   maxBikingDistance: 100000,
-  availableLanguages: ['fi', 'sv', 'en', 'fr', 'nb', 'de'],
-  defaultLanguage: 'en',
+  availableLanguages: ['fr', 'en', 'fi', 'sv', 'nb', 'de'],
+  defaultLanguage: 'fr',
   // This timezone data will expire on 31.12.2020
-  timezoneData: 'Europe/Helsinki|EET EEST|-20 -30|01010101010101010101010|1BWp0 1qM0 WM0 1qM0 ' +
-    'WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00|35e5',
+    timezoneData: 'Europe/Paris|PMT WET WEST CEST CET WEMT|-9.l 0 -10 -20 -10 -20|0121212121212121212121212121212121212121212121212123434352543434343434343434343434343434343434343434343434343434343434343434343434343434343434343434343434343434343434343434343434343434|-2nco8.l cNb8.l HA0 19A0 1iM0 11c0 1oo0 Wo0 1rc0 QM0 1EM0 UM0 1u00 10o0 1io0 1wo0 Rc0 1a00 1fA0 1cM0 1cM0 1io0 17c0 1fA0 1a00 1io0 1a00 1io0 17c0 1fA0 1a00 1io0 17c0 1cM0 1cM0 1a00 1io0 1cM0 1cM0 1a00 1fA0 1io0 17c0 1cM0 1cM0 1a00 1fA0 1io0 1qM0 Df0 Ik0 5M30 WM0 1fA0 1cM0 Vx0 hB0 1aq0 16M0 1ekn0 1cL0 1fC0 1a00 1fA0 1cM0 1cM0 1cM0 1fA0 1a00 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1fA0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1fA0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1fA0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00|11e6',
 
   mainMenu: {
     // Whether to show the left menu toggle button at all
     show: true,
-    showDisruptions: true,
+    showDisruptions: false,
     showInquiry: false,
-    showLoginCreateAccount: true,
-    showOffCanvasList: true,
+    showLoginCreateAccount: false,
+    showOffCanvasList: false,
   },
 
   feedback: {
@@ -93,15 +91,21 @@ export default {
     },
   },
 
+  initialLocation: {
+    zoom: 10,
+    lat: 48.8588589,
+    lon: 2.3475569,
+  },
+
   nearestStopDistance: {
     maxShownDistance: 5000,
   },
 
   map: {
     useRetinaTiles: true,
-    tileSize: 512,
-    zoomOffset: -1,
-    useVectorTiles: true,
+//    tileSize: 512,
+//    zoomOffset: -1,
+    useVectorTiles: false,
 
     genericMarker: {
       // Do not render name markers at zoom levels below this value
@@ -126,13 +130,13 @@ export default {
       },
     },
 
-    useModeIconsInNonTileLayer: false,
+    useModeIconsInNonTileLayer: true,
   },
 
   stopCard: {
     header: {
       showDescription: true,
-      showStopCode: true,
+      showStopCode: false,
       showDistance: true,
     },
   },
@@ -147,15 +151,17 @@ export default {
     showCityBikes: false,
 
     useUrl: {
-      fi: 'https://www.hsl.fi/citybike',
-      sv: 'https://www.hsl.fi/sv/citybike',
-      en: 'https://www.hsl.fi/en/citybike',
+      fi: 'http://en.velib.paris.fr/Subscriptions-and-fees/Access-the-service',
+      sv: 'http://en.velib.paris.fr/Subscriptions-and-fees/Access-the-service',
+      en: 'http://en.velib.paris.fr/Subscriptions-and-fees/Access-the-service',
+      fr: 'http://www.velib.paris/Abonnements-tarifs/Acceder-au-service',
     },
 
     infoUrl: {
-      fi: 'https://www.hsl.fi/kaupunkipyörät',
-      sv: 'https://www.hsl.fi/sv/stadscyklar',
-      en: 'https://www.hsl.fi/en/citybikes',
+      fi: 'http://en.velib.paris.fr',
+      sv: 'http://en.velib.paris.fr',
+      en: 'http://en.velib.paris.fr',
+      fr: 'http://www.velib.paris',
     },
 
     cityBikeMinZoom: 14,
@@ -170,26 +176,26 @@ export default {
   // Highest level when terminals are still rendered instead of individual stops
   terminalStopsMaxZoom: 17,
   terminalStopsMinZoom: 12,
-  terminalNamesZoom: 16,
+  terminalNamesZoom: 15,
 
-  appBarLink: { name: 'Digitransit', href: 'https://www.digitransit.fi/' },
+  appBarLink: { name: 'Digitransit', href: 'https://transit.paris/' },
 
   colors: {
     primary: '#00AFFF',
   },
 
   disruption: {
-    showInfoButton: true,
+    showInfoButton: false,
   },
 
   agency: {
-    show: true,
+    show: false,
   },
 
   socialMedia: {
-    title: 'Digitransit',
+    title: 'Digitransit Travel Planner for Paris',
     description: APP_DESCRIPTION,
-    locale: 'en_US',
+    locale: 'fr_FR',
 
     image: {
       url: '/img/default-social-share.png',
@@ -199,13 +205,13 @@ export default {
 
     twitter: {
       card: 'summary_large_image',
-      site: '@hsldevcom',
+      site: '@kalonbuntu33',
     },
   },
 
   meta: {
     description: APP_DESCRIPTION,
-    keywords: 'digitransit',
+    keywords: 'Digitransit,transit,trajet,itinéraires,Paris,Ile de France',
   },
   // Ticket information feature toggle
   showTicketInformation: false,
@@ -248,18 +254,18 @@ export default {
 
     // TODO: Switch back in april
     citybike: {
-      availableForSelection: false,
+      availableForSelection: true,
       defaultValue: false,
     },
 
     airplane: {
-      availableForSelection: true,
-      defaultValue: true,
+      availableForSelection: false,
+      defaultValue: false,
     },
 
     ferry: {
-      availableForSelection: true,
-      defaultValue: true,
+      availableForSelection: false,
+      defaultValue: false,
     },
   },
 
@@ -290,15 +296,15 @@ export default {
   },
 
   ticketOptions: [{
-    displayName: 'Ei lippuvyöhykerajoitusta',
+    displayName: 'Il y a une zone de validité des tickets',
     value: '0',
   }],
 
   accessibilityOptions: [{
-    displayName: 'Ei rajoitusta',
+    displayName: 'Illimité',
     value: '0',
   }, {
-    displayName: 'Liikun pyörätuolilla',
+    displayName: 'Je me déplace en fauteuil',
     value: '1',
   }],
 
@@ -332,60 +338,22 @@ export default {
     },
 
     ticketOptions: {
-      available: true,
+      available: false,
     },
 
     accessibility: {
-      available: true,
+      available: false,
     },
   },
 
   areaPolygon: [
-    [18.776, 60.3316],
-    [18.9625, 60.7385],
-    [19.8615, 60.8957],
-    [20.4145, 61.1942],
-    [20.4349, 61.9592],
-    [19.7853, 63.2157],
-    [20.4727, 63.6319],
-    [21.6353, 63.8559],
-    [23.4626, 64.7794],
-    [23.7244, 65.3008],
-    [23.6873, 65.8569],
-    [23.2069, 66.2701],
-    [23.4627, 66.8344],
-    [22.9291, 67.4662],
-    [23.0459, 67.9229],
-    [20.5459, 68.7605],
-    [20.0996, 69.14],
-    [21.426, 69.4835],
-    [21.9928, 69.4009],
-    [22.9226, 68.8678],
-    [23.8108, 69.0145],
-    [24.6903, 68.8614],
-    [25.2262, 69.0596],
-    [25.4029, 69.7235],
-    [26.066, 70.0559],
-    [28.2123, 70.2496],
-    [29.5813, 69.7854],
-    [29.8467, 69.49],
-    [28.9502, 68.515],
-    [30.4855, 67.6952],
-    [29.4962, 66.9232],
-    [30.5219, 65.8728],
-    [30.1543, 64.9646],
-    [30.9641, 64.1321],
-    [30.572, 63.7098],
-    [31.5491, 63.3309],
-    [31.9773, 62.9304],
-    [31.576, 62.426],
-    [27.739, 60.1117],
-    [26.0945, 59.8015],
-    [22.4235, 59.3342],
-    [20.2983, 59.2763],
-    [19.3719, 59.6858],
-    [18.7454, 60.1305],
-    [18.776, 60.3316],
+    [ 38.23488429, 21.25950778 ],
+    [ -3.40456064, 27.14097341 ],
+    [ -4.48214, 48.38749 ],
+    [ -0.148349, 51.492513 ],
+    [ 4.836263, 52.389289 ],
+    [ 8.14067588, 49.35006155 ],
+    [ 38.23488429, 21.25950778 ]
   ],
 
   footer: {
@@ -399,14 +367,15 @@ export default {
 
   // Default origin endpoint to use when user is outside of area
   defaultEndpoint: {
-    address: 'Helsinki-Vantaan Lentoasema',
-    lat: 60.317429,
-    lon: 24.9690395,
+    address: 'Paris - Châtelet les Halles',
+    lat: 48.8588589,
+    lon: 2.3475569,
   },
   defaultOrigins: [
-    { icon: 'icon-icon_airplane', label: 'Helsinki-Vantaan lentoasema', lat: 60.317429, lon: 24.9690395 },
-    { icon: 'icon-icon_ferry', label: 'Turun satama', lat: 60.436363, lon: 22.220002 },
-    { icon: 'icon-icon_airplane', label: 'Rovaniemen lentoasema', lat: 66.557326, lon: 25.828135 },
+    { icon: 'icon-icon_airplane', label: 'Aéroport Charles de Gaulle', lat: 49.0097, lon: 2.5479 },
+    { icon: 'icon-icon_rail', label: 'Gare de Massy TGV', lat: 48.72584, lon: 2.261345 },
+    { icon: 'icon-icon_rail', label: 'Gare de Paris Montparnasse', lat: 48.841157, lon: 2.320474 },
+    { icon: 'icon-icon_airplane', label: 'Aéroport d\'Orly', lat: 48.7262, lon: 2.3652 },
   ],
 
   aboutThisService: {
@@ -429,7 +398,11 @@ export default {
     },
 
     nb: {},
-    fr: {},
+    fr: {
+      about: 'Ce service est fourni par kalon33 (@kalonbuntu33) pour le calcul d\'itinéraires et l\'information trajet en Île de France (et un peu plus). Ce service couvre les transports en commun, la marche, le vélo, certains cars Macron (OUIBUS, Flixbus), les TER et les Intercités. Il est construit à partir de la plateforme Digitransit.',
+      digitransit: 'La plateforme Digitransit est développée par HSL et la Finnish Transport Agency, et basée sur OpenTripPlanner. Le code source de la plateforme est disponible sous les deux licences EUPL v1.2 et AGPLv3',
+      datasources: "Cartographie, rues, bâtiments, localisation des arrêts sont © contributeurs d'OpenStreetMap téléchargés depuis Geofabrik. Les données de transports sont téléchargées depuis les sites Opendata respectifs des différents transporteurs/opérateurs (STIF, SNCF, OUIBUS...)",
+    },
     de: {},
   },
 
