@@ -1,9 +1,16 @@
-@import '../default/theme';
+@import '../../base/waltti';
 
 /* main theme colors */
-$primary-color: #c40065;
-$secondary-color: #9b004b;
-$hilight-color: #c40065;
-$action-color: #f08c00;
+$ouluColor: #c40065;
+
+$primary-color: $ouluColor;
+$secondary-color: darken($primary-color, 20%);
+$hilight-color: $ouluColor;
+$action-color: $ouluColor;
+$bus-color: $ouluColor;
+$viewpoint-marker-color: $ouluColor;
+
+$standalone-btn-color: $primary-color;
+
 /* Navbar logo */
-$nav-logo: url(oulu-logo.png);
+$nav-logo: url('oulu-logo.png');

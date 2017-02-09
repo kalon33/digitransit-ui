@@ -19,11 +19,6 @@ export default mergeWith({}, walttiConfig, {
     'boundary.rect.max_lon': 22.939795,
   },
 
-  initialLocation: {
-    lat: 60.451159,
-    lon: 22.267633,
-  },
-
   colors: {
     primary: '#e8aa27',
   },
@@ -43,7 +38,6 @@ export default mergeWith({}, walttiConfig, {
     description: APP_DESCRIPTION,
   },
 
-  sprites: 'svg-sprite.turku.svg',
   title: APP_TITLE,
 
   transportModes: {
@@ -64,7 +58,7 @@ export default mergeWith({}, walttiConfig, {
     content: [
       { label: (function () { return `© Turun seudun joukkoliikenne ${(1900 + new Date().getYear())}`; }()) },
       {},
-      { name: 'footer-feedback', nameEn: 'Send feedback', type: 'feedback', icon: 'icon-icon_speech-bubble' },
+      { name: 'footer-feedback', nameEn: 'Submit feedback', type: 'feedback', icon: 'icon-icon_speech-bubble' },
       { name: 'about-this-service', nameEn: 'About this service', route: '/tietoja-palvelusta', icon: 'icon-icon_info' },
     ],
   },

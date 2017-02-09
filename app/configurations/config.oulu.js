@@ -10,7 +10,9 @@ const walttiConfig = require('./waltti').default;
 export default mergeWith({}, walttiConfig, {
   CONFIG,
 
-  appBarLink: { name: 'Oulu', href: 'http://www.oulunkaupunki.fi/' },
+  feedIds: ['OULU'],
+
+  appBarLink: { name: 'Oulun joukkoliikenne', href: 'http://www.oulunjoukkoliikennen.fi' },
 
   colors: {
     primary: '#c40065',
@@ -19,6 +21,9 @@ export default mergeWith({}, walttiConfig, {
   socialMedia: {
     title: APP_TITLE,
     description: APP_DESCRIPTION,
+    twitter: {
+      site: '@oulunkaupunki',
+    }
   },
 
   title: APP_TITLE,
@@ -32,9 +37,10 @@ export default mergeWith({}, walttiConfig, {
 
   areaPolygon: [[24.37, 64.71], [24.37, 65.38], [26.61, 65.38], [26.61, 64.71] ],
 
-  initialLocation: {
-    lat: 65.012367,
-    lon: 25.471350,
+  defaultEndpoint: {
+    address: 'Keskusta',
+    lat: 65.0118,
+    lon: 25.4702,
   },
 
   defaultOrigins: [
@@ -47,7 +53,7 @@ export default mergeWith({}, walttiConfig, {
     content: [
       { label: (function () { return `© Oulu ${(1900 + new Date().getYear())}`; }()) },
       {},
-      { name: 'footer-feedback', nameEn: 'Send feedback', type: 'feedback', icon: 'icon-icon_speech-bubble' },
+      { name: 'footer-feedback', nameEn: 'Submit feedback', type: 'feedback', icon: 'icon-icon_speech-bubble' },
       { name: 'about-this-service', nameEn: 'About this service', route: '/tietoja-palvelusta', icon: 'icon-icon_info' },
     ],
   },
