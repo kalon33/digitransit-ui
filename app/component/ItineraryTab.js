@@ -153,15 +153,26 @@ export default Relay.createContainer(ItineraryTab, {
           mode
           distance
           duration
+          intermediatePlace
           route {
             shortName
             gtfsId
+            longName
+            agency {
+              phone
+            }
           }
           trip {
             gtfsId
             tripHeadsign
             pattern {
               code
+            }
+            stoptimes {
+              pickupType
+              stop {
+                gtfsId
+              }
             }
           }
         }

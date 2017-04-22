@@ -1,5 +1,6 @@
-const CONFIG = process.env.CONFIG || 'hsl';
+const CONFIG = 'hsl';
 const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
+const MAP_URL = process.env.MAP_URL || 'https://digitransit-dev-cdn-origin.azureedge.net';
 const APP_DESCRIPTION = 'Helsingin seudun liikenteen uusi Reittiopas.';
 
 export default {
@@ -7,10 +8,10 @@ export default {
 
   URL: {
     OTP: `${API_URL}/routing/v1/routers/hsl/`,
-    STOP_MAP: `${API_URL}/map/v1/hsl-stop-map/`,
-    CITYBIKE_MAP: `${API_URL}/map/v1/hsl-citybike-map/`,
-    PARK_AND_RIDE_MAP: `${API_URL}/map/v1/hsl-parkandride-map/`,
-    TICKET_SALES_MAP: `${API_URL}/map/v1/hsl-ticket-sales-map/`,
+    STOP_MAP: `${MAP_URL}/map/v1/hsl-stop-map/`,
+    CITYBIKE_MAP: `${MAP_URL}/map/v1/hsl-citybike-map/`,
+    PARK_AND_RIDE_MAP: `${MAP_URL}/map/v1/hsl-parkandride-map/`,
+    TICKET_SALES_MAP: `${MAP_URL}/map/v1/hsl-ticket-sales-map/`,
     FONT: 'https://cloud.typography.com/6364294/6653152/css/fonts.css',
   },
 
@@ -28,6 +29,7 @@ export default {
   favicon: './sass/themes/hsl/icon_favicon-reittiopas.svg',
 
   preferredAgency: 'HSL',
+  showAdformTrackingPixel: true,
 
   searchParams: {
     'boundary.rect.min_lat': 59.9,
@@ -131,27 +133,66 @@ export default {
     { icon: 'icon-icon_bus', label: 'Kampin bussiterminaali, Helsinki', lat: 60.16902, lon: 24.931702 },
   ],
 
-  shouldShowIntro: true,
+  shouldShowIntro: false,
+
+  redirectReittiopasParams: true,
 
   aboutThisService: {
-    fi: {
-      about: 'Tervetuloa Reittioppaaseen! Reittiopas kertoo, miten pääset nopeasti ja helposti perille joukkoliikenteellä Helsingissä, Espoossa, Vantaalla, Kauniaisissa, Keravalla, Kirkkonummella ja Sipoossa. Reittiopas etsii nopeat reitit myös kävelyyn ja pyöräilyyn sekä rajatusti myös yksityisautoiluun. Reittiopas-palvelun tarjoaa HSL Helsingin seudun liikenne, ja se perustuu Digitransit-palvelualustaan.',
-      digitransit: 'Digitransit-palvelualusta on HSL:n ja Liikenneviraston kehittämä avoimen lähdekoodin reititystuote. Lähdekoodi tarjotaan EUPL v1.2 ja AGPLv3 lisensseillä. Tule mukaan kehittämään palvelusta entistä parempi: digitransit.fi.',
-      datasources: 'Kartat, tiedot kaduista, rakennuksista, pysäkkien sijainnista ynnä muusta tarjoaa © OpenStreetMap contributors, ja ne ladataan Geofabrik palvelusta. Osoitetiedot tuodaan Väestörekisterikeskuksen rakennustietorekisteristä, ja ne ladataan OpenAddresses-palvelusta. Joukkoliikenteen reitit ja aikataulut ladataan HSL:n dev.hsl.fi/gtfs palvelimelta.',
-    },
+    fi: [
+      {
+        header: 'Tietoja palvelusta',
+        paragraphs: ['Tervetuloa Reittioppaaseen! Reittiopas kertoo, miten pääset nopeasti ja helposti perille joukkoliikenteellä Helsingissä, Espoossa, Vantaalla, Kauniaisissa, Keravalla, Kirkkonummella ja Sipoossa. Reittiopas etsii nopeat reitit myös kävelyyn ja pyöräilyyn sekä rajatusti myös yksityisautoiluun. Reittiopas-palvelun tarjoaa HSL Helsingin seudun liikenne, ja se perustuu Digitransit-palvelualustaan.'],
+      },
+      {
+        header: 'Tietolähteet',
+        paragraphs: ['Kartat, tiedot kaduista, rakennuksista, pysäkkien sijainnista ynnä muusta tarjoaa © OpenStreetMap contributors. Osoitetiedot tuodaan Väestörekisterikeskuksen rakennustietorekisteristä. Joukkoliikenteen reitit ja aikataulut perustuvat HSL:n JORE-aineistoon.'],
+      },
+    ],
 
-    sv: {
-      about: 'Den här tjänsten erbjuds av HRT för reseplanering inom huvudstadsregionen (Helsingfors, Esbo, Vanda, Grankulla, Kervo, Kyrkslätt och Sibbo). Reseplaneraren täcker med vissa begränsningar kollektivtrafik, promenad, cykling samt privatbilism. Tjänsten baserar sig på Digitransit-plattformen.',
-      digitransit: 'Digitransit-plattformen är en öppen programvara utvecklad av HRT och Trafikverket. Källkoden distribueras under EUPL v1.2 och AGPLv3 licenserna. Du är välkommen att delta i utvecklandet av plattformen. Mer information hittar du på addressen digitransit.fi.',
-      datasources: 'Kartor, gator, byggnader, hållplatser och dylik information erbjuds av © OpenStreetMap contributors och hämtas från Geofabrik-tjänsten. Addressinformation hämtas från BRC:s byggnadsinformationsregister och hämtas från OpenAddresses-tjänsten. Kollektivtrafikens rutter och tidtabeller hämtas från HRT:s egna tjänst dev.hsl.fi/gtfs.',
-    },
+    sv: [
+      {
+        header: 'Om tjänsten',
+        paragraphs: ['Den här tjänsten erbjuds av HRT för reseplanering inom huvudstadsregionen (Helsingfors, Esbo, Vanda, Grankulla, Kervo, Kyrkslätt och Sibbo). Reseplaneraren täcker med vissa begränsningar kollektivtrafik, promenad, cykling samt privatbilism. Tjänsten baserar sig på Digitransit-plattformen.'],
+      },
+      {
+        header: 'Datakällor',
+        paragraphs: ['Kartor, gator, byggnader, hållplatser och dylik information erbjuds av © OpenStreetMap contributors. Addressinformation hämtas från BRC:s byggnadsinformationsregister. Kollektivtrafikens rutter och tidtabeller är baserad på HRT:s JORE data.'],
+      },
+    ],
 
-    en: {
-      about: 'Welcome to the Journey Planner! The Journey Planner shows you how to get to your destination fast and easy by public transport in Helsinki, Espoo, Vantaa, Kauniainen, Kerava, Kirkkonummi and Sipoo. You can also use the planner to find fast walking and cycling routes, and to an extent, for driving directions. The Journey Planner is provided by HSL Helsinki Region Transport and it is based on the Digitransit service platform.',
-      digitransit: 'The Digitransit service platform is an open source routing platform developed by HSL and The Finnish Transport Agency. The source code is available with the EUPL v1.2 and AGPLv3 licenses. Join us to make the service even better: digitransit.fi.',
-      datasources: 'Address data is retrieved from the Building and Dwelling Register of the Finnish Population Register Center and downloaded from the OpenAddresses service. Public transport routes and timetables are downloaded from HSL’s dev.hsl.fi/gtfs server.',
-    },
+    en: [
+      {
+        header: 'About this service',
+        paragraphs: ['Welcome to the Journey Planner! The Journey Planner shows you how to get to your destination fast and easy by public transport in Helsinki, Espoo, Vantaa, Kauniainen, Kerava, Kirkkonummi and Sipoo. You can also use the planner to find fast walking and cycling routes, and to an extent, for driving directions. The Journey Planner is provided by HSL Helsinki Region Transport and it is based on the Digitransit service platform.'],
+      },
+      {
+        header: 'Data sources',
+        paragraphs: ['Maps, streets, buildings, stop locations etc. are provided by © OpenStreetMap contributors. Address data is retrieved from the Building and Dwelling Register of the Finnish Population Register Center. Public transport routes and timetables are based on JORE data of HSL.'],
+      },
+    ],
   },
 
-  staticMessages: [],
-};
+  staticMessages: [
+    { id: '2',
+      content: {
+        fi:
+        [
+            { type: 'text', content: 'Käytämme evästeitä palveluidemme kehitykseen. Käyttämällä sivustoa hyväksyt evästeiden käytön. Lue lisää: ' },
+            { type: 'a', content: 'Käyttöehdot', href: 'https://www.hsl.fi/kayttoehdot' },
+            { type: 'a', content: 'Tietosuojaseloste', href: 'https://www.hsl.fi/tietosuojaseloste' },
+        ],
+        en:
+        [
+            { type: 'text', content: 'We use cookies to improve our services. By using this site, you agree to its use of cookies. Read more: ' },
+            { type: 'a', content: 'Terms of use', href: 'https://www.hsl.fi/en/terms-of-use' },
+            { type: 'a', content: 'Privacy Statement', href: 'https://www.hsl.fi/en/description-of-the-file' },
+        ],
+        sv:
+        [
+            { type: 'text', content: 'Vi använder cookies för att utveckla våra tjänster. Genom att använda webbplatsen godkänner du att vi använder cookies. Läs mer: ' },
+            { type: 'a', content: 'Användarvillkor', href: 'https://www.hsl.fi/sv/anvandarvillkor' },
+            { type: 'a', content: 'Dataskyddsbeskrivning', href: 'https://www.hsl.fi/sv/dataskyddsbeskrivning' },
+        ],
+      },
+    },
+  ] };

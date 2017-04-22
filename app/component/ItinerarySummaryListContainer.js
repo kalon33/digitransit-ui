@@ -16,12 +16,25 @@ function ItinerarySummaryListContainer(props) {
         currentTime={props.currentTime}
         onSelect={props.onSelect}
         onSelectImmediately={props.onSelectImmediately}
+        intermediatePlaces={props.relay.route.params.intermediatePlaces}
       >
         {i === open && props.children}
       </SummaryRow>
     ));
 
     return <div className="summary-list-container momentum-scroll">{summaries}</div>;
+  } else if (
+    !props.relay.route.params.from.lat || !props.relay.route.params.from.lon ||
+    !props.relay.route.params.to.lat || !props.relay.route.params.to.lon
+  ) {
+    return (
+      <div className="summary-list-container summary-no-route-found">
+        <FormattedMessage
+          id="no-route-start-end"
+          defaultMessage={'Please select origin and destination.'}
+        />
+      </div>
+    );
   }
   return (
     <div className="summary-list-container summary-no-route-found">
@@ -43,6 +56,22 @@ ItinerarySummaryListContainer.propTypes = {
   onSelectImmediately: React.PropTypes.func.isRequired,
   open: React.PropTypes.number,
   children: React.PropTypes.node,
+  relay: React.PropTypes.shape({
+    route: React.PropTypes.shape({
+      params: React.PropTypes.shape({
+        to: React.PropTypes.shape({
+          lat: React.PropTypes.number,
+          lon: React.PropTypes.number,
+          address: React.PropTypes.string.isRequired,
+        }).isRequired,
+        from: React.PropTypes.shape({
+          lat: React.PropTypes.number,
+          lon: React.PropTypes.number,
+          address: React.PropTypes.string.isRequired,
+        }).isRequired,
+      }).isRequired,
+    }).isRequired,
+  }).isRequired,
 };
 
 export default Relay.createContainer(ItinerarySummaryListContainer, {
@@ -61,6 +90,7 @@ export default Relay.createContainer(ItinerarySummaryListContainer, {
           distance
           duration
           rentedBike
+          intermediatePlace
           route {
             mode
             shortName
@@ -68,8 +98,26 @@ export default Relay.createContainer(ItinerarySummaryListContainer, {
               name
             }
           }
+          trip {
+            stoptimes {
+              stop {
+                gtfsId
+              }
+              pickupType
+            }
+          }
           from {
             name
+            lat
+            lon
+            stop {
+              gtfsId
+            }
+          }
+          to {
+            stop {
+              gtfsId
+            }
           }
         }
       }

@@ -30,7 +30,7 @@ require('babel-core/register')({
 
 const port = process.env.HOT_LOAD_PORT || 9000;
 
-const prodBrowsers = ['IE 11', '> 0.3% in FI', 'last 2 versions'];
+const prodBrowsers = ['IE 11', '> 0.3% in FI', 'last 2 versions', 'iOS 8'];
 
 function getRulesConfig(env) {
   if (env === 'development') {
@@ -95,6 +95,10 @@ function getRulesConfig(env) {
 }
 
 function getAllConfigs() {
+  if (process.env.CONFIG && process.env.CONFIG !== '') {
+    return [require('./app/config').getNamedConfiguration(process.env.CONFIG)];
+  }
+
   const srcDirectory = 'app/configurations';
   return fs.readdirSync(srcDirectory)
     .filter(file => /^config\.\w+\.js$/.test(file))
@@ -231,7 +235,10 @@ function getPluginsConfig(env) {
       allChunks: true,
     }),
     new OfflinePlugin({
-      excludes: ['**/.*', '**/*.map', '../stats.json', '**/*.gz', '**/*.br'],
+      excludes: [
+        '**/.*', '**/*.map', '../stats.json', '**/*.gz', '**/*.br',
+        'js/*_theme.*.js', 'js/*_sprite.*.js', 'iconstats-*.json',
+      ],
       // TODO: Can be enabled after cors headers have been added
       // externals: ['https://dev.hsl.fi/tmp/452925/86FC9FC158618AB68.css'],
       caches: {
@@ -240,7 +247,7 @@ function getPluginsConfig(env) {
           ':externals:',
           'js/+([a-z0-9]).js',
         ],
-        optional: ['js/*_theme.*.js', 'js/*_sprite.*.js', '*.png', 'css/*.css', '*.svg'],
+        optional: ['*.png', 'css/*.css', '*.svg'],
       },
       externals: [/* '/' Can be re-added later when we want to cache index page */],
       safeToUseOptionalCaches: true,
@@ -250,26 +257,21 @@ function getPluginsConfig(env) {
       AppCache: {
         caches: ['main', 'additional', 'optional'],
       },
+      version: '[hash]',
     }),
     new GzipCompressionPlugin({
       asset: '[path].gz[query]',
       algorithm: 'zopfli',
-      test: /\.(js|css|html|svg)$/,
+      test: /\.(js|css|html|svg|ico)$/,
       minRatio: 0.95,
     }),
     new BrotliCompressionPlugin({
       asset: '[path].br[query]',
-      test: /\.(js|css|html|svg)$/,
+      test: /\.(js|css|html|svg|ico)$/,
       minRatio: 0.95,
     }),
     new webpack.NoEmitOnErrorsPlugin(),
   ]);
-}
-
-function getDirectories(srcDirectory) {
-  return fs.readdirSync(srcDirectory).filter(file =>
-    fs.statSync(path.join(srcDirectory, file)).isDirectory() // eslint-disable-line comma-dangle
-  );
 }
 
 function getDevelopmentEntry() {
@@ -294,21 +296,25 @@ function getEntry() {
     main: './app/client',
   };
 
-  const spriteMap = {};
-  getAllConfigs().forEach((config) => {
-    if (config.sprites) {
-      spriteMap[config.CONFIG] = config.sprites;
+  const addEntry = (theme, sprites) => {
+    let themeCss = './sass/themes/' + theme + '/main.scss';
+    if (!fs.existsSync(themeCss)) {
+      themeCss = './sass/themes/default/main.scss';
     }
-  });
+    entry[theme + '_theme'] = [themeCss];
+    entry[theme + '_sprite'] = ['./static/' + (sprites || '/svg-sprite.' + theme + '.svg')];
+  };
 
-  const directories = getDirectories('./sass/themes');
-  directories.forEach((theme) => {
-    const sassEntryPath = './sass/themes/' + theme + '/main.scss';
-    entry[theme + '_theme'] = [sassEntryPath];
-    const svgEntryPath = spriteMap[theme] ? './static/' + spriteMap[theme] :
-          './static/svg-sprite.' + theme + '.svg';
-    entry[theme + '_sprite'] = [svgEntryPath];
-  });
+  if (process.env.CONFIG && process.env.CONFIG !== '') {
+    const config = require('./app/config').getNamedConfiguration(process.env.CONFIG);
+
+    addEntry('default');
+    addEntry(process.env.CONFIG, config.sprites);
+  } else {
+    getAllConfigs().forEach((config) => {
+      addEntry(config.CONFIG, config.sprites);
+    });
+  }
 
   return entry;
 }
@@ -331,6 +337,7 @@ module.exports = {
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],
     alias: {
       'lodash.merge': 'lodash/merge',
+      'lodash.keys': 'lodash/keys',
       'history/lib/Actions': 'history/es6/Actions',
       'history/lib/createBrowserHistory': 'history/es6/createBrowserHistory',
       'history/lib/createHashHistory': 'history/es6/createHashHistory',
@@ -339,6 +346,7 @@ module.exports = {
       'history/lib/useQueries': 'history/es6/useQueries',
       'react-router/lib/getRouteParams': 'react-router/es6/getRouteParams',
       moment$: 'moment/moment.js',
+      'core-js/library/fn/weak-map': path.join(__dirname, 'app/util/WeakMap'),
     },
   },
   resolveLoader: {
@@ -351,25 +359,7 @@ module.exports = {
     net: 'empty',
     tls: 'empty',
   },
-  externals: {
-    'core-js/library/fn/symbol': 'var Symbol',
-    'core-js/library/fn/object/assign': 'var Object.assign',
-    'core-js/library/fn/weak-map': 'var WeakMap',
-    'core-js/library/es6/map': 'var Map',
-    'core-js/library/fn/promise': 'var Promise',
-    'core-js/library/fn/array/from': 'var Array.from',
-    'core-js/library/fn/object/keys': 'var Object.keys',
-    'core-js/library/fn/object/freeze': 'var Object.freeze',
-    'core-js/library/fn/object/get-prototype-of': 'var Object.getPrototypeOf',
-    'core-js/library/fn/object/set-prototype-of': 'var Object.setPrototypeOf',
-    'core-js/library/fn/object/define-property': 'var Object.defineProperty',
-    'core-js/library/fn/json/stringify': 'var JSON.stringify',
-    'core-js/library/fn/object/create': 'var Object.create',
-    'core-js/library/fn/symbol/iterator': 'var Symbol.iterator',
-    'fbjs/lib/fetch': 'var fetch',
-    './fetch': 'var fetch',
-    'object-assign': 'var Object.assign',
-  },
+  externals: {},
   performance: {
     hints: (process.env.NODE_ENV === 'development') ? false : 'warning',
   },

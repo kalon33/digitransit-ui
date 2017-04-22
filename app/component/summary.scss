@@ -1,9 +1,14 @@
-.summary {
+.desktop .summary {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
 }
 
-.desktop .summary {
-  height: 100%;
-  max-height: calc(100% - 164px);
+@media print {
+  .desktop .summary {
+    display: block;
+    height: auto;
+  }
 }
 
 .summary-no-route-found {
@@ -21,7 +26,6 @@
   input[type="date"], input[type="time"], input[type="text"], select, .time-mui > input {
     vertical-align: middle;
     text-align: left;
-    width: auto;
     height: 2.6em;
     margin: 0;
     padding: 0 1rem 0 $padding-small;
@@ -32,9 +36,10 @@
     box-shadow: none;
     color: $secondary-font-color;
     border: none;
-    border-radius: 0;
+    border-radius: $border-radius;
     appearance: none;
     @include font-book;
+    cursor: pointer;
 
     &:hover {
       background-color: $primary-color;
@@ -48,9 +53,9 @@
       box-shadow: none;
     }
 
-    &.text-time-selector {
-      width: 60px;
-      padding: 0;
+    &.text-time-selector, &.desktop {
+      padding: 0 0.5em 0 0.5em;
+      margin: 0 -0.5em 0 0;
       text-align: center;
     }
   }
@@ -135,10 +140,8 @@
     padding: 0 calc(#{$padding-medium} + 1.5rem) 0 $padding-medium;
     height: 35px !important;
 
-    &.text-time-selector {
-      width: 60px;
-      padding: 0;
-      text-align: center;
+    &.text-time-selector, &.desktop {
+      padding: 0 0.5em 0 0.5em;
     }
   }
 
@@ -215,13 +218,59 @@
 }
 
 .desktop .summary-list-container {
-  height: calc(100% - 80px);
+  flex: 1 1 auto;
 }
 
+
+@media print {
+  .summary {
+    display:block;
+    height: auto;
+    .summary-list-container {
+      display:block;
+      height:auto;
+    }
+  }
+}
 
 .summary-content {
   height: 100%;
   > section {
     height: 100%;
+  }
+}
+
+.via-point-bar {
+  background: $black;
+  color: $white;
+  font-size: $font-size-small;
+
+  &:not(:empty) {
+    padding: 0.4em 10px;
+  }
+
+  .via-point {
+    color: $white;
+    > span {
+      padding-bottom: calc(#{$padding-xsmall} + 1px);
+      padding-right: $padding-large;
+      line-height: normal;
+    }
+
+    .link-name {
+      padding-top: 0.4em;
+      margin-right: $padding-medium;
+    }
+  }
+
+  &.bp-large {
+    font-size: $font-size-normal;
+
+    &:not(:empty) {
+      padding: 0.4em 20px;
+    }
+    .icon {
+      font-size: 14px;
+    }
   }
 }

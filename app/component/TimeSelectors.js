@@ -1,11 +1,13 @@
 import React, { PropTypes } from 'react';
 import moment from 'moment';
 import { intlShape } from 'react-intl';
-import Icon from './Icon';
+import { isMobile } from '../util/browser';
 
+import Icon from './Icon';
 import ComponentUsageExample from './ComponentUsageExample';
 import supportsInputType from '../util/supportsInputType';
 import TimeInput from './TimeInput';
+import CustomInputTime from './CustomInputTime';
 
 export default function TimeSelectors(
   { arriveBy, time, dates, setArriveBy, changeTime, changeDate }, { intl },
@@ -40,14 +42,14 @@ export default function TimeSelectors(
         <Icon className="fake-select-arrow" img="icon-icon_arrow-dropdown" />
       </div>
       {supportsInputType('time') ?
-        <div className="select-wrapper">
-          <input
-            type="time"
-            className="time-selector"
-            value={time.format('HH:mm')}
-            onChange={changeTime}
+        <div id="time" className="select-wrapper">
+          <CustomInputTime
+            time={time.format('HH:mm')}
+            changeTime={changeTime}
           />
-          <Icon className="fake-select-arrow" img="icon-icon_arrow-dropdown" />
+          {isMobile &&
+            <Icon className="fake-select-arrow" img="icon-icon_arrow-dropdown" key="caret" />
+          }
         </div> :
         <div className="select-wrapper">
           <TimeInput value={time.format('HH:mm')} changeTime={changeTime} />

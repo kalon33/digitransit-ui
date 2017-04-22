@@ -47,9 +47,10 @@ testVariation('Departure', 'isArrival', 4);
 testVariation('DepartureTime', 'normal', 2);
 testVariation('DepartureTime', 'canceled', 3);
 
-
 testVariation('RouteNumber', 'normal');
-testVariation('RouteNumber', 'vertical', 2);
+testVariation('RouteNumber', 'with-disruption', 2);
+testVariation('RouteNumber', 'vertical', 4);
+testVariation('RouteNumber', 'vertical-with-disruption', 5);
 
 testVariation('RouteDestination', 'normal');
 testVariation('RouteDestination', 'isArrival', 2);
@@ -75,6 +76,7 @@ testVariation('ParkAndRideAvailability', 'realtime', 2);
 
 testVariation('FavouriteLocation', 'normal', 1,
       '.component-example:nth-of-type(1) .component .realtime-icon').then(skip('ie11'));
+testVariation('NoFavouriteLocations');
 
 testVariation('EmptyFavouriteLocationSlot');
 
@@ -99,7 +101,8 @@ testVariation('IconWithTail', 'notail', 4);
 testVariation('SelectedIconWithTail');
 testVariation('IconWithCaution');
 testVariation('IconWithBigCaution');
-
+testVariation('IconWithIcon', 'customStyle', 1);
+testVariation('IconWithIcon', 'normal', 2);
 
 testVariation('TimeNavigationButtons', 'normal');
 testVariation('TimeNavigationButtons', 'hovered', 1, [], (actions) => {
@@ -109,7 +112,7 @@ testVariation('TimeNavigationButtons', 'hovered', 1, [], (actions) => {
       ).wait(400); // Wait for animation to happen
 });
 
-testVariation('TimeSelectors').then(skip(['ie11', 'safari10'])); // TODO figure out why time differs when run locally & snap
+testVariation('TimeSelectors');
 
 testVariation('RightOffcanvasToggle', 'default');
 testVariation('RightOffcanvasToggle', 'adjusted', 2);
@@ -188,6 +191,12 @@ testVariation('SummaryRow', 'passive-large-tomorrow', 7);
 testVariation('SummaryRow', 'active-large-tomorrow', 8);
 testVariation('SummaryRow', 'open-large-today', 9);
 testVariation('SummaryRow', 'open-large-tomorrow', 10);
+testVariation('SummaryRow', 'passive-small-via', 11);
+testVariation('SummaryRow', 'active-large-via', 12);
+testVariation('SummaryRow', 'passive-small-call-agency', 13);
+testVariation('SummaryRow', 'active-large-call-agency', 14);
+
+testVariation('CallAgencyWarning');
 
 testVariation('CurrentPositionSuggestionItem', 'with-position');
 testVariation('CurrentPositionSuggestionItem', 'no-position', 2);
@@ -198,3 +207,30 @@ testVariation('SuggestionItem', 'Route', 3);
 testVariation('SuggestionItem', 'Stop', 4);
 
 testVariation('DateWarning', 'tomorrow-show-warning', 2);
+
+testVariation('ViaPointSelector', 'no-via-point');
+testVariation('ViaPointSelector', 'with-via-point', 2);
+testVariation('ViaPointBar', 'with-via-point', 2);
+
+testVariation('WalkLeg', 'walk-start');
+testVariation('WalkLeg', 'walk-middle', 2);
+testVariation('WaitLeg');
+testVariation('BicycleLeg', 'bicycle-leg-normal');
+testVariation('BicycleLeg', 'bicycle-leg-walking-bike', 2);
+testVariation('BicycleLeg', 'bicycle-leg-citybike', 3);
+testVariation('BicycleLeg', 'bicycle-leg-citybike-walking-bike', 4);
+testVariation('EndLeg');
+testVariation('AirportCheckInLeg');
+testVariation('AirportCollectLuggageLeg');
+testVariation('BusLeg', 'scheduled');
+testVariation('BusLeg', 'realtime', 2, [
+  'svg.realtime-icon',
+]).then(skip('ie11'));
+testVariation('AirplaneLeg');
+testVariation('SubwayLeg');
+testVariation('TramLeg');
+testVariation('RailLeg');
+testVariation('FerryLeg');
+testVariation('CarLeg');
+testVariation('ViaLeg');
+testVariation('CallAgencyLeg');

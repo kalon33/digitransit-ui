@@ -7,6 +7,7 @@ import IconWithTail from './IconWithTail';
 import SelectedIconWithTail from './SelectedIconWithTail';
 import IconWithCaution from './IconWithCaution';
 import IconWithBigCaution from './IconWithBigCaution';
+import IconWithIcon from './IconWithIcon';
 import ComponentDocumentation from './ComponentDocumentation';
 import Departure from './Departure';
 import RouteNumber from './RouteNumber';
@@ -55,6 +56,7 @@ import Labeled from './Labeled';
 import Centered from './Centered';
 import InfoIcon from './InfoIcon';
 import Favourite from './Favourite';
+import NoFavouriteLocations from './NoFavouriteLocations';
 import DepartureListHeader from './DepartureListHeader';
 import NextDeparturesListHeader from './NextDeparturesListHeader';
 import CurrentPositionSuggestionItem from './CurrentPositionSuggestionItem';
@@ -66,6 +68,24 @@ import { component as SummaryRow } from './SummaryRow';
 import PageFooter from './PageFooter';
 import FooterItem from './FooterItem';
 import DateWarning from './DateWarning';
+import ViaPointSelector from './ViaPointSelector';
+import ViaPointBar from './ViaPointBar';
+import WalkLeg from './WalkLeg';
+import WaitLeg from './WaitLeg';
+import BicycleLeg from './BicycleLeg';
+import EndLeg from './EndLeg';
+import AirportCheckInLeg from './AirportCheckInLeg';
+import AirportCollectLuggageLeg from './AirportCollectLuggageLeg';
+import BusLeg from './BusLeg';
+import AirplaneLeg from './AirplaneLeg';
+import SubwayLeg from './SubwayLeg';
+import TramLeg from './TramLeg';
+import RailLeg from './RailLeg';
+import FerryLeg from './FerryLeg';
+import CarLeg from './CarLeg';
+import ViaLeg from './ViaLeg';
+import CallAgencyLeg from './CallAgencyLeg';
+import CallAgencyWarning from './CallAgencyWarning';
 
 const components = {
   Icon,
@@ -73,6 +93,7 @@ const components = {
   SelectedIconWithTail,
   IconWithBigCaution,
   IconWithCaution,
+  IconWithIcon,
   ComponentDocumentation,
   Departure,
   RouteNumber,
@@ -90,6 +111,7 @@ const components = {
   Availability,
   ParkAndRideAvailability,
   FavouriteLocation,
+  NoFavouriteLocations,
   EmptyFavouriteLocationSlot,
   TimeSelectors,
   TimeNavigationButtons,
@@ -133,6 +155,24 @@ const components = {
   PageFooter,
   FooterItem,
   DateWarning,
+  ViaPointSelector,
+  ViaPointBar,
+  WalkLeg,
+  WaitLeg,
+  BicycleLeg,
+  EndLeg,
+  AirportCheckInLeg,
+  AirportCollectLuggageLeg,
+  BusLeg,
+  AirplaneLeg,
+  SubwayLeg,
+  TramLeg,
+  RailLeg,
+  FerryLeg,
+  CarLeg,
+  ViaLeg,
+  CallAgencyLeg,
+  CallAgencyWarning,
 };
 
 function getColors() {

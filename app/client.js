@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Relay from 'react-relay';
-import { Router } from 'react-router';
-import match from 'react-router/lib/match';
+import { Router, match } from 'react-router';
 import IsomorphicRelay from 'isomorphic-relay';
 import IsomorphicRouter from 'isomorphic-relay-router';
 import provideContext from 'fluxible-addons-react/provideContext';
@@ -45,6 +44,35 @@ tapEventPlugin();
 const config = window.state.context.plugins['extra-context-plugin'].config;
 const app = appCreator(config);
 
+const piwik = Piwik.getTracker(config.PIWIK_ADDRESS, config.PIWIK_ID);
+
+if (!config.PIWIK_ADDRESS || !config.PIWIK_ID || config.PIWIK_ID === '') {
+  piwik.trackEvent = () => {};
+  piwik.setCustomVariable = () => {};
+  piwik.trackPageView = () => {};
+}
+
+const addPiwik = c => (c.piwik = piwik); // eslint-disable-line no-param-reassign
+
+const piwikPlugin = {
+  name: 'PiwikPlugin',
+  plugContext: plugContext(addPiwik),
+};
+
+const raven = Raven(config.SENTRY_DSN, piwik.getVisitorId());
+
+// eslint-disable-next-line no-param-reassign
+const addRaven = c => (c.raven = raven);
+
+const ravenPlugin = {
+  name: 'RavenPlugin',
+  plugContext: plugContext(addRaven),
+};
+
+// Add plugins
+app.plug(ravenPlugin);
+app.plug(piwikPlugin);
+
 // Run application
 const callback = () => app.rehydrate(window.state, (err, context) => {
   if (err) {
@@ -54,40 +82,14 @@ const callback = () => app.rehydrate(window.state, (err, context) => {
   window.context = context;
 
   if (process.env.NODE_ENV === 'development') {
-  // eslint-disable-next-line global-require, import/no-dynamic-require
-    require(`../sass/themes/${config.CONFIG}/main.scss`);
+    try {
+      // eslint-disable-next-line global-require, import/no-dynamic-require
+      require(`../sass/themes/${config.CONFIG}/main.scss`);
+    } catch (error) {
+      // eslint-disable-next-line global-require, import/no-dynamic-require
+      require('../sass/themes/default/main.scss');
+    }
   }
-
-  const piwik = Piwik.getTracker(config.PIWIK_ADDRESS, config.PIWIK_ID);
-
-  if (!config.PIWIK_ADDRESS || !config.PIWIK_ID || config.PIWIK_ID === '') {
-    piwik.trackEvent = () => {};
-    piwik.setCustomVariable = () => {};
-    piwik.trackPageView = () => {};
-  }
-
-  const addPiwik = c => (c.piwik = piwik); // eslint-disable-line no-param-reassign
-
-  const piwikPlugin = {
-    name: 'PiwikPlugin',
-    plugContext: plugContext(addPiwik),
-  };
-
-  // eslint-disable-next-line no-param-reassign
-  const addRaven = c => (c.raven = Raven(config.SENTRY_DSN));
-
-  const ravenPlugin = {
-    name: 'RavenPlugin',
-    plugContext: plugContext(addRaven),
-  };
-
-  if (typeof window.Raven !== 'undefined' && window.Raven !== null) {
-    window.Raven.setUserContext({ piwik: piwik.getVisitorId() });
-  }
-
-  // Add plugins
-  app.plug(piwikPlugin);
-  app.plug(ravenPlugin);
 
   Relay.injectNetworkLayer(new RelayNetworkLayer([
     urlMiddleware({
@@ -110,9 +112,10 @@ const callback = () => app.rehydrate(window.state, (err, context) => {
 
   const history = historyCreator(config);
 
+
   function track() {
     // track "getting back to home"
-    const newHref = this.props.history.createHref(this.state.location);
+    const newHref = this.props.router.createHref(this.state.location);
 
     if (this.href !== undefined && newHref === '/' && this.href !== newHref) {
       if (config.feedback.enable && shouldDisplayPopup(
@@ -128,7 +131,7 @@ const callback = () => app.rehydrate(window.state, (err, context) => {
     }
 
     this.href = newHref;
-    piwik.setCustomUrl(this.props.history.createHref(this.state.location));
+    piwik.setCustomUrl(this.props.router.createHref(this.state.location));
     piwik.trackPageView();
   }
 

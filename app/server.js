@@ -66,10 +66,12 @@ function getRobotNetworkLayer(config) {
   return robotLayers[config.CONFIG];
 }
 
+const RELAY_FETCH_TIMEOUT = process.env.RELAY_FETCH_TIMEOUT || 1000;
+
 function getNetworkLayer(config) {
   if (!networkLayers[config.CONFIG]) {
     networkLayers[config.CONFIG] = new RelayNetworkLayer([
-      retryMiddleware({ fetchTimeout: 1000, retryDelays: [] }),
+      retryMiddleware({ RELAY_FETCH_TIMEOUT, retryDelays: [] }),
       urlMiddleware({
         url: `${config.URL.OTP}index/graphql`,
         batchUrl: `${config.URL.OTP}index/graphql/batch`,
@@ -164,22 +166,25 @@ function getPolyfills(userAgent, config) {
     es6: { flags: ['gated'] },
     es7: { flags: ['gated'] },
     fetch: { flags: ['gated'] },
-    Intl: { flags: ['gated'] },
+    Intl: { flags: ['always'] },
+    'Object.assign': { flags: ['gated'] },
     matchMedia: { flags: ['gated'] },
   };
 
   config.availableLanguages.forEach((language) => {
     features[`Intl.~locale.${language}`] = {
-      flags: ['gated'],
+      flags: ['always'],
     };
   });
 
   return polyfillService.getPolyfillString({
     uaString: userAgent,
     features,
-    minify: true,
+    minify: process.env.NODE_ENV !== 'development',
     unknown: 'polyfill',
-  });
+  }).then(polyfills =>
+    // no sourcemaps for inlined js
+    polyfills.replace(/^\/\/# sourceMappingURL=.*$/gm, ''));
 }
 
 function getScripts(req, config) {
@@ -298,6 +303,12 @@ export default function (req, res, next) {
     } else if (!renderProps) {
       res.status(404).send('Not found');
     } else {
+      if (
+        renderProps.components
+          .filter(component => component && component.displayName === 'Error404').length > 0
+      ) {
+        res.status(404);
+      }
       let networkLayer;
       if (isRobotRequest(agent)) {
         networkLayer = getRobotNetworkLayer(config);

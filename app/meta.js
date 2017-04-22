@@ -25,6 +25,9 @@ export default function getMetadata(lang, host, url, config) {
       name: 'viewport',
       content: 'width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1 user-scalable=no, minimal-ui',
     }, {
+      property: 'referrer',
+      content: 'origin' },
+    {
       property: 'og:url',
       content: `https://${host}${url}`,
     }, {
@@ -83,6 +86,7 @@ export default function getMetadata(lang, host, url, config) {
     return {
       meta: baseData.meta.concat(config.metaData.meta),
       link: baseData.link.concat(config.metaData.link),
+      title: config.title,
     };
   }
 

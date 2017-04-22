@@ -1,10 +1,10 @@
 const CONFIG = process.env.CONFIG || 'default';
 const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
-const MAP_URL = process.env.MAP_URL || 'https://{s}-dev-api.digitransit.fi';
+const MAP_URL = process.env.MAP_URL || 'https://digitransit-dev-cdn-origin.azureedge.net';
 const APP_PATH = process.env.APP_CONTEXT || '';
-const PIWIK_ADDRESS = process.env.PIWIK_ADDRESS || '';
-const PIWIK_ID = process.env.PIWIK_ID || '';
-const SENTRY_DSN = process.env.SENTRY_DSN || '';
+const PIWIK_ADDRESS = process.env.PIWIK_ADDRESS;
+const PIWIK_ID = process.env.PIWIK_ID;
+const SENTRY_DSN = process.env.SENTRY_DSN;
 const PORT = process.env.PORT || 8080;
 const APP_DESCRIPTION = 'Digitransit journey planning UI';
 
@@ -22,8 +22,8 @@ export default {
       default: `${MAP_URL}/map/v1/hsl-map/`,
       sv: `${MAP_URL}/map/v1/hsl-map-sv/`,
     },
-    STOP_MAP: `${API_URL}/map/v1/finland-stop-map/`,
-    CITYBIKE_MAP: `${API_URL}/map/v1/hsl-citybike-map/`,
+    STOP_MAP: `${MAP_URL}/map/v1/finland-stop-map/`,
+    CITYBIKE_MAP: `${MAP_URL}/map/v1/hsl-citybike-map/`,
     MQTT: 'wss://dev.hsl.fi/mqtt-proxy',
     ALERTS: `${API_URL}/realtime/service-alerts/v1`,
     FONT: 'https://fonts.googleapis.com/css?family=Lato:300,400,900%7CPT+Sans+Narrow:400,700',
@@ -51,6 +51,11 @@ export default {
     suggestions: {
       useTransportIcons: false,
     },
+    usePeliasStops: false,
+    mapPeliasModality: false,
+    peliasMapping: { },
+    peliasLayer: null,
+    peliasLocalization: null,
   },
 
   nearbyRoutes: {
@@ -101,8 +106,18 @@ export default {
     useRetinaTiles: true,
     tileSize: 512,
     zoomOffset: -1,
+    minZoom: 1,
+    maxZoom: 18,
     useVectorTiles: true,
-
+    controls: {
+      zoom: {
+        // available controls positions: 'topleft', 'topright', 'bottomleft, 'bottomright'
+        position: 'bottomleft',
+      },
+      scale: {
+        position: 'bottomright',
+      },
+    },
     genericMarker: {
       // Do not render name markers at zoom levels below this value
       nameMarkerMinZoom: 18,
@@ -142,9 +157,8 @@ export default {
     locationAware: true,
   },
 
-  // TODO: Switch back in april
   cityBike: {
-    showCityBikes: false,
+    showCityBikes: true,
 
     useUrl: {
       fi: 'https://www.hsl.fi/citybike',
@@ -171,6 +185,11 @@ export default {
   terminalStopsMaxZoom: 17,
   terminalStopsMinZoom: 12,
   terminalNamesZoom: 16,
+  stopsIconSize: {
+    small: 8,
+    selected: 28,
+    default: 18,
+  },
 
   appBarLink: { name: 'Digitransit', href: 'https://www.digitransit.fi/' },
 
@@ -246,9 +265,8 @@ export default {
       defaultValue: true,
     },
 
-    // TODO: Switch back in april
     citybike: {
-      availableForSelection: false,
+      availableForSelection: true,
       defaultValue: false,
     },
 
@@ -410,24 +428,50 @@ export default {
   ],
 
   aboutThisService: {
-    fi: {
-      about: 'Palvelu kattaa joukkoliikenteen, kävelyn, pyöräilyn ja yksityisautoilun rajatuilta osin. Palvelu perustuu Digitransit palvelualustaan.',
-      digitransit: 'Digitransit palvelualusta on HSL:n ja Liikenneviraston kehittämä avoimen lähdekoodin ratkaisu, jonka taustalla toimii mm. OpenTripPlanner. Lähdekoodi tarjotaan EUPL v1.2 ja AGPLv3 lisensseillä.',
-      datasources: 'Kartat, kadut, rakennukset, pysäkkisijainnit ym. tiedot tarjoaa © OpenStreetMap contributors ja ne ladataan Geofabrik palvelusta. Osoitetiedot tuodaan VRK:n rakennustietorekisteristä ja ne ladataan OpenAddresses-palvelusta. Joukkoliikenteen reitit ja aikataulut ladataan mm. Liikenneviraston valtakunnallisesta joukkoliikenteen tietokannasta.',
-    },
+    fi: [
+      {
+        header: 'Tietoja palvelusta',
+        paragraphs: ['Palvelu kattaa joukkoliikenteen, kävelyn, pyöräilyn ja yksityisautoilun rajatuilta osin. Palvelu perustuu Digitransit palvelualustaan.'],
+      },
+      {
+        header: 'Digitransit palvelualusta',
+        paragraphs: ['Digitransit-palvelualusta on HSL:n ja Liikenneviraston kehittämä avoimen lähdekoodin reititystuote.'],
+      },
+      {
+        header: 'Tietolähteet',
+        paragraphs: ['Kartat, tiedot kaduista, rakennuksista, pysäkkien sijainnista ynnä muusta tarjoaa © OpenStreetMap contributors. Osoitetiedot tuodaan Väestörekisterikeskuksen rakennustietorekisteristä. Joukkoliikenteen reitit ja aikataulut ladataan Liikenneviraston valtakunnallisesta joukkoliikenteen tietokannasta.'],
+      },
+    ],
 
-    sv: {
-      about: 'Reseplaneraren täcker med vissa begränsningar kollektivtrafik, promenad, cykling samt privatbilism. Tjänsten baserar sig på Digitransit-plattformen.',
-      digitransit: 'Digitransit-plattformen är en öppen programvara utvecklad av HRT och Trafikverket, som bl.a. stödjer sig på OpenTripPlanner. Källkoden distribueras under EUPL v1.2 och AGPLv3 licenserna.',
-      datasources: 'Kartor, gator, byggnader, hållplatser och dylik information erbjuds av © OpenStreetMap contributors och laddas ned från Geofabrik-tjänsten. Addressinformation hämtas från BRC:s byggnadsinformationsregister och laddas ned från OpenAddresses-tjänsten. Kollektivtrafikens rutter och tidtabeller hämtas bl.a. från Trafikverkets landsomfattande kollektivtrafiksdatabas.',
-    },
+    sv: [
+      {
+        header: 'Om tjänsten',
+        paragraphs: ['Reseplaneraren täcker med vissa begränsningar kollektivtrafik, promenad, cykling samt privatbilism. Tjänsten baserar sig på Digitransit-plattformen.'],
+      },
+      {
+        header: 'Digitransit-plattformen',
+        paragraphs: ['Digitransit-plattformen är en öppen programvara utvecklad av HRT och Trafikverket.'],
+      },
+      {
+        header: 'Datakällor',
+        paragraphs: ['Kartor, gator, byggnader, hållplatser och dylik information erbjuds av © OpenStreetMap contributors. Addressinformation hämtas från BRC:s byggnadsinformationsregister. Kollektivtrafikens rutter och tidtabeller hämtas från Trafikverkets landsomfattande kollektivtrafiksdatabas.'],
+      },
+    ],
 
-    en: {
-      about: 'The service covers public transport, walking, cycling, and some private car use. Service is built on Digitransit platform.',
-      digitransit: 'Digitransit service platform is created by HSL and Finnish Transport Agency, built on top of e.g. OpenTripPlanner. The source code of the platform is dual-licensed under the EUPL v1.2 and AGPLv3 licenses.',
-      datasources: "Maps, streets, buildings, stop locations etc. from © OpenStreetMap contributors downloaded from Geofabrik. Additional address data from Finland's Population Register Centre downloaded from OpenAddresses Public transport routes and timetables from Finnish Transport Agency's national public transit database.",
-    },
-
+    en: [
+      {
+        header: 'About this service',
+        paragraphs: ['The service covers public transport, walking, cycling, and some private car use. Service is built on Digitransit platform.'],
+      },
+      {
+        header: 'Digitransit platform',
+        paragraphs: ['The Digitransit service platform is an open source routing platform developed by HSL and The Finnish Transport Agency.'],
+      },
+      {
+        header: 'Data sources',
+        paragraphs: ["Maps, streets, buildings, stop locations etc. are provided by © OpenStreetMap contributors. Address data is retrieved from the Building and Dwelling Register of the Finnish Population Register Center. Public transport routes and timetables are downloaded from Finnish Transport Agency's national public transit database."],
+      },
+    ],
     nb: {},
     fr: {},
     de: {},
@@ -441,17 +485,27 @@ export default {
     lappeenranta: 'lappeenranta',
     joensuu: 'joensuu',
     oulu: 'oulu',
+    hameenlinna: 'hameenlinna',
     matka: 'matka',
+    jyvaskyla: 'jyvaskyla',
+    lahti: 'lahti',
+    kuopio: 'kuopio',
   },
 
   piwikMap: [ // in priority order. 1st match stops
-    { id: '5', expr: 'dev.reittiopas' },
-    { id: '4', expr: 'reittiopas' },
-    { id: '7', expr: 'dev.matka|dev.digitransit' },
-    { id: '6', expr: 'matka|digitransit' },
     { id: '10', expr: 'dev-joensuu' },
     { id: '11', expr: 'joensuu' },
     { id: '12', expr: 'dev-turku' },
     { id: '13', expr: 'turku' },
+    // put generic expressions last so that they do not match waltti cities
+    // e.g. reittiopas.hameenlinna.fi or turku.digitransit.fi
+    { id: '5', expr: 'dev.reittiopas' },
+    { id: '4', expr: 'reittiopas' },
+    { id: '7', expr: 'dev.matka' },
+    { id: '6', expr: 'matka' },
+    { id: '7', expr: 'dev.digitransit' },
+    { id: '6', expr: 'digitransit' },
   ],
+
+  minutesToDepartureLimit: 9,
 };
