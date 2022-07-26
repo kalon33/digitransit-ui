@@ -4,7 +4,7 @@
 ## Install requirements
 You need Node and yarn (or npm3).
 
-- `node -v` should be >= 5
+- `node -v` should be >= 8
 - `yarn --version` should be >= 0.18.0 (or `npm -v` should be >= 3)
 
 You also need a C compiler:
@@ -34,16 +34,16 @@ The same applies to other npm run commands below.
 Or you can also use this:
 - https://github.com/robertknight/webpack-bundle-size-analyzer
 
-## Configure Git Hooks
-You should configure git pre-commit hook to run tests and lint. That can be done like so:
-- `ln -s ../../hooks/pre-commit.sh .git/hooks/pre-commit`
-- `ln -s ../../hooks/pre-push.sh .git/hooks/pre-push`
+## Using Git Hooks
+Husky (npm-package) is used for setting up the git hooks (`.git/hooks/`) that will allow custom scripts to be run on the repository.
+Look up 'husky' in `package.json` to see the details.
 
 ## Configuration application
 Digitransit ui can be configured in multiple ways. You can
-- Change between National and Regional versions using CONFIG parameter
-- Switch API backend using API_URL parameter
-- Enable Sentry client side error monitoring using SENTRY_* parameters
+- Change between National and Regional versions using `CONFIG` parameter
+  - Alternatively, use `BASE_CONFIG` if server is supposed to serve multiple configurations which have same base configuration. It is used server side at start up and request's host specific config based on `host` or `x-forwarded-host` header is merged into it before returning config to client.
+- Switch API backend using `API_URL` parameter
+- Enable Sentry client side error monitoring using `SENTRY_*` parameters
 
 Note that you can combine multiple configuration parameters.
 
@@ -56,12 +56,19 @@ Start HSL version
 - `yarn run build`
 - `CONFIG=hsl yarn run start`
 
-### Changing url for OpenTripPlanner and Geocoding (optional)
-By default digitransit-ui uses services from https://api.digitransit.fi but you can override API server like so:
+### Changing urls for OpenTripPlanner, Geocoding, Service alerts and Vehicle positions (optional)
+By default digitransit-ui uses services from https://dev-api.digitransit.fi but you can override API server like so:
 - `yarn run build`
-- `API_URL=https://dev-api.digitransit.fi yarn run start`
+- `API_URL=https://api.digitransit.fi yarn run start`
+
+If you want to specify different URL (not just base URL) for individual services, you can define variables OTP_URL, MAP_URL and/or GEOCODING_BASE_URL (URL path before /search or /reverse).
+- `yarn run build`
+- `GEOCODING_BASE_URL=https://api.digitransit.fi/geocoding/v1 OTP_URL=https://api.digitransit.fi/routing/v1/routers/finland/ yarn run start`
 
 ### Using Sentry to track client errors (optional)
 Sentry can be configured like so:
 - `yarn run build`
 - `SENTRY_DSN=https://xxxxx@app.getsentry.com/zzzzz SENTRY_SECRET_DSN=https://xxxx:yyyy@app.getsentry.com/zzzzz yarn run start`
+
+### Configuring static message URL with env variable
+- `STATIC_MESSAGE_URL=https://dev-yleisviesti.digitransit.fi yarn run start`

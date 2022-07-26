@@ -1,10 +1,11 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
-const Distance = (props) => {
+const Distance = props => {
   let approxDistance;
 
-  if (this.props.distance > 0) {
+  if (props.distance > 0) {
     approxDistance = Math.round(props.distance / 50) * 50;
 
     if (approxDistance > 50) {

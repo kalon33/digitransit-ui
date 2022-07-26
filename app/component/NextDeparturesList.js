@@ -1,81 +1,126 @@
-import React, { PropTypes } from 'react';
-import Relay from 'react-relay';
-import { Link } from 'react-router';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { routerShape } from 'react-router';
 import sortBy from 'lodash/sortBy';
 import Distance from './Distance';
 import RouteNumber from './RouteNumber';
 import RouteDestination from './RouteDestination';
 import DepartureTime from './DepartureTime';
-
+import { PREFIX_ROUTES, PREFIX_STOPS } from '../util/path';
 
 // TODO: Alerts aren't showing properly
 // Need to implement logic as per DepartureListContainer
-function NextDeparturesList(props) {
-  const departures = props.departures.map((originalDeparture) => {
-    const distance = originalDeparture.distance;
+function NextDeparturesList(props, context) {
+  const departures = props.departures.map(originalDeparture => {
+    const { distance } = originalDeparture;
 
     // TODO: use util or util Component
-    const roundedDistance = distance < 1000 ?
-        (distance - (distance % 10)) / 1000 :
-        (distance - (distance % 100)) / 1000;
+    const roundedDistance =
+      distance < 1000
+        ? (distance - distance % 10) / 1000
+        : (distance - distance % 100) / 1000;
 
     const departure = Object.assign({}, originalDeparture, { roundedDistance });
 
-    if (departure.stoptime == null || departure.stoptime.stoptimes.length === 0) {
+    if (
+      departure.stoptime == null ||
+      departure.stoptime.stoptimes.length === 0
+    ) {
       return departure;
     }
 
     const firstTime = departure.stoptime.stoptimes[0];
 
-    departure.sorttime = firstTime.serviceDay +
-      (firstTime.realtime ? firstTime.realtimeDeparture : firstTime.scheduledDeparture);
+    departure.sorttime =
+      firstTime.serviceDay +
+      (firstTime.realtime
+        ? firstTime.realtimeDeparture
+        : firstTime.scheduledDeparture);
 
     return departure;
   });
 
-  const departureObjs = sortBy(departures, ['roundedDistance', 'sorttime']).map((departure) => {
-    const stoptime = departure.stoptime;
+  const departureObjs = sortBy(departures, ['roundedDistance', 'sorttime']).map(
+    departure => {
+      const { stoptime } = departure;
 
-    const departureTimes = stoptime.stoptimes.map((departureTime) => {
-      const canceled = departureTime.realtimeState === 'CANCELED';
-      const key = `${stoptime.pattern.route.gtfsId}:${stoptime.pattern.headsign}:
+      const departureTimes = stoptime.stoptimes.map(departureTime => {
+        const canceled = departureTime.realtimeState === 'CANCELED';
+        const key = `${stoptime.pattern.route.gtfsId}:${
+          stoptime.pattern.headsign
+        }:
         ${departureTime.realtimeDeparture}`;
 
+        return (
+          <td key={`${key}-td`} className="td-departure-times">
+            <DepartureTime
+              key={key}
+              departureTime={
+                departureTime.serviceDay + departureTime.realtimeDeparture
+              }
+              realtime={departureTime.realtime}
+              currentTime={props.currentTime}
+              canceled={canceled}
+            />
+          </td>
+        );
+      });
+
+      const getDeparture = val => {
+        context.router.push(val);
+      };
+
+      // DT-3331: added query string sort=no to Link's to
+      const departureLinkUrl = `/${PREFIX_ROUTES}/${
+        stoptime.pattern.route.gtfsId
+      }/${PREFIX_STOPS}/${stoptime.pattern.code}?sort=no`;
+
+      // In case there's only one departure for the route,
+      // add a dummy cell to keep the table layout from breaking
+      const departureTimesChecked =
+        departureTimes.length < 2
+          ? [
+              departureTimes[0],
+              <td
+                key={`${departureTimes[0].key}-empty`}
+                className="td-departure-times"
+              />,
+            ]
+          : departureTimes;
+
+      // TODO: Should this be its own view component?
       return (
-        <DepartureTime
-          key={key}
-          departureTime={departureTime.serviceDay + departureTime.realtimeDeparture}
-          realtime={departureTime.realtime}
-          currentTime={props.currentTime}
-          canceled={canceled}
-        />
+        <tr
+          className="next-departure-row-tr"
+          onClick={() => getDeparture(departureLinkUrl)}
+          style={{ cursor: 'pointer' }}
+          key={stoptime.pattern.code}
+        >
+          <td className="td-distance">
+            <Distance distance={departure.distance} />
+          </td>
+          <td className="td-route-number">
+            <RouteNumber
+              alertSeverityLevel={departure.alertSeverityLevel}
+              mode={stoptime.pattern.route.mode}
+              text={stoptime.pattern.route.shortName}
+            />
+          </td>
+          <td className="td-destination">
+            <RouteDestination
+              mode={stoptime.pattern.route.mode}
+              destination={
+                stoptime.pattern.headsign || stoptime.pattern.route.longName
+              }
+            />
+          </td>
+          {departureTimesChecked}
+        </tr>
       );
-    });
+    },
+  );
 
-    // TODO: Should this be its own view component?
-    return (
-      <Link
-        to={`/linjat/${stoptime.pattern.route.gtfsId}/pysakit/${stoptime.pattern.code}`}
-        key={stoptime.pattern.code}
-      >
-        <div className="next-departure-row padding-vertical-normal border-bottom">
-          <Distance distance={departure.distance} />
-          <RouteNumber
-            mode={stoptime.pattern.route.mode}
-            text={stoptime.pattern.route.shortName}
-            hasDisruption={departure.hasDisruption}
-          />
-          <RouteDestination
-            mode={stoptime.pattern.route.mode}
-            destination={stoptime.pattern.headsign || stoptime.pattern.route.longName}
-          />
-          {departureTimes}
-        </div>
-      </Link>
-    );
-  });
-
-  return <div>{departureObjs}</div>;
+  return <React.Fragment>{departureObjs}</React.Fragment>;
 }
 
 NextDeparturesList.propTypes = {
@@ -83,25 +128,8 @@ NextDeparturesList.propTypes = {
   currentTime: PropTypes.number.isRequired,
 };
 
-export default NextDeparturesList;
+NextDeparturesList.contextTypes = {
+  router: routerShape.isRequired,
+};
 
-export const relayFragment = Relay.QL`
-  fragment on StoptimesInPattern{
-    pattern {
-      code
-      headsign
-      route {
-        gtfsId
-        shortName
-        longName
-        mode
-      }
-    }
-    stoptimes {
-      realtimeState
-      realtimeDeparture
-      scheduledDeparture
-      realtime
-      serviceDay
-    }
-  }`;
+export default NextDeparturesList;

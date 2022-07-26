@@ -1,104 +1,211 @@
-import React from 'react';
-import Helmet from 'react-helmet';
-import { intlShape } from 'react-intl';
+import PropTypes from 'prop-types';
+import React, { Fragment } from 'react';
 import some from 'lodash/some';
-
-import meta from '../meta';
-import configureMoment from '../util/configure-moment';
+import connectToStores from 'fluxible-addons-react/connectToStores';
+import {
+  getHomeUrl,
+  parseLocation,
+  PREFIX_STOPS,
+  PREFIX_ROUTES,
+  PREFIX_TERMINALS,
+} from '../util/path';
+import { dtLocationShape } from '../util/shapes';
 import AppBarContainer from './AppBarContainer';
 import MobileView from './MobileView';
 import DesktopView from './DesktopView';
+import ErrorBoundary from './ErrorBoundary';
+import { DesktopOrMobile } from '../util/withBreakpoint';
+import { getUser } from '../util/apiUtils';
+import setUser from '../action/userActions';
+import { addAnalyticsEvent } from '../util/analyticsUtils';
 
 class TopLevel extends React.Component {
   static propTypes = {
-    location: React.PropTypes.object.isRequired,
-    children: React.PropTypes.node,
-    width: React.PropTypes.number,
-    height: React.PropTypes.number,
-    header: React.PropTypes.node,
-    map: React.PropTypes.node,
-    content: React.PropTypes.node,
-    title: React.PropTypes.node,
-    meta: React.PropTypes.node,
-    routes: React.PropTypes.arrayOf(
-      React.PropTypes.shape({
-        topBarOptions: React.PropTypes.object,
-        disableMapOnMobile: React.PropTypes.bool,
+    location: PropTypes.object.isRequired,
+    children: PropTypes.node,
+    header: PropTypes.node,
+    map: PropTypes.node,
+    content: PropTypes.node,
+    title: PropTypes.node,
+    meta: PropTypes.node,
+    routes: PropTypes.arrayOf(
+      PropTypes.shape({
+        topBarOptions: PropTypes.object,
+        disableMapOnMobile: PropTypes.bool,
       }).isRequired,
     ).isRequired,
-  }
+    params: PropTypes.shape({
+      from: PropTypes.string,
+      to: PropTypes.string,
+      routeId: PropTypes.string,
+      stopId: PropTypes.string,
+      terminalId: PropTypes.string,
+    }).isRequired,
+    origin: dtLocationShape,
+    user: PropTypes.object,
+  };
 
   static contextTypes = {
-    getStore: React.PropTypes.func.isRequired,
-    intl: intlShape,
-    url: React.PropTypes.string.isRequired,
-    headers: React.PropTypes.object.isRequired,
-    config: React.PropTypes.object.isRequired,
+    headers: PropTypes.object.isRequired,
+    config: PropTypes.object.isRequired,
+    executeAction: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    origin: {
+      set: false,
+      ready: false,
+    },
   };
 
   static childContextTypes = {
-    location: React.PropTypes.object,
-    breakpoint: React.PropTypes.string.isRequired,
+    location: PropTypes.object,
   };
 
   getChildContext() {
     return {
       location: this.props.location,
-      breakpoint: this.getBreakpoint(),
     };
   }
 
-  getBreakpoint = () =>
-    (!this.props.width && 'none') ||
-    (this.props.width < 400 && 'small') ||
-    (this.props.width < 900 && 'medium') ||
-    'large'
+  componentDidMount() {
+    import(/* webpackChunkName: "main" */ `../configurations/images/${
+      this.context.config.logo
+    }`).then(logo => {
+      this.setState({ logo: logo.default });
+    });
+    if (this.context.config.showLogin && !this.props.user.name) {
+      getUser()
+        .then(user => {
+          this.context.executeAction(setUser, {
+            ...user,
+          });
+        })
+        .catch(() => {
+          this.context.executeAction(setUser, {});
+        });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    // send tracking calls when url changes
+    // listen for this here instead of in router directly to get access to old location as well
+    const oldLocation = prevProps.location.pathname;
+    const newLocation = this.props.location.pathname;
+    if (oldLocation && newLocation && oldLocation !== newLocation) {
+      addAnalyticsEvent({
+        event: 'Pageview',
+        url: newLocation,
+      });
+    }
+
+    // send tracking calls when visiting a new stop or route
+    const newContext = newLocation.slice(1, newLocation.indexOf('/', 1));
+    switch (newContext) {
+      case PREFIX_ROUTES:
+        if (
+          oldLocation.indexOf(newContext) !== 1 ||
+          (prevProps.params.routeId &&
+            this.props.params.routeId &&
+            prevProps.params.routeId !== this.props.params.routeId)
+        ) {
+          addAnalyticsEvent({
+            category: 'Route',
+            action: 'OpenRoute',
+            name: this.props.params.routeId,
+          });
+        }
+        break;
+      case PREFIX_STOPS:
+      case PREFIX_TERMINALS:
+        if (
+          oldLocation.indexOf(newContext) !== 1 ||
+          (prevProps.params.stopId &&
+            this.props.params.stopId &&
+            prevProps.params.stopId !== this.props.params.stopId) ||
+          (prevProps.params.terminalId &&
+            this.props.params.terminalId &&
+            prevProps.params.terminalId !== this.props.params.terminalId)
+        ) {
+          addAnalyticsEvent({
+            category: 'Stop',
+            action: 'OpenStop',
+            name: this.props.params.stopId || this.props.params.terminalId,
+          });
+        }
+        break;
+      default:
+        break;
+    }
+  }
 
   render() {
-    configureMoment(this.context.intl.locale, this.context.config);
-    const host = this.context.headers && (this.context.headers['x-forwarded-host'] || this.context.headers.host);
-    const url = this.context.url;
-    const metadata = meta(this.context.intl.locale, host, url, this.context.config);
-    const topBarOptions = Object.assign({}, ...this.props.routes.map(route => route.topBarOptions));
-
-    const disableMapOnMobile = some(this.props.routes, route => route.disableMapOnMobile);
+    this.topBarOptions = Object.assign(
+      {},
+      ...this.props.routes.map(route => route.topBarOptions),
+    );
+    this.disableMapOnMobile = some(
+      this.props.routes,
+      route => route.disableMapOnMobile,
+    );
 
     let content;
 
+    const homeUrl = getHomeUrl(
+      this.props.origin,
+      parseLocation(this.props.params.to),
+    );
+
     if (this.props.children || !(this.props.map || this.props.header)) {
       content = this.props.children || this.props.content;
-    } else if (this.props.width < 900) {
+    } else {
       content = (
-        <MobileView
-          map={disableMapOnMobile || this.props.map}
-          content={this.props.content}
-          header={this.props.header}
-        />
-     );
-    } else if (this.props.width >= 900) {
-      content = (
-        <DesktopView
-          title={this.props.title}
-          map={this.props.map}
-          content={this.props.content}
-          header={this.props.header}
+        <DesktopOrMobile
+          mobile={() => (
+            <MobileView
+              map={this.disableMapOnMobile || this.props.map}
+              content={this.props.content}
+              header={this.props.header}
+            />
+          )}
+          desktop={() => (
+            <DesktopView
+              title={this.props.title}
+              map={this.props.map}
+              content={this.props.content}
+              header={this.props.header}
+              homeUrl={homeUrl}
+            />
+          )}
         />
       );
     }
 
-    const menuHeight = (this.getBreakpoint() === 'large' && '60px') || '40px';
-
     return (
-      <div className="fullscreen">
-        {!topBarOptions.hidden && <AppBarContainer title={this.props.title} {...topBarOptions} />}
-        <Helmet {...metadata} />
-        <section ref="content" className="content" style={{ height: `calc(100% - ${menuHeight})` }}>
+      <Fragment>
+        {!this.topBarOptions.hidden && (
+          <AppBarContainer
+            title={this.props.title}
+            {...this.topBarOptions}
+            {...this.state}
+            homeUrl={homeUrl}
+          />
+        )}
+        <section id="mainContent" className="content">
           {this.props.meta}
-          { content }
+          <noscript>This page requires JavaScript to run.</noscript>
+          <ErrorBoundary>{content}</ErrorBoundary>
         </section>
-      </div>
+      </Fragment>
     );
   }
 }
 
-export default TopLevel;
+export default connectToStores(
+  TopLevel,
+  ['OriginStore', 'UserStore'],
+  ({ getStore }) => ({
+    origin: getStore('OriginStore').getOrigin(),
+    user: getStore('UserStore').getUser(),
+  }),
+);

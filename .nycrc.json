@@ -1,0 +1,16 @@
+{
+  "all": true,
+  "sourceMap": false,
+  "instrument": false,
+  "require": [
+    "@babel/register"
+  ],
+  "include": [
+    "app/**/*.js"
+  ],
+  "reporter": [
+    "lcovonly",
+    "html",
+    "text-summary"
+  ]
+}

@@ -7,11 +7,13 @@ $add-favourite-input-overlay-height: 27px;
   padding-right: 17px;
   height: 100%;
   background-color: $background-color;
-  #add-favourite-close-icon {
-    fill: $gray;
-    width: 1em;
-    height: 1em;
-    font-size: $font-size-small;
+  .button-container {
+    position: absolute;
+    display: inline-block;
+    right: 12px;
+    button  {
+      color: $gray;
+    }
   }
 
   .add-favourite-container__content {
@@ -21,6 +23,20 @@ $add-favourite-input-overlay-height: 27px;
     .add-favourite-container__search {
       padding-top: 0px;
       position: relative;
+
+      .react-autosuggest__container {
+        width: 100%;
+        .autosuggest-input-container {
+          width: 100%;
+          position: relative;
+          margin: 0;
+        }
+        .react-autosuggest__suggestions-container--open {
+          position: absolute;
+          width: 100%;
+          top: 3rem;
+        }
+      }
     }
 
     h4 {
@@ -59,7 +75,7 @@ $add-favourite-input-overlay-height: 27px;
         font-weight: inherit;
         border: none;
         width: 100%;
-        padding-left: 7px;
+        padding-left: calc(#{$padding-large} - 10px);
         &:focus {
           border: none;
           outline: none;
@@ -67,8 +83,15 @@ $add-favourite-input-overlay-height: 27px;
       }
     }
 
+    .add-favourite-container__save {
+      display: flex;
+    }
+
     .add-favourite-container-button {
       @include font-medium;
+      width: 100%;
+      height: 40px;
+      opacity: inherit;
       color: white;
       background: $standalone-btn-color;
       vertical-align: middle;
@@ -76,8 +99,8 @@ $add-favourite-input-overlay-height: 27px;
       padding: 0.5em 1.5em;
       text-align: center;
       max-width: 500px;
-      margin-top: 10px;
-      margin-bottom: 10px;
+      margin-top: 5px;
+      margin-bottom: 5px;
       margin-left: auto;
       margin-right: auto;
       cursor: pointer;
@@ -106,6 +129,7 @@ $add-favourite-input-overlay-height: 27px;
         background: $background-color;
         color: $gray-blue;
         max-width: 200px;
+
         border-radius: 0;
         span {
           border-bottom: 2px dotted $gray-blue;

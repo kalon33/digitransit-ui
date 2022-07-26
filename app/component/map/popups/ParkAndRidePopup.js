@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { intlShape } from 'react-intl';
 
@@ -8,10 +9,7 @@ import CardHeader from '../../CardHeader';
 import ComponentUsageExample from '../../ComponentUsageExample';
 
 export default class ParkAndRidePopup extends React.Component {
-  static contextTypes = {
-    getStore: React.PropTypes.func.isRequired,
-    intl: intlShape,
-  };
+  static contextTypes = { intl: intlShape.isRequired };
 
   static description = (
     <div>
@@ -25,19 +23,18 @@ export default class ParkAndRidePopup extends React.Component {
   );
 
   static propTypes = {
-    realtime: React.PropTypes.bool.isRequired,
-    maxCapacity: React.PropTypes.number.isRequired,
-    spacesAvailable: React.PropTypes.number.isRequired,
-    context: React.PropTypes.object.isRequired,
-    name: React.PropTypes.string.isRequired,
-    lat: React.PropTypes.number.isRequired,
-    lon: React.PropTypes.number.isRequired,
+    realtime: PropTypes.bool.isRequired,
+    maxCapacity: PropTypes.number.isRequired,
+    spacesAvailable: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    lat: PropTypes.number.isRequired,
+    lon: PropTypes.number.isRequired,
   };
 
   render() {
     return (
       <div className="card">
-        <Card className="padding-small">
+        <Card className="card-padding">
           <CardHeader
             name={this.context.intl.formatMessage({
               id: 'park-and-ride',

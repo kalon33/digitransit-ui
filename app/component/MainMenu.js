@@ -1,53 +1,86 @@
-import React, { PropTypes } from 'react';
-import { FormattedMessage } from 'react-intl';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { FormattedMessage, intlShape } from 'react-intl';
 import { Link } from 'react-router';
 
 import DisruptionInfoButtonContainer from './DisruptionInfoButtonContainer';
 import Icon from './Icon';
 import LangSelect from './LangSelect';
 import MainMenuLinks from './MainMenuLinks';
+import { addAnalyticsEvent } from '../util/analyticsUtils';
+import LoginButton from './LoginButton';
+import UserInfo from './UserInfo';
 
-function MainMenu(props, context) {
-  const inquiry = (
-    <p style={{ fontSize: '20px', backgroundColor: '#888888', padding: '20px' }} >
-      <span onClick={props.openFeedback}>
-        <FormattedMessage id="inquiry" defaultMessage="How did you find the new Journey Planner? Please tell us!" />
-        <Icon img="icon-icon_arrow-right" className="small" />
-      </span>
-    </p>);
-
-  const config = context.config;
-
+function MainMenu(props, { config, intl }) {
+  /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
   return (
     <div aria-hidden={!props.visible} className="main-menu no-select">
-      <div onClick={props.toggleVisibility} className="close-button cursor-pointer">
+      <button
+        onClick={props.toggleVisibility}
+        className="close-button cursor-pointer"
+        aria-label={intl.formatMessage({
+          id: 'main-menu-label-close',
+          defaultMessage: 'Close the main menu',
+        })}
+      >
         <Icon img="icon-icon_close" className="medium" />
-      </div>
+      </button>
       <header className="offcanvas-section">
         <LangSelect />
-        {config.mainMenu.showInquiry && inquiry}
       </header>
       <div className="offcanvas-section">
-        <Link id="frontpage" to="/">
+        <Link
+          id="frontpage"
+          to={props.homeUrl}
+          onClick={() => {
+            addAnalyticsEvent({
+              category: 'Navigation',
+              action: 'Home',
+              name: null,
+            });
+          }}
+        >
           <FormattedMessage id="frontpage" defaultMessage="Frontpage" />
         </Link>
       </div>
-      <div className="offcanvas-section">
-        {config.mainMenu.showDisruptions && props.showDisruptionInfo &&
-          <DisruptionInfoButtonContainer />}
-      </div>
+      {config.mainMenu.showDisruptions &&
+        props.showDisruptionInfo && (
+          <div className="offcanvas-section">
+            <DisruptionInfoButtonContainer />
+          </div>
+        )}
       <MainMenuLinks
-        content={([config.appBarLink].concat(config.footer && config.footer.content) || [])
-        .filter((item => item.href || item.route))}
+        content={(
+          [config.appBarLink].concat(config.footer && config.footer.content) ||
+          []
+        ).filter(item => item.href || item.route)}
       />
-    </div>);
+      {config.showLogin &&
+        (!props.user.name ? (
+          <LoginButton isMobile />
+        ) : (
+          <UserInfo
+            user={props.user}
+            list={[
+              {
+                key: 'dropdown-item-1',
+                messageId: 'logout',
+                href: '/logout',
+              },
+            ]}
+            isMobile
+          />
+        ))}
+    </div>
+  );
 }
 
 MainMenu.propTypes = {
-  openFeedback: PropTypes.func.isRequired,
   showDisruptionInfo: PropTypes.bool,
   toggleVisibility: PropTypes.func.isRequired,
   visible: PropTypes.bool,
+  homeUrl: PropTypes.string.isRequired,
+  user: PropTypes.object,
 };
 
 MainMenu.defaultProps = {
@@ -56,8 +89,8 @@ MainMenu.defaultProps = {
 
 MainMenu.contextTypes = {
   getStore: PropTypes.func.isRequired,
-  config: React.PropTypes.object.isRequired,
+  config: PropTypes.object.isRequired,
+  intl: intlShape.isRequired,
 };
-
 
 export default MainMenu;

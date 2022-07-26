@@ -1,21 +1,24 @@
-/* eslint-disable */
-import mergeWith from 'lodash/mergeWith';
+/* eslint-disable prefer-template */
+import configMerger from '../util/configMerger';
 
-const CONFIG = process.env.CONFIG || 'oulu';
+const CONFIG = 'oulu';
 const APP_DESCRIPTION = 'Oulun seudun uusi reittiopas';
 const APP_TITLE = 'Reittiopas';
 
-const walttiConfig = require('./waltti').default;
+const walttiConfig = require('./config.waltti').default;
 
-export default mergeWith({}, walttiConfig, {
+export default configMerger(walttiConfig, {
   CONFIG,
 
   feedIds: ['OULU'],
 
-  appBarLink: { name: 'Oulun joukkoliikenne', href: 'http://www.oulunjoukkoliikennen.fi' },
+  appBarLink: {
+    name: 'Oulun joukkoliikenne',
+    href: 'http://www.oulunjoukkoliikenne.fi',
+  },
 
   colors: {
-    primary: '#c40065',
+    primary: '#e10069',
   },
 
   socialMedia: {
@@ -23,10 +26,42 @@ export default mergeWith({}, walttiConfig, {
     description: APP_DESCRIPTION,
     twitter: {
       site: '@oulunkaupunki',
-    }
+    },
   },
 
   title: APP_TITLE,
+
+  // Navbar logo
+  logo: 'oulu/oulu-logo.png',
+
+  mapLayers: {
+    tooltip: {
+      fi: 'Uutta! Saat nyt lähellä olevat bussit kartalle asetuksista.',
+      en: 'New! You can now get nearby busses on the map from the settings.',
+      sv:
+        'Nytt! I inställningarna kan du nu välja att se närliggande bussar på kartan.',
+    },
+  },
+
+  cityBike: {
+    showCityBikes: false,
+    networks: {
+      oulu: {
+        icon: 'citybike',
+        name: {
+          fi: 'Oulu',
+          sv: 'Uleåborg',
+          en: 'Oulu',
+        },
+        type: 'citybike',
+        url: {
+          fi: 'https://kaupunkipyorat.ouka.fi/',
+          sv: 'https://kaupunkipyorat.ouka.fi/home',
+          en: 'https://kaupunkipyorat.ouka.fi/home',
+        },
+      },
+    },
+  },
 
   searchParams: {
     'boundary.rect.min_lat': 64.71,
@@ -35,7 +70,13 @@ export default mergeWith({}, walttiConfig, {
     'boundary.rect.max_lon': 26.61,
   },
 
-  areaPolygon: [[24.37, 64.71], [24.37, 65.38], [26.61, 65.38], [26.61, 64.71] ],
+  transportModes: {
+    citybike: {
+      availableForSelection: false,
+    },
+  },
+
+  areaPolygon: [[24.37, 64.71], [24.37, 65.38], [26.61, 65.38], [26.61, 64.71]],
 
   defaultEndpoint: {
     address: 'Keskusta',
@@ -43,43 +84,100 @@ export default mergeWith({}, walttiConfig, {
     lon: 25.4702,
   },
 
+  defaultSettings: {
+    walkBoardCost: 900,
+  },
+
   defaultOrigins: [
-    { icon: 'icon-icon_bus', label: 'Kauppatori, Oulu', lat: 65.013559, lon: 25.465032 },
-    { icon: 'icon-icon_rail', label: 'Rautatieasema, Oulu', lat: 65.011523, lon: 25.483571 },
-    { icon: 'icon-icon_airplane', label: 'Lentoasema, Oulu', lat: 64.928808, lon: 25.373296 },
+    {
+      icon: 'icon-icon_bus',
+      label: 'Rotuaari, Oulu',
+      lat: 65.012338,
+      lon: 25.471333,
+    },
+    {
+      icon: 'icon-icon_rail',
+      label: 'Rautatieasema, Oulu',
+      lat: 65.01014,
+      lon: 25.483349,
+    },
+    {
+      icon: 'icon-icon_airplane',
+      label: 'Lentoasema, Oulu',
+      lat: 64.928808,
+      lon: 25.373296,
+    },
   ],
 
   footer: {
     content: [
-      { label: (function () { return `© Oulu ${(1900 + new Date().getYear())}`; }()) },
+      { label: `© Oulu ${walttiConfig.YEAR}` },
       {},
-      { name: 'footer-feedback', nameEn: 'Submit feedback', type: 'feedback', icon: 'icon-icon_speech-bubble' },
-      { name: 'about-this-service', nameEn: 'About this service', route: '/tietoja-palvelusta', icon: 'icon-icon_info' },
+      {
+        name: 'footer-feedback',
+        nameEn: 'Submit feedback',
+        href: 'http://www.oulunjoukkoliikenne.fi/palautteet',
+        icon: 'icon-icon_speech-bubble',
+      },
+      {
+        name: 'about-this-service',
+        nameEn: 'About this service',
+        route: '/tietoja-palvelusta',
+        icon: 'icon-icon_info',
+      },
+      {
+        name: 'accessibility-statement',
+        nameEn: 'Accessibility statement',
+        href:
+          'https://kauppa.waltti.fi/media/authority/154/files/Saavutettavuusseloste_Waltti-reittiopas_JyQfJhC.htm',
+      },
     ],
   },
 
+  showAllBusses: true,
+  showVehiclesOnStopPage: true,
+
   aboutThisService: {
-    fi: {
-      about: 'Tämän palvelun tarjoaa Oulun joukkoliikenne joukkoliikenteen reittisuunnittelua varten Oulun, Iin, Kempeleen, Limingan, Lumijoen, Muhoksen, Tyrnävän alueella. Palvelu kattaa joukkoliikenteen, kävelyn, pyöräilyn ja yksityisautoilun rajatuilta osin. Palvelu perustuu Digitransit palvelualustaan.',
-      digitransit: 'Digitransit palvelualusta on HSL:n ja Liikenneviraston kehittämä avoimen lähdekoodin reititystuote. Lähdekoodi tarjotaan EUPL v1.2 ja AGPLv3 lisensseillä.',
-      datasources: 'Kartat, kadut, rakennukset, pysäkkisijainnit ym. tiedot tarjoaa © OpenStreetMap contributors ja ne ladataan Geofabrik palvelusta. Osoitetiedot tuodaan VRK:n rakennustietorekisteristä ja ne ladataan OpenAddresses-palvelusta. Joukkoliikenteen reitit ja aikataulut ladataan HSL:n dev.hsl.fi/gtfs palvelimelta.',
-    },
+    fi: [
+      {
+        header: 'Tietoja palvelusta',
+        paragraphs: [
+          'Tämän palvelun tarjoaa Oulun joukkoliikenne joukkoliikenteen reittisuunnittelua varten Oulun, Iin, Kempeleen, Limingan, Lumijoen, Muhoksen ja Tyrnävän alueella. Palvelu kattaa joukkoliikenteen, kävelyn, pyöräilyn ja yksityisautoilun rajatuilta osin. Palvelu perustuu Digitransit-palvelualustaan.',
+        ],
+      },
+    ],
 
-    sv: {
-      about: 'This is a new service for Oulu area route planning. The service covers public transport, walking, cycling, and some private car use. Service is built on Digitransit platform.',
-      digitransit: 'Digitransit service platform is created by HSL Finnish Transport Agency. The source code of the platform is dual-licensed under the EUPL v1.2 and AGPLv3 licenses.',
-      datasources: "Maps, streets, buildings, stop locations etc. from © OpenStreetMap contributors downloaded from Geofabrik. Additional address data from Finland's Population Register Centre downloaded from OpenAddresses Public transport routes and timetables from HSL downloaded from dev.hsl.fi/gtfs.",
-    },
+    sv: [
+      {
+        header: 'Om tjänsten',
+        paragraphs: [
+          'Den här tjänsten erbjuds av Oulun joukkoliikenne för reseplanering inom Oulu, Ii, Kempele, Liminka, Lumijoki, Muhos och Tyrnävä region. Reseplaneraren täcker med vissa begränsningar kollektivtrafik, promenad, cykling samt privatbilism. Tjänsten baserar sig på Digitransit-plattformen.',
+        ],
+      },
+    ],
 
-    en: {
-      about: 'This is a new service for Oulu area route planning. The service covers public transport, walking, cycling, and some private car use. Service is built on Digitransit platform. The service covers public transport, walking, cycling, and some private car use. Service is built on Digitransit platform.',
-      digitransit: 'Digitransit service platform is created by HSL Finnish Transport Agency. The source code of the platform is dual-licensed under the EUPL v1.2 and AGPLv3 licenses.',
-      datasources: "Maps, streets, buildings, stop locations etc. from © OpenStreetMap contributors downloaded from Geofabrik. Additional address data from Finland's Population Register Centre downloaded from OpenAddresses Public transport routes and timetables from HSL downloaded from dev.hsl.fi/gtfs.",
+    en: [
+      {
+        header: 'About this service',
+        paragraphs: [
+          'This service is provided by Oulun joukkoliikenne for route planning in Oulu, Ii, Kempele, Liminka, Lumijoki, Muhos and Tyrnävä region. The service covers public transport, walking, cycling, and some private car use. Service is built on Digitransit platform.',
+        ],
+      },
+    ],
+  },
+  zoneIdMapping: {
+    1: 'A-city',
+    2: 'A',
+    3: 'B',
+    4: 'C',
+    5: 'D',
+  },
+  zoneIdFontSize: {
+    'A-city': '10px',
+  },
+  stopCard: {
+    header: {
+      showZone: true,
     },
   },
-
-}, (objValue, srcValue) => {
-  if (Array.isArray(srcValue)) { return srcValue; }
-  if (Array.isArray(objValue)) { return objValue; }
-  return undefined; // default merge
 });

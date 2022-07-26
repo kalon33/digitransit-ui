@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { FormattedMessage } from 'react-intl';
@@ -8,7 +9,10 @@ const NetworkError = ({ retry }, { location }) => (
   <div className="page-not-found">
     <Icon img="icon-icon_error_page_not_found" />
     <p>
-      <FormattedMessage id="network-error" defaultMessage="There was a network error" />
+      <FormattedMessage
+        id="network-error"
+        defaultMessage="There was a network error"
+      />
     </p>
     <p>
       <Link to={location} onClick={retry}>
@@ -18,7 +22,9 @@ const NetworkError = ({ retry }, { location }) => (
   </div>
 );
 
-NetworkError.propTypes = { retry: React.PropTypes.func.isRequired };
-NetworkError.contextTypes = { location: locationShape.isRequired };
+NetworkError.propTypes = { retry: PropTypes.func.isRequired };
+NetworkError.contextTypes = {
+  location: locationShape.isRequired,
+};
 
 export default NetworkError;

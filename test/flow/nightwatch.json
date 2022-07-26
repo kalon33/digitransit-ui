@@ -7,30 +7,28 @@
 
   "selenium": {
     "start_process": true,
-    "server_path": "test/flow/binaries/selenium-server-standalone-2.53.0.jar",
+    "server_path": "test/flow/binaries/selenium-server-standalone-3.9.1.jar",
     "log_path": "",
     "host": "127.0.0.1",
     "port": 4444,
     "cli_args": {
-      "webdriver.chrome.driver": "",
-      "webdriver.ie.driver": ""
+      "webdriver.chrome.driver": "./chromedriver",
+      "webdriver.ie.driver": "",
+      "webdriver.gecko.driver": "./geckodriver"
     }
   },
 
-  "test_workers": {
-    "enabled": true,
-    "workers": 2
-  },
 
   "test_settings": {
     "default": {
-      "launch_url": "http://localhost:8000/?mock",
+      "launch_url": "http://localhost:8080/POS/-/lahellasi?mock",
       "selenium_port": 4444,
       "selenium_host": "localhost",
       "silent": true,
       "globals": {
-        "itinerarySearchTimeout": 21000,
-        "elementVisibleTimeout": 30000
+        "pause_ms": 200,
+        "itinerarySearchTimeout": 18000,
+        "elementVisibleTimeout": 15000
       },
       "screenshots": {
         "enabled": true,
@@ -39,21 +37,18 @@
         "path": "test_output/screenshots/"
       },
       "desiredCapabilities": {
-        "browserName": "firefox",
+        "resolution": "1280x800",
+        "browserName": "chrome",
         "javascriptEnabled": true,
         "acceptSslCerts": true
       }
     },
 
     "firefox": {
-      "launch_url": "http://localhost:8080/?mock",
+      "launch_url": "http://localhost:8080/POS/-/lahellasi?mock",
       "selenium_port": 4444,
       "selenium_host": "localhost",
       "silent": true,
-      "globals": {
-        "itinerarySearchTimeout": 11000,
-        "elementVisibleTimeout": 10000
-      },
       "screenshots": {
         "enabled": true,
         "on_failure": true,
@@ -61,9 +56,9 @@
         "path": "test_output/screenshots/"
       },
       "desiredCapabilities": {
+        "resolution": "1280x800",
         "browserName": "firefox",
         "javascriptEnabled": true,
-
         "acceptSslCerts": true
       }
     },
@@ -72,13 +67,34 @@
       "selenium": {
         "start_process": false
       },
-      "test_workers": {
+      "screenshots": {
         "enabled": true,
-        "workers": 2
+        "on_failure": true,
+        "on_error": true,
+        "path": "test_output/screenshots/"
+      },
+      "launch_url": "http://localhost:8080/POS/-/lahellasi?mock",
+      "selenium_port"  : 9515,
+      "selenium_host"  : "localhost",
+      "default_path_prefix" : "",
+
+      "desiredCapabilities": {
+          "resolution": "1280x800",
+          "browserName": "chrome",
+          "chromeOptions" : {
+            "args" : ["--no-sandbox"]
+          },
+          "acceptSslCerts": true
+        }
+    },
+
+    "chromedriver-mobile": {
+      "selenium": {
+        "start_process": false
       },
       "globals": {
         "itinerarySearchTimeout": 21000,
-        "elementVisibleTimeout": 10000,
+        "elementVisibleTimeout": 20000,
         "debug": false
       },
       "screenshots": {
@@ -87,15 +103,16 @@
         "on_error": true,
         "path": "test_output/screenshots/"
       },
-      "launch_url": "http://localhost:8080/?mock",
+      "launch_url": "http://localhost:8080/POS/-/lahellasi?mock",
       "selenium_port"  : 9515,
       "selenium_host"  : "localhost",
       "default_path_prefix" : "",
 
       "desiredCapabilities": {
+          "resolution": "1280x800",
           "browserName": "chrome",
           "chromeOptions" : {
-            "args" : ["--no-sandbox"]
+            "args" : ["--no-sandbox","window-size=400,800"]
           },
           "acceptSslCerts": true
         }
@@ -105,6 +122,7 @@
       "selenium_port": 4444,
       "selenium_host": "localhost",
         "desiredCapabilities": {
+          "resolution": "1280x800",
           "browserName": "phantomjs",
           "javascriptEnabled": true,
           "acceptSslCerts": true,
@@ -119,16 +137,19 @@
         "start_process": false
       },
       "desiredCapabilities": {
+        "resolution": "1280x800",
         "browserName": "firefox",
         "version": 47,
         "os": "WINDOWS",
         "os_version": "10",
+        "browserstack.video": false,
         "javascriptEnabled": true,
         "acceptSslCerts": true,
         "browserstack.user": "${BROWSERSTACK_USER}",
         "browserstack.key": "${BROWSERSTACK_KEY}",
         "browserstack.local": true,
-        "build": "${BROWSERSTACK_BUILD}"
+        "build": "${BROWSERSTACK_BUILD}",
+        "localIdentifier": "${BROWSERSTACK_ID}"
       }
     },
     "bs-chrome": {
@@ -138,15 +159,18 @@
         "start_process": false
       },
       "desiredCapabilities": {
+        "resolution": "1280x800",
         "browserName": "chrome",
         "os": "WINDOWS",
         "os_version": "10",
+        "browserstack.video": false,
         "javascriptEnabled": true,
         "acceptSslCerts": true,
         "browserstack.user": "${BROWSERSTACK_USER}",
         "browserstack.key": "${BROWSERSTACK_KEY}",
         "browserstack.local": true,
-        "build": "${BROWSERSTACK_BUILD}"
+        "build": "${BROWSERSTACK_BUILD}",
+        "localIdentifier": "${BROWSERSTACK_ID}"
       }
     },
     "bs-edge": {
@@ -156,18 +180,20 @@
         "start_process": false
       },
       "desiredCapabilities": {
+        "resolution": "1280x800",
         "browserName": "edge",
         "browser": "Edge",
-        "browser_version": "13",
+        "browser_version": "17",
         "os": "WINDOWS",
         "os_version": "10",
+        "browserstack.video": false,
         "javascriptEnabled": true,
         "acceptSslCerts": true,
-        "resolution": "1280x800",
         "browserstack.user": "${BROWSERSTACK_USER}",
         "browserstack.key": "${BROWSERSTACK_KEY}",
         "browserstack.local": true,
-        "build": "${BROWSERSTACK_BUILD}"
+        "build": "${BROWSERSTACK_BUILD}",
+        "localIdentifier": "${BROWSERSTACK_ID}"
       }
     },
     "bs-ie": {
@@ -177,18 +203,42 @@
         "start_process": false
       },
       "desiredCapabilities": {
+        "resolution": "1280x800",
         "browserName": "internet explorer",
         "browser": "IE",
         "browser_version": "11",
         "os": "WINDOWS",
         "os_version": "8.1",
+        "browserstack.video": false,
         "javascriptEnabled": true,
         "acceptSslCerts": true,
-        "resolution": "1280x800",
         "browserstack.user": "${BROWSERSTACK_USER}",
         "browserstack.key": "${BROWSERSTACK_KEY}",
         "browserstack.local": true,
-        "build": "${BROWSERSTACK_BUILD}"
+        "build": "${BROWSERSTACK_BUILD}",
+        "localIdentifier": "${BROWSERSTACK_ID}"
+      }
+    },
+    "bs-safari": {
+      "selenium_port": 80,
+      "selenium_host": "hub.browserstack.com",
+      "selenium": {
+        "start_process": false
+      },
+      "desiredCapabilities": {
+        "resolution": "1600x1200",
+        "os": "OS X",
+        "os_version": "High Sierra",
+        "browserName": "safari",
+        "version": "11.1",
+        "browserstack.video": false,
+        "javascriptEnabled": true,
+        "acceptSslCerts": true,
+        "browserstack.user": "${BROWSERSTACK_USER}",
+        "browserstack.key": "${BROWSERSTACK_KEY}",
+        "browserstack.local": true,
+        "build": "${BROWSERSTACK_BUILD}",
+        "localIdentifier": "${BROWSERSTACK_ID}"
       }
     },
     "bs-android": {
@@ -205,7 +255,8 @@
         "browserstack.user": "${BROWSERSTACK_USER}",
         "browserstack.key": "${BROWSERSTACK_KEY}",
         "browserstack.local": true,
-        "build": "${BROWSERSTACK_BUILD}"
+        "build": "${BROWSERSTACK_BUILD}",
+        "localIdentifier": "${BROWSERSTACK_ID}"
       }
     },
     "bs-iphone": {
@@ -223,7 +274,8 @@
         "browserstack.user": "${BROWSERSTACK_USER}",
         "browserstack.key": "${BROWSERSTACK_KEY}",
         "browserstack.local": true,
-        "build": "${BROWSERSTACK_BUILD}"
+        "build": "${BROWSERSTACK_BUILD}",
+        "localIdentifier": "${BROWSERSTACK_ID}"
       }
     },
     "sl-iphone": {

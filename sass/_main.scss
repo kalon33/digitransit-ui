@@ -4,13 +4,14 @@ $body-font-family: $font-family;
 $body-font-weight: $font-weight-medium;
 
 /* Base styles */
+@import 'base/zindex';
 @import 'base/helper-mixins';
 @import 'base/base';
 @import 'base/form';
 @import 'base/helper-classes';
 @import 'base/elements';
 
-@import '../node_modules/zurb-foundation-5/scss/foundation/components/grid';
+@import '~zurb-foundation-5/scss/foundation/components/grid';
 @import 'base/helper-classes-after-foundations';
 
 // Some of these files override sass variables Foundation uses,
@@ -18,14 +19,14 @@ $body-font-weight: $font-weight-medium;
 @import '../app/component/stop-cards';
 @import '../app/component/map/map';
 @import '../app/component/map/popups/marker-popup';
-@import '../app/component/map/non-tile-layer/terminal-marker';
 @import '../app/component/front-page';
 @import '../app/component/navigation';
 @import '../app/component/itinerary';
 @import '../app/component/itinerary-feedback';
 @import '../app/component/route';
-@import '../app/component/trip';
 @import '../app/component/customize-search';
+@import '../app/component/checkbox';
+@import '../app/component/no-favourites-panel';
 @import '../app/component/no-route-popup';
 @import '../app/component/summary-row';
 @import '../app/component/summary';
@@ -35,20 +36,25 @@ $body-font-weight: $font-weight-medium;
 @import '../app/component/departure';
 @import '../app/component/stop';
 @import '../app/component/util';
-@import '../app/component/not-implemented';
 @import '../app/component/city-bike';
-@import '../app/component/feedback-panel';
-@import '../app/component/score-table';
 @import '../app/component/generic-table';
 @import '../app/component/favourite-icon-table';
-@import '../app/component/splash';
+@import '../app/component/nolocation-panel';
 @import '../app/component/documentation';
-
-@import '../node_modules/zurb-foundation-5/scss/foundation/components/forms';
+@import '../app/component/timetable';
+@import '../app/component/visual/index';
+@import '../app/component/departures-table.scss';
+@import '../app/component/quickSettingsPanel';
+@import '../app/component/street-mode-selector-panel.scss';
+@import '../app/component/bubble-dialog';
+@import '../app/component/selectstreetmodedialog.scss';
+@import '../app/component/selectmaplayersdialog';
+@import '../app/component/itinerary-profile';
+@import '~zurb-foundation-5/scss/foundation/components/forms';
 
 /* Modal */
-@import '../node_modules/foundation-apps/scss/helpers/breakpoints';
-@import '../node_modules/foundation-apps/scss/components/modal';
+@import '~foundation-apps/scss/helpers/breakpoints';
+@import '~foundation-apps/scss/components/modal';
 
 // And these application specific styles use Foundation variables,
 // so they have to be loaded afterwards

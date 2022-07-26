@@ -1,11 +1,14 @@
 import Store from 'fluxible/addons/BaseStore';
 import includes from 'lodash/includes';
-import { setFavouriteRoutesStorage, getFavouriteRoutesStorage } from './localStorage';
+import {
+  setFavouriteRoutesStorage,
+  getFavouriteRoutesStorage,
+} from './localStorage';
 
 class FavouriteRoutesStore extends Store {
   static storeName = 'FavouriteRoutesStore';
 
-  routes = this.getRoutes();
+  routes = getFavouriteRoutesStorage();
 
   isFavourite(id) {
     return includes(this.routes, id);
@@ -17,7 +20,9 @@ class FavouriteRoutesStore extends Store {
 
   // eslint-disable-next-line class-methods-use-this
   getRoutes() {
-    return getFavouriteRoutesStorage();
+    return this.routes.filter(
+      route => typeof route === 'string' && route.includes(':'),
+    );
   }
 
   addFavouriteRoute(routeId) {

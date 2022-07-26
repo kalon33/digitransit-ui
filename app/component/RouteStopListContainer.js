@@ -1,78 +1,96 @@
+import PropTypes from 'prop-types';
 import React from 'react';
-import ReactDOM from 'react-dom';
-import Relay from 'react-relay';
-import toClass from 'recompose/toClass';
+import Relay from 'react-relay/classic';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import groupBy from 'lodash/groupBy';
 import values from 'lodash/values';
 import cx from 'classnames';
 
+import { StopAlertsQuery } from '../util/alertQueries';
 import { getDistanceToNearestStop } from '../util/geo-utils';
 import RouteStop from './RouteStop';
+import withBreakpoint from '../util/withBreakpoint';
 
-const RouteStopClass = toClass(RouteStop);
-
-class RouteStopListContainer extends React.Component {
+class RouteStopListContainer extends React.PureComponent {
   static propTypes = {
-    pattern: React.PropTypes.object.isRequired,
-    className: React.PropTypes.string,
-    vehicles: React.PropTypes.object,
-    position: React.PropTypes.object.isRequired,
-    currentTime: React.PropTypes.object.isRequired,
+    pattern: PropTypes.object.isRequired,
+    className: PropTypes.string,
+    vehicles: PropTypes.object,
+    position: PropTypes.object.isRequired,
+    currentTime: PropTypes.object.isRequired,
+    relay: PropTypes.shape({
+      setVariables: PropTypes.func.isRequired,
+    }).isRequired,
+    breakpoint: PropTypes.string.isRequired,
   };
 
   static contextTypes = {
-    breakpoint: React.PropTypes.string,
-    config: React.PropTypes.object.isRequired,
-  }
+    config: PropTypes.object.isRequired,
+  };
 
   componentDidMount() {
-    if (this.refs.nearestStop) {
-      ReactDOM.findDOMNode(this.refs.nearestStop).scrollIntoView(false);
+    if (this.nearestStop) {
+      this.nearestStop.element.scrollIntoView(false);
     }
   }
 
   componentWillReceiveProps({ relay, currentTime }) {
-    relay.setVariables({ currentTime: currentTime.unix() });
+    const currUnix = this.props.currentTime.unix();
+    const nextUnix = currentTime.unix();
+    if (currUnix !== nextUnix) {
+      relay.setVariables({ currentTime: nextUnix });
+    }
   }
 
+  setNearestStop = element => {
+    this.nearestStop = element;
+  };
+
   getStops() {
-    const position = this.props.position;
-    const stops = this.props.pattern.stops;
-    const nearest = position.hasLocation === true ?
-      getDistanceToNearestStop(position.lat, position.lon, stops) : null;
+    const { position } = this.props;
+    const { stops } = this.props.pattern;
+    const nearest =
+      position.hasLocation === true
+        ? getDistanceToNearestStop(position.lat, position.lon, stops)
+        : null;
     const mode = this.props.pattern.route.mode.toLowerCase();
 
     const vehicles = groupBy(
-      values(this.props.vehicles)
-        .filter(vehicle => (this.props.currentTime - (vehicle.timestamp * 1000)) < (90 * 1000))
-        .filter(vehicle => vehicle.tripStartTime && vehicle.tripStartTime !== 'undefined')
-      , vehicle => vehicle.direction);
-
-    const vehicleStops = groupBy(vehicles[this.props.pattern.directionId], vehicle =>
-      `HSL:${vehicle.next_stop}`,
+      values(this.props.vehicles).filter(
+        vehicle =>
+          this.props.currentTime - vehicle.timestamp * 1000 < 5 * 60 * 1000,
+      ),
+      vehicle => vehicle.next_stop,
     );
 
-    const rowClassName = this.context.breakpoint === 'large' && 'bp-large';
+    const rowClassName = `bp-${this.props.breakpoint}`;
 
     return stops.map((stop, i) => {
-      const isNearest = (
-        nearest && nearest.distance < this.context.config.nearestStopDistance.maxShownDistance &&
-          nearest.stop.gtfsId
-      ) === stop.gtfsId;
+      const idx = i; // DT-3159: using in key of RouteStop component
+      const isNearest =
+        (nearest &&
+          nearest.distance <
+            this.context.config.nearestStopDistance.maxShownDistance &&
+          nearest.stop.gtfsId) === stop.gtfsId;
 
       return (
-        <RouteStopClass
-          key={stop.gtfsId}
+        <RouteStop
+          color={
+            this.props.pattern.route && this.props.pattern.route.color
+              ? `#${this.props.pattern.route.color}`
+              : null
+          }
+          key={`${stop.gtfsId}-${this.props.pattern}-${idx}`} // DT-3159: added -${idx}
           stop={stop}
           mode={mode}
-          vehicles={vehicleStops[stop.gtfsId]}
+          vehicle={vehicles[stop.gtfsId] ? vehicles[stop.gtfsId][0] : null}
           distance={isNearest ? nearest.distance : null}
-          ref={isNearest ? 'nearestStop' : null}
+          ref={isNearest ? this.setNearestStop : null}
           currentTime={this.props.currentTime.unix()}
           last={i === stops.length - 1}
           first={i === 0}
           className={rowClassName}
+          displayNextDeparture={this.context.config.displayNextDeparture}
         />
       );
     });
@@ -80,15 +98,18 @@ class RouteStopListContainer extends React.Component {
 
   render() {
     return (
-      <div className={cx('route-stop-list momentum-scroll', this.props.className)}>
+      <div
+        className={cx('route-stop-list momentum-scroll', this.props.className)}
+      >
         {this.getStops()}
-      </div>);
+      </div>
+    );
   }
 }
 
-export default Relay.createContainer(
+const containerComponent = Relay.createContainer(
   connectToStores(
-    RouteStopListContainer,
+    withBreakpoint(RouteStopListContainer),
     ['RealTimeInformationStore', 'PositionStore', 'TimeStore'],
     ({ getStore }) => ({
       vehicles: getStore('RealTimeInformationStore').vehicles,
@@ -107,14 +128,17 @@ export default Relay.createContainer(
           directionId
           route {
             mode
+            color
           }
           stops {
+            ${StopAlertsQuery}
             stopTimesForPattern(id: $patternId, startTime: $currentTime) {
               realtime
               realtimeState
               realtimeDeparture
               serviceDay
               scheduledDeparture
+              pickupType
             }
             gtfsId
             lat
@@ -128,3 +152,5 @@ export default Relay.createContainer(
     },
   },
 );
+
+export { containerComponent as default, RouteStopListContainer as Component };

@@ -1,8 +1,11 @@
-import React, { Component, PropTypes } from 'react';
-import Relay, { Route } from 'react-relay';
-import NearbyRouteListContainer from './NearbyRouteListContainer';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Relay, { Route } from 'react-relay/classic';
+import NearbyDeparturesList from './NearbyDeparturesList';
+import NetworkError from './NetworkError';
+import Loading from './Loading';
 
-class NearbyRouteListContainerRoute extends Route {
+class NearbyDeparturesListRoute extends Route {
   static queries = {
     nearest: (RelayComponent, variables) => Relay.QL`
       query {
@@ -12,6 +15,7 @@ class NearbyRouteListContainerRoute extends Route {
       }
     `,
   };
+
   static paramDefinitions = {
     lat: { required: true },
     lon: { required: true },
@@ -22,7 +26,8 @@ class NearbyRouteListContainerRoute extends Route {
     maxResults: { required: true },
     timeRange: { required: true },
   };
-  static routeName = 'NearbyRouteListContainerRoute';
+
+  static routeName = 'NearbyDeparturesListRoute';
 }
 
 export default class NearestRoutesContainer extends Component {
@@ -30,8 +35,8 @@ export default class NearestRoutesContainer extends Component {
     lat: PropTypes.number.isRequired,
     lon: PropTypes.number.isRequired,
     currentTime: PropTypes.number.isRequired,
-    modes: PropTypes.array.isRequired,
-    placeTypes: PropTypes.array.isRequired,
+    modes: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+    placeTypes: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
     maxDistance: PropTypes.number.isRequired,
     maxResults: PropTypes.number.isRequired,
     timeRange: PropTypes.number.isRequired,
@@ -42,10 +47,6 @@ export default class NearestRoutesContainer extends Component {
     // useSpinner is used to only render the spinner on initial render.
     // After the initial render it is changed to false and data will be updated silently.
     this.useSpinner = true;
-  }
-
-  componentDidMount() {
-    this.useSpinner = false;
   }
 
   shouldComponentUpdate(nextProps) {
@@ -64,24 +65,31 @@ export default class NearestRoutesContainer extends Component {
   render() {
     return (
       <Relay.Renderer
-        Container={NearbyRouteListContainer}
-        queryConfig={new NearbyRouteListContainerRoute({
-          lat: this.props.lat,
-          lon: this.props.lon,
-          currentTime: this.props.currentTime,
-          modes: this.props.modes,
-          placeTypes: this.props.placeTypes,
-          maxDistance: this.props.maxDistance,
-          maxResults: this.props.maxResults,
-          timeRange: this.props.timeRange,
-        })}
+        Container={NearbyDeparturesList}
+        queryConfig={
+          new NearbyDeparturesListRoute({
+            lat: this.props.lat,
+            lon: this.props.lon,
+            currentTime: this.props.currentTime,
+            modes: this.props.modes,
+            placeTypes: this.props.placeTypes,
+            maxDistance: this.props.maxDistance,
+            maxResults: this.props.maxResults,
+            timeRange: this.props.timeRange,
+          })
+        }
         environment={Relay.Store}
-        render={({ props }) => {
+        render={({ error, props, retry }) => {
+          if (error) {
+            this.useSpinner = true;
+            return <NetworkError retry={retry} />;
+          }
           if (props) {
-            return <NearbyRouteListContainer {...props} />;
+            this.useSpinner = false;
+            return <NearbyDeparturesList {...props} />;
           }
           if (this.useSpinner === true) {
-            return <div className="spinner-loader" />;
+            return <Loading />;
           }
           return undefined;
         }}

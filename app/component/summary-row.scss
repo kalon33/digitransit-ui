@@ -1,19 +1,57 @@
+.canceled-legs-banner {
+  width: 100%;
+  background: $cancelation-red;
+  color: #fff;
+  padding: 1em;
+  .canceled-legs-container {
+    display: flex;
+    svg {
+      fill: $white;
+      color: $cancelation-red;
+      font-size: 1.5em;
+    }
+    .canceled-legs-right-content {
+      margin-left: 1em;
+      .canceled-legs-text {
+        margin-bottom: 0.5em;
+      }
+      button {
+        background: $cancelation-red;
+        color: $white;
+        border: 1px solid $white;
+        border-radius: 4px;
+        padding: 0.5em;
+        font-size: $font-size-xxsmall;
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
 .itinerary-summary-row {
   min-height: 50px;
   padding-left: $padding-medium;
   padding-right: 0;
-  padding-top: 0;
-  padding-bottom: 0;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
   overflow: hidden;
   background-color: $white;
   border-bottom: 1px solid $light-gray;
   border-left: 0.3em $action-color solid;
   display: flex;
   user-select: none;
-  $distance-gray: #999999;
+  $distance-gray: #7b7b7b;
   font-size: $font-size-normal;
   @include font-narrow-medium;
   white-space: nowrap;
+  position: relative;
+
+  &.cancelled-itinerary {
+    .itinerary-first-leg-start-time {
+      text-decoration: line-through;
+      color: $cancelation-red;
+    }
+  }
 
   &.passive {
     border-left-color: $background-color;
@@ -24,29 +62,29 @@
     }
   }
 
-  &.passive {
-    border-left-color: $background-color;
-    background-color: $background-color;
-  }
-
-  h2 {
+  h3, h4 {
+    @include font-medium;
     flex-grow: 1;
     margin: 0.5em;
+    line-height: 1.5;
   }
 
   .itinerary-timeframe {
-    padding-left:10px;
+    padding-left: 10px;
   }
 
   .itinerary-duration-and-distance {
-    width: 4em;
+    max-width: 4em;
     margin-top: $padding-small;
+    margin-left: $padding-medium;
   }
 
   .itinerary-duration {
     white-space: nowrap;
+    font-weight: $font-weight-bold;
   }
 
+  .itinerary-biking-distance,
   .itinerary-walking-distance {
     margin-top: -2px;
     color: $distance-gray;
@@ -63,19 +101,7 @@
     padding-left: 5px;
     min-width: 2em;
     @include font-narrow-medium;
-
-    .itinerary-first-leg-start-time {
-      color: $distance-gray;
-      font-size: $font-size-xsmall;
-      margin-top: -6px;
-      margin-right: -7px;
-      font-weight: 100;
-    }
-
-    // When we don't have a start date box, we can add some spacing
-    .itinerary-start-date.nobg + .itinerary-first-leg-start-time {
-      margin-top: -1px;
-    }
+    font-weight: $font-weight-bold;
 
     .itinerary-start-date {
       display: block;
@@ -106,14 +132,30 @@
     }
   }
 
-  .realtime-available {
-    color: $realtime-color;
+  .itinerary-end-time-and-distance {
+    max-width: 4em;
   }
 
   .itinerary-end-time {
     padding-left: 10px;
     width: 3em;
     margin-top: $padding-small;
+    font-weight: $font-weight-bold;
+  }
+
+  .itinerary-first-leg-start-time {
+    position: absolute;
+    top: 3.77em;
+    left: 2.3em;
+    text-align: right;
+    width: 3em;
+    color: $distance-gray;
+
+    &.small {
+      font-size: $font-size-small;
+      left: 1.2em;
+      top: 2.6em;
+    }
   }
 
   .itinerary-legs {
@@ -121,24 +163,88 @@
     display: flex;
     white-space: nowrap;
     min-width: 0;
-    flex: 1 1 0;
+    flex: 1 1 0px;
 
     .leg {
-      flex: 1 1 0;
+      padding-top: $padding-small;
+      flex: 1 1 0px;
       overflow: hidden;
       justify-content: center;
+      &.large {
+        padding-top: 0;
+      }
+      .route-number {
+        width: 100%;
+        &.vertical {
+          position: relative;
+          .vehicle-number-container-v {
+            overflow: visible;
+          }
+        }
+      }
+    }
+
+    .leg.via {
+      flex: 1 1 0px;
+      overflow: hidden;
+      justify-content: center;
+      max-width: 16px;
+      position: relative;
+
+      .itinerary-icon {
+        margin-left: 1px;
+        fill: #000;
+      }
     }
 
     .departure-stop {
       @include font-narrow-book;
       font-size: 13px;
       color: $gray;
+      margin-bottom: 4px;
       width: 100%;
     }
 
-    .line.walk, .line.bicycle, .line.car {
-      &:after {
+    .line.walk,
+    .line.bicycle,
+    .line.car {
+      .bar-container {
         left: 2em;
+      }
+    }
+
+    .vcenter-children {
+      display: flex;
+      align-items: center;
+      justify-content: left;
+      line-height: 1;
+    }
+
+    div.bar-container {
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      display: flex;
+      position: absolute;
+      align-items: center;
+    }
+
+    div.bar {
+      width: calc(100% - 1px);
+      z-index: -1;
+      background-color: currentColor;
+      border: 1px solid currentColor;
+      height: 6px;
+      border-width: 2px;
+      border-radius: $border-radius;
+      &.call {
+        border-color: #aaa;
+      }
+      .bar-inner {
+        width: 100%;
+        height: 2px;
+        background-color: rgba(255, 255, 255, 0.25);
       }
     }
 
@@ -149,34 +255,30 @@
       z-index: 1;
       text-align: center;
 
-      &:after {
-        content:"";
-        position: absolute;
-        z-index: -1;
-        right: 1px;
-        left: 0;
-        top: 1em;
-
-        border: 2px solid;
-        border-radius: $border-radius-small;
-      }
-
       .icon {
-        margin-top: $padding-small;
-        margin-left: $padding-xsmall;
-        font-size: 1.3rem;
-        float: left;
+        margin-left: 3px;
+        font-size: 1.35em;
+      }
+    }
+
+    .special-icon {
+      .icon {
+        padding-bottom: 1px; // fixes icon clipping in Safari on iOS
+      }
+      .icon-badge {
+        left: 0;
+        top: -0.75em;
       }
     }
 
     .vehicle-number {
       font-weight: $font-weight-medium;
       font-size: $font-size-small;
-      clear: left;
-      float: left;
       padding: 0;
-      width: 1.3em;
+      min-width: 1.3em;
       margin-left: $padding-small;
+      text-align: left;
+
       &.long {
         @extend .overflow-fade;
         display: inline-block;
@@ -188,14 +290,12 @@
   }
 
   .action-arrow-click-area {
-    padding: $padding-xsmall $padding-medium;
+    padding: 0.25em 0.3em 0.25em 0.3em;
     display: flex;
   }
   .action-arrow {
     display: flex;
     align-items: center;
-    border: 1px solid rgba(0, 0, 0, 0.19);
-    border-radius: 4px;
     padding: $padding-xxsmall $padding-xxsmall 0px $padding-xxsmall;
     line-height: 1;
 
@@ -207,8 +307,8 @@
   }
 
   .itinerary-tab {
-    width: calc(100% - 120px);
-    margin-left: 100px;
+    width: auto;
+    margin-left: 34px;
     margin-right: 10px;
     border-top: solid 1px $light-gray;
   }
@@ -219,12 +319,21 @@
     padding-left: 20px;
     padding-top: 0;
 
-    .itinerary-duration-and-distance {
-      width: 75px;
-      margin-top: 25px;
+    .leg.via {
+      .itinerary-icon {
+        margin-top: 19px;
+      }
     }
 
-    h2 {
+    .itinerary-duration-and-distance {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin-left: 1em;
+      width: 75px;
+    }
+
+    h3, h4 {
       margin-top: 10px;
     }
 
@@ -233,6 +342,7 @@
       @include font-narrow-medium;
     }
 
+    .itinerary-biking-distance,
     .itinerary-walking-distance {
       font-size: 18px;
     }
@@ -242,10 +352,6 @@
       font-size: 21px;
       padding-top: 17px;
 
-      .itinerary-first-leg-start-time {
-        padding-top: 1px;
-        font-size: $font-size-normal;
-      }
       .itinerary-start-date {
         @include font-narrow-book;
         font-size: $font-size-xxsmall;
@@ -261,24 +367,17 @@
 
     .itinerary-legs {
       padding-top: 0;
-      margin-top: 17px;
-
-      .line:after {
-        top: 10px;
-        border-width: 3px;
-        border-radius: $border-radius;
-      }
+      margin-top: 9px;
 
       .line .icon {
         margin-top: 0;
-        margin-left: 5px;
-        font-size: 24px;
+        margin-left: 8px;
+        font-size: $font-size-large;
       }
 
       .vehicle-number {
         font-size: $font-size-normal;
-        margin-left: 6px;
-        margin-top: 3.5px;
+        margin-left: 8px;
       }
     }
 
@@ -289,7 +388,7 @@
     }
 
     .action-arrow-click-area {
-      padding: 0 25px 0 20px;
+      padding: 0 20px 0 10px;
     }
     .action-arrow {
       font-size: 20px;
@@ -305,43 +404,76 @@
         transform: rotate(-90deg);
       }
 
-      &.bp-large {
-        min-height: 75px;
+      min-height: 75px;
+    }
+  }
+
+  .call {
+    //text color
+    color: $black;
+  }
+  .summary-clickable-area {
+      display: flex;
+      flex: auto;
+      flex-wrap: wrap;
+  }
+
+  .itinerary-summary-visible {
+    flex: auto;
+    flex-direction: column;
+  }
+
+  .itinerary-summary-header {
+      display: flex;
+      flex: auto;
+  }
+}
+
+.additional-canceled-itineraries {
+  border-bottom: 1px solid $light-gray;
+  border-top: 1px solid $light-gray;
+  cursor: pointer;
+  font-size: $font-size-xsmall;
+  padding: 1em;
+
+  .canceled-itineraries-button {
+    color: $primary-color;
+  }
+
+  .canceled-itineraries-container {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+    &.centered {
+      justify-content: center;
+    }
+
+    .canceled-itineraries-icon-container {
+      color: $primary-color;
+      margin-right: 1em;
+
+      .icon {
+        font-size: 1.4em;
       }
     }
   }
 }
 
-/*
-  Customize Search
-*/
+.mobile .itinerary-legs .leg {
+  height: 3.4em;
+}
 
-.customize-search {
-  select  {
-    background-color: $dark-gray;
-    color:$white;
-    &:hover {
-      background-color: $dark-gray;
-    }
+.mobile {
+  .subicon-caution {
+    left: -0.3em;
+    top: 0.5em;
   }
-  h4 {
-    font-size: $font-size-small;  // larger than normal
-    margin: 10px 0 5px 0;
-  }
-  input[type="text"] {
-    background-color: transparent;
-    border: 1px solid #575757;
-    border-radius: $border-radius;
-    color: $white;
+}
+
+@media print {
+  .itinerary-summary-row.bp-large.open {
+    height: auto;
     display: block;
-    margin: 0;
-    width: 100%;
-    appearance: none;
-    box-shadow: none;
-    border-radius: none;
-  }
-  input[type="text"]:focus {
-    color: $black;
-    outline: none;
   }
 }

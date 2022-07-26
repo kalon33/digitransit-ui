@@ -1,51 +1,57 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { FormattedMessage } from 'react-intl';
-import Icon from './Icon';
 import ComponentUsageExample from './ComponentUsageExample';
 import NearbyTabLabel from './NearbyTabLabel';
 import FavouritesTabLabelContainer from './FavouritesTabLabelContainer';
 
-const FrontPagePanelSmall = ({ selectedPanel, nearbyClicked,
-   favouritesClicked, closePanel, children }) => {
-  let heading;
+const FrontPagePanelSmall = ({
+  selectedPanel,
+  nearbyClicked,
+  favouritesClicked,
+  mapExpanded,
+  children,
+  //  location,
+}) => {
   const tabClasses = ['hover'];
   const nearbyClasses = ['nearby-routes', 'h4'];
   const favouritesClasses = ['favourites', 'h4'];
 
   if (selectedPanel === 1) {
-    heading = <FormattedMessage id="near-you" defaultMessage="Near you" />;
     nearbyClasses.push('selected');
-  } else if (selectedPanel === 2) {
-    heading = <FormattedMessage id="your-favourites" defaultMessage="Your favourites" />;
+  } else {
     favouritesClasses.push('selected');
   }
 
-  const top = (
-    <div className="panel-top">
-      <div className="panel-heading">
-        <h2>{heading}</h2>
-      </div>
-      <div className="close-icon" onClick={closePanel}>
-        <Icon img="icon-icon_close" />
-      </div>
+  const content = selectedPanel && (
+    <div
+      className={cx([
+        'frontpage-panel-wrapper',
+        'no-select',
+        'small',
+        { 'expanded-panel': mapExpanded },
+      ])}
+      key="panel"
+    >
+      {children}
     </div>
   );
 
-  const content = selectedPanel ?
-    <div className="frontpage-panel-wrapper" key="panel">{top}{children}</div> : undefined;
-
   return (
-    <div className="frontpage-panel-container no-select">
-      <ReactCSSTransitionGroup
-        transitionName="frontpage-panel-wrapper"
-        transitionEnterTimeout={300}
-        transitionLeaveTimeout={300}
+    <div
+      className={cx(['frontpage-panel-container', 'no-select'], {
+        expanded: mapExpanded,
+      })}
+    >
+      <ul
+        className={cx([
+          'tabs-row',
+          'cursor-pointer',
+          {
+            expanded: mapExpanded,
+          },
+        ])}
       >
-        {content}
-      </ReactCSSTransitionGroup>
-      <ul className="tabs-row cursor-pointer">
         <NearbyTabLabel
           classes={cx(tabClasses, nearbyClasses)}
           onClick={nearbyClicked}
@@ -55,6 +61,7 @@ const FrontPagePanelSmall = ({ selectedPanel, nearbyClicked,
           onClick={favouritesClicked}
         />
       </ul>
+      {content}
     </div>
   );
 };
@@ -63,22 +70,30 @@ const noop = () => {};
 
 FrontPagePanelSmall.displayName = 'FrontPagePanelSmall';
 
-FrontPagePanelSmall.description = () =>
+FrontPagePanelSmall.description = () => (
   <div>
-    <p>
-      Front page tabs for small display.
-    </p>
+    <p>Front page tabs for small display.</p>
     <ComponentUsageExample description="Front page tabs">
-      <FrontPagePanelSmall closePanel={noop} favouritesClicked={noop} nearbyClicked={noop} />
+      <FrontPagePanelSmall
+        closePanel={noop}
+        favouritesClicked={noop}
+        nearbyClicked={noop}
+      />
     </ComponentUsageExample>
-  </div>;
+  </div>
+);
+
+FrontPagePanelSmall.defaultProps = {
+  selectedPanel: 1,
+  children: null,
+};
 
 FrontPagePanelSmall.propTypes = {
-  selectedPanel: React.PropTypes.number,
-  nearbyClicked: React.PropTypes.func.isRequired,
-  favouritesClicked: React.PropTypes.func.isRequired,
-  closePanel: React.PropTypes.func.isRequired,
-  children: React.PropTypes.node,
+  selectedPanel: PropTypes.oneOf([1, 2]),
+  nearbyClicked: PropTypes.func.isRequired,
+  favouritesClicked: PropTypes.func.isRequired,
+  mapExpanded: PropTypes.bool.isRequired,
+  children: PropTypes.node,
 };
 
 export default FrontPagePanelSmall;

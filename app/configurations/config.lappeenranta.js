@@ -1,19 +1,20 @@
-/* eslint-disable */
-import mergeWith from 'lodash/mergeWith';
+/* eslint-disable prefer-template */
+import configMerger from '../util/configMerger';
+import { BIKEAVL_UNKNOWN } from '../util/citybikes';
 
-const CONFIG = process.env.CONFIG || 'lappeenranta';
+const CONFIG = 'lappeenranta';
 const APP_TITLE = 'reittiopas.lappeenranta.fi';
 const APP_DESCRIPTION = '';
 
-const walttiConfig = require('./waltti').default;
+const walttiConfig = require('./config.waltti').default;
 
-export default mergeWith({}, walttiConfig, {
+export default configMerger(walttiConfig, {
   CONFIG,
 
   appBarLink: { name: 'Lappeenranta', href: 'http://www.lappeenranta.fi/' },
 
   colors: {
-    primary: '#7AB92A',
+    primary: '#ea4097',
   },
 
   socialMedia: {
@@ -23,9 +24,47 @@ export default mergeWith({}, walttiConfig, {
 
   title: APP_TITLE,
 
-  textLogo: true, // title text instead of logo img
+  textLogo: false, // title text instead of logo img
 
-  favicon: './sass/themes/lappeenranta/bussi_fin.jpeg',
+  logo: 'lappeenranta/logo.png',
+
+  favicon: './app/configurations/images/lappeenranta/bussi_fin.jpeg',
+
+  mapLayers: {
+    tooltip: {
+      fi: 'Uutta! Saat nyt lähellä olevat bussit kartalle asetuksista.',
+      en: 'New! You can now get nearby busses on the map from the settings.',
+      sv:
+        'Nytt! I inställningarna kan du nu välja att se närliggande bussar på kartan.',
+    },
+  },
+
+  cityBike: {
+    showCityBikes: true,
+    capacity: BIKEAVL_UNKNOWN,
+    networks: {
+      lappeenranta: {
+        icon: 'citybike',
+        name: {
+          fi: 'Lappeenranta',
+          sv: 'Vilmanstrand',
+          en: 'Lappeenranta',
+        },
+        type: 'citybike',
+        url: {
+          fi: 'https://kaakau.fi/lappeenranta/',
+          sv: 'https://kaakau.fi/lappeenranta/?lang=en',
+          en: 'https://kaakau.fi/lappeenranta/?lang=sv',
+        },
+      },
+    },
+  },
+
+  transportModes: {
+    citybike: {
+      availableForSelection: true,
+    },
+  },
 
   feedIds: ['Lappeenranta'],
 
@@ -36,52 +75,112 @@ export default mergeWith({}, walttiConfig, {
     'boundary.rect.max_lon': 28.329905,
   },
 
-  areaPolygon: [[28.031, 61.017], [28.031, 61.1028], [28.33, 61.1028], [28.33, 61.017]],
+  areaPolygon: [
+    [28.031, 61.017],
+    [28.031, 61.1028],
+    [28.33, 61.1028],
+    [28.33, 61.017],
+  ],
 
   defaultEndpoint: {
     address: 'Oleksin ja Koulukadun risteys',
     lat: 61.059097,
-    lon: 28.185720,
+    lon: 28.18572,
   },
 
   defaultOrigins: [
-    { icon: 'icon-icon_city', label: 'Oleksi/Koulukatu', lat: 61.059097, lon: 28.185720 },
-    { icon: 'icon-icon_rail', label: 'Matkakeskus', lat: 61.0483, lon: 28.1945 },
-    { icon: 'icon-icon_school', label: 'Lappeenrannan teknillinen yliopisto', lat: 61.065, lon: 28.0949 },
+    {
+      icon: 'icon-icon_city',
+      label: 'Oleksi/Koulukatu',
+      lat: 61.059097,
+      lon: 28.18572,
+    },
+    {
+      icon: 'icon-icon_rail',
+      label: 'Matkakeskus',
+      lat: 61.0483,
+      lon: 28.1945,
+    },
+    {
+      icon: 'icon-icon_school',
+      label: 'Lappeenrannan teknillinen yliopisto',
+      lat: 61.065,
+      lon: 28.0949,
+    },
   ],
 
+  showAllBusses: true,
+  showVehiclesOnStopPage: true,
 
   footer: {
     content: [
-      { label: (function () { return `© Lappeenranta ${(1900 + new Date().getYear())}`; }()) },
+      { label: `© Lappeenranta ${walttiConfig.YEAR}` },
       {},
-      { name: 'footer-feedback', nameEn: 'Send feedback', type: 'feedback', icon: 'icon-icon_speech-bubble' },
-      { name: 'about-this-service', nameEn: 'About this service', route: '/tietoja-palvelusta', icon: 'icon-icon_info' },
+      {
+        name: 'about-this-service',
+        nameEn: 'About this service',
+        route: '/tietoja-palvelusta',
+        icon: 'icon-icon_info',
+      },
+      {
+        name: 'accessibility-statement',
+        nameEn: 'Accessibility statement',
+        href:
+          'https://kauppa.waltti.fi/media/authority/154/files/Saavutettavuusseloste_Waltti-reittiopas_JyQfJhC.htm',
+      },
     ],
   },
 
   aboutThisService: {
-    fi: {
-      about: 'Tämän palvelun tarjoaa Lappeenrannan kaupungin joukkoliikenne, joukkoliikenteenreittisuunnittelua varten Lappeenrannan paikallisliikenteen alueella. Palvelu perustuu Digitransit palvelualustaan.',
-      digitransit: 'Digitransit palvelualusta on HSL:n ja Liikenneviraston kehittämä avoimen lähdekoodin reititystuote. Lähdekoodi tarjotaan EUPL v1.2 ja AGPLv3 lisensseillä.',
-      datasources: 'Kartat, kadut, rakennukset, pysäkkisijainnit ym. tiedot tarjoaa © OpenStreetMap contributors ja ne ladataan Geofabrik palvelusta. Osoitetiedot tuodaan VRK:n rakennustietorekisteristä ja ne ladataan OpenAddresses-palvelusta. Joukkoliikenteen reitit ja aikataulut ladataan HSL:n dev.hsl.fi/gtfs.waltti palvelimelta.',
-    },
+    fi: [
+      {
+        header: 'Tietoja palvelusta',
+        paragraphs: [
+          'Tämän palvelun tarjoaa Lappeenrannan kaupungin joukkoliikenne joukkoliikenteen reittisuunnittelua varten Lappeenrannan paikallisliikenteen alueella. Palvelu perustuu Digitransit-palvelualustaan.',
+        ],
+      },
+    ],
 
-    sv: {
-      about: 'This is a test service for Lappeenranta area route planning. The service covers public transport, walking, cycling, and some private car use. Service is built on Digitransit platform.',
-      digitransit: 'Digitransit service platform is created by HSL Finnish Transport Agency. The source code of the platform is dual-licensed under the EUPL v1.2 and AGPLv3 licenses.',
-      datasources: "Maps, streets, buildings, stop locations etc. from © OpenStreetMap contributors downloaded from Geofabrik. Additional address data from Finland's Population Register Centre downloaded from OpenAddresses Public transport routes and timetables from HSL downloaded from dev.hsl.fi/gtfs.waltti.",
-    },
+    sv: [
+      {
+        header: 'Om tjänsten',
+        paragraphs: [
+          'Den här tjänsten erbjuds av Lappeenrannan kaupungin joukkoliikenne för lokal reseplanering inom Lappeenranta region. Reseplaneraren täcker med vissa begränsningar kollektivtrafik, promenad, cykling samt privatbilism. Tjänsten baserar sig på Digitransit-plattformen.',
+        ],
+      },
+    ],
 
-    en: {
-      about: 'This is a test service for Lappeenranta area route planning. The service covers public transport, walking, cycling, and some private car use. Service is built on Digitransit platform. The service covers public transport, walking, cycling, and some private car use. Service is built on Digitransit platform.',
-      digitransit: 'Digitransit service platform is created by HSL Finnish Transport Agency. The source code of the platform is dual-licensed under the EUPL v1.2 and AGPLv3 licenses.',
-      datasources: "Maps, streets, buildings, stop locations etc. from © OpenStreetMap contributors downloaded from Geofabrik. Additional address data from Finland's Population Register Centre downloaded from OpenAddresses Public transport routes and timetables from HSL downloaded from dev.hsl.fi/gtfs.waltti.",
+    en: [
+      {
+        header: 'About this service',
+        paragraphs: [
+          'This service is provided by Lappeenrannan kaupungin joukkoliikenne for local route planning in Lappenranta region. The service covers public transport, walking, cycling, and some private car use. Service is built on Digitransit platform.',
+        ],
+      },
+    ],
+  },
+  zoneIdMapping: {
+    1: 'A',
+    2: 'B',
+    3: 'C',
+    4: 'D',
+  },
+  stopCard: {
+    header: {
+      showZone: true,
     },
   },
-
-}, (objValue, srcValue) => {
-  if (Array.isArray(srcValue)) { return srcValue; }
-  if (Array.isArray(objValue)) { return objValue; }
-  return undefined; // default merge
+  geoJson: {
+    layers: [
+      {
+        name: {
+          fi: 'Pyöräilyreitit',
+          sv: 'Cykelrutter',
+          en: 'Bike routes',
+        },
+        url: 'https://ckan.saita.fi/geojson/pyorailyreitit_lpr.geojson',
+        isOffByDefault: true,
+      },
+    ],
+  },
 });

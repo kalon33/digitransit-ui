@@ -1,49 +1,92 @@
 import Store from 'fluxible/addons/BaseStore';
-import orderBy from 'lodash/orderBy';
+import cloneDeep from 'lodash/cloneDeep';
 import find from 'lodash/find';
+import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
+import orderBy from 'lodash/orderBy';
+import moment from 'moment';
 
 import { getOldSearchesStorage, setOldSearchesStorage } from './localStorage';
-import { getLabel } from '../util/suggestionUtils';
+import { getNameLabel } from '../util/suggestionUtils';
+
+/**
+ * The current version number of this store.
+ */
+export const STORE_VERSION = 3;
+
+/**
+ * The maximum amount of time in seconds a stored item will be returned.
+ */
+export const STORE_PERIOD = 60 * 60 * 24 * 60; // 60 days
+
+const isCurrentLocationItem = item =>
+  get(item, 'item.type') === 'CurrentLocation';
 
 class OldSearchesStore extends Store {
   static storeName = 'OldSearchesStore';
 
-  constructor(dispatcher) {
-    super(dispatcher);
-
-    const oldSearches = getOldSearchesStorage();
-    if (!oldSearches || oldSearches.version == null || oldSearches.version < 2) {
-      setOldSearchesStorage({
-        version: 2,
+  // eslint-disable-next-line class-methods-use-this
+  getStorageObject() {
+    let storage = getOldSearchesStorage();
+    if (
+      !storage ||
+      storage.version == null ||
+      storage.version < STORE_VERSION
+    ) {
+      storage = {
+        version: STORE_VERSION,
         items: [],
-      });
+      };
+      setOldSearchesStorage(storage);
     }
+    return storage;
   }
 
   saveSearch(destination) {
-    let searches = getOldSearchesStorage().items;
+    if (isCurrentLocationItem(destination)) {
+      return;
+    }
+    const { items } = this.getStorageObject();
 
-    const found = find(searches, oldItem =>
-        isEqual(getLabel(destination.item.properties), getLabel(oldItem.item.properties)));
+    const key = getNameLabel(destination.item.properties, true);
+    const found = find(items, oldItem =>
+      isEqual(key, getNameLabel(oldItem.item.properties, true)),
+    );
 
+    const timestamp = moment().unix();
     if (found != null) {
       found.count += 1;
+      found.lastUpdated = timestamp;
+      found.item = cloneDeep(destination.item);
     } else {
-      searches.push({ count: 1, ...destination });
+      items.push({
+        count: 1,
+        lastUpdated: timestamp,
+        ...destination,
+      });
     }
 
-    setOldSearchesStorage({ version: 2, items: orderBy(searches, 'count', 'desc') });
-    searches = this.getOldSearches();
+    setOldSearchesStorage({
+      version: STORE_VERSION,
+      items: orderBy(items, 'count', 'desc'),
+    });
+
     this.emitChange(destination);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   getOldSearches(type) {
-    return (getOldSearchesStorage().items &&
-      getOldSearchesStorage().items
-      .filter(item => (type ? item.type === type : true))
-      .map(item => item.item)) || [];
+    const { items } = this.getStorageObject();
+    const timestamp = moment().unix();
+    return items
+      .filter(
+        item =>
+          (type ? item.type === type : true) &&
+          (item.lastUpdated
+            ? timestamp - item.lastUpdated < STORE_PERIOD
+            : true) &&
+          !isCurrentLocationItem(item),
+      )
+      .map(item => item.item);
   }
 
   static handlers = {

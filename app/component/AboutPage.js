@@ -1,38 +1,43 @@
+import PropTypes from 'prop-types';
+/* eslint-disable react/no-array-index-key */
 import React from 'react';
 import { Link } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 
-const AboutPage = ({ currentLanguage }, context) => {
-  const about = context.config.aboutThisService[currentLanguage];
+const AboutPage = ({ currentLanguage }, { config }) => {
+  const about = config.aboutThisService[currentLanguage];
   return (
     <div className="about-page fullscreen">
       <div className="page-frame fullscreen momentum-scroll">
-        <h1 id="about-header">
-          <FormattedMessage
-            id="about-this-service" defaultMessage="About the service"
-          />
-        </h1>
-        <p>{about.about}</p>
-
-        <h1>
-          <FormattedMessage
-            id="digitransit-platform" defaultMessage="Digitransit service platform"
-          />
-        </h1>
-        <p>{about.digitransit}</p>
-
-        <h1>
-          <FormattedMessage
-            id="datasources" defaultMessage="Data sources"
-          />
-        </h1>
-        <p>{about.datasources}</p>
-
+        {about.map(
+          (section, i) =>
+            (section.paragraphs && section.paragraphs.length) ||
+            section.link ? (
+              <div key={`about-section-${i}`}>
+                <h1 className="about-header">{section.header}</h1>
+                {section.paragraphs &&
+                  section.paragraphs.map((p, j) => (
+                    <p key={`about-section-${i}-p-${j}`}>{p}</p>
+                  ))}
+                {section.link && (
+                  <a href={section.link}>
+                    <FormattedMessage
+                      id="extra-info"
+                      defaultMessage="More information"
+                    />
+                  </a>
+                )}
+              </div>
+            ) : (
+              false
+            ),
+        )}
         <Link to="/">
           <div className="call-to-action-button">
             <FormattedMessage
-              id="back-to-front-page" defaultMessage="Back to front page"
+              id="back-to-front-page"
+              defaultMessage="Back to front page"
             />
           </div>
         </Link>
@@ -42,13 +47,19 @@ const AboutPage = ({ currentLanguage }, context) => {
 };
 
 AboutPage.propTypes = {
-  currentLanguage: React.PropTypes.string.isRequired,
+  currentLanguage: PropTypes.string.isRequired,
 };
 
 AboutPage.contextTypes = {
-  config: React.PropTypes.object.isRequired,
+  config: PropTypes.object.isRequired,
 };
 
-export default connectToStores(AboutPage, ['PreferencesStore'], context => ({
-  currentLanguage: context.getStore('PreferencesStore').getLanguage(),
-}));
+const connectedComponent = connectToStores(
+  AboutPage,
+  ['PreferencesStore'],
+  context => ({
+    currentLanguage: context.getStore('PreferencesStore').getLanguage(),
+  }),
+);
+
+export { connectedComponent as default, AboutPage as Component };

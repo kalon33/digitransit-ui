@@ -1,8 +1,12 @@
 module.exports = {
+  '@disabled': true,
   tags: ['favourite'],
-  'Add route 58 as favourite': (browser) => {
-    browser.url(browser.launch_url);
-    browser.page.searchFields().setSearch('58');
+  'Add route 615 as favourite': browser => {
+    browser.url(
+      'http://127.0.0.1:8080/Opastinsilta%206,%20Helsinki::60.199437,24.940472/-',
+    );
+
+    browser.page.searchFields().selectFirstRouteSuggestion('615');
 
     const route = browser.page.route();
     route.addRouteAsFavourite();
@@ -10,7 +14,7 @@ module.exports = {
 
     const myFavourites = browser.page.myFavourites();
     myFavourites.clickFavourites();
-    myFavourites.verifyFavouriteRoute(58);
+    myFavourites.verifyFavouriteRoute(615);
 
     browser.end();
   },

@@ -1,16 +1,29 @@
+import PropTypes from 'prop-types';
 import React from 'react';
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic';
 import some from 'lodash/some';
 import cx from 'classnames';
+import pure from 'recompose/pure';
 
 import { getStartTime } from '../util/timeUtils';
 import TripListHeader from './TripListHeader';
 import TripStopListContainer from './TripStopListContainer';
+import withBreakpoint from '../util/withBreakpoint';
 
-function TripStopsContainer(props, { breakpoint }) {
-  const tripStartTime = getStartTime(props.trip.stoptimesForDate[0].scheduledDeparture);
+function TripStopsContainer({ breakpoint, routes, trip }) {
+  if (!trip) {
+    return null;
+  }
 
-  const fullscreen = some(props.routes, route => route.fullscreenMap);
+  const tripStartTime = getStartTime(
+    trip.stoptimesForDate[0].scheduledDeparture,
+  );
+
+  const fullscreen = some(routes, route => route.fullscreenMap);
+
+  if (fullscreen && breakpoint !== 'large') {
+    return <div className="route-page-content" />;
+  }
 
   return (
     <div
@@ -18,10 +31,10 @@ function TripStopsContainer(props, { breakpoint }) {
         'fullscreen-map': fullscreen && breakpoint !== 'large',
       })}
     >
-      <TripListHeader key="header" className={breakpoint === 'large' && 'bp-large'} />
+      <TripListHeader key="header" className={`bp-${breakpoint}`} />
       <TripStopListContainer
         key="list"
-        trip={props.trip}
+        trip={trip}
         tripStart={tripStartTime}
         fullscreenMap={fullscreen}
       />
@@ -30,30 +43,29 @@ function TripStopsContainer(props, { breakpoint }) {
 }
 
 TripStopsContainer.propTypes = {
-  pattern: React.PropTypes.object.isRequired,
-  trip: React.PropTypes.shape({
-    stoptimesForDate: React.PropTypes.arrayOf(
-      React.PropTypes.shape({
-        scheduledDeparture: React.PropTypes.number.isRequired,
+  trip: PropTypes.shape({
+    stoptimesForDate: PropTypes.arrayOf(
+      PropTypes.shape({
+        scheduledDeparture: PropTypes.number.isRequired,
       }).isRequired,
     ).isRequired,
-  }).isRequired,
-  routes: React.PropTypes.arrayOf(React.PropTypes.shape({
-    fullscreenMap: React.PropTypes.bool,
-  })).isRequired,
-  location: React.PropTypes.shape({
-    pathname: React.PropTypes.string.isRequired,
-  }).isRequired,
+  }),
+  routes: PropTypes.arrayOf(
+    PropTypes.shape({
+      fullscreenMap: PropTypes.bool,
+    }),
+  ).isRequired,
+  breakpoint: PropTypes.string.isRequired,
 };
 
-TripStopsContainer.contextTypes = {
-  breakpoint: React.PropTypes.string,
+TripStopsContainer.defaultProps = {
+  trip: undefined,
 };
 
-export default Relay.createContainer(TripStopsContainer, {
+const pureComponent = pure(withBreakpoint(TripStopsContainer));
+const containerComponent = Relay.createContainer(pureComponent, {
   fragments: {
-    trip: () =>
-      Relay.QL`
+    trip: () => Relay.QL`
       fragment on Trip {
         stoptimesForDate {
           scheduledDeparture
@@ -68,3 +80,5 @@ export default Relay.createContainer(TripStopsContainer, {
     `,
   },
 });
+
+export { containerComponent as default, TripStopsContainer as Component };

@@ -8,35 +8,53 @@ $border-radius-rounded: 30px;
   margin-bottom: 5px;
   line-height: $line-height-normal;
   overflow-x: hidden;
-
 }
 .card-header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
   background-color: $white;
   padding: 0.4em 0 0.5em;
 
-  .card-header-wrapper {
-    flex-grow: 1;
+  .card-header-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .card-header-wrapper {
+      flex-grow: 1;
+    }
+  }
+
+  .zone-icon-container {
+    align-items: center;
+    color: $primary-color;
+    display: flex;
+    font-size: $font-size-xxsmall;
+    font-weight: $font-weight-medium;
+    padding-bottom: $padding-small;
+
+    .icon {
+      display: block;
+      height: 2em;
+      margin-left: 0.5em;
+      width: 2em;
+    }
   }
 
   .h3 {
-   margin-top: -10px;
+    margin-top: -10px;
   }
- .card-sub-header {
-   p {
-     display: inline;
-   }
-   .card-code {
-     border: 1px solid $light-gray;
-     border-radius: $border-radius;
-     font-size: $font-size-xxsmall;
-     color: $gray-blue;
-     margin-right: 3px;
-     padding: 0px 2px 0px 2px;
-   }
- }
+  .card-sub-header {
+    p {
+      display: inline;
+    }
+    .card-code {
+      border: 1px solid $light-gray;
+      border-radius: $border-radius;
+      font-size: $font-size-xxsmall;
+      color: $gray-blue;
+      margin-right: 3px;
+      padding: 0px 2px 0px 2px;
+    }
+  }
 }
 
 /* buttons */
@@ -63,53 +81,24 @@ $border-radius-rounded: 30px;
 /* Modal */
 #app .modal {
   border-radius: $border-radius;
-  padding: 10px 22px;
-  max-height: 85%;
   cursor: auto;
+  height: 85%;
+  max-height: 85%;
+  padding: 0;
 
-  p  {
-    margin: 10px 0;
-  }
-  .modal-wrapper  {
+  .modal-content {
     height: 100%;
+    max-height: calc(100% - 5em);
   }
-  .modal-content  {
-    max-height: 64vh;
-    overflow-y: auto;
-    section {
-      padding-bottom: 20px;
-    }
-  }
+
   .modal-top-nav {
-    padding-top: 10px;
-  }
-  .disruption-header  {
-    .line {
-      margin: 0 5px 0 10px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5em;
+
+    h2 {
+      margin: $padding-xsmall 0;
     }
-    .time {
-      &:before {
-        content: " – ";
-      }
-    }
-  }
-  .disruption-details {
-    span  {
-      display:block;
-    }
-    b {
-      float:left;
-      padding-right: 5px;
-    }
-  }
-  .icon.center {
-    display: block;
-    float: left;
-    margin-top: 3px;
-  }
-  .line, .time {
-    padding: 0;
-    @include font-narrow-medium;
   }
 }
 
@@ -119,6 +108,21 @@ $border-radius-rounded: 30px;
   width: 1em;
   height: 1em;
   fill: currentColor;
+
+  &.caution {
+    color: $white;
+    fill: $disruption-color;
+  }
+
+  &.info {
+    color: $gray-blue;
+  }
+
+  &.inline-icon {
+    margin-left: $padding-xsmall;
+    position: relative;
+    top: 0.125em;
+  }
 }
 
 .favourite-icon {
@@ -151,16 +155,27 @@ $border-radius-rounded: 30px;
   height: 34px;
   background: rgba(0, 0, 0, 0.5);
   width: 34px;
-  bottom: 0px;
+  top: -3em;
   right: 10px;
   font-size: 17px;
-  border-top-right-radius: $border-radius;
-  border-top-left-radius: $border-radius;
-  z-index: 802;
+  border-radius: $border-radius;
+  z-index: index($zindex, map-fullscreen-toggle);
   .icon {
-   margin: 0.5em 0.5em 0 0.5em;
-   fill: rgb(255, 255, 255);
- }
+    margin: 0.5em 0.5em 0 0.5em;
+    fill: rgb(255, 255, 255);
+  }
+  &.expanded {
+    top: -3em;
+  }
+  &.routePage,
+  &.stopPage {
+    bottom: 0.7em;
+    top: auto;
+    &.expanded {
+      bottom: 0.5em;
+      top: auto;
+    }
+  }
 }
 
 .smallscreen-toggle {
@@ -168,44 +183,89 @@ $border-radius-rounded: 30px;
   bottom: -1px;
 }
 
-
 .prefix-icon {
   margin-right: 6px;
 }
-.info.icon {
-    width: 24px;
-    height: 24px;
-    color: $gray-blue;
-}
 
 .dotted-link {
-  border-bottom: 2px dotted rgba(255,255,255,0.5);
+  border-bottom: 2px dotted rgba(255, 255, 255, 0.5);
 }
 
 .overflow-fade {
   overflow: hidden;
-  mask-image: linear-gradient(to left, transparent, rgba(0,0,0,0.2) 5px, rgba(0,0,0,1) 25px, rgba(0,0,0,1));
+  mask-image: linear-gradient(
+    to left,
+    transparent,
+    rgba(0, 0, 0, 0.2) 5px,
+    rgba(0, 0, 0, 1) 25px,
+    rgba(0, 0, 0, 1)
+  );
+}
+
+.overflow-fade-left {
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    rgba(0, 0, 0, 0.2) 5px,
+    rgba(0, 0, 0, 1) 25px,
+    rgba(0, 0, 0, 1)
+  );
+}
+
+.double-overflow-fade {
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    rgba(0, 0, 0, 0.2) 2%,
+    rgba(0, 0, 0, 1) 5%,
+    rgba(0, 0, 0, 1) 95%,
+    rgba(0, 0, 0, 0.2) 98%
+  );
 }
 
 @keyframes realtimeInnerArch {
-  0%   {opacity: 1;}
-  20%  {opacity: 1;}
-  40%  {opacity: 0;}
-  60%  {opacity: 1;}
-  100% {opacity: 1;}
+  0% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes realtimeOuterArch {
-  0%   {opacity: 1;}
-  20%  {opacity: 1;}
-  40%  {opacity: 0;}
-  60%  {opacity: 0;}
-  80%  {opacity: 1;}
-  100% {opacity: 1;}
+  0% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0;
+  }
+  60% {
+    opacity: 0;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 svg.realtime-icon {
-  transform: translate3d(0,0,0);
+  transform: translate3d(0, 0, 0);
 }
 
 #icon-icon_realtime {
@@ -237,13 +297,37 @@ svg.realtime-icon {
     opacity: 0.4;
   }
 
-  75%  {
+  75% {
     opacity: 0.1;
   }
 
   100% {
     opacity: 0;
     transform: scale(3);
+  }
+}
+
+.icon-badge {
+  display: inline-block;
+  height: 1em;
+  position: absolute;
+  width: 1em;
+
+  > .badge-circle {
+    stroke: #fff;
+    stroke-width: 0;
+  }
+
+  > .badge-text {
+    fill: #fff;
+    font-family: $font-family;
+    font-size: 2rem;
+    font-weight: 500;
+    text-anchor: middle;
+
+    &.long {
+      font-size: 1.5rem;
+    }
   }
 }
 

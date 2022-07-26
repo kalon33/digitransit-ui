@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import ComponentUsageExample from './ComponentUsageExample';
 
@@ -13,27 +14,31 @@ function GenericTable(props) {
 
   return (
     <div className="generic-table">
-      <div className="row">
-        {props.children}
+      <div className="row">{props.children}</div>
+      <div className="generic-table__label-container">
+        {lowEndLabel}
+        {highEndLabel}
       </div>
-      <div className="generic-table__label-container">{lowEndLabel}{highEndLabel}</div>
     </div>
   );
 }
 
 GenericTable.displayName = 'GenericTable';
 
-GenericTable.description = () =>
+GenericTable.description = () => (
   <div>
     <p>Renders a score table</p>
-    <ComponentUsageExample description=""><GenericTable /></ComponentUsageExample>
-  </div>;
+    <ComponentUsageExample description="">
+      <GenericTable />
+    </ComponentUsageExample>
+  </div>
+);
 
 GenericTable.propTypes = {
-  showLabels: React.PropTypes.bool,
-  lowEndLabel: React.PropTypes.object,
-  highEndLabel: React.PropTypes.object,
-  children: React.PropTypes.node,
+  showLabels: PropTypes.bool,
+  lowEndLabel: PropTypes.object,
+  highEndLabel: PropTypes.object,
+  children: PropTypes.node,
 };
 
 export default GenericTable;

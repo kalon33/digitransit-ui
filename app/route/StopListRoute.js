@@ -1,4 +1,4 @@
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic';
 
 export default class StopListRoute extends Relay.Route {
   static queries = {
@@ -14,10 +14,12 @@ export default class StopListRoute extends Relay.Route {
       }
     `,
   };
+
   static paramDefinitions = {
     lat: { required: true },
     lon: { required: true },
     date: { required: true },
   };
+
   static routeName = 'StopListRoute';
 }

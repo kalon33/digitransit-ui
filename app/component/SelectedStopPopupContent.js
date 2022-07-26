@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import ComponentUsageExample from './ComponentUsageExample';
@@ -5,9 +6,7 @@ import ComponentUsageExample from './ComponentUsageExample';
 const SelectedStopPopupContent = ({ stop }) => (
   <div className="origin-popup">
     <div className="origin-popup-header">
-      <div className="selected-stop-header">
-        {stop.name}
-      </div>
+      <div className="selected-stop-header">{stop.name}</div>
     </div>
     {(stop.code || stop.desc) && (
       <div>
@@ -24,12 +23,12 @@ const SelectedStopPopupContent = ({ stop }) => (
 );
 
 SelectedStopPopupContent.propTypes = {
-  stop: React.PropTypes.object.isRequired,
+  stop: PropTypes.object.isRequired,
 };
 
 SelectedStopPopupContent.displayName = 'SelectedStopPopupContent';
 
-SelectedStopPopupContent.description = () =>
+SelectedStopPopupContent.description = () => (
   <div>
     <p>Renders a popup with the selected stop</p>
     <ComponentUsageExample description="example">
@@ -37,6 +36,7 @@ SelectedStopPopupContent.description = () =>
         stop={{ name: 'Name', code: '123', desc: 'Desc' }}
       />
     </ComponentUsageExample>
-  </div>;
+  </div>
+);
 
 export default SelectedStopPopupContent;

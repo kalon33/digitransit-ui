@@ -1,124 +1,118 @@
+import cx from 'classnames';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { intlShape } from 'react-intl';
-import cx from 'classnames';
-import without from 'lodash/without';
-import connectToStores from 'fluxible-addons-react/connectToStores';
+import { routerShape } from 'react-router';
+import { withCurrentTime } from '../util/searchUtils';
+import ComponentUsageExample from './ComponentUsageExample';
+import DTAutosuggestPanel from './DTAutosuggestPanel';
+import { PREFIX_ITINERARY_SUMMARY, navigateTo } from '../util/path';
+import {
+  getIntermediatePlaces,
+  setIntermediatePlaces,
+} from '../util/queryUtils';
+import { dtLocationShape } from '../util/shapes';
 
-import { storeEndpointIfNotCurrent, swapEndpoints } from '../action/EndpointActions';
-import Icon from './Icon';
-import OneTabSearchModal from './OneTabSearchModal';
-import { getAllEndpointLayers } from '../util/searchUtils';
+const locationToOtp = location =>
+  `${location.address}::${location.lat},${location.lon}${
+    location.locationSlack ? `::${location.locationSlack}` : ''
+  }`;
 
 class OriginDestinationBar extends React.Component {
   static propTypes = {
-    className: React.PropTypes.string,
-    origin: React.PropTypes.object,
-    destination: React.PropTypes.object,
-    originIsCurrent: React.PropTypes.bool,
-    destinationIsCurrent: React.PropTypes.bool,
-  }
-
-  static contextTypes = {
-    executeAction: React.PropTypes.func.isRequired,
-    intl: intlShape.isRequired,
-    router: React.PropTypes.object.isRequired,
-    location: React.PropTypes.object.isRequired,
+    className: PropTypes.string,
+    destination: dtLocationShape,
+    location: PropTypes.object,
+    origin: dtLocationShape,
   };
 
-  componentWillMount() {
-    this.context.executeAction(storeEndpointIfNotCurrent, { target: 'origin', endpoint: this.props.origin });
-    this.context.executeAction(storeEndpointIfNotCurrent, { target: 'destination', endpoint: this.props.destination });
+  static contextTypes = {
+    intl: intlShape.isRequired,
+    router: routerShape.isRequired,
+    getStore: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    className: undefined,
+    location: undefined,
+  };
+
+  get location() {
+    return this.props.location || this.context.router.getCurrentLocation();
   }
 
-  getSearchModalState = () => {
-    if (this.context.location.state != null &&
-        this.context.location.state.oneTabSearchModalOpen != null) {
-      return this.context.location.state.oneTabSearchModalOpen;
+  updateViaPoints = newViaPoints =>
+    setIntermediatePlaces(this.context.router, newViaPoints.map(locationToOtp));
+
+  swapEndpoints = () => {
+    const { location } = this;
+    const locationWithTime = withCurrentTime(this.context.getStore, location);
+    const intermediatePlaces = getIntermediatePlaces(location.query);
+    if (intermediatePlaces.length > 1) {
+      location.query.intermediatePlaces.reverse();
     }
-    return false;
-  }
-
-  swapEndpoints= () => {
-    this.context.executeAction(
-      swapEndpoints,
-      {
-        router: this.context.router,
-        location: this.context.location,
-      },
-    );
-  }
-
-  openSearchModal = (tab) => {
-    this.context.router.push({
-      ...this.context.location,
-      state: {
-        ...this.context.location.state,
-        oneTabSearchModalOpen: tab,
-      },
+    navigateTo({
+      base: locationWithTime,
+      origin: this.props.destination,
+      destination: this.props.origin,
+      context: PREFIX_ITINERARY_SUMMARY,
+      router: this.context.router,
+      resetIndex: true,
     });
-  }
+  };
 
-  render() {
-    const ownPosition = this.context.intl.formatMessage({
-      id: 'own-position',
-      defaultMessage: 'Your current location',
-    });
-    const tab = this.getSearchModalState();
-
-    let searchLayers = getAllEndpointLayers();
-    // don't offer current pos if it is already used as a route end point
-    if (this.props.originIsCurrent || this.props.destinationIsCurrent) {
-      searchLayers = without(searchLayers, 'CurrentPosition');
-    }
-
-    const originLabel = this.context.intl.formatMessage({ id: 'origin-label-change', defaultMessage: 'Change origin' });
-    const destinationLabel = this.context.intl.formatMessage({ id: 'destination-label-change', defaultMessage: 'Change destination' });
-
-    return (
-      <div className={cx('origin-destination-bar', this.props.className, 'flex-horizontal')}>
-        <button
-          id="open-origin"
-          aria-label={originLabel}
-          className="flex-grow noborder field-link"
-          onClick={() => this.openSearchModal('origin')}
-        >
-          <div className="from-link" >
-            <Icon img={'icon-icon_mapMarker-point'} className="itinerary-icon from" />
-            <span className="link-name">
-              {this.props.originIsCurrent ? ownPosition : this.props.origin.address}
-            </span>
-          </div>
-        </button>
-        <div className="switch" onClick={() => this.swapEndpoints()}>
-          <span>
-            <Icon img="icon-icon_direction-b" />
-          </span>
-        </div>
-        <button
-          id="open-destination"
-          aria-label={destinationLabel}
-          className="flex-grow noborder field-link"
-          onClick={() => this.openSearchModal('destination')}
-        >
-          <div className="to-link" >
-            <Icon img={'icon-icon_mapMarker-point'} className="itinerary-icon to" />
-            <span className="link-name">
-              {this.props.destinationIsCurrent ?
-              ownPosition : this.props.destination.address}
-            </span>
-          </div>
-        </button>
-        <OneTabSearchModal
-          layers={searchLayers}
-          endpoint={this.props[tab]}
-          target={tab}
-          responsive
-        />
-      </div>);
-  }
+  render = () => (
+    <div
+      className={cx(
+        'origin-destination-bar',
+        this.props.className,
+        'flex-horizontal',
+      )}
+    >
+      <DTAutosuggestPanel
+        origin={this.props.origin}
+        destination={this.props.destination}
+        isItinerary
+        initialViaPoints={getIntermediatePlaces(this.location.query)}
+        updateViaPoints={this.updateViaPoints}
+        swapOrder={this.swapEndpoints}
+      />
+    </div>
+  );
 }
 
-export default connectToStores(OriginDestinationBar, ['EndpointStore'], context => ({
-  originIsCurrent: context.getStore('EndpointStore').getOrigin().useCurrentPosition,
-  destinationIsCurrent: context.getStore('EndpointStore').getDestination().useCurrentPosition,
-}));
+OriginDestinationBar.description = (
+  <React.Fragment>
+    <ComponentUsageExample>
+      <OriginDestinationBar
+        destination={{ ready: false, set: false }}
+        origin={{
+          address: 'Messukeskus, Itä-Pasila, Helsinki',
+          lat: 60.201415,
+          lon: 24.936696,
+          ready: true,
+          set: true,
+        }}
+      />
+    </ComponentUsageExample>
+    <ComponentUsageExample description="with-viapoint">
+      <OriginDestinationBar
+        destination={{ ready: false, set: false }}
+        location={{
+          query: {
+            intermediatePlaces: 'Opastinsilta 6, Helsinki::60.199093,24.940536',
+          },
+        }}
+        origin={{
+          address: 'Messukeskus, Itä-Pasila, Helsinki',
+          lat: 60.201415,
+          lon: 24.936696,
+          ready: true,
+          set: true,
+        }}
+      />
+    </ComponentUsageExample>
+  </React.Fragment>
+);
+
+export default OriginDestinationBar;

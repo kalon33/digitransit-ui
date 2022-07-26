@@ -1,36 +1,44 @@
+import PropTypes from 'prop-types';
 import React from 'react';
-import cx from 'classnames';
+import IconWithIcon from './IconWithIcon';
 import ComponentUsageExample from './ComponentUsageExample';
+import { AlertSeverityLevelType } from '../constants';
 
-const IconWithBigCaution = props => (
-  <svg id={props.id} viewBox="0 0 40 40" className={cx('icon', props.className)}>
-    <use
-      transform="scale(0.9,0.9)"
-      x="5"
-      xlinkHref={`#${props.img}`}
+const IconWithBigCaution = ({ alertSeverityLevel, className, color, img }) => {
+  const iconType =
+    alertSeverityLevel === AlertSeverityLevelType.Info ? 'info' : 'caution';
+  return (
+    <IconWithIcon
+      className={className}
+      color={color}
+      img={img}
+      subIcon={`icon-icon_${iconType}`}
+      subIconClassName={`subicon-${iconType}`}
+      subIconShape={(iconType === 'info' && 'circle') || undefined}
     />
-    <use
-      xlinkHref="#icon-icon_caution"
-      transform="scale(0.7,0.7)"
-      y="20"
-      style={{ color: 'white', fill: 'red' }}
-    />
-  </svg>
-);
+  );
+};
 
 IconWithBigCaution.displayName = 'IconWithBigCaution';
 
-
-IconWithBigCaution.description = () =>
+IconWithBigCaution.description = () => (
   <ComponentUsageExample description="Bus with caution">
-    <IconWithBigCaution className="bus" img={'icon-icon_bus'} />
-  </ComponentUsageExample>;
-
+    <div style={{ paddingLeft: '5px' }}>
+      <IconWithBigCaution className="bus" img="icon-icon_bus" />
+    </div>
+  </ComponentUsageExample>
+);
 
 IconWithBigCaution.propTypes = {
-  id: React.PropTypes.string,
-  className: React.PropTypes.string,
-  img: React.PropTypes.string.isRequired,
+  alertSeverityLevel: PropTypes.string,
+  color: PropTypes.string,
+  className: PropTypes.string,
+  img: PropTypes.string.isRequired,
+};
+
+IconWithBigCaution.defaultProps = {
+  alertSeverityLevel: undefined,
+  className: '',
 };
 
 export default IconWithBigCaution;

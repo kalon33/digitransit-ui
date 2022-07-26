@@ -1,4 +1,4 @@
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 
 import StopCardHeaderContainer from './StopCardHeaderContainer';
@@ -14,8 +14,10 @@ const StopPageHeaderContainer = Relay.createContainer(StopPageHeader, {
   },
 });
 
-export default connectToStores(StopPageHeaderContainer, ['FavouriteStopsStore'],
+export default connectToStores(
+  StopPageHeaderContainer,
+  ['FavouriteStore'],
   ({ getStore }, { params }) => ({
-    favourite: getStore('FavouriteStopsStore').isFavourite(params.stopId),
+    favourite: getStore('FavouriteStore').isFavourite(params.stopId),
   }),
 );

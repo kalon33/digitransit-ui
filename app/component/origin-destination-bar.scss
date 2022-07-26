@@ -1,124 +1,18 @@
 .origin-destination-bar {
-  background-color: $primary-color;
+  background-color: $background-color-lighter;
   width: 100%;
+  padding-left: $padding-medium;
+  padding-right: $padding-medium;
   padding-top: calc(#{$padding-large} - 15px);
-  padding-bottom: calc(#{$padding-medium} - 8px);
   display: flex;
-  align-items: center;
   justify-content: space-around;
+  align-items: initial;
+}
 
-  .field-link{
-    @include font-book;
-    font-size: $font-size-small;
-    cursor: pointer;
-    color: $primary-font-color;
-    display: inline-block;
-    padding-left: 17px;
-    position: relative;
-    min-width: 0;
-    margin: 0 $padding-medium;
-
-    .link-name {
-      @extend .overflow-fade;
-      border-bottom: 1px solid $secondary-color;
-    }
-
-    .from-link span:first-child::before {
-        content: "A";
-    }
-
-    .to-link span:first-child::before {
-        content: "B";
-    }
-
-    span:first-child {
-      text-size: 20px;
-
-      &::before {
-        position: absolute;
-        margin-top: 4px;
-        margin-left: -14px;
-        z-index: 1;
-        font-size: 9px;
-        color: $white;
-      }
-    }
-
-    .icon.itinerary-icon {
-      font-size: 19px;
-      margin-left: -20px;
-      margin-top: 3px;
-    }
-
-    span:last-child {
-      white-space: nowrap;
-      overflow: hidden;
-      display: inline-block;
-      height: 23px;
-      line-height: 23px;
-      width: 100%;
-
-    }
-
-    &:hover {
-      color: $white;
-    }
-  }
-
-  .switch {
-    padding: $padding-xxsmall;
-    font-size: $font-size-normal;
-    margin-top: -4px;
-    border: solid 1px $secondary-color;
-    border-radius: $border-radius;
-    color: $secondary-font-color;
-    cursor: pointer;
-    display: inline-block;
-
-    .icon {
-      position: relative;
-      top: 2px;
-    }
-  }
-
-  &.bp-large {
-    height: 50px;
-    flex-wrap: wrap;
-    padding-left: 20px;
-    padding-right: 20px;
-
-    .field-link {
-      width: 95%;
-      padding-left: 30px;
-      margin-bottom: 5px;
-
-      .icon.itinerary-icon {
-        font-size: 30px;
-        margin-left: -37px;
-        margin-top: -3px;
-      }
-
-      span:first-child::before {
-        margin-top: 0px;
-        margin-left: -27px;
-        font-size: 14.4px;
-      }
-
-      span:last-child {
-        height: auto;
-        padding-bottom: 2px;
-        font-size: $font-size-normal;
-      }
-    }
-
-    .switch {
-      padding: 1px 2px;
-      font-size: 20px;
-      margin-top: -10px;
-
-      .icon {
-        top: 3px;
-      }
-    }
+.mobile {
+  .origin-destination-bar {
+    padding-left: $padding-small;
+    padding-right: $padding-small;
+    z-index: 999;
   }
 }

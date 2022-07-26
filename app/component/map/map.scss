@@ -2,27 +2,51 @@ $small-map-height: 10rem;
 $stop-thin-opacity: 0.2;
 
 div.map {
-  position: relative;
   width: 100%;
-
+  max-height: 100%;
+  position: relative;
   .leaflet-container .leaflet-control-attribution {
     background: rgba(255, 255, 255, 0.4);
-    color: $dark-gray
+    color: $dark-gray;
+  }
+  .leaflet-container .leaflet-popup-close-button {
+    width: 32px;
+    height: 32px;
   }
 }
 
-.below-map  {
+.below-map {
   overflow: auto;
 }
 
 .summary-map {
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100px;
+  position: relative;
+
+  .summary-map-buttons {
+    bottom: 36px;
+    display: flex;
+    left: 20px;
+    max-height: 36px;
+    position: absolute;
+    z-index: index($zindex, map-buttons);
+
+    & [role='button'] {
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+      max-height: 36px;
+      max-width: 36px;
+    }
+  }
 }
 
 div.map.small {
   min-height: $small-map-height;
 }
 div.map.full {
+  position: relative;
   min-height: $small-map-height;
   max-height: 100%;
   flex-grow: 1;
@@ -45,76 +69,60 @@ div.leaflet-bottom.leaflet-left div.leaflet-control-zoom {
     font-size: 17px;
   }
   a {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
     width: 30px;
     height: 30px;
     line-height: 30px;
     font-size: 22px;
+    color: currentColor;
+  }
+}
+
+.map .leaflet-bottom {
+  z-index: $leaflet-overlay;
+
+  @media print {
+    display: none;
   }
 }
 
 div.leaflet-container {
   position: absolute;
+  flex: 1;
   width: 100%;
   height: 100%;
-  background: rgb(230, 229, 217);
+  background: none;
+  z-index: index($zindex, map-container);
   @include font-map-container;
+
 }
 
 div.current-location-marker > span > svg.icon {
   font-size: 40px;
-}
-
-div.leaflet-marker-icon.place {
-  > span {
-    > svg.icon {
-      width: 24px;
-      height: 24px;
-      fill: $viewpoint-marker-color;
-    }
-  }
-}
-
-div.leaflet-marker-icon.place.halo {
-  > span {
-    > svg.icon {
-      width: 24px;
-      height: 24px;
-      fill: #fff;
-      stroke: #fff;
-      stroke-width: 50px;
-    }
-  }
+  color: $current-location-color;
 }
 
 .tripMap div.leaflet-marker-icon.place,
 .summary-map div.leaflet-marker-icon.place {
-    display: none;
+  display: none;
 }
 
-div.leaflet-marker-icon.from, div.leaflet-marker-icon.to {
+div.leaflet-marker-icon.from,
+div.leaflet-marker-icon.place,
+div.leaflet-marker-icon.to,
+div.leaflet-marker-icon.via {
   > span {
-    &::before {
-      color: white;
-      position: absolute;
-      left: 6.0pt;
-      z-index: 1000;
-    }
-
     > svg.icon {
-      width: 24px;
-      height: 24px;
-      stroke: white;
-      stroke-width: 60px;
+      height: auto;
+      width: auto;
     }
   }
 }
 
-div.leaflet-marker-icon.from > span::before {
-  content: "A";
-}
-
-div.leaflet-marker-icon.to > span::before {
-  content: "B";
+div.leaflet-marker-icon.via {
+  color: $black;
 }
 
 div.leaflet-marker-icon.vehicle-icon {
@@ -123,28 +131,50 @@ div.leaflet-marker-icon.vehicle-icon {
   > span > svg.icon {
     width: 1em;
     height: 1em;
-    top:-0.25em;
-    left:-0.25em;
+    top: -0.25em;
+    left: -0.25em;
   }
 }
 
-div.leaflet-marker-icon.vehicle-icon.small-map-icon  {
+div.leaflet-marker-icon.vehicle-icon.small-map-icon {
   > span > svg.icon {
     stroke-width: 40px;
     stroke: white;
     width: 0.78em;
     height: 0.78em;
-    top: -0.20em;
-    left: -0.20em;
+    top: -0.2em;
+    left: -0.2em;
   }
 }
 
+.bp-large .map-with-tracking-buttons {
+  bottom: 32px;
+}
+
+.map-with-tracking-buttons {
+  bottom: 18px;
+  display: flex;
+  left: 1em;
+  max-height: 36px;
+  max-width: calc(100% - 2em);
+  position: absolute;
+
+  [role='button'] {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+    max-height: 36px;
+    max-width: 36px;
+  }
+
+  & > * {
+    z-index: index($zindex, map-buttons);
+  }
+
+  & > *:not(:first-child) {
+    margin-left: 0.5em;
+  }
+}
 
 .toggle-positioning-container {
-  position: absolute;
-  z-index: 802;
-  bottom: 18px;
-  left: 20px;
   background-color: $white;
   padding: 6px;
   border-radius: $border-radius;
@@ -162,14 +192,12 @@ div.leaflet-marker-icon.vehicle-icon.small-map-icon  {
   font-size: 24px;
 }
 
-.popup {
-  left: -21px !important;
+.vehicle-popup {
+  left: -19px !important;
+
   .route-header {
-    height:auto;
+    height: auto;
     border: none;
-    & h1 {
-      font-size: 12pt;
-    }
   }
 
   .leaflet-popup-content-wrapper {
@@ -180,10 +208,15 @@ div.leaflet-marker-icon.vehicle-icon.small-map-icon  {
   .leaflet-popup-content {
     margin: 0;
     width: 18rem !important;
+    &.leaflet-popup-scrolled {
+      overflow: inherit;
+    }
   }
   .card {
     border: none;
-
+    > a {
+      display: block;
+    }
     hr {
       height: 1px;
       color: #ddd;
@@ -192,7 +225,7 @@ div.leaflet-marker-icon.vehicle-icon.small-map-icon  {
       border: 0;
     }
 
-    .card-row .no-margin:last-child hr{
+    .card-row .no-margin:last-child hr {
       display: none;
     }
   }
@@ -204,7 +237,7 @@ div.leaflet-marker-icon.vehicle-icon.small-map-icon  {
     @include font-medium;
     font-size: $font-size-small;
     line-height: $line-height-normal;
-    color: $primary-color;
+    color: $link-color;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -214,45 +247,123 @@ div.leaflet-marker-icon.vehicle-icon.small-map-icon  {
     background: $background-color;
     border-top: solid 1px #ddd;
 
-    div {
+    div,
+    a {
+      display: block;
       padding: 0.5em 12px;
       flex-grow: 1;
       text-align: center;
+      text-decoration: none;
 
       &:first-child {
         border-right: 1px solid $light-gray;
       }
-    }
-
-    a {
-      color: $gray;
-      text-decoration: none;
     }
   }
 
   .leaflet-popup-tip-container {
     margin: -5px 0px;
     left: 0px;
-    .leaflet-popup-tip  {
+    .leaflet-popup-tip {
       background: $background-color;
     }
   }
 }
 
-.leaflet-popup-content-wrapper, .leaflet-popup-tip {
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 3px 14px rgba(0, 0, 0, 0.4)
+.popup {
+  left: -21px !important;
+  .route-header {
+    height: auto;
+    border: none;
+  }
+
+  .leaflet-popup-content-wrapper {
+    border-radius: $border-radius;
+    padding: 0;
+    margin-bottom: 5px;
+  }
+  .leaflet-popup-content {
+    margin: 0;
+    width: 20rem !important;
+    &.leaflet-popup-scrolled {
+      overflow: inherit;
+      height: auto !important;
+    }
+  }
+  .card {
+    border: none;
+    > a {
+      display: block;
+    }
+    hr {
+      height: 1px;
+      color: #ddd;
+      background: #ddd;
+      font-size: 0;
+      border: 0;
+    }
+
+    .card-row .no-margin:last-child hr {
+      display: none;
+    }
+  }
+  .card-header {
+    border-radius: $border-radius;
+  }
+
+  .bottom {
+    @include font-medium;
+    font-size: $font-size-xsmall;
+    line-height: $line-height-normal;
+    color: $link-color;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 0;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    background: $white;
+    border-top: solid 1px #ddd;
+
+    div,
+    a {
+      display: block;
+      padding: 1em;
+      flex-grow: 1;
+      text-align: center;
+      text-decoration: none;
+      border-left: 1px solid $light-gray;
+
+      &:first-child {
+        border-right: none;
+      }
+    }
+  }
+
+  .leaflet-popup-tip-container {
+    margin: -5px 0px;
+    left: 0px;
+    .leaflet-popup-tip {
+      background: $background-color;
+    }
+  }
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 3px 14px rgba(0, 0, 0, 0.4);
 }
 
 div.origin-popup {
   font-size: $font-size-xxsmall;
   cursor: pointer;
-  width: 12.5em;
+  width: 15em;
   left: -21px !important;
 
   .origin-popup-header {
     @include font-bold;
     text-transform: uppercase;
-    color: $primary-color;
+    color: $link-color;
 
     .icon {
       margin: 0 0 -2px 8px;
@@ -260,16 +371,15 @@ div.origin-popup {
     }
   }
 
-
   .leaflet-popup-content-wrapper {
     border-radius: $border-radius;
     padding: 0;
     overflow: hidden;
 
     .leaflet-popup-content {
-      margin:8px;
+      margin: 8px;
       svg.right-arrow {
-          height:9px;
+        height: 9px;
       }
     }
   }
@@ -277,7 +387,7 @@ div.origin-popup {
   .origin-popup-name {
     @include font-book;
     height: 1.3em;
-    width:200px;
+    width: 200px;
     text-transform: none;
     color: $black;
     font-size: $font-size-small;
@@ -299,7 +409,6 @@ div.origin-popup {
     margin: 0px 0px;
   }
 }
-
 
 .route-header {
   .route-header-trip {
@@ -331,6 +440,13 @@ div.origin-popup {
   height: auto;
 }
 
+.leaflet-marker-icon.call {
+  width: auto;
+  height: auto;
+  margin-right: 0.75em;
+  font-size: 1.5em;
+}
+
 /* BEWARE! This is an ugly hack.
  * It so happens that firefox will not allow SVG clicks to bubble to DOM if pointer-events: none is not set.
  * If we set pointer-events: none for all browsers, then we lose "pointer cursor" for all browsers.
@@ -346,7 +462,8 @@ div.origin-popup {
   }
 }
 
-.map .thin .stop, .map .thin .stop-small {
+.map .thin .stop,
+.map .thin .stop-small {
   stroke-opacity: $stop-thin-opacity;
   fill-opacity: $stop-thin-opacity;
 }
@@ -363,7 +480,9 @@ div.origin-popup {
   width: 100%;
 }
 
-.map svg use { pointer-events:none; }
+.map svg use {
+  pointer-events: none;
+}
 
 .map .thin .stop-small {
   stroke-opacity: $stop-thin-opacity;
@@ -371,34 +490,42 @@ div.origin-popup {
 }
 
 .map .legmarker {
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   justify-content: center;
-   & > div {
-     @include font-narrow-medium;
-     background-color: $white;
-     border-width: 2px;
-     border-style: solid;
-     border-radius: $border-radius;
-     padding: 0 2px;
-     text-align: center;
-     flex-shrink: 0; /* work around iOS bug with flex sizes */
-     white-space: nowrap;
-     margin-left: -50%;
-     margin-right: 50%;
-     margin-top: -9px;
-   }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  & > div {
+    @include font-narrow-medium;
+    background-color: $white;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: $border-radius;
+    padding: 0 2px;
+    text-align: center;
+    flex-shrink: 0; /* work around iOS bug with flex sizes */
+    white-space: nowrap;
+    margin-left: -50%;
+    margin-right: 50%;
+    margin-top: -9px;
+  }
 }
 
+.map .leg-halo.call {
+  stroke: gray;
+  //    stroke-opacity: 0.8;
+}
 .map .leg-halo {
   stroke: #fff;
   stroke-opacity: 1;
-  &.walk, &.bicycle_walk, &.citybike_walk {
+  color: #ccc;
+  &.walk,
+  &.bicycle_walk,
+  &.citybike_walk {
     stroke-linecap: round;
     stroke-dasharray: 0.1, 7;
   }
-  &.bicycle, &.citybike{
+  &.bicycle,
+  &.citybike {
     stroke-linecap: round;
     stroke-dasharray: 10, 5;
   }
@@ -406,11 +533,14 @@ div.origin-popup {
 
 .map .leg {
   stroke-opacity: 1;
-  &.walk, &.bicycle_walk, &.citybike_walk {
+  &.walk,
+  &.bicycle_walk,
+  &.citybike_walk {
     stroke-linecap: round;
     stroke-dasharray: 0.1, 7;
   }
-  &.bicycle, &.citybike{
+  &.bicycle,
+  &.citybike {
     stroke-linecap: round;
     stroke-dasharray: 10, 5;
   }
@@ -423,6 +553,13 @@ div.origin-popup {
 /* Fix to default leaflet behavior */
 .leaflet-map-pane svg {
   position: relative;
+
+  &.icon-badge {
+    transform: translate(-0.5em, -2.5em);
+    > .badge-circle {
+      stroke-width: 2;
+    }
+  }
 }
 
 .leaflet-marker-icon > svg {
@@ -435,7 +572,10 @@ div.background-gradient {
   top: 0px;
   background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
   pointer-events: none;
-  z-index: 801;
+  z-index: index($zindex, map-gradient);
+  @media print {
+    display: none;
+  }
 }
 
 div.map-click-prevent-overlay {
@@ -447,48 +587,89 @@ div.map-click-prevent-overlay {
 }
 
 .leaflet-control-scale.leaflet-control {
-    //front page
-    margin-right: 20px;
-    margin-bottom: 20px;
-    cursor: grab;
+  //front page
+  margin-right: 20px;
+  margin-bottom: 20px;
+  cursor: grab;
 }
 
 .bp-large .leaflet-control-scale.leaflet-control {
-    //front page desktop
-    margin-right: 400px;
-    margin-bottom: 44px;
-    cursor: grab;
+  //front page desktop
+  right: calc(100px + 28vw);
+  bottom: 24px;
+  cursor: grab;
 }
 
 .map.full .leaflet-control-scale.leaflet-control {
-    //stop & ininerary page mobile
-    margin-right: 60px;
-    margin-bottom: 20px;
-    cursor: grab;
+  //stop & ininerary page mobile
+  margin-right: 60px;
+  margin-bottom: 20px;
+  cursor: grab;
 }
 
 .desktop .map.full .leaflet-control-scale.leaflet-control {
-    //stop & ininerary page mobile
-    margin-right: 20px;
-    margin-bottom: 20px;
-    cursor: grab;
+  //stop & ininerary page mobile
+  margin-right: 20px;
+  margin-bottom: 20px;
+  cursor: grab;
 }
 
 .leaflet-control-scale-line {
   background: none;
-  border:none;
-  text-align:right;
+  border: none;
+  text-align: right;
   margin-bottom: -2px;
   cursor: grab;
 }
 
 .leaflet-control-scale::after {
-  content: "";
-  display:block;
+  content: '';
+  display: block;
   border-bottom: 1px solid $gray;
-  border-left:1px solid $gray;
-  border-right:1px solid $gray;
-  height:4px;
+  border-left: 1px solid $gray;
+  border-right: 1px solid $gray;
+  height: 4px;
   background: none;
   cursor: grab;
+}
+
+.activeAreaLarge {
+  position: absolute;
+  top: 50px;
+  bottom: 20px;
+  left: 0px;
+  right: 370px;
+}
+
+.activeAreaSmall {
+  position: absolute;
+  top: 95px;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+}
+
+.smallspinner {
+  div.spinner-loader {
+    width: $spinner-size * 0.5;
+    height: $spinner-size * 0.5;
+  }
+}
+
+.leaflet-tooltip.geoJsonText {
+  direction: 'center';
+  box-shadow: none;
+  border: none;
+  background: transparent;
+  cursor: none;
+  interactive: false;
+  font-size: 50px;
+  color: $primary-color;
+}
+
+.leaflet-popup.geoJsonPopup {
+  @include font-medium;
+  .leaflet-popup-content-wrapper {
+    border-radius: $border-radius;
+  }
 }

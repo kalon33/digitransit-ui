@@ -7,7 +7,6 @@ import { FormattedMessage } from 'react-intl';
 import Icon from './Icon';
 import ComponentUsageExample from './ComponentUsageExample';
 
-
 const Locate = () => (
   <span className="use-own-position">
     &nbsp;-&nbsp;
@@ -37,7 +36,10 @@ const CurrentPositionSuggestionItemComponent = pure(
 const CurrentPositionSuggestionItem = connectToStores(
   CurrentPositionSuggestionItemComponent,
   ['PositionStore'],
-  context => ({ havePosition: context.getStore('PositionStore').getLocationState().hasLocation }),
+  context => ({
+    havePosition: context.getStore('PositionStore').getLocationState()
+      .hasLocation,
+  }),
 );
 
 CurrentPositionSuggestionItem.displayName = 'CurrentPositionSuggestionItem';
@@ -47,7 +49,7 @@ const exampleItem = {
   properties: { labelId: 'own-position', layer: 'currentPosition' },
 };
 
-CurrentPositionSuggestionItem.description = () =>
+CurrentPositionSuggestionItem.description = () => (
   <div>
     <ComponentUsageExample description="With position">
       <CurrentPositionSuggestionItemComponent havePosition item={exampleItem} />
@@ -55,6 +57,7 @@ CurrentPositionSuggestionItem.description = () =>
     <ComponentUsageExample description="No position">
       <CurrentPositionSuggestionItemComponent item={exampleItem} />
     </ComponentUsageExample>
-  </div>;
+  </div>
+);
 
 export default CurrentPositionSuggestionItem;

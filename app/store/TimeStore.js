@@ -3,6 +3,7 @@ import moment from 'moment';
 
 class TimeStore extends Store {
   static storeName = 'TimeStore';
+
   static TWICE_PER_MINUTE = 30 * 1000;
 
   constructor(dispatcher) {
@@ -17,7 +18,7 @@ class TimeStore extends Store {
     this.emitChange({
       currentTime: this.currentTime,
     });
-  }
+  };
 
   getCurrentTime() {
     return this.currentTime.clone();

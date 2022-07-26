@@ -1,22 +1,52 @@
-import React from 'react';
+import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react';
 import cx from 'classnames';
 
 import Icon from './Icon';
 import ComponentUsageExample from './ComponentUsageExample';
 
-const Favourite = ({ addFavourite, favourite, className }) => (
-  <span className={cx('cursor-pointer favourite-icon', className)} onClick={addFavourite}>
-    <Icon className={cx('favourite', { selected: favourite })} img="icon-icon_star" />
-  </span>
-);
+/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
+const Favourite = ({ addFavourite, deleteFavourite, favourite, className }) => {
+  const [disable, handleDisable] = useState(false);
 
-Favourite.propTypes = {
-  addFavourite: React.PropTypes.func.isRequired,
-  favourite: React.PropTypes.bool,
-  className: React.PropTypes.string,
+  useEffect(
+    () => {
+      handleDisable(false);
+    },
+    [favourite],
+  );
+
+  const onClick = () => {
+    if (!disable) {
+      handleDisable(true);
+      if (favourite) {
+        deleteFavourite();
+      } else {
+        addFavourite();
+      }
+    }
+  };
+  return (
+    <span
+      className={cx('cursor-pointer favourite-icon', className)}
+      onClick={onClick}
+    >
+      <Icon
+        className={cx('favourite', { selected: favourite })}
+        img="icon-icon_star"
+      />
+    </span>
+  );
 };
 
-Favourite.description = () =>
+Favourite.propTypes = {
+  addFavourite: PropTypes.func.isRequired,
+  deleteFavourite: PropTypes.func.isRequired,
+  favourite: PropTypes.bool,
+  className: PropTypes.string,
+};
+
+Favourite.description = () => (
   <div>
     <p>
       {`This component shows whether an entity is a favourite
@@ -28,7 +58,8 @@ Favourite.description = () =>
     <ComponentUsageExample description="entity is not favourite">
       <Favourite addFavourite={() => {}} />
     </ComponentUsageExample>
-  </div>;
+  </div>
+);
 
 Favourite.displayName = 'Favourite';
 

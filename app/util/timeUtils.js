@@ -6,8 +6,8 @@ export const DATE_PATTERN = 'dd D.M.';
 // converts the given parameter into a string in format HHmm
 // Input: time - seconds since midnight
 export function getStartTime(time) {
-  const hours = (`0${Math.floor(time / 60 / 60)}`).slice(-2);
-  const mins = (`0${(time / 60) % 60}`).slice(-2);
+  const hours = `0${Math.floor(time / 60 / 60)}`.slice(-2);
+  const mins = `0${(time / 60) % 60}`.slice(-2);
   return hours + mins;
 }
 
@@ -17,7 +17,8 @@ export function durationToString(inDuration) {
   const duration = moment.duration(inDuration);
 
   if (duration.asHours() >= 1) {
-    return `${duration.hours() + (duration.days() * 24)} h ${duration.minutes()} min`;
+    return `${duration.hours() +
+      duration.days() * 24} h ${duration.minutes()} min`;
   }
 
   return `${duration.minutes()} min`;
@@ -34,3 +35,49 @@ export const dateOrEmpty = (momentTime, momentRefTime) => {
 };
 
 export const sameDay = (x, y) => dateOrEmpty(x, y) === '';
+
+/**
+ * The default number of days to include to the service time range from the past.
+ */
+export const RANGE_PAST = 7;
+
+// added itineraryFutureDays parameter (DT-3175)
+export const validateServiceTimeRange = (
+  itineraryFutureDays,
+  serviceTimeRange,
+  now,
+) => {
+  const NOW = now ? moment.unix(now) : moment();
+  const RANGE_FUTURE = !itineraryFutureDays ? 30 : itineraryFutureDays;
+  const START = NOW.clone()
+    .subtract(RANGE_PAST, 'd')
+    .unix();
+  const END = NOW.clone()
+    .add(RANGE_FUTURE, 'd')
+    .unix();
+  const NOWUX = NOW.unix();
+
+  if (!serviceTimeRange) {
+    // empty param returns a default range
+    return {
+      start: START,
+      end: END,
+    };
+  }
+
+  // always include today!
+  let start = Math.min(Math.max(serviceTimeRange.start, START), NOWUX);
+  // make sure whole day is included, for comparing timestamps
+  start = moment
+    .unix(start)
+    .startOf('day')
+    .unix();
+
+  let end = Math.max(Math.min(serviceTimeRange.end, END), NOWUX);
+  end = moment
+    .unix(end)
+    .endOf('day')
+    .unix();
+
+  return { start, end };
+};

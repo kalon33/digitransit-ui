@@ -1,5 +1,5 @@
 /* Calculate some extra width for typeahead results*/
-$search-result-width: grid-calc($total-columns+1, $total-columns) + 1;
+$search-result-width: grid-calc($total-columns + 1, $total-columns) + 1;
 $search-result-background-color: $white;
 $search-result-text-font-family: $font-family;
 $search-result-text-font-weight: $font-weight-book;
@@ -7,7 +7,7 @@ $search-result-text-letter-spacing: $letter-spacing;
 $search-result-text-color: $black;
 $search-result-text-highlight-color: $black;
 $search-result-text-highlight-font-weight: $font-weight-book;
-$search-result-text-highlight-background-color: $background-color;
+$search-result-text-highlight-background-color: darken($background-color, 5%);
 $search-result-border-radius: $border-radius;
 $search-result-max-height: 130px;
 $search-result-icon-color: $gray;
@@ -16,272 +16,94 @@ $search-form-border-radius: $border-radius;
 $search-form-transparency: $transparency;
 $search-form-input-height: 3em;
 $search-form-input-overlay-height: 27px;
-$search-form-input-overlay-border-color: #E1E1E1;
-$search-form-input-overlay-background-color: #EEF1F3;
+$search-form-input-overlay-border-color: #e1e1e1;
+$search-form-input-overlay-background-color: #eef1f3;
 $search-form-location-icon-size: 18px;
 $search-header-height: 45px;
+$item-border-color: #eee;
 
-.search-form {
-  top: 0;
-  padding-top: 10px;
-  button {
-    width: 100%;
-  }
-
- .postfix {
-    height: calc(2rem + 15px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 1.5px 2.6px 10px 0 rgba(0, 0, 0, 0.2);
-    .icon {
-      font-size: $font-size-normal;
-    }
-    span {
-      line-height: 0;
-    }
-  }
-
-  .input-placeholder {
-    display: flex;
-    align-items: center;
-    background-color: $white;
-    height: calc(2rem + 15px);
-    border-top-left-radius: $input-border-radius;
-    border-bottom-left-radius: $input-border-radius;
-    box-shadow: 1.5px 2.6px 10px 0 rgba(0, 0, 0, 0.2);
-  }
-
-  .address-placeholder {
-    @include font-medium;
-    color: $gray;
-    background-color: transparent;
-    border-radius: $form-input-border-radius;
-    border: 0px;
-    height: $search-form-input-overlay-height;
-    padding-left: calc(#{$padding-large} - 10px);
-    line-height: $search-form-input-overlay-height;
-  }
-}
-
-.fake-search-container.bp-large {
-  padding-top: 30px;
-  padding-left: 20px;
-  max-width: none;
-  padding-right: 400px;
-  margin-left: auto;
-  margin-right:auto;
-
-  .search-modal-container {
-    top: -33px;
-  }
-
-  .search-modal {
-    top:0;
-    padding-left: 50px;
-    border-radius: $border-radius-bigger;
-    bottom: auto;
-    max-width:720px;
-    padding: 0;
-    width:100%;
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
-
-    input[type="text"].react-autowhatever__input {
-      flex: 0 0 auto;
-      border: 1px solid $primary-color;
-      border-radius: 4px;
-      height: 3em;
-      width: 100%;
-      padding: 10px;
-      outline: 0;
-      appearance: none;
-      font-size:19px;
-      @include font-medium;
-    }
-
-    .search-header {
-      padding: 0 15px;
-
-      .react-autowhatever__container {
-        max-height: calc(85vh - 50px);
-      }
-
-      ul.react-autowhatever__items-list {
-        padding: 10px 16px;
-        width: calc(100% + 32px);
-        margin: 0 -16px;
-      }
-
-      .search-header-width-fix {
-        margin-left: 10px !important;
-        margin-right: 50px !important;
-        width: calc(100% - 60px) !important;
-      }
-
-      .search-header__button, .search-header__button--selected {
-        font-size: 18px !important;
-      }
-    }
-
-    .react-autowhatever__type-selector {
-      font-size: 13px;
-
-      a {
-        padding: 10px 40px;
-      }
-    }
-
-    #react-whatever-suggest{
-      max-height:410px;
-    }
-  }
-}
-
-.search-modal-container {
-  padding-left: 20px;
-  left: 0;
-  max-width: none;
-  padding-right: 387px;
-  margin-left: auto;
-  margin-right: auto;
+.search-container {
+  margin-left: 5%;
+  pointer-events: none;
   position: absolute;
-  width: 100%;
-  top: -17px;
-}
+  width: 52.5%;
+  z-index: index($zindex, search-panel);
 
-.onetab-search-modal-container.bp-large {
-  width: 0px;
-  margin-left: -13px;
-
-  .fake-search-container.bp-large {
-    position: absolute;
-    padding:0;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100%;
-  }
-
-  .search-modal-container {
-    top: 105px;
-    position: relative;
-    padding-right: 20px;
-    width: 660px;
-  }
-
-  .search-modal {
-
-    input[type="text"].react-autowhatever__input {
-      width: calc(100% - 50px);
-    }
-
-    .search-header {
-      padding: 15px;
-
-      .search-header__tabs-root {
-        > div:first-child {
-          display: none;
-          width: 0px !important;
-        }
-        > div:nth-child(2) {
-          display: none;
-        }
-      }
-
-      .react-autowhatever__container {
-        max-height: calc(85vh - 150px);
-      }
-
-      .search-header__button, .search-header__button--selected {
-        height: 0px !important;
-      }
-
-      .search-header__back-arrow {
-          display: none;
-      }
-    }
+  & .autosuggest-input-container,
+  & .street-mode-selector-popup-options,
+  & .street-mode-selector-popup-toggle {
+    pointer-events: auto;
   }
 }
 
-.react-autowhatever__items-container {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-}
+.front-page {
+  //for index page only
+  .autosuggest-input-container {
+    box-shadow: 1.5px 2.6px 10px 0 rgba(0, 0, 0, 0.2);
+  }
 
-.react-autowhatever__container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
+  .origin-input-container,
+  .destination-input-container,
+  #origin,
+  #destination {
+    margin: 0;
+    font-size: 1rem;
+  }
 
-.search-form.bp-large {
-  padding-top: 0;
-  max-width: 720px;
-  .address-placeholder {
-    padding-left: 18px;
+  .autosuggest-input-icon {
+    margin-top: 0.75em;
+    z-index: index($zindex, search-input-icon)
   }
-  .postfix {
-    height: 60px;
-    width: 60px;
-    .icon {
-      font-size: 26px;
-    }
+
+  button.clear-input {
+    font-size: 1rem;
   }
-  .input-placeholder {
-      @include form-element();
-      height: 60px;
-      font-size:18px;
-      text-align: left;
-      line-height: $search-form-input-overlay-height;
-      border-top-left-radius: $input-border-radius;
-      border-bottom-left-radius: $input-border-radius;
-      box-shadow: 1.5px 2.6px 10px 0 rgba(0, 0, 0, 0.2);
-  }
-  .address-placeholder {
-    padding-top: 13px;
+  .autosuggest-panel .react-autosuggest__container .react-autosuggest__suggestions-container--open {
+    top: 3rem;
   }
 }
 
-.react-autowhatever__type-selector {
-  font-size: $font-size-xxsmall;
-  line-height: 1;
-  display: flex;
-  flex: 0 0 auto;
-  margin-bottom: -1px;
-  z-index: 1;
-
-  a {
-    color: $primary-color;
-    height: 100%;
-    padding: 10px 10px;
-    margin: 0 3px;
-    border: 1px solid $light-gray;
-    border-bottom: none;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-
-    &:first-child {
-      margin-left: 0;
-    }
-
-    &.selected {
-      background: $white;
-      color: $black;
-    }
-
-    .item-count {
-      background-color: $primary-color;
-      color: $primary-font-color;
-      font-size: 0.8em;
-      margin-left: 0.5em;
-      padding: 0.25em 0.75em;
-      border-radius: 1em;
-      vertical-align: 0.1em;
-    }
-  }
+/*Placeholder selectors can't be nested and need to be put 1 at a time, these are for the
+input field Placeholder texts */
+#origin::placeholder {
+  color: #666666;
+  opacity: 1;
+}
+#origin::-webkit-input-placeholder {
+  color: #666666;
+  opacity: 1;
+}
+#origin:-moz-placeholder {
+  color: #666666;
+  opacity: 1;
+}
+#origin::-moz-placeholder {
+  color: #666666;
+  opacity: 1;
+}
+#origin:-ms-input-placeholder {
+  color: #666666;
+  opacity: 1;
+}
+#destination::-ms-input-placeholder {
+  color: #666666;
+  opacity: 1;
+}
+#destination::-webkit-input-placeholder {
+  color: #666666;
+  opacity: 1;
+}
+#destination:-moz-placeholder {
+  color: #666666;
+  opacity: 1;
+}
+#destination::-moz-placeholder {
+  color: #666666;
+  opacity: 1;
+}
+#destination::placeholder {
+  color: #666666;
+  opacity: 1;
 }
 
 ul.react-autowhatever__items-list {
@@ -299,36 +121,12 @@ ul.react-autowhatever__items-list {
     overflow: hidden;
 
     &:not(:last-child) {
-      border-bottom: solid 1px #eee;
+      border-bottom: solid 1px $item-border-color;
     }
   }
 }
 
-.search-no-results {
-  @extend .react-autowhatever__items-list;
-  height: 200px;
-  li {
-    text-align: center;
-    font-weight: normal;
-    padding-top: 35px;
-
-    span {
-      padding-top: 40px;
-      display: inline-block;
-      white-space: normal;
-      line-height: normal;
-    }
-  }
-}
-
-.react-autowhatever__item {
-  font-family: $search-result-text-font-family;
-  font-weight: $search-result-text-font-weight;
-  letter-spacing: $search-result-text-letter-spacing;
-  padding: 0.2em;
-}
-
-.react-autowhatever__item--focused {
+.react-autosuggest__suggestion--highlighted {
   color: $search-result-text-highlight-color;
   font-family: $search-result-text-font-family;
   font-weight: $search-result-text-font-weight;
@@ -336,67 +134,17 @@ ul.react-autowhatever__items-list {
   background-color: $search-result-text-highlight-background-color;
 }
 
-.react-autosuggest__suggestion {
-  padding: 0px 0 5px 0;
-  margin: 0;
-  cursor: pointer;
-  height: 1.9em;
-  overflow-x: hidden;
-  white-space: nowrap;
-}
-
-.react-autosuggest__suggestion .icon {
-  margin-right: 4px;
-  fill: $search-result-icon-color;
-}
-
-.search-result {
-  display: flex;
-  align-items: center;
-  line-height: 1.2;
-  min-height: 2.5em;
-
-
-  .havePosition {
-    color: $hilight-color;
-  }
-
-  .noPosition {
-    color: $medium-gray;
-  }
-
-  .search-position {
-    color: $primary-color;
-  }
-
-  .autosuggestIcon {
-    color: $medium-gray;
-    padding: 0 0.6em;
-    font-size: $font-size-large;
-
-    svg.havePosition {
-      vertical-align: -0.15em;
-    }
-
-  }
-
-  &.favourite svg.icon {
-    stroke: $favourite-color;
-    fill: $favourite-color;
-  }
-
-  .use-own-position, .suggestion-name, .suggestion-label {
-    margin: 0;
-    @include font-book;
-  }
-
-  .suggestion-name, .use-own-position {
-    font-size: $font-size-small;
-  }
+.react-autosuggest__suggestions-container {
+  background-color: white;
 
   .suggestion-name {
     span {
-      .bus, .tram, .rail, .subway, .ferry, .airplane {
+      .bus,
+      .tram,
+      .rail,
+      .subway,
+      .ferry,
+      .airplane {
         font-weight: $font-weight-medium;
         font-family: $font-family-narrow;
         font-size: $font-size-normal;
@@ -410,71 +158,194 @@ ul.react-autowhatever__items-list {
     }
   }
 
+  .react-autosuggest__suggestions-list {
+    margin-top: -0.2em;
+    margin-bottom: 0;
+    padding-top: 0px;
+    padding-left: 0;
+    background: $white;
+    li:hover {
+      background: $search-result-text-highlight-background-color;
+    }
+  }
+}
+
+.react-autosuggest__suggestion {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  margin: 0;
+  cursor: pointer;
+  list-style: none;
+  display: block;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: nowrap;
+  border-bottom: 1px solid $light-gray;
+}
+
+.react-autosuggest__suggestion .icon {
+  margin-right: 4px;
+  fill: #cbcbcb;
+}
+
+.autosuggestIcon {
+  color: #cbcbcb;
+  padding: 0 0.6em;
+  font-size: $font-size-normal;
+
+  svg.havePosition {
+    vertical-align: -0.15em;
+  }
+}
+
+.search-result {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 2em;
+  overflow-x: hidden;
+
+  &.loading:not(.CurrentLocation) {
+    // These are importatn in over to override the styling for the loading phase of the search
+    svg.icon {
+      stroke: $medium-gray !important;
+      fill: $medium-gray !important;
+      background: $medium-gray !important;
+    }
+
+    .suggestion-name,
+    .suggestion-type,
+    .suggestion-label {
+      &,
+      * {
+        color: $medium-gray !important;
+        background: $medium-gray !important;
+      }
+    }
+  }
+
+  .havePosition {
+    color: $current-location-color;
+  }
+
+  .noPosition {
+    color: $current-location-color;
+  }
+
+  .search-position {
+    color: $current-location-color;
+  }
+
+  &.favourite svg.icon {
+    stroke: $favourite-color;
+    fill: $favourite-color;
+  }
+
+  &.CurrentLocation svg.icon {
+    color: $current-location-color;
+  }
+
+  .use-own-position,
+  .suggestion-name,
+  .suggestion-label {
+    margin: 0;
+    @include font-book;
+  }
+
+  .suggestion-name,
+  .use-own-position {
+    font-size: $font-size-small;
+  }
+
+  .suggestion-name {
+    span {
+      .bus,
+      .tram,
+      .rail,
+      .subway,
+      .ferry,
+      .airplane {
+        font-weight: $font-weight-medium;
+        font-family: $font-family-narrow;
+        font-size: $font-size-normal;
+      }
+      .suggestion-type {
+        font-size: $font-size-xxsmall;
+        font-weight: $font-weight-bold;
+        text-transform: uppercase;
+        color: $gray;
+      }
+    }
+  }
+
+  &.OldSearch,
+  &.FavouritePlace,
+  &.FavouriteStop,
+  &.CurrentLocation {
+    p.suggestion-name,
+    span.suggestion-type {
+      color: $visited-link-color;
+    }
+  }
+
   .suggestion-label {
     font-size: $font-size-xxsmall;
     color: $gray;
   }
 }
 
-
-.bp-large .search-result {
-  line-height: 1.25;
-
-  .autosuggestIcon {
-    font-size: 24px;
+.suggestion-item-stop {
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  > div {
+    flex-grow: 1;
   }
-
-  .suggestion-name, .use-own-position {
-    font-size: 15px;
-  }
-
-  .suggestion-label {
-    font-size: 13px;
-  }
-}
-
-.search-form-map-overlay {
-  z-index: 802;
-}
-
-.search-modal-overlay {
-  height: 100%;
-  width: 100%;
-  top: 0px;
-  left: 0px;
-  position: fixed;
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.541176);
-}
-
-.geolocation-bar-location-icon svg.icon {
-  fill: $hilight-color;
-  padding-top: 2px;
-}
-
-div.search-modal {
-  z-index: 1202;
-  background: #EEF1F3;
-  overflow: auto;
-  width: 100%;
-  max-width: none;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  bottom: 0px;
-
-  input[type="text"].react-autowhatever__input {
-    border: 1px solid $gray;
-    border-radius: 4px;
-    height: $search-form-input-height;
-    padding: 10px;
-    outline: 0;
-    appearance: none;
-
-    &:focus {
-      box-shadow: none;
-      border-color: $primary-color
+  .suggestion-item-timetable {
+    margin: 1px 0px 1px 0px;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    display: flex;
+    align-items: center;
+    flex-grow: 0;
+    flex-shrink: 0;
+    border-left: 1px solid $item-border-color;
+    a {
+      display: flex;
+      align-items: center;
     }
+    span {
+      //icon span
+      display: inline-block;
+      padding-right: $padding-small;
+      color: $link-color;
+    }
+    div.suggestion-item-timetable-label {
+      display: inline-block;
+      @include font-bold;
+      color: $link-color;
+      text-transform: uppercase;
+      font-size: $font-size-xxxsmall;
+    }
+    a > span > svg {
+      fill: $link-color;
+    }
+  }
+}
+
+.small .suggestion-item-stop {
+  > div {
+    width: 0em;
+  }
+  .suggestion-item-timetable {
+    width: 8em;
+  }
+}
+
+.suggestion-label {
+  .itinerary-stop-code {
+    display: inline-block;
+    margin-right: 4px;
   }
 }
 
@@ -485,127 +356,389 @@ div.map {
   }
 }
 
-div.origin-destination-bar {
-  .search-modal {
-    top: -40px;
+.autosuggest-panel {
+  &.isItinerary {
+    width: 100%;
+
+    input.react-autosuggest__input {
+      background: $white;
+    }
+
+    .clear-input {
+      border-top: 1px solid #ddd;
+      border-right: 1px solid #ddd;
+      border-bottom: 1px solid #ddd;
+    }
+  }
+
+  .dark-overlay {
+    z-index: index($zindex, search-overlay);
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: rgba(0, 0, 0, 0.57);
+
+    &.hidden {
+      display: none;
+    }
+    &.isItinerary {
+      position: fixed;
+    }
+  }
+
+  .react-autosuggest__container {
+    width: 100%;
+
+    .react-autosuggest__suggestions-container--open {
+      background: #fff;
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
+      max-height: 60vh;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      position: absolute;
+      width: 100%;
+      top: calc(3 * 0.875rem);
+    }
+  }
+
+  &.small
+    .react-autosuggest__container
+    .react-autosuggest__suggestions-container--open {
+    max-height: unset;
   }
 }
 
-.search-header {
-  overflow: hidden;
+.via-point-button-container {
+  display: flex;
 
-  .search-header__category-text {
-    color: $gray-blue;
-    font-size: $font-size-xxsmall;
-    margin-left: 12px;
-    margin-right: 6px;
-    vertical-align: middle;
+  & > div:nth-child(1) {
+    order: 1;
+    border-left: none;
+  }
+  & > div:nth-child(2) {
+    order: 2;
+    border-left: 1px solid rgba(151, 151, 151, 0.2);
+  }
+}
+
+.itinerary-search-control {
+  align-items: center;
+  color: $link-color;
+  display: flex;
+  justify-content: center;
+  min-width: 3em;
+
+  & + .itinerary-search-control {
+    border-left: 1px solid rgba(151, 151, 151, 0.2);
   }
 
-  .search-header__back-arrow {
-    position: absolute;
-    color: $gray-blue;
-    user-select: none;
-    line-height: 3.5em;
+  *:hover {
+    color: #0062a1;
   }
 
-  .search-header__button, .search-header__button--selected {
-    margin-bottom: 0;
-    letter-spacing: -0.025em;
-    font-size: $font-size-small !important;
-    font-weight: $font-weight-bold !important;
-
-    &:first-child {
-      @extend .overflow-fade;
-    }
-
-    // Uh-oh, override material-ui style for not overflowing the beginning of the word
-    > div > div {
-      align-items: stretch !important;
-      height: 3.5em !important;
+  .switch {
+    font-size: 1.8em;
+    .icon {
+      transform: rotate(90deg);
     }
   }
 
-  .search-header-width-fix {
-    margin-left: 30px !important;
-    margin-right: 5px !important;
-    width: calc(100% - 35px) !important;
-  }
+  .add-via-point-slack {
+    & > span:nth-child(2) {
+      display: inline;
+      position: relative;
 
-  .search-header__tabs-root {
-    height: 100%;
-    > div:first-child {
-      line-height: 18px !important;
-      @extend .search-header-width-fix;
+      .super-icon {
+        fill: $hilight-color;
+        font-size: $font-size-xxsmall;
+        position: absolute;
+        right: -0.5em;
+        top: -0.5em;
+      }
     }
-    > div:nth-child(2) { //hack, modify tabs in material ui to fix
-      @extend .search-header-width-fix;
-    }
-    > div:nth-child(3) {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      > div {
-        flex: 0 1 auto;
-        display: flex;
-        > div {
-          flex: 1 0 0;
-          width: 100%;
-        }
+  }
+}
+
+.small.autosuggest-panel {
+  &.isItinerary {
+    .autosuggest-input-container {
+      &.origin,
+      &.destination,
+      &.viapoint {
+        margin: 0;
+        padding: 0;
+        width: 100%;
       }
     }
   }
 
-  .close-icon {
-    color: $gray;
+  .autosuggest-input-container {
+    margin: 1em 1em 0 1em;
+    width: calc(100% - 2em);
   }
 
-  .geolocation {
-    position: absolute;
-    top: 0px;
+  .react-autosuggest__container {
     width: 100%;
-    padding: 5px;
-    height: 2.7em;
-    line-height: normal;
+    margin: 0 auto;
   }
 }
 
-.search-header-separator {
-  border-left: 1px solid $light-gray;
-  margin-left: 11px;
-  height: 2em;
-  display: inline-block;
-  position: relative;
-  bottom: -0.6em;
-}
-
-.search-current-origin-tip {
-  @include font-book;
-  font-size: $font-size-xxxsmall;
-  text-transform: none;
-
-  svg.icon {
-    color: $hilight-color;
-    margin-right: 0.5em;
-    font-size: 8px;
-  }
-}
-
-.bp-large .search-current-origin-tip {
-  font-size: 13px;
-
-  svg.icon {
-    font-size: 16px;
-    vertical-align: -3px;
-  }
-}
-
-#close-search-button-container {
+.autosuggest-input-icon {
+  display: block;
   position: absolute;
-  top: 20px;
-  right: 20px;
-  .icon {
-    color: $gray-blue;
-    font-size: 24px;
+  width: 1.45em;
+  height: 1.45em;
+  margin-top: 0.6em;
+  margin-left: 0.5em;
+
+  &.destination {
+    color: $to-color;
   }
+
+  &.origin {
+    color: $from-color;
+  }
+
+  .icon {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.isItinerary {
+  .autosuggest-input-icon {
+    z-index: index($zindex, search-input-icon)
+  }
+}
+
+input.react-autosuggest__input {
+  &.destination,
+  &.location,
+  &.position,
+  &.viapoint {
+    padding-left: 3em;
+  }
+
+  background-color: $white;
+  @include font-medium;
+  border: 1px solid #fff;
+  border-radius: 4px;
+  height: $search-form-input-height;
+  padding: 10px;
+  outline: 0;
+  appearance: none;
+  box-shadow: none;
+}
+
+.viapoint-container {
+  display: flex;
+  flex-wrap: wrap;
+
+  &.drop-target-before::before {
+    border-top: 1px solid $link-color;
+    content: '';
+    display: block;
+    margin-top: -0.25em;
+    width: 100%;
+  }
+}
+
+.origin-input-container,
+.viapoint-input-container,
+.destination-input-container {
+  display: flex;
+  flex: 1 0 100%;
+  margin-bottom: 0.5em;
+
+  input[type='text'] {
+    margin: 0;
+  }
+}
+
+.viapoint-input-container {
+  &.viapoint-1 > div.viapoint {
+    z-index: index($zindex, viapoint-input-1);
+  }
+
+  &.viapoint-2 > div.viapoint {
+    z-index: index($zindex, viapoint-input-2);
+  }
+
+  &.viapoint-3 > div.viapoint {
+    z-index: index($zindex, viapoint-input-3);
+  }
+
+  &.viapoint-4 > div.viapoint {
+    z-index: index($zindex, viapoint-input-4);
+  }
+
+  &.viapoint-5 > div.viapoint {
+    z-index: index($zindex, viapoint-input-5);
+  }
+}
+
+.autosuggest-input-container {
+  margin-top: 1em;
+  position: relative;
+  width: 100%;
+
+  &.origin {
+    z-index: index($zindex, origin-input);
+  }
+
+  &.destination {
+    z-index: index($zindex, destination-input);
+  }
+}
+
+.isItinerary .autosuggest-input-container {
+  margin: 0;
+
+  input[type='text'] {
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+  }
+}
+
+.viapoint-before {
+  align-items: center;
+  display: flex;
+
+  .icon {
+    color: rgb(207, 207, 207);
+    font-size: 1.3em;
+    transform: rotate(90deg);
+  }
+}
+
+.input-viapoint-slack-container {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  margin: 0 6em 0.5em 0;
+
+  span {
+    font-weight: 400;
+  }
+  .select-wrapper {
+    display: flex;
+    flex-direction: row;
+    color: $link-color;
+    margin-left: 0.5em;
+    flex: 0 1 6em;
+    > span {
+      margin-left: -1.4rem;
+      pointer-events: none;
+    }
+    .fake-select-arrow {
+      font-size: 0.7rem;
+      color: $primary-color;
+      margin-top: 1em;
+    }
+  }
+
+  select {
+    vertical-align: middle;
+    text-align: left;
+    margin: 0;
+    padding: 0 1rem 0 0.9em;
+    font-family: $font-family;
+    font-size: $font-size-xxsmall;
+    display: inline-block;
+    background-color: $white;
+    color: $link-color;
+    border-radius: 5px;
+    border: solid 1px #ddd;
+    appearance: none;
+    font-weight: 700;
+    height: 2.6em;
+
+    &:hover {
+      background-color: $white;
+      border: solid 1px #007ac9;
+    }
+    &:focus {
+      background-color: $white;
+    }
+    &.text-time-selector,
+    &.desktop {
+      padding: 0 0.5em 0 0.5em;
+      margin: 0 -0.5em 0 0;
+      text-align: center;
+    }
+    &.arrive,
+    &.select-route-modes {
+      width: 100%;
+    }
+  }
+}
+
+.react-autosuggest__container {
+  display: flex;
+}
+
+.react-autosuggest__container--open .react-autosuggest__input {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: none;
+  outline: none;
+  border: none;
+}
+
+.react-autosuggest__container input {
+  box-shadow: none;
+  outline: none;
+  transition: border 0s;
+  &:focus {
+    box-shadow: none;
+    @include default-focus-outline;
+    border: none;
+    background: $white;
+    z-index: index($zindex, search-input-focus);
+  }
+}
+
+input.react-autosuggest__input::-ms-clear {
+  display: none;
+}
+
+button.clear-input {
+  display: flex;
+  background: $white;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  align-items: center;
+  padding: 8px 12px 8px 12px;
+  margin-left: -4px;
+  font-size: 0.875rem; //for sizing the height of button
+  height: 3em;
+  margin-bottom: 0px;
+  color: $gray;
+  outline: none;
+  span {
+    //icon size
+    font-size: 1.1rem;
+  }
+  &:hover {
+    background: $white;
+  }
+  &:focus {
+    background-color: $white;
+    @include default-focus-outline;
+  }
+}
+
+.react-autosuggest__container--open {
+  button.clear-input {
+    border-bottom-right-radius: 0;
+  }
+}
+
+.suggestion-is-updating {
+  visibility: hidden;
 }

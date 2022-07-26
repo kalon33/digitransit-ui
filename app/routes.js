@@ -1,102 +1,22 @@
-// Libraries
+import PropTypes from 'prop-types';
 import React from 'react';
-import Relay from 'react-relay';
-import { Route, IndexRoute, IndexRedirect } from 'react-router';
-import ContainerDimensions from 'react-container-dimensions';
+import Relay from 'react-relay/classic';
+import { Route } from 'react-router';
 
-import omitBy from 'lodash/omitBy';
-import isNil from 'lodash/isNil';
-
-import moment from 'moment';
-
-// React pages
 import IndexPage from './component/IndexPage';
+import IndexPageMeta from './component/IndexPageMeta';
 import Error404 from './component/404';
-import NetworkError from './component/NetworkError';
-import Loading from './component/LoadingPage';
-import SplashOrChildren from './component/SplashOrChildren';
-
-import { otpToLocation } from './util/otpStrings';
-
 import TopLevel from './component/TopLevel';
 import Title from './component/Title';
 
-import { isBrowser } from './util/browser';
+import scrollTop from './util/scroll';
+import { PREFIX_ITINERARY_SUMMARY } from './util/path';
+import { preparePlanParams } from './util/planParamUtil';
+import { validateServiceTimeRange } from './util/timeUtils';
+import { errorLoading, getDefault, loadRoute } from './util/routerUtils';
 
-const ComponentLoading404Renderer = {
-  /* eslint-disable react/prop-types */
-  header: ({ error, props, element, retry }) => {
-    if (error) {
-      if (error.message === 'Failed to fetch' // Chrome
-        || error.message === 'Network request failed' // Safari && FF && IE
-      ) {
-        return <NetworkError retry={retry} />;
-      }
-      return <Error404 />;
-    } else if (props) {
-      return React.cloneElement(element, props);
-    }
-    return <Loading />;
-  },
-  map: ({ error, props, element }) => {
-    if (error) {
-      return null;
-    } else if (props) {
-      return React.cloneElement(element, props);
-    }
-    return undefined;
-  },
-  title: ({ props, element }) => React.cloneElement(element, { route: null, ...props }),
-  content: ({ props, element }) => (
-    props ? React.cloneElement(element, props) : <div className="flex-grow" />
-  ),
-  /* eslint-enable react/prop-types */
-};
-
-const StopQueries = {
-  stop: () => Relay.QL`
-    query  {
-      stop(id: $stopId)
-    }
-  `,
-};
-
-const RouteQueries = {
-  route: () => Relay.QL`
-    query {
-      route(id: $routeId)
-    }
-  `,
-};
-
-const PatternQueries = {
-  pattern: () => Relay.QL`
-    query {
-      pattern(id: $patternId)
-    }
-  `,
-};
-
-const TripQueries = {
-  trip: () => Relay.QL`
-    query {
-      trip(id: $tripId)
-    }
-  `,
-  pattern: () => Relay.QL`
-    query {
-      pattern(id: $patternId)
-    }
-  `,
-};
-
-const terminalQueries = {
-  stop: () => Relay.QL`
-    query  {
-      station(id: $terminalId)
-    }
-  `,
-};
+import getStopRoutes from './stopRoutes';
+import routeRoutes from './routeRoutes';
 
 const planQueries = {
   plan: (Component, variables) => Relay.QL`
@@ -105,323 +25,97 @@ const planQueries = {
         ${Component.getFragment('plan', variables)}
       }
     }`,
+  serviceTimeRange: () => Relay.QL`query { serviceTimeRange }`,
 };
 
-function errorLoading(err) {
-  console.error('Dynamic page loading failed', err);
-}
-
-function loadRoute(cb) {
-  return module => cb(null, module.default);
-}
-
-function getDefault(module) {
-  return module.default;
-}
-
-export default (config) => {
-  const preparePlanParams = (
-      { from, to },
-      { location: { query: {
-        numItineraries,
-        time,
-        arriveBy,
-        walkReluctance,
-        walkSpeed,
-        walkBoardCost,
-        minTransferTime,
-        modes,
-        accessibilityOption,
-      } } },
-    ) => omitBy({
-      fromPlace: from,
-      toPlace: to,
-      from: otpToLocation(from),
-      to: otpToLocation(to),
-      numItineraries: numItineraries ? Number(numItineraries) : undefined,
-      modes: modes ? modes
-        .split(',')
-        .sort()
-        .map(mode => (mode === 'CITYBIKE' ? 'BICYCLE_RENT' : mode))
-        .join(',')
-      : undefined,
-      date: time ? moment(time * 1000).format('YYYY-MM-DD') : undefined,
-      time: time ? moment(time * 1000).format('HH:mm:ss') : undefined,
-      walkReluctance: walkReluctance ? Number(walkReluctance) : undefined,
-      walkBoardCost: walkBoardCost ? Number(walkBoardCost) : undefined,
-      minTransferTime: minTransferTime ? Number(minTransferTime) : undefined,
-      walkSpeed: walkSpeed ? Number(walkSpeed) : undefined,
-      arriveBy: arriveBy ? arriveBy === 'true' : undefined,
-      maxWalkDistance: (typeof modes === 'undefined' ||
-        (typeof modes === 'string' && !modes.split(',').includes('BICYCLE'))) ?
-        config.maxWalkDistance : config.maxBikingDistance,
-      wheelchair: accessibilityOption === '1',
-      preferred: { agencies: config.preferredAgency || '' },
-      disableRemainingWeightHeuristic: modes && modes.split(',').includes('CITYBIKE'),
-    }, isNil);
-
-  const SummaryPageWrapper = ({ props, routerProps, element }) => (props ?
-    React.cloneElement(element, props) :
-    React.cloneElement(element, {
-      ...routerProps,
-      ...preparePlanParams(routerProps.params, routerProps),
-      plan: { plan: { } },
-      loading: true,
-    })
-  );
+export default config => {
+  const SummaryPageWrapper = ({ props, routerProps, element }) =>
+    props
+      ? React.cloneElement(element, props)
+      : React.cloneElement(element, {
+          ...routerProps,
+          ...preparePlanParams(config)(routerProps.params, routerProps),
+          plan: { plan: {} },
+          serviceTimeRange: validateServiceTimeRange(), // use default range
+          loading: true,
+        });
 
   SummaryPageWrapper.propTypes = {
-    props: React.PropTypes.object.isRequired,
-    routerProps: React.PropTypes.object.isRequired,
+    props: PropTypes.object.isRequired,
+    routerProps: PropTypes.object.isRequired,
   };
-
-
   return (
-    <Route
-      component={props => (isBrowser ?
-        <ContainerDimensions><TopLevel {...props} /></ContainerDimensions> :
-        <TopLevel {...props} />
-      )}
-    >
+    <Route component={TopLevel}>
       <Route
-        path="/" topBarOptions={{ disableBackButton: true }} components={{
-          title: Title,
-          content: props => <SplashOrChildren><IndexPage {...props} /></SplashOrChildren>
-          ,
+        path="/styleguide"
+        getComponent={(location, cb) => {
+          import(/* webpackChunkName: "styleguide" */ './component/StyleGuidePage')
+            .then(loadRoute(cb))
+            .catch(errorLoading);
         }}
-      >
-        <Route
-          path="lahellasi"
-          getComponents={(location, cb) =>
-            System.import('./component/NearbyRoutesPanel')
-              .then(getDefault).then(content => cb(null, { content })).catch(errorLoading)
-          }
-        />
-        <Route
-          path="suosikit"
-          getComponents={(location, cb) =>
-            System.import('./component/FavouritesPanel')
-              .then(getDefault).then(content => cb(null, { content })).catch(errorLoading)
-          }
-        />
-      </Route>
+      />
       <Route
-        path="/?mock" topBarOptions={{ disableBackButton: true }} components={{
-          title: Title,
-          content: props => <SplashOrChildren><IndexPage {...props} /></SplashOrChildren>,
+        path="/styleguide/component/:componentName"
+        topBarOptions={{ hidden: true }}
+        getComponent={(location, cb) => {
+          import(/* webpackChunkName: "styleguide" */ './component/StyleGuidePage')
+            .then(loadRoute(cb))
+            .catch(errorLoading);
         }}
-      >
-        <Route
-          path="lahellasi"
-          getComponents={(location, cb) =>
-            System.import('./component/NearbyRoutesPanel')
-              .then(getDefault).then(content => cb(null, { content })).catch(errorLoading)
-          }
-        />
-        <Route
-          path="suosikit"
-          getComponents={(location, cb) =>
-            System.import('./component/FavouritesPanel')
-              .then(getDefault).then(content => cb(null, { content })).catch(errorLoading)
-          }
-        />
-      </Route>
-
-      <Route path="/pysakit">
-        <IndexRoute component={Error404} /> {/* TODO: Should return list of all routes*/}
-        <Route
-          path=":stopId"
-          getComponents={(location, cb) => {
-            Promise.all([
-              System.import('./component/StopTitle').then(getDefault),
-              System.import('./component/StopPageHeaderContainer').then(getDefault),
-              System.import('./component/StopPage').then(getDefault),
-              System.import('./component/StopPageMap').then(getDefault),
-              System.import('./component/StopPageMeta').then(getDefault),
-            ]).then(([title, header, content, map, meta]) =>
-              cb(null, { title, header, content, map, meta },
-            ));
-          }}
-          queries={{
-            header: StopQueries,
-            map: StopQueries,
-            meta: StopQueries,
-          }}
-          render={ComponentLoading404Renderer}
-        >
-          <Route path="kartta" fullscreenMap />
-        </Route>
-      </Route>
-      <Route path="/terminaalit">
-        <IndexRoute component={Error404} /> {/* TODO: Should return list of all terminals*/}
-        <Route
-          path=":terminalId"
-          getComponents={(location, cb) => {
-            Promise.all([
-              System.import('./component/TerminalTitle').then(getDefault),
-              System.import('./component/StopPageHeaderContainer').then(getDefault),
-              System.import('./component/TerminalPage').then(getDefault),
-              System.import('./component/StopPageMap').then(getDefault),
-              System.import('./component/StopPageMeta').then(getDefault),
-            ]).then(([title, header, content, map, meta]) =>
-              cb(null, { title, header, content, map, meta },
-            ));
-          }}
-          queries={{
-            header: terminalQueries,
-            map: terminalQueries,
-            meta: terminalQueries,
-          }}
-          render={ComponentLoading404Renderer}
-        >
-          <Route path="kartta" fullscreenMap />
-        </Route>
-      </Route>
-      <Route path="/linjat">
-        <IndexRoute component={Error404} /> {/* TODO: Should return list of all routes */}
-        <Route path=":routeId">
-          <IndexRedirect to="pysakit" />
-          <Route path="pysakit">
-            <IndexRedirect to=":routeId%3A0%3A01" /> {/* Redirect to first pattern of route*/}
-            <Route path=":patternId">
-              <IndexRoute
-                getComponents={(location, cb) => {
-                  Promise.all([
-                    System.import('./component/RouteTitle').then(getDefault),
-                    System.import('./component/RoutePage').then(getDefault),
-                    System.import('./component/RouteMapContainer').then(getDefault),
-                    System.import('./component/PatternStopsContainer').then(getDefault),
-                    System.import('./component/RoutePageMeta').then(getDefault),
-                  ]).then(
-                    ([title, header, map, content, meta]) =>
-                      cb(null, { title, header, map, content, meta }),
-                  );
-                }}
-                queries={{
-                  title: RouteQueries,
-                  header: RouteQueries,
-                  map: PatternQueries,
-                  content: PatternQueries,
-                  meta: RouteQueries,
-                }}
-                render={ComponentLoading404Renderer}
-              />
-              <Route
-                path="kartta"
-                getComponents={(location, cb) => {
-                  Promise.all([
-                    System.import('./component/RouteTitle').then(getDefault),
-                    System.import('./component/RoutePage').then(getDefault),
-                    System.import('./component/RouteMapContainer').then(getDefault),
-                    System.import('./component/PatternStopsContainer').then(getDefault),
-                    System.import('./component/RoutePageMeta').then(getDefault),
-                  ]).then(
-                    ([title, header, map, content, meta]) =>
-                      cb(null, { title, header, map, content, meta }),
-                  );
-                }}
-                queries={{
-                  title: RouteQueries,
-                  header: RouteQueries,
-                  map: PatternQueries,
-                  content: PatternQueries,
-                  meta: RouteQueries,
-                }}
-                render={ComponentLoading404Renderer}
-                fullscreenMap
-              />
-              <Route
-                path=":tripId"
-                getComponents={(location, cb) => {
-                  Promise.all([
-                    System.import('./component/RouteTitle').then(getDefault),
-                    System.import('./component/RoutePage').then(getDefault),
-                    System.import('./component/RouteMapContainer').then(getDefault),
-                    System.import('./component/TripStopsContainer').then(getDefault),
-                    System.import('./component/RoutePageMeta').then(getDefault),
-                  ]).then(
-                    ([title, header, map, content, meta]) =>
-                      cb(null, { title, header, map, content, meta }),
-                  );
-                }}
-                queries={{
-                  title: RouteQueries,
-                  header: RouteQueries,
-                  map: TripQueries,
-                  content: TripQueries,
-                  meta: RouteQueries,
-                }}
-                render={ComponentLoading404Renderer}
-              >
-                <Route path="kartta" fullscreenMap />
-              </Route>
-            </Route>
-          </Route>
-          <Route path="aikataulu" >
-            <IndexRedirect to=":routeId%3A0%3A01" />
-            <Route
-              path=":patternId"
-              disableMapOnMobile
-              getComponents={(location, cb) => {
-                Promise.all([
-                  System.import('./component/RouteTitle').then(getDefault),
-                  System.import('./component/RoutePage').then(getDefault),
-                  System.import('./component/RouteMapContainer').then(getDefault),
-                  System.import('./component/RouteScheduleContainer').then(getDefault),
-                  System.import('./component/RoutePageMeta').then(getDefault),
-                ]).then(([title, header, map, content, meta]) =>
-                  cb(null, { title, header, map, content, meta }));
-              }}
-              queries={{
-                title: RouteQueries,
-                header: RouteQueries,
-                map: PatternQueries,
-                content: PatternQueries,
-                meta: RouteQueries,
-              }}
-              render={ComponentLoading404Renderer}
-            />
-          </Route>
-          <Route
-            path="hairiot"
-            getComponents={(location, cb) => {
-              Promise.all([
-                System.import('./component/RouteTitle').then(getDefault),
-                System.import('./component/RoutePage').then(getDefault),
-                System.import('./component/RouteAlertsContainer').then(getDefault),
-                System.import('./component/RoutePageMeta').then(getDefault),
-              ]).then(([title, header, content, meta]) =>
-                cb(null, { title, header, content, meta }));
-            }}
-            queries={{
-              title: RouteQueries,
-              header: RouteQueries,
-              content: RouteQueries,
-              meta: RouteQueries,
-            }}
-            render={ComponentLoading404Renderer}
-          />
-        </Route>
-      </Route>
+      />
       <Route
-        path="/reitti/:from/:to"
+        path="/suosikki/uusi"
+        getComponent={(location, cb) => {
+          import(/* webpackChunkName: "add-favourite" */ './component/AddFavouritePage')
+            .then(loadRoute(cb))
+            .catch(errorLoading);
+        }}
+      />
+      {getStopRoutes()}
+      {getStopRoutes(true) /* terminals */}
+      {routeRoutes}
+      <Route
+        path={`/${PREFIX_ITINERARY_SUMMARY}/:from/:to`}
         getComponents={(location, cb) => {
           Promise.all([
-            System.import('./component/SummaryTitle').then(getDefault),
-            System.import('./component/SummaryPage').then(getDefault),
-            System.import('./component/SummaryPageMeta').then(getDefault),
-          ]).then(([title, content, meta]) => cb(null, { title, content, meta }));
+            import(/* webpackChunkName: "itinerary" */ './component/SummaryTitle').then(
+              getDefault,
+            ),
+            import(/* webpackChunkName: "itinerary" */ './component/SummaryPage').then(
+              getDefault,
+            ),
+            import(/* webpackChunkName: "itinerary" */ './component/SummaryPageMeta').then(
+              getDefault,
+            ),
+          ]).then(([title, content, meta]) =>
+            cb(null, { title, content, meta }),
+          );
         }}
         queries={{ content: planQueries }}
-        prepareParams={preparePlanParams}
+        prepareParams={preparePlanParams(config)}
         render={{ content: SummaryPageWrapper }}
       >
+        <Route
+          path=":hash/tulosta"
+          getComponents={(location, cb) => {
+            import(/* webpackChunkName: "itinerary" */ './component/PrintableItinerary')
+              .then(content => cb(null, { content: content.default }))
+              .catch(errorLoading);
+          }}
+          printPage
+        >
+          <Route path="kartta" fullscreenMap />
+        </Route>
         <Route
           path=":hash"
           getComponents={(location, cb) => {
             Promise.all([
-              System.import('./component/ItineraryTab').then(getDefault),
-              System.import('./component/ItineraryPageMap').then(getDefault),
+              import(/* webpackChunkName: "itinerary" */ './component/ItineraryTab').then(
+                getDefault,
+              ),
+              import(/* webpackChunkName: "itinerary" */ './component/ItineraryPageMap').then(
+                getDefault,
+              ),
             ]).then(([content, map]) => cb(null, { content, map }));
           }}
         >
@@ -429,28 +123,19 @@ export default (config) => {
         </Route>
       </Route>
       <Route
-        path="/styleguide"
+        path="/suosikki/muokkaa/sijainti/:id"
         getComponent={(location, cb) => {
-          System.import('./component/StyleGuidePage').then(loadRoute(cb)).catch(errorLoading);
+          import(/* webpackChunkName: "add-favourite" */ './component/AddFavouritePage')
+            .then(loadRoute(cb))
+            .catch(errorLoading);
         }}
       />
       <Route
-        path="/styleguide/component/:componentName"
-        topBarOptions={{ hidden: true }}
+        path="/suosikki/muokkaa/pysakki/:id"
         getComponent={(location, cb) => {
-          System.import('./component/StyleGuidePage').then(loadRoute(cb)).catch(errorLoading);
-        }}
-      />
-      <Route
-        path="/suosikki/uusi"
-        getComponent={(location, cb) => {
-          System.import('./component/AddFavouritePage').then(loadRoute(cb)).catch(errorLoading);
-        }}
-      />
-      <Route
-        path="/suosikki/muokkaa/:id"
-        getComponent={(location, cb) => {
-          System.import('./component/AddFavouritePage').then(loadRoute(cb)).catch(errorLoading);
+          import(/* webpackChunkName: "add-favourite" */ './component/AddFavouritePage')
+            .then(loadRoute(cb))
+            .catch(errorLoading);
         }}
       />
       <Route
@@ -458,8 +143,41 @@ export default (config) => {
         getComponents={(location, cb) => {
           Promise.all([
             Promise.resolve(Title),
-            System.import('./component/AboutPage').then(getDefault),
+            import(/* webpackChunkName: "about" */ './component/AboutPage').then(
+              getDefault,
+            ),
           ]).then(([title, content]) => cb(null, { title, content }));
+        }}
+      />
+      {!config.URL.API_URL.includes('/api.') && (
+        <Route
+          path="/admin"
+          getComponent={(location, cb) => {
+            import(/* webpackChunkName: "admin" */ './component/AdminPage')
+              .then(loadRoute(cb))
+              .catch(errorLoading);
+          }}
+        />
+      )}
+      <Route path="/js/*" component={Error404} />
+      <Route path="/css/*" component={Error404} />
+      <Route path="/assets/*" component={Error404} />
+      <Route
+        path="/(:from)(/:to)(/:tab)"
+        topBarOptions={{ disableBackButton: true }}
+        components={{
+          title: Title,
+          content: IndexPage,
+          meta: IndexPageMeta,
+        }}
+        onEnter={scrollTop}
+      />
+      <Route
+        path="/?mock"
+        topBarOptions={{ disableBackButton: true }}
+        components={{
+          title: Title,
+          content: IndexPage,
         }}
       />
       {/* For all the rest render 404 */}

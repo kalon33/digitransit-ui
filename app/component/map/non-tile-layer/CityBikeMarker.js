@@ -1,8 +1,6 @@
+import PropTypes from 'prop-types';
 import React from 'react';
-import Relay from 'react-relay';
-import provideContext from 'fluxible-addons-react/provideContext';
-import { intlShape } from 'react-intl';
-import { routerShape, locationShape } from 'react-router';
+import Relay from 'react-relay/classic';
 
 import CityBikePopup from '../popups/CityBikePopup';
 import Icon from '../../Icon';
@@ -11,6 +9,13 @@ import { station as exampleStation } from '../../ExampleData';
 import ComponentUsageExample from '../../ComponentUsageExample';
 import CityBikeRoute from '../../../route/CityBikeRoute';
 import { isBrowser } from '../../../util/browser';
+import Loading from '../../Loading';
+import { getCityBikeAvailabilityIndicatorColor } from '../../../util/legUtils';
+import {
+  getCityBikeNetworkConfig,
+  getCityBikeNetworkIcon,
+  getCityBikeNetworkId,
+} from '../../../util/citybikes';
 
 let L;
 
@@ -22,14 +27,6 @@ if (isBrowser) {
   L = require('leaflet');
 }
 /* eslint-enable global-require */
-
-const CityBikePopupWithContext = provideContext(CityBikePopup, {
-  intl: intlShape.isRequired,
-  router: routerShape.isRequired,
-  location: locationShape.isRequired,
-  route: React.PropTypes.object.isRequired,
-  config: React.PropTypes.object.isRequired,
-});
 
 // Small icon for zoom levels <= 15
 const smallIconSvg = `
@@ -43,7 +40,11 @@ class CityBikeMarker extends React.Component {
     <div>
       <p>Renders a citybike marker</p>
       <ComponentUsageExample description="">
-        <CityBikeMarker key={exampleStation.id} map="leaflet map here" station={exampleStation} />
+        <CityBikeMarker
+          key={exampleStation.id}
+          map="leaflet map here"
+          station={exampleStation}
+        />
       </ComponentUsageExample>
     </div>
   );
@@ -51,37 +52,61 @@ class CityBikeMarker extends React.Component {
   static displayName = 'CityBikeMarker';
 
   static propTypes = {
-    station: React.PropTypes.object.isRequired,
-    transit: React.PropTypes.bool,
+    showBikeAvailability: PropTypes.bool,
+    station: PropTypes.object.isRequired,
+    transit: PropTypes.bool,
   };
 
   static contextTypes = {
-    getStore: React.PropTypes.func.isRequired,
-    executeAction: React.PropTypes.func.isRequired,
-    router: routerShape.isRequired,
-    location: locationShape.isRequired,
-    route: React.PropTypes.object.isRequired,
-    intl: intlShape.isRequired,
-    config: React.PropTypes.object.isRequired,
+    config: PropTypes.object.isRequired,
   };
 
-  getIcon = zoom => (
-    (!this.props.transit && zoom <= this.context.config.stopsSmallMaxZoom) ?
-      L.divIcon({
-        html: smallIconSvg,
-        iconSize: [8, 8],
-        className: 'citybike cursor-pointer',
-      })
-    :
-      L.divIcon({
-        html: Icon.asString('icon-icon_citybike', 'city-bike-medium-size'),
-        iconSize: [20, 20],
-        className: 'citybike cursor-pointer',
-      })
-    )
+  static defaultProps = {
+    showBikeAvailability: false,
+  };
+
+  static contextTypes = {
+    config: PropTypes.object.isRequired,
+  };
+
+  getIcon = zoom => {
+    const { showBikeAvailability, station, transit } = this.props;
+    const { config } = this.context;
+
+    const iconName = getCityBikeNetworkIcon(
+      getCityBikeNetworkConfig(getCityBikeNetworkId(station.networks), config),
+    );
+
+    return !transit && zoom <= config.stopsSmallMaxZoom
+      ? L.divIcon({
+          html: smallIconSvg,
+          iconSize: [8, 8],
+          className: 'citybike cursor-pointer',
+        })
+      : L.divIcon({
+          html: showBikeAvailability
+            ? Icon.asString({
+                img: iconName,
+                className: 'city-bike-medium-size',
+                badgeFill: getCityBikeAvailabilityIndicatorColor(
+                  station.bikesAvailable,
+                  config,
+                ),
+                badgeText: station.bikesAvailable,
+              })
+            : Icon.asString({
+                img: iconName,
+                className: 'city-bike-medium-size',
+              }),
+          iconSize: [20, 20],
+          className: 'citybike cursor-pointer',
+        });
+  };
 
   render() {
-    if (!isBrowser) return false;
+    if (!isBrowser) {
+      return false;
+    }
     return (
       <GenericMarker
         position={{
@@ -96,10 +121,10 @@ class CityBikeMarker extends React.Component {
           route={new CityBikeRoute({ stationId: this.props.station.stationId })}
           renderLoading={() => (
             <div className="card" style={{ height: '12rem' }}>
-              <div className="spinner-loader" />
+              <Loading />
             </div>
           )}
-          renderFetched={data => (<CityBikePopupWithContext {...data} context={this.context} />)}
+          renderFetched={data => <CityBikePopup {...data} />}
         />
       </GenericMarker>
     );
@@ -113,6 +138,8 @@ export default Relay.createContainer(CityBikeMarker, {
         lat
         lon
         stationId
+        networks
+        bikesAvailable
       }
     `,
   },

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 import TileLayerContainer from './TileLayerContainer';
 import CityBikes from './CityBikes';
@@ -39,10 +40,10 @@ export default function VectorTileLayerContainer(props, { config }) {
 
 VectorTileLayerContainer.propTypes = {
   hilightedStops: PropTypes.arrayOf(PropTypes.string.isRequired),
-  disableMapTracking: PropTypes.func.isRequired,
+  disableMapTracking: PropTypes.func,
   showStops: PropTypes.bool,
 };
 
 VectorTileLayerContainer.contextTypes = {
-  config: React.PropTypes.object.isRequired,
+  config: PropTypes.object.isRequired,
 };

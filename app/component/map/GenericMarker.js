@@ -1,4 +1,8 @@
+import isFunction from 'lodash/isFunction';
+import PropTypes from 'prop-types';
 import React from 'react';
+
+import { withLeaflet } from 'react-leaflet/es/context';
 
 import ComponentUsageExample from '../ComponentUsageExample';
 import { isBrowser } from '../../util/browser';
@@ -12,14 +16,13 @@ let L;
 //      these need to be loaded only when isBrowser is true.
 //      Perhaps still using the require from webpack?
 if (isBrowser) {
-  Marker = require('react-leaflet/lib/Marker').default;
-  Popup = require('react-leaflet/lib/Popup').default;
+  Marker = require('react-leaflet/es/Marker').default;
+  Popup = require('react-leaflet/es/Popup').default;
   L = require('leaflet');
 }
 /* eslint-enable global-require */
 
-
-export default class GenericMarker extends React.Component {
+class GenericMarker extends React.Component {
   static description = (
     <div>
       <p>A base class for markers.</p>
@@ -30,7 +33,6 @@ export default class GenericMarker extends React.Component {
           icons={{ smallIconSvg: 'smallIcon in svg', iconSvg: 'icon in svg' }}
           iconSizes={{ smallIconSvg: [8, 8], iconSvg: [20, 20] }}
           map="leaflet map object"
-          id="marker id here"
         />
       </ComponentUsageExample>
     </div>
@@ -39,41 +41,48 @@ export default class GenericMarker extends React.Component {
   static displayName = 'GenericMarker';
 
   static contextTypes = {
-    map: React.PropTypes.object.isRequired,
-    config: React.PropTypes.object.isRequired,
+    config: PropTypes.object.isRequired,
   };
 
   static propTypes = {
-    position: React.PropTypes.object.isRequired,
-    getIcon: React.PropTypes.func.isRequired,
-    id: React.PropTypes.string,
-    renderName: React.PropTypes.bool,
-    name: React.PropTypes.string,
-    children: React.PropTypes.node,
+    shouldRender: PropTypes.func,
+    position: PropTypes.object.isRequired,
+    getIcon: PropTypes.func.isRequired,
+    renderName: PropTypes.bool,
+    name: PropTypes.string,
+    children: PropTypes.node,
+    leaflet: PropTypes.shape({
+      map: PropTypes.shape({
+        getZoom: PropTypes.func.isRequired,
+        on: PropTypes.func.isRequired,
+        off: PropTypes.func.isRequired,
+      }).isRequired,
+    }).isRequired,
   };
 
-  componentDidMount() {
-    this.context.map.on('zoomend', this.onMapMove);
-  }
+  static defaultProps = {
+    shouldRender: () => true,
+  };
 
-  shouldComponentUpdate(nextProps) {
-    return nextProps.id !== this.props.id;
+  state = { zoom: this.props.leaflet.map.getZoom() };
+
+  componentDidMount() {
+    this.props.leaflet.map.on('zoomend', this.onMapMove);
   }
 
   componentWillUnmount() {
-    this.context.map.off('zoomend', this.onMapMove);
+    this.props.leaflet.map.off('zoomend', this.onMapMove);
   }
 
-  onMapMove = () => this.forceUpdate();
+  onMapMove = () => this.setState({ zoom: this.props.leaflet.map.getZoom() });
 
   getMarker = () => (
     <Marker
       position={{ lat: this.props.position.lat, lng: this.props.position.lon }}
-      icon={this.props.getIcon(this.context.map.getZoom())}
+      icon={this.props.getIcon(this.state.zoom)}
     >
       <Popup
         offset={this.context.config.map.genericMarker.popup.offset}
-        closeButton={false}
         maxWidth={this.context.config.map.genericMarker.popup.maxWidth}
         minWidth={this.context.config.map.genericMarker.popup.minWidth}
         className="popup"
@@ -86,7 +95,8 @@ export default class GenericMarker extends React.Component {
   getNameMarker() {
     if (
       !this.props.renderName ||
-      this.context.map.getZoom() < this.context.config.map.genericMarker.nameMarkerMinZoom
+      this.props.leaflet.map.getZoom() <
+        this.context.config.map.genericMarker.nameMarkerMinZoom
     ) {
       return false;
     }
@@ -94,7 +104,10 @@ export default class GenericMarker extends React.Component {
     return (
       <Marker
         key={`${this.props.name}_text`}
-        position={{ lat: this.props.position.lat, lng: this.props.position.lon }}
+        position={{
+          lat: this.props.position.lat,
+          lng: this.props.position.lon,
+        }}
         interactive={false}
         icon={L.divIcon({
           html: `<div>${this.props.name}</div>`,
@@ -111,11 +124,20 @@ export default class GenericMarker extends React.Component {
       return '';
     }
 
+    const { shouldRender } = this.props;
+    const { zoom } = this.state;
+    if (isFunction(shouldRender) && !shouldRender(zoom)) {
+      return null;
+    }
+
     return (
-      <div>
+      <React.Fragment>
         {this.getMarker()}
         {this.getNameMarker()}
-      </div>
+      </React.Fragment>
     );
   }
 }
+
+const leafletComponent = withLeaflet(GenericMarker);
+export { leafletComponent as default, GenericMarker as Component };

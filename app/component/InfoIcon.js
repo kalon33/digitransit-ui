@@ -1,10 +1,12 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router';
 import Icon from './Icon';
 import ComponentUsageExample from './ComponentUsageExample';
+import { PREFIX_STOPS } from '../util/path';
 
 const InfoIcon = ({ stop }) => (
-  <Link href={`/pysakit/${stop.gtfsId}/info`}>
+  <Link href={`/${PREFIX_STOPS}/${stop.gtfsId}/info`}>
     <span className="cursor-pointer">
       <Icon className="info" img="icon-icon_info" />
     </span>
@@ -12,7 +14,7 @@ const InfoIcon = ({ stop }) => (
 );
 
 InfoIcon.propTypes = {
-  stop: React.PropTypes.object.isRequired,
+  stop: PropTypes.object.isRequired,
 };
 
 InfoIcon.displayName = 'InfoIcon';
@@ -24,11 +26,12 @@ const exampleStop = {
   desc: 'Kaivonkatsojantie',
 };
 
-InfoIcon.description = () =>
+InfoIcon.description = () => (
   <div>
     <ComponentUsageExample description="basic">
       <InfoIcon stop={exampleStop} />
     </ComponentUsageExample>
-  </div>;
+  </div>
+);
 
 export default InfoIcon;

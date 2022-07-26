@@ -1,13 +1,11 @@
 module.exports = {
   '@tags': ['itinerary'],
-  'Origin and destination exists in instructions if suggestion is chosen': (browser) => {
+  'Origin and destination exists in instructions if suggestion is chosen': browser => {
     browser.url(browser.launch_url);
-    const splash = browser.page.splash();
-    splash.waitClose();
-//    const messagebar = browser.page.messageBar();
-//    messagebar.close();
 
-    browser.page.searchFields().itinerarySearch('helsingin rautatieasema', 'Narinkkatori');
+    browser.page
+      .searchFields()
+      .itinerarySearch('Helsingin rautatieasema', 'Narinkkatori');
 
     const itinerarySummary = browser.page.itinerarySummary();
     itinerarySummary.waitForFirstItineraryRow();
@@ -15,19 +13,20 @@ module.exports = {
 
     const itineraryInstructions = browser.page.itineraryInstructions();
     itineraryInstructions.waitForFirstItineraryInstructionColumn();
-    itineraryInstructions.verifyOrigin('Helsingin rautatieasema, Helsinki');
-    itineraryInstructions.verifyDestination('Narinkkatori, Helsinki');
+    // test in 2 parts so that helsingin päärautatieasema matches too
+    itineraryInstructions.verifyOrigin('Helsingin');
+    itineraryInstructions.verifyOrigin('rautatieasema');
+
+    itineraryInstructions.verifyDestination('Narinkka');
     browser.end();
   },
 
-  'From Kuninkaanportti to Pohjolanaukio': (browser) => {
+  'From Kuninkaanportti to Pohjolanaukio': browser => {
     browser.url(browser.launch_url);
-    const splash = browser.page.splash();
-    splash.waitClose();
-//    const messagebar = browser.page.messageBar();
-//    messagebar.close();
-    browser.page.searchFields().itinerarySearch('kuninkaanportti', 'Pohjolanaukio');
-    browser.page.itinerarySummary().waitForFirstItineraryRow();
+
+    browser.page
+      .searchFields()
+      .itinerarySearch('kuninkaanportti', 'Pohjolanaukio');
 
     const itinerarySummary = browser.page.itinerarySummary();
     itinerarySummary.waitForFirstItineraryRow();
@@ -39,5 +38,4 @@ module.exports = {
     itineraryInstructions.verifyDestination('Pohjolanaukio');
     browser.end();
   },
-
 };

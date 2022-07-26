@@ -1,125 +1,146 @@
-import React from 'react';
-import Relay from 'react-relay';
-import { FormattedMessage, intlShape } from 'react-intl';
 import moment from 'moment';
-import find from 'lodash/find';
-import upperFirst from 'lodash/upperFirst';
-import connectToStores from 'fluxible-addons-react/connectToStores';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { intlShape } from 'react-intl';
 
-import RouteAlertsRow from './RouteAlertsRow';
+import AlertList from './AlertList';
+import DepartureCancelationInfo from './DepartureCancelationInfo';
+import { DATE_FORMAT } from '../constants';
+import {
+  RouteAlertsWithContentQuery,
+  StopAlertsWithContentQuery,
+} from '../util/alertQueries';
+import {
+  getServiceAlertsForRoute,
+  getServiceAlertsForRouteStops,
+  otpServiceAlertShape,
+  tripHasCancelation,
+} from '../util/alertUtils';
 
+function RouteAlertsContainer({ route, patternId }, { intl }) {
+  const { color, mode, shortName } = route;
 
-const getAlerts = (route, currentTime, intl) => {
-  const routeMode = route.mode.toLowerCase();
-  const routeLine = route.shortName;
-
-  return route.alerts.map((alert) => {
-    // Try to find the alert in user's language, or failing in English, or failing in any language
-    // TODO: This should be a util function that we use everywhere
-    // TODO: We should match to all languages user's browser lists as acceptable
-    let header = find(alert.alertHeaderTextTranslations,
-                      ['language', intl.locale]);
-    if (!header) {
-      header = find(alert.alertHeaderTextTranslations,
-                    ['language', 'en']);
-    }
-    if (!header) {
-      header = alert.alertHeaderTextTranslations[0];
-    }
-    if (header) {
-      header = header.text;
-    }
-
-    // Unfortunately nothing in GTFS-RT specifies that if there's one string in a language then
-    // all other strings would also be available in the same language...
-    let description = find(alert.alertDescriptionTextTranslations,
-                      ['language', intl.locale]);
-    if (!description) {
-      description = find(alert.alertDescriptionTextTranslations,
-                    ['language', 'en']);
-    }
-    if (!description) {
-      description = alert.alertDescriptionTextTranslations[0];
-    }
-    if (description) {
-      description = description.text;
-    }
-
-    const startTime = moment(alert.effectiveStartDate * 1000);
-    const endTime = moment(alert.effectiveEndDate * 1000);
-    const sameDay = startTime.isSame(endTime, 'day');
-
-    return (
-      <RouteAlertsRow
-        key={alert.id}
-        routeMode={routeMode}
-        routeLine={routeLine}
-        header={header}
-        description={description}
-        endTime={sameDay ? intl.formatTime(endTime) : upperFirst(endTime.calendar(currentTime))}
-        startTime={upperFirst(startTime.calendar(currentTime))}
-        expired={startTime > currentTime || currentTime > endTime}
-      />);
-  });
-};
-
-function RouteAlertsContainer({ route, currentTime }, { intl }) {
-  if (route.alerts.length === 0) {
-    return (
-      <div className="no-alerts-message">
-        <FormattedMessage
-          id="disruption-info-no-alerts"
-          defaultMessage="No disruption info."
-        />
-      </div>);
-  }
+  const cancelations = route.patterns
+    .filter(pattern => pattern.code === patternId)
+    .map(pattern => pattern.trips.filter(tripHasCancelation))
+    .reduce((a, b) => a.concat(b), [])
+    .map(trip => {
+      const first = trip.stoptimes[0];
+      const departureTime = first.serviceDay + first.scheduledDeparture;
+      const last = trip.stoptimes[trip.stoptimes.length - 1];
+      return {
+        header: (
+          <DepartureCancelationInfo
+            firstStopName={first.stop.name}
+            headsign={first.headsign || trip.tripHeadsign}
+            routeMode={mode}
+            scheduledDepartureTime={departureTime}
+            shortName={shortName}
+          />
+        ),
+        route: {
+          color,
+          mode,
+          shortName,
+        },
+        validityPeriod: {
+          startTime: departureTime,
+          endTime: last.serviceDay + last.scheduledArrival,
+        },
+      };
+    });
+  const serviceAlerts = [
+    ...getServiceAlertsForRoute(route, patternId, intl.locale),
+    ...getServiceAlertsForRouteStops(route, patternId, intl.locale),
+  ];
 
   return (
-    <div className="route-alerts-list momentum-scroll">
-      {getAlerts(route, currentTime, intl)}
-    </div>);
+    <AlertList
+      showRouteNameLink={false}
+      cancelations={cancelations}
+      serviceAlerts={serviceAlerts}
+    />
+  );
 }
 
 RouteAlertsContainer.propTypes = {
-  route: React.PropTypes.object.isRequired,
-  currentTime: React.PropTypes.object,
+  patternId: PropTypes.string,
+  route: PropTypes.shape({
+    alerts: PropTypes.arrayOf(otpServiceAlertShape).isRequired,
+    color: PropTypes.string,
+    mode: PropTypes.string.isRequired,
+    shortName: PropTypes.string.isRequired,
+    patterns: PropTypes.arrayOf(
+      PropTypes.shape({
+        code: PropTypes.string,
+        stops: PropTypes.arrayOf(
+          PropTypes.shape({
+            alerts: PropTypes.arrayOf(otpServiceAlertShape).isRequired,
+          }),
+        ),
+        trips: PropTypes.arrayOf(
+          PropTypes.shape({
+            tripHeadsign: PropTypes.string,
+            stoptimes: PropTypes.arrayOf(
+              PropTypes.shape({
+                headsign: PropTypes.string,
+                realtimeState: PropTypes.string,
+                scheduledDeparture: PropTypes.number,
+                serviceDay: PropTypes.number,
+                stop: PropTypes.shape({
+                  name: PropTypes.string,
+                }).isRequired,
+              }),
+            ).isRequired,
+          }),
+        ).isRequired,
+      }),
+    ).isRequired,
+  }).isRequired,
+};
+
+RouteAlertsContainer.defaultProps = {
+  patternId: undefined,
 };
 
 RouteAlertsContainer.contextTypes = {
   intl: intlShape,
 };
 
-const RouteAlertsContainerWithTime = connectToStores(
-  RouteAlertsContainer,
-  ['TimeStore'],
-  context => ({
-    currentTime: context.getStore('TimeStore').getCurrentTime(),
-  }),
-);
-
-
-export default Relay.createContainer(RouteAlertsContainerWithTime,
-  {
-    fragments: {
-      route: () => Relay.QL`
-        fragment on Route {
-          mode
-          shortName
-          alerts {
-            id
-            alertHeaderTextTranslations {
-              text
-              language
+const containerComponent = Relay.createContainer(RouteAlertsContainer, {
+  fragments: {
+    route: () => Relay.QL`
+      fragment on Route {
+        color
+        mode
+        shortName
+        ${RouteAlertsWithContentQuery}
+        patterns {
+          code
+          stops {
+            ${StopAlertsWithContentQuery}
+          }
+          trips: tripsForDate(serviceDate: $serviceDay) {
+            tripHeadsign
+            stoptimes: stoptimesForDate(serviceDate: $serviceDay) {
+              headsign
+              realtimeState
+              scheduledArrival
+              scheduledDeparture
+              serviceDay
+              stop {
+                name
+              }
             }
-            alertDescriptionTextTranslations {
-              text
-              language
-            }
-            effectiveStartDate
-            effectiveEndDate
           }
         }
-      `,
-    },
+      }
+    `,
   },
-);
+  initialVariables: {
+    serviceDay: moment().format(DATE_FORMAT),
+  },
+});
+
+export { containerComponent as default, RouteAlertsContainer as Component };

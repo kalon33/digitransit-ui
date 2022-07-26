@@ -1,12 +1,11 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Relay from 'react-relay';
-import { Router } from 'react-router';
-import match from 'react-router/lib/match';
+import Relay from 'react-relay/classic';
+import { Router, match } from 'react-router';
 import IsomorphicRelay from 'isomorphic-relay';
 import IsomorphicRouter from 'isomorphic-relay-router';
 import provideContext from 'fluxible-addons-react/provideContext';
-import tapEventPlugin from 'react-tap-event-plugin';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import debug from 'debug';
@@ -15,20 +14,28 @@ import {
   urlMiddleware,
   gqErrorsMiddleware,
   retryMiddleware,
-} from 'react-relay-network-layer';
+  batchMiddleware,
+} from 'react-relay-network-layer/lib';
 import OfflinePlugin from 'offline-plugin/runtime';
+import Helmet from 'react-helmet';
 
 import Raven from './util/Raven';
+import configureMoment from './util/configure-moment';
 import StoreListeningIntlProvider from './util/StoreListeningIntlProvider';
 import MUITheme from './MuiTheme';
 import appCreator from './app';
 import translations from './translations';
-import { openFeedbackModal } from './action/feedbackActions';
-import { shouldDisplayPopup } from './util/Feedback';
-import { initGeolocation } from './action/PositionActions';
 import historyCreator from './history';
-import { COMMIT_ID, BUILD_TIME } from './buildInfo';
-import Piwik from './util/piwik';
+import { BUILD_TIME } from './buildInfo';
+import ErrorBoundary from './component/ErrorBoundary';
+import oldParamParser from './util/oldParamParser';
+import { ClientProvider as ClientBreakpointProvider } from './util/withBreakpoint';
+import meta from './meta';
+import { isIOSApp } from './util/browser';
+import {
+  initAnalyticsClientSide,
+  addAnalyticsEvent,
+} from './util/analyticsUtils';
 
 const plugContext = f => () => ({
   plugComponentContext: f,
@@ -38,162 +45,228 @@ const plugContext = f => () => ({
 
 window.debug = debug; // Allow _debug.enable('*') in browser console
 
-// Material-ui uses touch tap events
-tapEventPlugin();
-
 // TODO: this is an ugly hack, but required due to cyclical processing in app
-const config = window.state.context.plugins['extra-context-plugin'].config;
+const { config } = window.state.context.plugins['extra-context-plugin'];
 const app = appCreator(config);
+const raven = Raven(config.SENTRY_DSN);
+const addRaven = c => {
+  c.raven = raven; // eslint-disable-line no-param-reassign
+};
+
+const ravenPlugin = {
+  name: 'RavenPlugin',
+  plugContext: plugContext(addRaven),
+};
+
+// Add plugins
+app.plug(ravenPlugin);
+
+const getParams = query => {
+  if (!query) {
+    return {};
+  }
+
+  return query
+    .substring(1)
+    .split('&')
+    .map(v => v.split('='))
+    .reduce((params, [key, value]) => {
+      const newParam = {};
+      newParam[key] = decodeURIComponent(value);
+      return { ...params, ...newParam };
+    }, {});
+};
 
 // Run application
-const callback = () => app.rehydrate(window.state, (err, context) => {
-  if (err) {
-    throw err;
-  }
+const callback = () =>
+  app.rehydrate(window.state, (err, context) => {
+    if (err) {
+      throw err;
+    }
 
-  window.context = context;
+    window.context = context;
+    // For Google Tag Manager
+    initAnalyticsClientSide();
 
-  if (process.env.NODE_ENV === 'development') {
-  // eslint-disable-next-line global-require, import/no-dynamic-require
-    require(`../sass/themes/${config.CONFIG}/main.scss`);
-  }
-
-  const piwik = Piwik.getTracker(config.PIWIK_ADDRESS, config.PIWIK_ID);
-
-  if (!config.PIWIK_ADDRESS || !config.PIWIK_ID || config.PIWIK_ID === '') {
-    piwik.trackEvent = () => {};
-    piwik.setCustomVariable = () => {};
-    piwik.trackPageView = () => {};
-  }
-
-  const addPiwik = c => (c.piwik = piwik); // eslint-disable-line no-param-reassign
-
-  const piwikPlugin = {
-    name: 'PiwikPlugin',
-    plugContext: plugContext(addPiwik),
-  };
-
-  // eslint-disable-next-line no-param-reassign
-  const addRaven = c => (c.raven = Raven(config.SENTRY_DSN));
-
-  const ravenPlugin = {
-    name: 'RavenPlugin',
-    plugContext: plugContext(addRaven),
-  };
-
-  if (typeof window.Raven !== 'undefined' && window.Raven !== null) {
-    window.Raven.setUserContext({ piwik: piwik.getVisitorId() });
-  }
-
-  // Add plugins
-  app.plug(piwikPlugin);
-  app.plug(ravenPlugin);
-
-  Relay.injectNetworkLayer(new RelayNetworkLayer([
-    urlMiddleware({
-      url: `${config.URL.OTP}index/graphql`,
-      batchUrl: `${config.URL.OTP}index/graphql/batch`,
-    }),
-    gqErrorsMiddleware(),
-    retryMiddleware(),
-  ], { disableBatchQuery: false }));
-
-  IsomorphicRelay.injectPreparedData(
-    Relay.Store,
-    JSON.parse(document.getElementById('relayData').textContent),
-  );
-
-  context
-    .getComponentContext()
-    .getStore('MessageStore')
-    .addConfigMessages(config);
-
-  const history = historyCreator(config);
-
-  function track() {
-    // track "getting back to home"
-    const newHref = this.props.history.createHref(this.state.location);
-
-    if (this.href !== undefined && newHref === '/' && this.href !== newHref) {
-      if (config.feedback.enable && shouldDisplayPopup(
-        context
-          .getComponentContext()
-          .getStore('TimeStore')
-          .getCurrentTime()
-          .valueOf(),
-        )
-      ) {
-        context.executeAction(openFeedbackModal);
+    if (process.env.NODE_ENV === 'development') {
+      try {
+        // eslint-disable-next-line global-require, import/no-dynamic-require
+        require(`../sass/themes/${config.CONFIG}/main.scss`);
+      } catch (error) {
+        // eslint-disable-next-line global-require, import/no-dynamic-require
+        require('../sass/themes/default/main.scss');
       }
     }
 
-    this.href = newHref;
-    piwik.setCustomUrl(this.props.history.createHref(this.state.location));
-    piwik.trackPageView();
-  }
+    Relay.injectNetworkLayer(
+      new RelayNetworkLayer([
+        urlMiddleware({
+          url: `${config.URL.OTP}index/graphql`,
+        }),
+        batchMiddleware({
+          batchUrl: `${config.URL.OTP}index/graphql/batch`,
+        }),
+        gqErrorsMiddleware(),
+        retryMiddleware({
+          fetchTimeout: config.OTPTimeout + 1000,
+        }),
+        next => req => {
+          // eslint-disable-next-line no-param-reassign
+          req.headers.OTPTimeout = config.OTPTimeout;
+          return next(req);
+        },
+      ]),
+    );
 
-  const ContextProvider = provideContext(StoreListeningIntlProvider, {
-    piwik: React.PropTypes.object,
-    raven: React.PropTypes.object,
-    url: React.PropTypes.string,
-    config: React.PropTypes.object,
-    headers: React.PropTypes.object,
-  });
+    IsomorphicRelay.injectPreparedData(
+      Relay.Store,
+      JSON.parse(document.getElementById('relayData').textContent),
+    );
 
-  // init geolocation handling
-  context.executeAction(initGeolocation).then(() => {
-    match({ routes: app.getComponent(), history }, (error, redirectLocation, renderProps) => {
-      IsomorphicRouter.prepareInitialRender(Relay.Store, renderProps).then((props) => {
-        ReactDOM.render(
-          <ContextProvider translations={translations} context={context.getComponentContext()}>
-            <MuiThemeProvider
-              muiTheme={getMuiTheme(MUITheme(config), { userAgent: navigator.userAgent })}
-            >
-              <Router {...props} onUpdate={track} />
-            </MuiThemeProvider>
-          </ContextProvider>,
-          document.getElementById('app'),
-          () => {
-            // Run only in production mode and when built in a docker container
-            if (process.env.NODE_ENV === 'production' && BUILD_TIME !== 'unset') {
-              OfflinePlugin.install();
-            }
-          },
+    context
+      .getComponentContext()
+      .getStore('MessageStore')
+      .addConfigMessages(config);
+
+    const language = context
+      .getComponentContext()
+      .getStore('PreferencesStore')
+      .getLanguage();
+
+    configureMoment(language, config);
+
+    const path = window.location.pathname;
+    const history = historyCreator(config, path);
+
+    if (config.redirectReittiopasParams) {
+      const query = getParams(window.location.search);
+
+      if (query.from || query.to || query.from_in || query.to_in) {
+        oldParamParser(query, config).then(redirectUrl =>
+          window.location.replace(redirectUrl),
         );
+      } else if (['/fi/', '/en/', '/sv/', '/ru/', '/slangi/'].includes(path)) {
+        window.location.replace('/');
+      }
+    }
+    // send tracking call for initial page load.
+    // tracking page changes is done in TopLevel component
+    addAnalyticsEvent({
+      event: 'Pageview',
+      url: path,
+    });
+
+    const ContextProvider = provideContext(StoreListeningIntlProvider, {
+      raven: PropTypes.object,
+      config: PropTypes.object,
+      headers: PropTypes.object,
+    });
+
+    match(
+      { routes: app.getComponent(), history },
+      (error, redirectLocation, renderProps) => {
+        if (redirectLocation) {
+          window.location.replace(
+            redirectLocation.pathname + redirectLocation.search,
+          );
+        } else {
+          IsomorphicRouter.prepareInitialRender(Relay.Store, renderProps).then(
+            props => {
+              const root = document.getElementById('app');
+              const { initialBreakpoint } = root.dataset;
+
+              // KLUDGE: SSR and CSR mismatch breaks the UI in iOS PWA mode
+              // see: https://github.com/facebook/react/issues/11336
+              if (isIOSApp) {
+                root.innerHTML = '';
+              }
+
+              const content = (
+                <ClientBreakpointProvider
+                  serverGuessedBreakpoint={initialBreakpoint}
+                >
+                  <ContextProvider
+                    translations={translations}
+                    context={context.getComponentContext()}
+                  >
+                    <ErrorBoundary>
+                      <MuiThemeProvider
+                        muiTheme={getMuiTheme(MUITheme(config), {
+                          userAgent: navigator.userAgent,
+                        })}
+                      >
+                        <React.Fragment>
+                          <Helmet
+                            {...meta(
+                              context
+                                .getStore('PreferencesStore')
+                                .getLanguage(),
+                              window.location.host,
+                              window.location.href,
+                              config,
+                            )}
+                          />
+                          <Router {...props} />
+                        </React.Fragment>
+                      </MuiThemeProvider>
+                    </ErrorBoundary>
+                  </ContextProvider>
+                </ClientBreakpointProvider>
+              );
+
+              ReactDOM.hydrate(content, root, () => {
+                // Run only in production mode and when built in a docker container
+                if (
+                  process.env.NODE_ENV === 'production' &&
+                  BUILD_TIME !== 'unset'
+                ) {
+                  OfflinePlugin.install({
+                    onUpdateReady: () => OfflinePlugin.applyUpdate(),
+                  });
+                }
+              });
+            },
+          );
+        }
+      },
+    );
+
+    // Listen for Web App Install Banner events
+    window.addEventListener('beforeinstallprompt', e => {
+      addAnalyticsEvent({
+        event: 'sendMatomoEvent',
+        category: 'installprompt',
+        action: 'fired',
+        name: 'fired',
       });
+
+      // e.userChoice will return a Promise. (Only in chrome, not IE)
+      if (e.userChoice) {
+        e.userChoice.then(choiceResult =>
+          addAnalyticsEvent({
+            event: 'sendMatomoEvent',
+            category: 'installprompt',
+            action: 'result',
+            name: choiceResult.outcome,
+          }),
+        );
+      }
     });
   });
 
-  // Listen for Web App Install Banner events
-  window.addEventListener('beforeinstallprompt', (e) => {
-    piwik.trackEvent('installprompt', 'fired');
-
-    // e.userChoice will return a Promise. (Only in chrome, not IE)
-    if (e.userChoice) {
-      e.userChoice.then(choiceResult =>
-        piwik.trackEvent('installprompt', 'result', choiceResult.outcome),
-      );
-    }
-  });
-
-  piwik.enableLinkTracking();
-
-  // Send perf data after React has compared real and shadow DOMs
-  // and started positioning
-  piwik.setCustomVariable(4, 'commit_id', COMMIT_ID, 'visit');
-  piwik.setCustomVariable(5, 'build_time', BUILD_TIME, 'visit');
-});
-
-// Guard againist Samsung et.al. which are not properly polyfilled by polyfill-service
+// Guard againist Samsung et.al. which are not properly polyfilled by polyfill-library
 if (typeof window.Intl !== 'undefined') {
   callback();
 } else {
-  const modules = [System.import('intl')];
+  const modules = [
+    import(/* webpackChunkName: "intl",  webpackMode: "lazy" */ 'intl'),
+  ];
 
-  // TODO: re-enable this
-  // config.availableLanguages.forEach((language) => {
-  //  modules.push(System.import(`intl/locale-data/jsonp/${language}`));
-  // });
+  config.availableLanguages.forEach(language => {
+    modules.push(
+      import(/* webpackChunkName: "intl",  webpackMode: "lazy-once" */ `intl/locale-data/jsonp/${language}`),
+    );
+  });
 
   Promise.all(modules).then(callback);
 }

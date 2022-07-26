@@ -1,5 +1,6 @@
+import PropTypes from 'prop-types';
 import React from 'react';
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic';
 import MarkerPopupBottom from '../MarkerPopupBottom';
 import CityBikeContent from '../../CityBikeContent';
 import CityBikeCardContainer from '../../CityBikeCardContainer';
@@ -8,7 +9,7 @@ import ComponentUsageExample from '../../ComponentUsageExample';
 
 class CityBikePopup extends React.Component {
   static contextTypes = {
-    getStore: React.PropTypes.func.isRequired,
+    getStore: PropTypes.func.isRequired,
   };
 
   static description = (
@@ -19,19 +20,22 @@ class CityBikePopup extends React.Component {
           Im content of a citybike card
         </CityBikePopup>
       </ComponentUsageExample>
-    </div>);
+    </div>
+  );
 
   static displayName = 'CityBikePopup';
 
   static propTypes = {
-    station: React.PropTypes.object.isRequired,
-    context: React.PropTypes.object.isRequired,
+    station: PropTypes.object.isRequired,
   };
 
   render() {
     return (
       <div className="card">
-        <CityBikeCardContainer className="padding-small" station={this.props.station}>
+        <CityBikeCardContainer
+          className="card-padding"
+          station={this.props.station}
+        >
           <CityBikeContent
             lang={this.context.getStore('PreferencesStore').getLanguage()}
             station={this.props.station}
@@ -59,6 +63,8 @@ export default Relay.createContainer(CityBikePopup, {
         lon
         bikesAvailable
         spacesAvailable
+        state
+        networks
       }
     `,
   },

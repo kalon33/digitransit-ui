@@ -1,51 +1,78 @@
+import moment from 'moment';
+import PropTypes from 'prop-types';
 import React from 'react';
-import Relay from 'react-relay';
-import StopCardContainer from '../../StopCardContainer';
+import Relay from 'react-relay/classic';
+import connectToStores from 'fluxible-addons-react/connectToStores';
+
+import PopupMock from './PopupMock';
 import MarkerPopupBottom from '../MarkerPopupBottom';
+import StopCardContainer from '../../StopCardContainer';
+import ComponentUsageExample from '../../ComponentUsageExample';
+
+import mockData from './StopMarkerPopup.mockdata';
 
 const NUMBER_OF_DEPARTURES = 5;
 const STOP_TIME_RANGE = 12 * 60 * 60;
 const TERMINAL_TIME_RANGE = 60 * 60;
 
-function StopMarkerPopup(props) {
-  const stop = props.stop || props.terminal;
-  const terminal = props.terminal !== null;
+class StopMarkerPopup extends React.PureComponent {
+  componentWillReceiveProps({ relay, currentTime }) {
+    const currUnix = this.props.currentTime;
+    if (currUnix !== currentTime) {
+      relay.setVariables({ currentTime: currUnix });
+    }
+  }
 
-  return (
-    <div className="card">
-      <StopCardContainer
-        stop={stop}
-        numberOfDepartures={(terminal ? 3 : 1) * NUMBER_OF_DEPARTURES}
-        startTime={props.relay.variables.currentTime}
-        isTerminal={terminal}
-        timeRange={terminal ? TERMINAL_TIME_RANGE : STOP_TIME_RANGE}
-        limit={NUMBER_OF_DEPARTURES}
-        className="padding-small cursor-pointer"
-      />
-      <MarkerPopupBottom
-        location={{
-          address: stop.name,
-          lat: stop.lat,
-          lon: stop.lon,
-        }}
-      />
-    </div>
-  );
+  render() {
+    const { relay, stop, terminal } = this.props;
+    const entity = stop || terminal;
+    const isTerminal = terminal !== null;
+
+    return (
+      <div className="card">
+        <StopCardContainer
+          stop={entity}
+          numberOfDepartures={(isTerminal ? 3 : 1) * NUMBER_OF_DEPARTURES}
+          startTime={relay.variables.currentTime}
+          isTerminal={isTerminal}
+          timeRange={isTerminal ? TERMINAL_TIME_RANGE : STOP_TIME_RANGE}
+          limit={NUMBER_OF_DEPARTURES}
+          isPopUp
+          className="card-padding"
+        />
+        <MarkerPopupBottom
+          location={{
+            address: entity.name,
+            lat: entity.lat,
+            lon: entity.lon,
+          }}
+        />
+      </div>
+    );
+  }
 }
 
 StopMarkerPopup.propTypes = {
-  stop: React.PropTypes.object,
-  terminal: React.PropTypes.object,
-  relay: React.PropTypes.shape({
-    variables: React.PropTypes.shape({
-      currentTime: React.PropTypes.string.isRequired,
+  stop: PropTypes.object,
+  terminal: PropTypes.object,
+  currentTime: PropTypes.number.isRequired,
+  relay: PropTypes.shape({
+    variables: PropTypes.shape({
+      currentTime: PropTypes.number.isRequired,
     }).isRequired,
+    setVariables: PropTypes.func.isRequired,
   }).isRequired,
 };
 
-export default Relay.createContainer(StopMarkerPopup, {
-  fragments: {
-    stop: ({ currentTime }) => Relay.QL`
+const StopMarkerPopupContainer = Relay.createContainer(
+  connectToStores(StopMarkerPopup, ['TimeStore'], ({ getStore }) => ({
+    currentTime: getStore('TimeStore')
+      .getCurrentTime()
+      .unix(),
+  })),
+  {
+    fragments: {
+      stop: ({ currentTime }) => Relay.QL`
       fragment on Stop{
         gtfsId
         lat
@@ -58,7 +85,7 @@ export default Relay.createContainer(StopMarkerPopup, {
         })}
       }
     `,
-    terminal: ({ currentTime }) => Relay.QL`
+      terminal: ({ currentTime }) => Relay.QL`
       fragment on Stop{
         gtfsId
         lat
@@ -72,8 +99,72 @@ export default Relay.createContainer(StopMarkerPopup, {
         })}
       }
     `,
+    },
+    initialVariables: {
+      currentTime: 0,
+    },
   },
-  initialVariables: {
-    currentTime: 0,
+);
+
+StopMarkerPopupContainer.displayName = 'StopMarkerPopup';
+
+const getTimeProps = currentTime => ({
+  currentTime,
+  relay: {
+    variables: { currentTime },
+    setVariables: () => {},
   },
 });
+
+StopMarkerPopupContainer.description = () => (
+  <div>
+    <ComponentUsageExample description="empty">
+      <PopupMock size="small">
+        <StopMarkerPopup
+          {...mockData.empty}
+          {...getTimeProps(moment().unix())}
+        />
+      </PopupMock>
+    </ComponentUsageExample>
+    <ComponentUsageExample description="basic">
+      <PopupMock>
+        <StopMarkerPopup
+          {...mockData.basic}
+          {...getTimeProps(mockData.currentTime)}
+        />
+      </PopupMock>
+    </ComponentUsageExample>
+    <ComponentUsageExample description="withInfo">
+      <PopupMock size="small">
+        <StopMarkerPopup
+          stop={{
+            ...mockData.empty.stop,
+            alerts: [
+              {
+                alertSeverityLevel: 'INFO',
+              },
+            ],
+          }}
+          {...getTimeProps(moment().unix())}
+        />
+      </PopupMock>
+    </ComponentUsageExample>
+    <ComponentUsageExample description="withDisruption">
+      <PopupMock size="small">
+        <StopMarkerPopup
+          stop={{
+            ...mockData.empty.stop,
+            alerts: [
+              {
+                alertSeverityLevel: 'WARNING',
+              },
+            ],
+          }}
+          {...getTimeProps(moment().unix())}
+        />
+      </PopupMock>
+    </ComponentUsageExample>
+  </div>
+);
+
+export default StopMarkerPopupContainer;

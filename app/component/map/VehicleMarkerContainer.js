@@ -1,177 +1,204 @@
-import React, { PropTypes } from 'react';
-import Relay from 'react-relay';
-import provideContext from 'fluxible-addons-react/provideContext';
-import { intlShape } from 'react-intl';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Relay from 'react-relay/classic';
+import connectToStores from 'fluxible-addons-react/connectToStores';
 
-import { startRealTimeClient, stopRealTimeClient } from '../../action/realTimeClientAction';
-import RouteMarkerPopup from './route/RouteMarkerPopup';
+import TripMarkerPopup from './route/TripMarkerPopup';
+import FuzzyTripMarkerPopup from './route/FuzzyTripMarkerPopup';
+import TripRoute from '../../route/TripRoute';
 import FuzzyTripRoute from '../../route/FuzzyTripRoute';
-import { asString as iconAsString } from '../IconWithTail';
+import IconWithTail from '../IconWithTail';
+import IconMarker from './IconMarker';
+import Loading from '../Loading';
 
 import { isBrowser } from '../../util/browser';
 
 const MODES_WITH_ICONS = ['bus', 'tram', 'rail', 'subway', 'ferry'];
 
 let Popup;
-let Marker;
-let L;
 
-function getVehicleIcon(mode, heading, useSmallIcon = false) {
+function getVehicleIcon(
+  mode,
+  heading,
+  vehicleNumber,
+  useSmallIcon = false,
+  useLargeIcon = false,
+) {
   if (!isBrowser) {
     return null;
   }
-
+  if (!mode) {
+    return useLargeIcon
+      ? {
+          element: (
+            <IconWithTail
+              img="icon-icon_all-vehicles-large"
+              rotate={heading}
+              allVehicles
+              vehicleNumber={vehicleNumber}
+              useLargeIcon={useLargeIcon}
+            />
+          ),
+          className: `vehicle-icon bus ${useSmallIcon ? 'small-map-icon' : ''}`,
+          iconSize: [20, 20],
+          iconAnchor: [10, 10],
+        }
+      : {
+          element: (
+            <IconWithTail
+              img="icon-icon_all-vehicles-small"
+              rotate={heading}
+              allVehicles
+            />
+          ),
+          className: `vehicle-icon bus ${useSmallIcon ? 'small-map-icon' : ''}`,
+          iconSize: [20, 20],
+          iconAnchor: [10, 10],
+        };
+  }
   if (MODES_WITH_ICONS.indexOf(mode) !== -1) {
-    return L.divIcon({
-      html: iconAsString({ img: `icon-icon_${mode}-live`, rotate: heading }),
+    return {
+      element: <IconWithTail img={`icon-icon_${mode}-live`} rotate={heading} />,
       className: `vehicle-icon ${mode} ${useSmallIcon ? 'small-map-icon' : ''}`,
       iconSize: [20, 20],
       iconAnchor: [10, 10],
-    });
+    };
   }
 
-  return L.divIcon({
-    html: iconAsString({ img: 'icon-icon_bus-live', rotate: heading }),
+  return {
+    element: <IconWithTail img="icon-icon_bus-live" rotate={heading} />,
     className: `vehicle-icon bus ${useSmallIcon ? 'small-map-icon' : ''}`,
     iconSize: [20, 20],
     iconAnchor: [10, 10],
-  });
+  };
 }
-
 
 if (isBrowser) {
   /* eslint-disable global-require */
-  Popup = require('react-leaflet/lib/Popup').default;
-  Marker = require('react-leaflet/lib/Marker').default;
-  L = require('leaflet');
+  Popup = require('react-leaflet/es/Popup').default;
   /* eslint-enable global-require */
 }
 
-const RouteMarkerPopupWithContext = provideContext(RouteMarkerPopup, {
-  intl: intlShape.isRequired,
-  router: PropTypes.object.isRequired,
-  config: React.PropTypes.object.isRequired,
-});
+// if tripStartTime has been specified,
+// use only the updates for vehicles with matching startTime
 
-export default class VehicleMarkerContainer extends React.PureComponent {
-  static contextTypes = {
-    getStore: PropTypes.func.isRequired,
-    executeAction: PropTypes.func.isRequired,
-    router: PropTypes.object.isRequired,
-    config: React.PropTypes.object.isRequired,
-  };
+function shouldShowVehicle(message, direction, tripStart, pattern, headsign) {
+  return (
+    !Number.isNaN(parseFloat(message.lat)) &&
+    !Number.isNaN(parseFloat(message.long)) &&
+    (pattern === undefined ||
+      pattern.substr(0, message.route.length) === message.route) &&
+    (headsign === undefined ||
+      message.headsign === undefined ||
+      headsign === message.headsign) &&
+    (direction === undefined ||
+      message.direction === undefined ||
+      message.direction === direction) &&
+    (tripStart === undefined ||
+      message.tripStartTime === undefined ||
+      message.tripStartTime === tripStart)
+  );
+}
 
-  static propTypes = {
-    startRealTimeClient: PropTypes.bool,
-    tripStart: PropTypes.string,
-    direction: PropTypes.number,
-    useSmallIcons: PropTypes.bool,
-  }
-
-  componentWillMount() {
-    this.context.getStore('RealTimeInformationStore').addChangeListener(this.onChange);
-
-    if (this.props.startRealTimeClient) {
-      this.context.executeAction(startRealTimeClient);
-    }
-  }
-
-  componentWillReceiveProps(newProps) {
-    // Reset vehicles when recieving new props
-    this.vehicles = {};
-    this.updateVehicles(newProps);
-  }
-
-  componentWillUnmount() {
-    if (
-      this.props.startRealTimeClient && this.context.getStore('RealTimeInformationStore').client
-    ) {
-      this.context.executeAction(stopRealTimeClient(
-        this.context.getStore('RealTimeInformationStore').client,
-      ));
-    }
-    this.context.getStore('RealTimeInformationStore').removeChangeListener(this.onChange);
-  }
-
-  onChange = (id) => {
-    const message = this.context.getStore('RealTimeInformationStore').getVehicle(id);
-    if (this.shouldVehicleUpdate(message)) {
-      this.updateVehicle(id, message);
-      this.forceUpdate();
-    }
-  }
-
-  updateVehicles(newProps) {
-    const vehicles = this.context.getStore('RealTimeInformationStore').vehicles;
-
-    Object.keys(vehicles).forEach((id) => {
-      // if tripStartTime has been specified,
-      // use only the updates for vehicles with matching startTime
-      const message = vehicles[id];
-      if (this.shouldVehicleUpdate(message, newProps)) {
-        this.updateVehicle(id, message);
-      }
-    });
-  }
-
-  // if tripStartTime has been specified,
-  // use only the updates for vehicles with matching startTime
-  shouldVehicleUpdate(message, props = this.props) {
-    return (
-      (props.direction === undefined || message.direction === props.direction) &&
-      (props.tripStart === undefined || message.tripStartTime === props.tripStart)
-    );
-  }
-
-  vehicles = {};
-
-  updateVehicle(id, message) {
-    const popup = (
-      <Relay.RootContainer
-        Component={RouteMarkerPopup}
-        route={new FuzzyTripRoute({
-          route: message.route,
-          direction: message.direction,
-          date: message.operatingDay,
-          time:
-            (message.tripStartTime.substring(0, 2) * 60 * 60) +
-            (message.tripStartTime.substring(2, 4) * 60),
-        })}
-        renderLoading={() => (
-          <div className="card" style={{ height: '12rem' }}><div className="spinner-loader" /></div>
-        )}
-        renderFetched={data => (
-          <RouteMarkerPopupWithContext {...data} message={message} context={this.context} />
-        )}
-      />);
-
-    this.vehicles[id] = (
-      <Marker
+function VehicleMarkerContainer(props) {
+  return Object.entries(props.vehicles)
+    .filter(([, message]) =>
+      shouldShowVehicle(
+        message,
+        props.direction,
+        props.tripStart,
+        props.pattern,
+        props.headsign,
+      ),
+    )
+    .map(([id, message]) => (
+      <IconMarker
         key={id}
         position={{
           lat: message.lat,
-          lng: message.long,
+          lon: message.long,
         }}
-        icon={getVehicleIcon(message.mode, message.heading, this.props.useSmallIcons)}
+        zIndexOffset={100}
+        icon={getVehicleIcon(
+          props.ignoreMode ? null : message.mode,
+          message.heading,
+          message.shortName ? message.shortName : message.route.split(':')[1],
+          false,
+          props.useLargeIcon,
+        )}
       >
         <Popup
-          offset={[106, 16]}
-          closeButton={false}
+          offset={[106, 0]}
           maxWidth={250}
           minWidth={250}
-          className="popup"
+          className="vehicle-popup"
         >
-          {popup}
+          <Relay.RootContainer
+            Component={message.tripId ? TripMarkerPopup : FuzzyTripMarkerPopup}
+            route={
+              message.tripId
+                ? new TripRoute({ route: message.route, id: message.tripId })
+                : new FuzzyTripRoute({
+                    route: message.route,
+                    direction: message.direction,
+                    date: message.operatingDay,
+                    time:
+                      message.tripStartTime.substring(0, 2) * 60 * 60 +
+                      message.tripStartTime.substring(2, 4) * 60,
+                  })
+            }
+            renderLoading={() => (
+              <div className="card" style={{ height: '12rem' }}>
+                <Loading />
+              </div>
+            )}
+            renderFetched={data =>
+              message.tripId ? (
+                <TripMarkerPopup {...data} message={message} />
+              ) : (
+                <FuzzyTripMarkerPopup {...data} message={message} />
+              )
+            }
+          />
         </Popup>
-      </Marker>
-    );
-  }
-
-  render() {
-    return (
-      <div>
-        {Object.keys(this.vehicles).map(key => this.vehicles[key])}
-      </div>
-    );
-  }
+      </IconMarker>
+    ));
 }
+
+VehicleMarkerContainer.propTypes = {
+  tripStart: PropTypes.string,
+  headsign: PropTypes.string,
+  direction: PropTypes.number,
+  ignoreMode: PropTypes.bool,
+  vehicles: PropTypes.objectOf(
+    PropTypes.shape({
+      direction: PropTypes.number,
+      tripStartTime: PropTypes.string,
+      mode: PropTypes.string.isRequired,
+      heading: PropTypes.number,
+      lat: PropTypes.number.isRequired,
+      long: PropTypes.number.isRequired,
+    }).isRequired,
+  ).isRequired,
+};
+
+VehicleMarkerContainer.defaultProps = {
+  tripStart: undefined,
+  direction: undefined,
+};
+
+const connectedComponent = connectToStores(
+  VehicleMarkerContainer,
+  ['RealTimeInformationStore'],
+  (context, props) => ({
+    ...props,
+    vehicles: context.getStore('RealTimeInformationStore').vehicles,
+  }),
+);
+
+export {
+  connectedComponent as default,
+  VehicleMarkerContainer as Component,
+  shouldShowVehicle,
+  getVehicleIcon,
+};

@@ -1,38 +1,58 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { intlShape } from 'react-intl';
+import { routerShape } from 'react-router';
 
+import ComponentUsageExample from './ComponentUsageExample';
 import Icon from './Icon';
-import { openFeedbackModal } from '../action/feedbackActions';
 import LazilyLoad, { importLazy } from './LazilyLoad';
-
+import { addAnalyticsEvent } from '../util/analyticsUtils';
 
 class MainMenuContainer extends Component {
   static contextTypes = {
     executeAction: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
-    piwik: PropTypes.object,
-    router: PropTypes.object.isRequired,
+    router: routerShape.isRequired,
     intl: intlShape.isRequired,
-    config: React.PropTypes.object.isRequired,
+    config: PropTypes.object.isRequired,
+  };
+
+  static propTypes = {
+    homeUrl: PropTypes.string.isRequired,
+    isOpen: PropTypes.bool,
+    user: PropTypes.object,
+  };
+
+  static defaultProps = {
+    isOpen: false,
+  };
+
+  mainMenuModules = {
+    Drawer: () => importLazy(import('material-ui/Drawer')),
+    MainMenu: () => importLazy(import('./MainMenu')),
   };
 
   onRequestChange = newState => this.internalSetOffcanvas(newState);
 
   getOffcanvasState = () => {
-    if (this.context.location.state != null &&
-        this.context.location.state.offcanvasVisible != null) {
+    if (
+      this.context.location.state != null &&
+      this.context.location.state.offcanvasVisible != null
+    ) {
       return this.context.location.state.offcanvasVisible;
     }
     // If the state is missing or doesn't have offcanvasVisible, it's not set
     return false;
-  }
+  };
 
   toggleOffcanvas = () => this.internalSetOffcanvas(!this.getOffcanvasState());
 
-  internalSetOffcanvas = (newState) => {
-    if (this.context.piwik != null) {
-      this.context.piwik.trackEvent('Offcanvas', 'Index', newState ? 'open' : 'close');
-    }
+  internalSetOffcanvas = newState => {
+    addAnalyticsEvent({
+      category: 'Navigation',
+      action: newState ? 'OpenMobileMenu' : 'CloseMobileMenu',
+      name: null,
+    });
 
     if (newState) {
       this.context.router.push({
@@ -45,37 +65,30 @@ class MainMenuContainer extends Component {
     } else {
       this.context.router.goBack();
     }
-  }
+  };
 
-  openFeedback = () => {
-    this.context.executeAction(openFeedbackModal);
-    this.toggleOffcanvas();
-  }
-
-  mainMenuModules = {
-    Drawer: () => importLazy(System.import('material-ui/Drawer')),
-    MainMenu: () => importLazy(System.import('./MainMenu')),
-  }
-
-  render() {
+  render = () => {
+    const isOpen = this.getOffcanvasState() || this.props.isOpen;
+    const isForcedOpen = this.props.isOpen;
     return (
-      <div>
+      <React.Fragment>
         <LazilyLoad modules={this.mainMenuModules}>
           {({ Drawer, MainMenu }) => (
             <Drawer
               className="offcanvas"
               disableSwipeToOpen
-              ref="leftNav"
               docked={false}
-              open={this.getOffcanvasState()}
+              open={isOpen}
               openSecondary
               onRequestChange={this.onRequestChange}
+              style={{ position: 'absolute' }}
             >
               <MainMenu
-                openFeedback={this.openFeedback}
                 toggleVisibility={this.toggleOffcanvas}
-                showDisruptionInfo={this.getOffcanvasState()}
-                visible={this.getOffcanvasState()}
+                showDisruptionInfo={isOpen && !isForcedOpen}
+                visible={isOpen}
+                homeUrl={this.props.homeUrl}
+                user={this.props.user}
               />
             </Drawer>
           )}
@@ -90,12 +103,19 @@ class MainMenuContainer extends Component {
               onClick={this.toggleOffcanvas}
               className="noborder cursor-pointer"
             >
-              <Icon img={'icon-icon_menu'} className="icon" />
+              <Icon img="icon-icon_menu" className="icon" />
             </button>
           </div>
         ) : null}
-      </div>);
-  }
+      </React.Fragment>
+    );
+  };
 }
+
+MainMenuContainer.description = (
+  <ComponentUsageExample isFullscreen>
+    <MainMenuContainer homeUrl="" isOpen />
+  </ComponentUsageExample>
+);
 
 export default MainMenuContainer;

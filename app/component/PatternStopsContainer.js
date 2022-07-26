@@ -1,27 +1,32 @@
+import PropTypes from 'prop-types';
 import React from 'react';
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic';
 import some from 'lodash/some';
-
+import { routerShape } from 'react-router';
 import RouteListHeader from './RouteListHeader';
 import RouteStopListContainer from './RouteStopListContainer';
+import withBreakpoint from '../util/withBreakpoint';
 
-class PatternStopsContainer extends React.Component {
+class PatternStopsContainer extends React.PureComponent {
   static propTypes = {
-    pattern: React.PropTypes.shape({
-      code: React.PropTypes.string.isRequired,
+    pattern: PropTypes.shape({
+      code: PropTypes.string.isRequired,
     }).isRequired,
-    routes: React.PropTypes.arrayOf(React.PropTypes.shape({
-      fullscreenMap: React.PropTypes.bool,
-    }).isRequired).isRequired,
-    location: React.PropTypes.shape({
-      pathname: React.PropTypes.string.isRequired,
+    routes: PropTypes.arrayOf(
+      PropTypes.shape({
+        fullscreenMap: PropTypes.bool,
+      }).isRequired,
+    ).isRequired,
+    location: PropTypes.shape({
+      pathname: PropTypes.string.isRequired,
     }).isRequired,
-  }
+    breakpoint: PropTypes.string.isRequired,
+  };
 
   static contextTypes = {
-    router: React.PropTypes.object.isRequired,
-    breakpoint: React.PropTypes.string.isRequired,
-  }
+    router: routerShape.isRequired,
+    config: PropTypes.object.isRequired,
+  };
 
   toggleFullscreenMap = () => {
     if (some(this.props.routes, route => route.fullscreenMap)) {
@@ -29,14 +34,16 @@ class PatternStopsContainer extends React.Component {
       return;
     }
     this.context.router.push(`${this.props.location.pathname}/kartta`);
-  }
+  };
 
   render() {
-    if (!this.props.pattern) return false;
+    if (!this.props.pattern) {
+      return false;
+    }
 
     if (
       some(this.props.routes, route => route.fullscreenMap) &&
-      this.context.breakpoint !== 'large'
+      this.props.breakpoint !== 'large'
     ) {
       return <div className="route-page-content" />;
     }
@@ -45,7 +52,8 @@ class PatternStopsContainer extends React.Component {
       <div className="route-page-content">
         <RouteListHeader
           key="header"
-          className={this.context.breakpoint === 'large' && 'bp-large'}
+          displayNextDeparture={this.context.config.displayNextDeparture}
+          className={`bp-${this.props.breakpoint}`}
         />
         <RouteStopListContainer
           key="list"
@@ -57,7 +65,7 @@ class PatternStopsContainer extends React.Component {
   }
 }
 
-export default Relay.createContainer(PatternStopsContainer, {
+export default Relay.createContainer(withBreakpoint(PatternStopsContainer), {
   initialVariables: {
     patternId: null,
   },

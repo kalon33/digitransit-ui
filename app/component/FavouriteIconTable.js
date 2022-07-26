@@ -1,23 +1,25 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
 import ComponentUsageExample from './ComponentUsageExample';
 import GenericTable from './GenericTable';
 import Icon from './Icon';
 
-const FavouriteIconTable = ({ favouriteIconIds, selectedIconId, handleClick }) => {
-  const columnWidth = {
-    width: `${100 / favouriteIconIds.length}%`,
-  };
-
+const FavouriteIconTable = ({
+  favouriteIconIds,
+  selectedIconId,
+  handleClick,
+}) => {
   const columns = favouriteIconIds.map(value => (
-    <div
+    <button
       key={value}
-      className={cx('favourite-icon-table-column', { 'selected-icon': value === selectedIconId })}
-      style={columnWidth}
+      className={cx('favourite-icon-table-column', {
+        'selected-icon': value === selectedIconId,
+      })}
       onClick={() => handleClick(value)}
     >
       <Icon img={value} />
-    </div>
+    </button>
   ));
 
   return <GenericTable showLabels={false}>{columns}</GenericTable>;
@@ -25,18 +27,19 @@ const FavouriteIconTable = ({ favouriteIconIds, selectedIconId, handleClick }) =
 
 FavouriteIconTable.displayName = 'FavouriteIconTable';
 
-FavouriteIconTable.description = () =>
+FavouriteIconTable.description = () => (
   <div>
     <p>Renders a score table</p>
     <ComponentUsageExample description="">
       <FavouriteIconTable handleClick={() => {}} />
     </ComponentUsageExample>
-  </div>;
+  </div>
+);
 
 FavouriteIconTable.propTypes = {
-  handleClick: React.PropTypes.func.isRequired,
-  favouriteIconIds: React.PropTypes.array,
-  selectedIconId: React.PropTypes.string,
+  handleClick: PropTypes.func.isRequired,
+  favouriteIconIds: PropTypes.array,
+  selectedIconId: PropTypes.string,
 };
 
 export default FavouriteIconTable;

@@ -1,28 +1,49 @@
 module.exports = {
   'parser': 'babel-eslint',
-  'parserOptions': {
-    'ecmaFeatures': {
-      'jsx': true,
-    },
-  },
-  'extends': 'airbnb',
+  'extends': [
+    'plugin:compat/recommended',
+    'plugin:jsx-a11y/recommended',
+    'airbnb',
+    'prettier',
+    'prettier/react',
+  ],
   'rules': {
+    'curly': ['error', 'all'],
+    'lines-between-class-members': 'warn',
+    'no-else-return': 'warn',
+    'no-plusplus': ['error', { "allowForLoopAfterthoughts": true }],
+    'no-console': 'error',
+    // react
+    'react/button-has-type': 'warn',
+    'react/destructuring-assignment': 'off',
     'react/jsx-filename-extension': ['error', { "extensions": [".js"] }],
-    'react/no-string-refs': 'warn',
-    'react/no-find-dom-node': 'warn',
-    // TODO: https://github.com/yannickcr/eslint-plugin-react/issues/819
-    // TODO: https://github.com/yannickcr/eslint-plugin-react/issues/811
-    'react/no-unused-prop-types': ['off', { skipShapeProps: true }],
+    'react/jsx-key': 'error',
     'react/forbid-prop-types': ['warn', { forbid: ['any', 'array', 'object'] }],
     'react/require-default-props': 'warn',
-    'jsx-a11y/no-static-element-interactions': 'warn',
-    'no-plusplus': ['error', { "allowForLoopAfterthoughts": true }],
+    
+    // jsx-a11y
+    'jsx-a11y/anchor-is-valid': [ 'error', {
+        'components': [ 'Link' ],
+        'specialLink': [ 'to' ],
+        'aspects': [ 'noHref', 'invalidHref', 'preferButton' ]
+      }],
+    'jsx-a11y/label-has-associated-control': 'error',
+    'jsx-a11y/label-has-for': 'off', // deprecated in 6.1.0, does not support select tags
+    
+    // compat
     'compat/compat': 'error',
-    // Enable GraphQL linting
+    
+    // graphql
     'graphql/template-strings': ['error', {
       'env': 'relay',
       'schemaJson': require('./build/schema.json'),
     }],
+
+    // prettier
+    'prettier/prettier': ['error', {
+      'singleQuote': true,
+      'trailingComma': 'all',
+    }]
   },
   'env': {
     'browser': true,
@@ -31,8 +52,10 @@ module.exports = {
     'react',
     'graphql',
     'compat',
+    'prettier',
+    'jsx-a11y'
   ],
   'settings': {
-    'polyfills': ['fetch']
+    'polyfills': ['fetch', 'promises']
   }
 };

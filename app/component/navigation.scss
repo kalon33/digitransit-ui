@@ -1,11 +1,12 @@
 /* foundation override */
-$menu-slide: "transform 200ms ease";
+$menu-slide: 'transform 200ms ease';
 $offcanvas-background: #333333;
 $offcanvas-background-hover: scale-color($gray, $lightness: -30%);
 $offcanvas-background-active: scale-color($gray, $lightness: -30%);
 
 /* top bar */
 $topbar-height: 40px;
+
 $top-navigation-icon-color: $primary-font-color;
 $top-navigation-title-color: $title-color;
 
@@ -28,23 +29,29 @@ $offcanvas-link-text-font-size: 15px;
 /* Content */
 $content-background-color: $background-color;
 
-
+.top-bar-login {
+  display: flex;
+  flex-direction: row;
+  color: $white;
+  padding-right: 1.25rem;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  white-space: nowrap;
+}
 .top-bar {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: $primary-color;
+  background: $top-bar-color;
   text-align: center;
   overflow: visible; // Show drawer menu
-  z-index: 1001;
-  line-height: 35px;
+  z-index: 1008;
 
   // Fixed navbar height for now, as dynamic height leads to Safari issues
-  height: 40px;
-
-  // Sets the item spacing for s-breakpoint offcanvas
-  line-height: 35px;
+  height: $topbar-height;
+  min-height: $topbar-height;
 
   &.bp-large {
     height: 60px;
@@ -62,7 +69,7 @@ $content-background-color: $background-color;
     align-self: stretch;
   }
   .icon {
-    fill: $top-navigation-icon-color;
+    color: $top-navigation-icon-color;
     vertical-align: middle;
   }
   section.title {
@@ -76,39 +83,33 @@ $content-background-color: $background-color;
   .logo {
     height: 100%;
     min-height: 40px;
-    background-image: $nav-logo;
+    min-width: 8em;
     background-size: contain;
     background-repeat: no-repeat;
-    background-position: center;
-    min-width: 8em;
+    background-position: left center;
   }
   .navi-logo {
     margin-left: 32px;
-    height: 1.8em;
+    width: $nav-logo-width;
+    height: $nav-logo-height;
     min-width: 130px; //for ff
-    background-image: $nav-logo;
-    background-position: center;
     background-size: contain;
-    width:170px;
     background-repeat: no-repeat;
+    background-position: left center;
     cursor: pointer;
   }
-  .hamburger-large {
-    .main-menu-toggle {
-      top: 10px;
-      div.logo {
-        background-image: $nav-logo;
-        background-size: contain;
-        background-repeat: no-repeat;
-        height: $topbar-height;
-        max-width: 170px;
-      }
-    }
+}
+
+#skip-to-content-link {
+  height: 0px;
+
+  @media print {
+    display: none;
   }
 }
 
 .flex-horizontal {
-  display:flex;
+  display: flex;
   flex-direction: row;
 }
 
@@ -117,8 +118,8 @@ $content-background-color: $background-color;
   border-bottom: 1px solid #262626;
   padding: 0px 5px;
   .lang {
-    @include font-medium
-    font-size: font-size-small;
+    @include font-medium;
+    font-size: $font-size-small;
     display: inline-block;
     text-transform: uppercase;
     cursor: pointer;
@@ -126,44 +127,64 @@ $content-background-color: $background-color;
     margin: 0px 2px;
     &.selected {
       border-radius: 3px;
-      background-color: rgba($white, 0.15);
+      background-color: hsla(0, 0%, 100%, 0.15);
     }
   }
 }
 
-.navi-languages { //desktop
-  #lang-select{
+.navi-languages {
+  //desktop
+  #lang-select {
     border-bottom: 0px;
     .lang.selected {
-        background: rgba(0, 0, 0, 0.15);
+      background: $selected-lang-background;
     }
   }
 }
 
 .right-border {
-  border-right: 1px solid rgba(0,0,0,0.15);
+  border-right: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.login-icon {
+  .icon {
+    font-size: 1.8em;
+    color: $primary-color;
+    fill: $top-navigation-icon-color;
+    &.caution-topbar {
+      fill: $caution-icon-color;
+      color: $caution-icon-font-color;
+    }
+  }
+  margin-right: 0.5rem;
+  width: 100%;
 }
 
 .navi-icons {
   .icon {
     font-size: 1.8em;
-  }
-  width:50px;
-  a {
     color: $primary-color;
+    fill: $top-navigation-icon-color;
+    &.caution-topbar {
+      fill: $caution-icon-color;
+      color: $caution-icon-font-color;
+    }
   }
+  width: 50px;
 }
 .main-menu-toggle {
   .icon {
-    font-size: $font-size-large;;
+    font-size: $font-size-large;
   }
 
+  align-items: center;
+  display: flex;
   right: 0;
 }
 
 .back-button {
   .icon {
-    font-size: $font-size-large;;
+    font-size: $font-size-large;
   }
 }
 
@@ -171,10 +192,10 @@ $content-background-color: $background-color;
   padding: 0;
   background: $black;
   color: $offcanvas-link-color;
-  height:100%;
+  height: 100%;
   overflow-y: auto;
   text-align: left;
-  @include font-medium
+  @include font-medium;
 
   i.icon-profile {
     font-size: $offcanvas-profile-icon-size;
@@ -190,7 +211,7 @@ $content-background-color: $background-color;
     color: $offcanvas-link-color;
     text-decoration: none;
   }
-  .icon{
+  .icon {
     fill: $offcanvas-link-color;
     &.small {
       width: 10px;
@@ -205,14 +226,20 @@ $content-background-color: $background-color;
   .close-button {
     padding: 5px 20px;
     float: right;
+    background: none;
+  }
+
+  button.noborder {
+    @include font-medium;
   }
 }
 
 .offcanvas-section {
+  line-height: 35px;
   padding: 0.5em $padding-large;
   .footer-item {
     margin: 0px;
-    display:inline-block;
+    display: inline-block;
     font-size: $font-size-normal;
     button {
       font-size: $font-size-normal;
@@ -223,15 +250,12 @@ $content-background-color: $background-color;
   }
 }
 
-/* content */
-// TODO: This is an ugly hack
-// Performance with flex is ok after 9b3d165f2385f4737f757f77e0faa2d74e003119, which was reverted
-// Should-be re-enabled after safari fixes https://github.com/philipwalton/flexbugs/issues/84
-// Work-around using position: absolute; and pinning all corners made the performance really bad
 section.content {
   background-color: $content-background-color;
-  height: calc(100% - #{$topbar-height});
   position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 100%;
 
   .mobile {
     display: flex;
@@ -254,11 +278,25 @@ section.content {
       height: 100%;
       display: flex;
       flex-direction: column;
-      position: relative;
 
       @media print {
+        height: auto;
         width: 100%;
-        page-break-after: always;
+        display: inline;
+      }
+
+      .scrollable-content-wrapper {
+        display: flex;
+        flex-basis: 0px;
+        flex-direction: column;
+        flex-grow: 1;
+        flex-shrink: 0;
+
+        @media print {
+          display: inline;
+          height: auto;
+          width: 100%;
+        }
       }
     }
 
@@ -270,6 +308,7 @@ section.content {
       position: relative;
 
       @media print {
+        page-break-before: always;
         width: 100%;
         min-height: 27cm;
       }
@@ -277,29 +316,47 @@ section.content {
   }
 }
 
+@media print {
+  section.content {
+    height: auto;
+    display: block;
+
+    .desktop {
+      height: auto;
+      display: block;
+    }
+  }
+}
 
 .content.bp-large {
-  height: calc(100% - 60px);
+  height: calc(100% - 100px);
   position: relative;
 }
 
 .content:nth-child(5) {
-  height: calc(100% - #{$topbar-height} - 60px - 18px);
-  // 60px and 18px are the height of the message bar, but is specified in js
+  height: calc(100% - #{$topbar-height} - 100px - 18px);
+  // 100px and 18px are the height of the message bar, but is specified in js
 }
 
 .desktop-title {
-  background: $primary-color;
+  background: $desktop-title-color;
 
   a {
     color: $primary-font-color;
   }
 
-  h2 {
+  .title-container {
     @include font-medium;
     color: $primary-font-color;
     margin: 20px 30px;
     line-height: 1;
+  }
+
+  h1 {
+    @include font-medium;
+    color: $primary-font-color;
+    // line-height: 1;
+    display: inline;
   }
 
   .home-icon {
@@ -309,39 +366,99 @@ section.content {
   .arrow-icon {
     font-size: 0.6em;
     margin: 2px 1em;
-    color: $secondary-color;
+    color: $desktop-title-arrow-icon-color;
   }
 }
 
 .message-bar {
-  position:relative;
-  z-index:802;
+  @media print {
+    display: none;
+  }
+  position: relative;
+  z-index: 802;
+  width: 100%;
+  display: block;
   @include font-book;
   font-size: $font-size-small;
-  line-height: 14px;
-  background: $white;
-  color: $gray;
+  color: $black;
   text-align: left;
   cursor: pointer;
 
+  .banner-container {
+    display: flex;
+    max-height: 100%;
+
+    .message-bar-content {
+      flex-basis: auto;
+      flex-grow: 1;
+      width: 60%;
+    }
+
+    &.banner-disruption {
+      background: $disruption-color;
+
+      .icon {
+        color: $disruption-color;
+        fill: white;
+      }
+
+      .message-bar-content,
+      a,
+      h2 {
+        color: white;
+      }
+    }
+  }
+
+  span {
+    width: 45px;
+  }
+
   h2 {
     @include font-medium;
-    font-size: $font-size-small;
-    color: $action-color;
-    margin: 0;
+    font-size: $font-size-large;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+  }
+
+  .message-bar-error {
+    h2 {
+      color: red;
+    }
+  }
+
+  a {
+    @include font-medium;
+    padding: 0px 4px;
+  }
+
+  svg.message-bar-link-icon {
+    margin: 0 0 0 $padding-small;
+    position: relative;
+    top: 0.125em;
   }
 }
 
+#close-message-bar {
+  span {
+    padding-right: 10px;
+    padding-top: 10px;
+  }
+}
+.message-bar-fade {
+  mask-image: linear-gradient(rgba(0, 0, 0, 1) 80px, rgba(0, 0, 0, 0));
+}
 // Need more specific selector to override
 .message-bar .icon {
   margin: 10px;
 }
 
-.message-bar .icon.info {
+.message-bar .icon.message-icon {
   float: left;
   fill: $primary-color;
   height: 35px;
   width: 35px;
+  padding-right: 10px;
 }
 
 .message-bar .icon.close {
@@ -374,7 +491,7 @@ section.content {
   font-size: 18px;
   margin: 0px;
   padding: 0px 6px;
-  border: 1px solid rgba(0,0,0,0.15);
+  border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 4px;
 
   a.external-link {

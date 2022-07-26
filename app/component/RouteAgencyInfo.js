@@ -1,26 +1,30 @@
+import PropTypes from 'prop-types';
 import React from 'react';
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic';
 import get from 'lodash/get';
-import { FormattedMessage, intlShape } from 'react-intl';
+import AgencyInfo from './AgencyInfo';
 
-function RouteAgencyInfo({ route }, context) {
+function RouteAgencyInfo({ route }, { config }) {
   const agencyName = get(route, 'agency.name');
-  const show = get(context.config, 'agency.show', false);
-  if (show && agencyName) {
-    return (<span className="route-agency-name">
-      <FormattedMessage id="agency" defaultMessage="Operator" />: {agencyName}
-    </span>);
+  const url = get(route, 'agency.fareUrl') || get(route, 'agency.url');
+  const show = get(config, 'agency.show', false);
+
+  if (show) {
+    return (
+      <div className="route-agency">
+        <AgencyInfo url={url} agencyName={agencyName} />
+      </div>
+    );
   }
   return null;
 }
 
 RouteAgencyInfo.contextTypes = {
-  intl: intlShape.isRequired,
-  config: React.PropTypes.object.isRequired,
+  config: PropTypes.object.isRequired,
 };
 
 RouteAgencyInfo.propTypes = {
-  route: React.PropTypes.object,
+  route: PropTypes.object,
 };
 
 export default Relay.createContainer(RouteAgencyInfo, {
@@ -30,6 +34,8 @@ export default Relay.createContainer(RouteAgencyInfo, {
       fragment on Route {
         agency {
           name
+          url
+          fareUrl
         }
       }
     `,

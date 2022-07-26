@@ -11,7 +11,7 @@ class PreferencesStore extends Store {
   constructor(dispatcher) {
     super(dispatcher);
 
-    const config = dispatcher.getContext().config;
+    const { config } = dispatcher.getContext();
     this.availableLanguages = config.availableLanguages;
     this.defaultLanguage = config.defaultLanguage;
 
@@ -20,7 +20,8 @@ class PreferencesStore extends Store {
     }
 
     const language = reactCookie.load('lang');
-    if (this.availableLanguages.indexOf(language) === -1) { // illegal selection, use default
+    if (this.availableLanguages.indexOf(language) === -1) {
+      // illegal selection, use default
       this.language = this.defaultLanguage;
     } else {
       this.language = language;
@@ -36,13 +37,16 @@ class PreferencesStore extends Store {
       return;
     }
 
-    reactCookie.save('lang', language, { maxAge: 365 * 24 * 60 * 60 }); // Good up to one year
+    reactCookie.save('lang', language, {
+      // Good up to one year
+      maxAge: 365 * 24 * 60 * 60,
+      path: '/',
+    });
     this.language = language;
     this.emitChange();
   }
 
   static handlers = {
-
     SetLanguage: 'setLanguage',
   };
 }

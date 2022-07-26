@@ -1,25 +1,56 @@
+@function drop_off_svg($color, $alpha: 0.9999999) {
+  @return 'data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2713%27%20height%3D%2712%27%3E%3Cg%20stroke%3D%27none%27%20stroke-width%3D%271%27%20fill%3D%27none%27%20fill-rule%3D%27evenodd%27%3E%3Cpath%20fill%3D%27#{rgba($color, $alpha)}%27%20d%3D%27M6.06%2C0%20C9.38%2C0%2012.08%2C2.68%2012.08%2C6.02%20C12.08%2C9.34%209.38%2C12.02%206.06%2C12.02%20C2.74%2C12.02%200.04%2C9.34%200.04%2C6.02%20C0.04%2C2.68%202.74%2C0%206.06%2C0%20Z%20M7.2%2C9.2%20L7.2%2C5.94%20C7.2%2C5.3%206.78%2C4.8%206.14%2C4.8%20L5.04%2C4.8%20C4.5%2C4.8%204.18%2C5.16%204.18%2C5.62%20C4.18%2C6.02%204.44%2C6.44%205.28%2C6.44%20L5.28%2C9.2%20C5.28%2C9.84%205.62%2C10.34%206.24%2C10.34%20C6.88%2C10.34%207.2%2C9.84%207.2%2C9.2%20Z%20M7.36%2C2.78%20L7.36%2C2.68%20C7.36%2C2%206.8%2C1.56%206.06%2C1.56%20C5.32%2C1.56%204.76%2C2%204.76%2C2.68%20L4.76%2C2.78%20C4.76%2C3.46%205.32%2C3.92%206.06%2C3.92%20C6.8%2C3.92%207.36%2C3.46%207.36%2C2.78%20Z%27%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E';
+}
 
-.departure  {
+@function last_stop_svg($color, $alpha: 0.9999999) {
+  @return 'data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2719%27%20height%3D%2719%27%3E%3Cline%20x1%3D%272%27%20y1%3D%2710%27%20x2%3D%2710%27%20y2%3D%2710%27%20stroke%3D%27#{rgba($color, $alpha)}%27%20stroke-width%3D%273.5%27%20stroke-linecap%3D%27round%27%2F%3E%3Ccircle%20stroke-width%3D%272.5%27%20stroke%3D%27#{rgba($color, $alpha)}%27%20fill%3D%27white%27%20cx%3D%2711%27%20cy%3D%2710%27%20r%3D%274%27%2F%3E%3C%2Fsvg%3E';
+}
+
+.departure {
   // parent class for time, vehicle-number, destination
   background: $white;
+  display: flex;
+  justify-content: flex-start;
   line-height: $line-height-normal;
-  position: relative;
-  overflow-y: visible;
-  white-space: nowrap;
   margin: 0;
+  overflow-y: visible;
+  position: relative;
+  white-space: nowrap;
 
   .vehicle-number {
-    width: 2.5em;
+    width: 3em;
   }
 
   & .route-number {
     width: 3em;
   }
+
   .icon {
-    font-size: 0.85em;
+    font-size: 1em;
+    vertical-align: -1px;
   }
+
   .route-destination {
+    flex: 1;
     padding-left: 0.5em;
+
+    & .destination {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 100%;
+    }
+  }
+
+  .departure-canceled {
+    color: $cancelation-red;
+    .icon-container {
+      padding-right: $padding-xsmall;
+      .icon {
+        color: white;
+        fill: $cancelation-red;
+      }
+    }
   }
 }
 
@@ -27,6 +58,9 @@
   color: $black;
   @include font-narrow-book;
   font-size: $font-size-normal;
+  .vehicle-number {
+    mask-image: none;
+  }
 }
 
 .time,
@@ -51,9 +85,18 @@
   @include font-narrow-medium;
   padding: 0 5px;
   vertical-align: top;
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to left,
+    transparent,
+    rgba(0, 0, 0, 0.2) 5px,
+    black 7px,
+    black
+  );
 }
-.departure > div, .departure > span {
-    vertical-align: middle;
+.departure > div,
+.departure > span {
+  vertical-align: middle;
 }
 
 .desktop .route-destination {
@@ -64,35 +107,45 @@
   overflow: hidden;
   position: relative;
   display: inline-block;
-  width: calc(100% - 10.5em);
+  width: 100%;
   height: 1.2em;
 
   .last-stop-icon {
     vertical-align: middle;
     display: inline-block;
+    width: 19px;
+    height: 22px;
 
     &::after {
       vertical-align: middle;
     }
 
-    &.bus::after {
-      content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='19' height='19'><line x1='2' y1='10' x2='10' y2='10' stroke='#{rgba($bus-color, 0.9999999)}' stroke-width='3.5' stroke-linecap='round'/><circle stroke-width='2.5' stroke='#{rgba($bus-color, 0.9999999)}' fill='white' cx='11' cy='10' r='4'/></svg>");
+    &.bus {
+      background: url(last_stop_svg($bus-color));
     }
-    &.tram::after{
-      content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='19' height='19'><line x1='2' y1='10' x2='10' y2='10' stroke='#{rgba($tram-color, 0.9999999)}' stroke-width='3.5' stroke-linecap='round'/><circle  stroke-width='2.5' stroke='#{rgba($tram-color, 0.9999999)}' fill='white' cx='10' cy='10' r='4'/></svg>");
+    &.tram {
+      background: url(last_stop_svg($tram-color));
     }
-    &.rail::after{
-      content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='19' height='19'><line x1='2' y1='10' x2='10' y2='10' stroke='#{rgba($rail-color, 0.9999999)}' stroke-width='3.5' stroke-linecap='round'/><circle  stroke-width='2.5' stroke='#{rgba($rail-color, 0.9999999)}' fill='white' cx='10' cy='10' r='4'/></svg>");
+    &.rail {
+      background: url(last_stop_svg($rail-color));
     }
-    &.subway::after{
-      content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='19' height='19'><line x1='2' y1='10' x2='10' y2='10' stroke='#{rgba($metro-color, 0.9999999)}' stroke-width='3.5' stroke-linecap='round'/><circle  stroke-width='2.5' stroke='#{rgba($metro-color, 0.9999999)}' fill='white' cx='10' cy='10' r='4'/></svg>");
+    &.subway {
+      background: url(last_stop_svg($metro-color));
     }
-    &.ferry::after{
-      content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='19' height='19'><line x1='2' y1='10' x2='10' y2='10' stroke='#{rgba($ferry-color, 0.9999999)}' stroke-width='3.5' stroke-linecap='round'/><circle  stroke-width='2.5' stroke='#{rgba($ferry-color, 0.9999999)}' fill='white' cx='10' cy='10' r='4'/></svg>");
+    &.ferry {
+      background: url(last_stop_svg($ferry-color));
     }
-    &.citybike::after{
-      content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='19' height='19'><line x1='2' y1='10' x2='10' y2='10' stroke='#{rgba($citybike-color, 0.9999999)}' stroke-width='3.5' stroke-linecap='round'/><circle  stroke-width='2.5' stroke='#{rgba($citybike-color, 0.9999999)}' fill='white' cx='10' cy='10' r='4'/></svg>");
+    &.citybike {
+      background: url(last_stop_svg($citybike-color));
     }
+  }
+
+  .drop-off-stop-icon {
+    margin-right: 0.5em;
+    display: inline-block;
+    width: 13px;
+    height: 12px;
+    background: url(drop_off_svg($gray));
   }
 }
 
@@ -108,7 +161,7 @@
   display: inline-block;
 }
 
-.platform-number {
+.platform-short {
   @include font-narrow-book;
   width: 3em;
   color: $gray;
@@ -116,14 +169,25 @@
   text-align: right;
 }
 
+.platform-number {
+  @include font-narrow-book;
+  margin-left: 0.5em;
+  color: $gray;
+  font-size: $font-size-small;
+  text-align: right;
+}
+
 // route-number component
 .route-number {
-  width: 3.5em;
   vertical-align: top;
   position: relative;
   display: inline-block;
+  min-width: 64px;
   &.vertical {
-    text-align: center;
+    max-width: 100%;
+    .vehicle-number {
+      max-width: 100%;
+    }
   }
 }
 
@@ -135,30 +199,6 @@
   width: 0.5em;
 }
 
-.canceled .time, .time.canceled {
-  position: relative;
-  display: inline-block;
-  color: $cancelation-black;
-  background-color: $cancelation-background;
-  border-radius: $border-radius;
-  &::before,
-  &::after {
-    content: '';
-    width: 1.5em;
-    position: absolute;
-    left: 0.825em;
-    top: 50%;
-    opacity: 0.5;
-    border-bottom: 1px solid $cancelation-red;
-  }
-  &::before {
-    transform: skewY(-30deg);
-  }
-  &::after {
-    transform: skewY(30deg);
-  }
-}
-
 .card .canceled .time {
   margin-top: inherit;
   margin-bottom: inherit;
@@ -166,7 +206,7 @@
   padding-bottom: inherit;
 }
 
-.next-departure-row  {
+.next-departure-row {
   background: $white;
   line-height: $line-height-normal;
   position: relative;
@@ -184,19 +224,19 @@
   }
 
   .route-number {
-    padding-left: 0.25em;
+    padding-left: 0.35em;
+    padding-bottom: 4px;
     width: 3.5em;
     vertical-align: middle;
-    margin-bottom: -2px;
-    overflow: hidden;
+    margin-bottom: -6px;
+    overflow-x: hidden;
+    overflow-y: visible;
   }
-  .vehicle-number {
-    vertical-align: top;
 
-    .icon {
-      font-size: 16px;
-    }
+  .icon {
+    font-size: 1.15em;
   }
+
   .distance {
     width: 3em;
     color: $gray;
@@ -205,16 +245,17 @@
     font-size: $font-size-small;
   }
   .route-destination {
-    width: calc(100% - 14em);
+    width: 100%;
     padding-left: 0.5em;
     vertical-align: bottom;
   }
   .city-bike-station-name {
     width: calc(100% - 10.5em);
-    vertical-align: bottom;
+    vertical-align: middle;
     padding-left: 0.5em;
   }
   .bicycle-rental-station {
+    display: inline-flex;
     position: relative;
     width: calc(100% - 3.5em);
     background-color: rgb(238, 241, 243);
@@ -277,7 +318,6 @@
   .time-header {
     float: right;
     font-weight: inherit;
-    text-align: right;
     width: 3.5em;
     margin-right: 0.5em;
     text-align: right;
@@ -310,6 +350,12 @@
     width: 3.5em;
     padding-right: $padding-medium;
     margin-right: $padding-medium;
+  }
+}
+
+.mobile {
+  .departure-list-header {
+    margin-top: 0em;
   }
 }
 

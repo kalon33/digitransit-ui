@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import MarkerPopupBottom from '../MarkerPopupBottom';
@@ -9,15 +10,14 @@ export function getIcon(type) {
   switch (type) {
     case 'Palvelupiste':
       return 'icon-icon_service-point';
-    case 'HSL Automaatti MNL':
+    case 'Monilippuautomaatti':
       return 'icon-icon_ticket-machine';
-    case 'HSL Automaatti KL':
+    case 'Kertalippuautomaatti':
       return 'icon-icon_ticket-machine-single';
     case 'Myyntipiste':
       return 'icon-icon_ticket-sales-point';
-    case 'R-kioski':
-      return 'icon-icon_ticket-sales-point';
     default:
+      // eslint-disable-next-line no-console
       console.log(`Unknown ticket sales type: ${type}`);
       return 'icon-icon_ticket-sales-point';
   }
@@ -26,17 +26,17 @@ export function getIcon(type) {
 function TicketSalesPopup(props) {
   return (
     <div className="card">
-      <Card className="padding-small">
+      <Card className="card-padding">
         <CardHeader
-          name={props.NIMI}
-          description={props.OSOITE}
-          icon={getIcon(props.TYYPPI)}
+          name={props.Nimi}
+          description={props.Osoite}
+          icon={getIcon(props.Tyyppi)}
           unlinked
         />
       </Card>
       <MarkerPopupBottom
         location={{
-          address: props.NIMI,
+          address: props.Nimi,
           lat: props.LAT,
           lon: props.LON,
         }}
@@ -55,11 +55,11 @@ TicketSalesPopup.description = (
 );
 
 TicketSalesPopup.propTypes = {
-  TYYPPI: React.PropTypes.string.isRequired,
-  NIMI: React.PropTypes.string.isRequired,
-  OSOITE: React.PropTypes.string.isRequired,
-  LAT: React.PropTypes.number.isRequired,
-  LON: React.PropTypes.number.isRequired,
+  Tyyppi: PropTypes.string.isRequired,
+  Nimi: PropTypes.string.isRequired,
+  Osoite: PropTypes.string.isRequired,
+  LAT: PropTypes.number.isRequired,
+  LON: PropTypes.number.isRequired,
 };
 
 export default TicketSalesPopup;

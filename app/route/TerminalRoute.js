@@ -1,4 +1,4 @@
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic';
 
 export default class TerminalRoute extends Relay.Route {
   static queries = {
@@ -8,8 +8,10 @@ export default class TerminalRoute extends Relay.Route {
       }
     `,
   };
+
   static paramDefinitions = {
     terminalId: { required: true },
   };
+
   static routeName = 'TerminalRoute';
 }

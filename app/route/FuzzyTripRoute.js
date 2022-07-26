@@ -1,4 +1,4 @@
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic';
 
 export default class FuzzyTripRoute extends Relay.Route {
   static queries = {
@@ -15,11 +15,13 @@ export default class FuzzyTripRoute extends Relay.Route {
       }
     `,
   };
+
   static paramDefinitions = {
     route: { required: true },
     direction: { required: true },
     time: { required: true },
     date: { required: true },
   };
+
   static routeName = 'FuzzyTripRoute';
 }

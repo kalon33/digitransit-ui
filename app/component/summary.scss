@@ -1,77 +1,104 @@
-.summary {
-}
-
 .desktop .summary {
-  height: 100%;
-  max-height: calc(100% - 164px);
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
 }
 
 .summary-no-route-found {
-    padding: 1em;
+  padding: 1em;
+  .external-no-route .external-link-container {
+    margin-left: 0.5rem;
+    a.external-link {
+      color: $link-color;
+    }
+  }
+  .no-route-icon {
+    margin-right: 1em;
+    margin-top: 0.5em;
+    color: white;
+    width: 2em;
+    height: 2em;
+  }
+  .caution {
+    fill: $disruption-color;
+  }
+  .info {
+    fill: $gray-blue;
+  }
 }
 
 .time-selectors {
   @include font-book;
   font-size: $font-size-small;
-  background-color: $secondary-color;
+  background-color: $background-color-lighter;
   display: flex;
   flex-direction: row;
   align-items: stretch;
+  max-height: 2.2em;
+  flex: 0 1 49.6%;
 
-  input[type="date"], input[type="time"], input[type="text"], select, .time-mui > input {
+  input[type='date'],
+  input[type='time'].time-selector,
+  input[type='text'],
+  input[type='tel'],
+  select,
+  .time-mui > input {
     vertical-align: middle;
     text-align: left;
-    width: auto;
-    height: 2.6em;
     margin: 0;
-    padding: 0 1rem 0 $padding-small;
+    padding: 0 1rem 0 0.9em;
     font-size: $font-size-xxsmall;
     display: inline-block;
     background-image: none;
-    background-color: $primary-color;
-    box-shadow: none;
-    color: $secondary-font-color;
+    background-color: $white;
+    color: $link-color;
     border: none;
-    border-radius: 0;
+    border-radius: $border-radius;
     appearance: none;
     @include font-book;
+    font-weight: 700;
+    height: 2.6em;
 
     &:hover {
-      background-color: $primary-color;
+      background-color: $white;
       //outline: none;
-      box-shadow: none;
     }
 
     &:focus {
-      background-color: $primary-color;
+      background-color: $white;
       //outline: none;
-      box-shadow: none;
     }
 
-    &.text-time-selector {
-      width: 60px;
-      padding: 0;
+    &.text-time-selector,
+    &.desktop {
+      padding: 0 0.5em 0 0.5em;
+      margin: 0 -0.5em 0 0;
       text-align: center;
     }
   }
   .select-wrapper {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    border-radius: $border-radius;
-    background: $primary-color;
-    margin-right: 1px;
+    flex: 0 1 14.5em;
 
     > span {
       margin-left: -1rem;
       pointer-events: none;
     }
+    select {
+      border-radius: 5px;
+      padding: 0 1.5rem 0 0.9em;
+    }
+  }
+  .time-box-shadow input {
+    box-shadow: inset 1px 1px 3px 0 rgba(0, 0, 0, 0.43);
+    &:focus {
+      box-shadow: inset 1px 1px 3px 0 rgba(0, 0, 0, 0.43);
+    }
   }
 
   .fake-select-arrow {
-    font-size: 0.5rem;
-    width: 2em;
-    color: #fff;
+    font-size: 0.7rem;
+    color: $link-color;
   }
 
   .time-selector {
@@ -79,6 +106,11 @@
     text-align: left;
     font-family: $font-family !important;
     display: flex !important;
+    border: 1px solid #ddd;
+
+    &:hover {
+      border: 1px solid #007ac9;
+    }
     input {
       font-size: $font-size-xxsmall !important;
     }
@@ -97,117 +129,133 @@
   .arrive {
     width: auto;
     text-align: left;
- }
+  }
+
+  .arrive,
+  .date,
+  input[type='time'].time-selector {
+    border: solid 1px $light-gray;
+    box-shadow: none;
+  }
+
+  select {
+    &:hover {
+      border: solid 1px $link-color;
+    }
+  }
+}
+
+.mobile .time-selectors {
+  flex: 0 1 85%;
+  .select-wrapper > span {
+    margin-left: -1.4rem;
+  }
+}
+
+.time-input-container {
+  form {
+    display: inherit;
+    margin-bottom: 0;
+  }
+  display: flex;
+  background: $white;
+  padding: 0 0.6em 0 0.2em;
+  border-radius: 5px;
+  margin-right: 0.6em;
+  flex: 0 0 3em;
+  .time-input-field {
+    width: 1.5em;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+    box-shadow: none;
+    background-color: transparent !important;
+    &:focus {
+      box-shadow: none !important;
+      border-color: none !important;
+    }
+    &#inputMinutes {
+      text-align: left;
+      padding-bottom: 0.2em;
+      color: rgb(51, 51, 51);
+      font-weight: $font-weight-medium;
+    }
+    &#inputHours {
+      text-align: right;
+      padding-bottom: 0.2em;
+      color: rgb(51, 51, 51);
+      font-weight: $font-weight-medium;
+    }
+  }
+  #timeinput-digit-separator {
+    margin: 0.25em 1px 0 1px;
+    color: rgb(51, 51, 51);
+  }
+}
+
+.mobile .time-input-container {
+  margin-right: 0;
+}
+
+.quicksettings-separator-line {
+  display: block;
+  width: auto;
+  margin: 0 auto;
+  margin-left: 1em;
+  margin-right: 1em;
+  margin-top: 0.3em;
+  border-top: 1px solid #ddd;
+  background: $background-color-lighter;
+}
+
+.mobile .quicksettings-separator-line {
+  margin-left: 6px;
+  margin-right: 6px;
 }
 
 .time-selector-settings-row {
-  padding: $padding-small 6px;
-  overflow-x: hidden;
-  background-color: $secondary-color;
+  background-color: $background-color-lighter;
   display: flex;
   justify-content: space-between;
   align-items: stretch;
+  flex-direction: initial;
 
-  &.bp-large {
-    height: 50px;
-  }
-}
-
-.bp-large.time-selector-settings-row {
-  padding: $padding-small 20px;
-
-  .select-wrapper {
-    margin-right: 2px;
-    padding-right: 0.5rem;
-
-    > span {
-      margin-left: -1.5rem;
-    }
-  }
-
-  .time-mui {
-    padding-left: $padding-medium;
-    max-width: 6.5em;
-  }
-
-  input[type="date"], input[type="time"], input[type="text"], select, .time-mui > input {
-    font-size: $font-size-normal !important;
-    padding: 0 calc(#{$padding-medium} + 1.5rem) 0 $padding-medium;
-    height: 35px !important;
-
-    &.text-time-selector {
-      width: 60px;
-      padding: 0;
-      text-align: center;
-    }
-  }
-
-  .right-offcanvas-toggle {
-      span {
-        color: $primary-font-color;
-        font-size: $font-size-small;
-      }
-      border-radius: $border-radius;
-  }
-}
-
-.right-offcanvas-toggle {
-
-  &:hover {
-    background-color: $primary-color;
-    //outline: none;
-    box-shadow: none;
-  }
-
-  &:focus {
-    background-color: $primary-color;
-    //outline: none;
-    box-shadow: none;
-  }
-
-  span {
-    color: $primary-font-color;
-    @include font-bold;
-    font-size: $font-size-xxxsmall;
-    margin-left: $padding-xsmall;
-    text-align: center;
-    text-transform:uppercase;
-  }
-  width: auto;
-  margin: 0;
-  background-color: $primary-color;
-  border-radius: $border-radius-small;
-  color: $primary-font-color;
-  display: flex;
-  align-items: center;
-  min-height: 30px;
-
-  > button {
-    padding: $padding-small;
-    height: 100%;
-    > div {
-      display: flex;
-    }
-  }
-
-  .icon-holder {
-    display: inline;
+  .button-container {
     position: relative;
-    line-height: 0;
-
-    .icon {
-      fill: $white;
-      font-size: $font-size-large;
-    }
-
-    .super-icon {
-      fill: $hilight-color;
+    margin-top: -3px;
+    .icon-holder {
+      left: 1.4em;
       position: absolute;
-      right: 0;
-      top: -2px;
+      z-index: 2;
+    }
+  }
+
+  button.secondary-button {
+    background: none;
+    border: none;
+    margin-bottom: 0;
+    padding: 0.6em;
+    padding-right: 0.8em;
+    outline: none;
+    span {
+      font-weight: 700;
       font-size: $font-size-xxsmall;
     }
+    &.settings .icon {
+      font-size: 1.7em;
+      margin-top: -0.15em;
+    }
+    &.close {
+      .icon {
+        font-size: $font-size-small;
+      }
+      :first-child {
+        margin-left: 0.4em;
+      }
+    }
   }
+}
+.mobile button.secondary-button.close {
+  padding-right: 0.5em;
 }
 
 .summary-list-container {
@@ -215,13 +263,36 @@
 }
 
 .desktop .summary-list-container {
-  height: calc(100% - 80px);
+  flex: 1 1 auto;
 }
 
+@media print {
+  .summary {
+    display: block;
+    height: auto;
+    .summary-list-container {
+      display: block;
+      height: auto;
+    }
+  }
+}
 
 .summary-content {
   height: 100%;
   > section {
     height: 100%;
   }
+}
+
+.desktop .street-mode-selector-panel-container {
+  padding: 0 $padding-medium;
+}
+
+.mobile .street-mode-selector-panel-container {
+  padding: 0 $padding-small;
+}
+
+.summary-navigation-container {
+  background-color: $background-color-lighter;
+  flex: 0 0 auto;
 }

@@ -1,28 +1,32 @@
-import React, { PropTypes } from 'react';
-import Relay from 'react-relay';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Relay from 'react-relay/classic';
 import find from 'lodash/find';
 import FavouriteLocation from './FavouriteLocation';
 
-
-const FavouriteLocationContainer = ({ currentTime, onClickFavourite, plan, favourite }) => {
+const FavouriteLocationContainer = ({
+  currentTime,
+  onClickFavourite,
+  plan,
+  favourite,
+}) => {
   const itinerary = (plan && plan.plan.itineraries[0]) || {};
-  const firstTransitLeg = find(itinerary.legs, leg => (leg.transitLeg));
+  const firstTransitLeg = find(itinerary.legs, leg => leg.transitLeg);
 
   let departureTime;
   // We might not have any transit legs, just walking
   if (firstTransitLeg) {
     departureTime = firstTransitLeg.startTime / 1000;
   }
-
-  return (<FavouriteLocation
-    favourite={favourite}
-    clickFavourite={onClickFavourite}
-    {...{
-      departureTime,
-      currentTime,
-      firstTransitLeg,
-    }}
-  />);
+  return (
+    <FavouriteLocation
+      favourite={favourite}
+      clickFavourite={onClickFavourite}
+      departureTime={departureTime}
+      currentTime={currentTime}
+      firstTransitLeg={firstTransitLeg}
+    />
+  );
 };
 
 FavouriteLocationContainer.propTypes = {
@@ -50,7 +54,6 @@ export default Relay.createContainer(FavouriteLocationContainer, {
           disableRemainingWeightHeuristic:
           $disableRemainingWeightHeuristic,
           arriveBy: $arriveBy,
-          preferred: $preferred
         ) {
           itineraries {
             startTime
@@ -75,15 +78,10 @@ export default Relay.createContainer(FavouriteLocationContainer, {
     numItineraries: 1,
     walkReluctance: 2.0001,
     walkBoardCost: 600,
-    minTransferTime: 180,
+    minTransferTime: 120,
     walkSpeed: 1.2,
     wheelchair: false,
     maxWalkDistance: 0,
-
-    preferred: {
-      agencies: '',
-    },
-
     arriveBy: false,
     disableRemainingWeightHeuristic: false,
   },

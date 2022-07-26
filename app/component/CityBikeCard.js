@@ -1,61 +1,76 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
+import Card from './Card';
 import CardHeader from './CardHeader';
 import { station as exampleStation } from './ExampleData';
 import ComponentUsageExample from './ComponentUsageExample';
-import Card from './Card';
-import Favourite from './Favourite';
+import {
+  getCityBikeNetworkConfig,
+  getCityBikeNetworkIcon,
+  getCityBikeNetworkId,
+  getCityBikeNetworkName,
+} from '../util/citybikes';
 
-const CityBikeCard = ({ station, children, className, isFavourite, toggleFavourite }) => {
+const CityBikeCard = (
+  { station, children, className, language },
+  { config },
+) => {
   if (!station || !children || children.length === 0) {
     return false;
   }
 
+  const networkConfig = getCityBikeNetworkConfig(
+    getCityBikeNetworkId(station.networks),
+    config,
+  );
+
+  const description = [
+    getCityBikeNetworkName(networkConfig, language),
+    config.cityBike.showStationId ? station.stationId : '',
+  ]
+    .join(' ')
+    .trim();
+
   return (
     <Card className={className}>
       <CardHeader
+        description={description}
+        icon={getCityBikeNetworkIcon(networkConfig)}
         name={station.name}
-        description={station.stationId}
-        icon="icon-icon_citybike"
         unlinked
-        icons={[<Favourite
-          key="favourite"
-          favourite={isFavourite}
-          addFavourite={toggleFavourite}
-        />,
-        ]}
       />
       {children}
     </Card>
   );
 };
 
-CityBikeCard.description = () =>
+CityBikeCard.description = () => (
   <div>
     <p>Renders a citybike card with header and child props as content</p>
     <ComponentUsageExample description="Basic">
-      <CityBikeCard className="padding-small" station={exampleStation}>
+      <CityBikeCard className="card-padding" station={exampleStation}>
         Im content of the citybike card
       </CityBikeCard>
     </ComponentUsageExample>
-    <ComponentUsageExample description="Selected as favourite">
-      <CityBikeCard
-        className="padding-small"
-        toggleFavourite={() => {}} isFavourite station={exampleStation}
-      >
-        Im content of the favourite citybike card
-      </CityBikeCard>
-    </ComponentUsageExample>
-  </div>;
+  </div>
+);
 
 CityBikeCard.displayName = 'CityBikeCard';
 
 CityBikeCard.propTypes = {
-  station: React.PropTypes.object.isRequired,
-  className: React.PropTypes.string,
-  children: React.PropTypes.node.isRequired,
-  toggleFavourite: React.PropTypes.func,
-  isFavourite: React.PropTypes.bool,
+  station: PropTypes.object.isRequired,
+  className: PropTypes.string,
+  children: PropTypes.node.isRequired,
+  language: PropTypes.string,
+};
+
+CityBikeCard.contextTypes = {
+  config: PropTypes.object.isRequired,
+};
+
+CityBikeCard.defaultProps = {
+  language: 'en',
 };
 
 export default CityBikeCard;

@@ -1,66 +1,113 @@
+import PropTypes from 'prop-types';
 import React from 'react';
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic';
 import { FormattedMessage } from 'react-intl';
 import { routerShape, locationShape } from 'react-router';
-
-import Modal from './Modal';
-import ViewerRoute from '../route/ViewerRoute';
+import LazilyLoad, { importLazy } from './LazilyLoad';
+import Loading from './Loading';
 import DisruptionListContainer from './DisruptionListContainer';
 import ComponentUsageExample from './ComponentUsageExample';
 import { isBrowser } from '../util/browser';
 
 function DisruptionInfo(props, context) {
-  const isOpen = () => (context.location.state ? context.location.state.disruptionInfoOpen : false);
+  if (!props.isBrowser) {
+    return null;
+  }
+
+  const isOpen = () =>
+    context.location.state ? context.location.state.disruptionInfoOpen : false;
+  if (!isOpen()) {
+    return null;
+  }
 
   const toggleVisibility = () => {
     if (isOpen()) {
       context.router.goBack();
     } else {
       context.router.push({
-        ...location,
+        ...context.location,
         state: {
-          ...location.state,
+          ...context.location.state,
           disruptionInfoOpen: true,
         },
       });
     }
   };
 
-  if (isBrowser && isOpen()) {
-    return (
-      <Modal
-        open
-        title={
-          <FormattedMessage id="disruption-info" defaultMessage="Disruption info" />}
-        toggleVisibility={toggleVisibility}
-      >
-        <Relay.RootContainer
-          Component={DisruptionListContainer}
-          forceFetch
-          route={new ViewerRoute()}
-          renderLoading={() => <div className="spinner-loader" />}
+  const disruptionModalModules = {
+    Modal: () => importLazy(import('./Modal')),
+  };
+
+  const renderContent = Modal => (
+    <Modal
+      disableScrolling
+      open
+      title={
+        <FormattedMessage
+          id="disruption-info"
+          defaultMessage="Disruption info"
         />
-      </Modal>);
-  }
-  return <div />;
+      }
+      toggleVisibility={toggleVisibility}
+    >
+      <Relay.RootContainer
+        Component={DisruptionListContainer}
+        forceFetch
+        route={{
+          name: 'ViewerRoute',
+          queries: {
+            root: (Component, { feedIds }) => Relay.QL`
+      query {
+        viewer {
+          ${Component.getFragment('root', { feedIds })}
+        }
+      }
+   `,
+          },
+          params: { feedIds: context.config.feedIds },
+        }}
+        renderLoading={() => <Loading />}
+      />
+    </Modal>
+  );
+
+  return (
+    <React.Fragment>
+      <LazilyLoad modules={disruptionModalModules}>
+        {({ Modal }) => renderContent(Modal)}
+      </LazilyLoad>
+    </React.Fragment>
+  );
 }
 
-
 DisruptionInfo.contextTypes = {
-  router: routerShape.isRequired,
-  location: locationShape.isRequired,
+  router: routerShape.isRequired, // eslint-disable-line react/no-typos
+  location: locationShape.isRequired, // eslint-disable-line react/no-typos
+  config: PropTypes.shape({
+    feedIds: PropTypes.arrayOf(PropTypes.string.isRequired),
+  }).isRequired,
 };
 
-DisruptionInfo.description = () =>
+DisruptionInfo.propTypes = {
+  isBrowser: PropTypes.bool,
+};
+
+DisruptionInfo.defaultProps = {
+  isBrowser,
+};
+
+DisruptionInfo.description = () => (
   <div>
     <p>
-      Modal that shows all available disruption info.
-      Opened by DisruptionInfoButton.
-      <strong>Deprecated:</strong> Will be removed in short future in favor of announcements page.
+      Modal that shows all available disruption info. Opened by
+      DisruptionInfoButton.
+      <strong>Deprecated:</strong> Will be removed in short future in favor of
+      announcements page.
     </p>
     <ComponentUsageExample>
       <DisruptionInfo />
     </ComponentUsageExample>
-  </div>;
+  </div>
+);
 
 export default DisruptionInfo;

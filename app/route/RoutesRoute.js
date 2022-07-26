@@ -1,4 +1,4 @@
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic';
 
 export default class RoutesRoute extends Relay.Route {
   static queries = {
@@ -7,13 +7,13 @@ export default class RoutesRoute extends Relay.Route {
         routes (ids:$ids) {
           ${Component.getFragment('routes', {
             ids: variables.ids,
-          },
-        )
-      }
+          })}
     }}`,
   };
+
   static paramDefinitions = {
     ids: { required: true },
   };
+
   static routeName = 'RoutesRoute';
 }

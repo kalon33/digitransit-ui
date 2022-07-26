@@ -28,6 +28,10 @@ export const realtimeDeparture = {
     code: 'HSL:4611:1:01',
     headsign: 'Rautatientori',
   },
+
+  trip: {
+    gtfsId: 'HSL:1006T_20160613_La_1_2136',
+  },
 };
 
 export const departure = {
@@ -37,6 +41,7 @@ export const departure = {
     name: 'Kellosilta',
     desc: 'Ratamestarinkatu 9',
     gtfsId: 'JOLI:1007',
+    platformCode: '1-6',
   },
 
   stoptime: 1444185960,
@@ -70,7 +75,7 @@ export const vehicle = {
   route: 'HSL:4611',
   direction: 1,
   tripStartTime: '1323',
-  operatingDay: '20160601',
+  operatingDay: '2016-06-01',
   mode: 'bus',
   delay: 44,
   next_stop: '1401152',
@@ -88,11 +93,13 @@ export const station = {
   name: 'Fredrikinkatu 27',
   lon: 24.939603788199364,
   lat: 60.1626075196532,
+  state: 'Station on',
+  networks: ['Smoove'],
 };
 
 export const favouriteLocation = {
   favourite: {
-    locationName: 'Työ',
+    name: 'Työ',
     selectedIconId: 'icon-icon_place',
   },
   arrivalTime: 1444175199,
@@ -136,405 +143,427 @@ export const options = [
 ];
 
 export const plan = {
-  itineraries: [{
-    walkDistance: 465.2611547749316,
-    duration: 731,
-    startTime: 1463406749000,
-    endTime: 1463407480000,
-    fares: [{
-      type: 'regular',
-      cents: 320,
-      currency: 'EUR',
-    }],
-    legs: [{
-      mode: 'WALK',
-      agency: null,
-      from: {
-        lat: 60.19922449999999,
-        lon: 24.9400405,
-        name: 'Ratamestarinkatu 5, Helsinki',
-        vertexType: 'NORMAL',
-        bikeRentalStation: null,
-        stop: null,
-      },
-      to: {
-        lat: 60.19866269999994,
-        lon: 24.933482300000076,
-        name: 'Pasila',
-        vertexType: 'TRANSIT',
-        bikeRentalStation: null,
-        stop: {
-          gtfsId: 'HSL:1174552',
-          code: '0071',
-          id: 'U3RvcDpIU0w6MTE3NDU1Mg==',
-        },
-      },
-      legGeometry: {
-        length: 33,
-        points: 'ktlnJabfwC[NMDDj@?H@L@H@PFfADhC@TT|DBh@?BFdAJvADp@Dt@HtA?DDr@@H@FJrB@D???B?DBVB\\D|@FfATI',
-      },
-      intermediateStops: [],
-      realTime: false,
-      transitLeg: false,
-      rentedBike: false,
+  itineraries: [
+    {
+      walkDistance: 465.2611547749316,
+      duration: 731,
       startTime: 1463406749000,
-      endTime: 1463407139000,
-      distance: 427.403,
-      duration: 390,
-      route: null,
-      trip: null,
-    }, {
-      mode: 'RAIL',
-      agency: {
-        name: 'Helsingin seudun liikenne',
-        id: 'QWdlbmN5OkhTTA==',
-      },
-      from: {
-        lat: 60.19866269999994,
-        lon: 24.933482300000076,
-        name: 'Pasila',
-        vertexType: 'TRANSIT',
-        bikeRentalStation: null,
-        stop: {
-          gtfsId: 'HSL:1174552',
-          code: '0071',
-          id: 'U3RvcDpIU0w6MTE3NDU1Mg==',
-        },
-      },
-      to: {
-        lat: 60.17131980000005,
-        lon: 24.941456599999952,
-        name: 'Helsinki',
-        vertexType: 'TRANSIT',
-        bikeRentalStation: null,
-        stop: {
-          gtfsId: 'HSL:1020552',
-          code: '0070',
-          id: 'U3RvcDpIU0w6MTAyMDU1Mg==',
-        },
-      },
-      legGeometry: {
-        length: 2,
-        points: 'splnJgydwC|iDyp@',
-      },
-      intermediateStops: [],
-      realTime: false,
-      transitLeg: true,
-      rentedBike: false,
-      startTime: 1463407140000,
-      endTime: 1463407440000,
-      distance: 3072.1942153850637,
-      duration: 300,
-      route: {
-        shortName: 'A',
-        id: 'Um91dGU6SFNMOjMwMDJB',
-      },
-      trip: {
-        gtfsId: 'HSL:3002A_20160509_Ma_2_1647',
-        tripHeadsign: 'Helsinki',
-        id: 'VHJpcDpIU0w6MzAwMkFfMjAxNjA1MDlfTWFfMl8xNjQ3',
-      },
-    }, {
-      mode: 'WALK',
-      agency: null,
-      from: {
-        lat: 60.17131980000005,
-        lon: 24.941456599999952,
-        name: 'Helsinki',
-        vertexType: 'TRANSIT',
-        bikeRentalStation: null,
-        stop: {
-          gtfsId: 'HSL:1020552',
-          code: '0070',
-          id: 'U3RvcDpIU0w6MTAyMDU1Mg==',
-        },
-      },
-      to: {
-        lat: 60.171198,
-        lon: 24.941828,
-        name: 'Asema-Aukio 1, Helsinki',
-        vertexType: 'NORMAL',
-        bikeRentalStation: null,
-        stop: null,
-      },
-      legGeometry: {
-        length: 4,
-        points: 'segnJekfwCKo@TCRA',
-      },
-      intermediateStops: [],
-      realTime: false,
-      transitLeg: false,
-      rentedBike: false,
-      startTime: 1463407441000,
       endTime: 1463407480000,
-      distance: 37.714,
-      duration: 39,
-      route: null,
-      trip: null,
-    }],
-  }, {
-    walkDistance: 465.2611547749316,
-    duration: 731,
-    startTime: 1463406929000,
-    endTime: 1463407660000,
-    legs: [{
-      mode: 'WALK',
-      agency: null,
-      from: {
-        lat: 60.19922449999999,
-        lon: 24.9400405,
-        name: 'Ratamestarinkatu 5, Helsinki',
-        vertexType: 'NORMAL',
-        bikeRentalStation: null,
-        stop: null,
-      },
-      to: {
-        lat: 60.19866269999994,
-        lon: 24.933482300000076,
-        name: 'Pasila',
-        vertexType: 'TRANSIT',
-        bikeRentalStation: null,
-        stop: {
-          gtfsId: 'HSL:1174552',
-          code: '0071',
-          id: 'U3RvcDpIU0w6MTE3NDU1Mg==',
+      fares: [
+        {
+          type: 'regular',
+          cents: 320,
+          currency: 'EUR',
+          components: [{ fareId: 'HSL:AB' }],
         },
-      },
-      legGeometry: {
-        length: 33,
-        points: 'ktlnJabfwC[NMDDj@?H@L@H@PFfADhC@TT|DBh@?BFdAJvADp@Dt@HtA?DDr@@H@FJrB@D???B?DBVB\\D|@FfATI',
-      },
-      intermediateStops: [],
-      realTime: false,
-      transitLeg: false,
-      rentedBike: false,
+      ],
+      legs: [
+        {
+          mode: 'WALK',
+          agency: null,
+          from: {
+            lat: 60.19922449999999,
+            lon: 24.9400405,
+            name: 'Ratamestarinkatu 5, Helsinki',
+            vertexType: 'NORMAL',
+            bikeRentalStation: null,
+            stop: null,
+          },
+          to: {
+            lat: 60.19866269999994,
+            lon: 24.933482300000076,
+            name: 'Pasila',
+            vertexType: 'TRANSIT',
+            bikeRentalStation: null,
+            stop: {
+              gtfsId: 'HSL:1174552',
+              code: '0071',
+              id: 'U3RvcDpIU0w6MTE3NDU1Mg==',
+            },
+          },
+          legGeometry: {
+            length: 33,
+            points:
+              'ktlnJabfwC[NMDDj@?H@L@H@PFfADhC@TT|DBh@?BFdAJvADp@Dt@HtA?DDr@@H@FJrB@D???B?DBVB\\D|@FfATI',
+          },
+          intermediatePlaces: [],
+          realTime: false,
+          transitLeg: false,
+          rentedBike: false,
+          startTime: 1463406749000,
+          endTime: 1463407139000,
+          distance: 427.403,
+          duration: 390,
+          route: null,
+          trip: null,
+        },
+        {
+          mode: 'RAIL',
+          agency: {
+            name: 'Helsingin seudun liikenne',
+            id: 'QWdlbmN5OkhTTA==',
+          },
+          from: {
+            lat: 60.19866269999994,
+            lon: 24.933482300000076,
+            name: 'Pasila',
+            vertexType: 'TRANSIT',
+            bikeRentalStation: null,
+            stop: {
+              gtfsId: 'HSL:1174552',
+              code: '0071',
+              id: 'U3RvcDpIU0w6MTE3NDU1Mg==',
+            },
+          },
+          to: {
+            lat: 60.17131980000005,
+            lon: 24.941456599999952,
+            name: 'Helsinki',
+            vertexType: 'TRANSIT',
+            bikeRentalStation: null,
+            stop: {
+              gtfsId: 'HSL:1020552',
+              code: '0070',
+              id: 'U3RvcDpIU0w6MTAyMDU1Mg==',
+            },
+          },
+          legGeometry: {
+            length: 2,
+            points: 'splnJgydwC|iDyp@',
+          },
+          intermediatePlaces: [],
+          realTime: false,
+          transitLeg: true,
+          rentedBike: false,
+          startTime: 1463407140000,
+          endTime: 1463407440000,
+          distance: 3072.1942153850637,
+          duration: 300,
+          route: {
+            shortName: 'A',
+            id: 'Um91dGU6SFNMOjMwMDJB',
+          },
+          trip: {
+            gtfsId: 'HSL:3002A_20160509_Ma_2_1647',
+            tripHeadsign: 'Helsinki',
+            id: 'VHJpcDpIU0w6MzAwMkFfMjAxNjA1MDlfTWFfMl8xNjQ3',
+          },
+        },
+        {
+          mode: 'WALK',
+          agency: null,
+          from: {
+            lat: 60.17131980000005,
+            lon: 24.941456599999952,
+            name: 'Helsinki',
+            vertexType: 'TRANSIT',
+            bikeRentalStation: null,
+            stop: {
+              gtfsId: 'HSL:1020552',
+              code: '0070',
+              id: 'U3RvcDpIU0w6MTAyMDU1Mg==',
+            },
+          },
+          to: {
+            lat: 60.171198,
+            lon: 24.941828,
+            name: 'Asema-Aukio 1, Helsinki',
+            vertexType: 'NORMAL',
+            bikeRentalStation: null,
+            stop: null,
+          },
+          legGeometry: {
+            length: 4,
+            points: 'segnJekfwCKo@TCRA',
+          },
+          intermediatePlaces: [],
+          realTime: false,
+          transitLeg: false,
+          rentedBike: false,
+          startTime: 1463407441000,
+          endTime: 1463407480000,
+          distance: 37.714,
+          duration: 39,
+          route: null,
+          trip: null,
+        },
+      ],
+    },
+    {
+      walkDistance: 465.2611547749316,
+      duration: 731,
       startTime: 1463406929000,
-      endTime: 1463407319000,
-      distance: 427.403,
-      duration: 390,
-      route: null,
-      trip: null,
-    }, {
-      mode: 'RAIL',
-      agency: {
-        name: 'Helsingin seudun liikenne',
-        id: 'QWdlbmN5OkhTTA==',
-      },
-      from: {
-        lat: 60.19866269999994,
-        lon: 24.933482300000076,
-        name: 'Pasila',
-        vertexType: 'TRANSIT',
-        bikeRentalStation: null,
-        stop: {
-          gtfsId: 'HSL:1174552',
-          code: '0071',
-          id: 'U3RvcDpIU0w6MTE3NDU1Mg==',
-        },
-      },
-      to: {
-        lat: 60.17131980000005,
-        lon: 24.941456599999952,
-        name: 'Helsinki',
-        vertexType: 'TRANSIT',
-        bikeRentalStation: null,
-        stop: {
-          gtfsId: 'HSL:1020552',
-          code: '0070',
-          id: 'U3RvcDpIU0w6MTAyMDU1Mg==',
-        },
-      },
-      legGeometry: {
-        length: 2,
-        points: 'splnJgydwC|iDyp@',
-      },
-      intermediateStops: [],
-      realTime: false,
-      transitLeg: true,
-      rentedBike: false,
-      startTime: 1463407320000,
-      endTime: 1463407620000,
-      distance: 3072.1942153850637,
-      duration: 300,
-      route: {
-        shortName: 'Y',
-        id: 'Um91dGU6SFNMOjMwMDJZ',
-      },
-      trip: {
-        gtfsId: 'HSL:3002Y_20160509_Ma_2_1621',
-        tripHeadsign: 'Helsinki',
-        id: 'VHJpcDpIU0w6MzAwMllfMjAxNjA1MDlfTWFfMl8xNjIx',
-      },
-    }, {
-      mode: 'WALK',
-      agency: null,
-      from: {
-        lat: 60.17131980000005,
-        lon: 24.941456599999952,
-        name: 'Helsinki',
-        vertexType: 'TRANSIT',
-        bikeRentalStation: null,
-        stop: {
-          gtfsId: 'HSL:1020552',
-          code: '0070',
-          id: 'U3RvcDpIU0w6MTAyMDU1Mg==',
-        },
-      },
-      to: {
-        lat: 60.171198,
-        lon: 24.941828,
-        name: 'Asema-Aukio 1, Helsinki',
-        vertexType: 'NORMAL',
-        bikeRentalStation: null,
-        stop: null,
-      },
-      legGeometry: {
-        length: 4,
-        points: 'segnJekfwCKo@TCRA',
-      },
-      intermediateStops: [],
-      realTime: false,
-      transitLeg: false,
-      rentedBike: false,
-      startTime: 1463407621000,
       endTime: 1463407660000,
-      distance: 37.714,
-      duration: 39,
-      route: null,
-      trip: null,
-    }],
-  }, {
-    walkDistance: 465.2611547749316,
-    duration: 731,
-    startTime: 1463407049000,
-    endTime: 1463407780000,
-    legs: [{
-      mode: 'WALK',
-      agency: null,
-      from: {
-        lat: 60.19922449999999,
-        lon: 24.9400405,
-        name: 'Ratamestarinkatu 5, Helsinki',
-        vertexType: 'NORMAL',
-        bikeRentalStation: null,
-        stop: null,
-      },
-      to: {
-        lat: 60.19866269999994,
-        lon: 24.933482300000076,
-        name: 'Pasila',
-        vertexType: 'TRANSIT',
-        bikeRentalStation: null,
-        stop: {
-          gtfsId: 'HSL:1174552',
-          code: '0071',
-          id: 'U3RvcDpIU0w6MTE3NDU1Mg==',
+      legs: [
+        {
+          mode: 'WALK',
+          agency: null,
+          from: {
+            lat: 60.19922449999999,
+            lon: 24.9400405,
+            name: 'Ratamestarinkatu 5, Helsinki',
+            vertexType: 'NORMAL',
+            bikeRentalStation: null,
+            stop: null,
+          },
+          to: {
+            lat: 60.19866269999994,
+            lon: 24.933482300000076,
+            name: 'Pasila',
+            vertexType: 'TRANSIT',
+            bikeRentalStation: null,
+            stop: {
+              gtfsId: 'HSL:1174552',
+              code: '0071',
+              id: 'U3RvcDpIU0w6MTE3NDU1Mg==',
+            },
+          },
+          legGeometry: {
+            length: 33,
+            points:
+              'ktlnJabfwC[NMDDj@?H@L@H@PFfADhC@TT|DBh@?BFdAJvADp@Dt@HtA?DDr@@H@FJrB@D???B?DBVB\\D|@FfATI',
+          },
+          intermediatePlaces: [],
+          realTime: false,
+          transitLeg: false,
+          rentedBike: false,
+          startTime: 1463406929000,
+          endTime: 1463407319000,
+          distance: 427.403,
+          duration: 390,
+          route: null,
+          trip: null,
         },
-      },
-      legGeometry: {
-        length: 33,
-        points: 'ktlnJabfwC[NMDDj@?H@L@H@PFfADhC@TT|DBh@?BFdAJvADp@Dt@HtA?DDr@@H@FJrB@D???B?DBVB\\D|@FfATI',
-      },
-      intermediateStops: [],
-      realTime: false,
-      transitLeg: false,
-      rentedBike: false,
+        {
+          mode: 'RAIL',
+          agency: {
+            name: 'Helsingin seudun liikenne',
+            id: 'QWdlbmN5OkhTTA==',
+          },
+          from: {
+            lat: 60.19866269999994,
+            lon: 24.933482300000076,
+            name: 'Pasila',
+            vertexType: 'TRANSIT',
+            bikeRentalStation: null,
+            stop: {
+              gtfsId: 'HSL:1174552',
+              code: '0071',
+              id: 'U3RvcDpIU0w6MTE3NDU1Mg==',
+            },
+          },
+          to: {
+            lat: 60.17131980000005,
+            lon: 24.941456599999952,
+            name: 'Helsinki',
+            vertexType: 'TRANSIT',
+            bikeRentalStation: null,
+            stop: {
+              gtfsId: 'HSL:1020552',
+              code: '0070',
+              id: 'U3RvcDpIU0w6MTAyMDU1Mg==',
+            },
+          },
+          legGeometry: {
+            length: 2,
+            points: 'splnJgydwC|iDyp@',
+          },
+          intermediatePlaces: [],
+          realTime: false,
+          transitLeg: true,
+          rentedBike: false,
+          startTime: 1463407320000,
+          endTime: 1463407620000,
+          distance: 3072.1942153850637,
+          duration: 300,
+          route: {
+            shortName: 'Y',
+            id: 'Um91dGU6SFNMOjMwMDJZ',
+          },
+          trip: {
+            gtfsId: 'HSL:3002Y_20160509_Ma_2_1621',
+            tripHeadsign: 'Helsinki',
+            id: 'VHJpcDpIU0w6MzAwMllfMjAxNjA1MDlfTWFfMl8xNjIx',
+          },
+        },
+        {
+          mode: 'WALK',
+          agency: null,
+          from: {
+            lat: 60.17131980000005,
+            lon: 24.941456599999952,
+            name: 'Helsinki',
+            vertexType: 'TRANSIT',
+            bikeRentalStation: null,
+            stop: {
+              gtfsId: 'HSL:1020552',
+              code: '0070',
+              id: 'U3RvcDpIU0w6MTAyMDU1Mg==',
+            },
+          },
+          to: {
+            lat: 60.171198,
+            lon: 24.941828,
+            name: 'Asema-Aukio 1, Helsinki',
+            vertexType: 'NORMAL',
+            bikeRentalStation: null,
+            stop: null,
+          },
+          legGeometry: {
+            length: 4,
+            points: 'segnJekfwCKo@TCRA',
+          },
+          intermediatePlaces: [],
+          realTime: false,
+          transitLeg: false,
+          rentedBike: false,
+          startTime: 1463407621000,
+          endTime: 1463407660000,
+          distance: 37.714,
+          duration: 39,
+          route: null,
+          trip: null,
+        },
+      ],
+    },
+    {
+      walkDistance: 465.2611547749316,
+      duration: 731,
       startTime: 1463407049000,
-      endTime: 1463407439000,
-      distance: 427.403,
-      duration: 390,
-      route: null,
-      trip: null,
-    }, {
-      mode: 'RAIL',
-      agency: {
-        name: 'Helsingin seudun liikenne',
-        id: 'QWdlbmN5OkhTTA==',
-      },
-      from: {
-        lat: 60.19866269999994,
-        lon: 24.933482300000076,
-        name: 'Pasila',
-        vertexType: 'TRANSIT',
-        bikeRentalStation: null,
-        stop: {
-          gtfsId: 'HSL:1174552',
-          code: '0071',
-          id: 'U3RvcDpIU0w6MTE3NDU1Mg==',
-        },
-      },
-      to: {
-        lat: 60.17131980000005,
-        lon: 24.941456599999952,
-        name: 'Helsinki',
-        vertexType: 'TRANSIT',
-        bikeRentalStation: null,
-        stop: {
-          gtfsId: 'HSL:1020552',
-          code: '0070',
-          id: 'U3RvcDpIU0w6MTAyMDU1Mg==',
-        },
-      },
-      legGeometry: {
-        length: 2,
-        points: 'splnJgydwC|iDyp@',
-      },
-      intermediateStops: [],
-      realTime: false,
-      transitLeg: true,
-      rentedBike: false,
-      startTime: 1463407440000,
-      endTime: 1463407740000,
-      distance: 3072.1942153850637,
-      duration: 300,
-      route: {
-        shortName: 'I',
-        id: 'Um91dGU6SFNMOjMwMDFJ',
-      },
-      trip: {
-        gtfsId: 'HSL:3001I_20160509_Ma_1_1609',
-        tripHeadsign: 'Helsinki',
-        id: 'VHJpcDpIU0w6MzAwMUlfMjAxNjA1MDlfTWFfMV8xNjA5',
-      },
-    }, {
-      mode: 'WALK',
-      agency: null,
-      from: {
-        lat: 60.17131980000005,
-        lon: 24.941456599999952,
-        name: 'Helsinki',
-        vertexType: 'TRANSIT',
-        bikeRentalStation: null,
-        stop: {
-          gtfsId: 'HSL:1020552',
-          code: '0070',
-          id: 'U3RvcDpIU0w6MTAyMDU1Mg==',
-        },
-      },
-      to: {
-        lat: 60.171198,
-        lon: 24.941828,
-        name: 'Asema-Aukio 1, Helsinki',
-        vertexType: 'NORMAL',
-        bikeRentalStation: null,
-        stop: null,
-      },
-      legGeometry: {
-        length: 4,
-        points: 'segnJekfwCKo@TCRA',
-      },
-      intermediateStops: [],
-      realTime: false,
-      transitLeg: false,
-      rentedBike: false,
-      startTime: 1463407741000,
       endTime: 1463407780000,
-      distance: 37.714,
-      duration: 39,
-      route: null,
-      trip: null,
-    }],
-  }],
+      legs: [
+        {
+          mode: 'WALK',
+          agency: null,
+          from: {
+            lat: 60.19922449999999,
+            lon: 24.9400405,
+            name: 'Ratamestarinkatu 5, Helsinki',
+            vertexType: 'NORMAL',
+            bikeRentalStation: null,
+            stop: null,
+          },
+          to: {
+            lat: 60.19866269999994,
+            lon: 24.933482300000076,
+            name: 'Pasila',
+            vertexType: 'TRANSIT',
+            bikeRentalStation: null,
+            stop: {
+              gtfsId: 'HSL:1174552',
+              code: '0071',
+              id: 'U3RvcDpIU0w6MTE3NDU1Mg==',
+            },
+          },
+          legGeometry: {
+            length: 33,
+            points:
+              'ktlnJabfwC[NMDDj@?H@L@H@PFfADhC@TT|DBh@?BFdAJvADp@Dt@HtA?DDr@@H@FJrB@D???B?DBVB\\D|@FfATI',
+          },
+          intermediatePlaces: [],
+          realTime: false,
+          transitLeg: false,
+          rentedBike: false,
+          startTime: 1463407049000,
+          endTime: 1463407439000,
+          distance: 427.403,
+          duration: 390,
+          route: null,
+          trip: null,
+        },
+        {
+          mode: 'RAIL',
+          agency: {
+            name: 'Helsingin seudun liikenne',
+            id: 'QWdlbmN5OkhTTA==',
+          },
+          from: {
+            lat: 60.19866269999994,
+            lon: 24.933482300000076,
+            name: 'Pasila',
+            vertexType: 'TRANSIT',
+            bikeRentalStation: null,
+            stop: {
+              gtfsId: 'HSL:1174552',
+              code: '0071',
+              id: 'U3RvcDpIU0w6MTE3NDU1Mg==',
+            },
+          },
+          to: {
+            lat: 60.17131980000005,
+            lon: 24.941456599999952,
+            name: 'Helsinki',
+            vertexType: 'TRANSIT',
+            bikeRentalStation: null,
+            stop: {
+              gtfsId: 'HSL:1020552',
+              code: '0070',
+              id: 'U3RvcDpIU0w6MTAyMDU1Mg==',
+            },
+          },
+          legGeometry: {
+            length: 2,
+            points: 'splnJgydwC|iDyp@',
+          },
+          intermediatePlaces: [],
+          realTime: false,
+          transitLeg: true,
+          rentedBike: false,
+          startTime: 1463407440000,
+          endTime: 1463407740000,
+          distance: 3072.1942153850637,
+          duration: 300,
+          route: {
+            shortName: 'I',
+            id: 'Um91dGU6SFNMOjMwMDFJ',
+          },
+          trip: {
+            gtfsId: 'HSL:3001I_20160509_Ma_1_1609',
+            tripHeadsign: 'Helsinki',
+            id: 'VHJpcDpIU0w6MzAwMUlfMjAxNjA1MDlfTWFfMV8xNjA5',
+          },
+        },
+        {
+          mode: 'WALK',
+          agency: null,
+          from: {
+            lat: 60.17131980000005,
+            lon: 24.941456599999952,
+            name: 'Helsinki',
+            vertexType: 'TRANSIT',
+            bikeRentalStation: null,
+            stop: {
+              gtfsId: 'HSL:1020552',
+              code: '0070',
+              id: 'U3RvcDpIU0w6MTAyMDU1Mg==',
+            },
+          },
+          to: {
+            lat: 60.171198,
+            lon: 24.941828,
+            name: 'Asema-Aukio 1, Helsinki',
+            vertexType: 'NORMAL',
+            bikeRentalStation: null,
+            stop: null,
+          },
+          legGeometry: {
+            length: 4,
+            points: 'segnJekfwCKo@TCRA',
+          },
+          intermediatePlaces: [],
+          realTime: false,
+          transitLeg: false,
+          rentedBike: false,
+          startTime: 1463407741000,
+          endTime: 1463407780000,
+          distance: 37.714,
+          duration: 39,
+          route: null,
+          trip: null,
+        },
+      ],
+    },
+  ],
 };
 
 export const routeScheduleStopSelectOptions = [
@@ -551,6 +580,7 @@ export const routeScheduleHeaderStops = [
   { name: 'Sörnäinen(M)' },
 ];
 
+/*
 export const routePatterns = {
   pattern: {
     code: 'HSL:1007A:1:03',
@@ -574,3 +604,201 @@ export const routePatterns = {
     },
   },
 };
+*/
+
+export const routePatterns = {
+  patterns: [
+    {
+      code: 'HSL:1010:1:02',
+      headsign: 'Pikku Huopalahti',
+      stops: [
+        {
+          name: 'Korppaanmäki',
+        },
+        {
+          name: 'Johanneksenkirkko',
+        },
+        {
+          name: 'Tarkk´ampujankatu',
+        },
+      ],
+      tripsForDate: [
+        {
+          stoptimes: [
+            {
+              scheduledArrival: 56100,
+              scheduledDeparture: 56100,
+              serviceDay: 1551996000,
+              stop: {
+                id: 'U3RvcDpIU0w6MTI5MTQwNA==',
+              },
+            },
+            {
+              scheduledArrival: 56220,
+              scheduledDeparture: 56220,
+              serviceDay: 1551996000,
+              stop: {
+                id: 'U3RvcDpIU0w6MTI5MTQwMg==',
+              },
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: 'HSL:1010:0:01',
+      headsign: 'Pikku Huopalahti',
+      stops: [
+        {
+          name: 'Korppaanmäki',
+        },
+        {
+          name: 'Johanneksenkirkko',
+        },
+        {
+          name: 'Tarkk´ampujankatu',
+        },
+      ],
+      tripsForDate: [
+        {
+          stoptimes: [
+            {
+              scheduledArrival: 56100,
+              scheduledDeparture: 56100,
+              serviceDay: 1551996000,
+              stop: {
+                id: 'U3RvcDpIU0w6MTI5MTQwNA==',
+              },
+            },
+            {
+              scheduledArrival: 56220,
+              scheduledDeparture: 56220,
+              serviceDay: 1551996000,
+              stop: {
+                id: 'U3RvcDpIU0w6MTI5MTQwMg==',
+              },
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: 'HSL:1010:0:01',
+      headsign: 'Pikku Huopalahti',
+      stops: [
+        {
+          name: 'Korppaanmäki',
+        },
+        {
+          name: 'Johanneksenkirkko',
+        },
+        {
+          name: 'Tarkk´ampujankatu',
+        },
+      ],
+      tripsForDate: [
+        {
+          stoptimes: [
+            {
+              scheduledArrival: 56100,
+              scheduledDeparture: 56100,
+              serviceDay: 1551996000,
+              stop: {
+                id: 'U3RvcDpIU0w6MTI5MTQwNA==',
+              },
+            },
+            {
+              scheduledArrival: 56220,
+              scheduledDeparture: 56220,
+              serviceDay: 1551996000,
+              stop: {
+                id: 'U3RvcDpIU0w6MTI5MTQwMg==',
+              },
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+export const twoRoutePatterns = {
+  patterns: [
+    {
+      code: 'HSL:1010:1:02',
+      headsign: 'Pikku Huopalahti',
+      stops: [
+        {
+          name: 'Korppaanmäki',
+        },
+        {
+          name: 'Johanneksenkirkko',
+        },
+        {
+          name: 'Tarkk´ampujankatu',
+        },
+      ],
+      tripsForDate: [
+        {
+          stoptimes: [
+            {
+              scheduledArrival: 56100,
+              scheduledDeparture: 56100,
+              serviceDay: 1551996000,
+              stop: {
+                id: 'U3RvcDpIU0w6MTI5MTQwNA==',
+              },
+            },
+            {
+              scheduledArrival: 56220,
+              scheduledDeparture: 56220,
+              serviceDay: 1551996000,
+              stop: {
+                id: 'U3RvcDpIU0w6MTI5MTQwMg==',
+              },
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: 'HSL:1010:0:01',
+      headsign: 'Pikku Huopalahti',
+      stops: [
+        {
+          name: 'Korppaanmäki',
+        },
+        {
+          name: 'Johanneksenkirkko',
+        },
+        {
+          name: 'Tarkk´ampujankatu',
+        },
+      ],
+      tripsForDate: [
+        {
+          stoptimes: [
+            {
+              scheduledArrival: 56100,
+              scheduledDeparture: 56100,
+              serviceDay: 1551996000,
+              stop: {
+                id: 'U3RvcDpIU0w6MTI5MTQwNA==',
+              },
+            },
+            {
+              scheduledArrival: 56220,
+              scheduledDeparture: 56220,
+              serviceDay: 1551996000,
+              stop: {
+                id: 'U3RvcDpIU0w6MTI5MTQwMg==',
+              },
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+export const cityBikeUrl = 'https://www.hsl.fi/kaupunkipyorat';

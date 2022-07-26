@@ -1,4 +1,4 @@
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic';
 
 export default class PlanRoute extends Relay.Route {
   static queries = {
@@ -9,6 +9,8 @@ export default class PlanRoute extends Relay.Route {
         }
       }`,
   };
+
   static paramDefinitions = {};
+
   static routeName = 'PlanRoute';
 }

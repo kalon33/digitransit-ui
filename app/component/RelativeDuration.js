@@ -1,27 +1,38 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import moment from 'moment';
 import { FormattedMessage, intlShape } from 'react-intl';
 
 function RelativeDuration(props) {
   const duration = moment.duration(props.duration);
-
-  const hourShort = <FormattedMessage id="hour-short" defaultMessage="h" />;
-
-  const minuteShort = <FormattedMessage id="minute-short" defaultMessage="min" />;
-
   if (duration.asHours() >= 1) {
-    const hours = duration.hours() + (duration.days() * 24);
-    return <span>{hours} {hourShort} {duration.minutes()} {minuteShort}</span>;
+    const hours = duration.hours() + duration.days() * 24;
+    return (
+      <FormattedMessage
+        id="travel-time-with-hours"
+        values={{
+          h: hours,
+          min: duration.minutes(),
+        }}
+      />
+    );
   }
-  return <span>{duration.minutes()} {minuteShort}</span>;
+  return (
+    <FormattedMessage
+      id="travel-time"
+      values={{
+        min: duration.minutes(),
+      }}
+    />
+  );
 }
 
 RelativeDuration.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape.isRequired, // eslint-disable-line react/no-typos
 };
 
 RelativeDuration.propTypes = {
-  duration: React.PropTypes.number.isRequired,
+  duration: PropTypes.number.isRequired,
 };
 
 export default RelativeDuration;

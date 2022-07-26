@@ -17,17 +17,12 @@ $slider-gray: #575757;
 /* This sets the actual clickable area. In webkit even the thumb cannot be
    clicked unless the cursor is in the input element. */
 .slider {
-// no height because it hides range on windows mobile  height: 21px;
+  // no height because it hides range on windows mobile  height: 21px;
   background: none;
   cursor: pointer;
 }
 
-input[type=range].slider {
-  -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
-  width: 100%; /* Specific width is required for Firefox. */
-  margin: 3px 0 1em;
-}
-input[type=range].slider:focus {
+input[type='range'].slider:focus {
   outline: none;
 }
 
@@ -45,7 +40,11 @@ $track-border: 2px solid $slider-gray;
   border: $track-border;
 }
 
-input[type=range].slider {
+input[type='range'].slider {
+  -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+  width: 100%; /* Specific width is required for Firefox. */
+  margin: 3px 0 1em;
+
   &::-webkit-slider-runnable-track {
     @include track;
   }
@@ -94,7 +93,8 @@ input[type=range].slider {
   cursor: ew-resize;
 }
 
-input[type=range].slider {
+/* stylelint-disable-next-line */
+input[type='range'].slider {
   &::-webkit-slider-thumb {
     @include thumb;
     -webkit-appearance: none;
@@ -117,18 +117,18 @@ input[type=range].slider {
 
 $thumb-color-pink: $favourite-color;
 
-.slider-container.active, .slider-container.modified {
-  input[type=range].slider::-webkit-slider-thumb {
+.slider-container.active,
+.slider-container.modified {
+  input[type='range'].slider::-webkit-slider-thumb {
     background-color: $thumb-color-pink !important;
   }
-  input[type=range].slider::-moz-range-thumb  {
+  input[type='range'].slider::-moz-range-thumb {
     background-color: $thumb-color-pink !important;
   }
-  input[type=range].slider::-ms-thumb {
+  input[type='range'].slider::-ms-thumb {
     background-color: $thumb-color-pink !important;
   }
 }
-
 
 /*
   TOGGLE BUTTON
@@ -155,7 +155,6 @@ $btn-heigth: 17px;
 .btn {
   background-color: $btn-inactive-background-color;
   text-align: center;
-  background-color: #575757;
   display: inline-block;
   cursor: pointer;
 
@@ -164,34 +163,84 @@ $btn-heigth: 17px;
   }
   &.bus {
     background-color: $btn-bus-active-background-color;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: $btn-bus-active-background-color;
+    }
   }
   &.tram {
     background-color: $btn-tram-active-background-color;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: $btn-tram-active-background-color;
+    }
   }
   &.rail {
     background-color: $btn-rail-active-background-color;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: $btn-rail-active-background-color;
+    }
   }
   &.subway {
     background-color: $btn-subway-active-background-color;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: $btn-subway-active-background-color;
+    }
   }
   &.ferry {
     background-color: $btn-ferry-active-background-color;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: $btn-ferry-active-background-color;
+    }
   }
   &.airplane {
     background-color: $btn-air-active-background-color;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: $btn-air-active-background-color;
+    }
   }
   &.citybike {
     background-color: $btn-citybike-active-background-color;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: $btn-citybike-active-background-color;
+    }
   }
-  &.walk, &.bicycle, &.car, &.car_park  {
+  &.walk,
+  &.bicycle,
+  &.car,
+  &.car_park,
+  &.public_transport {
     background-color: $btn-radio-checked-background-color;
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: $btn-radio-checked-background-color;
+    }
     .icon {
       color: $btn-icon-color-checked;
     }
   }
-  &.bus, &.tram, &.rail, &.subway, &.ferry, &.airplane, &.citybike {
-    .icon{
-      color:$btn-icon-color-active;
+  &.bus,
+  &.tram,
+  &.rail,
+  &.subway,
+  &.ferry,
+  &.airplane,
+  &.citybike {
+    .icon {
+      color: $btn-icon-color-active;
     }
   }
 
@@ -203,9 +252,14 @@ $btn-heigth: 17px;
     color: $btn-icon-color-inactive;
   }
 }
-.btn-bar  {
-  .btn{
+.btn-bar {
+  display: flex;
+  flex-direction: row;
+  .btn {
+    flex: 1;
+    border-radius: 0;
     border-right: 1px solid $offcanvas-background;
+    padding: 0;
     &:first-child {
       border-top-left-radius: $border-radius;
       border-bottom-left-radius: $border-radius;
@@ -215,7 +269,7 @@ $btn-heigth: 17px;
       border-bottom-right-radius: $border-radius;
     }
   }
-  [class*="column"] + [class*="column"]:last-child {
+  [class*='column'] + [class*='column']:last-child {
     border-right: none;
   }
 }
@@ -224,13 +278,54 @@ $btn-heigth: 17px;
   background-color: $standalone-btn-color;
   padding: $padding-small $padding-medium;
   border-radius: 20px;
-  .icon-holder  {
+  .icon-holder {
     padding: 0;
     margin: 0;
     margin-bottom: -4px;
   }
   &:hover {
     background-color: $standalone-btn-hover-color;
+  }
+}
+
+.secondary-button {
+  border-radius: 4px;
+  background-color: #ffffff;
+  border: solid 1px #b7b7b7;
+  font-family: $font-family;
+  font-weight: $font-narrow-weight-medium;
+  text-align: center;
+  color: $link-color;
+  font-size: $font-size-normal;
+  padding: 0.92em $padding-large;
+  display: flex;
+  flex-direction: row;
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: $link-color;
+    background-color: #ffffff;
+    border: solid 1px $link-color;
+  }
+  .icon {
+    margin-right: 4px;
+    width: 1.1em;
+  }
+
+  &.small {
+    padding: 0.7em $padding-medium;
+  }
+}
+
+.mobile {
+  .secondary-button {
+    font-size: $font-size-small;
+    padding: 0.85em 1em;
+  }
+
+  .popup-container {
+    min-width: 80%;
   }
 }
 
@@ -243,18 +338,88 @@ $btn-heigth: 17px;
   border-bottom-right-radius: $border-radius;
 }
 
+.popup-dark-overlay {
+  background-color: rgba(0, 0, 0, 0.23);
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 1008;
+  top: 0;
+  left: 0;
+}
+
+.popup-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  max-width: 437px;
+  min-width: 320px;
+  background-color: #fff;
+  padding: 1em;
+  border-radius: 4pt;
+  transform: translate(-50%, -50%);
+
+  .close-popup {
+    button {
+      background: none;
+      padding: 0;
+      margin: 0;
+    }
+    .icon.close {
+      width: 1.4em;
+      height: 1.4em;
+      color: rgb(0, 122, 201);
+    }
+  }
+
+  &.no-bike-allowed-popup {
+    .popup-icon,
+    .popup-text {
+      text-align: center;
+    }
+
+    .popup-icon {
+      margin-bottom: 1em;
+    }
+
+    .popup-text {
+      margin-bottom: 1.5em;
+      font-size: $font-size-large;
+      user-select: none;
+    }
+
+    .close-popup {
+      display: flex;
+      flex-direction: row-reverse;
+    }
+
+    .icon {
+      &.caution {
+        width: 3.5em;
+        height: 3.5em;
+        fill: rgb(220, 4, 81);
+        color: #fff;
+      }
+    }
+  }
+}
+
 .mode-filter {
   width: 100%;
   padding-top: 0;
   padding-bottom: 0px;
   height: 53px;
   text-align: center;
+  align-items: flex-start;
+
+  .btn {
+    height: 45px;
+  }
 }
 
 select {
   -moz-appearance: none;
 }
-
 
 .split-bars {
   display: flex;
@@ -272,37 +437,13 @@ select {
   width: 0.7em;
 }
 
-.labeled {
-  display: inline-block;
-  width: inherit;
-  height: inherit;
-  line-height: 1;
-  &:hover .labeled-label {
-    color: lighten($black, 20%);
-  }
-}
-
-.labeled-item {
-  text-align: center;
-}
-
-.labeled-label {
-  display: inline-block;
-  min-width: 60px;
-  color: $gray-blue;
-  @include font-bold;
-  font-size: $font-size-small;
-  text-transform: uppercase;
-  text-align: center;
-}
-
-.centered {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-}
-
-.centered--item {
+.canceled {
+  color: $cancelation-red;
+  background: linear-gradient(
+    to bottom,
+    transparent calc(50% - 1px),
+    $cancelation-red calc(50% - 1px),
+    $cancelation-red calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
 }

@@ -1,20 +1,24 @@
-const async = require('async');
+// TODO: remove citybikes on 2018-10-31
+const modalities = [
+  'bus',
+  'tram',
+  'rail',
+  'subway',
+  'ferry',
+  'citybike',
+  'airplane',
+];
 
-// TODO: add citybikes back in april
-const modalities = ['bus', 'tram', 'rail', 'subway', 'ferry', /* 'citybike',*/ 'airplane'];
-
-function clickCanvasToggle() {
-  this.waitForElementVisible('@canvasToggle', this.api.globals.elementVisibleTimeout);
-  return this.api.checkedClick(this.elements.canvasToggle.selector);
-}
-
-function closeCanvas() {
-  this.waitForElementVisible('@closeCanvas', this.api.globals.elementVisibleTimeout);
-  return this.api.checkedClick(this.elements.closeCanvas.selector);
+function openQuickSettings() {
+  this.waitForElementVisible(
+    '@openAdvancedSettings',
+    this.api.globals.elementVisibleTimeout,
+  );
+  return this;
 }
 
 function exists(selector, callback) {
-  this.api.elements('css selector', selector, (result) => {
+  this.api.elements('css selector', selector, result => {
     if (result.value && result.value.length > 0 && result.value[0].ELEMENT) {
       callback(selector, true);
     } else {
@@ -23,53 +27,67 @@ function exists(selector, callback) {
   });
 }
 
-function enableModality(modality) {
-  this.api.debug(`enabling ${modality}`);
-  exists.call(this, `.btn-bar > .${modality}`, (selector, found) => {
+function enableModality(mode) {
+  this.api.debug(`enabling ${mode}`);
+  const modeSelector = `.toggle-modes>.btn-bar>.${mode}`;
+  exists.call(this, modeSelector, (selector, found) => {
     if (!found) {
-      this.checkedClick(`.btn-bar > .btn:nth-of-type(${modalities.indexOf(modality) + 1})`);
+      const nth = modalities.indexOf(mode) + 1;
+      this.checkedClick(`.toggle-modes>.btn-bar>.btn:nth-of-type(${nth})`);
     }
   });
-  this.waitForElementPresent(`.btn-bar > .${modality}`, this.api.globals.elementVisibleTimeout);
+  this.waitForElementPresent(
+    modeSelector,
+    this.api.globals.elementVisibleTimeout,
+  );
 }
 
-function disableModality(modality, asyncCallback = () => {}) {
-  this.api.debug(`disabling ${modality}`);
-  exists.call(this, `.btn-bar > .${modality}`, (selector, found) => {
+function disableModality(mode) {
+  this.api.debug(`disabling ${mode}`);
+  const modeSelector = `.toggle-modes>.btn-bar>.${mode}`;
+  exists.call(this, modeSelector, (selector, found) => {
     if (found) {
-      this.checkedClick(selector);
+      this.waitForElementPresent(
+        modeSelector,
+        this.api.globals.elementVisibleTimeout,
+      );
+      this.waitForElementVisible(
+        modeSelector,
+        this.api.globals.elementVisibleTimeout,
+      );
+      this.checkedClick(modeSelector);
     }
   });
-  this.waitForElementNotPresent(`.btn-bar > .${modality}`,
-    this.api.globals.elementVisibleTimeout, true, () => {
-      asyncCallback();
-    });
+  this.waitForElementNotPresent(
+    modeSelector,
+    this.api.globals.elementVisibleTimeout,
+  );
 }
 
 function disableAllModalitiesExcept(except) {
   this.api.debug(`disabling all but ${except}`);
 
-  async.eachSeries(modalities, (modality, callback) => {
-    this.api.pause(1000);
+  modalities.forEach(modality => {
     this.api.debug(`iterating ${modality}`);
     if (modality !== except) {
-      disableModality.call(this, modality, callback);
+      disableModality.call(this, modality);
+      this.api.pause(5 * this.api.globals.pause_ms);
     }
   });
   this.api.debug('all iterated');
 }
 
 module.exports = {
-  commands: [{
-    clickCanvasToggle,
-    enableModality,
-    disableModality,
-    disableAllModalitiesExcept,
-    exists,
-    closeCanvas,
-  }],
+  commands: [
+    {
+      openQuickSettings,
+      enableModality,
+      disableModality,
+      disableAllModalitiesExcept,
+      exists,
+    },
+  ],
   elements: {
-    canvasToggle: '.right-offcanvas-toggle',
-    closeCanvas: '.offcanvas-close',
+    openAdvancedSettings: '.open-advanced-settings',
   },
 };

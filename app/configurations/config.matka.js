@@ -1,9 +1,20 @@
-const CONFIG = process.env.CONFIG || 'matka';
-const APP_DESCRIPTION = 'Liikenneviraston Matka.fi–palvelu.';
+import { PREFIX_ITINERARY_SUMMARY } from '../util/path';
+
+/* eslint-disable prefer-template */
+const CONFIG = 'matka';
+const APP_DESCRIPTION = 'Matka.fi–palvelu.';
 const APP_TITLE = 'Matka.fi';
+const YEAR = 1900 + new Date().getYear();
+const STATIC_MESSAGE_URL =
+  process.env.STATIC_MESSAGE_URL ||
+  'https://tyokalu.navici.com/yleisviestipalvelu/messages/';
+
+// route timetable data needs to be up-to-date before this is enabled
+// const HSLRouteTimetable = require('./timetableConfigUtils').default.HSLRoutes;
 
 export default {
   CONFIG,
+  OTPTimeout: process.env.OTP_TIMEOUT || 30000,
 
   contactName: {
     sv: 'Livin',
@@ -14,7 +25,10 @@ export default {
   availableLanguages: ['fi', 'sv', 'en'],
   defaultLanguage: 'fi',
 
-  appBarLink: { name: 'Liikennevirasto', href: 'http://www.liikennevirasto.fi/liikennejarjestelma/henkiloliikenne/joukkoliikenteen-palvelut/informaatiopalvelut/liikkujan-infopalvelut' },
+  appBarLink: {
+    name: 'Traficom',
+    href: 'https://www.traficom.fi/fi/joukkoliikenteen-informaatiopalvelut',
+  },
 
   socialMedia: {
     title: APP_TITLE,
@@ -24,45 +38,178 @@ export default {
 
   title: APP_TITLE,
 
-  favicon: './sass/themes/hsl/icon_favicon-matkafi.svg',
+  // Navbar logo
+  logo: 'matka/matka-logo.png',
 
-  sprites: 'svg-sprite.default.svg',
+  favicon: './app/configurations/images/hsl/icon_favicon-matkafi.svg',
+
+  feedIds: [
+    'MATKA',
+    'HSL',
+    'tampere',
+    'LINKKI',
+    'lautta',
+    'OULU',
+    'MatkahuoltoKainuu',
+    'MatkahuoltoSavo',
+    'MatkahuoltoKanta',
+    'MatkahuoltoKarjala',
+    'MatkahuoltoKeski',
+    'MatkahuoltoKyme',
+    'MatkahuoltoLappi',
+    'MatkahuoltoPohjanmaa',
+    'MatkahuoltoSatakunta',
+    'MatkahuoltoVakka',
+    'MatkahuoltoVantaa',
+    'MatkahuoltoVarsinais',
+  ],
 
   meta: {
     description: APP_DESCRIPTION,
-    keywords: 'reitti,reitit,opas,reittiopas,joukkoliikenne',
+    keywords: `${PREFIX_ITINERARY_SUMMARY},reitit,opas,reittiopas,joukkoliikenne`,
+  },
+
+  routeTimetables: {
+    // route timetable data needs to be up-to-date before this is enabled
+    //  HSL: HSLRouteTimetable,
   },
 
   footer: {
     content: [
-      { label: (function () { return `© Liikennevirasto ${(1900 + new Date().getYear())}`; }()) },
+      { label: `© Traficom ${YEAR}` },
       {},
-      { name: 'footer-feedback', nameEn: 'Submit feedback', href: 'http://www.liikennevirasto.fi/liikennejarjestelma/henkiloliikenne/joukkoliikenteen-palvelut/informaatiopalvelut/liikkujan-infopalvelut/matka.fi-palautesivu', icon: 'icon-icon_speech-bubble' },
-      { name: 'about-this-service', nameEn: 'About this service', href: 'http://www.liikennevirasto.fi/liikennejarjestelma/henkiloliikenne/joukkoliikenteen-palvelut/informaatiopalvelut/liikkujan-infopalvelut/tietoja-matka.fi-palvelusta', icon: 'icon-icon_info' },
+      {
+        name: 'footer-feedback',
+        nameEn: 'Submit feedback',
+        href: 'https://www.traficom.fi/fi/asioi-kanssamme/reittiopas',
+        icon: 'icon-icon_speech-bubble',
+      },
+      {
+        name: 'about-this-service',
+        nameEn: 'About this service',
+        href: 'https://www.traficom.fi/fi/joukkoliikenteen-informaatiopalvelut',
+        icon: 'icon-icon_info',
+      },
+      {
+        name: 'accessibility-statement',
+        nameEn: 'Accessibility statement',
+        href:
+          'https://www.traficom.fi/fi/asioi-kanssamme/reittiopas/matkafi-reittioppaan-saavutettavuusseloste',
+      },
     ],
   },
 
-  shouldShowIntro: true,
+  redirectReittiopasParams: true,
 
-  aboutThisService: {
-    fi: {
-      about: 'Tämän palvelun tarjoaa Liikennevirasto joukkoliikenteen reittisuunnittelua varten koko Suomen alueella. Palvelu kattaa joukkoliikenteen, kävelyn, pyöräilyn ja yksityisautoilun rajatuilta osin. Palvelu perustuu Digitransit palvelualustaan. Reittiehdotukset perustuvat arvioituihin ajoaikoihin. Ehdotetun yhteyden toteutumista ei voida kuitenkaan taata. Liikennevirasto ei korvaa kulkuyhteyden toteutumatta jäämisestä mahdollisesti aiheutuvia vahinkoja.',
-      digitransit: 'Digitransit palvelualusta on HSL:n ja Liikenneviraston kehittämä avoimen lähdekoodin ratkaisu, jonka taustalla toimii mm. OpenTripPlanner. Lähdekoodi tarjotaan EUPL v1.2 ja AGPLv3 lisensseillä.',
-      datasources: 'Kartat, kadut, rakennukset, pysäkkisijainnit ym. tiedot tarjoaa © OpenStreetMap contributors ja ne ladataan Geofabrik palvelusta. Osoitetiedot tuodaan VRK:n rakennustietorekisteristä ja ne ladataan OpenAddresses-palvelusta. Joukkoliikenteen reitit ja aikataulut ladataan mm. Liikenneviraston valtakunnallisesta joukkoliikenteen tietokannasta.',
-    },
-
-    sv: {
-      about: 'Den här tjänsten erbjuds av Trafikverket för reseplanering inom hela Finland. Reseplaneraren täcker med vissa begränsningar kollektivtrafik, promenad, cykling samt privatbilism. Tjänsten baserar sig på Digitransit-plattformen.',
-      digitransit: 'Digitransit-plattformen är en öppen programvara utvecklad av HRT och Trafikverket, som bl.a. stödjer sig på OpenTripPlanner. Källkoden distribueras under EUPL v1.2 och AGPLv3 licenserna.',
-      datasources: 'Kartor, gator, byggnader, hållplatser och dylik information erbjuds av © OpenStreetMap contributors och laddas ned från Geofabrik-tjänsten. Addressinformation hämtas från BRC:s byggnadsinformationsregister och laddas ned från OpenAddresses-tjänsten. Kollektivtrafikens rutter och tidtabeller hämtas bl.a. från Trafikverkets landsomfattande kollektivtrafiksdatabas.',
-    },
-
-    en: {
-      about: 'This service is provided by Finnish Transport Agency for journey planning and information in Finland. The service covers public transport, walking, cycling, and some private car use. Service is built on Digitransit platform.',
-      digitransit: 'Digitransit service platform is created by HSL and Finnish Transport Agency, built on top of e.g. OpenTripPlanner. The source code of the platform is dual-licensed under the EUPL v1.2 and AGPLv3 licenses.',
-      datasources: "Maps, streets, buildings, stop locations etc. from © OpenStreetMap contributors downloaded from Geofabrik. Additional address data from Finland's Population Register Centre downloaded from OpenAddresses Public transport routes and timetables from Finnish Transport Agency's national public transit database.",
+  cityBike: {
+    showCityBikes: true,
+    networks: {
+      smoove: {
+        icon: 'citybike',
+        name: {
+          fi: 'Helsinki ja Espoo',
+          sv: 'Helsingfors och Esbo',
+          en: 'Helsinki and Espoo',
+        },
+        type: 'citybike',
+        url: {
+          fi: 'https://www.hsl.fi/kaupunkipyorat/helsinki',
+          sv: 'https://www.hsl.fi/sv/stadscyklar/helsingfors',
+          en: 'https://www.hsl.fi/en/citybikes/helsinki',
+        },
+      },
+      vantaa: {
+        icon: 'citybike-secondary',
+        name: {
+          fi: 'Vantaa',
+          sv: 'Vanda',
+          en: 'Vantaa',
+        },
+        type: 'citybike',
+        url: {
+          fi: 'https://www.hsl.fi/kaupunkipyorat/vantaa',
+          sv: 'https://www.hsl.fi/sv/stadscyklar/vanda',
+          en: 'https://www.hsl.fi/en/citybikes/vantaa',
+        },
+      },
+      turku: {
+        icon: 'citybike',
+        name: {
+          fi: 'Turku',
+          sv: 'Åbo',
+          en: 'Turku',
+        },
+        type: 'citybike',
+        url: {
+          fi: 'https://www.foli.fi/kaupunkipyorat',
+          sv: 'https://www.foli.fi/sv/stadscyklar',
+          en: 'https://www.foli.fi/en/citybikes',
+        },
+      },
+      vilkku: {
+        icon: 'citybike',
+        name: {
+          fi: 'Vilkku',
+          sv: 'Vilkku',
+          en: 'Vilkku',
+        },
+        type: 'citybike',
+        url: {
+          fi: 'https://kaupunkipyorat.kuopio.fi/',
+          sv: 'https://kaupunkipyorat.kuopio.fi/?lang=2',
+          en: 'https://kaupunkipyorat.kuopio.fi/?lang=2',
+        },
+      },
+      // lappeenranta: {
+      //   icon: 'citybike',
+      //   name: {
+      //     fi: 'Lappeenranta',
+      //     sv: 'Vilmanstrand',
+      //     en: 'Lappeenranta',
+      //   },
+      //   type: 'citybike',
+      //   url: {
+      //     fi: 'https://kaakau.fi/lappeenranta/',
+      //     sv: 'https://kaakau.fi/lappeenranta/?lang=en',
+      //     en: 'https://kaakau.fi/lappeenranta/?lang=sv',
+      //   },
+      // },
     },
   },
 
-  staticMessages: [],
+  transportModes: {
+    citybike: {
+      availableForSelection: true,
+    },
+  },
+
+  aboutThisService: {
+    fi: [
+      {
+        header: 'Tietoja palvelusta',
+        paragraphs: [
+          'Tämän palvelun tarjoaa Traficomin joukkoliikenteen reittisuunnittelua varten koko Suomen alueella. Palvelu kattaa joukkoliikenteen, kävelyn, pyöräilyn ja yksityisautoilun rajatuilta osin. Palvelu perustuu Digitransit-palvelualustaan. Reittiehdotukset perustuvat arvioituihin ajoaikoihin. Ehdotetun yhteyden toteutumista ei voida kuitenkaan taata. Kulkuyhteyden toteutumatta jäämisestä mahdollisesti aiheutuvia vahinkoja ei korvata.',
+        ],
+      },
+    ],
+
+    sv: [
+      {
+        header: 'Om tjänsten',
+        paragraphs: [
+          'Den här tjänsten erbjuds av Traficom för reseplanering inom hela Finland. Reseplaneraren täcker med vissa begränsningar kollektivtrafik, promenad, cykling samt privatbilism. Tjänsten baserar sig på Digitransit-plattformen.',
+        ],
+      },
+    ],
+
+    en: [
+      {
+        header: 'About this service',
+        paragraphs: [
+          'This service is provided by Traficom for journey planning and information in Finland. The service covers public transport, walking, cycling, and some private car use. Service is built on Digitransit platform.',
+        ],
+      },
+    ],
+  },
+  staticMessagesUrl: STATIC_MESSAGE_URL,
 };

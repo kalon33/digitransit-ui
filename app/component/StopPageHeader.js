@@ -1,39 +1,23 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import mapProps from 'recompose/mapProps';
 import getContext from 'recompose/getContext';
 import compose from 'recompose/compose';
-// import { FormattedMessage } from 'react-intl';
 
 import StopCardHeaderContainer from './StopCardHeaderContainer';
-// import { addFavouriteStop } from '../action/FavouriteActions';
 import ComponentUsageExample from './ComponentUsageExample';
-// import Labeled from './Labeled';
-// import InfoIcon from './InfoIcon';
-// import Favourite from './Favourite';
+import withBreakpoint from '../util/withBreakpoint';
 
 const StopPageHeader = compose(
-  getContext({ executeAction: React.PropTypes.func.isRequired,
-    breakpoint: React.PropTypes.string.isRequired }),
+  withBreakpoint,
+  getContext({
+    executeAction: PropTypes.func.isRequired,
+  }),
   mapProps(props => ({
     stop: props.stop,
     className: 'stop-page header',
     headingStyle: 'h3',
-    icons: [
-      // TODO: Re-add when done
-      /* <Labeled
-        label={<FormattedMessage id="extra-info" defaultMessage="Further information" />}
-        showLabel={props.breakpoint === 'large'}
-      >
-        <InfoIcon stop={props.stop} />
-      </Labeled>,
-      <Favourite
-        favourite={props.favourite}
-        addFavourite={(e) => {
-          e.stopPropagation();
-          props.executeAction(addFavouriteStop, props.params.stopId);
-        }}
-      />, */
-    ],
+    icons: [],
   })),
 )(StopCardHeaderContainer);
 
@@ -42,15 +26,17 @@ const exampleStop = {
   gtfsId: 'HSL:1541157',
   name: 'Kaivonkatsojanpuisto',
   desc: 'Kaivonkatsojantie',
+  zoneId: 'C',
 };
 
 StopPageHeader.displayName = 'StopPageHeader';
 
-StopPageHeader.description = () =>
+StopPageHeader.description = () => (
   <div>
     <ComponentUsageExample description="basic">
       <StopPageHeader stop={exampleStop} params={{ stopId: 123 }} />
     </ComponentUsageExample>
-  </div>;
+  </div>
+);
 
 export default StopPageHeader;
