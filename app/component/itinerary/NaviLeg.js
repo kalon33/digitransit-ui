@@ -16,13 +16,13 @@ const iconMap = {
 /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
 export default function NaviLeg({ leg, nextLeg, legType }) {
   const iconName = legType === 'wait' ? iconMap.WAIT : iconMap[leg.mode];
-  let moveInstructions = `navileg-${leg.mode.toLowerCase()}`;
+  let instructions = `navileg-${leg.mode.toLowerCase()}`;
 
   if (isRental(leg, nextLeg)) {
     if (leg.mode === 'WALK' && nextLeg?.mode === 'SCOOTER') {
-      moveInstructions = `navileg-rent-scooter`;
+      instructions = `navileg-rent-scooter`;
     } else {
-      moveInstructions = `navileg-rent-cycle`;
+      instructions = `navileg-rent-cycle`;
     }
   }
   return (
@@ -34,7 +34,7 @@ export default function NaviLeg({ leg, nextLeg, legType }) {
           <NaviLegContent
             leg={leg}
             nextLeg={nextLeg}
-            moveInstructions={moveInstructions}
+            instructions={instructions}
             legType={legType}
           />
         </div>

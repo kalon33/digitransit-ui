@@ -7,14 +7,14 @@ import NaviDestination from './NaviDestination';
 import RouteNumber from '../RouteNumber';
 
 export default function NaviLegContent(
-  { leg, nextLeg, moveInstructions, legType },
+  { leg, nextLeg, instructions, legType },
   { intl },
 ) {
   if (legType === 'move') {
     return (
       <>
         <div className="destination-header">
-          <FormattedMessage id={moveInstructions} defaultMessage="Go to" />
+          <FormattedMessage id={instructions} defaultMessage="Go to" />
           &nbsp;
           {legDestination(intl, leg, null, nextLeg)}
         </div>
@@ -59,7 +59,7 @@ export default function NaviLegContent(
 NaviLegContent.propTypes = {
   leg: legShape.isRequired,
   nextLeg: legShape.isRequired,
-  moveInstructions: PropTypes.string.isRequired,
+  instructions: PropTypes.string.isRequired,
   legType: PropTypes.string,
 };
 
