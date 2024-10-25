@@ -83,7 +83,17 @@ function NaviContainer(
         });
         const rtLegs = itinerary.legs.map(l => {
           const rtLeg = l.id ? legMap[l.id] : null;
-          return rtLeg ? { ...l, ...rtLeg } : { ...l };
+          if (rtLeg) {
+            return {
+              ...l,
+              ...rtLeg,
+              to: {
+                ...l.to,
+                vehicleRentalStation: rtLeg.to.vehicleRentalStation,
+              },
+            };
+          }
+          return { ...l };
         });
         setRealTimeLegs(rtLegs);
       });
