@@ -23,7 +23,11 @@ const NaviStack = ({ messages, handleRemove, show }) => {
 
 NaviStack.propTypes = {
   // eslint-disable-next-line
-  messages: PropTypes.arrayOf(PropTypes.object).isRequired,
+  messages: PropTypes.arrayOf(    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      severity: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
   show: PropTypes.bool.isRequired,
   handleRemove: PropTypes.func.isRequired,
 };

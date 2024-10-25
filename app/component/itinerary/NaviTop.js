@@ -13,7 +13,7 @@ import {
   getAdditionalMessages,
 } from './NaviUtils';
 
-const DISTANCE_FROM_DESTINATION = 20; // meters
+const DESTINATION_RADIUS = 20; // meters
 const TIME_AT_DESTINATION = 3; // * 10 seconds
 
 function getFirstLastLegs(legs) {
@@ -33,7 +33,7 @@ function NaviTop(
   // notifications that are shown to the user.
   const [activeMessages, setActiveMessages] = useState([]);
   const focusRef = useRef(false);
-  // Destination ounter. How long user has been at the destination. * 10 seconds
+  // Destination counter. How long user has been at the destination. * 10 seconds
   const destCountRef = useRef(0);
 
   const handleClick = () => {
@@ -56,6 +56,7 @@ function NaviTop(
     const incomingMessages = new Map();
 
     // TODO proper alert handling.
+    // Alerts for NaviStack
     const alerts = getItineraryAlerts(realTimeLegs, intl);
     alerts.forEach(alert => {
       incomingMessages.set(alert.id, alert);
@@ -70,8 +71,8 @@ function NaviTop(
       const nextTransitLeg = realTimeLegs.find(
         leg => legTime(leg.start) > legTime(l.start) && leg.transitLeg,
       );
-
       if (nextTransitLeg) {
+        // Messages for NaviStack.
         const transitLegState = getTransitLegState(
           nextTransitLeg,
           intl,
@@ -100,6 +101,8 @@ function NaviTop(
       }
 
       if (incomingMessages.size || legChanged) {
+        // Handle messages when new messages arrives or leg is changed.
+
         // Current active messages. Filter away legChange messages when leg changes.
         const currActiveMessages = legChanged
           ? activeMessages.filter(m => m.expiresOn !== 'legChange')
@@ -128,10 +131,12 @@ function NaviTop(
         focusRef.current = true;
       }
     }
+
+    // User position and distance from currentleg endpoint.
     if (
       position &&
       currentLeg &&
-      distance(position, currentLeg.to) <= DISTANCE_FROM_DESTINATION
+      distance(position, currentLeg.to) <= DESTINATION_RADIUS
     ) {
       destCountRef.current += 1;
     } else {
@@ -156,6 +161,7 @@ function NaviTop(
         return legTime(leg.start) > legTime(currentLeg.start);
       });
       if (destCountRef.current >= TIME_AT_DESTINATION) {
+        // User at the destination. show wait message.
         naviTopContent = (
           <NaviLeg leg={currentLeg} nextLeg={nextLeg} legType="wait" />
         );

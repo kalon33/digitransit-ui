@@ -23,28 +23,8 @@ const legQuery = graphql`
           time
         }
       }
-      from {
-        lat
-        lon
-        stop {
-          name
-          code
-          platformCode
-          vehicleMode
-          zoneId
-          parentStation {
-            name
-          }
-        }
-      }
+
       to {
-        lat
-        lon
-        stop {
-          parentStation {
-            name
-          }
-        }
         vehicleRentalStation {
           availableVehicles {
             total

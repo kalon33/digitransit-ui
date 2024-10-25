@@ -13,7 +13,6 @@ const iconMap = {
   WAIT: 'icon-icon_navigation_wait',
 };
 
-/* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
 export default function NaviLeg({ leg, nextLeg, legType }) {
   const iconName = legType === 'wait' ? iconMap.WAIT : iconMap[leg.mode];
   let instructions = `navileg-${leg.mode.toLowerCase()}`;
@@ -26,18 +25,16 @@ export default function NaviLeg({ leg, nextLeg, legType }) {
     }
   }
   return (
-    <div>
-      <div className="navileg-goto">
-        <Icon img={iconName} color="black" className="navileg-mode" />
-        <div className="navileg-divider" />
-        <div className="navileg-destination">
-          <NaviLegContent
-            leg={leg}
-            nextLeg={nextLeg}
-            instructions={instructions}
-            legType={legType}
-          />
-        </div>
+    <div className="navileg-goto">
+      <Icon img={iconName} color="black" className="navileg-mode" />
+      <div className="navileg-divider" />
+      <div className="navileg-destination">
+        <NaviLegContent
+          leg={leg}
+          nextLeg={nextLeg}
+          instructions={instructions}
+          legType={legType}
+        />
       </div>
     </div>
   );
