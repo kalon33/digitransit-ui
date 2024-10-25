@@ -20,10 +20,12 @@ const NaviStack = ({ messages, handleRemove, show }) => {
     </div>
   );
 };
+
 NaviStack.propTypes = {
   // eslint-disable-next-line
   messages: PropTypes.arrayOf(PropTypes.object).isRequired,
   show: PropTypes.bool.isRequired,
   handleRemove: PropTypes.func.isRequired,
 };
+
 export default NaviStack;
