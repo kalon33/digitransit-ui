@@ -57,7 +57,7 @@ function NaviTop(
 
     // TODO proper alert handling.
     // Alerts for NaviStack
-    const alerts = getItineraryAlerts(realTimeLegs, intl);
+    const alerts = getItineraryAlerts(realTimeLegs, intl, messages);
     alerts.forEach(alert => {
       incomingMessages.set(alert.id, alert);
     });

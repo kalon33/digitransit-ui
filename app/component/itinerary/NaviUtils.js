@@ -72,7 +72,7 @@ export const getTransitLegState = (leg, intl, messages) => {
   });
   let content;
   let severity;
-  const isRealTime = realtimeState && realtimeState === 'UPDATED';
+  const isRealTime = realtimeState === 'UPDATED';
 
   if (late && prevSeverity !== 'ALERT') {
     // todo: Do this when design is ready.
@@ -123,45 +123,46 @@ export const getTransitLegState = (leg, intl, messages) => {
 
 // We'll need the intl later.
 // eslint-disable-next-line no-unused-vars
-export const getItineraryAlerts = (realTimeLegs, intl) => {
+export const getItineraryAlerts = (realTimeLegs, intl, messages) => {
   const alerts = [];
   const canceled = realTimeLegs.filter(leg => leg.realtimeState === 'CANCELED');
   const transferProblem = findTransferProblem(realTimeLegs);
   const late = realTimeLegs.filter(leg => leg.start.estimate?.delay > 0);
   let content;
   // TODO: Proper ID handling
-  const id = 'alert-todo-proper-id';
-  if (canceled.length > 0) {
+  if (canceled.length > 0 && !messages.get('canceled')) {
     content = <div className="notifiler">Osa matkan lähdöistä on peruttu</div>;
     // Todo: No current design
     // todo find modes that are canceled
     alerts.push({
       severity: 'ALERT',
       content,
-      id,
+      id: 'canceled',
     });
   }
-
   if (transferProblem !== null) {
-    // todo no current design
-    content = (
-      <div className="notifiler">{`Vaihto ${transferProblem[0].route.shortName} - ${transferProblem[1].route.shortName} ei onnistu reittisuunnitelman mukaisesti`}</div>
-    );
+    const transferId = `transfer-${transferProblem[0].id}-${transferProblem[1].id}}`;
+    if (!messages.get(transferId)) {
+      // todo no current design
+      content = (
+        <div className="notifiler">{`Vaihto ${transferProblem[0].route.shortName} - ${transferProblem[1].route.shortName} ei onnistu reittisuunnitelman mukaisesti`}</div>
+      );
 
-    alerts.push({
-      severity: 'ALERT',
-      content,
-      id,
-    });
+      alerts.push({
+        severity: 'ALERT',
+        content,
+        id: transferId,
+      });
+    }
   }
-  if (late.length) {
+  if (late.length && !messages.get('late')) {
     // Todo: No current design
     // Todo add mode and delay time to this message
     content = <div className="notifiler">Kulkuneuvo on myöhässä</div>;
     alerts.push({
       severity: 'ALERT',
       content,
-      id,
+      id: 'late',
     });
   }
 
