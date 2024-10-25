@@ -2,6 +2,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { legTime } from '../../util/legUtils';
 import { timeStr } from '../../util/timeUtils';
+import { getFaresFromLegs } from '../../util/fareUtils';
 
 const TRANSFER_SLACK = 60000;
 
@@ -32,42 +33,53 @@ function findTransferProblem(legs) {
   return null;
 }
 
-export const getJourneyStateMessages = (leg, intl) => {
-  const { start, realtimeState, to, from, mode, id } = leg;
+export const getAdditionalMessages = (leg, time, intl, config, messages) => {
+  const msgs = [];
+  const ticketDisplay = 120 * 1000; // 2 minutes
+  const ticketMsg = messages.get('ticket');
+  if (!ticketMsg && legTime(leg.start) - time < ticketDisplay) {
+    // Todo: multiple fares?
+    const fare = getFaresFromLegs([leg], config)[0];
+    msgs.push({
+      severity: 'INFO',
+      content: (
+        <div className="navi-info-content">
+          <FormattedMessage id="navigation-remember-ticket" />
+          <span>
+            {fare.ticketName} {fare.price} €
+          </span>
+        </div>
+      ),
+      id: 'ticket',
+    });
+  }
+  return msgs;
+};
+
+export const getTransitLegState = (leg, intl, messages) => {
+  const { start, realtimeState, from, mode, id } = leg;
   const { scheduledTime, estimated } = start;
   if (mode === 'WALK') {
     return null;
   }
-
-  const time = estimated?.time || scheduledTime;
-  let msgId = id || `${mode.toLowerCase()}-${time}`;
+  const previousMessage = messages.get(id);
+  const prevSeverity = previousMessage ? previousMessage.severity : null;
 
   const late = estimated?.delay > 0;
   const localizedMode = intl.formatMessage({
     id: `${mode.toLowerCase()}`,
     defaultMessage: `${mode}`,
   });
-  // Todo: should bicycle be in other messages tba?
-  // This function will be more next transitLeg state.
   let content;
   let severity;
-  if (mode === 'BICYCLE' && from.vehicleRentalStation) {
-    const bikes = from.vehicleRentalStation.availableVehicles?.total;
-    msgId += `-${bikes}`;
-    content = (
-      <div className="navi-info-content">
-        <FormattedMessage
-          id="navileg-mode-citybike"
-          values={{ available: bikes }}
-        />
-      </div>
-    );
-    severity = 'INFO';
-  } else if (late) {
+  if (late && prevSeverity !== 'ALERT') {
     // todo: Do this when design is ready.
     severity = 'ALERT';
     content = <div className="navi-info-content"> Kulkuneuvo on myöhässä </div>;
-  } else if (!realtimeState || realtimeState !== 'UPDATED') {
+  } else if (
+    (!realtimeState || realtimeState !== 'UPDATED') &&
+    prevSeverity !== 'WARNING'
+  ) {
     severity = 'WARNING';
     content = (
       <div className="navi-info-content">
@@ -81,12 +93,11 @@ export const getJourneyStateMessages = (leg, intl) => {
         />
       </div>
     );
-  } else if (leg.transitLeg) {
-    const { parentStation, name } = to.stop;
+  } else if (prevSeverity !== 'INFO') {
+    const { parentStation, name } = from.stop;
     const stopOrStation = parentStation
       ? intl.formatMessage({ id: 'from-station' })
       : intl.formatMessage({ id: 'from-stop' });
-
     content = (
       <div className="navi-info-content">
         <FormattedMessage
@@ -105,15 +116,15 @@ export const getJourneyStateMessages = (leg, intl) => {
     );
     severity = 'INFO';
   }
-  const info = { severity, content, id: msgId };
-  // Only one main info, first in stack.
-  info.expiresOn = 'legChange';
-  return info;
+  const state = severity
+    ? { severity, content, id, expiresOn: 'legChange' }
+    : null;
+  return state;
 };
 
 // We'll need the intl later.
 // eslint-disable-next-line no-unused-vars
-export const getJourneyStateAlerts = (realTimeLegs, intl) => {
+export const getItineraryAlerts = (realTimeLegs, intl) => {
   const alerts = [];
   const canceled = realTimeLegs.filter(leg => leg.realtimeState === 'CANCELED');
   const transferProblem = findTransferProblem(realTimeLegs);

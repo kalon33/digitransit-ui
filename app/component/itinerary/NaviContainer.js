@@ -23,6 +23,20 @@ const legQuery = graphql`
           time
         }
       }
+      from {
+        lat
+        lon
+        stop {
+          name
+          code
+          platformCode
+          vehicleMode
+          zoneId
+          parentStation {
+            name
+          }
+        }
+      }
       to {
         lat
         lon
@@ -157,6 +171,17 @@ const withRelay = createFragmentContainer(NaviContainer, {
         distance
         duration
         headsign
+        fareProducts {
+          product {
+            name
+            id
+            ... on DefaultFareProduct {
+              price {
+                amount
+              }
+            }
+          }
+        }
         start {
           scheduledTime
           estimated {
@@ -180,6 +205,14 @@ const withRelay = createFragmentContainer(NaviContainer, {
         from {
           lat
           lon
+          stop {
+            name
+            lat
+            lon
+            parentStation {
+              name
+            }
+          }
           vehicleRentalStation {
             name
             rentalNetwork {
@@ -199,6 +232,10 @@ const withRelay = createFragmentContainer(NaviContainer, {
             code
             platformCode
             vehicleMode
+            zoneId
+            parentStation {
+              name
+            }
           }
           vehicleParking {
             name

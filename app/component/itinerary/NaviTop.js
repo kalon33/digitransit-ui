@@ -7,7 +7,11 @@ import { legTime, legTimeStr } from '../../util/legUtils';
 import NaviLeg from './NaviLeg';
 import Icon from '../Icon';
 import NaviStack from './NaviStack';
-import { getJourneyStateAlerts, getJourneyStateMessages } from './NaviUtils';
+import {
+  getItineraryAlerts,
+  getTransitLegState,
+  getAdditionalMessages,
+} from './NaviUtils';
 
 const DISTANCE_FROM_DESTINATION = 20; // meters
 const TIME_AT_DESTINATION = 3; // * 10 seconds
@@ -49,8 +53,10 @@ function NaviTop(
       return legTime(leg.start) <= time && time <= legTime(leg.end);
     });
 
-    const incomingMessages = new Map(messages.entries());
-    const alerts = getJourneyStateAlerts(realTimeLegs, intl);
+    const incomingMessages = new Map();
+
+    // TODO proper alert handling.
+    const alerts = getItineraryAlerts(realTimeLegs, intl);
     alerts.forEach(alert => {
       incomingMessages.set(alert.id, alert);
     });
@@ -59,14 +65,32 @@ function NaviTop(
       ? newLeg.id !== currentLeg?.id
       : currentLeg?.mode !== newLeg?.mode;
     const l = currentLeg || newLeg;
+
     if (l) {
-      const nextLeg = realTimeLegs.find(
-        leg => legTime(leg.start) > legTime(l.start),
+      const nextTransitLeg = realTimeLegs.find(
+        leg => legTime(leg.start) > legTime(l.start) && leg.transitLeg,
       );
-      if (nextLeg) {
-        const i = getJourneyStateMessages(nextLeg, intl);
-        if (i) {
-          incomingMessages.set(i.id, i);
+
+      if (nextTransitLeg) {
+        const transitLegState = getTransitLegState(
+          nextTransitLeg,
+          intl,
+          messages,
+        );
+        if (transitLegState) {
+          incomingMessages.set(transitLegState.id, transitLegState);
+        }
+        const additionalMsgs = getAdditionalMessages(
+          nextTransitLeg,
+          time,
+          intl,
+          config,
+          messages,
+        );
+        if (additionalMsgs) {
+          additionalMsgs.forEach(m => {
+            incomingMessages.set(m.id, m);
+          });
         }
       }
 
@@ -74,22 +98,16 @@ function NaviTop(
         focusToLeg?.(newLeg);
         setCurrentLeg(newLeg);
       }
-      // TODO: We may have situations where old messages are updaded.
-      // This needs to be refactored after.
-      if (incomingMessages.size > messages.size || legChanged) {
-        // TODO: After realtimeLegs are updated so that it will remove outdated legs,
-        // this needs to be changed.
 
+      if (incomingMessages.size || legChanged) {
         // Current active messages. Filter away legChange messages when leg changes.
         const currActiveMessages = legChanged
           ? activeMessages.filter(m => m.expiresOn !== 'legChange')
           : activeMessages;
 
-        const newMessages = Array.from(incomingMessages.values()).filter(
-          message => !messages.has(message.id),
-        );
+        const newMessages = Array.from(incomingMessages.values());
         setActiveMessages([...currActiveMessages, ...newMessages]);
-        setMessages(incomingMessages);
+        setMessages(new Map([...messages, ...incomingMessages]));
 
         setShowMessages(true);
       }
@@ -157,9 +175,7 @@ function NaviTop(
   const handleRemove = index => {
     setActiveMessages(activeMessages.filter((_, i) => i !== index));
   };
-  // useRef calculates
-  // TransitLeg ajan perusteella (Paikka, kun ollaan ajossa.. )
-  // Vuokraustila sijainnin ? perusteella
+
   const showmessages = activeMessages.length > 0;
   return (
     <>
