@@ -72,14 +72,13 @@ export const getTransitLegState = (leg, intl, messages) => {
   });
   let content;
   let severity;
+  const isRealTime = realtimeState && realtimeState === 'UPDATED';
+
   if (late && prevSeverity !== 'ALERT') {
     // todo: Do this when design is ready.
     severity = 'ALERT';
     content = <div className="navi-info-content"> Kulkuneuvo on myöhässä </div>;
-  } else if (
-    (!realtimeState || realtimeState !== 'UPDATED') &&
-    prevSeverity !== 'WARNING'
-  ) {
+  } else if (!isRealTime && prevSeverity !== 'WARNING') {
     severity = 'WARNING';
     content = (
       <div className="navi-info-content">
@@ -93,7 +92,7 @@ export const getTransitLegState = (leg, intl, messages) => {
         />
       </div>
     );
-  } else if (prevSeverity !== 'INFO') {
+  } else if (isRealTime && prevSeverity !== 'INFO') {
     const { parentStation, name } = from.stop;
     const stopOrStation = parentStation
       ? intl.formatMessage({ id: 'from-station' })
