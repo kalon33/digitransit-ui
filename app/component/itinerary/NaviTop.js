@@ -1,12 +1,20 @@
 import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, intlShape } from 'react-intl';
+import distance from '@digitransit-search-util/digitransit-search-util-distance';
 import { legShape, configShape } from '../../util/shapes';
 import { legTime, legTimeStr } from '../../util/legUtils';
 import NaviLeg from './NaviLeg';
 import Icon from '../Icon';
 import NaviStack from './NaviStack';
-import { getAlerts, getScheduleInfo } from './NaviUtils';
+import {
+  getItineraryAlerts,
+  getTransitLegState,
+  getAdditionalMessages,
+} from './NaviUtils';
+
+const DESTINATION_RADIUS = 20; // meters
+const TIME_AT_DESTINATION = 3; // * 10 seconds
 
 function getFirstLastLegs(legs) {
   const first = legs[0];
@@ -14,22 +22,27 @@ function getFirstLastLegs(legs) {
   return { first, last };
 }
 
-function NaviTop({ focusToLeg, time, realTimeLegs }, { intl, config }) {
+function NaviTop(
+  { focusToLeg, time, realTimeLegs, position },
+  { intl, config },
+) {
   const [currentLeg, setCurrentLeg] = useState(null);
-  const [show, setShow] = useState(true);
+  const [showMessages, setShowMessages] = useState(true);
   // All notifications including those user has dismissed.
-  const [notifications, setNotifications] = useState([]);
+  const [messages, setMessages] = useState(new Map());
   // notifications that are shown to the user.
-  const [activeNotifications, setActiveNotifications] = useState([]);
+  const [activeMessages, setActiveMessages] = useState([]);
   const focusRef = useRef(false);
+  // Destination counter. How long user has been at the destination. * 10 seconds
+  const destCountRef = useRef(0);
 
   const handleClick = () => {
-    setShow(!show);
+    setShowMessages(!showMessages);
   };
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setShow(false);
+      setShowMessages(false);
     }, 5000);
 
     return () => clearTimeout(timer);
@@ -40,51 +53,73 @@ function NaviTop({ focusToLeg, time, realTimeLegs }, { intl, config }) {
       return legTime(leg.start) <= time && time <= legTime(leg.end);
     });
 
-    const incomingNotifications = [];
+    const incomingMessages = new Map();
 
-    const alerts = getAlerts(realTimeLegs, intl);
-    if (alerts.length > 0) {
-      const newAlerts = alerts.filter(
-        p => !notifications.find(n => n.id === p.id),
-      );
-      incomingNotifications.push(...newAlerts);
-    }
+    // TODO proper alert handling.
+    // Alerts for NaviStack
+    const alerts = getItineraryAlerts(realTimeLegs, intl, messages);
+    alerts.forEach(alert => {
+      incomingMessages.set(alert.id, alert);
+    });
 
     const legChanged = newLeg?.id
       ? newLeg.id !== currentLeg?.id
       : currentLeg?.mode !== newLeg?.mode;
     const l = currentLeg || newLeg;
+
     if (l) {
-      const nextLeg = realTimeLegs.find(
-        leg => legTime(leg.start) > legTime(l.start),
+      const nextTransitLeg = realTimeLegs.find(
+        leg => legTime(leg.start) > legTime(l.start) && leg.transitLeg,
       );
-      if (nextLeg) {
-        const i = getScheduleInfo(nextLeg, intl);
-        if (i) {
-          const found = notifications.find(n => n.id === i.id);
-          if (!found) {
-            incomingNotifications.push(i);
-          }
+      if (nextTransitLeg) {
+        // Messages for NaviStack.
+        const transitLegState = getTransitLegState(
+          nextTransitLeg,
+          intl,
+          messages,
+        );
+        if (transitLegState) {
+          incomingMessages.set(transitLegState.id, transitLegState);
+        }
+        const additionalMsgs = getAdditionalMessages(
+          nextTransitLeg,
+          time,
+          intl,
+          config,
+          messages,
+        );
+        if (additionalMsgs) {
+          additionalMsgs.forEach(m => {
+            incomingMessages.set(m.id, m);
+          });
         }
       }
 
       if (legChanged) {
-        // remove Old main notification when new leg is started.
-        // todo: this should be done in a better way.
-        setActiveNotifications(nots => nots.filter(n => n.type !== 'main'));
         focusToLeg?.(newLeg);
         setCurrentLeg(newLeg);
       }
-      if (incomingNotifications.length > 0) {
-        setActiveNotifications(nots => nots.concat(...incomingNotifications));
-        setNotifications(nots => nots.concat(...incomingNotifications));
-        setShow(true);
+
+      if (incomingMessages.size || legChanged) {
+        // Handle messages when new messages arrives or leg is changed.
+
+        // Current active messages. Filter away legChange messages when leg changes.
+        const currActiveMessages = legChanged
+          ? activeMessages.filter(m => m.expiresOn !== 'legChange')
+          : activeMessages;
+
+        const newMessages = Array.from(incomingMessages.values());
+        setActiveMessages([...currActiveMessages, ...newMessages]);
+        setMessages(new Map([...messages, ...incomingMessages]));
+
+        setShowMessages(true);
       }
 
       if (!focusRef.current && focusToLeg) {
         // handle initial focus when not tracking
         if (newLeg) {
           focusToLeg(newLeg);
+          destCountRef.current = 0;
         } else {
           const { first, last } = getFirstLastLegs(realTimeLegs);
           if (time < legTime(first.start)) {
@@ -95,6 +130,18 @@ function NaviTop({ focusToLeg, time, realTimeLegs }, { intl, config }) {
         }
         focusRef.current = true;
       }
+    }
+
+    // User position and distance from currentleg endpoint.
+    if (
+      position &&
+      currentLeg &&
+      distance(position, currentLeg.to) <= DESTINATION_RADIUS
+    ) {
+      destCountRef.current += 1;
+    } else {
+      // Todo: this works in transit legs, but do we need additional logic for bikes / scooters?
+      destCountRef.current = 0;
     }
   }, [time]);
 
@@ -110,10 +157,19 @@ function NaviTop({ focusToLeg, time, realTimeLegs }, { intl, config }) {
     );
   } else if (currentLeg) {
     if (!currentLeg.transitLeg) {
-      const nextLeg = realTimeLegs.find(
-        leg => legTime(leg.start) > legTime(currentLeg.start),
-      );
-      naviTopContent = <NaviLeg leg={currentLeg} nextLeg={nextLeg} />;
+      const nextLeg = realTimeLegs.find(leg => {
+        return legTime(leg.start) > legTime(currentLeg.start);
+      });
+      if (destCountRef.current >= TIME_AT_DESTINATION) {
+        // User at the destination. show wait message.
+        naviTopContent = (
+          <NaviLeg leg={currentLeg} nextLeg={nextLeg} legType="wait" />
+        );
+      } else {
+        naviTopContent = (
+          <NaviLeg leg={currentLeg} nextLeg={nextLeg} legType="move" />
+        );
+      }
     } else {
       naviTopContent = `Tracking ${currentLeg?.mode} leg`;
     }
@@ -123,28 +179,28 @@ function NaviTop({ focusToLeg, time, realTimeLegs }, { intl, config }) {
     naviTopContent = <FormattedMessage id="navigation-wait" />;
   }
   const handleRemove = index => {
-    setActiveNotifications(activeNotifications.filter((_, i) => i !== index));
+    setActiveMessages(activeMessages.filter((_, i) => i !== index));
   };
-  const showNotifications = activeNotifications.length > 0;
+
+  const showmessages = activeMessages.length > 0;
   return (
     <>
       <button type="button" className="navitop" onClick={handleClick}>
         <div className="content">{naviTopContent}</div>
         <div type="button" className="navitop-arrow">
-          {showNotifications && (
+          {showmessages && (
             <Icon
               img="icon-icon_arrow-collapse"
-              className={`cursor-pointer ${show ? 'inverted' : ''}`}
+              className={`cursor-pointer ${showMessages ? 'inverted' : ''}`}
               color={config.colors.primary}
             />
           )}
         </div>
       </button>
-      {showNotifications && (
+      {showmessages && (
         <NaviStack
-          notifications={activeNotifications}
-          setShow={setShow}
-          show={show}
+          messages={activeMessages}
+          show={showMessages}
           handleRemove={handleRemove}
         />
       )}
@@ -156,6 +212,11 @@ NaviTop.propTypes = {
   focusToLeg: PropTypes.func,
   time: PropTypes.number.isRequired,
   realTimeLegs: PropTypes.arrayOf(legShape).isRequired,
+  position: PropTypes.shape({
+    lat: PropTypes.number,
+    lon: PropTypes.number,
+  }),
+
   /*
   focusToPoint: PropTypes.func.isRequired,
   */
@@ -163,6 +224,7 @@ NaviTop.propTypes = {
 
 NaviTop.defaultProps = {
   focusToLeg: undefined,
+  position: undefined,
 };
 
 NaviTop.contextTypes = {

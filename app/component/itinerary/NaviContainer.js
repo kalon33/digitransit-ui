@@ -23,12 +23,8 @@ const legQuery = graphql`
           time
         }
       }
+
       to {
-        stop {
-          parentStation {
-            name
-          }
-        }
         vehicleRentalStation {
           availableVehicles {
             total
@@ -40,16 +36,15 @@ const legQuery = graphql`
   }
 `;
 
-function NaviContainer({
-  itinerary,
-  focusToLeg,
-  relayEnvironment,
-  setNavigation,
-  mapRef,
-}) {
+function NaviContainer(
+  { itinerary, focusToLeg, relayEnvironment, setNavigation, mapRef },
+  { getStore },
+) {
   const [realTimeLegs, setRealTimeLegs] = useState(itinerary.legs);
   const [time, setTime] = useState(Date.now());
   const locationOK = useRef(true);
+  const position = getStore('PositionStore').getLocationState();
+
   // update view after every 10 seconds
   useEffect(() => {
     checkPositioningPermission().then(permission => {
@@ -88,7 +83,17 @@ function NaviContainer({
         });
         const rtLegs = itinerary.legs.map(l => {
           const rtLeg = l.id ? legMap[l.id] : null;
-          return rtLeg ? { ...l, ...rtLeg } : { ...l };
+          if (rtLeg) {
+            return {
+              ...l,
+              ...rtLeg,
+              to: {
+                ...l.to,
+                vehicleRentalStation: rtLeg.to.vehicleRentalStation,
+              },
+            };
+          }
+          return { ...l };
         });
         setRealTimeLegs(rtLegs);
       });
@@ -121,6 +126,7 @@ function NaviContainer({
           mapRef?.state.mapTracking || locationOK.current ? null : focusToLeg
         }
         time={time}
+        position={position}
       />{' '}
       <NaviBottom setNavigation={setNavigation} arrival={arrivalTime} />
     </>
@@ -134,6 +140,10 @@ NaviContainer.propTypes = {
   setNavigation: PropTypes.func.isRequired,
   // eslint-disable-next-line
   mapRef: PropTypes.object,
+};
+
+NaviContainer.contextTypes = {
+  getStore: PropTypes.func.isRequired,
 };
 
 NaviContainer.defaultProps = { mapRef: undefined };
@@ -150,6 +160,18 @@ const withRelay = createFragmentContainer(NaviContainer, {
         interlineWithPreviousLeg
         distance
         duration
+        headsign
+        fareProducts {
+          product {
+            name
+            id
+            ... on DefaultFareProduct {
+              price {
+                amount
+              }
+            }
+          }
+        }
         start {
           scheduledTime
           estimated {
@@ -168,10 +190,19 @@ const withRelay = createFragmentContainer(NaviContainer, {
         }
         route {
           shortName
+          color
         }
         from {
           lat
           lon
+          stop {
+            name
+            lat
+            lon
+            parentStation {
+              name
+            }
+          }
           vehicleRentalStation {
             name
             rentalNetwork {
@@ -191,6 +222,10 @@ const withRelay = createFragmentContainer(NaviContainer, {
             code
             platformCode
             vehicleMode
+            zoneId
+            parentStation {
+              name
+            }
           }
           vehicleParking {
             name

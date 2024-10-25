@@ -2,6 +2,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { legTime } from '../../util/legUtils';
 import { timeStr } from '../../util/timeUtils';
+import { getFaresFromLegs } from '../../util/fareUtils';
 
 const TRANSFER_SLACK = 60000;
 
@@ -32,15 +33,37 @@ function findTransferProblem(legs) {
   return null;
 }
 
-export const getScheduleInfo = (leg, intl) => {
-  const { start, realtimeState, to, from, mode, id } = leg;
+export const getAdditionalMessages = (leg, time, intl, config, messages) => {
+  const msgs = [];
+  const ticketDisplay = 120 * 1000; // 2 minutes
+  const ticketMsg = messages.get('ticket');
+  if (!ticketMsg && legTime(leg.start) - time < ticketDisplay) {
+    // Todo: multiple fares?
+    const fare = getFaresFromLegs([leg], config)[0];
+    msgs.push({
+      severity: 'INFO',
+      content: (
+        <div className="navi-info-content">
+          <FormattedMessage id="navigation-remember-ticket" />
+          <span>
+            {fare.ticketName} {fare.price} €
+          </span>
+        </div>
+      ),
+      id: 'ticket',
+    });
+  }
+  return msgs;
+};
+
+export const getTransitLegState = (leg, intl, messages) => {
+  const { start, realtimeState, from, mode, id } = leg;
   const { scheduledTime, estimated } = start;
   if (mode === 'WALK') {
     return null;
   }
-
-  const time = estimated?.time || scheduledTime;
-  let msgId = id || `${mode.toLowerCase()}-${time}`;
+  const previousMessage = messages.get(id);
+  const prevSeverity = previousMessage ? previousMessage.severity : null;
 
   const late = estimated?.delay > 0;
   const localizedMode = intl.formatMessage({
@@ -49,23 +72,13 @@ export const getScheduleInfo = (leg, intl) => {
   });
   let content;
   let severity;
-  if (mode === 'BICYCLE' && from.vehicleRentalStation) {
-    const bikes = from.vehicleRentalStation.availableVehicles?.total;
-    msgId += `-${bikes}`;
-    content = (
-      <div className="navi-info-content">
-        <FormattedMessage
-          id="navileg-mode-citybike"
-          values={{ available: bikes }}
-        />
-      </div>
-    );
-    severity = 'INFO';
-  } else if (late) {
+  const isRealTime = realtimeState === 'UPDATED';
+
+  if (late && prevSeverity !== 'ALERT') {
     // todo: Do this when design is ready.
     severity = 'ALERT';
     content = <div className="navi-info-content"> Kulkuneuvo on myöhässä </div>;
-  } else if (!realtimeState || realtimeState !== 'UPDATED') {
+  } else if (!isRealTime && prevSeverity !== 'WARNING') {
     severity = 'WARNING';
     content = (
       <div className="navi-info-content">
@@ -79,12 +92,11 @@ export const getScheduleInfo = (leg, intl) => {
         />
       </div>
     );
-  } else if (leg.transitLeg) {
-    const { parentStation, name } = to.stop;
+  } else if (isRealTime && prevSeverity !== 'INFO') {
+    const { parentStation, name } = from.stop;
     const stopOrStation = parentStation
       ? intl.formatMessage({ id: 'from-station' })
       : intl.formatMessage({ id: 'from-stop' });
-
     content = (
       <div className="navi-info-content">
         <FormattedMessage
@@ -103,53 +115,54 @@ export const getScheduleInfo = (leg, intl) => {
     );
     severity = 'INFO';
   }
-  const info = { severity, content, id: msgId };
-  // Only one main info, first in stack.
-  info.type = 'main';
-  return info;
+  const state = severity
+    ? { severity, content, id, expiresOn: 'legChange' }
+    : null;
+  return state;
 };
 
 // We'll need the intl later.
 // eslint-disable-next-line no-unused-vars
-export const getAlerts = (realTimeLegs, intl) => {
+export const getItineraryAlerts = (realTimeLegs, intl, messages) => {
   const alerts = [];
   const canceled = realTimeLegs.filter(leg => leg.realtimeState === 'CANCELED');
   const transferProblem = findTransferProblem(realTimeLegs);
   const late = realTimeLegs.filter(leg => leg.start.estimate?.delay > 0);
   let content;
   // TODO: Proper ID handling
-  const id = 'alert-todo-proper-id';
-  if (canceled.length > 0) {
+  if (canceled.length > 0 && !messages.get('canceled')) {
     content = <div className="notifiler">Osa matkan lähdöistä on peruttu</div>;
     // Todo: No current design
     // todo find modes that are canceled
     alerts.push({
       severity: 'ALERT',
       content,
-      id,
+      id: 'canceled',
     });
   }
-
   if (transferProblem !== null) {
-    // todo no current design
-    content = (
-      <div className="notifiler">{`Vaihto ${transferProblem[0].route.shortName} - ${transferProblem[1].route.shortName} ei onnistu reittisuunnitelman mukaisesti`}</div>
-    );
+    const transferId = `transfer-${transferProblem[0].id}-${transferProblem[1].id}}`;
+    if (!messages.get(transferId)) {
+      // todo no current design
+      content = (
+        <div className="notifiler">{`Vaihto ${transferProblem[0].route.shortName} - ${transferProblem[1].route.shortName} ei onnistu reittisuunnitelman mukaisesti`}</div>
+      );
 
-    alerts.push({
-      severity: 'ALERT',
-      content,
-      id,
-    });
+      alerts.push({
+        severity: 'ALERT',
+        content,
+        id: transferId,
+      });
+    }
   }
-  if (late.length) {
+  if (late.length && !messages.get('late')) {
     // Todo: No current design
     // Todo add mode and delay time to this message
     content = <div className="notifiler">Kulkuneuvo on myöhässä</div>;
     alerts.push({
       severity: 'ALERT',
       content,
-      id,
+      id: 'late',
     });
   }
 

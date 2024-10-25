@@ -1,42 +1,40 @@
 import React from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import PropTypes from 'prop-types';
 import { legShape } from '../../util/shapes';
 import Icon from '../Icon';
-import { legDestination, isRental } from '../../util/legUtils';
-import NaviDestination from './NaviDestination';
+import { isRental } from '../../util/legUtils';
+import NaviLegContent from './NaviLegContent';
 
 const iconMap = {
   BICYCLE: 'icon-icon_cyclist',
   CAR: 'icon-icon_car-withoutBox',
   SCOOTER: 'icon-icon_scooter_rider',
   WALK: 'icon-icon_walk',
+  WAIT: 'icon-icon_navigation_wait',
 };
 
-/* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
-export default function NaviLeg({ leg, nextLeg }, { intl }) {
-  const iconName = iconMap[leg.mode];
-  let goTo = `navileg-${leg.mode.toLowerCase()}`;
+export default function NaviLeg({ leg, nextLeg, legType }) {
+  const iconName = legType === 'wait' ? iconMap.WAIT : iconMap[leg.mode];
+  let instructions = `navileg-${leg.mode.toLowerCase()}`;
 
   if (isRental(leg, nextLeg)) {
     if (leg.mode === 'WALK' && nextLeg?.mode === 'SCOOTER') {
-      goTo = `navileg-rent-scooter`;
+      instructions = `navileg-rent-scooter`;
     } else {
-      goTo = `navileg-rent-cycle`;
+      instructions = `navileg-rent-cycle`;
     }
   }
   return (
-    <div>
-      <div className="navileg-goto">
-        <Icon img={iconName} color="black" className="navileg-mode" />
-        <div className="navileg-divider" />
-        <div className="navileg-destination">
-          <div className="destination-header">
-            <FormattedMessage id={goTo} defaultMessage="Go to" />
-            &nbsp;
-            {legDestination(intl, leg, null, nextLeg)}
-          </div>
-          <NaviDestination leg={leg} />
-        </div>
+    <div className="navileg-goto">
+      <Icon img={iconName} color="black" className="navileg-mode" />
+      <div className="navileg-divider" />
+      <div className="navileg-destination">
+        <NaviLegContent
+          leg={leg}
+          nextLeg={nextLeg}
+          instructions={instructions}
+          legType={legType}
+        />
       </div>
     </div>
   );
@@ -44,13 +42,6 @@ export default function NaviLeg({ leg, nextLeg }, { intl }) {
 
 NaviLeg.propTypes = {
   leg: legShape.isRequired,
-  nextLeg: legShape,
-};
-
-NaviLeg.defaultProps = {
-  nextLeg: null,
-};
-
-NaviLeg.contextTypes = {
-  intl: intlShape.isRequired,
+  nextLeg: legShape.isRequired,
+  legType: PropTypes.string.isRequired,
 };
