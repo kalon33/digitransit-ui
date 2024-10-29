@@ -809,6 +809,10 @@ $itinerary-tab-switch-height: 48px;
   letter-spacing: -0.03em;
   line-height: 22px;
   text-align: center;
+
+  &.purchase {
+    color: #ffff;
+  }
 }
 
 .desktop {
