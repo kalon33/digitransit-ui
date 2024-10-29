@@ -32,7 +32,7 @@ export default configMerger(walttiConfig, {
     },
   },
 
-  feedIds: ['VARELY', 'FOLI', 'Rauma'],
+  feedIds: ['VARELY', 'FOLI', 'Rauma', 'Pori', 'Salo'],
 
   colors: {
     primary: colorPrimary,
@@ -162,6 +162,16 @@ export default configMerger(walttiConfig, {
       fi: 'Turun seutu',
       sv: 'Åboregion',
       en: 'Turku region',
+    },
+    Salo: {
+      fi: 'Salo',
+      sv: 'Salo',
+      en: 'Salo',
+    },
+    Pori: {
+      fi: 'Pori',
+      sv: 'Björneborg',
+      en: 'Pori',
     },
   },
 
