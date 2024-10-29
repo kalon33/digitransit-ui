@@ -1201,9 +1201,7 @@ export default function ItineraryPage(props, context) {
         biking={bikePlan?.edges?.length > 0 || !!bikePublicPlan?.edges?.length}
         driving={
           (settings.includeCarSuggestions &&
-            (carPlan?.edges?.length > 0 ||
-              (config.carBoardingModes?.FERRY !== undefined &&
-                carPublicPlan?.edges?.length))) ||
+            (carPlan?.edges?.length > 0 || !!carPublicPlan?.edges?.length)) ||
           !!parkRidePlan?.edges?.length
         }
       />
@@ -1211,9 +1209,7 @@ export default function ItineraryPage(props, context) {
   }
 
   const showCarPublicPlan =
-    settings.includeCarSuggestions &&
-    config.carBoardingModes?.FERRY !== undefined &&
-    carPublicPlan.carPublicItineraryCount > 0;
+    settings.includeCarSuggestions && carPublicPlan.carPublicItineraryCount > 0;
 
   const showAltBar =
     !detailView &&
@@ -1225,9 +1221,7 @@ export default function ItineraryPage(props, context) {
       bikePublicPlan?.edges?.length ||
       parkRidePlan?.edges?.length ||
       (settings.includeCarSuggestions &&
-        (carPlan?.edges?.length ||
-          (config.carBoardingModes?.FERRY !== undefined &&
-            carPublicPlan?.edges?.length))));
+        (carPlan?.edges?.length || carPublicPlan?.edges?.length)));
 
   const alternativeItineraryBar = showAltBar ? (
     <AlternativeItineraryBar

@@ -18,10 +18,7 @@ const InterlineInfo = ({ legs, leg, usingOwnCarWholeTrip }) => {
       }
     });
   }
-  let icon = 'icon-icon_wait';
-  if (usingOwnCarWholeTrip) {
-    icon = 'icon-icon_wait-car';
-  }
+  const icon = usingOwnCarWholeTrip ? 'icon-icon_wait-car' : 'icon-icon_wait';
   return (
     <div className="interline-info-container">
       {legs.length === 1 && (

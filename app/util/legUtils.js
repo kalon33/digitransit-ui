@@ -618,7 +618,7 @@ export function getBoardingLeg(
         stop: null,
       };
     }
-    const boardingLeg = {
+    return {
       duration: 0,
       start: leg.start,
       end: leg.start,
@@ -628,7 +628,6 @@ export function getBoardingLeg(
       from,
       mode: boardingMode,
     };
-    return boardingLeg;
   }
   return undefined;
 }
@@ -642,7 +641,7 @@ export function getBoardingLeg(
  */
 export const showBikeBoardingNote = (leg, config) => {
   const { bikeBoardingModes } = config;
-  return bikeBoardingModes && bikeBoardingModes[leg.mode]?.showNotification;
+  return bikeBoardingModes?.[leg.mode]?.showNotification;
 };
 
 /**
@@ -654,7 +653,7 @@ export const showBikeBoardingNote = (leg, config) => {
  */
 export const showCarBoardingNote = (leg, config) => {
   const { carBoardingModes } = config;
-  return carBoardingModes && carBoardingModes[leg.mode]?.showNotification;
+  return carBoardingModes?.[leg.mode]?.showNotification;
 };
 
 /**

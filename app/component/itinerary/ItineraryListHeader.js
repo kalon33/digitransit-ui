@@ -23,12 +23,10 @@ export default function ItineraryListHeader({
             />
           </div>
           <div className="with-bike-info-notification">
-            <div className="with-bike-info-content">
-              <FormattedMessage
-                id="itinerary-summary.bike-boarding-information"
-                defaultMessage="Invalid boarding information: translation not found"
-              />
-            </div>
+            <FormattedMessage
+              id="itinerary-summary.bike-boarding-information"
+              defaultMessage=""
+            />
           </div>
         </div>
       )}
@@ -42,12 +40,10 @@ export default function ItineraryListHeader({
             />
           </div>
           <div className="with-car-info-notification">
-            <div className="with-car-info-content">
-              <FormattedMessage
-                id="itinerary-summary.car-boarding-information"
-                defaultMessage="Invalid boarding information: translation not found"
-              />
-            </div>
+            <FormattedMessage
+              id="itinerary-summary.car-boarding-information"
+              defaultMessage=""
+            />
           </div>
         </div>
       )}

@@ -36,22 +36,12 @@
   }
 
   .with-bike-info-notification {
-    margin-top: 5px;
-
-    .with-bike-info-content {
-      flex: 1;
-      color: #333;
-      margin: 0 4px 4px 8px;
-      font-style: normal;
-      line-height: normal;
-      letter-spacing: -0.39px;
-    }
-
-    .with-bike-info-header {
-      font-size: $font-size-xsmall;
-      font-weight: bold;
-      margin: 0 4px 0 8px;
-    }
+    flex: 1;
+    color: #333;
+    margin: 5px 4px 4px 8px;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: -0.39px;
   }
 }
 
@@ -79,22 +69,12 @@
   }
 
   .with-car-info-notification {
-    margin-top: 5px;
-
-    .with-car-info-content {
-      flex: 1;
-      color: #333;
-      margin: 0 4px 4px 8px;
-      font-style: normal;
-      line-height: normal;
-      letter-spacing: -0.39px;
-    }
-
-    .with-car-info-header {
-      font-size: $font-size-xsmall;
-      font-weight: bold;
-      margin: 0 4px 0 8px;
-    }
+    flex: 1;
+    color: #333;
+    margin: 5px 4px 4px 8px;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: -0.39px;
   }
 }
 

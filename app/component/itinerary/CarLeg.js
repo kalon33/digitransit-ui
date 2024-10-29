@@ -21,23 +21,19 @@ export default function CarLeg(props, { config, intl }) {
   const firstLegClassName = props.index === 0 ? 'first' : '';
   const modeClassName = 'car';
 
-  let circleLine = (
+  const circleLine = props.carBoardingLeg ? (
+    <ItineraryCircleLineLong
+      index={props.index}
+      modeClassName={modeClassName}
+      boardingLeg={props.carBoardingLeg}
+    />
+  ) : (
     <ItineraryCircleLineWithIcon
       index={props.index}
       modeClassName={modeClassName}
       icon="icon-icon_car-withoutBox"
     />
   );
-
-  if (props.carBoardingLeg !== undefined) {
-    circleLine = (
-      <ItineraryCircleLineLong
-        index={props.index}
-        modeClassName={modeClassName}
-        boardingLeg={props.carBoardingLeg}
-      />
-    );
-  }
 
   const [address, place] = props.leg.from.name.split(/, (.+)/); // Splits the name-string to two parts from the first occurance of ', '
 

@@ -144,12 +144,10 @@ class ItineraryDetails extends React.Component {
     const extraProps = this.getExtraProps(itinerary);
     const {biking, walking, driving, futureText, isMultiRow} = extraProps;
     // This does not take into account if the user is using a car at the time of using transit,
-    // instead this just calculates if the car is used for the whole trip
-    // a smarter approach would be to store the current personal mode of transport (walk, bike, car)
+    // instead this just calculates if the car is used for the whole trip.
+    // A smarter approach would be to store the current personal mode of transport (walk, bike, car)
     // this could then be used to set the waiting icon legs that need it.
-    const usingOwnCarWholeTrip = ((walking && walking.distance <= 0) || walking === undefined) &&
-                                 ((biking && biking.distance <= 0) || biking === undefined) &&
-                                 (driving && driving.distance > 0)
+    const usingOwnCarWholeTrip = walking.distance === 0 && biking.distance === 0 && driving.distance > 0;
     const legsWithRentalBike = compressLegs(itinerary.legs).filter(leg =>
       legContainsRentalBike(leg),
     );

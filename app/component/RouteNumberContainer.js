@@ -11,8 +11,6 @@ const RouteNumberContainer = (
     className,
     route,
     isCallAgency,
-    withBicycle,
-    withCar,
     occupancyStatus,
     mode,
     ...props
@@ -27,14 +25,11 @@ const RouteNumberContainer = (
       color={route.color ? `#${route.color}` : null}
       mode={mode !== undefined ? mode : route.mode}
       text={
-        config.disabledLegTextModes !== undefined &&
-        config.disabledLegTextModes.includes(route.mode) &&
+        config.disabledLegTextModes?.includes(route.mode) &&
         className.includes('line')
           ? ''
           : getLegText(route, config, interliningWithRoute)
       }
-      withBicycle={withBicycle}
-      withCar={withCar}
       occupancyStatus={occupancyStatus}
       {...props}
     />
@@ -48,8 +43,6 @@ RouteNumberContainer.propTypes = {
   vertical: PropTypes.bool,
   className: PropTypes.string,
   fadeLong: PropTypes.bool,
-  withBicycle: PropTypes.bool,
-  withCar: PropTypes.bool,
   occupancyStatus: PropTypes.string,
   mode: PropTypes.string,
 };
@@ -61,8 +54,6 @@ RouteNumberContainer.defaultProps = {
   vertical: false,
   fadeLong: false,
   className: '',
-  withBicycle: false,
-  withCar: false,
   occupancyStatus: undefined,
   mode: undefined,
 };

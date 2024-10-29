@@ -133,7 +133,7 @@ function ItineraryList(
       );
 
       summaries.splice(
-        carDirectItineraryCount || 0,
+        carDirectItineraryCount,
         0,
         <ItineraryListHeader
           translationId={`itinerary-summary.carAndPublic-${mode}-title`}
