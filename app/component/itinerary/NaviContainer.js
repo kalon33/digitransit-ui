@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { createFragmentContainer, graphql, fetchQuery } from 'react-relay';
 import { itineraryShape, relayShape } from '../../util/shapes';
@@ -23,27 +23,36 @@ const legQuery = graphql`
           time
         }
       }
+
+      to {
+        vehicleRentalStation {
+          availableVehicles {
+            total
+          }
+        }
+      }
       realtimeState
     }
   }
 `;
 
-function NaviContainer({
-  itinerary,
-  focusToLeg,
-  relayEnvironment,
-  setNavigation,
-  mapRef,
-}) {
+function NaviContainer(
+  { itinerary, focusToLeg, relayEnvironment, setNavigation, mapRef },
+  { getStore },
+) {
   const [realTimeLegs, setRealTimeLegs] = useState(itinerary.legs);
   const [time, setTime] = useState(Date.now());
+  const locationOK = useRef(true);
+  const position = getStore('PositionStore').getLocationState();
 
   // update view after every 10 seconds
   useEffect(() => {
     checkPositioningPermission().then(permission => {
-      if (permission.state === 'granted') {
+      locationOK.current = permission.state === 'granted';
+      if (locationOK.current) {
         mapRef?.enableMapTracking();
       }
+      setTime(Date.now()); // force refresh
     });
     const interval = setInterval(() => {
       setTime(Date.now());
@@ -74,7 +83,17 @@ function NaviContainer({
         });
         const rtLegs = itinerary.legs.map(l => {
           const rtLeg = l.id ? legMap[l.id] : null;
-          return rtLeg ? { ...l, ...rtLeg } : { ...l };
+          if (rtLeg) {
+            return {
+              ...l,
+              ...rtLeg,
+              to: {
+                ...l.to,
+                vehicleRentalStation: rtLeg.to.vehicleRentalStation,
+              },
+            };
+          }
+          return { ...l };
         });
         setRealTimeLegs(rtLegs);
       });
@@ -103,8 +122,11 @@ function NaviContainer({
       <NaviTop
         itinerary={itinerary}
         realTimeLegs={realTimeLegs}
-        focusToLeg={mapRef?.state.mapTracking ? null : focusToLeg}
+        focusToLeg={
+          mapRef?.state.mapTracking || locationOK.current ? null : focusToLeg
+        }
         time={time}
+        position={position}
       />{' '}
       <NaviBottom setNavigation={setNavigation} arrival={arrivalTime} />
     </>
@@ -118,6 +140,10 @@ NaviContainer.propTypes = {
   setNavigation: PropTypes.func.isRequired,
   // eslint-disable-next-line
   mapRef: PropTypes.object,
+};
+
+NaviContainer.contextTypes = {
+  getStore: PropTypes.func.isRequired,
 };
 
 NaviContainer.defaultProps = { mapRef: undefined };
@@ -134,6 +160,18 @@ const withRelay = createFragmentContainer(NaviContainer, {
         interlineWithPreviousLeg
         distance
         duration
+        headsign
+        fareProducts {
+          product {
+            name
+            id
+            ... on DefaultFareProduct {
+              price {
+                amount
+              }
+            }
+          }
+        }
         start {
           scheduledTime
           estimated {
@@ -152,10 +190,28 @@ const withRelay = createFragmentContainer(NaviContainer, {
         }
         route {
           shortName
+          color
         }
         from {
           lat
           lon
+          stop {
+            name
+            lat
+            lon
+            parentStation {
+              name
+            }
+          }
+          vehicleRentalStation {
+            name
+            rentalNetwork {
+              networkId
+            }
+            availableVehicles {
+              total
+            }
+          }
         }
         to {
           lat
@@ -166,6 +222,10 @@ const withRelay = createFragmentContainer(NaviContainer, {
             code
             platformCode
             vehicleMode
+            zoneId
+            parentStation {
+              name
+            }
           }
           vehicleParking {
             name

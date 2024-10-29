@@ -132,15 +132,11 @@ class MapWithTrackingStateHandler extends React.Component {
 
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(newProps) {
-    let newState;
-
-    if (newProps.mapTracking && !this.state.mapTracking) {
-      newState = { ...newState, mapTracking: true };
-    } else if (newProps.mapTracking === false && this.state.mapTracking) {
-      newState = { ...newState, mapTracking: false };
-    }
-    if (newState) {
-      this.setState(newState);
+    if (
+      newProps.mapTracking !== undefined &&
+      newProps.mapTracking !== this.state.mapTracking
+    ) {
+      this.setState({ mapTracking: newProps.mapTracking });
     }
   }
 
@@ -161,9 +157,15 @@ class MapWithTrackingStateHandler extends React.Component {
     if (!this.props.position.hasLocation) {
       this.context.executeAction(startLocationWatch);
     }
-    this.setState({
-      mapTracking: true,
-    });
+    if (!this.state.mapTracking) {
+      // enabling tracking will trigger same navigation events as user navigation
+      // this hack prevents those events from clearing tracking
+      this.ignoreNavigation = true;
+      setTimeout(() => {
+        this.ignoreNavigation = false;
+      }, 500);
+      this.setState({ mapTracking: true });
+    }
     if (this.props.onMapTracking) {
       this.props.onMapTracking();
     }
@@ -315,7 +317,6 @@ class MapWithTrackingStateHandler extends React.Component {
         ? this.context.intl.formatMessage({ id: 'tracking-button-on' })
         : this.context.intl.formatMessage({ id: 'tracking-button-off' });
 
-    const iconColor = this.state.mapTracking ? '#ff0000' : '#78909c';
     const mergedMapLayers = this.getMapLayers();
     return (
       <>
@@ -357,18 +358,11 @@ class MapWithTrackingStateHandler extends React.Component {
               <ToggleMapTracking
                 key="toggleMapTracking"
                 img={img}
-                iconColor={iconColor}
                 ariaLabel={ariaLabel}
                 handleClick={() => {
                   if (this.state.mapTracking) {
                     this.disableMapTracking();
                   } else {
-                    // enabling tracking will trigger same navigation events as user navigation
-                    // this hack prevents those events from clearing tracking
-                    this.ignoreNavigation = true;
-                    setTimeout(() => {
-                      this.ignoreNavigation = false;
-                    }, 500);
                     this.enableMapTracking();
                   }
                 }}

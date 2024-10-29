@@ -267,4 +267,23 @@ export default {
   carBoardingModes: {
     FERRY: { showNotification: true },
   },
+  navigation: true,
+
+  ticketPurchaseLink: function purchaseTicketLink(fare, operatorCode) {
+    const fareId = fare.fareProducts[0].product.id;
+    const ticket = fareId?.substring
+      ? fareId.substring(fareId.indexOf(':') + 1)
+      : '';
+    let zones = '';
+    // Waltti wants zone ids, so map A to 01, B to 02 etc
+    for (let i = 0; i < ticket.length; i++) {
+      zones += `0${ticket.charCodeAt(i) - 64}`; // eslint-disable
+    }
+    return `https://waltti.fi/walttiapp/busTicket/?operator=${operatorCode}&ticketType=single&customerGroup=adult&zones=${zones}`;
+  },
+
+  analyticsScript: function createAnalyticsScript(hostname) {
+    // eslint-disable-next-line no-useless-escape
+    return `<script defer data-domain="${hostname}" src="https://plausible.io/js/script.js"><\/script>\n`;
+  },
 };

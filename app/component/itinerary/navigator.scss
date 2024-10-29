@@ -1,46 +1,40 @@
 .navi-start-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 56px;
-  flex-direction: row;
-  background-color: #e5f2fa;
-  color: $black;
-  margin-right: 10px;
-  margin-left: 10px;
-  margin-top: 16px;
-  border-radius: 10px;
-}
+  padding: 0 10px;
 
-.navi-start-leftgroup {
-  display: flex;
-  flex-direction: row;
-  margin-top: 5px;
-  margin-left: 10px;
-  font-size: $font-size-xsmall;
-  font-weight: $font-weight-book;
-}
+  button {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: $infobox-color-generic-blue;
+    margin: 4px 0 0 0;
+    padding: var(--space-m);
+    gap: var(--space-s);
+    font-weight: normal;
+    border-radius: $border-radius-bigger;
 
-.navi-start-icon {
-  margin-right: 12px;
-  margin-left: 5px;
-}
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: var(--space-s);
+    }
 
-.navi-start-button {
-  margin-right: 16px;
-  background-color: $primary-color;
-  color: $white;
+    span.icon-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-  &:hover {
-    background-color: $standalone-btn-hover-color;
-    color: $white;
+      :last-of-type {
+        margin-left: auto;
+      }
+    }
+
+    span.icon-container:last-of-type {
+      margin-left: auto;
+    }
   }
-
-  font-size: $font-size-normal;
-  border-radius: 20px;
-  width: 140px;
-  height: 40px;
-  text-align: center;
 }
 
 .navitop {
@@ -71,7 +65,7 @@
     color: red;
   }
 
-  .info {
+  .content {
     margin: 15px 20px 0 20px;
 
     .navileg-goto {
@@ -101,9 +95,42 @@
       font-weight: $font-weight-medium;
 
       .destination-header {
-        font-size: $font-size-xsmall;
-        font-weight: $font-weight-book;
+        font-size: $font-size-normal;
+        font-weight: $font-weight-medium;
         display: flex;
+      }
+
+      .wait-leg {
+        display: flex;
+        align-items: center;
+        margin-top: 3px;
+
+        .headsign {
+          margin-left: 10px;
+          font-size: $font-size-small;
+          font-weight: $font-weight-book;
+          max-width: 120px;
+        }
+
+        .icon {
+          margin-top: 2px;
+          height: 25px;
+          width: 25px;
+        }
+
+        .route-number {
+          min-width: 55px;
+
+          .vcenter-children {
+            .vehicle-number {
+              color: white;
+              font-size: $font-size-large;
+              margin-top: 4px;
+            }
+
+            display: flex;
+          }
+        }
       }
 
       .navileg-destination-details {
@@ -193,6 +220,18 @@
     height: 100%;
     margin-top: 5px;
 
+    &.info {
+      background-color: #e5f2fa;
+    }
+
+    &.warning {
+      background-color: #fff8e8;
+    }
+
+    &.alert {
+      background-color: #fdf3f6;
+    }
+
     &.slide-out-right {
       animation: slideOutRight 0.5s ease-out forwards;
       pointer-events: none;
@@ -240,6 +279,7 @@
 
       span:last-child {
         font-size: $font-size-xsmall;
+        font-weight: $font-weight-book;
       }
     }
   }

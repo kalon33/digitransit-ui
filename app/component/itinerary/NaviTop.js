@@ -1,211 +1,155 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, intlShape } from 'react-intl';
-import { itineraryShape, legShape, configShape } from '../../util/shapes';
+import distance from '@digitransit-search-util/digitransit-search-util-distance';
+import { legShape, configShape } from '../../util/shapes';
 import { legTime, legTimeStr } from '../../util/legUtils';
 import NaviLeg from './NaviLeg';
 import Icon from '../Icon';
 import NaviStack from './NaviStack';
-import { timeStr } from '../../util/timeUtils';
+import {
+  getItineraryAlerts,
+  getTransitLegState,
+  getAdditionalMessages,
+} from './NaviUtils';
 
-const TRANSFER_SLACK = 60000;
+const DESTINATION_RADIUS = 20; // meters
+const TIME_AT_DESTINATION = 3; // * 10 seconds
 
-function findTransferProblem(legs) {
-  for (let i = 1; i < legs.length - 1; i++) {
-    const prev = legs[i - 1];
-    const leg = legs[i];
-    const next = legs[i + 1];
-
-    if (prev.transitLeg && leg.transitLeg && !leg.interlineWithPreviousLeg) {
-      // transfer at a stop
-      if (legTime(leg.start) - legTime(prev.end) < TRANSFER_SLACK) {
-        return [prev, leg];
-      }
-    }
-
-    if (prev.transitLeg && next.transitLeg && !leg.transitLeg) {
-      // transfer with some walking
-      const t1 = legTime(prev.end);
-      const t2 = legTime(next.start);
-      const transferDuration = legTime(leg.end) - legTime(leg.start);
-      const slack = t2 - t1 - transferDuration;
-      if (slack < TRANSFER_SLACK) {
-        return [prev, next];
-      }
-    }
-  }
-  return null;
+function getFirstLastLegs(legs) {
+  const first = legs[0];
+  const last = legs[legs.length - 1];
+  return { first, last };
 }
-const getScheduleInfo = (nextLeg, intl) => {
-  const { start, realtimeState, to, mode } = nextLeg;
-  const { estimatedTime, scheduledTime, estimated } = start;
-  const late = estimated?.delay > 0;
-
-  const localizedMode = intl.formatMessage({
-    id: `${mode.toLowerCase()}`,
-    defaultMessage: `${mode}`,
-  });
-
-  if (late) {
-    // todo: Do this when design is ready.
-    return {
-      content: (
-        <div className="navi-info-content"> Kulkuneuvo on myöhässä </div>
-      ),
-      backgroundColor: '#FFF8E8',
-      iconColor: '#FED100',
-      iconId: 'icon-icon_info',
-    };
-  }
-  if (!realtimeState !== 'UPDATED') {
-    return {
-      content: (
-        <div className="navi-info-content">
-          <FormattedMessage id="navileg-mode-schedule" />
-          <FormattedMessage
-            id="navileg-start-schedule"
-            values={{
-              time: timeStr(scheduledTime),
-              mode: localizedMode,
-            }}
-          />{' '}
-        </div>
-      ),
-      backgroundColor: '#FFF8E8',
-      iconColor: '#FED100',
-      iconId: 'icon-icon_attention',
-    };
-  }
-  if (nextLeg.transitLeg) {
-    const { parentStation, name } = to.stop;
-
-    const stopOrStation = parentStation
-      ? intl.formatMessage({ id: 'from-station' })
-      : intl.formatMessage({ id: 'from-stop' });
-
-    return {
-      content: (
-        <div className="navi-info-content">
-          <FormattedMessage id="navileg-mode-realtime" values={{ mode }} />
-          <FormattedMessage
-            id="navileg-start-realtime"
-            values={{
-              time: timeStr(estimatedTime),
-              stopOrStation,
-              stopName: name,
-            }}
-          />
-        </div>
-      ),
-      backgroundColor: '##0074BF',
-      iconColor: '#FFF',
-      iconId: 'icon-icon_info',
-    };
-  }
-  return null;
-};
-
-// We'll need the intl later.
-// eslint-disable-next-line no-unused-vars
-const getAlerts = (realTimeLegs, intl) => {
-  const alerts = [];
-  const canceled = realTimeLegs.filter(leg => leg.realtimeState === 'CANCELED');
-  const transferProblem = findTransferProblem(realTimeLegs);
-  const late = realTimeLegs.filter(leg => leg.start.estimate?.delay > 0);
-
-  if (canceled.length > 0) {
-    // Todo: No current design
-    // todo find modes that are canceled
-    alerts.push({
-      content: <div className="notifiler">Osa matkan lähdöistä on peruttu</div>,
-      backgroundColor: '#DC0451',
-      iconColor: '#888',
-      iconId: 'icon-icon_caution_white_exclamation',
-    });
-  }
-
-  if (transferProblem !== null) {
-    // todo no current design
-    alerts.push({
-      content: (
-        <div className="notifiler">{`Vaihto ${transferProblem[0].route.shortName} - ${transferProblem[1].route.shortName} ei onnistu reittisuunnitelman mukaisesti`}</div>
-      ),
-      iconId: 'icon-icon_caution_white_exclamation',
-      iconColor: '#888',
-    });
-  }
-  if (late.length) {
-    // Todo: No current design
-    // Todo add mode and delay time to this message
-    alerts.push({
-      content: <div className="notifiler">Kulkuneuvo on myöhässä</div>,
-      backgroundColor: '#FDF3F6',
-      iconColor: '#DC0451',
-      iconId: 'icon-icon_delay',
-    });
-  }
-
-  return alerts;
-};
 
 function NaviTop(
-  { itinerary, focusToLeg, time, realTimeLegs },
+  { focusToLeg, time, realTimeLegs, position },
   { intl, config },
 ) {
   const [currentLeg, setCurrentLeg] = useState(null);
-  const [show, setShow] = useState(true);
-  const [notifications, setNotifications] = useState([]);
+  const [showMessages, setShowMessages] = useState(true);
+  // All notifications including those user has dismissed.
+  const [messages, setMessages] = useState(new Map());
+  // notifications that are shown to the user.
+  const [activeMessages, setActiveMessages] = useState([]);
+  const focusRef = useRef(false);
+  // Destination counter. How long user has been at the destination. * 10 seconds
+  const destCountRef = useRef(0);
 
   const handleClick = () => {
-    setShow(!show);
+    setShowMessages(!showMessages);
   };
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setShow(false);
+      setShowMessages(false);
     }, 5000);
 
     return () => clearTimeout(timer);
   }, []);
-  let nextLeg;
+
   useEffect(() => {
     const newLeg = realTimeLegs.find(leg => {
       return legTime(leg.start) <= time && time <= legTime(leg.end);
     });
-    const notifs = [];
-    if (newLeg?.id !== currentLeg?.id) {
-      if (newLeg) {
-        if (!newLeg.transitLeg) {
-          // When the component is first rendered, there is no currentLeg
-          const l = currentLeg || newLeg;
-          nextLeg = itinerary.legs.find(
-            leg => legTime(leg.start) > legTime(l.start),
-          );
+
+    const incomingMessages = new Map();
+
+    // TODO proper alert handling.
+    // Alerts for NaviStack
+    const alerts = getItineraryAlerts(realTimeLegs, intl, messages);
+    alerts.forEach(alert => {
+      incomingMessages.set(alert.id, alert);
+    });
+
+    const legChanged = newLeg?.id
+      ? newLeg.id !== currentLeg?.id
+      : currentLeg?.mode !== newLeg?.mode;
+    const l = currentLeg || newLeg;
+
+    if (l) {
+      const nextTransitLeg = realTimeLegs.find(
+        leg => legTime(leg.start) > legTime(l.start) && leg.transitLeg,
+      );
+      if (nextTransitLeg) {
+        // Messages for NaviStack.
+        const transitLegState = getTransitLegState(
+          nextTransitLeg,
+          intl,
+          messages,
+        );
+        if (transitLegState) {
+          incomingMessages.set(transitLegState.id, transitLegState);
         }
-        focusToLeg?.(newLeg, false);
-        if (nextLeg) {
-          notifs.push(getScheduleInfo(nextLeg, intl));
+        const additionalMsgs = getAdditionalMessages(
+          nextTransitLeg,
+          time,
+          intl,
+          config,
+          messages,
+        );
+        if (additionalMsgs) {
+          additionalMsgs.forEach(m => {
+            incomingMessages.set(m.id, m);
+          });
         }
       }
-      setCurrentLeg(newLeg);
+
+      if (legChanged) {
+        focusToLeg?.(newLeg);
+        setCurrentLeg(newLeg);
+      }
+
+      if (incomingMessages.size || legChanged) {
+        // Handle messages when new messages arrives or leg is changed.
+
+        // Current active messages. Filter away legChange messages when leg changes.
+        const currActiveMessages = legChanged
+          ? activeMessages.filter(m => m.expiresOn !== 'legChange')
+          : activeMessages;
+
+        const newMessages = Array.from(incomingMessages.values());
+        setActiveMessages([...currActiveMessages, ...newMessages]);
+        setMessages(new Map([...messages, ...incomingMessages]));
+
+        setShowMessages(true);
+      }
+
+      if (!focusRef.current && focusToLeg) {
+        // handle initial focus when not tracking
+        if (newLeg) {
+          focusToLeg(newLeg);
+          destCountRef.current = 0;
+        } else {
+          const { first, last } = getFirstLastLegs(realTimeLegs);
+          if (time < legTime(first.start)) {
+            focusToLeg(first);
+          } else {
+            focusToLeg(last);
+          }
+        }
+        focusRef.current = true;
+      }
     }
-    const problems = getAlerts(realTimeLegs, intl);
-    if (problems.length > 0) {
-      notifs.push(problems);
-    }
-    if (notifs.length > 0) {
-      const combinedNotifications = notifications.concat(...notifs);
-      setNotifications(combinedNotifications);
-      setShow(true);
+
+    // User position and distance from currentleg endpoint.
+    if (
+      position &&
+      currentLeg &&
+      distance(position, currentLeg.to) <= DESTINATION_RADIUS
+    ) {
+      destCountRef.current += 1;
+    } else {
+      // Todo: this works in transit legs, but do we need additional logic for bikes / scooters?
+      destCountRef.current = 0;
     }
   }, [time]);
 
-  const first = realTimeLegs[0];
-  const last = realTimeLegs[realTimeLegs.length - 1];
+  const { first, last } = getFirstLastLegs(realTimeLegs);
 
-  let info;
+  let naviTopContent;
   if (time < legTime(first.start)) {
-    info = (
+    naviTopContent = (
       <FormattedMessage
         id="navigation-journey-start"
         values={{ time: legTimeStr(first.start) }}
@@ -213,41 +157,50 @@ function NaviTop(
     );
   } else if (currentLeg) {
     if (!currentLeg.transitLeg) {
-      nextLeg = itinerary.legs.find(
-        leg => legTime(leg.start) > legTime(currentLeg.start),
-      );
-      info = <NaviLeg leg={currentLeg} nextLeg={nextLeg} />;
+      const nextLeg = realTimeLegs.find(leg => {
+        return legTime(leg.start) > legTime(currentLeg.start);
+      });
+      if (destCountRef.current >= TIME_AT_DESTINATION) {
+        // User at the destination. show wait message.
+        naviTopContent = (
+          <NaviLeg leg={currentLeg} nextLeg={nextLeg} legType="wait" />
+        );
+      } else {
+        naviTopContent = (
+          <NaviLeg leg={currentLeg} nextLeg={nextLeg} legType="move" />
+        );
+      }
     } else {
-      info = `Tracking ${currentLeg?.mode} leg`;
+      naviTopContent = `Tracking ${currentLeg?.mode} leg`;
     }
   } else if (time > legTime(last.end)) {
-    info = <FormattedMessage id="navigation-journey-end" />;
+    naviTopContent = <FormattedMessage id="navigation-journey-end" />;
   } else {
-    info = <FormattedMessage id="navigation-wait" />;
+    naviTopContent = <FormattedMessage id="navigation-wait" />;
   }
   const handleRemove = index => {
-    setNotifications(notifications.filter((_, i) => i !== index));
+    setActiveMessages(activeMessages.filter((_, i) => i !== index));
   };
 
+  const showmessages = activeMessages.length > 0;
   return (
     <>
       <button type="button" className="navitop" onClick={handleClick}>
-        <div className="info">{info}</div>
+        <div className="content">{naviTopContent}</div>
         <div type="button" className="navitop-arrow">
-          {nextLeg && notifications.length > 0 && (
+          {showmessages && (
             <Icon
               img="icon-icon_arrow-collapse"
-              className={`cursor-pointer ${show ? 'inverted' : ''}`}
+              className={`cursor-pointer ${showMessages ? 'inverted' : ''}`}
               color={config.colors.primary}
             />
           )}
         </div>
       </button>
-      {nextLeg && (
+      {showmessages && (
         <NaviStack
-          notifications={notifications}
-          setShow={setShow}
-          show={show}
+          messages={activeMessages}
+          show={showMessages}
           handleRemove={handleRemove}
         />
       )}
@@ -256,10 +209,14 @@ function NaviTop(
 }
 
 NaviTop.propTypes = {
-  itinerary: itineraryShape.isRequired,
   focusToLeg: PropTypes.func,
   time: PropTypes.number.isRequired,
   realTimeLegs: PropTypes.arrayOf(legShape).isRequired,
+  position: PropTypes.shape({
+    lat: PropTypes.number,
+    lon: PropTypes.number,
+  }),
+
   /*
   focusToPoint: PropTypes.func.isRequired,
   */
@@ -267,6 +224,7 @@ NaviTop.propTypes = {
 
 NaviTop.defaultProps = {
   focusToLeg: undefined,
+  position: undefined,
 };
 
 NaviTop.contextTypes = {

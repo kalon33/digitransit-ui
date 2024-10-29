@@ -172,19 +172,7 @@ export default configMerger(walttiConfig, {
     includeBikeSuggestions: false,
     transferPenalty: 1600,
   },
-
-  ticketPurchaseLink: function purchaseTicketLink(fare) {
-    const fareId = fare.fareProducts[0].product.id;
-    const ticket = fareId?.substring
-      ? fareId.substring(fareId.indexOf(':') + 1)
-      : '';
-    let zones = '';
-    // Waltti wants zone ids, so map A to 01, B to 02 etc
-    for (let i = 0; i < ticket.length; i++) {
-      zones += `0${ticket.charCodeAt(i) - 64}`; // eslint-disable
-    }
-    return `https://waltti.fi/walttiapp/busTicket/?operator=50209&ticketType=single&customerGroup=adult&zones=${zones}`;
-  },
+  ticketLinkOperatorCode: 50209,
 
   fareMapping: function mapFareId(fareId) {
     const id = fareId?.substring?.(fareId.indexOf(':') + 1);
@@ -225,4 +213,5 @@ export default configMerger(walttiConfig, {
   },
   // Notice! Turning on this setting forces the search for car routes (for the CO2 comparison only).
   showCO2InItinerarySummary: true,
+  devAnalytics: true,
 });
