@@ -12,7 +12,7 @@
 
   .ticket-container {
     margin: 11px 6px 9px 15px;
-    max-width: 172px;
+    max-width: 50%;
 
     @include min-width(tablet) {
       margin-right: 15px;
