@@ -264,7 +264,7 @@ export default {
       value: 600,
     },
   ],
-  navigation: false,
+  navigation: true,
 
   ticketPurchaseLink: function purchaseTicketLink(fare, operatorCode) {
     const fareId = fare.fareProducts[0].product.id;
