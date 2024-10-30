@@ -4,9 +4,10 @@ import cx from 'classnames';
 import NaviMessage from './NaviMessage';
 
 // eslint-disable-next-line no-unused-vars
-const NaviStack = ({ messages, handleRemove, show }) => {
+const NaviStack = ({ messages, handleRemove, showSecondary }) => {
+  const top = showSecondary ? '212px' : '150px'; // todo not final
   return (
-    <div className={cx('info-stack', !show ? 'slide-out' : 'slide-in')}>
+    <div className={cx('info-stack', 'slide-in')} style={{ top }}>
       {messages.map((notification, index) => (
         <NaviMessage
           key={notification.id}
@@ -28,8 +29,12 @@ NaviStack.propTypes = {
       severity: PropTypes.string.isRequired,
     }),
   ).isRequired,
-  show: PropTypes.bool.isRequired,
   handleRemove: PropTypes.func.isRequired,
+  showSecondary: PropTypes.bool,
+};
+
+NaviStack.defaultProps = {
+  showSecondary: false,
 };
 
 export default NaviStack;

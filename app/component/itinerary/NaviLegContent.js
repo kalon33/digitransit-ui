@@ -3,7 +3,7 @@ import { FormattedMessage, intlShape } from 'react-intl';
 import PropTypes from 'prop-types';
 import { legShape } from '../../util/shapes';
 import { legDestination } from '../../util/legUtils';
-import NaviDestination from './NaviDestination';
+import NaviDuration from './NaviDuration';
 import RouteNumber from '../RouteNumber';
 
 export default function NaviLegContent(
@@ -18,7 +18,7 @@ export default function NaviLegContent(
           &nbsp;
           {legDestination(intl, leg, null, nextLeg)}
         </div>
-        <NaviDestination leg={leg} />
+        <NaviDuration leg={leg} />
       </>
     );
   }

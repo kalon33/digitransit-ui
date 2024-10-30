@@ -13,7 +13,7 @@ const iconMap = {
   WAIT: 'icon-icon_navigation_wait',
 };
 
-export default function NaviLeg({ leg, nextLeg, legType }) {
+export default function NaviLeg({ leg, nextLeg, legType, showSecondary }) {
   const iconName = legType === 'wait' ? iconMap.WAIT : iconMap[leg.mode];
   let instructions = `navileg-${leg.mode.toLowerCase()}`;
 
@@ -35,6 +35,12 @@ export default function NaviLeg({ leg, nextLeg, legType }) {
           instructions={instructions}
           legType={legType}
         />
+        <div type="button" className="navitop-arrow">
+          <Icon
+            img="icon-icon_arrow-collapse"
+            className={`cursor-pointer ${showSecondary ? 'inverted' : ''}`}
+          />
+        </div>
       </div>
     </div>
   );
@@ -44,4 +50,8 @@ NaviLeg.propTypes = {
   leg: legShape.isRequired,
   nextLeg: legShape.isRequired,
   legType: PropTypes.string.isRequired,
+  showSecondary: PropTypes.bool,
+};
+NaviLeg.defaultProps = {
+  showSecondary: false,
 };

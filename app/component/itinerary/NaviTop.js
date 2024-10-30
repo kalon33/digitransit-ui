@@ -5,8 +5,8 @@ import distance from '@digitransit-search-util/digitransit-search-util-distance'
 import { legShape, configShape } from '../../util/shapes';
 import { legTime, legTimeStr } from '../../util/legUtils';
 import NaviLeg from './NaviLeg';
-import Icon from '../Icon';
 import NaviStack from './NaviStack';
+import NaviScondaryInfo from './NaviSecondaryInfo';
 import {
   getItineraryAlerts,
   getTransitLegState,
@@ -27,7 +27,7 @@ function NaviTop(
   { intl, config },
 ) {
   const [currentLeg, setCurrentLeg] = useState(null);
-  const [showMessages, setShowMessages] = useState(true);
+  const [showSecondaryInfo, setShowSecondaryInfo] = useState(false);
   // All notifications including those user has dismissed.
   const [messages, setMessages] = useState(new Map());
   // notifications that are shown to the user.
@@ -37,16 +37,8 @@ function NaviTop(
   const destCountRef = useRef(0);
 
   const handleClick = () => {
-    setShowMessages(!showMessages);
+    setShowSecondaryInfo(!showSecondaryInfo);
   };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowMessages(false);
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     const newLeg = realTimeLegs.find(leg => {
@@ -111,8 +103,6 @@ function NaviTop(
         const newMessages = Array.from(incomingMessages.values());
         setActiveMessages([...currActiveMessages, ...newMessages]);
         setMessages(new Map([...messages, ...incomingMessages]));
-
-        setShowMessages(true);
       }
 
       if (!focusRef.current && focusToLeg) {
@@ -167,7 +157,15 @@ function NaviTop(
         );
       } else {
         naviTopContent = (
-          <NaviLeg leg={currentLeg} nextLeg={nextLeg} legType="move" />
+          <>
+            <NaviLeg
+              leg={currentLeg}
+              nextLeg={nextLeg}
+              showSecondary={showSecondaryInfo}
+              legType="move"
+            />
+            <NaviScondaryInfo leg={currentLeg} show={showSecondaryInfo} />
+          </>
         );
       }
     } else {
@@ -182,25 +180,15 @@ function NaviTop(
     setActiveMessages(activeMessages.filter((_, i) => i !== index));
   };
 
-  const showmessages = activeMessages.length > 0;
   return (
     <>
       <button type="button" className="navitop" onClick={handleClick}>
         <div className="content">{naviTopContent}</div>
-        <div type="button" className="navitop-arrow">
-          {showmessages && (
-            <Icon
-              img="icon-icon_arrow-collapse"
-              className={`cursor-pointer ${showMessages ? 'inverted' : ''}`}
-              color={config.colors.primary}
-            />
-          )}
-        </div>
       </button>
-      {showmessages && (
+      {activeMessages.length > 0 && (
         <NaviStack
           messages={activeMessages}
-          show={showMessages}
+          showSecondary={showSecondaryInfo}
           handleRemove={handleRemove}
         />
       )}
