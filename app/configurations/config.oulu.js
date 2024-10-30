@@ -100,7 +100,7 @@ export default configMerger(walttiConfig, {
           sv: 'Zoner',
           en: 'Zones',
         },
-        url: '/assets/geojson/oulu_zone_lines_20241011.geojson',
+        url: '/assets/geojson/oulu_zone_lines_20230223.geojson',
       },
     ],
   },
@@ -138,7 +138,11 @@ export default configMerger(walttiConfig, {
     ],
   },
   zoneIdMapping: {
-    1: 'Oulu',
+    1: 'L',
+    2: 'A',
+    3: 'B',
+    4: 'C',
+    5: 'D',
   },
   zones: {
     stops: true,
