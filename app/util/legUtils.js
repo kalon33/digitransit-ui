@@ -191,7 +191,7 @@ export function compressLegs(originalLegs, keepBicycleWalk = false) {
   let compressedLeg;
   let bikeParked = false;
   originalLegs.forEach((currentLeg, i) => {
-    if (currentLeg.to.vehicleParking && currentLeg.mode === LegMode.Bicycle) {
+    if (currentLeg.to?.vehicleParking && currentLeg.mode === LegMode.Bicycle) {
       bikeParked = true;
     }
     if (!compressedLeg) {
