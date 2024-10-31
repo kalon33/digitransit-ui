@@ -83,60 +83,66 @@ export default function CarLeg(props, { config, intl }) {
           />
         </div>
         {props.carBoardingLeg?.from.stop && (
-          <div className={cx('itinerary-leg-action', 'car')}>
-            <div className="itinerary-leg-action-content">
-              <FormattedMessage
-                id="car-drive-from-transit-no-duration"
-                values={{
-                  transportMode: (
-                    <FormattedMessage
-                      id={`from-${props.carBoardingLeg.from.stop.vehicleMode.toLowerCase()}`}
-                    />
-                  ),
-                }}
-              />
-              <ItineraryMapAction
-                target={props.leg.from.name || ''}
-                focusAction={props.focusAction}
-              />
-            </div>
-          </div>
-        )}
-        <div className="itinerary-leg-action">
-          <div className="itinerary-leg-action-content">
+          <div
+            className={cx(
+              'itinerary-leg-action',
+              'car',
+              'itinerary-leg-action-content',
+            )}
+          >
             <FormattedMessage
-              id={
-                config.hideCarSuggestionDuration
-                  ? 'car-distance-no-duration'
-                  : 'car-distance-duration'
-              }
-              values={{ distance, duration }}
-              defaultMessage="Drive {distance} ({duration})}"
+              id="car-drive-from-transit-no-duration"
+              values={{
+                transportMode: (
+                  <FormattedMessage
+                    id={`from-${props.carBoardingLeg.from.stop.vehicleMode.toLowerCase()}`}
+                  />
+                ),
+              }}
             />
             <ItineraryMapAction
               target={props.leg.from.name || ''}
-              focusAction={props.focusToLeg}
+              focusAction={props.focusAction}
             />
           </div>
+        )}
+        <div className="itinerary-leg-action itinerary-leg-action-content">
+          <FormattedMessage
+            id={
+              config.hideCarSuggestionDuration
+                ? 'car-distance-no-duration'
+                : 'car-distance-duration'
+            }
+            values={{ distance, duration }}
+            defaultMessage="Drive {distance} ({duration})}"
+          />
+          <ItineraryMapAction
+            target={props.leg.from.name || ''}
+            focusAction={props.focusToLeg}
+          />
         </div>
         {props.carBoardingLeg?.to.stop && (
-          <div className={cx('itinerary-leg-action', 'car')}>
-            <div className="itinerary-leg-action-content">
-              <FormattedMessage
-                id="car-drive-to-transit-no-duration"
-                values={{
-                  transportMode: (
-                    <FormattedMessage
-                      id={`to-${props.carBoardingLeg.to.stop?.vehicleMode.toLowerCase()}`}
-                    />
-                  ),
-                }}
-              />
-              <ItineraryMapAction
-                target={props.leg.from.name || ''}
-                focusAction={props.focusAction}
-              />
-            </div>
+          <div
+            className={cx(
+              'itinerary-leg-action',
+              'car',
+              'itinerary-leg-action-content',
+            )}
+          >
+            <FormattedMessage
+              id="car-drive-to-transit-no-duration"
+              values={{
+                transportMode: (
+                  <FormattedMessage
+                    id={`to-${props.carBoardingLeg.to.stop?.vehicleMode.toLowerCase()}`}
+                  />
+                ),
+              }}
+            />
+            <ItineraryMapAction
+              target={props.leg.from.name || ''}
+              focusAction={props.focusAction}
+            />
           </div>
         )}
       </div>

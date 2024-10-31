@@ -63,15 +63,13 @@ function WaitLeg(
             focusAction={focusAction}
           />
         </div>
-        <div className="itinerary-leg-action">
-          <div className="itinerary-leg-action-content">
-            <FormattedMessage
-              id="wait-amount-of-time"
-              values={{ duration: `(${durationToString(waitTime)})` }}
-              defaultMessage="Wait {duration}"
-            />
-            <ItineraryMapAction target="" focusAction={focusAction} />
-          </div>
+        <div className="itinerary-leg-action itinerary-leg-action-content">
+          <FormattedMessage
+            id="wait-amount-of-time"
+            values={{ duration: `(${durationToString(waitTime)})` }}
+            defaultMessage="Wait {duration}"
+          />
+          <ItineraryMapAction target="" focusAction={focusAction} />
         </div>
       </div>
     </div>
