@@ -852,9 +852,12 @@ export default function ItineraryPage(props, context) {
 
   // merge direct car and car transit plans into one
   useEffect(() => {
+    const settings = getSettings(config);
     if (
       altStates[PLANTYPE.CAR][0].loading === LOADSTATE.DONE &&
-      altStates[PLANTYPE.CARTRANSIT][0].loading === LOADSTATE.DONE
+      altStates[PLANTYPE.CARTRANSIT][0].loading === LOADSTATE.DONE &&
+      settings.includeCarSuggestions &&
+      config.carBoardingModes !== undefined
     ) {
       const plan = mergeCarDirectAndTransitPlans(
         altStates[PLANTYPE.CAR][0].plan,
