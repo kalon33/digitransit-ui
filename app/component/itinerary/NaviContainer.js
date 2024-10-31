@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { createFragmentContainer, graphql, fetchQuery } from 'react-relay';
+import { graphql, fetchQuery } from 'react-relay';
 import { itineraryShape, relayShape } from '../../util/shapes';
 import NaviTop from './NaviTop';
 import NaviBottom from './NaviBottom';
@@ -148,107 +148,4 @@ NaviContainer.contextTypes = {
 
 NaviContainer.defaultProps = { mapRef: undefined };
 
-const withRelay = createFragmentContainer(NaviContainer, {
-  itinerary: graphql`
-    fragment NaviContainer_itinerary on Itinerary {
-      start
-      end
-      legs {
-        id
-        mode
-        transitLeg
-        interlineWithPreviousLeg
-        distance
-        duration
-        headsign
-        fareProducts {
-          product {
-            name
-            id
-            ... on DefaultFareProduct {
-              price {
-                amount
-              }
-            }
-          }
-        }
-        start {
-          scheduledTime
-          estimated {
-            time
-          }
-        }
-        end {
-          scheduledTime
-          estimated {
-            time
-          }
-        }
-        realtimeState
-        legGeometry {
-          points
-        }
-        route {
-          shortName
-          color
-        }
-        from {
-          lat
-          lon
-          stop {
-            name
-            lat
-            lon
-            parentStation {
-              name
-            }
-          }
-          vehicleRentalStation {
-            name
-            rentalNetwork {
-              networkId
-            }
-            availableVehicles {
-              total
-            }
-          }
-        }
-        to {
-          lat
-          lon
-          name
-          stop {
-            name
-            code
-            platformCode
-            vehicleMode
-            zoneId
-            parentStation {
-              name
-            }
-          }
-          vehicleParking {
-            name
-          }
-          vehicleRentalStation {
-            name
-            rentalNetwork {
-              networkId
-            }
-            availableVehicles {
-              total
-            }
-          }
-          rentalVehicle {
-            rentalNetwork {
-              networkId
-              url
-            }
-          }
-        }
-      }
-    }
-  `,
-});
-
-export { NaviContainer as Component, withRelay as default };
+export default NaviContainer;
