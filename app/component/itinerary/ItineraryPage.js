@@ -1234,16 +1234,15 @@ export default function ItineraryPage(props, context) {
         walking={walkPlan?.edges?.length > 0}
         biking={bikePlan?.edges?.length > 0 || !!bikePublicPlan?.edges?.length}
         driving={
-          (settings.includeCarSuggestions &&
-            (carPlan?.edges?.length > 0 || !!carPublicPlan?.edges?.length)) ||
+          (settings.includeCarSuggestions && carPlan?.edges?.length > 0) ||
+          !!carPublicPlan?.edges?.length ||
           !!parkRidePlan?.edges?.length
         }
       />
     );
   }
 
-  const showCarPublicPlan =
-    settings.includeCarSuggestions && carPublicPlan.carPublicItineraryCount > 0;
+  const showCarPublicPlan = carPublicPlan.carPublicItineraryCount > 0;
 
   const showAltBar =
     !detailView &&
@@ -1254,8 +1253,8 @@ export default function ItineraryPage(props, context) {
       bikePlan?.edges?.length ||
       bikePublicPlan?.edges?.length ||
       parkRidePlan?.edges?.length ||
-      (settings.includeCarSuggestions &&
-        (carPlan?.edges?.length || carPublicPlan?.edges?.length)));
+      (settings.includeCarSuggestions && carPlan?.edges?.length) ||
+      carPublicPlan?.edges?.length);
 
   const alternativeItineraryBar = showAltBar ? (
     <AlternativeItineraryBar
