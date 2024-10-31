@@ -204,11 +204,7 @@ export function planQueryNeeded(
       );
 
     case PLANTYPE.CARTRANSIT:
-      return (
-        transitModes.length > 0 &&
-        settings.includeCarSuggestions &&
-        config.carBoardingModes?.FERRY !== undefined
-      );
+      return transitModes.length > 0 && settings.includeCarSuggestions;
 
     case PLANTYPE.SCOOTERTRANSIT:
       /* special logic: relaxed scooter query is made only if no networks allowed */
