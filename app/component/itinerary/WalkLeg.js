@@ -68,12 +68,12 @@ function WalkLeg(
   }
 
   const destinationLabel =
-    leg.to?.name?.toLowerCase() === 'scooter'
+    leg.to.name?.toLowerCase() === 'scooter'
       ? intl.formatMessage({
           id: 'e-scooter',
           defaultMessage: 'scooter',
         })
-      : leg.to?.name;
+      : leg.to.name;
 
   return (
     <div key={index} className="row itinerary-row">

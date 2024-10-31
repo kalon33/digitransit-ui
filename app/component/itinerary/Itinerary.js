@@ -279,10 +279,10 @@ const Itinerary = (
     leg => getLegMode(leg) === 'BICYCLE' && leg.rentedBike === false,
   );
   const usingOwnBicycleWholeTrip =
-    usingOwnBicycle && itinerary.legs.every(leg => !leg.to?.vehicleParking);
+    usingOwnBicycle && itinerary.legs.every(leg => !leg.to.vehicleParking);
   const usingOwnCar = itinerary.legs.some(leg => getLegMode(leg) === 'CAR');
   const usingOwnCarWholeTrip =
-    usingOwnCar && itinerary.legs.every(leg => !leg.to?.vehicleParking);
+    usingOwnCar && itinerary.legs.every(leg => !leg.to.vehicleParking);
   const { refTime } = props;
   const startTime = Date.parse(itinerary.start);
   const endTime = Date.parse(itinerary.end);

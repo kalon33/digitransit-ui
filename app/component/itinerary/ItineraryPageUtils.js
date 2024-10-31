@@ -324,7 +324,7 @@ export function getRentalStationsToHideOnMap(
   const objectsToHide = { vehicleRentalStations: [] };
   if (hasVehicleRentalStation) {
     objectsToHide.vehicleRentalStations = selectedItinerary?.legs
-      ?.filter(leg => leg.from?.vehicleRentalStation)
+      ?.filter(leg => leg.from.vehicleRentalStation)
       .map(station => station.from?.vehicleRentalStation.stationId);
   }
   return objectsToHide;

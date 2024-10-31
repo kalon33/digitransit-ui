@@ -38,18 +38,18 @@ const ItineraryCircleLineLong = props => {
   let secondModeClassName;
   let positionRelativeToTransit;
   if (
-    props.boardingLeg.to?.stop !== null &&
-    props.boardingLeg.from?.stop !== null
+    props.boardingLeg.to.stop !== null &&
+    props.boardingLeg.from.stop !== null
   ) {
     positionRelativeToTransit = 'between-transit';
     firstModeClassName = props.boardingLeg.mode.toLowerCase();
     secondModeClassName = props.modeClassName.toLowerCase();
-  } else if (props.boardingLeg.to?.stop !== null) {
+  } else if (props.boardingLeg.to.stop !== null) {
     positionRelativeToTransit = 'before-transit';
     firstModeClassName = props.modeClassName.toLowerCase();
     secondModeClassName = props.boardingLeg.mode.toLowerCase();
   } else {
-    // props.boardingLeg.from?.stop !== undefined
+    // props.boardingLeg.from.stop !== undefined
     positionRelativeToTransit = 'after-transit';
     firstModeClassName = props.boardingLeg.mode.toLowerCase();
     secondModeClassName = props.modeClassName.toLowerCase();

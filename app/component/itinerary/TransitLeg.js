@@ -105,7 +105,7 @@ class TransitLeg extends React.Component {
   getZoneChange() {
     const { leg } = this.props;
     const startZone = leg.from.stop.zoneId;
-    const endZone = leg.to?.stop.zoneId || leg.to.stop.zoneId;
+    const endZone = leg.to.stop.zoneId || leg.to.stop.zoneId;
     const renderZoneIcons = () => {
       return (
         this.context.config.zones.itinerary &&

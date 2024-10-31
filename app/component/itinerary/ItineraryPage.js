@@ -1021,7 +1021,7 @@ export default function ItineraryPage(props, context) {
 
     const itineraryContainsDepartureFromVehicleRentalStation = planEdges?.[
       activeIndex
-    ]?.node.legs.some(leg => leg.from?.vehicleRentalStation);
+    ]?.node.legs.some(leg => leg.from.vehicleRentalStation);
 
     const mapLayerOptions = itineraryContainsDepartureFromVehicleRentalStation
       ? addBikeStationMapForRentalVehicleItineraries(planEdges)
