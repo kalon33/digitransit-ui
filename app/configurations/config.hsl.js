@@ -580,7 +580,7 @@ export default {
   showSimilarRoutesOnRouteDropDown: true,
   useRealtimeTravellerCapacities: true,
 
-  navigation: true,
+  navigation: false,
   navigationLogo: 'hsl/navigator-logo.svg',
 
   stopCard: {

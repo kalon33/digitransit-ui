@@ -20,7 +20,7 @@ To use Windows Subsystem for Linux in digitransit-ui development you may need to
 ```
 ::1     ip6-localhost ip6-loopback localhost
 ``` 
-2. Add the following to your `/etc/resolv.conf` if not yet present. This prevents WSL from regenerating the `/etc/hosts` as well as the `/etc/resolv.conf`:
+2. Add the following to your `/etc/wsl.conf` if not yet present. This prevents WSL from regenerating the `/etc/hosts` as well as the `/etc/resolv.conf`:
 ```
 [network]
 generateResolvConf=false
