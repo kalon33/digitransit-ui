@@ -25,7 +25,7 @@ const NaviSecondaryInfo = ({ leg }, { config }) => {
   }
 
   return (
-    <div className={`secondary-info `}>
+    <div className="secondary-info">
       <div className="secondary-divider" />
       <div className="secondary-content">
         <Icon img="navi-expand" className="icon-expand" />
