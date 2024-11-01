@@ -267,7 +267,7 @@ export default {
   carBoardingModes: {
     FERRY: { showNotification: true },
   },
-  navigation: true,
+  navigation: false,
 
   ticketPurchaseLink: function purchaseTicketLink(fare, operatorCode) {
     const fareId = fare.fareProducts[0].product.id;
