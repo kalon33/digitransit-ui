@@ -96,9 +96,17 @@ function NaviCardContainer(
           ? activeMessages.filter(m => m.expiresOn !== 'legChange')
           : activeMessages;
 
+        // handle messages that are updated.
+        const updatedMessages = currActiveMessages.map(msg => {
+          const incoming = incomingMessages.get(msg.id);
+          if (incoming) {
+            incomingMessages.delete(msg.id);
+            return incoming;
+          }
+          return msg;
+        });
         const newMessages = Array.from(incomingMessages.values());
-        // todo: filter by  id
-        setActiveMessages([...currActiveMessages, ...newMessages]);
+        setActiveMessages([...updatedMessages, ...newMessages]);
         setMessages(new Map([...messages, ...incomingMessages]));
       }
 
