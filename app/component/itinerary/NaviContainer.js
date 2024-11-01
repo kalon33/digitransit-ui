@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { graphql, fetchQuery } from 'react-relay';
 import { itineraryShape, relayShape } from '../../util/shapes';
-import NaviTop from './NaviCardContainer';
+import NaviCardContainer from './NaviCardContainer';
 import NaviBottom from './NaviBottom';
 import { legTime } from '../../util/legUtils';
 import { checkPositioningPermission } from '../../action/PositionActions';
@@ -119,7 +119,7 @@ function NaviContainer(
 
   return (
     <>
-      <NaviTop
+      <NaviCardContainer
         itinerary={itinerary}
         realTimeLegs={realTimeLegs}
         focusToLeg={
