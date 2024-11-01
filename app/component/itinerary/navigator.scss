@@ -38,7 +38,6 @@
 }
 
 .navitop {
-  transition: max-height 0.25s ease-out;
   margin-bottom: 5px;
   position: fixed;
   top: 80px;
@@ -50,7 +49,10 @@
   background-color: white !important;
   display: flex;
   align-items: center;
-  max-height: 180px;
+
+  &.expanded {
+    max-height: 150px;
+  }
 
   .navitop-arrow {
     .inverted {
@@ -77,14 +79,96 @@
       margin-left: 50px;
     }
 
-    .secondary {
-      display: flex;
-      flex-direction: row;
-      margin: 10px 0 20px 50px;
+    .navi-top-card {
+      .main {
+        display: flex;
+        flex-direction: row;
+        height: 50px;
+        color: black;
 
-      &.expanded {
-        max-height: 250px;
-        transition: max-height 0.2s ease-in;
+        .divider {
+          height: 70px;
+          margin-left: 15px;
+        }
+
+        .mode {
+          width: 32px;
+          height: 32px;
+          color: black;
+        }
+      }
+
+      .instructions {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        font-size: $font-size-normal;
+        font-weight: $font-weight-medium;
+
+        .destination-header {
+          font-size: $font-size-normal;
+          font-weight: $font-weight-medium;
+          display: flex;
+        }
+
+        .wait-leg {
+          display: flex;
+          align-items: center;
+          margin-top: 3px;
+
+          .headsign {
+            margin-left: 10px;
+            font-size: $font-size-small;
+            font-weight: $font-weight-book;
+            max-width: 120px;
+          }
+
+          .icon {
+            margin-top: 2px;
+            height: 25px;
+            width: 25px;
+          }
+
+          .route-number {
+            min-width: 55px;
+
+            .vcenter-children {
+              .vehicle-number {
+                color: white;
+                font-size: $font-size-large;
+                margin-top: 4px;
+              }
+
+              display: flex;
+            }
+          }
+        }
+      }
+
+      .duration {
+        &.fade-out {
+          animation: fadeOut 3s forwards;
+        }
+
+        font-size: $font-size-xsmall;
+        font-weight: $font-weight-book;
+        display: flex;
+      }
+    }
+
+    .secondary-info {
+      flex-direction: column;
+      max-height: 250px;
+
+      .secondary-divider {
+        border: 1px solid #ddd;
+        width: 75%;
+        margin-left: 50px;
+      }
+
+      .secondary-content {
+        display: flex;
+        margin: 10px 0 20px 50px;
       }
 
       .icon-expand {
@@ -93,13 +177,13 @@
         height: 16px;
       }
 
-      .lollipop {
+      .stop-icon-lollipop {
         margin: 0 10px;
       }
 
       .destination {
-        width: 45px;
         font-weight: $font-weight-book;
+        text-align: left;
 
         .details {
           > * {
@@ -117,85 +201,6 @@
           display: flex;
           flex-direction: row;
         }
-      }
-    }
-
-    .navileg-goto {
-      display: flex;
-      flex-direction: row;
-      height: 50px;
-      color: black;
-
-      .navileg-divider {
-        height: 70px;
-        margin-left: 15px;
-      }
-
-      .navileg-mode {
-        width: 32px;
-        height: 32px;
-        color: black;
-      }
-    }
-
-    .navileg-destination {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      font-size: $font-size-normal;
-      font-weight: $font-weight-medium;
-
-      .destination-header {
-        font-size: $font-size-normal;
-        font-weight: $font-weight-medium;
-        display: flex;
-      }
-
-      .wait-leg {
-        display: flex;
-        align-items: center;
-        margin-top: 3px;
-
-        .headsign {
-          margin-left: 10px;
-          font-size: $font-size-small;
-          font-weight: $font-weight-book;
-          max-width: 120px;
-        }
-
-        .icon {
-          margin-top: 2px;
-          height: 25px;
-          width: 25px;
-        }
-
-        .route-number {
-          min-width: 55px;
-
-          .vcenter-children {
-            .vehicle-number {
-              color: white;
-              font-size: $font-size-large;
-              margin-top: 4px;
-            }
-
-            display: flex;
-          }
-        }
-      }
-
-      .navileg-destination-details {
-        .duration {
-          &.fade-out {
-            animation: fadeOut 3s forwards;
-          }
-
-          font-size: $font-size-xsmall;
-          font-weight: $font-weight-book;
-          display: flex;
-        }
-
-        display: flex;
       }
     }
   }

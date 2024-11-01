@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { createFragmentContainer, graphql, fetchQuery } from 'react-relay';
 import { itineraryShape, relayShape } from '../../util/shapes';
-import NaviTop from './NaviTop';
+import NaviTop from './NaviCardContainer';
 import NaviBottom from './NaviBottom';
 import { legTime } from '../../util/legUtils';
 import { checkPositioningPermission } from '../../action/PositionActions';

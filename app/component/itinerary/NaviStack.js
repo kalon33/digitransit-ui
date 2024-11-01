@@ -4,8 +4,10 @@ import cx from 'classnames';
 import NaviMessage from './NaviMessage';
 
 // eslint-disable-next-line no-unused-vars
-const NaviStack = ({ messages, handleRemove, showSecondary }) => {
-  const top = showSecondary ? '212px' : '150px'; // todo not final
+const NaviStack = ({ messages, handleRemove, cardExpanded }) => {
+  // Becuase of the way the NaviCard is placed (fixed) we need to adjust the top position depending
+  // on if the  card is expanded or not
+  const top = cardExpanded ? '212px' : '150px';
   return (
     <div className={cx('info-stack', 'slide-in')} style={{ top }}>
       {messages.map((notification, index) => (
@@ -30,11 +32,11 @@ NaviStack.propTypes = {
     }),
   ).isRequired,
   handleRemove: PropTypes.func.isRequired,
-  showSecondary: PropTypes.bool,
+  cardExpanded: PropTypes.bool,
 };
 
 NaviStack.defaultProps = {
-  showSecondary: false,
+  cardExpanded: false,
 };
 
 export default NaviStack;
