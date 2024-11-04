@@ -69,6 +69,7 @@ const planConnection = graphql`
             mode
             distance
             transitLeg
+            id
             interlineWithPreviousLeg
             duration
             headsign
