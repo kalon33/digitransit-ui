@@ -87,44 +87,43 @@ function NaviCardContainer(
         setCurrentLeg(newLeg);
         setCardExpanded(false);
       }
+    }
+    if (incomingMessages.size || legChanged) {
+      // Handle messages when new messages arrives or leg is changed.
 
-      if (incomingMessages.size || legChanged) {
-        // Handle messages when new messages arrives or leg is changed.
+      // Current active messages. Filter away legChange messages when leg changes.
+      const previousValidMessages = legChanged
+        ? activeMessages.filter(m => m.expiresOn !== 'legChange')
+        : activeMessages;
 
-        // Current active messages. Filter away legChange messages when leg changes.
-        const currActiveMessages = legChanged
-          ? activeMessages.filter(m => m.expiresOn !== 'legChange')
-          : activeMessages;
-
-        // handle messages that are updated.
-        const updatedMessages = currActiveMessages.map(msg => {
-          const incoming = incomingMessages.get(msg.id);
-          if (incoming) {
-            incomingMessages.delete(msg.id);
-            return incoming;
-          }
-          return msg;
-        });
-        const newMessages = Array.from(incomingMessages.values());
-        setActiveMessages([...updatedMessages, ...newMessages]);
-        setMessages(new Map([...messages, ...incomingMessages]));
-      }
-
-      if (!focusRef.current && focusToLeg) {
-        // handle initial focus when not tracking
-        if (newLeg) {
-          focusToLeg(newLeg);
-          destCountRef.current = 0;
-        } else {
-          const { first, last } = getFirstLastLegs(realTimeLegs);
-          if (time < legTime(first.start)) {
-            focusToLeg(first);
-          } else {
-            focusToLeg(last);
-          }
+      // handle messages that are updated.
+      const updatedMessages = previousValidMessages.map(msg => {
+        const incoming = incomingMessages.get(msg.id);
+        if (incoming) {
+          incomingMessages.delete(msg.id);
+          return incoming;
         }
-        focusRef.current = true;
+        return msg;
+      });
+      const newMessages = Array.from(incomingMessages.values());
+      setActiveMessages([...updatedMessages, ...newMessages]);
+      setMessages(new Map([...messages, ...incomingMessages]));
+    }
+
+    if (!focusRef.current && focusToLeg) {
+      // handle initial focus when not tracking
+      if (newLeg) {
+        focusToLeg(newLeg);
+        destCountRef.current = 0;
+      } else {
+        const { first, last } = getFirstLastLegs(realTimeLegs);
+        if (time < legTime(first.start)) {
+          focusToLeg(first);
+        } else {
+          focusToLeg(last);
+        }
       }
+      focusRef.current = true;
     }
 
     // User position and distance from currentleg endpoint.
@@ -155,26 +154,20 @@ function NaviCardContainer(
       const nextLeg = realTimeLegs.find(leg => {
         return legTime(leg.start) > legTime(currentLeg.start);
       });
+      let legType;
       if (destCountRef.current >= TIME_AT_DESTINATION) {
-        // User at the destination. show wait message.
-        naviTopContent = (
-          <NaviCard
-            leg={currentLeg}
-            nextLeg={nextLeg}
-            cardExpanded={cardExpanded}
-            legType="wait"
-          />
-        );
+        legType = 'wait';
       } else {
-        naviTopContent = (
-          <NaviCard
-            leg={currentLeg}
-            nextLeg={nextLeg}
-            cardExpanded={cardExpanded}
-            legType="move"
-          />
-        );
+        legType = 'move';
       }
+      naviTopContent = (
+        <NaviCard
+          leg={currentLeg}
+          nextLeg={nextLeg}
+          cardExpanded={cardExpanded}
+          legType={legType}
+        />
+      );
     } else {
       naviTopContent = `Tracking ${currentLeg?.mode} leg`;
     }
