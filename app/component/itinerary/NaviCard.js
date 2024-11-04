@@ -4,7 +4,7 @@ import { legShape } from '../../util/shapes';
 import Icon from '../Icon';
 import { isRental } from '../../util/legUtils';
 import NaviInstructions from './NaviInstructions';
-import NaviSecondaryInfo from './NaviSecondaryInfo';
+import NaviCardExtension from './NaviCardExtension';
 
 const iconMap = {
   BICYCLE: 'icon-icon_cyclist',
@@ -45,7 +45,7 @@ export default function NaviCard({ leg, nextLeg, legType, cardExpanded }) {
           </div>
         </div>
       </div>
-      {cardExpanded && <NaviSecondaryInfo leg={leg} />}
+      {cardExpanded && <NaviCardExtension leg={leg} />}
     </div>
   );
 }

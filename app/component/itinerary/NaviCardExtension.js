@@ -6,7 +6,7 @@ import { getZoneLabel } from '../../util/legUtils';
 import ZoneIcon from '../ZoneIcon';
 import { legShape, configShape } from '../../util/shapes';
 
-const NaviSecondaryInfo = ({ leg }, { config }) => {
+const NaviCardExtension = ({ leg }, { config }) => {
   const { stop, rentalVehicle, vehicleParking, vehicleRentalStation, name } =
     leg.to;
   const { code, platformCode, vehicleMode, zoneId } = stop || {};
@@ -59,12 +59,12 @@ const NaviSecondaryInfo = ({ leg }, { config }) => {
   );
 };
 
-NaviSecondaryInfo.propTypes = {
+NaviCardExtension.propTypes = {
   leg: legShape.isRequired,
 };
 
-NaviSecondaryInfo.contextTypes = {
+NaviCardExtension.contextTypes = {
   config: configShape.isRequired,
 };
 
-export default NaviSecondaryInfo;
+export default NaviCardExtension;
