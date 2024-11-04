@@ -81,9 +81,10 @@ function NaviCardContainer(
           });
         }
       }
-
-      if (legChanged) {
+      if (newLeg) {
         focusToLeg?.(newLeg);
+      }
+      if (legChanged) {
         setCurrentLeg(newLeg);
         setCardExpanded(false);
       }
