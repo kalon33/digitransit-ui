@@ -10,7 +10,7 @@ import { checkPositioningPermission } from '../../action/PositionActions';
 const legQuery = graphql`
   query NaviContainer_legQuery($id: String!) {
     leg(id: $id) {
-      id
+      legId
       start {
         scheduledTime
         estimated {
@@ -69,7 +69,7 @@ function NaviContainer(
           fetchQuery(
             relayEnvironment,
             legQuery,
-            { id: leg.id },
+            { id: leg.legId },
             { force: true },
           ).toPromise(),
         );
@@ -79,10 +79,10 @@ function NaviContainer(
       Promise.all(legQueries).then(responses => {
         const legMap = {};
         responses.forEach(data => {
-          legMap[data.leg.id] = data.leg;
+          legMap[data.leg.legId] = data.leg;
         });
         const rtLegs = itinerary.legs.map(l => {
-          const rtLeg = l.id ? legMap[l.id] : null;
+          const rtLeg = l.legId ? legMap[l.legId] : null;
           if (rtLeg) {
             return {
               ...l,
@@ -110,7 +110,7 @@ function NaviContainer(
   });
   if (lastTransitLeg) {
     const rtLeg = realTimeLegs.find(leg => {
-      return leg.id === lastTransitLeg.id;
+      return leg.legId === lastTransitLeg.legId;
     });
     arrivalChange = legTime(rtLeg.end) - legTime(lastTransitLeg.end);
   }
