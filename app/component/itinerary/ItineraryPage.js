@@ -1,75 +1,75 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
-import PropTypes from 'prop-types';
-import React, { useEffect, useState, useRef, cloneElement } from 'react';
-import { fetchQuery } from 'react-relay';
-import { FormattedMessage, intlShape } from 'react-intl';
 import { matchShape, routerShape } from 'found';
-import isEqual from 'lodash/isEqual';
 import isEmpty from 'lodash/isEmpty';
+import isEqual from 'lodash/isEqual';
 import moment from 'moment';
 import polyline from 'polyline-encoded';
+import PropTypes from 'prop-types';
+import React, { cloneElement, useEffect, useRef, useState } from 'react';
+import { FormattedMessage, intlShape } from 'react-intl';
+import { fetchQuery } from 'react-relay';
+import { saveFutureRoute } from '../../action/FutureRoutesActions';
+import { saveSearch } from '../../action/SearchActions';
+import { TransportMode } from '../../constants';
+import { mapLayerShape } from '../../store/MapLayerStore';
+import { addAnalyticsEvent } from '../../util/analyticsUtils';
+import { getWeatherData } from '../../util/apiUtils';
+import { isIOS } from '../../util/browser';
+import { boundWithMinimumArea } from '../../util/geo-utils';
 import {
-  relayShape,
+  getIntermediatePlaces,
+  otpToLocation,
+  parseLatLon,
+} from '../../util/otpStrings';
+import { getItineraryPagePath, streetHash } from '../../util/path';
+import {
+  PLANTYPE,
+  getPlanParams,
+  getSettings,
+  planQueryNeeded,
+} from '../../util/planParamUtil';
+import {
   configShape,
   mapLayerOptionsShape,
+  relayShape,
 } from '../../util/shapes';
+import { epochToTime } from '../../util/timeUtils';
+import { getAllNetworksOfType } from '../../util/vehicleRentalUtils';
 import DesktopView from '../DesktopView';
+import Loading from '../Loading';
 import MobileView from '../MobileView';
 import ItineraryPageMap from '../map/ItineraryPageMap';
-import ItineraryListContainer from './ItineraryListContainer';
+import AlternativeItineraryBar from './AlternativeItineraryBar';
+import CustomizeSearch from './CustomizeSearch';
 import { spinnerPosition } from './ItineraryList';
+import ItineraryListContainer from './ItineraryListContainer';
 import ItineraryPageControls from './ItineraryPageControls';
-import ItineraryTabs from './ItineraryTabs';
-import { getWeatherData } from '../../util/apiUtils';
-import Loading from '../Loading';
-import { getItineraryPagePath, streetHash } from '../../util/path';
-import { boundWithMinimumArea } from '../../util/geo-utils';
-import planConnection from './PlanConnection';
 import {
-  getSelectedItineraryIndex,
-  reportError,
-  addFeedbackly,
-  getTopics,
-  getBounds,
-  isEqualItineraries,
-  settingsLimitRouting,
-  setCurrentTimeToURL,
-  updateClient,
-  stopClient,
-  getRentalStationsToHideOnMap,
   addBikeStationMapForRentalVehicleItineraries,
+  addFeedbackly,
   checkDayNight,
   filterItinerariesByFeedId,
   filterWalk,
+  getBounds,
+  getRentalStationsToHideOnMap,
+  getSelectedItineraryIndex,
+  getTopics,
+  isEqualItineraries,
   mergeBikeTransitPlans,
   mergeScooterTransitPlan,
   quitIteration,
+  reportError,
   scooterEdges,
+  setCurrentTimeToURL,
+  settingsLimitRouting,
+  stopClient,
+  updateClient,
 } from './ItineraryPageUtils';
-import { isIOS } from '../../util/browser';
-import { addAnalyticsEvent } from '../../util/analyticsUtils';
-import {
-  parseLatLon,
-  otpToLocation,
-  getIntermediatePlaces,
-} from '../../util/otpStrings';
-import AlternativeItineraryBar from './AlternativeItineraryBar';
-import {
-  PLANTYPE,
-  getSettings,
-  getPlanParams,
-  planQueryNeeded,
-} from '../../util/planParamUtil';
-import { epochToTime } from '../../util/timeUtils';
-import { saveFutureRoute } from '../../action/FutureRoutesActions';
-import { saveSearch } from '../../action/SearchActions';
-import CustomizeSearch from './CustomizeSearch';
-import { getAllNetworksOfType } from '../../util/vehicleRentalUtils';
-import { TransportMode } from '../../constants';
-import { mapLayerShape } from '../../store/MapLayerStore';
+import ItineraryTabs from './ItineraryTabs';
 import NaviContainer from './NaviContainer';
 import NavigatorIntroModal from './NavigatorIntro/NavigatorIntroModal';
+import planConnection from './PlanConnection';
 import {
   clearLatestNavigatorItinerary,
   getDialogState,
