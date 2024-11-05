@@ -115,7 +115,7 @@ const emptyState = {
 const emptyPlan = { plan: {}, loading: LOADSTATE.DONE };
 const unset = { plan: {}, loading: LOADSTATE.UNSET };
 
-const ItineraryPage = (props, context) => {
+export default function ItineraryPage(props, context) {
   const headerRef = useRef(null);
   const mwtRef = useRef();
   const mobileRef = useRef();
@@ -159,22 +159,22 @@ const ItineraryPage = (props, context) => {
   const { query } = location;
   const detailView = altTransitHash.includes(hash) ? secondHash : hash;
 
-  const altLoading = () => {
+  function altLoading() {
     return Object.values(altStates).some(
       st => st[0].loading === LOADSTATE.LOADING,
     );
-  };
+  }
 
-  const altLoadingDone = () => {
+  function altLoadingDone() {
     return Object.values(altStates).every(
       st => st[0].loading === LOADSTATE.DONE,
     );
-  };
+  }
 
-  const stopClientAndUpdateTopics = () => {
+  function stopClientAndUpdateTopics() {
     stopClient(context);
     setTopicsState(null);
-  };
+  }
 
   const selectStreetMode = newStreetMode => {
     addAnalyticsEvent({
@@ -209,7 +209,7 @@ const ItineraryPage = (props, context) => {
     }
   };
 
-  const mapHashToPlan = () => {
+  function mapHashToPlan() {
     switch (hash) {
       case streetHash.walk:
         return altStates[PLANTYPE.WALK][0].plan;
@@ -237,9 +237,9 @@ const ItineraryPage = (props, context) => {
         }
         return combinedState.plan;
     }
-  };
+  }
 
-  const makeWeatherQuery = () => {
+  function makeWeatherQuery() {
     const from = otpToLocation(params.from);
     const time = query.time ? query.time * 1000 : Date.now();
     setWeatherState({ ...weatherState, loading: true });
@@ -269,9 +269,9 @@ const ItineraryPage = (props, context) => {
       .catch(() => {
         setWeatherState(newState);
       });
-  };
+  }
 
-  const iterateQuery = async (planParams, reps) => {
+  async function iterateQuery(planParams, reps) {
     let plan;
     const trials = reps || (planParams.modes.directOnly ? 1 : MAX_QUERY_COUNT);
     const arriveBy = !!planParams.datetime.latestArrival;
@@ -325,9 +325,9 @@ const ItineraryPage = (props, context) => {
       }
     }
     return plan;
-  };
+  }
 
-  const makeAltQuery = async planType => {
+  async function makeAltQuery(planType) {
     const altState = altStates[planType];
     if (!planQueryNeeded(config, match, planType)) {
       altState[1]({ plan: {}, loading: LOADSTATE.DONE });
@@ -341,9 +341,9 @@ const ItineraryPage = (props, context) => {
     } catch (error) {
       altState[1]({ plan: {}, loading: LOADSTATE.DONE });
     }
-  };
+  }
 
-  const makeRelaxedQuery = async () => {
+  async function makeRelaxedQuery() {
     if (!planQueryNeeded(config, match, PLANTYPE.TRANSIT, true)) {
       setRelaxState(emptyPlan);
       return;
@@ -356,9 +356,9 @@ const ItineraryPage = (props, context) => {
     } catch (error) {
       setRelaxState(emptyPlan);
     }
-  };
+  }
 
-  const makeMainQuery = async () => {
+  async function makeMainQuery() {
     if (!planQueryNeeded(config, match, PLANTYPE.TRANSIT)) {
       setState(emptyState);
       return;
@@ -374,9 +374,9 @@ const ItineraryPage = (props, context) => {
       reportError(error);
       setState(emptyPlan);
     }
-  };
+  }
 
-  const makeScooterQuery = async () => {
+  async function makeScooterQuery() {
     if (!planQueryNeeded(config, match, PLANTYPE.SCOOTERTRANSIT)) {
       setScooterState(emptyPlan);
       return;
@@ -397,9 +397,9 @@ const ItineraryPage = (props, context) => {
       reportError(error);
       setScooterState(emptyPlan);
     }
-  };
+  }
 
-  const makeRelaxedScooterQuery = async () => {
+  async function makeRelaxedScooterQuery() {
     if (!planQueryNeeded(config, match, PLANTYPE.SCOOTERTRANSIT, true)) {
       setRelaxScooterState(emptyPlan);
       return;
@@ -429,7 +429,7 @@ const ItineraryPage = (props, context) => {
     } catch (error) {
       setRelaxScooterState(emptyPlan);
     }
-  };
+  }
 
   const onLater = async () => {
     addAnalyticsEvent({
@@ -603,7 +603,7 @@ const ItineraryPage = (props, context) => {
   };
 
   // make the map to obey external navigation
-  const navigateMap = () => {
+  function navigateMap() {
     // map sticks to user location if tracking is on, so set it off
     if (mwtRef.current?.disableMapTracking) {
       mwtRef.current.disableMapTracking();
@@ -612,7 +612,7 @@ const ItineraryPage = (props, context) => {
     if (mwtRef.current?.forceRefresh) {
       mwtRef.current.forceRefresh();
     }
-  };
+  }
 
   const getCombinedPlanEdges = () => {
     return [
@@ -661,7 +661,7 @@ const ItineraryPage = (props, context) => {
   };
 
   // save url-defined location to old searches
-  const saveUrlSearch = endpoint => {
+  function saveUrlSearch(endpoint) {
     const parts = endpoint.split('::'); // label::lat,lon
     if (parts.length !== 2) {
       return;
@@ -690,9 +690,9 @@ const ItineraryPage = (props, context) => {
       },
       type: 'endpoint',
     });
-  };
+  }
 
-  const updateLocalStorage = saveEndpoints => {
+  function updateLocalStorage(saveEndpoints) {
     const pathArray = decodeURIComponent(location.pathname)
       .substring(1)
       .split('/');
@@ -727,7 +727,7 @@ const ItineraryPage = (props, context) => {
       query,
     };
     context.executeAction(saveFutureRoute, itinerarySearch);
-  };
+  }
 
   function showVehicles() {
     const now = Date.now() / 1000;
@@ -1001,7 +1001,7 @@ const ItineraryPage = (props, context) => {
     }, 500);
   };
 
-  const renderMap = (from, to, viaPoints, planEdges, activeIndex) => {
+  function renderMap(from, to, viaPoints, planEdges, activeIndex) {
     const mwtProps = {};
     if (mapState.bounds) {
       mwtProps.bounds = mapState.bounds;
@@ -1025,7 +1025,6 @@ const ItineraryPage = (props, context) => {
       itineraryContainsDepartureFromVehicleRentalStation,
       planEdges?.[activeIndex]?.node,
     );
-
     return (
       <ItineraryPageMap
         {...mwtProps}
@@ -1045,7 +1044,7 @@ const ItineraryPage = (props, context) => {
         objectsToHide={objectsToHide}
       />
     );
-  };
+  }
 
   const itinerarySelection = getItinerarySelection();
   const { combinedEdges, selectedIndex, hasNoTransitItineraries } =
@@ -1307,7 +1306,7 @@ const ItineraryPage = (props, context) => {
       match={match}
     />
   );
-};
+}
 
 ItineraryPage.contextTypes = {
   config: configShape,
@@ -1333,5 +1332,3 @@ ItineraryPage.defaultProps = {
   content: undefined,
   map: undefined,
 };
-
-export default ItineraryPage;

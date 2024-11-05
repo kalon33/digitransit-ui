@@ -1,6 +1,6 @@
 import { isBrowser } from '../util/browser';
 
-export const handleSecurityError = (error, logMessage) => {
+function handleSecurityError(error, logMessage) {
   if (error.name === 'SecurityError') {
     if (logMessage) {
       console.log(logMessage); // eslint-disable-line no-console
@@ -8,7 +8,7 @@ export const handleSecurityError = (error, logMessage) => {
   } else {
     throw error;
   }
-};
+}
 
 export const getLocalStorage = (
   runningInBrowser,
@@ -26,7 +26,7 @@ export const getLocalStorage = (
   }
 };
 
-const setItem = (key, value) => {
+function setItem(key, value) {
   const localStorage = getLocalStorage(isBrowser);
   if (localStorage) {
     try {
@@ -47,9 +47,9 @@ const setItem = (key, value) => {
       }
     }
   }
-};
+}
 
-const getItem = key => {
+function getItem(key) {
   const localStorage = getLocalStorage(isBrowser);
   if (localStorage) {
     try {
@@ -59,19 +59,19 @@ const getItem = key => {
     }
   }
   return null;
-};
+}
 
-const getItemAsJson = (key, defaultValue) => {
+function getItemAsJson(key, defaultValue) {
   let item = getItem(key);
 
-  if (item == null || item === undefined) {
+  if (item == null) {
     item = defaultValue || '[]';
   }
 
   return JSON.parse(item);
-};
+}
 
-export const removeItem = k => {
+export function removeItem(k) {
   const localStorage = getLocalStorage(isBrowser);
   if (localStorage) {
     try {
@@ -80,9 +80,9 @@ export const removeItem = k => {
       handleSecurityError(error);
     }
   }
-};
+}
 
-export const getCustomizedSettings = () => {
+export function getCustomizedSettings() {
   const settings = getItemAsJson('customizedSettings', '{}');
   // remove outdated settings
   if (settings.modes) {
@@ -91,7 +91,7 @@ export const getCustomizedSettings = () => {
     );
   }
   return settings;
-};
+}
 
 const getNumberValueOrDefault = (value, defaultValue) =>
   value !== undefined && value !== null ? Number(value) : defaultValue;
@@ -99,7 +99,7 @@ const getNumberValueOrDefault = (value, defaultValue) =>
 const getValueOrDefault = (value, defaultValue) =>
   value !== undefined ? value : defaultValue;
 
-export const setCustomizedSettings = data => {
+export function setCustomizedSettings(data) {
   // Get old settings and test if set values have changed
   const oldSettings = getCustomizedSettings();
 
@@ -156,34 +156,34 @@ export const setCustomizedSettings = data => {
     );
   }
   setItem('customizedSettings', newSettings);
-};
+}
 
-export const clearFavouriteStorage = () => {
+export function clearFavouriteStorage() {
   return setItem('favouriteStore', []);
-};
+}
 
-export const getFavouriteStorage = () => {
+export function getFavouriteStorage() {
   return getItemAsJson('favouriteStore');
-};
+}
 
-export const setFavouriteStorage = data => {
+export function setFavouriteStorage(data) {
   setItem('favouriteStore-updated-at', Math.round(Date.now() / 1000));
   return setItem('favouriteStore', data);
-};
+}
 
-export const getFavouriteLocationsStorage = () => {
+export function getFavouriteLocationsStorage() {
   return getItemAsJson('favouriteLocations');
-};
+}
 
-export const getFavouriteStopsStorage = () => {
+export function getFavouriteStopsStorage() {
   return getItemAsJson('favouriteStops');
-};
+}
 
-export const setReadMessageIds = data => {
+export function setReadMessageIds(data) {
   setItem('readMessages', data);
-};
+}
 
-export const getReadMessageIds = () => {
+export function getReadMessageIds() {
   /* Migrate old data */
   const oldMessages = getItemAsJson('messages', '[]');
   if (oldMessages.length !== 0) {
@@ -195,13 +195,13 @@ export const getReadMessageIds = () => {
   }
 
   return getItemAsJson('readMessages', '[]');
-};
+}
 
-export const getFavouriteRoutesStorage = () => {
+export function getFavouriteRoutesStorage() {
   return getItemAsJson('favouriteRoutes');
-};
+}
 
-export const getOldSearchesStorage = () => {
+export function getOldSearchesStorage() {
   const storage = getItemAsJson('saved-searches', '{"items": []}');
   return {
     ...storage,
@@ -209,28 +209,28 @@ export const getOldSearchesStorage = () => {
       search => search.item.address !== 'SelectFromMap',
     ),
   };
-};
+}
 
-export const setOldSearchesStorage = data => {
+export function setOldSearchesStorage(data) {
   setItem('saved-searches-updated-at', Math.round(Date.now() / 1000));
   setItem('saved-searches', data);
-};
+}
 
-export const getSearchSettingsStorage = () => {
+export function getSearchSettingsStorage() {
   return getItemAsJson('customizedSettings', '{}');
-};
+}
 
-export const setSearchSettingsStorage = data => {
+export function setSearchSettingsStorage(data) {
   setItem('customizedSettings', data);
-};
+}
 
-export const setGeolocationState = state => {
+export function setGeolocationState(state) {
   setItem('geolocationPermission', { state });
-};
+}
 
-export const getGeolocationState = () => {
+export function getGeolocationState() {
   return getItemAsJson('geolocationPermission', '{ "state": "unknown" }').state;
-};
+}
 
 export const setMapLayerSettings = settings => {
   setItem('map-layers', settings);
@@ -267,25 +267,25 @@ export const setDialogState = (dialogId, seen = true) => {
 export const getDialogState = dialogId =>
   getItemAsJson('dialogState', '{}')[`${dialogId}`] === true;
 
-export const getFutureRoutesStorage = () => {
+export function getFutureRoutesStorage() {
   return getItemAsJson('futureRoutes', '[]');
-};
+}
 
-export const setFutureRoutesStorage = data => {
+export function setFutureRoutesStorage(data) {
   setItem('futureRoutes', data);
-};
+}
 
-export const getSavedGeolocationPermission = () => {
+export function getSavedGeolocationPermission() {
   return getItemAsJson('geolocationPermission', '{}');
-};
+}
 
-export const setSavedGeolocationPermission = (key, value) => {
+export function setSavedGeolocationPermission(key, value) {
   const geolocationPermissions = getSavedGeolocationPermission();
   setItem('geolocationPermission', {
     ...geolocationPermissions,
     [key]: value,
   });
-};
+}
 
 export const setLatestNavigatorItinerary = value => {
   setItem('latestNavigatorItinerary', value);

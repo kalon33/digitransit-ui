@@ -37,10 +37,10 @@ const legQuery = graphql`
   }
 `;
 
-const NaviContainer = (
+function NaviContainer(
   { itinerary, focusToLeg, relayEnvironment, setNavigation, mapRef },
   { getStore },
-) => {
+) {
   const [realTimeLegs, setRealTimeLegs] = useState(itinerary.legs);
   const [time, setTime] = useState(Date.now());
   const locationOK = useRef(true);
@@ -135,7 +135,7 @@ const NaviContainer = (
       <NaviBottom setNavigation={setNavigation} arrival={arrivalTime} />
     </>
   );
-};
+}
 
 NaviContainer.propTypes = {
   itinerary: itineraryShape.isRequired,
