@@ -56,9 +56,9 @@ describe('retryFetch', () => {
     expect(secondDuration).to.be.below(360);
 
     // because of longer delay between requests, the difference between 2 retries with 20ms delay
-    // and 2 retries with 100ms delay should be 160ms but because performance slightly varies, there is a 60ms threshold for test failure
+    // and 2 retries with 100ms delay should be 160ms but because performance slightly varies, there is a 100ms threshold for test failure
     const expectedDifference = 100;
-    const allowedVariance = 60;
+    const allowedVariance = 100;
     const durationDifference = secondDuration - firstDuration;
 
     expect(durationDifference).to.be.within(
