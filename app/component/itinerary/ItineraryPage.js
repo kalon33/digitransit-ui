@@ -1158,7 +1158,6 @@ const ItineraryPage = (props, context) => {
             itinerary={naviModeItinerary}
             focusToLeg={focusToLeg}
             relayEnvironment={props.relayEnvironment}
-            combinedEdges={combinedEdges}
             setNavigation={setNavigation}
             mapRef={mwtRef.current}
           />

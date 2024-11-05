@@ -125,7 +125,6 @@ const NaviContainer = (
   return (
     <>
       <NaviTop
-        itinerary={itinerary}
         realTimeLegs={realTimeLegs}
         focusToLeg={
           mapRef?.state.mapTracking || locationOK.current ? null : focusToLeg
