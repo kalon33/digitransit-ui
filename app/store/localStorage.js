@@ -1,6 +1,6 @@
 import { isBrowser } from '../util/browser';
 
-function handleSecurityError(error, logMessage) {
+export const handleSecurityError = (error, logMessage) => {
   if (error.name === 'SecurityError') {
     if (logMessage) {
       console.log(logMessage); // eslint-disable-line no-console
@@ -8,7 +8,7 @@ function handleSecurityError(error, logMessage) {
   } else {
     throw error;
   }
-}
+};
 
 export const getLocalStorage = (
   runningInBrowser,
@@ -26,7 +26,7 @@ export const getLocalStorage = (
   }
 };
 
-function setItem(key, value) {
+const setItem = (key, value) => {
   const localStorage = getLocalStorage(isBrowser);
   if (localStorage) {
     try {
@@ -47,9 +47,9 @@ function setItem(key, value) {
       }
     }
   }
-}
+};
 
-function getItem(key) {
+const getItem = key => {
   const localStorage = getLocalStorage(isBrowser);
   if (localStorage) {
     try {
@@ -59,19 +59,19 @@ function getItem(key) {
     }
   }
   return null;
-}
+};
 
-function getItemAsJson(key, defaultValue) {
+const getItemAsJson = (key, defaultValue) => {
   let item = getItem(key);
 
-  if (item == null) {
+  if (item == null || item === undefined) {
     item = defaultValue || '[]';
   }
 
   return JSON.parse(item);
-}
+};
 
-export function removeItem(k) {
+export const removeItem = k => {
   const localStorage = getLocalStorage(isBrowser);
   if (localStorage) {
     try {
@@ -80,9 +80,9 @@ export function removeItem(k) {
       handleSecurityError(error);
     }
   }
-}
+};
 
-export function getCustomizedSettings() {
+export const getCustomizedSettings = () => {
   const settings = getItemAsJson('customizedSettings', '{}');
   // remove outdated settings
   if (settings.modes) {
@@ -91,7 +91,7 @@ export function getCustomizedSettings() {
     );
   }
   return settings;
-}
+};
 
 const getNumberValueOrDefault = (value, defaultValue) =>
   value !== undefined && value !== null ? Number(value) : defaultValue;
@@ -99,7 +99,7 @@ const getNumberValueOrDefault = (value, defaultValue) =>
 const getValueOrDefault = (value, defaultValue) =>
   value !== undefined ? value : defaultValue;
 
-export function setCustomizedSettings(data) {
+export const setCustomizedSettings = data => {
   // Get old settings and test if set values have changed
   const oldSettings = getCustomizedSettings();
 
@@ -156,34 +156,34 @@ export function setCustomizedSettings(data) {
     );
   }
   setItem('customizedSettings', newSettings);
-}
+};
 
-export function clearFavouriteStorage() {
+export const clearFavouriteStorage = () => {
   return setItem('favouriteStore', []);
-}
+};
 
-export function getFavouriteStorage() {
+export const getFavouriteStorage = () => {
   return getItemAsJson('favouriteStore');
-}
+};
 
-export function setFavouriteStorage(data) {
+export const setFavouriteStorage = data => {
   setItem('favouriteStore-updated-at', Math.round(Date.now() / 1000));
   return setItem('favouriteStore', data);
-}
+};
 
-export function getFavouriteLocationsStorage() {
+export const getFavouriteLocationsStorage = () => {
   return getItemAsJson('favouriteLocations');
-}
+};
 
-export function getFavouriteStopsStorage() {
+export const getFavouriteStopsStorage = () => {
   return getItemAsJson('favouriteStops');
-}
+};
 
-export function setReadMessageIds(data) {
+export const setReadMessageIds = data => {
   setItem('readMessages', data);
-}
+};
 
-export function getReadMessageIds() {
+export const getReadMessageIds = () => {
   /* Migrate old data */
   const oldMessages = getItemAsJson('messages', '[]');
   if (oldMessages.length !== 0) {
@@ -195,13 +195,13 @@ export function getReadMessageIds() {
   }
 
   return getItemAsJson('readMessages', '[]');
-}
+};
 
-export function getFavouriteRoutesStorage() {
+export const getFavouriteRoutesStorage = () => {
   return getItemAsJson('favouriteRoutes');
-}
+};
 
-export function getOldSearchesStorage() {
+export const getOldSearchesStorage = () => {
   const storage = getItemAsJson('saved-searches', '{"items": []}');
   return {
     ...storage,
@@ -209,28 +209,28 @@ export function getOldSearchesStorage() {
       search => search.item.address !== 'SelectFromMap',
     ),
   };
-}
+};
 
-export function setOldSearchesStorage(data) {
+export const setOldSearchesStorage = data => {
   setItem('saved-searches-updated-at', Math.round(Date.now() / 1000));
   setItem('saved-searches', data);
-}
+};
 
-export function getSearchSettingsStorage() {
+export const getSearchSettingsStorage = () => {
   return getItemAsJson('customizedSettings', '{}');
-}
+};
 
-export function setSearchSettingsStorage(data) {
+export const setSearchSettingsStorage = data => {
   setItem('customizedSettings', data);
-}
+};
 
-export function setGeolocationState(state) {
+export const setGeolocationState = state => {
   setItem('geolocationPermission', { state });
-}
+};
 
-export function getGeolocationState() {
+export const getGeolocationState = () => {
   return getItemAsJson('geolocationPermission', '{ "state": "unknown" }').state;
-}
+};
 
 export const setMapLayerSettings = settings => {
   setItem('map-layers', settings);
@@ -267,25 +267,25 @@ export const setDialogState = (dialogId, seen = true) => {
 export const getDialogState = dialogId =>
   getItemAsJson('dialogState', '{}')[`${dialogId}`] === true;
 
-export function getFutureRoutesStorage() {
+export const getFutureRoutesStorage = () => {
   return getItemAsJson('futureRoutes', '[]');
-}
+};
 
-export function setFutureRoutesStorage(data) {
+export const setFutureRoutesStorage = data => {
   setItem('futureRoutes', data);
-}
+};
 
-export function getSavedGeolocationPermission() {
+export const getSavedGeolocationPermission = () => {
   return getItemAsJson('geolocationPermission', '{}');
-}
+};
 
-export function setSavedGeolocationPermission(key, value) {
+export const setSavedGeolocationPermission = (key, value) => {
   const geolocationPermissions = getSavedGeolocationPermission();
   setItem('geolocationPermission', {
     ...geolocationPermissions,
     [key]: value,
   });
-}
+};
 
 export const setLatestNavigatorItinerary = value => {
   setItem('latestNavigatorItinerary', value);
