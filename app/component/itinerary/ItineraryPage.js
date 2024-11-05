@@ -7,6 +7,7 @@ import { FormattedMessage, intlShape } from 'react-intl';
 import { matchShape, routerShape } from 'found';
 import isEqual from 'lodash/isEqual';
 import isEmpty from 'lodash/isEmpty';
+import moment from 'moment';
 import polyline from 'polyline-encoded';
 import {
   relayShape,
@@ -69,7 +70,13 @@ import { TransportMode } from '../../constants';
 import { mapLayerShape } from '../../store/MapLayerStore';
 import NaviContainer from './NaviContainer';
 import NavigatorIntroModal from './NavigatorIntro/NavigatorIntroModal';
-import { getDialogState, setDialogState } from '../../store/localStorage';
+import {
+  clearLatestNavigatorItinerary,
+  getDialogState,
+  getLatestNavigatorItinerary,
+  setDialogState,
+  setLatestNavigatorItinerary,
+} from '../../store/localStorage';
 
 const MAX_QUERY_COUNT = 4; // number of attempts to collect enough itineraries
 
@@ -607,15 +614,50 @@ export default function ItineraryPage(props, context) {
     }
   }
 
-  const setNavigation = enable => {
-    if (mobileRef.current) {
-      mobileRef.current.setBottomSheet(enable ? 'bottom' : 'middle');
+  const getCombinedPlanEdges = () => {
+    return [
+      ...(state.earlierEdges || []),
+      ...(mapHashToPlan()?.edges || []),
+      ...(state.laterEdges || []),
+    ];
+  };
+
+  const getItinerarySelection = () => {
+    const hasNoTransitItineraries = filterWalk(state.plan?.edges).length === 0;
+    const plan = mapHashToPlan();
+    let combinedEdges;
+    // Remove old itineraries if new query cannot find a route
+    if (state.error) {
+      combinedEdges = [];
+    } else if (streetHashes.includes(hash)) {
+      combinedEdges = plan?.edges || [];
+    } else {
+      combinedEdges = getCombinedPlanEdges();
+      if (!hasNoTransitItineraries) {
+        // don't show plain walking in transit itinerary list
+        combinedEdges = filterWalk(combinedEdges);
+      }
     }
-    if (!enable) {
+    const selectedIndex = getSelectedItineraryIndex(location, combinedEdges);
+
+    return { plan, combinedEdges, selectedIndex, hasNoTransitItineraries };
+  };
+
+  const setNavigation = isEnabled => {
+    if (mobileRef.current) {
+      mobileRef.current.setBottomSheet(isEnabled ? 'bottom' : 'middle');
+    }
+    if (!isEnabled) {
       setMapState({ center: undefined, zoom: undefined, bounds: undefined });
       navigateMap();
+      clearLatestNavigatorItinerary();
+    } else {
+      const { combinedEdges, selectedIndex } = getItinerarySelection();
+      if (combinedEdges[selectedIndex]?.node) {
+        setLatestNavigatorItinerary(combinedEdges[selectedIndex]?.node);
+      }
     }
-    setNaviMode(enable);
+    setNaviMode(isEnabled);
   };
 
   // save url-defined location to old searches
@@ -704,39 +746,17 @@ export default function ItineraryPage(props, context) {
     );
   }
 
-  function getCombinedPlanEdges() {
-    return [
-      ...(state.earlierEdges || []),
-      ...(mapHashToPlan()?.edges || []),
-      ...(state.laterEdges || []),
-    ];
-  }
-
-  function getItinerarySelection() {
-    const hasNoTransitItineraries = filterWalk(state.plan?.edges).length === 0;
-    const plan = mapHashToPlan();
-    let combinedEdges;
-    // Remove old itineraries if new query cannot find a route
-    if (state.error) {
-      combinedEdges = [];
-    } else if (streetHashes.includes(hash)) {
-      combinedEdges = plan?.edges || [];
-    } else {
-      combinedEdges = getCombinedPlanEdges();
-      if (!hasNoTransitItineraries) {
-        // don't show plain walking in transit itinerary list
-        combinedEdges = filterWalk(combinedEdges);
-      }
-    }
-    const selectedIndex = getSelectedItineraryIndex(location, combinedEdges);
-
-    return { plan, combinedEdges, selectedIndex, hasNoTransitItineraries };
-  }
-
   useEffect(() => {
     setCurrentTimeToURL(config, match);
     updateLocalStorage(true);
     addFeedbackly(context);
+
+    const storedItinerary = getLatestNavigatorItinerary();
+
+    setNavigation(
+      storedItinerary?.end && moment(storedItinerary.end).isAfter(Date.now()),
+    );
+
     return () => {
       if (showVehicles()) {
         stopClient(context);
@@ -1110,6 +1130,7 @@ export default function ItineraryPage(props, context) {
   // in mobile, settings drawer hides other content
   const panelHidden = !desktop && settingsDrawer !== null;
   let content; // bottom content of itinerary panel
+
   if (panelHidden) {
     content = null;
   } else if (loading) {
@@ -1120,6 +1141,9 @@ export default function ItineraryPage(props, context) {
     );
   } else if (detailView) {
     if (naviMode) {
+      const naviModeItinerary =
+        getLatestNavigatorItinerary() || combinedEdges[selectedIndex]?.node;
+
       content = (
         <>
           {!isNavigatorIntroDismissed && (
@@ -1130,7 +1154,7 @@ export default function ItineraryPage(props, context) {
             />
           )}
           <NaviContainer
-            itinerary={combinedEdges[selectedIndex]?.node}
+            itinerary={naviModeItinerary}
             focusToLeg={focusToLeg}
             relayEnvironment={props.relayEnvironment}
             combinedEdges={combinedEdges}

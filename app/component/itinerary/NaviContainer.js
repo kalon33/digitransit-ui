@@ -6,6 +6,7 @@ import NaviTop from './NaviTop';
 import NaviBottom from './NaviBottom';
 import { legTime } from '../../util/legUtils';
 import { checkPositioningPermission } from '../../action/PositionActions';
+import { setLatestNavigatorItinerary } from '../../store/localStorage';
 
 const legQuery = graphql`
   query NaviContainer_legQuery($id: String!) {
@@ -96,6 +97,10 @@ function NaviContainer(
           return { ...l };
         });
         setRealTimeLegs(rtLegs);
+        setLatestNavigatorItinerary({
+          ...itinerary,
+          legs: rtLegs,
+        });
       });
     }
   }, [time]);
