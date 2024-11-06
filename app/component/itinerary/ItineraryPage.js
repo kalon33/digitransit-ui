@@ -1154,7 +1154,7 @@ export default function ItineraryPage(props, context) {
             />
           )}
           <NaviContainer
-            itinerary={naviModeItinerary}
+            legs={naviModeItinerary.legs}
             focusToLeg={focusToLeg}
             relayEnvironment={props.relayEnvironment}
             setNavigation={setNavigation}
