@@ -28,7 +28,7 @@ const useRealtimeLegs = (initialLegs, relayEnvironment, enableMapTracking) => {
         {},
       );
     },
-    [fetchQuery],
+    [initialLegs, relayEnvironment, fetchQuery],
   );
 
   const fetchAndSetRealtimeLegs = useCallback(async () => {
@@ -52,7 +52,12 @@ const useRealtimeLegs = (initialLegs, relayEnvironment, enableMapTracking) => {
       return { ...l };
     });
     setRealTimeLegs(rtLegs);
-  }, [initialLegs, relayEnvironment, enableMapTracking]);
+  }, [
+    initialLegs,
+    relayEnvironment,
+    enableMapTracking,
+    queryAndMapRealtimeLegs,
+  ]);
 
   useEffect(() => {
     enableMapTracking();
