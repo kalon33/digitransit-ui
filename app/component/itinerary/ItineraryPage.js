@@ -3,7 +3,6 @@
 import { matchShape, routerShape } from 'found';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
-import moment from 'moment';
 import polyline from 'polyline-encoded';
 import PropTypes from 'prop-types';
 import React, { cloneElement, useEffect, useRef, useState } from 'react';
@@ -13,6 +12,13 @@ import { saveFutureRoute } from '../../action/FutureRoutesActions';
 import { saveSearch } from '../../action/SearchActions';
 import { TransportMode } from '../../constants';
 import { mapLayerShape } from '../../store/MapLayerStore';
+import {
+  clearLatestNavigatorItinerary,
+  getDialogState,
+  getLatestNavigatorItinerary,
+  setDialogState,
+  setLatestNavigatorItinerary,
+} from '../../store/localStorage';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
 import { getWeatherData } from '../../util/apiUtils';
 import { isIOS } from '../../util/browser';
@@ -70,13 +76,6 @@ import ItineraryTabs from './ItineraryTabs';
 import NaviContainer from './NaviContainer';
 import NavigatorIntroModal from './NavigatorIntro/NavigatorIntroModal';
 import planConnection from './PlanConnection';
-import {
-  clearLatestNavigatorItinerary,
-  getDialogState,
-  getLatestNavigatorItinerary,
-  setDialogState,
-  setLatestNavigatorItinerary,
-} from '../../store/localStorage';
 
 const MAX_QUERY_COUNT = 4; // number of attempts to collect enough itineraries
 
@@ -753,9 +752,7 @@ export default function ItineraryPage(props, context) {
 
     const storedItinerary = getLatestNavigatorItinerary();
 
-    setNavigation(
-      storedItinerary?.end && moment(storedItinerary.end).isAfter(Date.now()),
-    );
+    setNavigation(storedItinerary?.end && storedItinerary.end > Date.now());
 
     return () => {
       if (showVehicles()) {
