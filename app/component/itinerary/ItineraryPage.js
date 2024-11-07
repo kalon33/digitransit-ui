@@ -752,7 +752,9 @@ export default function ItineraryPage(props, context) {
 
     const storedItinerary = getLatestNavigatorItinerary();
 
-    setNavigation(storedItinerary?.end && storedItinerary.end > Date.now());
+    setNavigation(
+      storedItinerary?.end && Date.parse(storedItinerary.end) > Date.now(),
+    );
 
     return () => {
       if (showVehicles()) {
