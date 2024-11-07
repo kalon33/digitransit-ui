@@ -177,8 +177,40 @@
         height: 16px;
       }
 
-      .stop-icon-lollipop {
+      .destination-icon {
         margin: 0 10px;
+
+        &.place {
+          fill: $to-color;
+        }
+
+        &.bus-stop {
+          color: $bus-color;
+        }
+
+        &.tram-stop {
+          color: $tram-color;
+        }
+
+        &.subway-stop {
+          color: $metro-color;
+        }
+
+        &.rail-stop {
+          color: $rail-color;
+        }
+
+        &.ferry-stop {
+          color: $ferry-color;
+        }
+
+        &.funicular-stop {
+          color: $funicular-color;
+        }
+
+        &.speedtram-stop {
+          color: $speedtram-color;
+        }
       }
 
       .destination {
@@ -188,6 +220,10 @@
         .details {
           > * {
             margin-right: 8px;
+          }
+
+          .address {
+            color: #888;
           }
 
           .platform-short {

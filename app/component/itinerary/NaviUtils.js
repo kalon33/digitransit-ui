@@ -3,6 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { legTime } from '../../util/legUtils';
 import { timeStr } from '../../util/timeUtils';
 import { getFaresFromLegs } from '../../util/fareUtils';
+import { ExtendedRouteTypes } from '../../constants';
 
 const TRANSFER_SLACK = 60000;
 
@@ -167,4 +168,69 @@ export const getItineraryAlerts = (realTimeLegs, intl, messages) => {
   }
 
   return alerts;
+};
+
+/*
+ * Get the properties of the destination based on the leg.
+ *
+ */
+export const getDestinationProperties = (leg, stop, config) => {
+  const { rentalVehicle, vehicleParking, vehicleRentalStation } = leg.to;
+  const { vehicleMode, routes } = stop;
+
+  const destination = {};
+  const iconOptions = {};
+  let mode = stop.vehicleMode;
+
+  if (routes && vehicleMode === 'BUS' && config.useExtendedRouteTypes) {
+    if (routes.some(p => p.type === ExtendedRouteTypes.BusExpress)) {
+      mode = 'bus-express';
+    }
+  } else if (routes && vehicleMode === 'TRAM' && config.useExtendedRouteTypes) {
+    if (routes.some(p => p.type === ExtendedRouteTypes.SpeedTram)) {
+      mode = 'speedtram';
+    }
+  }
+  // todo: scooter and citybike icons etc.
+  if (rentalVehicle) {
+    destination.name = rentalVehicle.rentalNetwork.networkId;
+  } else if (vehicleParking) {
+    destination.name = vehicleParking.name;
+  } else if (vehicleRentalStation) {
+    destination.name = vehicleRentalStation.name;
+  } else {
+    switch (mode) {
+      case 'TRAM,BUS':
+        iconOptions.iconId = 'icon-icon_bustram-stop-lollipop';
+        iconOptions.className = 'tram-stop';
+        break;
+      case 'SUBWAY':
+        iconOptions.iconId = 'icon-icon_subway';
+        iconOptions.className = 'subway-stop';
+        break;
+      case 'RAIL':
+        iconOptions.iconId = 'icon-icon_rail-stop-lollipop';
+        iconOptions.className = 'rail-stop';
+        break;
+      case 'FERRY':
+        iconOptions.iconId = 'icon-icon_ferry';
+        iconOptions.className = 'ferry-stop';
+        break;
+      case 'bus-express':
+        iconOptions.iconId = 'icon-icon_bus-stop-express-lollipop';
+        iconOptions.className = 'bus-stop';
+        break;
+      case 'speedtram':
+        iconOptions.iconId = 'icon-icon_speedtram-stop-lollipop';
+        iconOptions.className = 'speedtram-stop';
+        break;
+      default:
+        iconOptions.iconId = `icon-icon_${mode.toLowerCase()}-stop-lollipop`;
+    }
+  }
+  destination.iconId = iconOptions.iconId;
+  destination.classNamePostFix = iconOptions.className;
+  destination.name = stop.name;
+
+  return destination;
 };
