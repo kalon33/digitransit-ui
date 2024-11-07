@@ -73,5 +73,4 @@ const useRealtimeLegs = (initialLegs, relayEnvironment, enableMapTracking) => {
   return { realTimeLegs, time };
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export { useRealtimeLegs };

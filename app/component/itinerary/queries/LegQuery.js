@@ -29,5 +29,4 @@ const legQuery = graphql`
   }
 `;
 
-// eslint-disable-next-line import/prefer-default-export
 export { legQuery };
