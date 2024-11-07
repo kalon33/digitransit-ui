@@ -5,7 +5,6 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     'airbnb',
     'plugin:prettier/recommended',
-    'plugin:react-hooks/recommended',
   ],
   rules: {
     curly: ['error', 'all'],
