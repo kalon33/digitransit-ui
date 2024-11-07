@@ -29,7 +29,6 @@ export default function NaviCard({ leg, nextLeg, legType, cardExpanded }) {
     <div className="navi-top-card">
       <div className="main-card">
         <Icon img={iconName} color="black" className="mode" />
-        <div className="divider" />
         <div className="instructions">
           <NaviInstructions
             leg={leg}

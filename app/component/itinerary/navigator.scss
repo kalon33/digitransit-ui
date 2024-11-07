@@ -55,6 +55,8 @@
   }
 
   .navitop-arrow {
+    margin-right: var(--space-m);
+
     .inverted {
       transform: rotate(180deg);
     }
@@ -70,31 +72,21 @@
   }
 
   .content {
-    margin: 15px 20px 0 20px;
     width: 100%;
-
-    .secondary-divider {
-      border: 1px solid #ddd;
-      width: 75%;
-      margin-left: 50px;
-    }
 
     .navi-top-card {
       .main-card {
         display: flex;
         flex-direction: row;
-        height: 50px;
         color: black;
-
-        .divider {
-          height: 70px;
-          margin-left: 15px;
-        }
+        margin: var(--space-s) var(--space-m) 0;
 
         .mode {
-          width: 32px;
-          height: 32px;
+          width: var(--space-l);
+          height: var(--space-l);
           color: black;
+          margin-right: var(--space-s);
+          margin-top: var(--space-xxs);
         }
       }
 
@@ -159,6 +151,7 @@
     .secondary-info {
       flex-direction: column;
       max-height: 250px;
+      padding-top: var(--space-xxs);
 
       .secondary-divider {
         border: 1px solid #ddd;
@@ -168,13 +161,15 @@
 
       .secondary-content {
         display: flex;
-        margin: 10px 0 20px 50px;
+        margin-left: var(--space-xxl);
+        margin-bottom: var(--space-s);
+        margin-top: var(--space-xs);
       }
 
       .icon-expand {
         margin-top: 5px;
-        width: 16px;
-        height: 16px;
+        width: var(--space-m);
+        height: var(--space-m);
       }
 
       .destination-icon {
@@ -219,7 +214,7 @@
 
         .details {
           > * {
-            margin-right: 8px;
+            margin-right: var(--space-xs);
           }
 
           .address {
@@ -296,7 +291,7 @@
   top: 150px;
 
   &.expanded {
-    top: 215px;
+    top: 180px;
   }
 
   &.slide-out {
