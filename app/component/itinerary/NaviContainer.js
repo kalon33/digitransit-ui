@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useRef, useCallback } from 'react';
-import { checkPositioningPermission } from '../../action/PositionActions';
+import React from 'react';
 import { legTime } from '../../util/legUtils';
 import { legShape, relayShape } from '../../util/shapes';
 import NaviBottom from './NaviBottom';
@@ -11,28 +10,12 @@ function NaviContainer(
   { legs, focusToLeg, relayEnvironment, setNavigation, mapRef },
   { getStore },
 ) {
-  const locationOK = useRef(true);
   const position = getStore('PositionStore').getLocationState();
 
-  const isPositioningAllowed = useCallback(async () => {
-    const permission = await checkPositioningPermission();
-    return permission.state === 'granted';
-  }, [checkPositioningPermission]);
-
-  const enableMapTracking = useCallback(() => {
-    locationOK.current = isPositioningAllowed().catch(err =>
-      // eslint-disable-next-line no-console
-      console.log('Failed to determine if positioning is allowed', err),
-    );
-    if (locationOK.current) {
-      mapRef?.enableMapTracking();
-    }
-  }, [locationOK, mapRef, isPositioningAllowed]);
-
-  const { realTimeLegs, time } = useRealtimeLegs(
+  const { realTimeLegs, time, isPositioningAllowed } = useRealtimeLegs(
     legs,
+    mapRef,
     relayEnvironment,
-    enableMapTracking,
   );
 
   // recompute estimated arrival
@@ -59,7 +42,7 @@ function NaviContainer(
       <NaviTop
         realTimeLegs={realTimeLegs}
         focusToLeg={
-          mapRef?.state.mapTracking || locationOK.current ? null : focusToLeg
+          mapRef?.state.mapTracking || isPositioningAllowed ? null : focusToLeg
         }
         time={time}
         position={position}
