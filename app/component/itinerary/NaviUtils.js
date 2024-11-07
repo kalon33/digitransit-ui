@@ -179,7 +179,6 @@ export const getDestinationProperties = (leg, stop, config) => {
   const { vehicleMode, routes } = stop;
 
   const destination = {};
-  const iconOptions = {};
   let mode = stop.vehicleMode;
 
   if (routes && vehicleMode === 'BUS' && config.useExtendedRouteTypes) {
@@ -201,35 +200,33 @@ export const getDestinationProperties = (leg, stop, config) => {
   } else {
     switch (mode) {
       case 'TRAM,BUS':
-        iconOptions.iconId = 'icon-icon_bustram-stop-lollipop';
-        iconOptions.className = 'tram-stop';
+        destination.iconId = 'icon-icon_bustram-stop-lollipop';
+        destination.className = 'tram-stop';
         break;
       case 'SUBWAY':
-        iconOptions.iconId = 'icon-icon_subway';
-        iconOptions.className = 'subway-stop';
+        destination.iconId = 'icon-icon_subway';
+        destination.className = 'subway-stop';
         break;
       case 'RAIL':
-        iconOptions.iconId = 'icon-icon_rail-stop-lollipop';
-        iconOptions.className = 'rail-stop';
+        destination.iconId = 'icon-icon_rail-stop-lollipop';
+        destination.className = 'rail-stop';
         break;
       case 'FERRY':
-        iconOptions.iconId = 'icon-icon_ferry';
-        iconOptions.className = 'ferry-stop';
+        destination.iconId = 'icon-icon_ferry';
+        destination.className = 'ferry-stop';
         break;
       case 'bus-express':
-        iconOptions.iconId = 'icon-icon_bus-stop-express-lollipop';
-        iconOptions.className = 'bus-stop';
+        destination.iconId = 'icon-icon_bus-stop-express-lollipop';
+        destination.className = 'bus-stop';
         break;
       case 'speedtram':
-        iconOptions.iconId = 'icon-icon_speedtram-stop-lollipop';
-        iconOptions.className = 'speedtram-stop';
+        destination.iconId = 'icon-icon_speedtram-stop-lollipop';
+        destination.className = 'speedtram-stop';
         break;
       default:
-        iconOptions.iconId = `icon-icon_${mode.toLowerCase()}-stop-lollipop`;
+        destination.iconId = `icon-icon_${mode.toLowerCase()}-stop-lollipop`;
     }
   }
-  destination.iconId = iconOptions.iconId;
-  destination.classNamePostFix = iconOptions.className;
   destination.name = stop.name;
 
   return destination;
