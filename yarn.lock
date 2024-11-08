@@ -11197,6 +11197,7 @@ __metadata:
     async: ^3.2.2
     autoprefixer: 9.8.6
     axe-core: ^4.7.2
+    axios: 1.7.7
     babel-loader: 8.2.5
     babel-plugin-dynamic-import-node: 2.3.3
     babel-plugin-inline-react-svg: 2.0.2
