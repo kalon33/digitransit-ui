@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import cx from 'classnames';
 import NaviMessage from './NaviMessage';
 
-// eslint-disable-next-line no-unused-vars
-const NaviStack = ({ messages, handleRemove, show }) => {
+const NaviStack = ({ messages, handleRemove, cardExpanded }) => {
   return (
-    <div className={cx('info-stack', !show ? 'slide-out' : 'slide-in')}>
+    <div className={cx('info-stack', 'slide-in', cardExpanded && 'expanded')}>
       {messages.map((notification, index) => (
         <NaviMessage
           key={notification.id}
@@ -22,14 +21,18 @@ const NaviStack = ({ messages, handleRemove, show }) => {
 };
 
 NaviStack.propTypes = {
-  // eslint-disable-next-line
-  messages: PropTypes.arrayOf(    PropTypes.shape({
+  messages: PropTypes.arrayOf(
+    PropTypes.shape({
       id: PropTypes.string.isRequired,
       severity: PropTypes.string.isRequired,
     }),
   ).isRequired,
-  show: PropTypes.bool.isRequired,
   handleRemove: PropTypes.func.isRequired,
+  cardExpanded: PropTypes.bool,
+};
+
+NaviStack.defaultProps = {
+  cardExpanded: false,
 };
 
 export default NaviStack;

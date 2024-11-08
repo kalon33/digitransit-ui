@@ -173,7 +173,6 @@ export default configMerger(walttiConfig, {
     },
   },
 
-  /*
   showTicketInformation: true,
   useTicketIcons: true,
   ticketLink: 'https://www.lsl.fi/liput-ja-hinnat/',
@@ -215,6 +214,5 @@ export default configMerger(walttiConfig, {
         return '';
     }
   },
-  */
   devAnalytics: true,
 });

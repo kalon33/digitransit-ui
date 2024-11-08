@@ -4,8 +4,7 @@ import { FormattedMessage, intlShape } from 'react-intl';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
 import { legShape, configShape } from '../../util/shapes';
 import { legTime, legTimeStr } from '../../util/legUtils';
-import NaviLeg from './NaviLeg';
-import Icon from '../Icon';
+import NaviCard from './NaviCard';
 import NaviStack from './NaviStack';
 import {
   getItineraryAlerts,
@@ -22,12 +21,12 @@ function getFirstLastLegs(legs) {
   return { first, last };
 }
 
-function NaviTop(
+function NaviCardContainer(
   { focusToLeg, time, realTimeLegs, position },
   { intl, config },
 ) {
   const [currentLeg, setCurrentLeg] = useState(null);
-  const [showMessages, setShowMessages] = useState(true);
+  const [cardExpanded, setCardExpanded] = useState(false);
   // All notifications including those user has dismissed.
   const [messages, setMessages] = useState(new Map());
   // notifications that are shown to the user.
@@ -37,16 +36,8 @@ function NaviTop(
   const destCountRef = useRef(0);
 
   const handleClick = () => {
-    setShowMessages(!showMessages);
+    setCardExpanded(!cardExpanded);
   };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowMessages(false);
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     const newLeg = realTimeLegs.find(leg => {
@@ -68,21 +59,17 @@ function NaviTop(
     const l = currentLeg || newLeg;
 
     if (l) {
-      const nextTransitLeg = realTimeLegs.find(
-        leg => legTime(leg.start) > legTime(l.start) && leg.transitLeg,
+      const nextLeg = realTimeLegs.find(
+        leg => legTime(leg.start) > legTime(l.start),
       );
-      if (nextTransitLeg) {
+      if (nextLeg?.transitLeg) {
         // Messages for NaviStack.
-        const transitLegState = getTransitLegState(
-          nextTransitLeg,
-          intl,
-          messages,
-        );
+        const transitLegState = getTransitLegState(nextLeg, intl, messages);
         if (transitLegState) {
           incomingMessages.set(transitLegState.id, transitLegState);
         }
         const additionalMsgs = getAdditionalMessages(
-          nextTransitLeg,
+          nextLeg,
           time,
           intl,
           config,
@@ -94,42 +81,50 @@ function NaviTop(
           });
         }
       }
-
-      if (legChanged) {
+      if (newLeg) {
         focusToLeg?.(newLeg);
+      }
+      if (legChanged) {
         setCurrentLeg(newLeg);
+        setCardExpanded(false);
       }
+    }
+    if (incomingMessages.size || legChanged) {
+      // Handle messages when new messages arrives or leg is changed.
 
-      if (incomingMessages.size || legChanged) {
-        // Handle messages when new messages arrives or leg is changed.
+      // Current active messages. Filter away legChange messages when leg changes.
+      const previousValidMessages = legChanged
+        ? activeMessages.filter(m => m.expiresOn !== 'legChange')
+        : activeMessages;
 
-        // Current active messages. Filter away legChange messages when leg changes.
-        const currActiveMessages = legChanged
-          ? activeMessages.filter(m => m.expiresOn !== 'legChange')
-          : activeMessages;
-
-        const newMessages = Array.from(incomingMessages.values());
-        setActiveMessages([...currActiveMessages, ...newMessages]);
-        setMessages(new Map([...messages, ...incomingMessages]));
-
-        setShowMessages(true);
-      }
-
-      if (!focusRef.current && focusToLeg) {
-        // handle initial focus when not tracking
-        if (newLeg) {
-          focusToLeg(newLeg);
-          destCountRef.current = 0;
-        } else {
-          const { first, last } = getFirstLastLegs(realTimeLegs);
-          if (time < legTime(first.start)) {
-            focusToLeg(first);
-          } else {
-            focusToLeg(last);
-          }
+      // handle messages that are updated.
+      const updatedMessages = previousValidMessages.map(msg => {
+        const incoming = incomingMessages.get(msg.id);
+        if (incoming) {
+          incomingMessages.delete(msg.id);
+          return incoming;
         }
-        focusRef.current = true;
+        return msg;
+      });
+      const newMessages = Array.from(incomingMessages.values());
+      setActiveMessages([...updatedMessages, ...newMessages]);
+      setMessages(new Map([...messages, ...incomingMessages]));
+    }
+
+    if (!focusRef.current && focusToLeg) {
+      // handle initial focus when not tracking
+      if (newLeg) {
+        focusToLeg(newLeg);
+        destCountRef.current = 0;
+      } else {
+        const { first, last } = getFirstLastLegs(realTimeLegs);
+        if (time < legTime(first.start)) {
+          focusToLeg(first);
+        } else {
+          focusToLeg(last);
+        }
       }
+      focusRef.current = true;
     }
 
     // User position and distance from currentleg endpoint.
@@ -160,16 +155,20 @@ function NaviTop(
       const nextLeg = realTimeLegs.find(leg => {
         return legTime(leg.start) > legTime(currentLeg.start);
       });
+      let legType;
       if (destCountRef.current >= TIME_AT_DESTINATION) {
-        // User at the destination. show wait message.
-        naviTopContent = (
-          <NaviLeg leg={currentLeg} nextLeg={nextLeg} legType="wait" />
-        );
+        legType = 'wait';
       } else {
-        naviTopContent = (
-          <NaviLeg leg={currentLeg} nextLeg={nextLeg} legType="move" />
-        );
+        legType = 'move';
       }
+      naviTopContent = (
+        <NaviCard
+          leg={currentLeg}
+          nextLeg={nextLeg}
+          cardExpanded={cardExpanded}
+          legType={legType}
+        />
+      );
     } else {
       naviTopContent = `Tracking ${currentLeg?.mode} leg`;
     }
@@ -182,25 +181,19 @@ function NaviTop(
     setActiveMessages(activeMessages.filter((_, i) => i !== index));
   };
 
-  const showmessages = activeMessages.length > 0;
   return (
     <>
-      <button type="button" className="navitop" onClick={handleClick}>
+      <button
+        type="button"
+        className={`navitop ${cardExpanded ? 'expanded' : ''}`}
+        onClick={handleClick}
+      >
         <div className="content">{naviTopContent}</div>
-        <div type="button" className="navitop-arrow">
-          {showmessages && (
-            <Icon
-              img="icon-icon_arrow-collapse"
-              className={`cursor-pointer ${showMessages ? 'inverted' : ''}`}
-              color={config.colors.primary}
-            />
-          )}
-        </div>
       </button>
-      {showmessages && (
+      {activeMessages.length > 0 && (
         <NaviStack
           messages={activeMessages}
-          show={showMessages}
+          cardExpanded={cardExpanded}
           handleRemove={handleRemove}
         />
       )}
@@ -208,7 +201,7 @@ function NaviTop(
   );
 }
 
-NaviTop.propTypes = {
+NaviCardContainer.propTypes = {
   focusToLeg: PropTypes.func,
   time: PropTypes.number.isRequired,
   realTimeLegs: PropTypes.arrayOf(legShape).isRequired,
@@ -222,14 +215,14 @@ NaviTop.propTypes = {
   */
 };
 
-NaviTop.defaultProps = {
+NaviCardContainer.defaultProps = {
   focusToLeg: undefined,
   position: undefined,
 };
 
-NaviTop.contextTypes = {
+NaviCardContainer.contextTypes = {
   intl: intlShape.isRequired,
   config: configShape.isRequired,
 };
 
-export default NaviTop;
+export default NaviCardContainer;

@@ -69,7 +69,7 @@ const planConnection = graphql`
             mode
             distance
             transitLeg
-            legId
+            legId: id
             interlineWithPreviousLeg
             duration
             headsign
@@ -140,6 +140,9 @@ const planConnection = graphql`
                 zoneId
                 parentStation {
                   name
+                }
+                routes {
+                  type
                 }
               }
               vehicleParking {

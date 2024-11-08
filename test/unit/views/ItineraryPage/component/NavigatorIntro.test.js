@@ -2,9 +2,12 @@ import { assert } from 'chai';
 import { describe, it } from 'mocha';
 import React from 'react';
 
-import NavigatorIntro from '../../../app/component/itinerary/NavigatorIntro/NavigatorIntro';
-import { mockChildContextTypes, mockContext } from '../helpers/mock-context';
-import { mountWithIntl } from '../helpers/mock-intl-enzyme';
+import NavigatorIntro from '../../../../../app/component/itinerary/NavigatorIntro/NavigatorIntro';
+import {
+  mockChildContextTypes,
+  mockContext,
+} from '../../../helpers/mock-context';
+import { mountWithIntl } from '../../../helpers/mock-intl-enzyme';
 
 const defaultProps = {
   onClose: () => {},
