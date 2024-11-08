@@ -11,7 +11,6 @@ import {
   mapLayerOptionsShape,
 } from '../../util/shapes';
 import { getSettings } from '../../util/planParamUtil';
-import TimeStore from '../../store/TimeStore';
 import PositionStore from '../../store/PositionStore';
 import MapLayerStore, { mapLayerShape } from '../../store/MapLayerStore';
 import MapWithTracking from './MapWithTracking';
@@ -215,9 +214,8 @@ const componentWithBreakpoint = withBreakpoint(StopPageMap);
 
 const StopPageMapWithStores = connectToStores(
   componentWithBreakpoint,
-  [TimeStore, PositionStore, MapLayerStore],
+  [PositionStore, MapLayerStore],
   ({ config, getStore }, props) => {
-    const currentTime = getStore(TimeStore).getCurrentTime();
     const locationState = getStore(PositionStore).getLocationState();
     const ml = config.showVehiclesOnStopPage ? { notThese: ['vehicles'] } : {};
     if (props.citybike) {
@@ -235,7 +233,6 @@ const StopPageMapWithStores = connectToStores(
     });
     return {
       locationState,
-      currentTime,
       mapLayers,
       mapLayerOptions,
     };
