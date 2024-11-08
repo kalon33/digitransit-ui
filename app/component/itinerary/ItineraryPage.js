@@ -1,75 +1,81 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
-import PropTypes from 'prop-types';
-import React, { useEffect, useState, useRef, cloneElement } from 'react';
-import { fetchQuery } from 'react-relay';
-import { FormattedMessage, intlShape } from 'react-intl';
 import { matchShape, routerShape } from 'found';
-import isEqual from 'lodash/isEqual';
 import isEmpty from 'lodash/isEmpty';
+import isEqual from 'lodash/isEqual';
 import polyline from 'polyline-encoded';
+import PropTypes from 'prop-types';
+import React, { cloneElement, useEffect, useRef, useState } from 'react';
+import { FormattedMessage, intlShape } from 'react-intl';
+import { fetchQuery } from 'react-relay';
+import { saveFutureRoute } from '../../action/FutureRoutesActions';
+import { saveSearch } from '../../action/SearchActions';
+import { TransportMode } from '../../constants';
+import { mapLayerShape } from '../../store/MapLayerStore';
 import {
-  relayShape,
+  clearLatestNavigatorItinerary,
+  getDialogState,
+  getLatestNavigatorItinerary,
+  setDialogState,
+  setLatestNavigatorItinerary,
+} from '../../store/localStorage';
+import { addAnalyticsEvent } from '../../util/analyticsUtils';
+import { getWeatherData } from '../../util/apiUtils';
+import { isIOS } from '../../util/browser';
+import { boundWithMinimumArea } from '../../util/geo-utils';
+import {
+  getIntermediatePlaces,
+  otpToLocation,
+  parseLatLon,
+} from '../../util/otpStrings';
+import { getItineraryPagePath, streetHash } from '../../util/path';
+import {
+  PLANTYPE,
+  getPlanParams,
+  getSettings,
+  planQueryNeeded,
+} from '../../util/planParamUtil';
+import {
   configShape,
   mapLayerOptionsShape,
+  relayShape,
 } from '../../util/shapes';
+import { epochToTime } from '../../util/timeUtils';
+import { getAllNetworksOfType } from '../../util/vehicleRentalUtils';
 import DesktopView from '../DesktopView';
+import Loading from '../Loading';
 import MobileView from '../MobileView';
 import ItineraryPageMap from '../map/ItineraryPageMap';
-import ItineraryListContainer from './ItineraryListContainer';
+import AlternativeItineraryBar from './AlternativeItineraryBar';
+import CustomizeSearch from './CustomizeSearch';
 import { spinnerPosition } from './ItineraryList';
+import ItineraryListContainer from './ItineraryListContainer';
 import ItineraryPageControls from './ItineraryPageControls';
-import ItineraryTabs from './ItineraryTabs';
-import { getWeatherData } from '../../util/apiUtils';
-import Loading from '../Loading';
-import { getItineraryPagePath, streetHash } from '../../util/path';
-import { boundWithMinimumArea } from '../../util/geo-utils';
-import planConnection from './PlanConnection';
 import {
-  getSelectedItineraryIndex,
-  reportError,
-  addFeedbackly,
-  getTopics,
-  getBounds,
-  isEqualItineraries,
-  settingsLimitRouting,
-  setCurrentTimeToURL,
-  updateClient,
-  stopClient,
-  getRentalStationsToHideOnMap,
   addBikeStationMapForRentalVehicleItineraries,
+  addFeedbackly,
   checkDayNight,
   filterItinerariesByFeedId,
   filterWalk,
+  getBounds,
+  getRentalStationsToHideOnMap,
+  getSelectedItineraryIndex,
+  getTopics,
+  isEqualItineraries,
   mergeBikeTransitPlans,
   mergeScooterTransitPlan,
   quitIteration,
+  reportError,
   scooterEdges,
+  setCurrentTimeToURL,
+  settingsLimitRouting,
+  stopClient,
+  updateClient,
 } from './ItineraryPageUtils';
-import { isIOS } from '../../util/browser';
-import { addAnalyticsEvent } from '../../util/analyticsUtils';
-import {
-  parseLatLon,
-  otpToLocation,
-  getIntermediatePlaces,
-} from '../../util/otpStrings';
-import AlternativeItineraryBar from './AlternativeItineraryBar';
-import {
-  PLANTYPE,
-  getSettings,
-  getPlanParams,
-  planQueryNeeded,
-} from '../../util/planParamUtil';
-import { epochToTime } from '../../util/timeUtils';
-import { saveFutureRoute } from '../../action/FutureRoutesActions';
-import { saveSearch } from '../../action/SearchActions';
-import CustomizeSearch from './CustomizeSearch';
-import { getAllNetworksOfType } from '../../util/vehicleRentalUtils';
-import { TransportMode } from '../../constants';
-import { mapLayerShape } from '../../store/MapLayerStore';
+import ItineraryTabs from './ItineraryTabs';
 import NaviContainer from './NaviContainer';
 import NavigatorIntroModal from './NavigatorIntro/NavigatorIntroModal';
-import { getDialogState, setDialogState } from '../../store/localStorage';
+import planConnection from './PlanConnection';
 
 const MAX_QUERY_COUNT = 4; // number of attempts to collect enough itineraries
 
@@ -607,15 +613,50 @@ export default function ItineraryPage(props, context) {
     }
   }
 
-  const setNavigation = enable => {
-    if (mobileRef.current) {
-      mobileRef.current.setBottomSheet(enable ? 'bottom' : 'middle');
+  const getCombinedPlanEdges = () => {
+    return [
+      ...(state.earlierEdges || []),
+      ...(mapHashToPlan()?.edges || []),
+      ...(state.laterEdges || []),
+    ];
+  };
+
+  const getItinerarySelection = () => {
+    const hasNoTransitItineraries = filterWalk(state.plan?.edges).length === 0;
+    const plan = mapHashToPlan();
+    let combinedEdges;
+    // Remove old itineraries if new query cannot find a route
+    if (state.error) {
+      combinedEdges = [];
+    } else if (streetHashes.includes(hash)) {
+      combinedEdges = plan?.edges || [];
+    } else {
+      combinedEdges = getCombinedPlanEdges();
+      if (!hasNoTransitItineraries) {
+        // don't show plain walking in transit itinerary list
+        combinedEdges = filterWalk(combinedEdges);
+      }
     }
-    if (!enable) {
+    const selectedIndex = getSelectedItineraryIndex(location, combinedEdges);
+
+    return { plan, combinedEdges, selectedIndex, hasNoTransitItineraries };
+  };
+
+  const setNavigation = isEnabled => {
+    if (mobileRef.current) {
+      mobileRef.current.setBottomSheet(isEnabled ? 'bottom' : 'middle');
+    }
+    if (!isEnabled) {
       setMapState({ center: undefined, zoom: undefined, bounds: undefined });
       navigateMap();
+      clearLatestNavigatorItinerary();
+    } else {
+      const { combinedEdges, selectedIndex } = getItinerarySelection();
+      if (combinedEdges[selectedIndex]?.node) {
+        setLatestNavigatorItinerary(combinedEdges[selectedIndex]?.node);
+      }
     }
-    setNaviMode(enable);
+    setNaviMode(isEnabled);
   };
 
   // save url-defined location to old searches
@@ -704,39 +745,17 @@ export default function ItineraryPage(props, context) {
     );
   }
 
-  function getCombinedPlanEdges() {
-    return [
-      ...(state.earlierEdges || []),
-      ...(mapHashToPlan()?.edges || []),
-      ...(state.laterEdges || []),
-    ];
-  }
-
-  function getItinerarySelection() {
-    const hasNoTransitItineraries = filterWalk(state.plan?.edges).length === 0;
-    const plan = mapHashToPlan();
-    let combinedEdges;
-    // Remove old itineraries if new query cannot find a route
-    if (state.error) {
-      combinedEdges = [];
-    } else if (streetHashes.includes(hash)) {
-      combinedEdges = plan?.edges || [];
-    } else {
-      combinedEdges = getCombinedPlanEdges();
-      if (!hasNoTransitItineraries) {
-        // don't show plain walking in transit itinerary list
-        combinedEdges = filterWalk(combinedEdges);
-      }
-    }
-    const selectedIndex = getSelectedItineraryIndex(location, combinedEdges);
-
-    return { plan, combinedEdges, selectedIndex, hasNoTransitItineraries };
-  }
-
   useEffect(() => {
     setCurrentTimeToURL(config, match);
     updateLocalStorage(true);
     addFeedbackly(context);
+
+    const storedItinerary = getLatestNavigatorItinerary();
+
+    setNavigation(
+      storedItinerary?.end && Date.parse(storedItinerary.end) > Date.now(),
+    );
+
     return () => {
       if (showVehicles()) {
         stopClient(context);
@@ -1110,6 +1129,7 @@ export default function ItineraryPage(props, context) {
   // in mobile, settings drawer hides other content
   const panelHidden = !desktop && settingsDrawer !== null;
   let content; // bottom content of itinerary panel
+
   if (panelHidden) {
     content = null;
   } else if (loading) {
@@ -1120,6 +1140,9 @@ export default function ItineraryPage(props, context) {
     );
   } else if (detailView) {
     if (naviMode) {
+      const naviModeItinerary =
+        getLatestNavigatorItinerary() || combinedEdges[selectedIndex]?.node;
+
       content = (
         <>
           {!isNavigatorIntroDismissed && (
@@ -1130,10 +1153,9 @@ export default function ItineraryPage(props, context) {
             />
           )}
           <NaviContainer
-            itinerary={combinedEdges[selectedIndex]?.node}
+            itinerary={naviModeItinerary}
             focusToLeg={focusToLeg}
             relayEnvironment={props.relayEnvironment}
-            combinedEdges={combinedEdges}
             setNavigation={setNavigation}
             mapRef={mwtRef.current}
           />
