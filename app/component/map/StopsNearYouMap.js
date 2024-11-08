@@ -377,7 +377,6 @@ function StopsNearYouMap(
     leafletObjs.push(
       <ItineraryLine
         key="itinerary"
-        hash={0}
         legs={walk.itinerary.legs}
         passive={false}
         showIntermediateStops={false}

@@ -136,7 +136,6 @@ function StopPageMap(
     leafletObjs.push(
       <ItineraryLine
         key="itinerary"
-        hash={0}
         legs={itinerary.legs}
         passive={false}
         showIntermediateStops={false}
