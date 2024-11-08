@@ -117,7 +117,7 @@ export const getTransitLegState = (leg, intl, messages) => {
     severity = 'INFO';
   }
   const state = severity
-    ? { severity, content, legId, expiresOn: 'legChange' }
+    ? { severity, content, id: legId, expiresOn: 'legChange' }
     : null;
   return state;
 };
