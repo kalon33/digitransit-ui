@@ -21,7 +21,8 @@ export default function MobileTicketPurchaseInformation(
     !fare.isUnknown,
     config.availableTickets,
   );
-  const price = `${fare.price.toFixed(2)} €`.replace('.', ',');
+  const price =
+    fare.price > 0 ? `${fare.price.toFixed(2)} €`.replace('.', ',') : '';
 
   const faresInfo = () => {
     const header = `${intl.formatMessage({
@@ -64,7 +65,7 @@ export default function MobileTicketPurchaseInformation(
             addAnalyticsEvent({ event: 'journey_planner_open_app' })
           }
         >
-          <FormattedMessage id="open-app" />
+          <FormattedMessage id={config.ticketButtonTextId} />
         </ExternalLink>
       </div>
     </div>
