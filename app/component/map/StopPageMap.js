@@ -56,11 +56,11 @@ function StopPageMap(
 
   const maxShowRouteDistance = breakpoint === 'large' ? 900 : 470;
   const { environment } = useContext(ReactRelayContext);
-  const [itinerary, setItinerary] = useState(null);
+  const [walk, setWalk] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
-    const fetchItinerary = async targetStop => {
+    const fetchWalk = async targetStop => {
       if (locationState.hasLocation && locationState.address) {
         if (distance(locationState, stop) < maxShowRouteDistance) {
           const settings = getSettings(config);
@@ -88,7 +88,7 @@ function StopPageMap(
             .toPromise()
             .then(result => {
               if (isMounted) {
-                setItinerary(
+                setWalk(
                   result.plan.edges.length ? result.plan.edges?.[0].node : null,
                 );
               }
@@ -97,7 +97,7 @@ function StopPageMap(
       }
     };
     if (stop && locationState.hasLocation) {
-      fetchItinerary(stop);
+      fetchWalk(stop);
     }
     return () => {
       isMounted = false;
@@ -132,11 +132,11 @@ function StopPageMap(
     );
   }
 
-  if (itinerary) {
+  if (walk) {
     leafletObjs.push(
       <ItineraryLine
-        key="itinerary"
-        legs={itinerary.legs}
+        key="walk"
+        legs={walk.legs}
         passive={false}
         showIntermediateStops={false}
         streetMode="walk"
