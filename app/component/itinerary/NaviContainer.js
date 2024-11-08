@@ -1,15 +1,16 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { legTime } from '../../util/legUtils';
-import { legShape, relayShape } from '../../util/shapes';
+import { itineraryShape, relayShape } from '../../util/shapes';
 import NaviBottom from './NaviBottom';
-import NaviTop from './NaviTop';
+import NaviCardContainer from './NaviCardContainer';
 import { useRealtimeLegs } from './hooks/useRealtimeLegs';
 
 function NaviContainer(
-  { legs, focusToLeg, relayEnvironment, setNavigation, mapRef },
+  { itinerary, focusToLeg, relayEnvironment, setNavigation, mapRef },
   { getStore },
 ) {
+  const { legs } = itinerary;
   const position = getStore('PositionStore').getLocationState();
 
   const { realTimeLegs, time, isPositioningAllowed } = useRealtimeLegs(
@@ -39,7 +40,8 @@ function NaviContainer(
 
   return (
     <>
-      <NaviTop
+      <NaviCardContainer
+        itinerary={itinerary}
         realTimeLegs={realTimeLegs}
         focusToLeg={
           mapRef?.state.mapTracking || isPositioningAllowed ? null : focusToLeg
@@ -53,7 +55,7 @@ function NaviContainer(
 }
 
 NaviContainer.propTypes = {
-  legs: PropTypes.arrayOf(legShape).isRequired,
+  itinerary: itineraryShape.isRequired,
   focusToLeg: PropTypes.func.isRequired,
   relayEnvironment: relayShape.isRequired,
   setNavigation: PropTypes.func.isRequired,

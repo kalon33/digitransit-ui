@@ -3,6 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { legTime } from '../../util/legUtils';
 import { timeStr } from '../../util/timeUtils';
 import { getFaresFromLegs } from '../../util/fareUtils';
+import { ExtendedRouteTypes } from '../../constants';
 
 const TRANSFER_SLACK = 60000;
 
@@ -167,4 +168,85 @@ export const getItineraryAlerts = (realTimeLegs, intl, messages) => {
   }
 
   return alerts;
+};
+
+/*
+ * Get the properties of the destination based on the leg.
+ *
+ */
+export const getDestinationProperties = (leg, stop, config) => {
+  const { rentalVehicle, vehicleParking, vehicleRentalStation } = leg.to;
+  const { vehicleMode, routes } = stop;
+
+  let destination = {};
+  let mode = vehicleMode;
+
+  if (routes && vehicleMode === 'BUS' && config.useExtendedRouteTypes) {
+    if (routes.some(p => p.type === ExtendedRouteTypes.BusExpress)) {
+      mode = 'bus-express';
+    }
+  } else if (routes && vehicleMode === 'TRAM' && config.useExtendedRouteTypes) {
+    if (routes.some(p => p.type === ExtendedRouteTypes.SpeedTram)) {
+      mode = 'speedtram';
+    }
+  }
+  // todo: scooter and citybike icons etc.
+  if (rentalVehicle) {
+    destination.name = rentalVehicle.rentalNetwork.networkId;
+  } else if (vehicleParking) {
+    destination.name = vehicleParking.name;
+  } else if (vehicleRentalStation) {
+    destination.name = vehicleRentalStation.name;
+  } else {
+    let iconProps = {};
+    switch (mode) {
+      case 'TRAM,BUS':
+        iconProps = {
+          iconId: 'icon-icon_bustram-stop-lollipop',
+          className: 'tram-stop',
+        };
+        break;
+      case 'SUBWAY':
+        iconProps = {
+          iconId: 'icon-icon_subway',
+          className: 'subway-stop',
+        };
+        break;
+      case 'RAIL':
+        iconProps = {
+          iconId: 'icon-icon_rail-stop-lollipop',
+          className: 'rail-stop',
+        };
+
+        break;
+      case 'FERRY':
+        iconProps = {
+          iconId: 'icon-icon_ferry',
+          className: 'ferry-stop',
+        };
+        break;
+      case 'bus-express':
+        iconProps = {
+          iconId: 'icon-icon_bus-stop-express-lollipop',
+          className: 'bus-stop',
+        };
+        break;
+      case 'speedtram':
+        iconProps = {
+          iconId: 'icon-icon_speedtram-stop-lollipop',
+          className: 'speedtram-stop',
+        };
+        break;
+      default:
+        iconProps = {
+          iconId: `icon-icon_${mode.toLowerCase()}-stop-lollipop`,
+        };
+    }
+    destination = {
+      ...iconProps,
+      name: stop.name,
+    };
+  }
+
+  return destination;
 };

@@ -141,6 +141,9 @@ const planConnection = graphql`
                 parentStation {
                   name
                 }
+                routes {
+                  type
+                }
               }
               vehicleParking {
                 name
