@@ -58,12 +58,12 @@ export const getAdditionalMessages = (leg, time, intl, config, messages) => {
 };
 
 export const getTransitLegState = (leg, intl, messages) => {
-  const { start, realtimeState, from, mode, id } = leg;
+  const { start, realtimeState, from, mode, legId } = leg;
   const { scheduledTime, estimated } = start;
   if (mode === 'WALK') {
     return null;
   }
-  const previousMessage = messages.get(id);
+  const previousMessage = messages.get(legId);
   const prevSeverity = previousMessage ? previousMessage.severity : null;
 
   const late = estimated?.delay > 0;
@@ -117,7 +117,7 @@ export const getTransitLegState = (leg, intl, messages) => {
     severity = 'INFO';
   }
   const state = severity
-    ? { severity, content, id, expiresOn: 'legChange' }
+    ? { severity, content, id: legId, expiresOn: 'legChange' }
     : null;
   return state;
 };
@@ -142,7 +142,7 @@ export const getItineraryAlerts = (realTimeLegs, intl, messages) => {
     });
   }
   if (transferProblem !== null) {
-    const transferId = `transfer-${transferProblem[0].id}-${transferProblem[1].id}}`;
+    const transferId = `transfer-${transferProblem[0].legId}-${transferProblem[1].legId}}`;
     if (!messages.get(transferId)) {
       // todo no current design
       content = (

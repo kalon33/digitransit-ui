@@ -31,7 +31,7 @@ function NaviContainer(
 
   if (lastTransitLeg) {
     const rtLeg = realTimeLegs.find(leg => {
-      return leg.id === lastTransitLeg.id;
+      return leg.legId === lastTransitLeg.legId;
     });
     arrivalChange = legTime(rtLeg.end) - legTime(lastTransitLeg.end);
   }

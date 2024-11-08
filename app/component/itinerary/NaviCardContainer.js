@@ -53,8 +53,8 @@ function NaviCardContainer(
       incomingMessages.set(alert.id, alert);
     });
 
-    const legChanged = newLeg?.id
-      ? newLeg.id !== currentLeg?.id
+    const legChanged = newLeg?.legId
+      ? newLeg.legId !== currentLeg?.legId
       : currentLeg?.mode !== newLeg?.mode;
     const l = currentLeg || newLeg;
 
