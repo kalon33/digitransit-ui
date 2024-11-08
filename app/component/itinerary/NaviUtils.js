@@ -178,8 +178,8 @@ export const getDestinationProperties = (leg, stop, config) => {
   const { rentalVehicle, vehicleParking, vehicleRentalStation } = leg.to;
   const { vehicleMode, routes } = stop;
 
-  const destination = {};
-  let mode = stop.vehicleMode;
+  let destination = {};
+  let mode = vehicleMode;
 
   if (routes && vehicleMode === 'BUS' && config.useExtendedRouteTypes) {
     if (routes.some(p => p.type === ExtendedRouteTypes.BusExpress)) {
@@ -198,36 +198,55 @@ export const getDestinationProperties = (leg, stop, config) => {
   } else if (vehicleRentalStation) {
     destination.name = vehicleRentalStation.name;
   } else {
+    let iconProps = {};
     switch (mode) {
       case 'TRAM,BUS':
-        destination.iconId = 'icon-icon_bustram-stop-lollipop';
-        destination.className = 'tram-stop';
+        iconProps = {
+          iconId: 'icon-icon_bustram-stop-lollipop',
+          className: 'tram-stop',
+        };
         break;
       case 'SUBWAY':
-        destination.iconId = 'icon-icon_subway';
-        destination.className = 'subway-stop';
+        iconProps = {
+          iconId: 'icon-icon_subway',
+          className: 'subway-stop',
+        };
         break;
       case 'RAIL':
-        destination.iconId = 'icon-icon_rail-stop-lollipop';
-        destination.className = 'rail-stop';
+        iconProps = {
+          iconId: 'icon-icon_rail-stop-lollipop',
+          className: 'rail-stop',
+        };
+
         break;
       case 'FERRY':
-        destination.iconId = 'icon-icon_ferry';
-        destination.className = 'ferry-stop';
+        iconProps = {
+          iconId: 'icon-icon_ferry',
+          className: 'ferry-stop',
+        };
         break;
       case 'bus-express':
-        destination.iconId = 'icon-icon_bus-stop-express-lollipop';
-        destination.className = 'bus-stop';
+        iconProps = {
+          iconId: 'icon-icon_bus-stop-express-lollipop',
+          className: 'bus-stop',
+        };
         break;
       case 'speedtram':
-        destination.iconId = 'icon-icon_speedtram-stop-lollipop';
-        destination.className = 'speedtram-stop';
+        iconProps = {
+          iconId: 'icon-icon_speedtram-stop-lollipop',
+          className: 'speedtram-stop',
+        };
         break;
       default:
-        destination.iconId = `icon-icon_${mode.toLowerCase()}-stop-lollipop`;
+        iconProps = {
+          iconId: `icon-icon_${mode.toLowerCase()}-stop-lollipop`,
+        };
     }
+    destination = {
+      ...iconProps,
+      name: stop.name,
+    };
   }
-  destination.name = stop.name;
 
   return destination;
 };
