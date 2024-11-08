@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { matchShape } from 'found';
-import { graphql, fetchQuery } from 'react-relay';
-import moment from 'moment';
+import { fetchQuery } from 'react-relay';
 import uniqBy from 'lodash/uniqBy';
 import compact from 'lodash/compact';
 import isEqual from 'lodash/isEqual';
@@ -18,7 +17,6 @@ import {
   stopRealTimeClient,
   changeRealTimeClientTopics,
 } from '../../action/realTimeClientAction';
-import { locationToUri } from '../../util/otpStrings';
 import {
   sortNearbyRentalStations,
   sortNearbyStops,
@@ -35,6 +33,7 @@ import LazilyLoad, { importLazy } from '../LazilyLoad';
 import { getDefaultNetworks } from '../../util/vehicleRentalUtils';
 import { getRouteMode } from '../../util/modeUtils';
 import CookieSettingsButton from '../CookieSettingsButton';
+import { walkQuery } from './WalkQuery';
 
 const locationMarkerModules = {
   LocationMarker: () =>
@@ -146,7 +145,6 @@ const getLocationMarker = location => {
 function StopsNearYouMap(
   {
     breakpoint,
-    currentTime,
     stopsNearYou,
     match,
     loading,
@@ -164,11 +162,7 @@ function StopsNearYouMap(
   const [routeLines, setRouteLines] = useState([]);
   const [bounds, setBounds] = useState([]);
   const [clientOn, setClientOn] = useState(false);
-  const [firstPlan, setFirstPlan] = useState({
-    itinerary: [],
-    isFetching: false,
-    stop: null,
-  });
+  const [walk, setWalk] = useState({ itinerary: null, stop: null });
   const prevPlace = useRef();
   const prevMode = useRef();
   const { mode } = match.params;
@@ -176,56 +170,36 @@ function StopsNearYouMap(
   const walkRoutingThreshold =
     mode === 'RAIL' || mode === 'SUBWAY' || mode === 'FERRY' ? 3000 : 1500;
   const { environment } = relay;
+
   const fetchPlan = stop => {
-    const toPlace = {
-      address: stop.name ? stop.name : 'stop',
-      lon: stop.lon,
-      lat: stop.lat,
-    };
-    const settings = getSettings(context.config);
-    const variables = {
-      fromPlace: locationToUri(position),
-      toPlace: locationToUri(toPlace),
-      date: moment(currentTime * 1000).format('YYYY-MM-DD'),
-      time: moment(currentTime * 1000).format('HH:mm:ss'),
-      walkSpeed: settings.walkSpeed,
-      wheelchair: !!settings.accessibilityOption,
-    };
-    const query = graphql`
-      query StopsNearYouMapQuery(
-        $fromPlace: String!
-        $toPlace: String!
-        $date: String!
-        $time: String!
-        $walkSpeed: Float
-        $wheelchair: Boolean
-      ) {
-        plan: plan(
-          fromPlace: $fromPlace
-          toPlace: $toPlace
-          date: $date
-          time: $time
-          transportModes: [{ mode: WALK }]
-          walkSpeed: $walkSpeed
-          wheelchair: $wheelchair
-        ) {
-          itineraries {
-            legs {
-              mode
-              ...ItineraryLine_legs
-            }
-          }
-        }
-      }
-    `;
     if (stop.distance < walkRoutingThreshold) {
-      fetchQuery(environment, query, variables)
+      const settings = getSettings(context.config);
+      const variables = {
+        origin: {
+          location: {
+            coordinate: { latitude: position.lat, longitude: position.lon },
+          },
+        },
+        destination: {
+          location: {
+            coordinate: { latitude: stop.lat, longitude: stop.lon },
+          },
+        },
+        walkSpeed: settings.walkSpeed,
+        wheelchair: !!settings.accessibilityOption,
+      };
+      fetchQuery(environment, walkQuery, variables)
         .toPromise()
-        .then(({ plan: result }) => {
-          setFirstPlan({ itinerary: result, isFetching: false, stop });
+        .then(result => {
+          setWalk({
+            itinerary: result.plan.edges.length
+              ? result.plan.edges?.[0].node
+              : null,
+            stop,
+          });
         });
     } else {
-      setFirstPlan({ itinerary: [], isFetching: false, stop });
+      setWalk({ itinerary: null, stop });
     }
   };
 
@@ -239,27 +213,14 @@ function StopsNearYouMap(
             favouriteIds.has(firstStop.gtfsId)
           );
         };
-        if (!isEqual(firstStop, firstPlan.stop) && shouldFetchWalkRoute()) {
-          setFirstPlan({
-            itinerary: firstPlan.itinerary,
-            isFetching: true,
-            stop: firstStop,
-          });
+        if (!isEqual(firstStop, walk.stop) && shouldFetchWalkRoute()) {
           fetchPlan(firstStop);
         } else if (!shouldFetchWalkRoute()) {
-          setFirstPlan({
-            itinerary: [],
-            isFetching: false,
-            stop: null,
-          });
+          setWalk({ itinerary: null, stop: null });
         }
       }
     } else {
-      setFirstPlan({
-        itinerary: [],
-        isFetching: false,
-        stop: null,
-      });
+      setWalk({ itinerary: null, stop: null });
     }
   };
   useEffect(() => {
@@ -412,23 +373,16 @@ function StopsNearYouMap(
       />,
     );
   }
-  if (
-    firstPlan.itinerary.itineraries &&
-    firstPlan.itinerary.itineraries.length > 0
-  ) {
+  if (walk.itinerary) {
     leafletObjs.push(
-      firstPlan.itinerary.itineraries.map((itinerary, i) => {
-        return (
-          <ItineraryLine
-            key="itinerary"
-            hash={i}
-            legs={itinerary.legs}
-            passive={false}
-            showIntermediateStops={false}
-            streetMode="walk"
-          />
-        );
-      }),
+      <ItineraryLine
+        key="itinerary"
+        hash={0}
+        legs={walk.itinerary.legs}
+        passive={false}
+        showIntermediateStops={false}
+        streetMode="walk"
+      />,
     );
   }
 
@@ -481,7 +435,6 @@ function StopsNearYouMap(
 }
 
 StopsNearYouMap.propTypes = {
-  currentTime: PropTypes.number.isRequired,
   stopsNearYou: PropTypes.shape({
     nearest: PropTypes.shape({
       // eslint-disable-next-line
