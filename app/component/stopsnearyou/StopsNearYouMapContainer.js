@@ -1,9 +1,9 @@
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import { graphql, createPaginationContainer } from 'react-relay';
-import StopsNearYouMap from './map/StopsNearYouMap';
+import StopsNearYouMap from '../map/StopsNearYouMap';
 
-import FavouriteStore from '../store/FavouriteStore';
-import PreferencesStore from '../store/PreferencesStore';
+import FavouriteStore from '../../store/FavouriteStore';
+import PreferencesStore from '../../store/PreferencesStore';
 
 const StopsNearYouMapWithStores = connectToStores(
   StopsNearYouMap,

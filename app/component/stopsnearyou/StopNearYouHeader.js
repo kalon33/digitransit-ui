@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'found';
-import { stopShape, configShape } from '../util/shapes';
-import AddressRow from './AddressRow';
-import ZoneIcon from './ZoneIcon';
-import PlatformNumber from './PlatformNumber';
-import FavouriteStopContainer from './FavouriteStopContainer';
-import { getZoneLabel } from '../util/legUtils';
+import { stopShape, configShape } from '../../util/shapes';
+import AddressRow from '../AddressRow';
+import ZoneIcon from '../ZoneIcon';
+import PlatformNumber from '../PlatformNumber';
+import FavouriteStopContainer from '../FavouriteStopContainer';
+import { getZoneLabel } from '../../util/legUtils';
 
 const StopNearYouHeader = (
   { stop, desc, isStation, linkAddress },

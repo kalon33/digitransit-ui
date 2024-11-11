@@ -4,9 +4,9 @@ import { routerShape } from 'found';
 import { pure } from 'recompose';
 import DTAutoSuggest from '@digitransit-component/digitransit-component-autosuggest';
 import { filterSearchResultsByMode } from '@digitransit-search-util/digitransit-search-util-query-utils';
-import { configShape } from '../util/shapes';
-import withSearchContext from './WithSearchContext';
-import { getStopRoutePath } from '../util/path';
+import { configShape } from '../../util/shapes';
+import withSearchContext from '../WithSearchContext';
+import { getStopRoutePath } from '../../util/path';
 
 const DTAutoSuggestWithSearchContext = withSearchContext(DTAutoSuggest);
 const searchSources = ['Favourite', 'History', 'Datasource'];

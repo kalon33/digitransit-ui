@@ -224,7 +224,7 @@ export default config => {
             <Route
               getComponent={() =>
                 import(
-                  /* webpackChunkName: "nearyou" */ './component/StopsNearYouPage'
+                  /* webpackChunkName: "nearyou" */ './component/stopsnearyou/StopsNearYouPage'
                 ).then(getDefault)
               }
               render={({ Component, props, error }) => {
@@ -244,7 +244,7 @@ export default config => {
               path="(.*)?"
               getComponent={() =>
                 import(
-                  /* webpackChunkName: "itinerary" */ './component/StopsNearYouPageMeta'
+                  /* webpackChunkName: "itinerary" */ './component/stopsnearyou/StopsNearYouPageMeta'
                 ).then(getDefault)
               }
             />

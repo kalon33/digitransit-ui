@@ -9,46 +9,46 @@ import Modal from '@hsl-fi/modal';
 import DTAutoSuggest from '@digitransit-component/digitransit-component-autosuggest';
 import DTIcon from '@digitransit-component/digitransit-component-icon';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
-import { relayShape, configShape, locationShape } from '../util/shapes';
-import Icon from './Icon';
-import DesktopView from './DesktopView';
-import MobileView from './MobileView';
-import withBreakpoint, { DesktopOrMobile } from '../util/withBreakpoint';
-import { otpToLocation, locationToUri } from '../util/otpStrings';
-import { isKeyboardSelectionEvent } from '../util/browser';
-import Loading from './Loading';
+import { relayShape, configShape, locationShape } from '../../util/shapes';
+import Icon from '../Icon';
+import DesktopView from '../DesktopView';
+import MobileView from '../MobileView';
+import withBreakpoint, { DesktopOrMobile } from '../../util/withBreakpoint';
+import { otpToLocation, locationToUri } from '../../util/otpStrings';
+import { isKeyboardSelectionEvent } from '../../util/browser';
+import Loading from '../Loading';
 import StopNearYouContainer from './StopNearYouContainer';
 import {
   checkPositioningPermission,
   startLocationWatch,
-} from '../action/PositionActions';
-import DisruptionBanner from './DisruptionBanner';
+} from '../../action/PositionActions';
+import DisruptionBanner from '../DisruptionBanner';
 import StopsNearYouSearch from './StopsNearYouSearch';
 import {
   getGeolocationState,
   getReadMessageIds,
   setReadMessageIds,
-} from '../store/localStorage';
-import withSearchContext from './WithSearchContext';
-import { PREFIX_NEARYOU } from '../util/path';
+} from '../../store/localStorage';
+import withSearchContext from '../WithSearchContext';
+import { PREFIX_NEARYOU } from '../../util/path';
 import StopsNearYouContainer from './StopsNearYouContainer';
-import SwipeableTabs from './SwipeableTabs';
+import SwipeableTabs from '../SwipeableTabs';
 import StopsNearYouFavorites from './StopsNearYouFavorites';
 import StopsNearYouMapContainer from './StopsNearYouMapContainer';
 import StopsNearYouFavoritesMapContainer from './StopsNearYouFavoritesMapContainer';
-import { mapLayerShape } from '../store/MapLayerStore';
+import { mapLayerShape } from '../../store/MapLayerStore';
 import {
   getRentalNetworkConfig,
   getRentalNetworkId,
   getDefaultNetworks,
-} from '../util/vehicleRentalUtils';
-import { getMapLayerOptions } from '../util/mapLayerUtils';
+} from '../../util/vehicleRentalUtils';
+import { getMapLayerOptions } from '../../util/mapLayerUtils';
 import {
   getTransportModes,
   getNearYouModes,
   useCitybikes,
-} from '../util/modeUtils';
-import FavouriteStore from '../store/FavouriteStore';
+} from '../../util/modeUtils';
+import FavouriteStore from '../../store/FavouriteStore';
 
 // component initialization phases
 const PH_START = 'start';
