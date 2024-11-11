@@ -51,7 +51,7 @@
   align-items: center;
 
   &.expanded {
-    max-height: 150px;
+    max-height: unset;
   }
 
   .navitop-arrow {
@@ -96,6 +96,11 @@
         width: 100%;
         font-size: $font-size-normal;
         font-weight: $font-weight-medium;
+        margin-bottom: var(--space-s);
+
+        &.expanded {
+          margin-bottom: 0;
+        }
 
         .destination-header {
           font-size: $font-size-normal;
@@ -145,12 +150,14 @@
     .secondary-info {
       flex-direction: column;
       max-height: 250px;
-      padding-top: var(--space-xxs);
+      margin-bottom: var(--space-s);
 
       .secondary-divider {
         border: 1px solid #ddd;
         width: 75%;
         margin-left: 50px;
+        margin-top: var(--space-s);
+        margin-bottom: var(--space-s);
       }
 
       .remaining {
@@ -164,7 +171,6 @@
         flex-direction: row;
         font-weight: $font-weight-book;
         margin-left: 48px;
-        margin-top: var(--space-xs);
         margin-bottom: var(--space-s);
         text-align: left;
 
@@ -193,6 +199,7 @@
         .info {
           display: flex;
           flex-direction: column;
+          margin-left: var(--space-xs);
         }
       }
 
@@ -325,10 +332,19 @@
   height: 69px;
   margin-left: 5%;
   width: 90%;
-  top: 150px;
+  top: 155px;
+  margin-top: 5px;
+
+  div:first-child {
+    margin-top: 0;
+  }
 
   &.expanded {
-    top: 180px;
+    top: 190px;
+  }
+
+  &.expand-transit {
+    top: 235px;
   }
 
   &.slide-out {
@@ -346,7 +362,6 @@
     display: flex;
     align-items: center;
     height: 100%;
-    margin-top: 5px;
 
     &.info {
       background-color: #e5f2fa;

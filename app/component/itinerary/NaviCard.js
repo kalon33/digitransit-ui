@@ -22,8 +22,8 @@ const iconMap = {
 export default function NaviCard({ leg, nextLeg, legType, cardExpanded }) {
   const iconName = legType === 'wait' ? iconMap.WAIT : iconMap[leg.mode];
   let instructions = `navileg-${leg.mode.toLowerCase()}`;
-  if (legType === 'in-vehicle') {
-    instructions = `navileg-in-vehicle`;
+  if (legType === 'in-transit') {
+    instructions = `navileg-in-transit`;
   } else if (isRental(leg, nextLeg)) {
     if (leg.mode === 'WALK' && nextLeg?.mode === 'SCOOTER') {
       instructions = `navileg-rent-scooter`;
@@ -35,7 +35,7 @@ export default function NaviCard({ leg, nextLeg, legType, cardExpanded }) {
     <div className="navi-top-card">
       <div className="main-card">
         <Icon img={iconName} color="black" className="mode" />
-        <div className="instructions">
+        <div className={`instructions ${cardExpanded ? 'expanded' : ''}`}>
           <NaviInstructions
             leg={leg}
             nextLeg={nextLeg}

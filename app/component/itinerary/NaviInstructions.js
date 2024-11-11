@@ -74,7 +74,7 @@ export default function NaviInstructions(
     );
   }
 
-  if (legType === 'in-vehicle') {
+  if (legType === 'in-transit') {
     const t = legTime(leg.end);
     const stopOrStation = leg.to.stop.parentStation
       ? intl.formatMessage({ id: 'navileg-from-station' })

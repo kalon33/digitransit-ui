@@ -25,12 +25,21 @@ const NaviCardExtension = ({ legType, leg }, { config }) => {
     destination.className = 'place';
     destination.name = place;
   }
-  if (legType === 'in-vehicle') {
-    // Todo routenumbercontainer on taas hanurista, tyylittelyt ja nimet kuntoon. Rakenne on ok mutta pitää viilata
-    // Lasketaan interMediateplaces taulukosta arrival  ajan ja nykyhetken perusteella.
-    // Lähijuna = juna ? Pitääköhän tuokin tehdä..
-    // ei oo kommitointivalmis, pitää muutella muuttujie ja classnameja ja kattoa voisko navicardontainerin järkeistää tässä vaiheessa.
-    const nrStopsRemaining = 0;
+  // todo translationID ei toimi
+  if (legType === 'in-transit') {
+    const arrivalTimes =
+      leg.intermediatePlaces?.map(
+        p =>
+          new Date(p.arrival.estimated?.time) ||
+          new Date(p.arrival.scheduledTime),
+      ) || [];
+
+    const now = new Date();
+    const idx = arrivalTimes.findIndex(d => d.getTime() > now.getTime());
+    const count = arrivalTimes.length - idx;
+    const nrStopsRemaining = <span className="realtime"> {count}</span>;
+    const translationId =
+      count === 1 ? 'navileg-one-stop-remaining' : 'navileg-stops-remaining';
     return (
       <div className="secondary-info">
         <div className="secondary-divider" />
@@ -47,7 +56,7 @@ const NaviCardExtension = ({ legType, leg }, { config }) => {
         </div>
         <div className="remaining">
           <FormattedMessage
-            id="stops-remaining"
+            id={translationId}
             values={{ nrStopsRemaining }}
             defaultMessage="{nrStopsRemaining} stops remaining"
           />

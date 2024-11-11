@@ -141,7 +141,7 @@ function NaviCardContainer(
   }, [time]);
 
   const { first, last } = getFirstLastLegs(realTimeLegs);
-
+  let legType;
   let naviTopContent;
   if (time < legTime(first.start)) {
     naviTopContent = (
@@ -155,30 +155,22 @@ function NaviCardContainer(
       return legTime(leg.start) > legTime(currentLeg.start);
     });
     if (!currentLeg.transitLeg) {
-      let legType;
       if (destCountRef.current >= TIME_AT_DESTINATION) {
         legType = 'wait';
       } else {
         legType = 'move';
       }
-      naviTopContent = (
-        <NaviCard
-          leg={currentLeg}
-          nextLeg={nextLeg}
-          cardExpanded={cardExpanded}
-          legType={legType}
-        />
-      );
     } else {
-      naviTopContent = (
-        <NaviCard
-          leg={currentLeg}
-          nextLeg={nextLeg}
-          cardExpanded={cardExpanded}
-          legType="in-vehicle"
-        />
-      );
+      legType = 'in-transit';
     }
+    naviTopContent = (
+      <NaviCard
+        leg={currentLeg}
+        nextLeg={nextLeg}
+        cardExpanded={cardExpanded}
+        legType={legType}
+      />
+    );
   } else if (time > legTime(last.end)) {
     naviTopContent = <FormattedMessage id="navigation-journey-end" />;
   } else {
@@ -202,6 +194,7 @@ function NaviCardContainer(
           messages={activeMessages}
           cardExpanded={cardExpanded}
           handleRemove={handleRemove}
+          legType={legType}
         />
       )}
     </>
