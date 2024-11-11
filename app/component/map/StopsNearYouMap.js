@@ -101,7 +101,7 @@ const updateClient = (context, topics) => {
   }
 };
 
-const handleBounds = (location, edges, breakpoint) => {
+const handleBounds = (location, edges) => {
   if (edges.length === 0) {
     // No stops anywhere near
     return [
@@ -110,25 +110,13 @@ const handleBounds = (location, edges, breakpoint) => {
     ];
   }
   const nearestStop = edges[0].node.place;
-  const bounds =
-    breakpoint !== 'large'
-      ? [
-          [
-            nearestStop.lat + (nearestStop.lat - location.lat) * 0.5,
-            nearestStop.lon + (nearestStop.lon - location.lon) * 0.5,
-          ],
-          [
-            location.lat + (location.lat - nearestStop.lat) * 0.5,
-            location.lon + (location.lon - nearestStop.lon) * 0.5,
-          ],
-        ]
-      : [
-          [nearestStop.lat, nearestStop.lon],
-          [
-            location.lat + location.lat - nearestStop.lat,
-            location.lon + location.lon - nearestStop.lon,
-          ],
-        ];
+  const bounds = [
+    [nearestStop.lat, nearestStop.lon],
+    [
+      location.lat + location.lat - nearestStop.lat,
+      location.lon + location.lon - nearestStop.lon,
+    ],
+  ];
   return bounds;
 };
 
@@ -232,7 +220,7 @@ function StopsNearYouMap(
   }, []);
 
   useEffect(() => {
-    const newBounds = handleBounds(position, sortedStopEdges, breakpoint);
+    const newBounds = handleBounds(position, sortedStopEdges);
     if (newBounds.length > 0) {
       setBounds(newBounds);
     }
