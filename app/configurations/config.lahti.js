@@ -186,6 +186,4 @@ export default configMerger(walttiConfig, {
     transferPenalty: 1600,
   },
   ticketLinkOperatorCode: 50223,
-
-  devAnalytics: true,
 });
