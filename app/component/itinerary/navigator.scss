@@ -103,6 +103,14 @@
           display: flex;
         }
 
+        .vehicle-leg {
+          display: flex;
+          margin-top: var(--space-xs);
+          font-weight: $font-weight-book;
+          width: 80%;
+          text-align: left;
+        }
+
         .wait-leg {
           display: flex;
           align-items: center;
@@ -119,20 +127,6 @@
             margin-top: 2px;
             height: 25px;
             width: 25px;
-          }
-
-          .route-number {
-            min-width: 55px;
-
-            .vcenter-children {
-              .vehicle-number {
-                color: white;
-                font-size: $font-size-large;
-                margin-top: 4px;
-              }
-
-              display: flex;
-            }
           }
         }
       }
@@ -157,6 +151,49 @@
         border: 1px solid #ddd;
         width: 75%;
         margin-left: 50px;
+      }
+
+      .remaining {
+        display: flex;
+        margin-left: 48px;
+        font-weight: $font-weight-book;
+      }
+
+      .secondary-vehicle {
+        display: flex;
+        flex-direction: row;
+        font-weight: $font-weight-book;
+        margin-left: 48px;
+        margin-top: var(--space-xs);
+        margin-bottom: var(--space-s);
+        text-align: left;
+
+        .route-number {
+          min-width: 55px;
+
+          .vcenter-children {
+            .vehicle-number {
+              color: white;
+              font-size: $font-size-large;
+              margin-top: 4px;
+            }
+
+            display: flex;
+          }
+        }
+
+        .line {
+          text-align: center;
+
+          .icon {
+            font-size: 24px;
+          }
+        }
+
+        .info {
+          display: flex;
+          flex-direction: column;
+        }
       }
 
       .secondary-content {

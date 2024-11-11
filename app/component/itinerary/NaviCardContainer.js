@@ -151,10 +151,10 @@ function NaviCardContainer(
       />
     );
   } else if (currentLeg) {
+    const nextLeg = realTimeLegs.find(leg => {
+      return legTime(leg.start) > legTime(currentLeg.start);
+    });
     if (!currentLeg.transitLeg) {
-      const nextLeg = realTimeLegs.find(leg => {
-        return legTime(leg.start) > legTime(currentLeg.start);
-      });
       let legType;
       if (destCountRef.current >= TIME_AT_DESTINATION) {
         legType = 'wait';
@@ -170,7 +170,14 @@ function NaviCardContainer(
         />
       );
     } else {
-      naviTopContent = `Tracking ${currentLeg?.mode} leg`;
+      naviTopContent = (
+        <NaviCard
+          leg={currentLeg}
+          nextLeg={nextLeg}
+          cardExpanded={cardExpanded}
+          legType="in-vehicle"
+        />
+      );
     }
   } else if (time > legTime(last.end)) {
     naviTopContent = <FormattedMessage id="navigation-journey-end" />;

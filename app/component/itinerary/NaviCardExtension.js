@@ -1,4 +1,7 @@
 import React from 'react';
+import cx from 'classnames';
+import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import Icon from '../Icon';
 import StopCode from '../StopCode';
 import PlatformNumber from '../PlatformNumber';
@@ -6,8 +9,9 @@ import { getZoneLabel } from '../../util/legUtils';
 import ZoneIcon from '../ZoneIcon';
 import { legShape, configShape } from '../../util/shapes';
 import { getDestinationProperties } from './NaviUtils';
+import RouteNumberContainer from '../RouteNumberContainer';
 
-const NaviCardExtension = ({ leg }, { config }) => {
+const NaviCardExtension = ({ legType, leg }, { config }) => {
   const { stop, name } = leg.to;
   const { code, platformCode, zoneId, vehicleMode } = stop || {};
   const [place, address] = name?.split(/, (.+)/) || [];
@@ -21,6 +25,37 @@ const NaviCardExtension = ({ leg }, { config }) => {
     destination.className = 'place';
     destination.name = place;
   }
+  if (legType === 'in-vehicle') {
+    // Todo routenumbercontainer on taas hanurista, tyylittelyt ja nimet kuntoon. Rakenne on ok mutta pitää viilata
+    // Lasketaan interMediateplaces taulukosta arrival  ajan ja nykyhetken perusteella.
+    // Lähijuna = juna ? Pitääköhän tuokin tehdä..
+    // ei oo kommitointivalmis, pitää muutella muuttujie ja classnameja ja kattoa voisko navicardontainerin järkeistää tässä vaiheessa.
+    const nrStopsRemaining = 0;
+    return (
+      <div className="secondary-info">
+        <div className="secondary-divider" />
+        <div className="secondary-vehicle">
+          <RouteNumberContainer
+            className={cx('line', vehicleMode.toLowerCase())}
+            route={leg.route}
+            mode={leg.mode.toLowerCase()}
+            isTransitLeg
+            vertical
+            withBar
+          />
+          <div className="info">{leg.to.name}</div>
+        </div>
+        <div className="remaining">
+          <FormattedMessage
+            id="stops-remaining"
+            values={{ nrStopsRemaining }}
+            defaultMessage="{nrStopsRemaining} stops remaining"
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="secondary-info">
       <div className="secondary-divider" />
@@ -59,6 +94,11 @@ const NaviCardExtension = ({ leg }, { config }) => {
 
 NaviCardExtension.propTypes = {
   leg: legShape.isRequired,
+  legType: PropTypes.string,
+};
+
+NaviCardExtension.defaultProps = {
+  legType: '',
 };
 
 NaviCardExtension.contextTypes = {

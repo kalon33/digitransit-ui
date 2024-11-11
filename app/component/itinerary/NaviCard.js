@@ -12,13 +12,19 @@ const iconMap = {
   SCOOTER: 'icon-icon_scooter_rider',
   WALK: 'icon-icon_walk',
   WAIT: 'icon-icon_navigation_wait',
+  BUS: 'icon-icon_bus',
+  RAIL: 'icon-icon_rail',
+  SUBWAY: 'icon-icon_subway',
+  TRAM: 'icon-icon_tram',
+  FERRY: 'icon-icon_ferry',
 };
 
 export default function NaviCard({ leg, nextLeg, legType, cardExpanded }) {
   const iconName = legType === 'wait' ? iconMap.WAIT : iconMap[leg.mode];
   let instructions = `navileg-${leg.mode.toLowerCase()}`;
-
-  if (isRental(leg, nextLeg)) {
+  if (legType === 'in-vehicle') {
+    instructions = `navileg-in-vehicle`;
+  } else if (isRental(leg, nextLeg)) {
     if (leg.mode === 'WALK' && nextLeg?.mode === 'SCOOTER') {
       instructions = `navileg-rent-scooter`;
     } else {
@@ -44,7 +50,7 @@ export default function NaviCard({ leg, nextLeg, legType, cardExpanded }) {
           </div>
         </div>
       </div>
-      {cardExpanded && <NaviCardExtension leg={leg} />}
+      {cardExpanded && <NaviCardExtension legType={legType} leg={leg} />}
     </div>
   );
 }
