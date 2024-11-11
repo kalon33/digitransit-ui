@@ -83,7 +83,7 @@ class ItineraryDetails extends React.Component {
       this.context.match.params.hash !== streetHash.walk &&
       this.context.match.params.hash !== streetHash.bike
     );
-  };
+  }
 
   getFutureText(startTime) {
     const refTime = Date.now();
@@ -96,7 +96,7 @@ class ItineraryDetails extends React.Component {
       });
     }
     return getFormattedTimeDate(startTime, 'dd D.M.');
-  };
+  }
 
   getExtraProps(itinerary) {
     const compressedItinerary = {
@@ -130,24 +130,36 @@ class ItineraryDetails extends React.Component {
       futureText,
       isMultiRow,
     };
-  };
+  }
 
   render() {
-    const { itinerary, currentLanguage, isMobile, bikeAndPublicItineraryCount } = this.props;
+    const {
+      itinerary,
+      currentLanguage,
+      isMobile,
+      bikeAndPublicItineraryCount,
+    } = this.props;
     const { config } = this.context;
     if (!itinerary?.legs[0]) {
       return null;
     }
     const fares = getFaresFromLegs(itinerary.legs, config);
     const extraProps = this.getExtraProps(itinerary);
-    const {biking, walking, driving, futureText, isMultiRow} = extraProps;
+    const { biking, walking, driving, futureText, isMultiRow } = extraProps;
     const legsWithRentalBike = compressLegs(itinerary.legs).filter(leg =>
       legContainsRentalBike(leg),
     );
-    const legswithBikePark = compressLegs(itinerary.legs).filter(leg => legContainsBikePark(leg));
-    const legsWithScooter = compressLegs(itinerary.legs).some(leg => leg.mode === 'SCOOTER');
+    const legswithBikePark = compressLegs(itinerary.legs).filter(leg =>
+      legContainsBikePark(leg),
+    );
+    const legsWithScooter = compressLegs(itinerary.legs).some(
+      leg => leg.mode === 'SCOOTER',
+    );
     const containsBiking = biking.duration > 0 && biking.distance > 0;
-    const showBikeBoardingInformation = containsBiking && bikeAndPublicItineraryCount > 0 && legswithBikePark.length === 0;
+    const showBikeBoardingInformation =
+      containsBiking &&
+      bikeAndPublicItineraryCount > 0 &&
+      legswithBikePark.length === 0;
     const rentalBikeNetworks = new Set();
     let showRentalBikeDurationWarning = false;
     if (legsWithRentalBike.length > 0) {
@@ -183,7 +195,10 @@ class ItineraryDetails extends React.Component {
 
     const externalOperatorJourneys = legsWithScooter;
 
-    if (shouldShowFareInfo(config) && (fares.some(fare => fare.isUnknown) || externalOperatorJourneys) ) {
+    if (
+      shouldShowFareInfo(config) &&
+      (fares.some(fare => fare.isUnknown) || externalOperatorJourneys)
+    ) {
       const found = {};
       itinerary.legs.forEach(leg => {
         if (config.modeDisclaimers?.[leg.mode] && !found[leg.mode]) {
@@ -201,13 +216,10 @@ class ItineraryDetails extends React.Component {
       });
 
       const info = config.callAgencyInfo?.[currentLanguage];
-      if (
-        info &&
-        itinerary.legs.some(leg => isCallAgencyPickupType(leg))
-      ) {
+      if (info && itinerary.legs.some(leg => isCallAgencyPickupType(leg))) {
         disclaimers.push(
           <FareDisclaimer
-	    key={disclaimers.length}
+            key={disclaimers.length}
             textId="separate-ticket-required-for-call-agency-disclaimer"
             href={info.callAgencyInfoLink}
             linkText={info.callAgencyInfoLinkText}
@@ -218,11 +230,13 @@ class ItineraryDetails extends React.Component {
       if (!disclaimers.length) {
         disclaimers.push(
           <FareDisclaimer
-	    key="faredisclaimer-separate-ticket-key"
+            key="faredisclaimer-separate-ticket-key"
             textId="separate-ticket-required-disclaimer"
             values={{
-              agencyName: typeof config.primaryAgencyName === 'string' ? config.primaryAgencyName :
-		config.primaryAgencyName?.[currentLanguage]
+              agencyName:
+                typeof config.primaryAgencyName === 'string'
+                  ? config.primaryAgencyName
+                  : config.primaryAgencyName?.[currentLanguage],
             }}
           />,
         );
@@ -238,10 +252,10 @@ class ItineraryDetails extends React.Component {
               number: itineraryIndex,
             }}
           />
-	</h2>
+        </h2>
         <BreakpointConsumer>
           {breakpoint => [
-	    breakpoint === 'large' && !this.props.hideTitle && (
+            breakpoint === 'large' && !this.props.hideTitle && (
               <div className="desktop-title" key="header">
                 <div className="title-container h2">
                   <BackButton
@@ -258,7 +272,7 @@ class ItineraryDetails extends React.Component {
                 </div>
               </div>
             ),
-	    <ItinerarySummary
+            <ItinerarySummary
               itinerary={itinerary}
               key="summary"
               walking={walking}
@@ -267,15 +281,14 @@ class ItineraryDetails extends React.Component {
               futureText={futureText}
               isMultiRow={isMultiRow}
               isMobile={isMobile}
-              hideBottomDivider={isMobile && shouldShowFarePurchaseInfo(
-                config,
-                breakpoint,
-                fares,
-              )}
+              hideBottomDivider={
+                isMobile &&
+                shouldShowFarePurchaseInfo(config, breakpoint, fares)
+              }
             />,
             showRentalBikeDurationWarning && (
               <VehicleRentalDurationInfo
-		key="rentaldurationinfo"
+                key="rentaldurationinfo"
                 networks={Array.from(rentalBikeNetworks)}
                 config={config}
               />
@@ -283,28 +296,28 @@ class ItineraryDetails extends React.Component {
             shouldShowFareInfo(config) &&
               (shouldShowFarePurchaseInfo(config, breakpoint, fares) ? (
                 <MobileTicketPurchaseInformation
-		  key="mobileticketpurchaseinformation"
+                  key="mobileticketpurchaseinformation"
                   fares={fares}
                   zones={getZones(itinerary.legs)}
                 />
               ) : (
                 <TicketInformation
-		  key="ticketinformation"
+                  key="ticketinformation"
                   fares={fares}
                   zones={getZones(itinerary.legs)}
                   legs={itinerary.legs}
                 />
               )),
 
-              this.props.setNavigation && (
-                <StartNavi
-                  key="navigation"
-                  setNavigation={this.props.setNavigation}
-                />
-              ),
+            this.props.setNavigation && (
+              <StartNavi
+                key="navigation"
+                setNavigation={this.props.setNavigation}
+              />
+            ),
             config.showCO2InItinerarySummary && !legsWithScooter && (
               <EmissionsInfo
-		key="emissionsummary"
+                key="emissionsummary"
                 itinerary={itinerary}
                 isMobile={isMobile}
               />
@@ -319,11 +332,11 @@ class ItineraryDetails extends React.Component {
                 className={cx('itinerary-main', {
                   'bp-large': breakpoint === 'large',
                 })}
-		key="legwrapper"
+                key="legwrapper"
               >
                 {disclaimers}
                 <Legs
-		  key="itinerarylegs"
+                  key="itinerarylegs"
                   fares={fares}
                   itinerary={itinerary}
                   focusToPoint={this.props.focusToPoint}
@@ -337,7 +350,7 @@ class ItineraryDetails extends React.Component {
               </div>
               {config.showCO2InItinerarySummary && !legsWithScooter && (
                 <Emissions
-		  key="emissionsinfo"
+                  key="emissionsinfo"
                   config={config}
                   itinerary={itinerary}
                   carEmissions={this.props.carEmissions}
@@ -354,7 +367,7 @@ class ItineraryDetails extends React.Component {
                   />
                 </div>
               )}
-              <div className="itinerary-empty-space" key="emptyspace"/>
+              <div className="itinerary-empty-space" key="emptyspace" />
             </div>,
           ]}
         </BreakpointConsumer>
@@ -447,14 +460,14 @@ const withRelay = createFragmentContainer(
             lat
             lon
             name
-            vehicleParking  {
+            vehicleParking {
               name
               vehicleParkingId
             }
             vehicleRentalStation {
               rentalNetwork {
-               networkId
-            }
+                networkId
+              }
               availableVehicles {
                 total
               }
@@ -469,7 +482,7 @@ const withRelay = createFragmentContainer(
               lon
               rentalUris {
                 android
-                ios 
+                ios
                 web
               }
               rentalNetwork {
@@ -507,7 +520,7 @@ const withRelay = createFragmentContainer(
               lon
               stationId
               rentalNetwork {
-               networkId
+                networkId
               }
               availableVehicles {
                 total
@@ -542,13 +555,13 @@ const withRelay = createFragmentContainer(
                 }
               }
             }
-            vehicleParking  {
-               vehicleParkingId
-               name
+            vehicleParking {
+              vehicleParkingId
+              name
             }
           }
           intermediatePlaces {
-            arrival  {
+            arrival {
               scheduledTime
               estimated {
                 time
