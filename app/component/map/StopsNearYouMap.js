@@ -195,15 +195,12 @@ function StopsNearYouMap(
     if (showWalkRoute) {
       if (stopsAndStations.length > 0) {
         const firstStop = stopsAndStations[0];
-        const shouldFetchWalkRoute = () => {
-          return (
-            (mode !== 'BUS' && mode !== 'TRAM') ||
-            favouriteIds.has(firstStop.gtfsId)
-          );
-        };
-        if (!isEqual(firstStop, walk.stop) && shouldFetchWalkRoute()) {
+        const shouldFetch =
+          (mode !== 'BUS' && mode !== 'TRAM') ||
+          favouriteIds.has(firstStop.gtfsId);
+        if (shouldFetch && !isEqual(firstStop, walk.stop)) {
           fetchPlan(firstStop);
-        } else if (!shouldFetchWalkRoute()) {
+        } else if (!shouldFetch) {
           setWalk({ itinerary: null, stop: null });
         }
       }
@@ -211,6 +208,7 @@ function StopsNearYouMap(
       setWalk({ itinerary: null, stop: null });
     }
   };
+
   useEffect(() => {
     prevPlace.current = match.params.place;
     prevMode.current = match.params.mode;
