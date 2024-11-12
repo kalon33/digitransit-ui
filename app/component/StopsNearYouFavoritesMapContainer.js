@@ -4,7 +4,6 @@ import connectToStores from 'fluxible-addons-react/connectToStores';
 import { graphql, createFragmentContainer } from 'react-relay';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
 import StopsNearYouMap from './map/StopsNearYouMap';
-import TimeStore from '../store/TimeStore';
 import PreferencesStore from '../store/PreferencesStore';
 import FavouriteStore from '../store/FavouriteStore';
 import {
@@ -84,16 +83,13 @@ StopsNearYouFavoritesMapContainer.defaultProps = {
 
 const StopsNearYouMapWithStores = connectToStores(
   StopsNearYouFavoritesMapContainer,
-  [TimeStore, PreferencesStore, FavouriteStore],
+  [PreferencesStore, FavouriteStore],
   ({ getStore }) => {
-    const currentTime = getStore(TimeStore).getCurrentTime();
     const language = getStore(PreferencesStore).getLanguage();
-    return {
-      language,
-      currentTime,
-    };
+    return { language };
   },
 );
+
 const containerComponent = createFragmentContainer(StopsNearYouMapWithStores, {
   stops: graphql`
     fragment StopsNearYouFavoritesMapContainer_stops on Stop
