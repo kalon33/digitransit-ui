@@ -25,7 +25,7 @@ const NaviCardExtension = ({ legType, leg }, { config }) => {
     destination.className = 'place';
     destination.name = place;
   }
-  // todo translationID ei toimi
+
   if (legType === 'in-transit') {
     const arrivalTimes =
       leg.intermediatePlaces?.map(
@@ -37,13 +37,13 @@ const NaviCardExtension = ({ legType, leg }, { config }) => {
     const now = new Date();
     const idx = arrivalTimes.findIndex(d => d.getTime() > now.getTime());
     const count = arrivalTimes.length - idx;
-    const nrStopsRemaining = <span className="realtime"> {count}</span>;
+    const stopCount = <span className="realtime"> {count}</span>;
     const translationId =
       count === 1 ? 'navileg-one-stop-remaining' : 'navileg-stops-remaining';
     return (
-      <div className="secondary-info">
-        <div className="secondary-divider" />
-        <div className="secondary-vehicle">
+      <div className="extension">
+        <div className="extension-divider" />
+        <div className="extension-routenumber">
           <RouteNumberContainer
             className={cx('line', vehicleMode.toLowerCase())}
             route={leg.route}
@@ -52,12 +52,12 @@ const NaviCardExtension = ({ legType, leg }, { config }) => {
             vertical
             withBar
           />
-          <div className="info">{leg.to.name}</div>
+          <div className="dest-name">{leg.to.name}</div>
         </div>
-        <div className="remaining">
+        <div className="stop-count">
           <FormattedMessage
             id={translationId}
-            values={{ nrStopsRemaining }}
+            values={{ stopCount }}
             defaultMessage="{nrStopsRemaining} stops remaining"
           />
         </div>
@@ -66,9 +66,9 @@ const NaviCardExtension = ({ legType, leg }, { config }) => {
   }
 
   return (
-    <div className="secondary-info">
-      <div className="secondary-divider" />
-      <div className="secondary-content">
+    <div className="extension">
+      <div className="extension-divider" />
+      <div className="extension-walk">
         <Icon img="navi-expand" className="icon-expand" />
         <Icon
           img={destination.iconId}

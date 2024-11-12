@@ -147,12 +147,12 @@
       }
     }
 
-    .secondary-info {
+    .extension {
       flex-direction: column;
       max-height: 250px;
       margin-bottom: var(--space-s);
 
-      .secondary-divider {
+      .extension-divider {
         border: 1px solid #ddd;
         width: 75%;
         margin-left: 50px;
@@ -160,13 +160,13 @@
         margin-bottom: var(--space-s);
       }
 
-      .remaining {
+      .stop-count {
         display: flex;
         margin-left: 48px;
         font-weight: $font-weight-book;
       }
 
-      .secondary-vehicle {
+      .extension-routenumber {
         display: flex;
         flex-direction: row;
         font-weight: $font-weight-book;
@@ -196,14 +196,16 @@
           }
         }
 
-        .info {
+        .dest-name {
           display: flex;
           flex-direction: column;
           margin-left: var(--space-xs);
+          justify-content: center;
+          font-size: $font-size-small;
         }
       }
 
-      .secondary-content {
+      .extension-walk {
         display: flex;
         margin-left: var(--space-xxl);
         margin-bottom: var(--space-s);
@@ -333,10 +335,13 @@
   margin-left: 5%;
   width: 90%;
   top: 155px;
-  margin-top: 5px;
 
   div:first-child {
     margin-top: 0;
+  }
+
+  div:not(:first-child) {
+    margin-top: 5px;
   }
 
   &.expanded {
