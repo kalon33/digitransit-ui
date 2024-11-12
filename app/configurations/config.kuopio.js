@@ -199,5 +199,4 @@ export default configMerger(walttiConfig, {
       },
     },
   },
-  devAnalytics: true,
 });
