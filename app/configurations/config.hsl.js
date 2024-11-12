@@ -309,13 +309,13 @@ export default {
   },
 
   maxNearbyStopDistance: {
-    favorite: 10000,
-    bus: 10000,
-    tram: 10000,
-    subway: 10000,
-    rail: 10000,
-    ferry: 10000,
-    citybike: 10000,
+    favorite: 20000,
+    bus: 20000,
+    tram: 20000,
+    subway: 20000,
+    rail: 20000,
+    ferry: 20000,
+    citybike: 20000,
   },
 
   prioritizedStopsNearYou: {

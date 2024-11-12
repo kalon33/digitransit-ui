@@ -137,11 +137,11 @@ export default {
   nearbyModeSet: 'waltti',
 
   maxNearbyStopDistance: {
-    bus: 10000,
-    tram: 10000,
-    rail: 10000,
-    ferry: 10000,
-    citybike: 10000,
+    bus: 30000,
+    tram: 30000,
+    rail: 50000,
+    ferry: 50000,
+    citybike: 30000,
   },
 
   redirectReittiopasParams: true,
