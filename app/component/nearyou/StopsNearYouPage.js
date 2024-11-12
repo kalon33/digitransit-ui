@@ -254,20 +254,9 @@ class StopsNearYouPage extends React.Component {
     let location;
     if (!mapElement) {
       location = this.props.position;
-    } else if (this.props.breakpoint === 'large') {
+    } else {
       const centerOfMap = mapElement.leafletElement.getCenter();
       location = { lat: centerOfMap.lat, lon: centerOfMap.lng };
-    } else {
-      const drawer = document.getElementsByClassName('drawer-container')[0];
-      const { scrollTop } = drawer;
-
-      const height = (window.innerHeight * 0.9 - 24 - scrollTop) / 2;
-      const width = window.innerWidth / 2;
-      const point = mapElement.leafletElement.containerPointToLatLng([
-        width,
-        height,
-      ]);
-      location = { lat: point.lat, lon: point.lng };
     }
     this.centerOfMap = location;
     const changed = distance(location, this.state.searchPosition) > 100;
