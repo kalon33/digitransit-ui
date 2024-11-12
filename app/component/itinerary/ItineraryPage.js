@@ -739,16 +739,63 @@ export default function ItineraryPage(props, context) {
     );
   }
 
+  /**
+   * Checks if itinerary in local storage was set with identical parameters.
+   *
+   * @param {{from: string, to: string, time: number, arriveBy: boolean, hash: number}} storedParams
+   * @param {boolean} shouldCompareHash false bypasses hash check when user navigates to ItineraryPage root with the list of suggested itineraries
+   * @returns true if stored itinerary was set with identical parameters
+   */
+  const isMatchingParams = (storedParams, shouldCompareHash) => {
+    if (!storedParams) {
+      return false;
+    }
+    let isHashOK = true;
+    if (shouldCompareHash) {
+      isHashOK =
+        hash !== undefined && hash !== null && storedParams.index === hash;
+    }
+    return (
+      storedParams.from === params.from &&
+      storedParams.to === params.to &&
+      storedParams.time === query.time &&
+      storedParams.arriveBy === query.arriveBy &&
+      isHashOK
+    );
+  };
+
+  /**
+   * Enables naviMode immediately on itinerary selection if all of the following resolve as true:
+   * a stored itinerary exists
+   * the stored itinerary ends in future
+   * the stored itinerary to and from coordinates match those of current query
+   *
+   * Note: false value is not passed to function to prevent localStorage entry from being cleared
+   */
+  const setupNavigator = () => {
+    const { itinerary: storedItinerary, params: storedParams } =
+      getLatestNavigatorItinerary();
+    if (
+      storedItinerary &&
+      Date.parse(storedItinerary.end) > Date.now() &&
+      isMatchingParams(storedParams, true)
+    ) {
+      setNavigation(true);
+    }
+  };
+
   useEffect(() => {
     setCurrentTimeToURL(config, match);
     updateLocalStorage(true);
     addFeedbackly(context);
 
-    const storedItinerary = getLatestNavigatorItinerary();
-
-    setNavigation(
-      storedItinerary?.end && Date.parse(storedItinerary.end) > Date.now(),
-    );
+    const { params: storedParams } = getLatestNavigatorItinerary();
+    if (
+      !isMatchingParams(storedParams, false) &&
+      (hash === undefined || hash === null)
+    ) {
+      clearLatestNavigatorItinerary();
+    }
 
     return () => {
       if (showVehicles()) {
@@ -770,6 +817,7 @@ export default function ItineraryPage(props, context) {
       makeRelaxedQuery();
       makeRelaxedScooterQuery();
     }
+    setupNavigator();
   }, [
     settingsState.settingsChanged,
     params.from,
@@ -781,6 +829,7 @@ export default function ItineraryPage(props, context) {
   useEffect(() => {
     navigateMap();
     setMapState({ center: undefined, zoom: undefined, bounds: undefined });
+    setupNavigator();
 
     if (detailView) {
       // If itinerary is not found in detail view, go back to summary view
@@ -1134,8 +1183,9 @@ export default function ItineraryPage(props, context) {
     );
   } else if (detailView) {
     if (naviMode) {
-      const naviModeItinerary =
-        getLatestNavigatorItinerary() || combinedEdges[selectedIndex]?.node;
+      const { itinerary: storedItinerary } = getLatestNavigatorItinerary();
+      const itineraryForNavigator =
+        storedItinerary || combinedEdges[selectedIndex]?.node;
 
       content = (
         <>
@@ -1147,7 +1197,7 @@ export default function ItineraryPage(props, context) {
             />
           )}
           <NaviContainer
-            itinerary={naviModeItinerary}
+            itinerary={itineraryForNavigator}
             focusToLeg={focusToLeg}
             relayEnvironment={props.relayEnvironment}
             setNavigation={setNavigation}
