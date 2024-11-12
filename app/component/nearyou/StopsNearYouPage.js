@@ -237,7 +237,7 @@ class StopsNearYouPage extends React.Component {
     return {
       lat: searchPosition.lat,
       lon: searchPosition.lon,
-      maxResults: 2000,
+      maxResults: 50,
       first: this.context.config.maxNearbyStopAmount,
       maxDistance:
         this.context.config.maxNearbyStopDistance[mode.toLowerCase()],
