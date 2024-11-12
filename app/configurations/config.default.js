@@ -171,7 +171,7 @@ export default {
   maxNearbyStopRefetches: 5,
   maxNearbyStopDistance: {
     favorite: 20000,
-    bus: 20000,
+    bus: 50000,
     tram: 20000,
     subway: 20000,
     rail: 50000,
