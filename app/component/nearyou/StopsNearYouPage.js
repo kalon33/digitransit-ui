@@ -64,6 +64,17 @@ const PH_READY = [PH_USEDEFAULTPOS, PH_USEGEOLOCATION, PH_USEMAPCENTER]; // rend
 
 const DTAutoSuggestWithSearchContext = withSearchContext(DTAutoSuggest);
 
+function getNearByStopModes(config) {
+  const transportModes = getTransportModes(config);
+  const nearYouModes = getNearYouModes(config);
+  const modes = nearYouModes.length
+    ? nearYouModes
+    : Object.keys(transportModes).filter(
+        mode => transportModes[mode].availableForSelection,
+      );
+  return modes.map(nearYouMode => nearYouMode.toUpperCase());
+}
+
 class StopsNearYouPage extends React.Component {
   static contextTypes = {
     config: configShape.isRequired,
@@ -107,6 +118,7 @@ class StopsNearYouPage extends React.Component {
   }
 
   componentDidMount() {
+    this.modes = getNearByStopModes(this.context.config);
     const readMessageIds = getReadMessageIds();
     const showCityBikeTeaser = !readMessageIds.includes('citybike_teaser');
     if (this.context.config.map.showLayerSelector) {
@@ -299,20 +311,6 @@ class StopsNearYouPage extends React.Component {
     return this.setState({ searchPosition: this.getPosition() });
   };
 
-  getNearByStopModes = () => {
-    const transportModes = getTransportModes(this.context.config);
-    const nearYouModes = getNearYouModes(this.context.config);
-    const configNearByYouModes = nearYouModes.length
-      ? nearYouModes
-      : Object.keys(transportModes).filter(
-          mode => transportModes[mode].availableForSelection,
-        );
-    const nearByStopModes = configNearByYouModes.map(nearYouMode =>
-      nearYouMode.toUpperCase(),
-    );
-    return nearByStopModes;
-  };
-
   getPosition = () => {
     return this.state.phase === PH_USEDEFAULTPOS
       ? this.state.searchPosition
@@ -320,9 +318,8 @@ class StopsNearYouPage extends React.Component {
   };
 
   onSwipe = e => {
-    const nearByStopModes = this.getNearByStopModes();
     const { mode } = this.props.match.params;
-    const newMode = nearByStopModes[e];
+    const newMode = this.modes[e];
     const paramArray = this.props.match.location.pathname.split(mode);
     const pathParams = paramArray.length > 1 ? paramArray[1] : '/POS';
     const path = `/${PREFIX_NEARYOU}/${newMode}${pathParams}`;
@@ -385,7 +382,7 @@ class StopsNearYouPage extends React.Component {
     const { mode } = this.props.match.params;
     const noFavorites = mode === 'FAVORITE' && this.noFavorites();
     const renderRefetchButton = centerOfMapChanged && !noFavorites;
-    const nearByStopModes = this.getNearByStopModes();
+    const nearByStopModes = this.modes;
     const index = nearByStopModes.indexOf(mode);
     const tabs = nearByStopModes.map(nearByStopMode => {
       const renderSearch =
@@ -913,7 +910,7 @@ class StopsNearYouPage extends React.Component {
   render() {
     const { mode } = this.props.match.params;
     const { phase } = this.state;
-    const nearByStopModes = this.getNearByStopModes();
+    const nearByStopModes = this.modes;
 
     if (PH_SHOWSEARCH.includes(phase)) {
       return <div>{this.renderDialogModal()}</div>;
