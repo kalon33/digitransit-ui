@@ -28,7 +28,7 @@ const NaviCardExtension = ({ legType, leg }, { config }) => {
 
   if (legType === 'in-transit') {
     const arrivalTimes =
-      leg.intermediatePlaces?.map(
+      leg.intermediatePlaces.map(
         p =>
           new Date(p.arrival.estimated?.time) ||
           new Date(p.arrival.scheduledTime),
@@ -36,7 +36,9 @@ const NaviCardExtension = ({ legType, leg }, { config }) => {
 
     const now = new Date();
     const idx = arrivalTimes.findIndex(d => d.getTime() > now.getTime());
-    const count = arrivalTimes.length - idx;
+    // Count the number of stops remaining, excluding the last one where
+    // the user is supposed to get off.
+    const count = arrivalTimes.length - idx - 1;
     const stopCount = <span className="realtime"> {count}</span>;
     const translationId =
       count === 1 ? 'navileg-one-stop-remaining' : 'navileg-stops-remaining';
