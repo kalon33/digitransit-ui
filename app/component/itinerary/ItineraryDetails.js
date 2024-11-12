@@ -312,6 +312,7 @@ class ItineraryDetails extends React.Component {
             this.props.setNavigation && (
               <StartNavi
                 key="navigation"
+                itinerary={itinerary}
                 setNavigation={this.props.setNavigation}
               />
             ),

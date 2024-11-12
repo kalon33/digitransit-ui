@@ -17,7 +17,6 @@ import {
   getDialogState,
   getLatestNavigatorItinerary,
   setDialogState,
-  setLatestNavigatorItinerary,
 } from '../../store/localStorage';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
 import { getWeatherData } from '../../util/apiUtils';
@@ -650,11 +649,6 @@ export default function ItineraryPage(props, context) {
       setMapState({ center: undefined, zoom: undefined, bounds: undefined });
       navigateMap();
       clearLatestNavigatorItinerary();
-    } else {
-      const { combinedEdges, selectedIndex } = getItinerarySelection();
-      if (combinedEdges[selectedIndex]?.node) {
-        setLatestNavigatorItinerary(combinedEdges[selectedIndex]?.node);
-      }
     }
     setNaviMode(isEnabled);
   };
