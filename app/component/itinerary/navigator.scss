@@ -352,6 +352,10 @@
     top: 235px;
   }
 
+  &.in-transit {
+    top: 162px;
+  }
+
   &.slide-out {
     animation: slideOut 0.5s ease-out forwards;
     pointer-events: none;
