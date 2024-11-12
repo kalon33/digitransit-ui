@@ -27,19 +27,18 @@ const NaviCardExtension = ({ legType, leg }, { config }) => {
   }
 
   if (legType === 'in-transit') {
-    const arrivalTimes =
-      leg.intermediatePlaces.map(
-        p =>
-          new Date(p.arrival.estimated?.time) ||
-          new Date(p.arrival.scheduledTime),
-      ) || [];
-
+    const { intermediatePlaces } = leg;
     const now = new Date();
-    const idx = arrivalTimes.findIndex(d => d.getTime() > now.getTime());
-    // Count the number of stops remaining, excluding the last one where
-    // the user is supposed to get off.
-    const count = arrivalTimes.length - idx - 1;
-    const stopCount = <span className="realtime"> {count}</span>;
+    const idx =
+      intermediatePlaces.findIndex(
+        p =>
+          new Date(
+            p.arrival.estimated?.time || p.arrival.scheduledTime,
+          ).getTime() > now.getTime(),
+      ) ?? -1;
+
+    const count = idx > -1 ? intermediatePlaces.length - idx : 0;
+    const stopCountElement = <span className="realtime"> {count}</span>;
     const translationId =
       count === 1 ? 'navileg-one-stop-remaining' : 'navileg-stops-remaining';
     return (
@@ -59,7 +58,7 @@ const NaviCardExtension = ({ legType, leg }, { config }) => {
         <div className="stop-count">
           <FormattedMessage
             id={translationId}
-            values={{ stopCount }}
+            values={{ stopCount: stopCountElement }}
             defaultMessage="{nrStopsRemaining} stops remaining"
           />
         </div>
