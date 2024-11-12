@@ -34,7 +34,7 @@ export default function NaviCard({ leg, nextLeg, legType, cardExpanded }) {
   return (
     <div className="navi-top-card">
       <div className="main-card">
-        <Icon img={iconName} color="black" className="mode" />
+        <Icon img={iconName} className="mode" />
         <div className={`instructions ${cardExpanded ? 'expanded' : ''}`}>
           <NaviInstructions
             leg={leg}

@@ -79,7 +79,7 @@ export default function NaviInstructions(
     const stopOrStation = leg.to.stop.parentStation
       ? intl.formatMessage({ id: 'navileg-from-station' })
       : intl.formatMessage({ id: 'navileg-from-stop' });
-    const rt = leg.realtimeState !== 'SCHEDULED';
+    const rt = leg.realtimeState === 'UPDATED';
     const localizedMode = intl.formatMessage({
       id: `${leg.mode.toLowerCase()}`,
       defaultMessage: `${leg.mode}`,
