@@ -768,9 +768,9 @@ export default function ItineraryPage(props, context) {
    * Enables naviMode immediately on itinerary selection if all of the following resolve as true:
    * a stored itinerary exists
    * the stored itinerary ends in future
-   * the stored itinerary to and from coordinates match those of current query
+   * the params stored along itinerary match those of the current query
    *
-   * Note: false value is not passed to function to prevent localStorage entry from being cleared
+   * Note: false value is not passed to setNavigation to prevent localStorage entry from being cleared
    */
   const setupNavigator = () => {
     const { itinerary: storedItinerary, params: storedParams } =
