@@ -1,17 +1,15 @@
+import cx from 'classnames';
+import connectToStores from 'fluxible-addons-react/connectToStores';
+import { matchShape, routerShape } from 'found';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { createFragmentContainer, graphql } from 'react-relay';
-import cx from 'classnames';
-import { matchShape, routerShape } from 'found';
 import { FormattedMessage, intlShape } from 'react-intl';
-import connectToStores from 'fluxible-addons-react/connectToStores';
-import { configShape, itineraryShape, relayShape } from '../../util/shapes';
-import TicketInformation from './TicketInformation';
-import ItinerarySummary from './ItinerarySummary';
-import Legs from './Legs';
-import BackButton from '../BackButton';
-import StartNavi from './StartNavi';
-import MobileTicketPurchaseInformation from './MobileTicketPurchaseInformation';
+import { createFragmentContainer, graphql } from 'react-relay';
+import {
+  getFaresFromLegs,
+  shouldShowFareInfo,
+  shouldShowFarePurchaseInfo,
+} from '../../util/fareUtils';
 import {
   compressLegs,
   getTotalBikingDistance,
@@ -25,22 +23,24 @@ import {
   legContainsBikePark,
   legContainsRentalBike,
 } from '../../util/legUtils';
-import { BreakpointConsumer } from '../../util/withBreakpoint';
 import { streetHash } from '../../util/path';
-import {
-  getFaresFromLegs,
-  shouldShowFareInfo,
-  shouldShowFarePurchaseInfo,
-} from '../../util/fareUtils';
+import { configShape, itineraryShape, relayShape } from '../../util/shapes';
 import {
   getFormattedTimeDate,
   isToday,
   isTomorrow,
 } from '../../util/timeUtils';
-import VehicleRentalDurationInfo from './VehicleRentalDurationInfo';
+import { BreakpointConsumer } from '../../util/withBreakpoint';
+import BackButton from '../BackButton';
 import Emissions from './Emissions';
 import EmissionsInfo from './EmissionsInfo';
 import FareDisclaimer from './FareDisclaimer';
+import ItinerarySummary from './ItinerarySummary';
+import Legs from './Legs';
+import MobileTicketPurchaseInformation from './MobileTicketPurchaseInformation';
+import StartNavi from './StartNavi';
+import TicketInformation from './TicketInformation';
+import VehicleRentalDurationInfo from './VehicleRentalDurationInfo';
 
 class ItineraryDetails extends React.Component {
   static propTypes = {
