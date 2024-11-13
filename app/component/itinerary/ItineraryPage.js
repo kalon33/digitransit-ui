@@ -745,7 +745,8 @@ export default function ItineraryPage(props, context) {
     updateLocalStorage(true);
     addFeedbackly(context);
 
-    if (isStoredItineraryRelevant(match)) {
+    const storedItinerary = getLatestNavigatorItinerary();
+    if (isStoredItineraryRelevant(storedItinerary, match)) {
       setNavigation(true);
     } else {
       clearLatestNavigatorItinerary();

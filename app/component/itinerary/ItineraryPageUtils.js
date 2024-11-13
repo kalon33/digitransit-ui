@@ -10,7 +10,6 @@ import {
   stopRealTimeClient,
 } from '../../action/realTimeClientAction';
 import { PlannerMessageType } from '../../constants';
-import { getLatestNavigatorItinerary } from '../../store/localStorage';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
 import { boundWithMinimumArea } from '../../util/geo-utils';
 import { compressLegs, getTotalBikingDistance } from '../../util/legUtils';
@@ -538,50 +537,27 @@ export function quitIteration(plan, newPlan, planParams, startTime) {
 }
 
 /**
- * Checks if itinerary in local storage was set with identical URL parameters.
+ * Enables Navigator assisted journey on itinerary selection if all of the following resolve as true:
+ * - a stored itinerary exists
+ * - the stored itinerary ends in future
+ * - the params stored along itinerary are identical to current URL parameters
  *
- * Note: storedParams.hash is not compared
- *
- * @param {{from: string, to: string, time: number, arriveBy: boolean}} storedParams
+ * @param {{itinerary: itineraryShape, params: {from: string, to: string, time: number, arriveBy: boolean, index: string}}} itinerary matchContext with URL params
  * @param {matchShape} match matchContext with URL params
- * @returns true if stored itinerary was set with identical parameters
+ * @returns true if Navigator can be initialized with stored itinerary
  */
-const storedParamsMatchURL = (storedParams, match) => {
-  if (!storedParams || !match) {
+export const isStoredItineraryRelevant = ({ itinerary, params }, match) => {
+  if (!itinerary || !params) {
     return false;
   }
 
   return (
-    storedParams.from === match.params?.from &&
-    storedParams.to === match.params?.to &&
-    storedParams.time === match.location?.query?.time &&
-    storedParams.arriveBy === match.location?.query?.arriveBy
-  );
-};
-
-/**
- * Enables Navigator assisted journey on itinerary selection if all of the following resolve as true:
- * - a stored itinerary exists
- * - the stored itinerary ends in future
- * - the params stored along itinerary match those of the current query
- *
- * Note: Itinerary related hash param is also compared
- *
- * @param {matchShape} match matchContext with URL params
- * @returns true if Navigator can be initialized with stored itinerary
- */
-export const isStoredItineraryRelevant = match => {
-  /* eslint-disable eqeqeq */
-  const { itinerary, params } = getLatestNavigatorItinerary();
-  const {
-    params: { hash, secondHash },
-  } = match;
-
-  return (
-    (itinerary &&
-      Date.parse(itinerary.end) > Date.now() &&
-      storedParamsMatchURL(params, match) &&
-      params?.index == secondHash) ||
-    params?.index == hash
+    Date.parse(itinerary.end) > Date.now() &&
+    params.from === match.params.from &&
+    params.to === match.params.to &&
+    params.time === match.location?.query?.time &&
+    params.arriveBy === match.location?.query?.arriveBy &&
+    params.hash === match.params.hash &&
+    params.secondHash === match.params.secondHash
   );
 };
