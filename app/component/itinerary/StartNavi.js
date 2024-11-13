@@ -21,7 +21,7 @@ const StartNavi = ({ setNavigation, itinerary }, context) => {
         to: match.params.to,
         arriveBy: match.location.query.arriveBy,
         time: match.location.query.time,
-        index: match.params.hash,
+        index: match.params.secondHash ?? match.params.hash,
       },
     });
   };

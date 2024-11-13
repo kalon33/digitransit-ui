@@ -70,7 +70,6 @@ import {
   setCurrentTimeToURL,
   settingsLimitRouting,
   stopClient,
-  storedParamsMatchURL,
   updateClient,
 } from './ItineraryPageUtils';
 import ItineraryTabs from './ItineraryTabs';
@@ -746,11 +745,9 @@ export default function ItineraryPage(props, context) {
     updateLocalStorage(true);
     addFeedbackly(context);
 
-    const { params: storedParams } = getLatestNavigatorItinerary();
-    if (
-      (hash === undefined || hash === null) &&
-      !storedParamsMatchURL(storedParams, match)
-    ) {
+    if (isStoredItineraryRelevant(match)) {
+      setNavigation(true);
+    } else {
       clearLatestNavigatorItinerary();
     }
 
@@ -774,9 +771,6 @@ export default function ItineraryPage(props, context) {
       makeRelaxedQuery();
       makeRelaxedScooterQuery();
     }
-    if (isStoredItineraryRelevant(match)) {
-      setNavigation(true);
-    }
   }, [
     settingsState.settingsChanged,
     params.from,
@@ -788,9 +782,6 @@ export default function ItineraryPage(props, context) {
   useEffect(() => {
     navigateMap();
     setMapState({ center: undefined, zoom: undefined, bounds: undefined });
-    if (isStoredItineraryRelevant(match)) {
-      setNavigation(true);
-    }
 
     if (detailView) {
       // If itinerary is not found in detail view, go back to summary view

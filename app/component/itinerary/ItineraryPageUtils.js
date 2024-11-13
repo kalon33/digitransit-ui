@@ -546,16 +546,16 @@ export function quitIteration(plan, newPlan, planParams, startTime) {
  * @param {matchShape} match matchContext with URL params
  * @returns true if stored itinerary was set with identical parameters
  */
-export const storedParamsMatchURL = (storedParams, match) => {
+const storedParamsMatchURL = (storedParams, match) => {
   if (!storedParams || !match) {
     return false;
   }
 
   return (
-    storedParams.from === match?.params?.from &&
-    storedParams.to === match?.params?.to &&
-    storedParams.time === match?.location?.query?.time &&
-    storedParams.arriveBy === match?.location?.query?.arriveBy
+    storedParams.from === match.params?.from &&
+    storedParams.to === match.params?.to &&
+    storedParams.time === match.location?.query?.time &&
+    storedParams.arriveBy === match.location?.query?.arriveBy
   );
 };
 
@@ -571,15 +571,17 @@ export const storedParamsMatchURL = (storedParams, match) => {
  * @returns true if Navigator can be initialized with stored itinerary
  */
 export const isStoredItineraryRelevant = match => {
+  /* eslint-disable eqeqeq */
   const { itinerary, params } = getLatestNavigatorItinerary();
   const {
-    params: { hash = null },
+    params: { hash, secondHash },
   } = match;
 
   return (
-    itinerary &&
-    Date.parse(itinerary.end) > Date.now() &&
-    storedParamsMatchURL(params, match) &&
-    params?.index === hash
+    (itinerary &&
+      Date.parse(itinerary.end) > Date.now() &&
+      storedParamsMatchURL(params, match) &&
+      params?.index == secondHash) ||
+    params?.index == hash
   );
 };
