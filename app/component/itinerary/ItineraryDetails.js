@@ -42,7 +42,6 @@ import Emissions from './Emissions';
 import EmissionsInfo from './EmissionsInfo';
 import FareDisclaimer from './FareDisclaimer';
 
-/* eslint-disable prettier/prettier */
 class ItineraryDetails extends React.Component {
   static propTypes = {
     itinerary: itineraryShape.isRequired,
