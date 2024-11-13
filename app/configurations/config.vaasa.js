@@ -35,7 +35,7 @@ export default configMerger(walttiConfig, {
 
   title: APP_TITLE,
 
-  logo: 'vaasa/vaasa-favicon.png',
+  logo: 'vaasa/vaasa_vasa_rgb_nega_v01.png',
   secondaryLogo: 'vaasa/secondary-logo.png',
 
   feedIds: ['Vaasa'],
