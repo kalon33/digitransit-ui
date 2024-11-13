@@ -541,6 +541,7 @@ export function quitIteration(plan, newPlan, planParams, startTime) {
  * Checks if itinerary in local storage was set with identical URL parameters.
  *
  * Note: storedParams.hash is not compared
+ *
  * @param {{from: string, to: string, time: number, arriveBy: boolean}} storedParams
  * @param {matchShape} match matchContext with URL params
  * @returns true if stored itinerary was set with identical parameters
@@ -559,12 +560,13 @@ export const storedParamsMatchURL = (storedParams, match) => {
 };
 
 /**
- * Enables Navigator assisted journey to on itinerary selection if all of the following resolve as true:
- * a stored itinerary exists
- * the stored itinerary ends in future
- * the params stored along itinerary match those of the current query
+ * Enables Navigator assisted journey on itinerary selection if all of the following resolve as true:
+ * - a stored itinerary exists
+ * - the stored itinerary ends in future
+ * - the params stored along itinerary match those of the current query
  *
  * Note: Itinerary related hash param is also compared
+ *
  * @param {matchShape} match matchContext with URL params
  * @returns true if Navigator can be initialized with stored itinerary
  */
