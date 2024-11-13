@@ -1,21 +1,22 @@
-import isEqual from 'lodash/isEqual';
-import isEmpty from 'lodash/isEmpty';
-import pick from 'lodash/pick';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
+import isEqual from 'lodash/isEqual';
+import pick from 'lodash/pick';
 import polyline from 'polyline-encoded';
 import SunCalc from 'suncalc';
-import { boundWithMinimumArea } from '../../util/geo-utils';
-import { addAnalyticsEvent } from '../../util/analyticsUtils';
-import { getStartTimeWithColon } from '../../util/timeUtils';
-import { getSettings, getDefaultSettings } from '../../util/planParamUtil';
-import { PlannerMessageType } from '../../constants';
 import {
+  changeRealTimeClientTopics,
   startRealTimeClient,
   stopRealTimeClient,
-  changeRealTimeClientTopics,
 } from '../../action/realTimeClientAction';
+import { PlannerMessageType } from '../../constants';
+import { getLatestNavigatorItinerary } from '../../store/localStorage';
+import { addAnalyticsEvent } from '../../util/analyticsUtils';
+import { boundWithMinimumArea } from '../../util/geo-utils';
+import { compressLegs, getTotalBikingDistance } from '../../util/legUtils';
 import { getMapLayerOptions } from '../../util/mapLayerUtils';
-import { getTotalBikingDistance, compressLegs } from '../../util/legUtils';
+import { getDefaultSettings, getSettings } from '../../util/planParamUtil';
+import { getStartTimeWithColon } from '../../util/timeUtils';
 
 /**
  * Returns the index of selected itinerary. Attempts to look for
@@ -535,3 +536,48 @@ export function quitIteration(plan, newPlan, planParams, startTime) {
   }
   return false;
 }
+
+/**
+ * Checks if itinerary in local storage was set with identical URL parameters.
+ *
+ * Note: storedParams.hash is not compared
+ * @param {{from: string, to: string, time: number, arriveBy: boolean}} storedParams
+ * @param {matchShape} match matchContext with URL params
+ * @returns true if stored itinerary was set with identical parameters
+ */
+export const storedParamsMatchURL = (storedParams, match) => {
+  if (!storedParams || !match) {
+    return false;
+  }
+
+  return (
+    storedParams.from === match?.params?.from &&
+    storedParams.to === match?.params?.to &&
+    storedParams.time === match?.location?.query?.time &&
+    storedParams.arriveBy === match?.location?.query?.arriveBy
+  );
+};
+
+/**
+ * Enables Navigator assisted journey to on itinerary selection if all of the following resolve as true:
+ * a stored itinerary exists
+ * the stored itinerary ends in future
+ * the params stored along itinerary match those of the current query
+ *
+ * Note: Itinerary related hash param is also compared
+ * @param {matchShape} match matchContext with URL params
+ * @returns true if Navigator can be initialized with stored itinerary
+ */
+export const isStoredItineraryRelevant = match => {
+  const { itinerary, params } = getLatestNavigatorItinerary();
+  const {
+    params: { hash = null },
+  } = match;
+
+  return (
+    itinerary &&
+    Date.parse(itinerary.end) > Date.now() &&
+    storedParamsMatchURL(params, match) &&
+    params?.index === hash
+  );
+};

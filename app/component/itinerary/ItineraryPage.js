@@ -61,6 +61,7 @@ import {
   getSelectedItineraryIndex,
   getTopics,
   isEqualItineraries,
+  isStoredItineraryRelevant,
   mergeBikeTransitPlans,
   mergeScooterTransitPlan,
   quitIteration,
@@ -69,6 +70,7 @@ import {
   setCurrentTimeToURL,
   settingsLimitRouting,
   stopClient,
+  storedParamsMatchURL,
   updateClient,
 } from './ItineraryPageUtils';
 import ItineraryTabs from './ItineraryTabs';
@@ -739,51 +741,6 @@ export default function ItineraryPage(props, context) {
     );
   }
 
-  /**
-   * Checks if itinerary in local storage was set with identical parameters.
-   *
-   * @param {{from: string, to: string, time: number, arriveBy: boolean, hash: number}} storedParams
-   * @param {boolean} shouldCompareHash false bypasses hash check when user navigates to ItineraryPage root with the list of suggested itineraries
-   * @returns true if stored itinerary was set with identical parameters
-   */
-  const isMatchingParams = (storedParams, shouldCompareHash) => {
-    if (!storedParams) {
-      return false;
-    }
-    let isHashOK = true;
-    if (shouldCompareHash) {
-      isHashOK =
-        hash !== undefined && hash !== null && storedParams.index === hash;
-    }
-    return (
-      storedParams.from === params.from &&
-      storedParams.to === params.to &&
-      storedParams.time === query.time &&
-      storedParams.arriveBy === query.arriveBy &&
-      isHashOK
-    );
-  };
-
-  /**
-   * Enables naviMode immediately on itinerary selection if all of the following resolve as true:
-   * a stored itinerary exists
-   * the stored itinerary ends in future
-   * the params stored along itinerary match those of the current query
-   *
-   * Note: false value is not passed to setNavigation to prevent localStorage entry from being cleared
-   */
-  const setupNavigator = () => {
-    const { itinerary: storedItinerary, params: storedParams } =
-      getLatestNavigatorItinerary();
-    if (
-      storedItinerary &&
-      Date.parse(storedItinerary.end) > Date.now() &&
-      isMatchingParams(storedParams, true)
-    ) {
-      setNavigation(true);
-    }
-  };
-
   useEffect(() => {
     setCurrentTimeToURL(config, match);
     updateLocalStorage(true);
@@ -791,8 +748,8 @@ export default function ItineraryPage(props, context) {
 
     const { params: storedParams } = getLatestNavigatorItinerary();
     if (
-      !isMatchingParams(storedParams, false) &&
-      (hash === undefined || hash === null)
+      (hash === undefined || hash === null) &&
+      !storedParamsMatchURL(storedParams, match)
     ) {
       clearLatestNavigatorItinerary();
     }
@@ -817,7 +774,9 @@ export default function ItineraryPage(props, context) {
       makeRelaxedQuery();
       makeRelaxedScooterQuery();
     }
-    setupNavigator();
+    if (isStoredItineraryRelevant(match)) {
+      setNavigation(true);
+    }
   }, [
     settingsState.settingsChanged,
     params.from,
@@ -829,7 +788,9 @@ export default function ItineraryPage(props, context) {
   useEffect(() => {
     navigateMap();
     setMapState({ center: undefined, zoom: undefined, bounds: undefined });
-    setupNavigator();
+    if (isStoredItineraryRelevant(match)) {
+      setNavigation(true);
+    }
 
     if (detailView) {
       // If itinerary is not found in detail view, go back to summary view
