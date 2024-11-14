@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { configShape } from '../../util/shapes';
-import { epochToTime } from '../../util/timeUtils';
+import { configShape } from '../../../util/shapes';
+import { epochToTime } from '../../../util/timeUtils';
 
 export default function NaviBottom({ setNavigation, arrival }, { config }) {
   const remainingDuration = Math.ceil((arrival - Date.now()) / 60000); // ms to minutes

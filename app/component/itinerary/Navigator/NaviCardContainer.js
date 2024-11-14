@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, intlShape } from 'react-intl';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
-import { legShape, configShape } from '../../util/shapes';
-import { legTime, legTimeStr } from '../../util/legUtils';
+import { legShape, configShape } from '../../../util/shapes';
+import { legTime, legTimeStr } from '../../../util/legUtils';
 import NaviCard from './NaviCard';
 import NaviStack from './NaviStack';
 import {

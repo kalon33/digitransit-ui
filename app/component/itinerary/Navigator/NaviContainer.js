@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { legTime } from '../../util/legUtils';
-import { itineraryShape, relayShape } from '../../util/shapes';
+import { legTime } from '../../../util/legUtils';
+import { itineraryShape, relayShape } from '../../../util/shapes';
 import NaviBottom from './NaviBottom';
 import NaviCardContainer from './NaviCardContainer';
-import { useRealtimeLegs } from './hooks/useRealtimeLegs';
+import { useRealtimeLegs } from '../hooks/useRealtimeLegs';
 
 function NaviContainer(
   { itinerary, focusToLeg, relayEnvironment, setNavigation, mapRef },

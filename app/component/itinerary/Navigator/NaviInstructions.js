@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-import { legShape, configShape } from '../../util/shapes';
-import { legDestination, legTimeStr, legTime } from '../../util/legUtils';
-import RouteNumber from '../RouteNumber';
+import { legShape, configShape } from '../../../util/shapes';
+import { legDestination, legTimeStr, legTime } from '../../../util/legUtils';
+import RouteNumber from '../../RouteNumber';
 import { LEGTYPE } from './NaviUtils';
-import { displayDistance } from '../../util/geo-utils';
-import { durationToString } from '../../util/timeUtils';
+import { displayDistance } from '../../../util/geo-utils';
+import { durationToString } from '../../../util/timeUtils';
 
 export default function NaviInstructions(
   { leg, nextLeg, instructions, legType },

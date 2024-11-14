@@ -73,7 +73,7 @@ import {
   updateClient,
 } from './ItineraryPageUtils';
 import ItineraryTabs from './ItineraryTabs';
-import NaviContainer from './NaviContainer';
+import NaviContainer from './Navigator/NaviContainer';
 import NavigatorIntroModal from './NavigatorIntro/NavigatorIntroModal';
 import planConnection from './PlanConnection';
 

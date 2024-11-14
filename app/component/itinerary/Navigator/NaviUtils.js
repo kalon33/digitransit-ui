@@ -1,9 +1,9 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { legTime } from '../../util/legUtils';
-import { timeStr } from '../../util/timeUtils';
-import { getFaresFromLegs } from '../../util/fareUtils';
-import { ExtendedRouteTypes } from '../../constants';
+import { legTime } from '../../../util/legUtils';
+import { timeStr } from '../../../util/timeUtils';
+import { getFaresFromLegs } from '../../../util/fareUtils';
+import { ExtendedRouteTypes } from '../../../constants';
 
 const TRANSFER_SLACK = 60000;
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { legShape } from '../../util/shapes';
-import Icon from '../Icon';
-import { isRental } from '../../util/legUtils';
+import { legShape } from '../../../util/shapes';
+import Icon from '../../Icon';
+import { isRental } from '../../../util/legUtils';
 import NaviInstructions from './NaviInstructions';
 import NaviCardExtension from './NaviCardExtension';
 import { LEGTYPE } from './NaviUtils';

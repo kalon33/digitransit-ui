@@ -2,15 +2,15 @@ import React from 'react';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import Icon from '../Icon';
-import StopCode from '../StopCode';
-import PlatformNumber from '../PlatformNumber';
-import { getZoneLabel, legTime } from '../../util/legUtils';
-import ZoneIcon from '../ZoneIcon';
-import { legShape, configShape } from '../../util/shapes';
+import Icon from '../../Icon';
+import StopCode from '../../StopCode';
+import PlatformNumber from '../../PlatformNumber';
+import { getZoneLabel, legTime } from '../../../util/legUtils';
+import ZoneIcon from '../../ZoneIcon';
+import { legShape, configShape } from '../../../util/shapes';
 import { getDestinationProperties, LEGTYPE } from './NaviUtils';
 
-import RouteNumberContainer from '../RouteNumberContainer';
+import RouteNumberContainer from '../../RouteNumberContainer';
 
 const NaviCardExtension = ({ legType, leg }, { config }) => {
   const { stop, name } = leg.to;
