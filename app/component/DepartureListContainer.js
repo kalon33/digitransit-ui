@@ -314,7 +314,7 @@ class DepartureListContainer extends Component {
         );
       }
 
-      const id = `${departure.pattern.code}:${departure.stoptime}`;
+      const id = `${departure.pattern.code}:${departure.stoptime}:${departure.trip.gtfsId}`;
       const dropoffMessage = getDropoffMessage(
         departure.hasOnlyDropoff,
         departure.hasNoStop,
