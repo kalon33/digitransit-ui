@@ -2,7 +2,7 @@ import Modal from '@hsl-fi/modal';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { intlShape } from 'react-intl';
-import { configShape } from '../../../util/shapes';
+import { configShape } from '../../../../util/shapes';
 import NavigatorIntro from './NavigatorIntro';
 
 const NavigatorIntroModal = ({ onPrimaryClick, onClose }, context) => {
@@ -17,7 +17,7 @@ const NavigatorIntroModal = ({ onPrimaryClick, onClose }, context) => {
     const loadLogo = async () => {
       try {
         const importedLogo = await import(
-          /* webpackChunkName: "main" */ `../../../configurations/images/${config.navigationLogo}`
+          /* webpackChunkName: "main" */ `../../../../configurations/images/${config.navigationLogo}`
         );
         setLogo(importedLogo.default);
       } catch (error) {

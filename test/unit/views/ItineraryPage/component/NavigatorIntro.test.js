@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import { describe, it } from 'mocha';
 import React from 'react';
 
-import NavigatorIntro from '../../../../../app/component/itinerary/NavigatorIntro/NavigatorIntro';
+import NavigatorIntro from '../../../../../app/component/itinerary/Navigator/NavigatorIntro/NavigatorIntro';
 import {
   mockChildContextTypes,
   mockContext,
