@@ -29,9 +29,8 @@ const NaviCardExtension = ({ legType, leg }, { config }) => {
 
   if (legType === LEGTYPE.TRANSIT) {
     const { intermediatePlaces } = leg;
-    const idx = intermediatePlaces.findIndex(
-      p => legTime(p.arrival) > Date.now(),
-    );
+    const now = Date.now();
+    const idx = intermediatePlaces.findIndex(p => legTime(p.arrival) > now);
 
     const count = idx > -1 ? intermediatePlaces.length - idx : 0;
     const stopCount = <span className="realtime"> {count} </span>;
