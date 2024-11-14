@@ -2,15 +2,13 @@ import connectToStores from 'fluxible-addons-react/connectToStores';
 import { graphql, createPaginationContainer } from 'react-relay';
 import StopsNearYouMap from './map/StopsNearYouMap';
 
-import TimeStore from '../store/TimeStore';
 import FavouriteStore from '../store/FavouriteStore';
 import PreferencesStore from '../store/PreferencesStore';
 
 const StopsNearYouMapWithStores = connectToStores(
   StopsNearYouMap,
-  [TimeStore, PreferencesStore, FavouriteStore],
+  [PreferencesStore, FavouriteStore],
   ({ getStore }, { match }) => {
-    const currentTime = getStore(TimeStore).getCurrentTime();
     const language = getStore(PreferencesStore).getLanguage();
     const favouriteIds =
       match.params.mode === 'CITYBIKE'
@@ -26,7 +24,6 @@ const StopsNearYouMapWithStores = connectToStores(
           );
     return {
       language,
-      currentTime,
       favouriteIds,
     };
   },

@@ -69,7 +69,7 @@ const planConnection = graphql`
             mode
             distance
             transitLeg
-            id
+            legId: id
             interlineWithPreviousLeg
             intermediatePlaces {
               arrival {

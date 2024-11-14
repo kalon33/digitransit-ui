@@ -17,7 +17,6 @@ import {
   getDialogState,
   getLatestNavigatorItinerary,
   setDialogState,
-  setLatestNavigatorItinerary,
 } from '../../store/localStorage';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
 import { getWeatherData } from '../../util/apiUtils';
@@ -62,6 +61,7 @@ import {
   getSelectedItineraryIndex,
   getTopics,
   isEqualItineraries,
+  isStoredItineraryRelevant,
   mergeBikeTransitPlans,
   mergeScooterTransitPlan,
   quitIteration,
@@ -650,11 +650,6 @@ export default function ItineraryPage(props, context) {
       setMapState({ center: undefined, zoom: undefined, bounds: undefined });
       navigateMap();
       clearLatestNavigatorItinerary();
-    } else {
-      const { combinedEdges, selectedIndex } = getItinerarySelection();
-      if (combinedEdges[selectedIndex]?.node) {
-        setLatestNavigatorItinerary(combinedEdges[selectedIndex]?.node);
-      }
     }
     setNaviMode(isEnabled);
   };
@@ -751,10 +746,11 @@ export default function ItineraryPage(props, context) {
     addFeedbackly(context);
 
     const storedItinerary = getLatestNavigatorItinerary();
-
-    setNavigation(
-      storedItinerary?.end && Date.parse(storedItinerary.end) > Date.now(),
-    );
+    if (isStoredItineraryRelevant(storedItinerary, match)) {
+      setNavigation(true);
+    } else {
+      clearLatestNavigatorItinerary();
+    }
 
     return () => {
       if (showVehicles()) {
@@ -1140,8 +1136,9 @@ export default function ItineraryPage(props, context) {
     );
   } else if (detailView) {
     if (naviMode) {
-      const naviModeItinerary =
-        getLatestNavigatorItinerary() || combinedEdges[selectedIndex]?.node;
+      const { itinerary: storedItinerary } = getLatestNavigatorItinerary();
+      const itineraryForNavigator =
+        storedItinerary || combinedEdges[selectedIndex]?.node;
 
       content = (
         <>
@@ -1153,7 +1150,7 @@ export default function ItineraryPage(props, context) {
             />
           )}
           <NaviContainer
-            itinerary={naviModeItinerary}
+            itinerary={itineraryForNavigator}
             focusToLeg={focusToLeg}
             relayEnvironment={props.relayEnvironment}
             setNavigation={setNavigation}

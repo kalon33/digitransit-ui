@@ -3,7 +3,7 @@ import { graphql } from 'react-relay';
 const legQuery = graphql`
   query LegQuery($id: String!) {
     leg(id: $id) {
-      id
+      legId: id
       start {
         scheduledTime
         estimated {

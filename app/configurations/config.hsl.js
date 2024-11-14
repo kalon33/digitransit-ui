@@ -426,6 +426,7 @@ export default {
       ? fareId.substring(fareId.indexOf(':') + 1)
       : '';
   },
+  ticketButtonTextId: 'open-app',
 
   trafficNowLink: {
     fi: 'matkustaminen/liikenne',

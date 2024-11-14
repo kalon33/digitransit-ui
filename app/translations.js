@@ -862,6 +862,7 @@ const translations = {
     'as-destination': 'Destination',
     'as-origin': 'Origin',
     'as-viapoint': 'Viapoint',
+    'buy-in-app': 'Buy in App',
     'search-autosuggest-label': 'Venue, place and stopsearch.',
     'search-autosuggest-label-instructions':
       'Navigate list with arrow keys and select with enter key.',
@@ -2117,6 +2118,7 @@ const translations = {
     'as-destination': 'Määränpääksi',
     'as-origin': 'Lähtöpaikaksi',
     'as-viapoint': 'Välipisteeksi',
+    'buy-in-app': 'Osta sovelluksessa',
     'search-autosuggest-label': 'Paikka, linja ja pysäkkihaku.',
     'search-autosuggest-label-instructions':
       'Navigoi listassa nuolinäppäimillä ja valitse enterillä.',
@@ -5039,6 +5041,7 @@ const translations = {
     'as-viapoint': 'Via punkt',
     'book-a-lift':
       'Tilaa kyyti sovelluksella ja jää odottamaan sen saapumista:',
+    'buy-in-app': 'Köp i appen',
     'search-autosuggest-label': 'Plats, linje och hållplatssökning.',
     'search-autosuggest-label-instructions':
       'Navigera listan med piltangenterna och välj med Enter-tangeten.',

@@ -29,13 +29,13 @@ const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
           fetchQuery(
             relayEnvironment,
             legQuery,
-            { id: leg.id },
+            { id: leg.legId },
             { force: true },
           ).toPromise(),
         );
       const responses = await Promise.all(legQueries);
       return responses.reduce(
-        (map, response) => ({ ...map, [response.leg.id]: response.leg }),
+        (map, response) => ({ ...map, [response.leg.legId]: response.leg }),
         {},
       );
     },
@@ -49,7 +49,7 @@ const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
     );
 
     const rtLegs = initialLegs.map(l => {
-      const rtLeg = l.id ? rtLegMap[l.id] : null;
+      const rtLeg = l.legId ? rtLegMap[l.legId] : null;
       if (rtLeg) {
         return {
           ...l,
