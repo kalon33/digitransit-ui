@@ -581,7 +581,9 @@ export default {
   showSimilarRoutesOnRouteDropDown: true,
   useRealtimeTravellerCapacities: true,
 
-  navigation: true,
+  navigation:
+    process.env.RUN_ENV === 'development' ||
+    process.env.NODE_ENV !== 'production',
   navigationLogo: 'hsl/navigator-logo.svg',
 
   stopCard: {

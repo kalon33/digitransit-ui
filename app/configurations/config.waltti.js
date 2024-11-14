@@ -264,7 +264,9 @@ export default {
       value: 600,
     },
   ],
-  navigation: true,
+  navigation:
+    process.env.RUN_ENV === 'development' ||
+    process.env.NODE_ENV !== 'production',
 
   ticketPurchaseLink: function purchaseTicketLink(fare, operatorCode) {
     const fareId = fare.fareProducts[0].product.id;
