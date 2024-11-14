@@ -71,6 +71,14 @@ const planConnection = graphql`
             transitLeg
             legId: id
             interlineWithPreviousLeg
+            intermediatePlaces {
+              arrival {
+                scheduledTime
+                estimated {
+                  time
+                }
+              }
+            }
             duration
             headsign
             realtimeState

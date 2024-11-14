@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import cx from 'classnames';
 import NaviMessage from './NaviMessage';
 
-const NaviStack = ({ messages, handleRemove, cardExpanded }) => {
+const NaviStack = ({ messages, handleRemove, classPostfix }) => {
   return (
-    <div className={cx('info-stack', 'slide-in', cardExpanded && 'expanded')}>
+    <div className={cx('info-stack', 'slide-in', classPostfix)}>
       {messages.map((notification, index) => (
         <NaviMessage
           key={notification.id}
@@ -28,11 +28,11 @@ NaviStack.propTypes = {
     }),
   ).isRequired,
   handleRemove: PropTypes.func.isRequired,
-  cardExpanded: PropTypes.bool,
+  classPostfix: PropTypes.string,
 };
 
 NaviStack.defaultProps = {
-  cardExpanded: false,
+  classPostfix: '',
 };
 
 export default NaviStack;

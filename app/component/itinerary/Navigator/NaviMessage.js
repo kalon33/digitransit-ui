@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { intlShape } from 'react-intl';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import { configShape } from '../../util/shapes';
+import { configShape } from '../../../util/shapes';
 
-import Icon from '../Icon';
+import Icon from '../../Icon';
 
 function NaviMessage({ severity, children, index, handleRemove }, { config }) {
   const [removingIndex, setRemovingIndex] = useState(null);

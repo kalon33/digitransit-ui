@@ -2,14 +2,15 @@ import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, intlShape } from 'react-intl';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
-import { legShape, configShape } from '../../util/shapes';
-import { legTime, legTimeStr } from '../../util/legUtils';
+import { legShape, configShape } from '../../../util/shapes';
+import { legTime, legTimeStr } from '../../../util/legUtils';
 import NaviCard from './NaviCard';
 import NaviStack from './NaviStack';
 import {
   getItineraryAlerts,
   getTransitLegState,
   getAdditionalMessages,
+  LEGTYPE,
 } from './NaviUtils';
 
 const DESTINATION_RADIUS = 20; // meters
@@ -141,7 +142,7 @@ function NaviCardContainer(
   }, [time]);
 
   const { first, last } = getFirstLastLegs(realTimeLegs);
-
+  let legType;
   let naviTopContent;
   if (time < legTime(first.start)) {
     naviTopContent = (
@@ -151,31 +152,41 @@ function NaviCardContainer(
       />
     );
   } else if (currentLeg) {
+    const nextLeg = realTimeLegs.find(leg => {
+      return legTime(leg.start) > legTime(currentLeg.start);
+    });
     if (!currentLeg.transitLeg) {
-      const nextLeg = realTimeLegs.find(leg => {
-        return legTime(leg.start) > legTime(currentLeg.start);
-      });
-      let legType;
       if (destCountRef.current >= TIME_AT_DESTINATION) {
-        legType = 'wait';
+        legType = LEGTYPE.WAIT;
       } else {
-        legType = 'move';
+        legType = LEGTYPE.MOVE;
       }
-      naviTopContent = (
-        <NaviCard
-          leg={currentLeg}
-          nextLeg={nextLeg}
-          cardExpanded={cardExpanded}
-          legType={legType}
-        />
-      );
     } else {
-      naviTopContent = `Tracking ${currentLeg?.mode} leg`;
+      legType = LEGTYPE.TRANSIT;
     }
+    naviTopContent = (
+      <NaviCard
+        leg={currentLeg}
+        nextLeg={nextLeg}
+        cardExpanded={cardExpanded}
+        legType={legType}
+      />
+    );
   } else if (time > legTime(last.end)) {
     naviTopContent = <FormattedMessage id="navigation-journey-end" />;
   } else {
     naviTopContent = <FormattedMessage id="navigation-wait" />;
+  }
+
+  // Card has 4 sizes: first leg collapsed, expanded
+  // and in transit collapsed, expanded.
+  let classPostfix = '';
+  if (legType === LEGTYPE.TRANSIT && cardExpanded) {
+    classPostfix = 'expand-transit';
+  } else if (legType === LEGTYPE.TRANSIT) {
+    classPostfix = 'transit';
+  } else if (cardExpanded) {
+    classPostfix = 'expanded';
   }
   const handleRemove = index => {
     setActiveMessages(activeMessages.filter((_, i) => i !== index));
@@ -193,8 +204,8 @@ function NaviCardContainer(
       {activeMessages.length > 0 && (
         <NaviStack
           messages={activeMessages}
-          cardExpanded={cardExpanded}
           handleRemove={handleRemove}
+          classPostfix={classPostfix}
         />
       )}
     </>

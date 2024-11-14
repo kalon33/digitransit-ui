@@ -51,7 +51,7 @@
   align-items: center;
 
   &.expanded {
-    max-height: 150px;
+    max-height: unset;
   }
 
   .navitop-arrow {
@@ -96,11 +96,24 @@
         width: 100%;
         font-size: $font-size-normal;
         font-weight: $font-weight-medium;
+        margin-bottom: var(--space-s);
+
+        &.expanded {
+          margin-bottom: 0;
+        }
 
         .destination-header {
           font-size: $font-size-normal;
           font-weight: $font-weight-medium;
           display: flex;
+        }
+
+        .vehicle-leg {
+          display: flex;
+          margin-top: var(--space-xs);
+          font-weight: $font-weight-book;
+          width: 80%;
+          text-align: left;
         }
 
         .wait-leg {
@@ -120,20 +133,6 @@
             height: 25px;
             width: 25px;
           }
-
-          .route-number {
-            min-width: 55px;
-
-            .vcenter-children {
-              .vehicle-number {
-                color: white;
-                font-size: $font-size-large;
-                margin-top: 4px;
-              }
-
-              display: flex;
-            }
-          }
         }
       }
 
@@ -148,18 +147,64 @@
       }
     }
 
-    .secondary-info {
+    .extension {
       flex-direction: column;
       max-height: 250px;
-      padding-top: var(--space-xxs);
+      margin-bottom: var(--space-s);
 
-      .secondary-divider {
+      .extension-divider {
         border: 1px solid #ddd;
         width: 75%;
         margin-left: 50px;
+        margin-top: var(--space-s);
+        margin-bottom: var(--space-s);
       }
 
-      .secondary-content {
+      .stop-count {
+        display: flex;
+        margin-left: 48px;
+        font-weight: $font-weight-book;
+      }
+
+      .extension-routenumber {
+        display: flex;
+        flex-direction: row;
+        font-weight: $font-weight-book;
+        margin-left: 48px;
+        margin-bottom: var(--space-s);
+        text-align: left;
+
+        .route-number {
+          min-width: 55px;
+
+          .vcenter-children {
+            .vehicle-number {
+              color: white;
+              margin-top: 4px;
+            }
+
+            display: flex;
+          }
+        }
+
+        .line {
+          text-align: center;
+
+          .icon {
+            font-size: 24px;
+          }
+        }
+
+        .dest-name {
+          display: flex;
+          flex-direction: column;
+          margin-left: var(--space-xs);
+          justify-content: center;
+          font-size: $font-size-small;
+        }
+      }
+
+      .extension-walk {
         display: flex;
         margin-left: var(--space-xxl);
         margin-bottom: var(--space-s);
@@ -288,10 +333,26 @@
   height: 69px;
   margin-left: 5%;
   width: 90%;
-  top: 150px;
+  top: 155px;
+
+  div:first-child {
+    margin-top: 0;
+  }
+
+  div:not(:first-child) {
+    margin-top: 5px;
+  }
 
   &.expanded {
-    top: 180px;
+    top: 190px;
+  }
+
+  &.expand-transit {
+    top: 235px;
+  }
+
+  &.transit {
+    top: 162px;
   }
 
   &.slide-out {
@@ -309,7 +370,6 @@
     display: flex;
     align-items: center;
     height: 100%;
-    margin-top: 5px;
 
     &.info {
       background-color: #e5f2fa;

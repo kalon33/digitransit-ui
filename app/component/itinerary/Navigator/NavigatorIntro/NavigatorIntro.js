@@ -3,8 +3,8 @@ import { connectToStores } from 'fluxible-addons-react';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
-import { configShape } from '../../../util/shapes';
-import Icon from '../../Icon';
+import { configShape } from '../../../../util/shapes';
+import Icon from '../../../Icon';
 import NavigatorIntroFeature from './NavigatorIntroFeature';
 
 const NavigatorIntro = (
