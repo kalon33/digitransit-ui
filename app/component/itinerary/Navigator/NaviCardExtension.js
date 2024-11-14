@@ -28,7 +28,7 @@ const NaviCardExtension = ({ legType, leg }, { config }) => {
   }
 
   if (legType === LEGTYPE.TRANSIT) {
-    const { intermediatePlaces } = leg;
+    const { intermediatePlaces, headsign } = leg;
     const now = Date.now();
     const idx = intermediatePlaces.findIndex(p => legTime(p.arrival) > now);
 
@@ -48,7 +48,7 @@ const NaviCardExtension = ({ legType, leg }, { config }) => {
             vertical
             withBar
           />
-          <div className="dest-name">{leg.to.name}</div>
+          <div className="dest-name">{headsign}</div>
         </div>
         <div className="stop-count">
           <FormattedMessage

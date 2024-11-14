@@ -43,33 +43,49 @@ export default function NaviInstructions(
       </>
     );
   }
-
   if (legType === LEGTYPE.WAIT) {
-    const { mode, headsign, route } = nextLeg;
-
+    const { mode, headsign, route, end } = nextLeg;
     const color = route.color ? route.color : 'currentColor';
     const localizedMode = intl.formatMessage({
-      id: `${mode.toLowerCase()}`,
+      id: `to-${mode.toLowerCase()}`,
       defaultMessage: `${mode}`,
     });
+    const t = legTime(end);
+    const remainingDuration = Math.ceil((t - Date.now()) / 60000); // ms to minutes
+    const rt = nextLeg.realtimeState === 'UPDATED';
+    const values = {
+      duration: (
+        <span className={cx({ realtime: rt })}> {remainingDuration} </span>
+      ),
+      legTime: <span className={cx({ realtime: rt })}>{legTimeStr(end)}</span>,
+    };
     return (
       <>
         <div className="destination-header">
           <FormattedMessage
             id="navigation-wait-mode"
             values={{ mode: localizedMode }}
-            defaultMessage="Wait for"
+            defaultMessage="Wait for {mode}"
           />
         </div>
         <div className="wait-leg">
-          <RouteNumber
-            mode={mode.toLowerCase()}
-            text={route?.shortName}
-            withBar
-            isTransitLeg
-            color={color}
-          />
-          <div className="headsign">{headsign}</div>
+          <div className="route-info">
+            <RouteNumber
+              mode={mode.toLowerCase()}
+              text={route?.shortName}
+              withBar
+              isTransitLeg
+              color={color}
+            />
+            <div className="headsign">{headsign}</div>
+          </div>
+          <div className="vehiclewait-leg">
+            <FormattedMessage
+              id="navileg-arrive-at"
+              defaultMessage="{duration}min päästä klo {legTime}"
+              values={values}
+            />
+          </div>
         </div>
       </>
     );

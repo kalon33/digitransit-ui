@@ -180,6 +180,7 @@ function NaviCardContainer(
 
   // Card has 4 sizes: first leg collapsed, expanded
   // and in transit collapsed, expanded.
+  // Todo: postfix fo wait leg
   let classPostfix = '';
   if (legType === LEGTYPE.TRANSIT && cardExpanded) {
     classPostfix = 'expand-transit';
