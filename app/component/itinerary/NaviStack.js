@@ -3,17 +3,7 @@ import PropTypes from 'prop-types';
 import cx from 'classnames';
 import NaviMessage from './NaviMessage';
 
-const NaviStack = ({ messages, handleRemove, cardExpanded, legType }) => {
-  // Card has 4 sizes: first leg collapsed, expanded
-  // and in transit collapsed, expanded.
-  let classPostfix = '';
-  if (legType === 'in-transit' && cardExpanded) {
-    classPostfix = 'expand-transit';
-  } else if (legType === 'in-transit') {
-    classPostfix = 'in-transit';
-  } else if (cardExpanded) {
-    classPostfix = 'expanded';
-  }
+const NaviStack = ({ messages, handleRemove, classPostfix }) => {
   return (
     <div className={cx('info-stack', 'slide-in', classPostfix)}>
       {messages.map((notification, index) => (
@@ -38,13 +28,11 @@ NaviStack.propTypes = {
     }),
   ).isRequired,
   handleRemove: PropTypes.func.isRequired,
-  cardExpanded: PropTypes.bool,
-  legType: PropTypes.string,
+  classPostfix: PropTypes.string,
 };
 
 NaviStack.defaultProps = {
-  cardExpanded: false,
-  legType: '',
+  classPostfix: '',
 };
 
 export default NaviStack;

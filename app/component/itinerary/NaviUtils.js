@@ -250,3 +250,9 @@ export const getDestinationProperties = (leg, stop, config) => {
 
   return destination;
 };
+
+export const LEGTYPE = {
+  WAIT: 'WAIT',
+  MOVE: 'MOVE',
+  TRANSIT: 'TRANSIT',
+};

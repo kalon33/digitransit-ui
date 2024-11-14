@@ -5,10 +5,11 @@ import { FormattedMessage } from 'react-intl';
 import Icon from '../Icon';
 import StopCode from '../StopCode';
 import PlatformNumber from '../PlatformNumber';
-import { getZoneLabel } from '../../util/legUtils';
+import { getZoneLabel, legTime } from '../../util/legUtils';
 import ZoneIcon from '../ZoneIcon';
 import { legShape, configShape } from '../../util/shapes';
-import { getDestinationProperties } from './NaviUtils';
+import { getDestinationProperties, LEGTYPE } from './NaviUtils';
+
 import RouteNumberContainer from '../RouteNumberContainer';
 
 const NaviCardExtension = ({ legType, leg }, { config }) => {
@@ -26,19 +27,14 @@ const NaviCardExtension = ({ legType, leg }, { config }) => {
     destination.name = place;
   }
 
-  if (legType === 'in-transit') {
+  if (legType === LEGTYPE.TRANSIT) {
     const { intermediatePlaces } = leg;
-    const now = new Date();
-    const idx =
-      intermediatePlaces.findIndex(
-        p =>
-          new Date(
-            p.arrival.estimated?.time || p.arrival.scheduledTime,
-          ).getTime() > now.getTime(),
-      ) ?? -1;
+    const idx = intermediatePlaces.findIndex(
+      p => legTime(p.arrival) > Date.now(),
+    );
 
     const count = idx > -1 ? intermediatePlaces.length - idx : 0;
-    const stopCountElement = <span className="realtime"> {count}</span>;
+    const stopCount = <span className="realtime"> {count} </span>;
     const translationId =
       count === 1 ? 'navileg-one-stop-remaining' : 'navileg-stops-remaining';
     return (
@@ -58,7 +54,7 @@ const NaviCardExtension = ({ legType, leg }, { config }) => {
         <div className="stop-count">
           <FormattedMessage
             id={translationId}
-            values={{ stopCount: stopCountElement }}
+            values={{ stopCount }}
             defaultMessage="{nrStopsRemaining} stops remaining"
           />
         </div>

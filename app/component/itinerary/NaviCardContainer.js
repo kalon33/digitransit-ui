@@ -10,6 +10,7 @@ import {
   getItineraryAlerts,
   getTransitLegState,
   getAdditionalMessages,
+  LEGTYPE,
 } from './NaviUtils';
 
 const DESTINATION_RADIUS = 20; // meters
@@ -156,12 +157,12 @@ function NaviCardContainer(
     });
     if (!currentLeg.transitLeg) {
       if (destCountRef.current >= TIME_AT_DESTINATION) {
-        legType = 'wait';
+        legType = LEGTYPE.WAIT;
       } else {
-        legType = 'move';
+        legType = LEGTYPE.MOVE;
       }
     } else {
-      legType = 'in-transit';
+      legType = LEGTYPE.TRANSIT;
     }
     naviTopContent = (
       <NaviCard
@@ -175,6 +176,17 @@ function NaviCardContainer(
     naviTopContent = <FormattedMessage id="navigation-journey-end" />;
   } else {
     naviTopContent = <FormattedMessage id="navigation-wait" />;
+  }
+
+  // Card has 4 sizes: first leg collapsed, expanded
+  // and in transit collapsed, expanded.
+  let classPostfix = '';
+  if (legType === LEGTYPE.TRANSIT && cardExpanded) {
+    classPostfix = 'expand-transit';
+  } else if (legType === LEGTYPE.TRANSIT) {
+    classPostfix = 'transit';
+  } else if (cardExpanded) {
+    classPostfix = 'expanded';
   }
   const handleRemove = index => {
     setActiveMessages(activeMessages.filter((_, i) => i !== index));
@@ -192,9 +204,8 @@ function NaviCardContainer(
       {activeMessages.length > 0 && (
         <NaviStack
           messages={activeMessages}
-          cardExpanded={cardExpanded}
           handleRemove={handleRemove}
-          legType={legType}
+          classPostfix={classPostfix}
         />
       )}
     </>
