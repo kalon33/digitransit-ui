@@ -264,7 +264,6 @@ export default {
       value: 600,
     },
   ],
-  navigation: true,
 
   ticketPurchaseLink: function purchaseTicketLink(fare, operatorCode) {
     const fareId = fare.fareProducts[0].product.id;
@@ -283,5 +282,12 @@ export default {
   analyticsScript: function createAnalyticsScript(hostname) {
     // eslint-disable-next-line no-useless-escape
     return `<script defer data-domain="${hostname}" src="https://plausible.io/js/script.js"><\/script>\n`;
+  },
+
+  // features that should not be deployed to production
+  experimental: {
+    navigation:
+      process.env.RUN_ENV === 'development' ||
+      process.env.NODE_ENV !== 'production',
   },
 };

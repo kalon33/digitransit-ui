@@ -581,9 +581,6 @@ export default {
   showSimilarRoutesOnRouteDropDown: true,
   useRealtimeTravellerCapacities: true,
 
-  navigation: true,
-  navigationLogo: 'hsl/navigator-logo.svg',
-
   stopCard: {
     header: {
       virtualMonitorBaseUrl: 'https://omatnaytot.hsl.fi/',
@@ -753,4 +750,13 @@ export default {
   },
 
   startSearchFromUserLocation: true,
+
+  navigationLogo: 'hsl/navigator-logo.svg',
+
+  // features that should not be deployed to production
+  experimental: {
+    navigation:
+      process.env.RUN_ENV === 'development' ||
+      process.env.NODE_ENV !== 'production',
+  },
 };
