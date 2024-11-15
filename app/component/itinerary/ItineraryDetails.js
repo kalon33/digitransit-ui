@@ -311,7 +311,6 @@ class ItineraryDetails extends React.Component {
             this.props.onStartNavigatorCallback && (
               <StartNavi
                 key="navigation"
-                itinerary={itinerary}
                 onStartNavigatorCallback={this.props.onStartNavigatorCallback}
               />
             ),
