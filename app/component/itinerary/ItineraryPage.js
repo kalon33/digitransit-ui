@@ -655,7 +655,7 @@ export default function ItineraryPage(props, context) {
     setNaviMode(isEnabled);
   };
 
-  const storeItineraryAndStartNavi = itinerary => {
+  const storeItineraryAndStartNavigation = itinerary => {
     setNavigation(true);
     setLatestNavigatorItinerary({
       itinerary,
@@ -1180,7 +1180,10 @@ export default function ItineraryPage(props, context) {
         Date.parse(combinedEdges[selectedIndex]?.node.end) < Date.now();
       const navigateHook =
         !desktop && config.experimental.navigation && !pastSearch
-          ? () => storeItineraryAndStartNavi(combinedEdges[selectedIndex]?.node)
+          ? () =>
+              storeItineraryAndStartNavigation(
+                combinedEdges[selectedIndex]?.node,
+              )
           : undefined;
       carEmissions = carEmissions ? Math.round(carEmissions) : undefined;
       content = (
@@ -1196,7 +1199,7 @@ export default function ItineraryPage(props, context) {
           bikeAndPublicItineraryCount={bikePublicPlan.bikePublicItineraryCount}
           openSettings={showSettingsPanel}
           relayEnvironment={props.relayEnvironment}
-          onStartNavigatorCallback={navigateHook}
+          onStartNavigator={navigateHook}
         />
       );
     }

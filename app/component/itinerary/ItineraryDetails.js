@@ -53,7 +53,7 @@ class ItineraryDetails extends React.Component {
     currentLanguage: PropTypes.string,
     changeHash: PropTypes.func,
     openSettings: PropTypes.func.isRequired,
-    onStartNavigatorCallback: PropTypes.func,
+    startNavigation: PropTypes.func,
     bikeAndPublicItineraryCount: PropTypes.number,
     relayEnvironment: relayShape,
   };
@@ -65,7 +65,7 @@ class ItineraryDetails extends React.Component {
     bikeAndPublicItineraryCount: 0,
     carEmissions: undefined,
     relayEnvironment: undefined,
-    onStartNavigatorCallback: undefined,
+    startNavigation: undefined,
   };
 
   static contextTypes = {
@@ -308,10 +308,10 @@ class ItineraryDetails extends React.Component {
                 />
               )),
 
-            this.props.onStartNavigatorCallback && (
+            this.props.startNavigation && (
               <StartNavi
                 key="navigation"
-                onStartNavigatorCallback={this.props.onStartNavigatorCallback}
+                startNavigation={this.props.startNavigation}
               />
             ),
             config.showCO2InItinerarySummary && !legsWithScooter && (
