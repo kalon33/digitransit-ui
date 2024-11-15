@@ -1199,7 +1199,7 @@ export default function ItineraryPage(props, context) {
           bikeAndPublicItineraryCount={bikePublicPlan.bikePublicItineraryCount}
           openSettings={showSettingsPanel}
           relayEnvironment={props.relayEnvironment}
-          startNavigator={navigateHook}
+          startNavigation={navigateHook}
         />
       );
     }
