@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { fetchQuery } from 'react-relay';
-import { checkPositioningPermission } from '../../../action/PositionActions';
-import { legQuery } from '../queries/LegQuery';
+import { checkPositioningPermission } from '../../../../action/PositionActions';
+import { legQuery } from '../../queries/LegQuery';
 
 const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
   const [isPositioningAllowed, setPositioningAllowed] = useState(false);
