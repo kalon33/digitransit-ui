@@ -17,6 +17,7 @@ import {
   getDialogState,
   getLatestNavigatorItinerary,
   setDialogState,
+  setLatestNavigatorItinerary,
 } from '../../store/localStorage';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
 import { getWeatherData } from '../../util/apiUtils';
@@ -654,6 +655,21 @@ export default function ItineraryPage(props, context) {
     setNaviMode(isEnabled);
   };
 
+  const storeItineraryAndStartNavi = itinerary => {
+    setNavigation(true);
+    setLatestNavigatorItinerary({
+      itinerary,
+      params: {
+        from: params.from,
+        to: params.to,
+        arriveBy: query.arriveBy,
+        time: query.time,
+        hash,
+        secondHash,
+      },
+    });
+  };
+
   // save url-defined location to old searches
   function saveUrlSearch(endpoint) {
     const parts = endpoint.split('::'); // label::lat,lon
@@ -1164,7 +1180,7 @@ export default function ItineraryPage(props, context) {
         Date.parse(combinedEdges[selectedIndex]?.node.end) < Date.now();
       const navigateHook =
         !desktop && config.experimental.navigation && !pastSearch
-          ? setNavigation
+          ? () => storeItineraryAndStartNavi(combinedEdges[selectedIndex]?.node)
           : undefined;
       carEmissions = carEmissions ? Math.round(carEmissions) : undefined;
       content = (
@@ -1180,7 +1196,7 @@ export default function ItineraryPage(props, context) {
           bikeAndPublicItineraryCount={bikePublicPlan.bikePublicItineraryCount}
           openSettings={showSettingsPanel}
           relayEnvironment={props.relayEnvironment}
-          setNavigation={navigateHook}
+          onStartNavigatorCallback={navigateHook}
         />
       );
     }
