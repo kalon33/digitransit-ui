@@ -73,8 +73,8 @@ import {
   updateClient,
 } from './ItineraryPageUtils';
 import ItineraryTabs from './ItineraryTabs';
-import NaviContainer from './Navigator/NaviContainer';
-import NavigatorIntroModal from './Navigator/NavigatorIntro/NavigatorIntroModal';
+import NaviContainer from './navigator/NaviContainer';
+import NavigatorIntroModal from './navigator/navigatorintro/NavigatorIntroModal';
 import planConnection from './PlanConnection';
 
 const MAX_QUERY_COUNT = 4; // number of attempts to collect enough itineraries
