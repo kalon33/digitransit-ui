@@ -12,15 +12,21 @@ import { getDestinationProperties, LEGTYPE } from './NaviUtils';
 
 import RouteNumberContainer from '../../RouteNumberContainer';
 
-const NaviCardExtension = ({ legType, leg }, { config }) => {
-  const { stop, name } = leg.to;
+const NaviCardExtension = ({ legType, leg, nextLeg }, { config }) => {
+  const { stop, name, rentalVehicle, vehicleParking, vehicleRentalStation } =
+    leg ? leg.to : nextLeg.from;
   const { code, platformCode, zoneId, vehicleMode } = stop || {};
   const [place, address] = name?.split(/, (.+)/) || [];
 
   let destination = {};
   if (stop) {
-    destination = getDestinationProperties(leg, stop, config);
-    destination.name = stop.name;
+    destination = getDestinationProperties(
+      rentalVehicle,
+      vehicleParking,
+      vehicleRentalStation,
+      stop,
+      config,
+    );
   } else {
     destination.iconId = 'icon-icon_mapMarker-to';
     destination.className = 'place';
@@ -60,7 +66,6 @@ const NaviCardExtension = ({ legType, leg }, { config }) => {
       </div>
     );
   }
-
   return (
     <div className="extension">
       <div className="extension-divider" />
@@ -98,12 +103,15 @@ const NaviCardExtension = ({ legType, leg }, { config }) => {
 };
 
 NaviCardExtension.propTypes = {
-  leg: legShape.isRequired,
+  leg: legShape,
+  nextLeg: legShape,
   legType: PropTypes.string,
 };
 
 NaviCardExtension.defaultProps = {
   legType: '',
+  leg: undefined,
+  nextLeg: undefined,
 };
 
 NaviCardExtension.contextTypes = {

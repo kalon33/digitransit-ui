@@ -144,6 +144,10 @@ function NaviCardContainer(
   const { first, last } = getFirstLastLegs(realTimeLegs);
   let legType;
   let naviTopContent;
+  const t = currentLeg ? legTime(currentLeg.start) : time;
+  const nextLeg = realTimeLegs.find(leg => {
+    return legTime(leg.start) > t;
+  });
   if (time < legTime(first.start)) {
     naviTopContent = (
       <FormattedMessage
@@ -152,9 +156,6 @@ function NaviCardContainer(
       />
     );
   } else if (currentLeg) {
-    const nextLeg = realTimeLegs.find(leg => {
-      return legTime(leg.start) > legTime(currentLeg.start);
-    });
     if (!currentLeg.transitLeg) {
       if (destCountRef.current >= TIME_AT_DESTINATION) {
         legType = LEGTYPE.WAIT;
@@ -164,19 +165,19 @@ function NaviCardContainer(
     } else {
       legType = LEGTYPE.TRANSIT;
     }
-    naviTopContent = (
-      <NaviCard
-        leg={currentLeg}
-        nextLeg={nextLeg}
-        cardExpanded={cardExpanded}
-        legType={legType}
-      />
-    );
   } else if (time > legTime(last.end)) {
     naviTopContent = <FormattedMessage id="navigation-journey-end" />;
   } else {
-    naviTopContent = <FormattedMessage id="navigation-wait" />;
+    legType = LEGTYPE.WAIT;
   }
+  naviTopContent = (
+    <NaviCard
+      leg={currentLeg}
+      nextLeg={nextLeg}
+      cardExpanded={cardExpanded}
+      legType={legType}
+    />
+  );
 
   // Card has 4 sizes: first leg collapsed, expanded
   // and in transit collapsed, expanded.

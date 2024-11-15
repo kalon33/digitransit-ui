@@ -174,13 +174,16 @@ export const getItineraryAlerts = (realTimeLegs, intl, messages) => {
  * Get the properties of the destination based on the leg.
  *
  */
-export const getDestinationProperties = (leg, stop, config) => {
-  const { rentalVehicle, vehicleParking, vehicleRentalStation } = leg.to;
-  const { vehicleMode, routes } = stop;
-
+export const getDestinationProperties = (
+  rentalVehicle,
+  vehicleParking,
+  vehicleRentalStation,
+  stop,
+  config,
+) => {
+  const { routes, vehicleMode } = stop;
   let destination = {};
   let mode = vehicleMode;
-
   if (routes && vehicleMode === 'BUS' && config.useExtendedRouteTypes) {
     if (routes.some(p => p.type === ExtendedRouteTypes.BusExpress)) {
       mode = 'bus-express';

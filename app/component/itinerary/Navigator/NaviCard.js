@@ -22,14 +22,14 @@ const iconMap = {
 
 export default function NaviCard({ leg, nextLeg, legType, cardExpanded }) {
   const iconName = legType === LEGTYPE.WAIT ? iconMap.WAIT : iconMap[leg.mode];
-  let instructions = `navileg-${leg.mode.toLowerCase()}`;
+  let instructions = `navileg-${leg?.mode.toLowerCase()}`;
   if (legType === LEGTYPE.TRANSIT) {
     instructions = `navileg-in-transit`;
-  } else if (isRental(leg, nextLeg)) {
+  } else if (legType !== LEGTYPE.WAIT && isRental(leg, nextLeg)) {
     if (leg.mode === 'WALK' && nextLeg?.mode === 'SCOOTER') {
       instructions = `navileg-rent-scooter`;
     } else {
-      instructions = `navileg-rent-cycle`;
+      instructions = 'rent-cycle-at';
     }
   }
   return (
@@ -51,18 +51,21 @@ export default function NaviCard({ leg, nextLeg, legType, cardExpanded }) {
           </div>
         </div>
       </div>
-      {cardExpanded && <NaviCardExtension legType={legType} leg={leg} />}
+      {cardExpanded && (
+        <NaviCardExtension legType={legType} leg={leg} nextLeg={nextLeg} />
+      )}
     </div>
   );
 }
 
 NaviCard.propTypes = {
-  leg: legShape.isRequired,
+  leg: legShape,
   nextLeg: legShape,
   legType: PropTypes.string.isRequired,
   cardExpanded: PropTypes.bool,
 };
 NaviCard.defaultProps = {
   cardExpanded: false,
+  leg: undefined,
   nextLeg: undefined,
 };

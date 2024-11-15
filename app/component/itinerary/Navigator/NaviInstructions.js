@@ -13,7 +13,6 @@ export default function NaviInstructions(
   { leg, nextLeg, instructions, legType },
   { intl, config },
 ) {
-  const { distance, duration } = leg;
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
@@ -27,6 +26,7 @@ export default function NaviInstructions(
   }, [leg]);
 
   if (legType === LEGTYPE.MOVE) {
+    const { distance, duration } = leg;
     return (
       <>
         <div className="destination-header">
@@ -44,13 +44,13 @@ export default function NaviInstructions(
     );
   }
   if (legType === LEGTYPE.WAIT) {
-    const { mode, headsign, route, end } = nextLeg;
-    const color = route.color ? route.color : 'currentColor';
+    const { mode, headsign, route, end, start } = nextLeg;
+    const color = route?.color ? route.color : 'currentColor';
     const localizedMode = intl.formatMessage({
       id: `to-${mode.toLowerCase()}`,
       defaultMessage: `${mode}`,
     });
-    const t = legTime(end);
+    const t = leg ? legTime(end) : legTime(start);
     const remainingDuration = Math.ceil((t - Date.now()) / 60000); // ms to minutes
     const rt = nextLeg.realtimeState === 'UPDATED';
     const values = {
