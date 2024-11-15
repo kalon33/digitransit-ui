@@ -1163,7 +1163,7 @@ export default function ItineraryPage(props, context) {
       const pastSearch =
         Date.parse(combinedEdges[selectedIndex]?.node.end) < Date.now();
       const navigateHook =
-        !desktop && config.navigation && !pastSearch
+        !desktop && config.experimental.navigation && !pastSearch
           ? setNavigation
           : undefined;
       carEmissions = carEmissions ? Math.round(carEmissions) : undefined;
