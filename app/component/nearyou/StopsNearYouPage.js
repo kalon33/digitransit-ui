@@ -254,12 +254,44 @@ class StopsNearYouPage extends React.Component {
     let location;
     if (!mapElement) {
       location = this.props.position;
-    } else {
+    } else if (this.props.breakpoint === 'large') {
       const centerOfMap = mapElement.leafletElement.getCenter();
       location = { lat: centerOfMap.lat, lon: centerOfMap.lng };
+    } else {
+      const opts = mapElement.leafletElement.options;
+      // For some strange reason, projecting visible map center to lat, lon
+      // does not match with geographic bounds center (there is a vertical offset).
+      // We have to use a hack to get rid of 'map location changed' notifier
+      if (this.boundsUsed) {
+        // applied after user navigation
+        const x =
+          opts.boundsOptions.paddingTopLeft[0] +
+          (window.innerWidth -
+            opts.boundsOptions.paddingTopLeft[0] -
+            opts.boundsOptions.paddingBottomRight[0]) /
+            2;
+        const y =
+          0 +
+          opts.boundsOptions.paddingTopLeft[1] +
+          (window.innerHeight -
+            opts.boundsOptions.paddingTopLeft[1] -
+            opts.boundsOptions.paddingBottomRight[1]) /
+            2;
+        const point = mapElement.leafletElement.containerPointToLatLng([x, y]);
+        location = { lat: point.lat, lon: point.lng };
+      } else {
+        // initial map render
+        const bo = opts.bounds;
+        location = {
+          lat: (bo[0][0] + bo[1][0]) / 2,
+          lon: (bo[0][1] + bo[1][1]) / 2,
+        };
+        this.boundsUsed = true;
+      }
     }
     this.centerOfMap = location;
-    const changed = distance(location, this.state.searchPosition) > 100;
+    const changed = distance(location, this.state.searchPosition) > 200;
+
     if (changed !== this.state.centerOfMapChanged) {
       this.setState({ centerOfMapChanged: changed });
     }
@@ -291,6 +323,7 @@ class StopsNearYouPage extends React.Component {
           pathname: path,
         });
       }
+      this.boundsUsed = false;
       return this.setState({
         searchPosition: { ...centerOfMap, type },
         centerOfMapChanged: false,
