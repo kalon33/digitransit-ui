@@ -258,39 +258,25 @@ class NearYouPage extends React.Component {
       const centerOfMap = mapElement.leafletElement.getCenter();
       location = { lat: centerOfMap.lat, lon: centerOfMap.lng };
     } else {
+      // find center pixel coordinates of the visible part of the map
+      // and convert to lat, lon
       const opts = mapElement.leafletElement.options;
-      // For some strange reason, projecting visible map center to lat, lon
-      // does not match with geographic bounds center (there is a vertical offset).
-      // We have to use a hack to get rid of 'map location changed' notifier
-      if (this.boundsUsed) {
-        // applied after user navigation
-        const x =
-          opts.boundsOptions.paddingTopLeft[0] +
-          (window.innerWidth -
-            opts.boundsOptions.paddingTopLeft[0] -
-            opts.boundsOptions.paddingBottomRight[0]) /
-            2;
-        const y =
-          opts.boundsOptions.paddingTopLeft[1] +
-          (window.innerHeight -
-            opts.boundsOptions.paddingTopLeft[1] -
-            opts.boundsOptions.paddingBottomRight[1]) /
-            2;
-        const point = mapElement.leafletElement.containerPointToLatLng([x, y]);
-        location = { lat: point.lat, lon: point.lng };
-      } else {
-        // initial map render
-        const bo = opts.bounds;
-        location = {
-          lat: (bo[0][0] + bo[1][0]) / 2,
-          lon: (bo[0][1] + bo[1][1]) / 2,
-        };
-        this.boundsUsed = true;
-      }
+      const bo = opts.boundsOptions;
+      // eslint-disable-next-line
+      const w = mapElement.leafletElement._size.x;
+      // eslint-disable-next-line
+      const h = mapElement.leafletElement._size.y;
+      const x =
+        bo.paddingTopLeft[0] +
+        (w - bo.paddingTopLeft[0] - bo.paddingBottomRight[0]) / 2;
+      const y =
+        bo.paddingTopLeft[1] +
+        (h - bo.paddingTopLeft[1] - bo.paddingBottomRight[1]) / 2;
+      const point = mapElement.leafletElement.containerPointToLatLng([x, y]);
+      location = { lat: point.lat, lon: point.lng };
     }
     this.centerOfMap = location;
     const changed = distance(location, this.state.searchPosition) > 200;
-
     if (changed !== this.state.centerOfMapChanged) {
       this.setState({ centerOfMapChanged: changed });
     }
@@ -322,7 +308,6 @@ class NearYouPage extends React.Component {
           pathname: path,
         });
       }
-      this.boundsUsed = false;
       return this.setState({
         searchPosition: { ...centerOfMap, type },
         centerOfMapChanged: false,
