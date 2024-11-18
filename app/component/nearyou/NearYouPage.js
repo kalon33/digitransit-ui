@@ -75,7 +75,7 @@ function getModes(config) {
   return modes.map(nearYouMode => nearYouMode.toUpperCase());
 }
 
-class StopsNearYouPage extends React.Component {
+class NearYouPage extends React.Component {
   static contextTypes = {
     config: configShape.isRequired,
     executeAction: PropTypes.func.isRequired,
@@ -444,7 +444,7 @@ class StopsNearYouPage extends React.Component {
         >
           <QueryRenderer
             query={graphql`
-              query StopsNearYouPageContentQuery(
+              query NearYouPageContentQuery(
                 $lat: Float!
                 $lon: Float!
                 $filterByPlaceTypes: [FilterPlaceType]
@@ -586,7 +586,7 @@ class StopsNearYouPage extends React.Component {
                   {prioritizedStops?.length && (
                     <QueryRenderer
                       query={graphql`
-                        query StopsNearYouPagePrioritizedStopsQuery(
+                        query NearYouPagePrioritizedStopsQuery(
                           $stopIds: [String!]!
                           $startTime: Long!
                           $omitNonPickups: Boolean!
@@ -673,7 +673,7 @@ class StopsNearYouPage extends React.Component {
       return (
         <QueryRenderer
           query={graphql`
-            query StopsNearYouPageFavoritesMapQuery(
+            query NearYouPageFavoritesMapQuery(
               $stopIds: [String!]!
               $stationIds: [String!]!
               $vehicleRentalStationIds: [String!]!
@@ -742,7 +742,7 @@ class StopsNearYouPage extends React.Component {
     return (
       <QueryRenderer
         query={graphql`
-          query StopsNearYouPageStopsQuery(
+          query NearYouPageStopsQuery(
             $lat: Float!
             $lon: Float!
             $filterByPlaceTypes: [FilterPlaceType]
@@ -986,16 +986,16 @@ class StopsNearYouPage extends React.Component {
   }
 }
 
-const StopsNearYouPageWithBreakpoint = withBreakpoint(props => (
+const NearYouPageWithBreakpoint = withBreakpoint(props => (
   <ReactRelayContext.Consumer>
     {({ environment }) => (
-      <StopsNearYouPage {...props} relayEnvironment={environment} />
+      <NearYouPage {...props} relayEnvironment={environment} />
     )}
   </ReactRelayContext.Consumer>
 ));
 
 const PositioningWrapper = connectToStores(
-  StopsNearYouPageWithBreakpoint,
+  NearYouPageWithBreakpoint,
   ['PositionStore', 'PreferencesStore', 'FavouriteStore', 'MapLayerStore'],
   (context, props) => {
     const favouriteStopIds = context
@@ -1038,5 +1038,5 @@ PositioningWrapper.contextTypes = {
 
 export {
   PositioningWrapper as default,
-  StopsNearYouPageWithBreakpoint as Component,
+  NearYouPageWithBreakpoint as Component,
 };
