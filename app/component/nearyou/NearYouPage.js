@@ -9,46 +9,46 @@ import Modal from '@hsl-fi/modal';
 import DTAutoSuggest from '@digitransit-component/digitransit-component-autosuggest';
 import DTIcon from '@digitransit-component/digitransit-component-icon';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
-import { relayShape, configShape, locationShape } from '../util/shapes';
-import Icon from './Icon';
-import DesktopView from './DesktopView';
-import MobileView from './MobileView';
-import withBreakpoint, { DesktopOrMobile } from '../util/withBreakpoint';
-import { otpToLocation, locationToUri } from '../util/otpStrings';
-import { isKeyboardSelectionEvent } from '../util/browser';
-import Loading from './Loading';
+import { relayShape, configShape, locationShape } from '../../util/shapes';
+import Icon from '../Icon';
+import DesktopView from '../DesktopView';
+import MobileView from '../MobileView';
+import withBreakpoint, { DesktopOrMobile } from '../../util/withBreakpoint';
+import { otpToLocation, locationToUri } from '../../util/otpStrings';
+import { isKeyboardSelectionEvent } from '../../util/browser';
+import Loading from '../Loading';
 import StopNearYouContainer from './StopNearYouContainer';
 import {
   checkPositioningPermission,
   startLocationWatch,
-} from '../action/PositionActions';
-import DisruptionBanner from './DisruptionBanner';
+} from '../../action/PositionActions';
+import DisruptionBanner from '../DisruptionBanner';
 import StopsNearYouSearch from './StopsNearYouSearch';
 import {
   getGeolocationState,
   getReadMessageIds,
   setReadMessageIds,
-} from '../store/localStorage';
-import withSearchContext from './WithSearchContext';
-import { PREFIX_NEARYOU } from '../util/path';
+} from '../../store/localStorage';
+import withSearchContext from '../WithSearchContext';
+import { PREFIX_NEARYOU } from '../../util/path';
 import StopsNearYouContainer from './StopsNearYouContainer';
-import SwipeableTabs from './SwipeableTabs';
+import SwipeableTabs from '../SwipeableTabs';
 import StopsNearYouFavorites from './StopsNearYouFavorites';
 import StopsNearYouMapContainer from './StopsNearYouMapContainer';
 import StopsNearYouFavoritesMapContainer from './StopsNearYouFavoritesMapContainer';
-import { mapLayerShape } from '../store/MapLayerStore';
+import { mapLayerShape } from '../../store/MapLayerStore';
 import {
   getRentalNetworkConfig,
   getRentalNetworkId,
   getDefaultNetworks,
-} from '../util/vehicleRentalUtils';
-import { getMapLayerOptions } from '../util/mapLayerUtils';
+} from '../../util/vehicleRentalUtils';
+import { getMapLayerOptions } from '../../util/mapLayerUtils';
 import {
   getTransportModes,
   getNearYouModes,
   useCitybikes,
-} from '../util/modeUtils';
-import FavouriteStore from '../store/FavouriteStore';
+} from '../../util/modeUtils';
+import FavouriteStore from '../../store/FavouriteStore';
 
 // component initialization phases
 const PH_START = 'start';
@@ -64,7 +64,18 @@ const PH_READY = [PH_USEDEFAULTPOS, PH_USEGEOLOCATION, PH_USEMAPCENTER]; // rend
 
 const DTAutoSuggestWithSearchContext = withSearchContext(DTAutoSuggest);
 
-class StopsNearYouPage extends React.Component {
+function getModes(config) {
+  const transportModes = getTransportModes(config);
+  const nearYouModes = getNearYouModes(config);
+  const modes = nearYouModes.length
+    ? nearYouModes
+    : Object.keys(transportModes).filter(
+        mode => transportModes[mode].availableForSelection,
+      );
+  return modes.map(nearYouMode => nearYouMode.toUpperCase());
+}
+
+class NearYouPage extends React.Component {
   static contextTypes = {
     config: configShape.isRequired,
     executeAction: PropTypes.func.isRequired,
@@ -107,6 +118,7 @@ class StopsNearYouPage extends React.Component {
   }
 
   componentDidMount() {
+    this.modes = getModes(this.context.config);
     const readMessageIds = getReadMessageIds();
     const showCityBikeTeaser = !readMessageIds.includes('citybike_teaser');
     if (this.context.config.map.showLayerSelector) {
@@ -225,7 +237,7 @@ class StopsNearYouPage extends React.Component {
     return {
       lat: searchPosition.lat,
       lon: searchPosition.lon,
-      maxResults: 2000,
+      maxResults: 10,
       first: this.context.config.maxNearbyStopAmount,
       maxDistance:
         this.context.config.maxNearbyStopDistance[mode.toLowerCase()],
@@ -246,19 +258,22 @@ class StopsNearYouPage extends React.Component {
       const centerOfMap = mapElement.leafletElement.getCenter();
       location = { lat: centerOfMap.lat, lon: centerOfMap.lng };
     } else {
-      const drawer = document.getElementsByClassName('drawer-container')[0];
-      const { scrollTop } = drawer;
-
-      const height = (window.innerHeight * 0.9 - 24 - scrollTop) / 2;
-      const width = window.innerWidth / 2;
-      const point = mapElement.leafletElement.containerPointToLatLng([
-        width,
-        height,
-      ]);
+      // find center pixel coordinates of the visible part of the map
+      // and convert to lat, lon
+      const opts = mapElement.leafletElement.options;
+      const bo = opts.boundsOptions;
+      const size = mapElement.leafletElement.getSize();
+      const x =
+        bo.paddingTopLeft[0] +
+        (size.x - bo.paddingTopLeft[0] - bo.paddingBottomRight[0]) / 2;
+      const y =
+        bo.paddingTopLeft[1] +
+        (size.y - bo.paddingTopLeft[1] - bo.paddingBottomRight[1]) / 2;
+      const point = mapElement.leafletElement.containerPointToLatLng([x, y]);
       location = { lat: point.lat, lon: point.lng };
     }
     this.centerOfMap = location;
-    const changed = distance(location, this.state.searchPosition) > 100;
+    const changed = distance(location, this.state.searchPosition) > 200;
     if (changed !== this.state.centerOfMapChanged) {
       this.setState({ centerOfMapChanged: changed });
     }
@@ -299,20 +314,6 @@ class StopsNearYouPage extends React.Component {
     return this.setState({ searchPosition: this.getPosition() });
   };
 
-  getNearByStopModes = () => {
-    const transportModes = getTransportModes(this.context.config);
-    const nearYouModes = getNearYouModes(this.context.config);
-    const configNearByYouModes = nearYouModes.length
-      ? nearYouModes
-      : Object.keys(transportModes).filter(
-          mode => transportModes[mode].availableForSelection,
-        );
-    const nearByStopModes = configNearByYouModes.map(nearYouMode =>
-      nearYouMode.toUpperCase(),
-    );
-    return nearByStopModes;
-  };
-
   getPosition = () => {
     return this.state.phase === PH_USEDEFAULTPOS
       ? this.state.searchPosition
@@ -320,9 +321,8 @@ class StopsNearYouPage extends React.Component {
   };
 
   onSwipe = e => {
-    const nearByStopModes = this.getNearByStopModes();
     const { mode } = this.props.match.params;
-    const newMode = nearByStopModes[e];
+    const newMode = this.modes[e];
     const paramArray = this.props.match.location.pathname.split(mode);
     const pathParams = paramArray.length > 1 ? paramArray[1] : '/POS';
     const path = `/${PREFIX_NEARYOU}/${newMode}${pathParams}`;
@@ -385,7 +385,7 @@ class StopsNearYouPage extends React.Component {
     const { mode } = this.props.match.params;
     const noFavorites = mode === 'FAVORITE' && this.noFavorites();
     const renderRefetchButton = centerOfMapChanged && !noFavorites;
-    const nearByStopModes = this.getNearByStopModes();
+    const nearByStopModes = this.modes;
     const index = nearByStopModes.indexOf(mode);
     const tabs = nearByStopModes.map(nearByStopMode => {
       const renderSearch =
@@ -425,7 +425,7 @@ class StopsNearYouPage extends React.Component {
         >
           <QueryRenderer
             query={graphql`
-              query StopsNearYouPageContentQuery(
+              query NearYouPageContentQuery(
                 $lat: Float!
                 $lon: Float!
                 $filterByPlaceTypes: [FilterPlaceType]
@@ -567,7 +567,7 @@ class StopsNearYouPage extends React.Component {
                   {prioritizedStops?.length && (
                     <QueryRenderer
                       query={graphql`
-                        query StopsNearYouPagePrioritizedStopsQuery(
+                        query NearYouPagePrioritizedStopsQuery(
                           $stopIds: [String!]!
                           $startTime: Long!
                           $omitNonPickups: Boolean!
@@ -654,7 +654,7 @@ class StopsNearYouPage extends React.Component {
       return (
         <QueryRenderer
           query={graphql`
-            query StopsNearYouPageFavoritesMapQuery(
+            query NearYouPageFavoritesMapQuery(
               $stopIds: [String!]!
               $stationIds: [String!]!
               $vehicleRentalStationIds: [String!]!
@@ -723,7 +723,7 @@ class StopsNearYouPage extends React.Component {
     return (
       <QueryRenderer
         query={graphql`
-          query StopsNearYouPageStopsQuery(
+          query NearYouPageStopsQuery(
             $lat: Float!
             $lon: Float!
             $filterByPlaceTypes: [FilterPlaceType]
@@ -913,7 +913,7 @@ class StopsNearYouPage extends React.Component {
   render() {
     const { mode } = this.props.match.params;
     const { phase } = this.state;
-    const nearByStopModes = this.getNearByStopModes();
+    const nearByStopModes = this.modes;
 
     if (PH_SHOWSEARCH.includes(phase)) {
       return <div>{this.renderDialogModal()}</div>;
@@ -967,16 +967,16 @@ class StopsNearYouPage extends React.Component {
   }
 }
 
-const StopsNearYouPageWithBreakpoint = withBreakpoint(props => (
+const NearYouPageWithBreakpoint = withBreakpoint(props => (
   <ReactRelayContext.Consumer>
     {({ environment }) => (
-      <StopsNearYouPage {...props} relayEnvironment={environment} />
+      <NearYouPage {...props} relayEnvironment={environment} />
     )}
   </ReactRelayContext.Consumer>
 ));
 
 const PositioningWrapper = connectToStores(
-  StopsNearYouPageWithBreakpoint,
+  NearYouPageWithBreakpoint,
   ['PositionStore', 'PreferencesStore', 'FavouriteStore', 'MapLayerStore'],
   (context, props) => {
     const favouriteStopIds = context
@@ -1019,5 +1019,5 @@ PositioningWrapper.contextTypes = {
 
 export {
   PositioningWrapper as default,
-  StopsNearYouPageWithBreakpoint as Component,
+  NearYouPageWithBreakpoint as Component,
 };

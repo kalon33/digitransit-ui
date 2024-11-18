@@ -4,14 +4,17 @@ import { createPaginationContainer, graphql } from 'react-relay';
 import { intlShape, FormattedMessage } from 'react-intl';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import { matchShape } from 'found';
-import { configShape, relayShape } from '../util/shapes';
+import { configShape, relayShape } from '../../util/shapes';
 import StopNearYouContainer from './StopNearYouContainer';
-import withBreakpoint from '../util/withBreakpoint';
-import { sortNearbyRentalStations, sortNearbyStops } from '../util/sortUtils';
+import withBreakpoint from '../../util/withBreakpoint';
+import {
+  sortNearbyRentalStations,
+  sortNearbyStops,
+} from '../../util/sortUtils';
 import CityBikeStopNearYou from './VehicleRentalStationNearYou';
-import Loading from './Loading';
-import Icon from './Icon';
-import { getDefaultNetworks } from '../util/vehicleRentalUtils';
+import Loading from '../Loading';
+import Icon from '../Icon';
+import { getDefaultNetworks } from '../../util/vehicleRentalUtils';
 
 class StopsNearYouContainer extends React.Component {
   static propTypes = {

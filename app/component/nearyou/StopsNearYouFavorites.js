@@ -8,10 +8,10 @@ import {
   stopShape,
   stationShape,
   vehicleRentalStationShape,
-} from '../util/shapes';
+} from '../../util/shapes';
 import StopsNearYouFavouritesContainer from './StopsNearYouFavouritesContainer';
-import withBreakpoint from '../util/withBreakpoint';
-import Loading from './Loading';
+import withBreakpoint from '../../util/withBreakpoint';
+import Loading from '../Loading';
 
 function StopsNearYouFavorites({
   favoriteStops,

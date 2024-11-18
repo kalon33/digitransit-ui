@@ -1,12 +1,12 @@
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import { graphql, createPaginationContainer } from 'react-relay';
-import StopsNearYouMap from './map/StopsNearYouMap';
+import NearYouMap from '../map/NearYouMap';
 
-import FavouriteStore from '../store/FavouriteStore';
-import PreferencesStore from '../store/PreferencesStore';
+import FavouriteStore from '../../store/FavouriteStore';
+import PreferencesStore from '../../store/PreferencesStore';
 
 const StopsNearYouMapWithStores = connectToStores(
-  StopsNearYouMap,
+  NearYouMap,
   [PreferencesStore, FavouriteStore],
   ({ getStore }, { match }) => {
     const language = getStore(PreferencesStore).getLanguage();

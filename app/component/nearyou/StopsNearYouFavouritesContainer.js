@@ -7,7 +7,7 @@ import {
   stationShape,
   vehicleRentalStationShape,
   locationShape,
-} from '../util/shapes';
+} from '../../util/shapes';
 import StopNearYouContainer from './StopNearYouContainer';
 import CityBikeStopNearYou from './VehicleRentalStationNearYou';
 

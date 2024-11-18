@@ -308,15 +308,14 @@ export default {
     en: 'HSL',
   },
 
-  maxNearbyStopAmount: 5,
   maxNearbyStopDistance: {
-    favorite: 100000,
-    bus: 30000,
-    tram: 100000,
-    subway: 100000,
-    rail: 50000,
-    ferry: 100000,
-    citybike: 100000,
+    favorite: 20000,
+    bus: 20000,
+    tram: 20000,
+    subway: 20000,
+    rail: 20000,
+    ferry: 20000,
+    citybike: 20000,
   },
 
   prioritizedStopsNearYou: {

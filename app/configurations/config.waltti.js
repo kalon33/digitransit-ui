@@ -136,6 +136,14 @@ export default {
 
   nearbyModeSet: 'waltti',
 
+  maxNearbyStopDistance: {
+    bus: 30000,
+    tram: 30000,
+    rail: 50000,
+    ferry: 50000,
+    citybike: 30000,
+  },
+
   redirectReittiopasParams: true,
   queryMaxAgeDays: 14,
 
