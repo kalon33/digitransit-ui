@@ -13,6 +13,9 @@ export default function NaviInstructions(
   { leg, nextLeg, instructions, legType },
   { intl, config },
 ) {
+  if (!leg && !nextLeg) {
+    return null;
+  }
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
