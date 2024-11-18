@@ -262,16 +262,13 @@ class NearYouPage extends React.Component {
       // and convert to lat, lon
       const opts = mapElement.leafletElement.options;
       const bo = opts.boundsOptions;
-      // eslint-disable-next-line
-      const w = mapElement.leafletElement._size.x;
-      // eslint-disable-next-line
-      const h = mapElement.leafletElement._size.y;
+      const size = mapElement.leafletElement.getSize();
       const x =
         bo.paddingTopLeft[0] +
-        (w - bo.paddingTopLeft[0] - bo.paddingBottomRight[0]) / 2;
+        (size.x - bo.paddingTopLeft[0] - bo.paddingBottomRight[0]) / 2;
       const y =
         bo.paddingTopLeft[1] +
-        (h - bo.paddingTopLeft[1] - bo.paddingBottomRight[1]) / 2;
+        (size.y - bo.paddingTopLeft[1] - bo.paddingBottomRight[1]) / 2;
       const point = mapElement.leafletElement.containerPointToLatLng([x, y]);
       location = { lat: point.lat, lon: point.lng };
     }
