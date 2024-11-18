@@ -45,6 +45,7 @@ export default function NaviInstructions(
   }
   if (legType === LEGTYPE.WAIT) {
     const { mode, headsign, route, end, start } = nextLeg;
+    const hs = headsign || nextLeg.trip?.tripHeadsign;
     const color = route?.color ? route.color : 'currentColor';
     const localizedMode = intl.formatMessage({
       id: `to-${mode.toLowerCase()}`,
@@ -77,9 +78,9 @@ export default function NaviInstructions(
               isTransitLeg
               color={color}
             />
-            <div className="headsign">{headsign}</div>
+            <div className="headsign">{hs}</div>
           </div>
-          <div className="vehiclewait-leg">
+          <div className="wait-duration">
             <FormattedMessage
               id="navileg-arrive-at"
               defaultMessage="{duration}min päästä klo {legTime}"

@@ -187,6 +187,10 @@ function NaviCardContainer(
     classPostfix = 'expand-transit';
   } else if (legType === LEGTYPE.TRANSIT) {
     classPostfix = 'transit';
+  } else if (legType === LEGTYPE.WAIT && cardExpanded) {
+    classPostfix = 'expand-wait';
+  } else if (legType === LEGTYPE.WAIT) {
+    classPostfix = 'wait';
   } else if (cardExpanded) {
     classPostfix = 'expanded';
   }

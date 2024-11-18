@@ -104,7 +104,7 @@
 
         .destination-header {
           font-size: $font-size-normal;
-          font-weight: $font-weight-medium;
+          font-weight: 500; //  $font-weight-medium;
           display: flex;
         }
 
@@ -126,18 +126,19 @@
           .route-info {
             display: flex;
             align-self: flex-start;
+            margin-bottom: var(--space-xcs);
           }
 
-          .routeinfo {
-            display: flex;
-            margin-top: var(--space-xs);
+          .wait-duration {
             font-weight: $font-weight-book;
-            text-align: left;
+            margin-top: var(--space-xs);
+          }
+
+          .bar {
+            border-radius: $border-radius;
           }
 
           .route-number {
-            min-width: 55px;
-
             .vcenter-children {
               .vehicle-number {
                 color: white;
@@ -202,9 +203,11 @@
         margin-bottom: var(--space-s);
         text-align: left;
 
-        .route-number {
-          min-width: 55px;
+        .bar {
+          border-radius: $border-radius;
+        }
 
+        .route-number {
           .vcenter-children {
             .vehicle-number {
               color: white;
@@ -381,6 +384,14 @@
 
   &.transit {
     top: 162px;
+  }
+
+  &.wait {
+    top: 172px;
+  }
+
+  &.expand-wait {
+    top: 225px;
   }
 
   &.slide-out {
