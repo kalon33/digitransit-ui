@@ -64,7 +64,7 @@ const PH_READY = [PH_USEDEFAULTPOS, PH_USEGEOLOCATION, PH_USEMAPCENTER]; // rend
 
 const DTAutoSuggestWithSearchContext = withSearchContext(DTAutoSuggest);
 
-function getNearByStopModes(config) {
+function getModes(config) {
   const transportModes = getTransportModes(config);
   const nearYouModes = getNearYouModes(config);
   const modes = nearYouModes.length
@@ -118,7 +118,7 @@ class StopsNearYouPage extends React.Component {
   }
 
   componentDidMount() {
-    this.modes = getNearByStopModes(this.context.config);
+    this.modes = getModes(this.context.config);
     const readMessageIds = getReadMessageIds();
     const showCityBikeTeaser = !readMessageIds.includes('citybike_teaser');
     if (this.context.config.map.showLayerSelector) {

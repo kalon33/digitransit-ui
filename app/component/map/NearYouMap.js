@@ -130,7 +130,7 @@ const getLocationMarker = location => {
   );
 };
 
-function StopsNearYouMap(
+function NearYouMap(
   {
     breakpoint,
     stopsNearYou,
@@ -419,7 +419,7 @@ function StopsNearYouMap(
   );
 }
 
-StopsNearYouMap.propTypes = {
+NearYouMap.propTypes = {
   stopsNearYou: PropTypes.shape({
     nearest: PropTypes.shape({
       // eslint-disable-next-line
@@ -438,7 +438,7 @@ StopsNearYouMap.propTypes = {
   showWalkRoute: PropTypes.bool,
 };
 
-StopsNearYouMap.defaultProps = {
+NearYouMap.defaultProps = {
   stopsNearYou: null,
   showWalkRoute: false,
   loading: false,
@@ -446,10 +446,10 @@ StopsNearYouMap.defaultProps = {
   prioritizedStopsNearYou: [],
 };
 
-StopsNearYouMap.contextTypes = {
+NearYouMap.contextTypes = {
   config: configShape,
   executeAction: PropTypes.func,
   getStore: PropTypes.func,
 };
 
-export default StopsNearYouMap;
+export default NearYouMap;
