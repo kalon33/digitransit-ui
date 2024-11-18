@@ -271,7 +271,6 @@ class NearYouPage extends React.Component {
             opts.boundsOptions.paddingBottomRight[0]) /
             2;
         const y =
-          0 +
           opts.boundsOptions.paddingTopLeft[1] +
           (window.innerHeight -
             opts.boundsOptions.paddingTopLeft[1] -
