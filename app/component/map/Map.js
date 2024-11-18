@@ -120,15 +120,10 @@ export default class Map extends React.Component {
     if (props.mapRef) {
       props.mapRef(this);
     }
-    if (this.props.breakpoint === 'large') {
+    if (this.props.breakpoint !== 'large') {
       this.boundsOptions = {
         paddingTopLeft: [0, EXTRA_PADDING],
         paddingBottomRight: [0, (window.innerHeight - 64) / 2],
-      };
-    } else {
-      this.boundsOptions = {
-        paddingTopLeft: [0, 0],
-        paddingBottomRight: [0, 0],
       };
     }
   }
