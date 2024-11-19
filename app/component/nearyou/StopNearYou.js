@@ -4,14 +4,14 @@ import { FormattedMessage, intlShape } from 'react-intl';
 import { Link } from 'found';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import Modal from '@hsl-fi/modal';
-import { stopShape, configShape, relayShape } from '../util/shapes';
-import { hasEntitiesOfType } from '../util/alertUtils';
-import { PREFIX_STOPS, PREFIX_TERMINALS } from '../util/path';
-import { AlertEntityType } from '../constants';
+import { stopShape, configShape, relayShape } from '../../util/shapes';
+import { hasEntitiesOfType } from '../../util/alertUtils';
+import { PREFIX_STOPS, PREFIX_TERMINALS } from '../../util/path';
+import { AlertEntityType } from '../../constants';
 import StopNearYouHeader from './StopNearYouHeader';
-import AlertBanner from './AlertBanner';
+import AlertBanner from '../AlertBanner';
 import StopNearYouDepartureRowContainer from './StopNearYouDepartureRowContainer';
-import CapacityModal from './CapacityModal';
+import CapacityModal from '../CapacityModal';
 
 const StopNearYou = (
   { stop, desc, stopId, currentTime, currentMode, relay },

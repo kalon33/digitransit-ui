@@ -3,15 +3,15 @@ import React from 'react';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import { graphql, createFragmentContainer } from 'react-relay';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
-import StopsNearYouMap from './map/StopsNearYouMap';
-import PreferencesStore from '../store/PreferencesStore';
-import FavouriteStore from '../store/FavouriteStore';
+import NearYouMap from '../map/NearYouMap';
+import PreferencesStore from '../../store/PreferencesStore';
+import FavouriteStore from '../../store/FavouriteStore';
 import {
   vehicleRentalStationShape,
   stopShape,
   stationShape,
   locationShape,
-} from '../util/shapes';
+} from '../../util/shapes';
 
 function StopsNearYouFavoritesMapContainer(props) {
   const { stops, stations, vehicleStations, position } = props;
@@ -65,7 +65,7 @@ function StopsNearYouFavoritesMapContainer(props) {
   }
   stopList.sort((a, b) => a.node.distance - b.node.distance);
 
-  return <StopsNearYouMap {...props} stopsNearYou={stopList} />;
+  return <NearYouMap {...props} stopsNearYou={stopList} />;
 }
 
 StopsNearYouFavoritesMapContainer.propTypes = {

@@ -2,7 +2,7 @@ import React from 'react';
 import { v4 as uuid } from 'uuid';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import DepartureRow from './DepartureRow';
+import DepartureRow from '../DepartureRow';
 
 export default function StopNearYouDepartureRowContainer({
   stopTimes,

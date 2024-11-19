@@ -3,9 +3,9 @@ import { intlShape } from 'react-intl';
 import compose from 'recompose/compose';
 import getContext from 'recompose/getContext';
 import mapProps from 'recompose/mapProps';
-import { configShape } from '../util/shapes';
+import { configShape } from '../../util/shapes';
 
-import { generateMetaData } from '../util/metaUtils';
+import { generateMetaData } from '../../util/metaUtils';
 
 export default compose(
   getContext({ config: configShape, intl: intlShape }),

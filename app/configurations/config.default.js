@@ -170,14 +170,14 @@ export default {
   maxNearbyStopAmount: 5,
   maxNearbyStopRefetches: 5,
   maxNearbyStopDistance: {
-    favorite: 100000,
-    bus: 100000,
-    tram: 100000,
-    subway: 100000,
-    rail: 100000,
-    ferry: 100000,
-    citybike: 100000,
-    airplane: 200000,
+    favorite: 20000,
+    bus: 50000,
+    tram: 20000,
+    subway: 20000,
+    rail: 50000,
+    ferry: 50000,
+    citybike: 20000,
+    airplane: 100000,
   },
 
   defaultSettings: {

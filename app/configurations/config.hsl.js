@@ -308,15 +308,14 @@ export default {
     en: 'HSL',
   },
 
-  maxNearbyStopAmount: 5,
   maxNearbyStopDistance: {
-    favorite: 100000,
-    bus: 30000,
-    tram: 100000,
-    subway: 100000,
-    rail: 50000,
-    ferry: 100000,
-    citybike: 100000,
+    favorite: 20000,
+    bus: 20000,
+    tram: 20000,
+    subway: 20000,
+    rail: 20000,
+    ferry: 20000,
+    citybike: 20000,
   },
 
   prioritizedStopsNearYou: {
@@ -581,9 +580,6 @@ export default {
   showSimilarRoutesOnRouteDropDown: true,
   useRealtimeTravellerCapacities: true,
 
-  navigation: true,
-  navigationLogo: 'hsl/navigator-logo.svg',
-
   stopCard: {
     header: {
       virtualMonitorBaseUrl: 'https://omatnaytot.hsl.fi/',
@@ -753,4 +749,13 @@ export default {
   },
 
   startSearchFromUserLocation: true,
+
+  navigationLogo: 'hsl/navigator-logo.svg',
+
+  // features that should not be deployed to production
+  experimental: {
+    navigation:
+      process.env.RUN_ENV === 'development' ||
+      process.env.NODE_ENV !== 'production',
+  },
 };

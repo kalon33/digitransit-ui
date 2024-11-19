@@ -27,7 +27,7 @@ $body-font-weight: $font-weight-medium;
 @import '../app/component/routepage/route';
 @import '../app/component/checkbox';
 @import '../app/component/toggle';
-@import '../app/component/stops-near-you';
+@import '../app/component/nearyou/stops-near-you';
 @import '../app/component/disruption';
 @import '../app/component/departure';
 @import '../app/component/stop';
@@ -63,8 +63,8 @@ $body-font-weight: $font-weight-medium;
 @import '../app/component/itinerary/settings-panel';
 @import '../app/component/itinerary/mobile-ticket-purchase-information';
 @import 'base/button';
-@import '../app/component/itinerary/Navigator/navigator';
-@import '../app/component/itinerary/Navigator/NavigatorIntro/navigator-intro';
+@import '../app/component/itinerary/navigator/navigator';
+@import '../app/component/itinerary/navigator/navigatorintro/navigator-intro';
 
 /* Modal */
 @import '~foundation-apps/scss/helpers/breakpoints';

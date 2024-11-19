@@ -101,7 +101,7 @@ const updateClient = (context, topics) => {
   }
 };
 
-const handleBounds = (location, edges, breakpoint) => {
+const handleBounds = (location, edges) => {
   if (edges.length === 0) {
     // No stops anywhere near
     return [
@@ -110,25 +110,13 @@ const handleBounds = (location, edges, breakpoint) => {
     ];
   }
   const nearestStop = edges[0].node.place;
-  const bounds =
-    breakpoint !== 'large'
-      ? [
-          [
-            nearestStop.lat + (nearestStop.lat - location.lat) * 0.5,
-            nearestStop.lon + (nearestStop.lon - location.lon) * 0.5,
-          ],
-          [
-            location.lat + (location.lat - nearestStop.lat) * 0.5,
-            location.lon + (location.lon - nearestStop.lon) * 0.5,
-          ],
-        ]
-      : [
-          [nearestStop.lat, nearestStop.lon],
-          [
-            location.lat + location.lat - nearestStop.lat,
-            location.lon + location.lon - nearestStop.lon,
-          ],
-        ];
+  const bounds = [
+    [nearestStop.lat, nearestStop.lon],
+    [
+      location.lat + location.lat - nearestStop.lat,
+      location.lon + location.lon - nearestStop.lon,
+    ],
+  ];
   return bounds;
 };
 
@@ -142,7 +130,7 @@ const getLocationMarker = location => {
   );
 };
 
-function StopsNearYouMap(
+function NearYouMap(
   {
     breakpoint,
     stopsNearYou,
@@ -207,15 +195,12 @@ function StopsNearYouMap(
     if (showWalkRoute) {
       if (stopsAndStations.length > 0) {
         const firstStop = stopsAndStations[0];
-        const shouldFetchWalkRoute = () => {
-          return (
-            (mode !== 'BUS' && mode !== 'TRAM') ||
-            favouriteIds.has(firstStop.gtfsId)
-          );
-        };
-        if (!isEqual(firstStop, walk.stop) && shouldFetchWalkRoute()) {
+        const shouldFetch =
+          (mode !== 'BUS' && mode !== 'TRAM') ||
+          favouriteIds.has(firstStop.gtfsId);
+        if (shouldFetch && !isEqual(firstStop, walk.stop)) {
           fetchPlan(firstStop);
-        } else if (!shouldFetchWalkRoute()) {
+        } else if (!shouldFetch) {
           setWalk({ itinerary: null, stop: null });
         }
       }
@@ -223,6 +208,7 @@ function StopsNearYouMap(
       setWalk({ itinerary: null, stop: null });
     }
   };
+
   useEffect(() => {
     prevPlace.current = match.params.place;
     prevMode.current = match.params.mode;
@@ -232,7 +218,7 @@ function StopsNearYouMap(
   }, []);
 
   useEffect(() => {
-    const newBounds = handleBounds(position, sortedStopEdges, breakpoint);
+    const newBounds = handleBounds(position, sortedStopEdges);
     if (newBounds.length > 0) {
       setBounds(newBounds);
     }
@@ -433,7 +419,7 @@ function StopsNearYouMap(
   );
 }
 
-StopsNearYouMap.propTypes = {
+NearYouMap.propTypes = {
   stopsNearYou: PropTypes.shape({
     nearest: PropTypes.shape({
       // eslint-disable-next-line
@@ -452,7 +438,7 @@ StopsNearYouMap.propTypes = {
   showWalkRoute: PropTypes.bool,
 };
 
-StopsNearYouMap.defaultProps = {
+NearYouMap.defaultProps = {
   stopsNearYou: null,
   showWalkRoute: false,
   loading: false,
@@ -460,10 +446,10 @@ StopsNearYouMap.defaultProps = {
   prioritizedStopsNearYou: [],
 };
 
-StopsNearYouMap.contextTypes = {
+NearYouMap.contextTypes = {
   config: configShape,
   executeAction: PropTypes.func,
   getStore: PropTypes.func,
 };
 
-export default StopsNearYouMap;
+export default NearYouMap;
