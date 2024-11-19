@@ -374,26 +374,6 @@
     margin-top: 5px;
   }
 
-  &.expanded {
-    top: 205px;
-  }
-
-  &.expand-transit {
-    top: 250px;
-  }
-
-  &.transit {
-    top: 185px;
-  }
-
-  &.wait {
-    top: 200px;
-  }
-
-  &.expand-wait {
-    top: 245px;
-  }
-
   &.slide-out {
     animation: slideOut 0.5s ease-out forwards;
     pointer-events: none;

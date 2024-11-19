@@ -35,10 +35,24 @@ function NaviCardContainer(
   const focusRef = useRef(false);
   // Destination counter. How long user has been at the destination. * 10 seconds
   const destCountRef = useRef(0);
+  const [topPosition, setTopPosition] = useState(0);
+  const cardRef = useRef(null);
+
+  const handleRemove = index => {
+    setActiveMessages(activeMessages.filter((_, i) => i !== index));
+  };
 
   const handleClick = () => {
     setCardExpanded(!cardExpanded);
   };
+
+  useEffect(() => {
+    if (cardRef.current) {
+      const contentHeight = cardRef.current.clientHeight;
+      // Navistack top position depending on main card height.
+      setTopPosition(contentHeight + 86);
+    }
+  }, [currentLeg, cardExpanded]);
 
   useEffect(() => {
     const newLeg = realTimeLegs.find(leg => {
@@ -165,25 +179,6 @@ function NaviCardContainer(
     legType = LEGTYPE.WAIT;
   }
 
-  // Card has 6 sizes: first leg collapsed, expanded
-  //  in transit collapsed, expanded.
-  // Wait leg collapsed, expanded.
-  let classPostfix = '';
-  if (legType === LEGTYPE.TRANSIT && cardExpanded) {
-    classPostfix = 'expand-transit';
-  } else if (legType === LEGTYPE.TRANSIT) {
-    classPostfix = 'transit';
-  } else if (legType === LEGTYPE.WAIT && cardExpanded) {
-    classPostfix = 'expand-wait';
-  } else if (legType === LEGTYPE.WAIT) {
-    classPostfix = 'wait';
-  } else if (cardExpanded) {
-    classPostfix = 'expanded';
-  }
-  const handleRemove = index => {
-    setActiveMessages(activeMessages.filter((_, i) => i !== index));
-  };
-
   return (
     <>
       <button
@@ -191,7 +186,7 @@ function NaviCardContainer(
         className={`navitop ${cardExpanded ? 'expanded' : ''}`}
         onClick={handleClick}
       >
-        <div className="content">
+        <div className="content" ref={cardRef}>
           <NaviCard
             leg={currentLeg}
             nextLeg={nextLeg}
@@ -205,7 +200,7 @@ function NaviCardContainer(
         <NaviStack
           messages={activeMessages}
           handleRemove={handleRemove}
-          classPostfix={classPostfix}
+          topPosition={topPosition}
         />
       )}
     </>
