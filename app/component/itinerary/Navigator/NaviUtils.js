@@ -258,4 +258,6 @@ export const LEGTYPE = {
   WAIT: 'WAIT',
   MOVE: 'MOVE',
   TRANSIT: 'TRANSIT',
+  PENDING: 'PENDING',
+  END: 'END',
 };

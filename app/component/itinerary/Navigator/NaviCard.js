@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { legShape } from '../../../util/shapes';
 import Icon from '../../Icon';
@@ -20,8 +21,26 @@ const iconMap = {
   FERRY: 'icon-icon_ferry',
 };
 
-export default function NaviCard({ leg, nextLeg, legType, cardExpanded }) {
+export default function NaviCard({
+  leg,
+  nextLeg,
+  legType,
+  cardExpanded,
+  startTime,
+}) {
+  if (legType === LEGTYPE.PENDING) {
+    return (
+      <FormattedMessage
+        id="navigation-journey-start"
+        values={{ time: startTime }}
+      />
+    );
+  }
+  if (legType === LEGTYPE.END) {
+    return <FormattedMessage id="navigation-journey-end" />;
+  }
   const iconName = legType === LEGTYPE.WAIT ? iconMap.WAIT : iconMap[leg.mode];
+
   let instructions = `navileg-${leg?.mode.toLowerCase()}`;
   if (legType === LEGTYPE.TRANSIT) {
     instructions = `navileg-in-transit`;
@@ -63,9 +82,11 @@ NaviCard.propTypes = {
   nextLeg: legShape,
   legType: PropTypes.string.isRequired,
   cardExpanded: PropTypes.bool,
+  startTime: PropTypes.string,
 };
 NaviCard.defaultProps = {
   cardExpanded: false,
   leg: undefined,
   nextLeg: undefined,
+  startTime: '',
 };
