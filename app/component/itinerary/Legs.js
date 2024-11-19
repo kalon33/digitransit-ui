@@ -287,7 +287,7 @@ export default class Legs extends React.Component {
         <WalkLeg
           index={numberOfLegs}
           leg={compressedLegs[numberOfLegs - 1]}
-          previousLeg={compressedLegs[numberOfLegs - 2]}
+          previousLeg={compressedLegs[numberOfLegs - 1]}
           focusAction={this.focus(compressedLegs[numberOfLegs - 1].to)}
           focusToLeg={this.focusToLeg(compressedLegs[numberOfLegs - 1])}
         >
