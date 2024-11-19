@@ -194,6 +194,7 @@ export default {
     includeParkAndRideSuggestions: false,
     includeCarSuggestions: false,
     showBikeAndParkItineraries: false,
+    includeTaxiSuggestions: false,
   },
 
   /**
@@ -467,6 +468,11 @@ export default {
     },
 
     scooter: {
+      availableForSelection: false,
+      defaultValue: false, // always false
+    },
+
+    taxi: {
       availableForSelection: false,
       defaultValue: false, // always false
     },

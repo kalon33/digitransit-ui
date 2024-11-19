@@ -207,6 +207,10 @@ export default {
       availableForSelection: false,
       defaultValue: false,
     },
+    taxi: {
+      availableForSelection: true,
+      defaultValue: false,
+    },
   },
 
   search: {
