@@ -154,7 +154,8 @@
             font-size: $font-size-small;
             font-weight: $font-weight-book;
             max-width: 120px;
-            margin-top: 6px;
+            text-align: left;
+            align-content: center;
           }
 
           .icon {
@@ -226,7 +227,7 @@
           }
         }
 
-        .dest-name {
+        .headsign {
           display: flex;
           flex-direction: column;
           margin-left: var(--space-xs);

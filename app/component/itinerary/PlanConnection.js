@@ -117,6 +117,10 @@ const planConnection = graphql`
                 name
                 lat
                 lon
+                vehicleMode
+                code
+                platformCode
+                zoneId
                 parentStation {
                   name
                 }

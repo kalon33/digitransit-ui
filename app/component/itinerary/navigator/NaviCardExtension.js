@@ -50,12 +50,12 @@ const NaviCardExtension = ({ legType, leg, nextLeg }, { config }) => {
           <RouteNumberContainer
             className={cx('line', vehicleMode.toLowerCase())}
             route={leg.route}
-            mode={leg.mode.toLowerCase()}
+            mode={vehicleMode.toLowerCase()}
             isTransitLeg
             vertical
             withBar
           />
-          <div className="dest-name">{hs}</div>
+          <div className="headsign">{hs}</div>
         </div>
         <div className="stop-count">
           <FormattedMessage
