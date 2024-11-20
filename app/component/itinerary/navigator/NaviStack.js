@@ -28,11 +28,7 @@ NaviStack.propTypes = {
     }),
   ).isRequired,
   handleRemove: PropTypes.func.isRequired,
-  topPosition: PropTypes.string,
-};
-
-NaviStack.defaultProps = {
-  topPosition: '',
+  topPosition: PropTypes.number.isRequired,
 };
 
 export default NaviStack;
