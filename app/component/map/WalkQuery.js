@@ -20,7 +20,104 @@ const walkQuery = graphql`
       edges {
         node {
           legs {
-            ...ItineraryLine_legs
+            mode
+            rentedBike
+            start {
+              scheduledTime
+              estimated {
+                time
+              }
+            }
+            end {
+              scheduledTime
+              estimated {
+                time
+              }
+            }
+            duration
+            distance
+            legGeometry {
+              points
+            }
+            transitLeg
+            interlineWithPreviousLeg
+            route {
+              gtfsId
+              shortName
+              color
+              type
+              agency {
+                name
+              }
+            }
+            from {
+              lat
+              lon
+              name
+              vertexType
+              vehicleRentalStation {
+                lat
+                lon
+                stationId
+                rentalNetwork {
+                  networkId
+                }
+                availableVehicles {
+                  total
+                }
+              }
+              rentalVehicle {
+                vehicleId
+                rentalNetwork {
+                  networkId
+                }
+              }
+              stop {
+                gtfsId
+                code
+                platformCode
+              }
+            }
+            to {
+              lat
+              lon
+              name
+              vertexType
+              vehicleRentalStation {
+                lat
+                lon
+                stationId
+                rentalNetwork {
+                  networkId
+                }
+                availableVehicles {
+                  total
+                }
+              }
+              stop {
+                gtfsId
+                code
+                platformCode
+              }
+            }
+            trip {
+              stoptimes {
+                stop {
+                  gtfsId
+                }
+                pickupType
+              }
+            }
+            intermediatePlaces {
+              stop {
+                gtfsId
+                lat
+                lon
+                name
+                code
+                platformCode
+              }
+            }
           }
         }
       }
