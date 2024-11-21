@@ -151,6 +151,9 @@ export default function ItineraryPage(props, context) {
   const [topicsState, setTopicsState] = useState(null);
   const [mapState, setMapState] = useState({});
   const [naviMode, setNaviMode] = useState(false);
+  const [storedItinerary, setStoredItinerary] = useState(
+    getLatestNavigatorItinerary(),
+  );
 
   const { config, router } = context;
   const { match, breakpoint } = props;
@@ -657,7 +660,7 @@ export default function ItineraryPage(props, context) {
 
   const storeItineraryAndStartNavigation = itinerary => {
     setNavigation(true);
-    setLatestNavigatorItinerary({
+    const itineraryWithParams = {
       itinerary,
       params: {
         from: params.from,
@@ -667,7 +670,9 @@ export default function ItineraryPage(props, context) {
         hash,
         secondHash,
       },
-    });
+    };
+    setLatestNavigatorItinerary(itineraryWithParams);
+    setStoredItinerary(itineraryWithParams);
   };
 
   // save url-defined location to old searches
@@ -761,7 +766,6 @@ export default function ItineraryPage(props, context) {
     updateLocalStorage(true);
     addFeedbackly(context);
 
-    const storedItinerary = getLatestNavigatorItinerary();
     if (isStoredItineraryRelevant(storedItinerary, match)) {
       setNavigation(true);
     } else {
@@ -1152,9 +1156,8 @@ export default function ItineraryPage(props, context) {
     );
   } else if (detailView) {
     if (naviMode) {
-      const { itinerary: storedItinerary } = getLatestNavigatorItinerary();
       const itineraryForNavigator =
-        storedItinerary || combinedEdges[selectedIndex]?.node;
+        storedItinerary.itinerary || combinedEdges[selectedIndex]?.node;
 
       content = (
         <>
