@@ -13,7 +13,6 @@ export default function NaviInstructions(
   { leg, nextLeg, instructions, legType },
   { intl, config },
 ) {
-  const { distance, duration } = leg;
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
@@ -27,6 +26,7 @@ export default function NaviInstructions(
   }, [leg]);
 
   if (legType === LEGTYPE.MOVE) {
+    const { distance, duration } = leg;
     return (
       <>
         <div className="destination-header">
@@ -43,33 +43,50 @@ export default function NaviInstructions(
       </>
     );
   }
-
-  if (legType === LEGTYPE.WAIT) {
-    const { mode, headsign, route } = nextLeg;
-
-    const color = route.color ? route.color : 'currentColor';
+  if (legType === LEGTYPE.WAIT && nextLeg.mode !== 'WALK') {
+    const { mode, headsign, route, end, start } = nextLeg;
+    const hs = headsign || nextLeg.trip?.tripHeadsign;
+    const color = route.color || 'currentColor';
     const localizedMode = intl.formatMessage({
-      id: `${mode.toLowerCase()}`,
+      id: `to-${mode.toLowerCase()}`,
       defaultMessage: `${mode}`,
     });
+    const t = leg ? legTime(end) : legTime(start);
+    const remainingDuration = Math.ceil((t - Date.now()) / 60000); // ms to minutes
+    const rt = nextLeg.realtimeState === 'UPDATED';
+    const values = {
+      duration: (
+        <span className={cx({ realtime: rt })}> {remainingDuration} </span>
+      ),
+      legTime: <span className={cx({ realtime: rt })}>{legTimeStr(end)}</span>,
+    };
     return (
       <>
         <div className="destination-header">
           <FormattedMessage
             id="navigation-wait-mode"
             values={{ mode: localizedMode }}
-            defaultMessage="Wait for"
+            defaultMessage="Wait for {mode}"
           />
         </div>
         <div className="wait-leg">
-          <RouteNumber
-            mode={mode.toLowerCase()}
-            text={route?.shortName}
-            withBar
-            isTransitLeg
-            color={color}
-          />
-          <div className="headsign">{headsign}</div>
+          <div className="route-info">
+            <RouteNumber
+              mode={mode.toLowerCase()}
+              text={route?.shortName}
+              withBar
+              isTransitLeg
+              color={color}
+            />
+            <div className="headsign">{hs}</div>
+          </div>
+          <div className="wait-duration">
+            <FormattedMessage
+              id="navileg-arrive-at"
+              defaultMessage="{duration}min päästä klo {legTime}"
+              values={values}
+            />
+          </div>
         </div>
       </>
     );
@@ -120,14 +137,16 @@ export default function NaviInstructions(
 }
 
 NaviInstructions.propTypes = {
-  leg: legShape.isRequired,
-  nextLeg: legShape.isRequired,
+  leg: legShape,
+  nextLeg: legShape,
   instructions: PropTypes.string.isRequired,
   legType: PropTypes.string,
 };
 
 NaviInstructions.defaultProps = {
-  legType: LEGTYPE.MOVE,
+  legType: '',
+  leg: undefined,
+  nextLeg: undefined,
 };
 NaviInstructions.contextTypes = {
   intl: intlShape.isRequired,
