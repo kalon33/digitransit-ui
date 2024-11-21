@@ -46,7 +46,7 @@ export default function NaviInstructions(
   if (legType === LEGTYPE.WAIT && nextLeg.mode !== 'WALK') {
     const { mode, headsign, route, end, start } = nextLeg;
     const hs = headsign || nextLeg.trip?.tripHeadsign;
-    const color = route?.color ? route.color : 'currentColor';
+    const color = route.color || 'currentColor';
     const localizedMode = intl.formatMessage({
       id: `to-${mode.toLowerCase()}`,
       defaultMessage: `${mode}`,

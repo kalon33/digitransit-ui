@@ -43,14 +43,15 @@ const NaviCardExtension = ({ legType, leg, nextLeg }, { config }) => {
     const stopCount = <span className="realtime"> {count} </span>;
     const translationId =
       count === 1 ? 'navileg-one-stop-remaining' : 'navileg-stops-remaining';
+    const mode = leg.mode.toLowerCase();
     return (
       <div className="extension">
         <div className="extension-divider" />
         <div className="extension-routenumber">
           <RouteNumberContainer
-            className={cx('line', vehicleMode.toLowerCase())}
+            className={cx('line', mode)}
             route={leg.route}
-            mode={vehicleMode.toLowerCase()}
+            mode={mode}
             isTransitLeg
             vertical
             withBar
