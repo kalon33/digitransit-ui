@@ -13,9 +13,6 @@ export default function NaviInstructions(
   { leg, nextLeg, instructions, legType },
   { intl, config },
 ) {
-  if (!leg && !nextLeg) {
-    return null;
-  }
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
@@ -140,14 +137,16 @@ export default function NaviInstructions(
 }
 
 NaviInstructions.propTypes = {
-  leg: legShape.isRequired,
-  nextLeg: legShape.isRequired,
+  leg: legShape,
+  nextLeg: legShape,
   instructions: PropTypes.string.isRequired,
   legType: PropTypes.string,
 };
 
 NaviInstructions.defaultProps = {
-  legType: LEGTYPE.MOVE,
+  legType: '',
+  leg: undefined,
+  nextLeg: undefined,
 };
 NaviInstructions.contextTypes = {
   intl: intlShape.isRequired,

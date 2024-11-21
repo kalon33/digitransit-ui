@@ -35,7 +35,7 @@ const NaviCardExtension = ({ legType, leg, nextLeg }, { config }) => {
 
   if (legType === LEGTYPE.TRANSIT) {
     const { intermediatePlaces, headsign, trip } = leg;
-    const hs = headsign || trip?.tripHeadsign;
+    const hs = headsign || trip.tripHeadsign;
     const now = Date.now();
     const idx = intermediatePlaces.findIndex(p => legTime(p.arrival) > now);
 

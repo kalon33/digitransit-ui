@@ -39,9 +39,12 @@ export default function NaviCard({
   if (legType === LEGTYPE.END) {
     return <FormattedMessage id="navigation-journey-end" />;
   }
+  if (!leg && !nextLeg) {
+    return null;
+  }
   const iconName = legType === LEGTYPE.WAIT ? iconMap.WAIT : iconMap[leg.mode];
 
-  let instructions = `navileg-${leg?.mode.toLowerCase()}`;
+  let instructions = '';
   if (legType === LEGTYPE.TRANSIT) {
     instructions = `navileg-in-transit`;
   } else if (legType !== LEGTYPE.WAIT && isRental(leg, nextLeg)) {
@@ -50,7 +53,10 @@ export default function NaviCard({
     } else {
       instructions = 'rent-cycle-at';
     }
+  } else if (legType === LEGTYPE.MOVE) {
+    instructions = `navileg-${leg?.mode.toLowerCase()}`;
   }
+
   return (
     <div className="navi-top-card">
       <div className="main-card">
