@@ -21,7 +21,9 @@ function getFirstLastLegs(legs) {
   const last = legs[legs.length - 1];
   return { first, last };
 }
-
+function getNextLeg(legs, time) {
+  return legs.find(leg => legTime(leg.start) > time);
+}
 function NaviCardContainer(
   { focusToLeg, time, realTimeLegs, position },
   { intl, config },
@@ -74,9 +76,8 @@ function NaviCardContainer(
     const l = currentLeg || newLeg;
 
     if (l) {
-      const nextLeg = realTimeLegs.find(
-        leg => legTime(leg.start) > legTime(l.start),
-      );
+      const nextLeg = getNextLeg(realTimeLegs, legTime(l.start));
+
       if (nextLeg?.transitLeg) {
         // Messages for NaviStack.
         const transitLegState = getTransitLegState(nextLeg, intl, messages);
@@ -158,9 +159,8 @@ function NaviCardContainer(
   const { first, last } = getFirstLastLegs(realTimeLegs);
   let legType;
   const t = currentLeg ? legTime(currentLeg.start) : time;
-  const nextLeg = realTimeLegs.find(leg => {
-    return legTime(leg.start) > t;
-  });
+  const nextLeg = getNextLeg(realTimeLegs, t);
+
   if (time < legTime(first.start)) {
     legType = LEGTYPE.PENDING;
   } else if (currentLeg) {
