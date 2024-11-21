@@ -115,6 +115,8 @@ const emptyState = {
 const emptyPlan = { plan: {}, loading: LOADSTATE.DONE };
 const unset = { plan: {}, loading: LOADSTATE.UNSET };
 
+const noFocus = { center: undefined, zoom: undefined, bounds: undefined };
+
 export default function ItineraryPage(props, context) {
   const headerRef = useRef(null);
   const mwtRef = useRef();
@@ -648,7 +650,7 @@ export default function ItineraryPage(props, context) {
       mobileRef.current.setBottomSheet(isEnabled ? 'bottom' : 'middle');
     }
     if (!isEnabled) {
-      setMapState({ center: undefined, zoom: undefined, bounds: undefined });
+      setMapState(noFocus);
       navigateMap();
       clearLatestNavigatorItinerary();
     }
@@ -798,7 +800,7 @@ export default function ItineraryPage(props, context) {
 
   useEffect(() => {
     navigateMap();
-    setMapState({ center: undefined, zoom: undefined, bounds: undefined });
+    setMapState(noFocus);
 
     if (detailView) {
       // If itinerary is not found in detail view, go back to summary view
@@ -913,7 +915,7 @@ export default function ItineraryPage(props, context) {
         )
         .filter(a => a[0] && a[1]),
     );
-    setMapState({ bounds, center: undefined });
+    setMapState({ bounds, center: undefined, zoom: undefined });
   };
 
   const changeHash = index => {

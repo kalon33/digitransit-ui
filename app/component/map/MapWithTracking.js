@@ -280,6 +280,7 @@ class MapWithTrackingStateHandler extends React.Component {
       (!isEqual(this.oldBounds, this.props.bounds) || this.refresh)
     ) {
       this.naviProps.bounds = cloneDeep(this.props.bounds);
+      delete this.naviProps.zoom;
       if (this.refresh) {
         // bounds is defined by [min, max] point pair. Substract min lat a bit
         this.naviProps.bounds[0][0] -= 0.000001 * Math.random();
