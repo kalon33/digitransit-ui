@@ -1040,6 +1040,12 @@ export default function ItineraryPage(props, context) {
       itineraryContainsDepartureFromVehicleRentalStation,
       planEdges?.[activeIndex]?.node,
     );
+
+    const explicitItinerary =
+      !!detailView && naviMode && !!storedItinerary.itinerary
+        ? storedItinerary.itinerary
+        : undefined;
+
     return (
       <ItineraryPageMap
         {...mwtProps}
@@ -1053,10 +1059,11 @@ export default function ItineraryPage(props, context) {
         planEdges={planEdges}
         topics={topicsState}
         active={activeIndex}
-        showActive={!!detailView}
+        showActiveOnly={!!detailView}
         showVehicles={showVehicles()}
         showDurationBubble={planEdges?.[0]?.node.legs?.length === 1}
         objectsToHide={objectsToHide}
+        itinerary={explicitItinerary}
       />
     );
   }
