@@ -159,7 +159,7 @@ class OriginDestinationBar extends React.Component {
             'Datasource',
             props.showFavourites ? 'Favourite' : '',
           ]}
-          targets={getLocationSearchTargets(config, false)}
+          targets={getLocationSearchTargets(config, props.isMobile)}
           lang={props.language}
           disableAutoFocus={props.isMobile}
           isMobile={props.isMobile}
