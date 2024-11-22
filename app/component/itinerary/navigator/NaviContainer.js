@@ -48,7 +48,7 @@ function NaviContainer(
         }
         time={time}
         position={position}
-      />{' '}
+      />
       <NaviBottom setNavigation={setNavigation} arrival={arrivalTime} />
     </>
   );

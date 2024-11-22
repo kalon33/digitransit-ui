@@ -75,11 +75,12 @@
     width: 100%;
 
     .navi-top-card {
+      margin: 16px 24px 16px;
+
       .main-card {
         display: flex;
         flex-direction: row;
         color: black;
-        margin: var(--space-s) var(--space-m) 0;
 
         .mode {
           width: var(--space-l);
@@ -96,7 +97,6 @@
         width: 100%;
         font-size: $font-size-normal;
         font-weight: $font-weight-medium;
-        margin-bottom: var(--space-s);
 
         &.expanded {
           margin-bottom: 0;
@@ -104,7 +104,7 @@
 
         .destination-header {
           font-size: $font-size-normal;
-          font-weight: $font-weight-medium;
+          font-weight: 500;
           display: flex;
         }
 
@@ -120,12 +120,42 @@
           display: flex;
           align-items: center;
           margin-top: 3px;
+          flex-direction: column;
+          align-self: flex-start;
+
+          .route-info {
+            display: flex;
+            align-self: flex-start;
+            margin-bottom: var(--space-xcs);
+          }
+
+          .wait-duration {
+            font-weight: $font-weight-book;
+            margin-top: var(--space-xs);
+          }
+
+          .bar {
+            border-radius: $border-radius;
+          }
+
+          .route-number {
+            .vcenter-children {
+              .vehicle-number {
+                color: white;
+                margin-top: 5px;
+              }
+
+              display: flex;
+            }
+          }
 
           .headsign {
             margin-left: 10px;
             font-size: $font-size-small;
             font-weight: $font-weight-book;
             max-width: 120px;
+            text-align: left;
+            align-content: center;
           }
 
           .icon {
@@ -155,14 +185,14 @@
       .extension-divider {
         border: 1px solid #ddd;
         width: 75%;
-        margin-left: 50px;
+        margin-left: 35px;
         margin-top: var(--space-s);
         margin-bottom: var(--space-s);
       }
 
       .stop-count {
         display: flex;
-        margin-left: 48px;
+        margin-left: 35px;
         font-weight: $font-weight-book;
       }
 
@@ -170,17 +200,19 @@
         display: flex;
         flex-direction: row;
         font-weight: $font-weight-book;
-        margin-left: 48px;
+        margin-left: 35px;
         margin-bottom: var(--space-s);
         text-align: left;
 
-        .route-number {
-          min-width: 55px;
+        .bar {
+          border-radius: $border-radius;
+        }
 
+        .route-number {
           .vcenter-children {
             .vehicle-number {
               color: white;
-              margin-top: 4px;
+              margin-top: 5px;
             }
 
             display: flex;
@@ -195,7 +227,7 @@
           }
         }
 
-        .dest-name {
+        .headsign {
           display: flex;
           flex-direction: column;
           margin-left: var(--space-xs);
@@ -206,7 +238,7 @@
 
       .extension-walk {
         display: flex;
-        margin-left: var(--space-xxl);
+        margin-left: var(--space-xl);
         margin-bottom: var(--space-s);
         margin-top: var(--space-xs);
       }
@@ -333,7 +365,7 @@
   height: 69px;
   margin-left: 5%;
   width: 90%;
-  top: 155px;
+  top: 160px;
 
   div:first-child {
     margin-top: 0;
@@ -341,18 +373,6 @@
 
   div:not(:first-child) {
     margin-top: 5px;
-  }
-
-  &.expanded {
-    top: 190px;
-  }
-
-  &.expand-transit {
-    top: 235px;
-  }
-
-  &.transit {
-    top: 162px;
   }
 
   &.slide-out {

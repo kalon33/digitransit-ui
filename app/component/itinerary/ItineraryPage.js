@@ -74,9 +74,9 @@ import {
   updateClient,
 } from './ItineraryPageUtils';
 import ItineraryTabs from './ItineraryTabs';
+import planConnection from './PlanConnection';
 import NaviContainer from './navigator/NaviContainer';
 import NavigatorIntroModal from './navigator/navigatorintro/NavigatorIntroModal';
-import planConnection from './PlanConnection';
 
 const MAX_QUERY_COUNT = 4; // number of attempts to collect enough itineraries
 
@@ -153,6 +153,9 @@ export default function ItineraryPage(props, context) {
   const [topicsState, setTopicsState] = useState(null);
   const [mapState, setMapState] = useState({});
   const [naviMode, setNaviMode] = useState(false);
+  const [storedItinerary, setStoredItinerary] = useState(
+    getLatestNavigatorItinerary(),
+  );
 
   const { config, router } = context;
   const { match, breakpoint } = props;
@@ -659,7 +662,7 @@ export default function ItineraryPage(props, context) {
 
   const storeItineraryAndStartNavigation = itinerary => {
     setNavigation(true);
-    setLatestNavigatorItinerary({
+    const itineraryWithParams = {
       itinerary,
       params: {
         from: params.from,
@@ -669,7 +672,9 @@ export default function ItineraryPage(props, context) {
         hash,
         secondHash,
       },
-    });
+    };
+    setLatestNavigatorItinerary(itineraryWithParams);
+    setStoredItinerary(itineraryWithParams);
   };
 
   // save url-defined location to old searches
@@ -763,7 +768,6 @@ export default function ItineraryPage(props, context) {
     updateLocalStorage(true);
     addFeedbackly(context);
 
-    const storedItinerary = getLatestNavigatorItinerary();
     if (isStoredItineraryRelevant(storedItinerary, match)) {
       setNavigation(true);
     } else {
@@ -1038,6 +1042,12 @@ export default function ItineraryPage(props, context) {
       itineraryContainsDepartureFromVehicleRentalStation,
       planEdges?.[activeIndex]?.node,
     );
+
+    const explicitItinerary =
+      !!detailView && naviMode && !!storedItinerary.itinerary
+        ? storedItinerary.itinerary
+        : undefined;
+
     return (
       <ItineraryPageMap
         {...mwtProps}
@@ -1051,10 +1061,11 @@ export default function ItineraryPage(props, context) {
         planEdges={planEdges}
         topics={topicsState}
         active={activeIndex}
-        showActive={!!detailView}
+        showActiveOnly={!!detailView}
         showVehicles={showVehicles()}
         showDurationBubble={planEdges?.[0]?.node.legs?.length === 1}
         objectsToHide={objectsToHide}
+        itinerary={explicitItinerary}
       />
     );
   }
@@ -1154,9 +1165,8 @@ export default function ItineraryPage(props, context) {
     );
   } else if (detailView) {
     if (naviMode) {
-      const { itinerary: storedItinerary } = getLatestNavigatorItinerary();
       const itineraryForNavigator =
-        storedItinerary || combinedEdges[selectedIndex]?.node;
+        storedItinerary.itinerary || combinedEdges[selectedIndex]?.node;
 
       content = (
         <>

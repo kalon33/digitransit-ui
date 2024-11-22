@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { intlShape } from 'react-intl';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
 import { legShape, configShape } from '../../../util/shapes';
 import { legTime, legTimeStr } from '../../../util/legUtils';
@@ -21,7 +21,9 @@ function getFirstLastLegs(legs) {
   const last = legs[legs.length - 1];
   return { first, last };
 }
-
+function getNextLeg(legs, time) {
+  return legs.find(leg => legTime(leg.start) > time);
+}
 function NaviCardContainer(
   { focusToLeg, time, realTimeLegs, position },
   { intl, config },
@@ -35,10 +37,24 @@ function NaviCardContainer(
   const focusRef = useRef(false);
   // Destination counter. How long user has been at the destination. * 10 seconds
   const destCountRef = useRef(0);
+  const [topPosition, setTopPosition] = useState(0);
+  const cardRef = useRef(null);
+
+  const handleRemove = index => {
+    setActiveMessages(activeMessages.filter((_, i) => i !== index));
+  };
 
   const handleClick = () => {
     setCardExpanded(!cardExpanded);
   };
+
+  useEffect(() => {
+    if (cardRef.current) {
+      const contentHeight = cardRef.current.clientHeight;
+      // Navistack top position depending on main card height.
+      setTopPosition(contentHeight + 86);
+    }
+  }, [currentLeg, cardExpanded]);
 
   useEffect(() => {
     const newLeg = realTimeLegs.find(leg => {
@@ -60,9 +76,8 @@ function NaviCardContainer(
     const l = currentLeg || newLeg;
 
     if (l) {
-      const nextLeg = realTimeLegs.find(
-        leg => legTime(leg.start) > legTime(l.start),
-      );
+      const nextLeg = getNextLeg(realTimeLegs, legTime(l.start));
+
       if (nextLeg?.transitLeg) {
         // Messages for NaviStack.
         const transitLegState = getTransitLegState(nextLeg, intl, messages);
@@ -143,18 +158,12 @@ function NaviCardContainer(
 
   const { first, last } = getFirstLastLegs(realTimeLegs);
   let legType;
-  let naviTopContent;
+  const t = currentLeg ? legTime(currentLeg.start) : time;
+  const nextLeg = getNextLeg(realTimeLegs, t);
+
   if (time < legTime(first.start)) {
-    naviTopContent = (
-      <FormattedMessage
-        id="navigation-journey-start"
-        values={{ time: legTimeStr(first.start) }}
-      />
-    );
+    legType = LEGTYPE.PENDING;
   } else if (currentLeg) {
-    const nextLeg = realTimeLegs.find(leg => {
-      return legTime(leg.start) > legTime(currentLeg.start);
-    });
     if (!currentLeg.transitLeg) {
       if (destCountRef.current >= TIME_AT_DESTINATION) {
         legType = LEGTYPE.WAIT;
@@ -164,33 +173,11 @@ function NaviCardContainer(
     } else {
       legType = LEGTYPE.TRANSIT;
     }
-    naviTopContent = (
-      <NaviCard
-        leg={currentLeg}
-        nextLeg={nextLeg}
-        cardExpanded={cardExpanded}
-        legType={legType}
-      />
-    );
   } else if (time > legTime(last.end)) {
-    naviTopContent = <FormattedMessage id="navigation-journey-end" />;
+    legType = LEGTYPE.END;
   } else {
-    naviTopContent = <FormattedMessage id="navigation-wait" />;
+    legType = LEGTYPE.WAIT;
   }
-
-  // Card has 4 sizes: first leg collapsed, expanded
-  // and in transit collapsed, expanded.
-  let classPostfix = '';
-  if (legType === LEGTYPE.TRANSIT && cardExpanded) {
-    classPostfix = 'expand-transit';
-  } else if (legType === LEGTYPE.TRANSIT) {
-    classPostfix = 'transit';
-  } else if (cardExpanded) {
-    classPostfix = 'expanded';
-  }
-  const handleRemove = index => {
-    setActiveMessages(activeMessages.filter((_, i) => i !== index));
-  };
 
   return (
     <>
@@ -199,13 +186,21 @@ function NaviCardContainer(
         className={`navitop ${cardExpanded ? 'expanded' : ''}`}
         onClick={handleClick}
       >
-        <div className="content">{naviTopContent}</div>
+        <div className="content" ref={cardRef}>
+          <NaviCard
+            leg={currentLeg}
+            nextLeg={nextLeg}
+            cardExpanded={cardExpanded}
+            legType={legType}
+            startTime={legTimeStr(first.start)}
+          />
+        </div>
       </button>
       {activeMessages.length > 0 && (
         <NaviStack
           messages={activeMessages}
           handleRemove={handleRemove}
-          classPostfix={classPostfix}
+          topPosition={topPosition}
         />
       )}
     </>
