@@ -2,17 +2,23 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { createRefetchContainer, graphql } from 'react-relay';
 import { matchShape, routerShape } from 'found';
-import { unixTime, unixToYYYYMMDD } from '../util/timeUtils';
-import { configShape, relayShape } from '../util/shapes';
-import { prepareServiceDay } from '../util/dateParamUtils';
+import { configShape, relayShape } from '../../util/shapes';
+import { unixTime, unixToYYYYMMDD } from '../../util/timeUtils';
+import { prepareServiceDay } from '../../util/dateParamUtils';
 import TimetableContainer from './TimetableContainer';
 
-class StopTimetablePage extends React.Component {
+class TerminalTimetablePage extends React.Component {
   static propTypes = {
-    stop: PropTypes.shape({
+    station: PropTypes.shape({
       url: PropTypes.string,
     }).isRequired,
     relay: relayShape.isRequired,
+  };
+
+  static contextTypes = {
+    router: routerShape.isRequired,
+    match: matchShape.isRequired,
+    config: configShape.isRequired,
   };
 
   state = prepareServiceDay({});
@@ -37,16 +43,10 @@ class StopTimetablePage extends React.Component {
     );
   };
 
-  static contextTypes = {
-    router: routerShape.isRequired,
-    match: matchShape.isRequired,
-    config: configShape.isRequired,
-  };
-
   render() {
     return (
       <TimetableContainer
-        stop={this.props.stop}
+        stop={this.props.station}
         date={this.state.date}
         startDate={unixToYYYYMMDD(unixTime(), this.context.config)}
         onDateChange={this.onDateChange}
@@ -56,10 +56,10 @@ class StopTimetablePage extends React.Component {
 }
 
 export default createRefetchContainer(
-  StopTimetablePage,
+  TerminalTimetablePage,
   {
-    stop: graphql`
-      fragment StopTimetablePage_stop on Stop
+    station: graphql`
+      fragment TerminalTimetablePage_station on Stop
       @argumentDefinitions(date: { type: "String" }) {
         url
         ...TimetableContainer_stop @arguments(date: $date)
@@ -67,9 +67,9 @@ export default createRefetchContainer(
     `,
   },
   graphql`
-    query StopTimetablePageQuery($stopId: String!, $date: String) {
-      stop(id: $stopId) {
-        ...StopTimetablePage_stop @arguments(date: $date)
+    query TerminalTimetablePageQuery($terminalId: String!, $date: String) {
+      station(id: $terminalId) {
+        ...TerminalTimetablePage_station @arguments(date: $date)
       }
     }
   `,

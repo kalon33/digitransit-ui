@@ -8,19 +8,19 @@ import padStart from 'lodash/padStart';
 import { FormattedMessage, intlShape } from 'react-intl';
 import { matchShape, routerShape, RedirectException } from 'found';
 import cx from 'classnames';
-import { configShape } from '../util/shapes';
-import Icon from './Icon';
+import { configShape } from '../../util/shapes';
+import Icon from '../Icon';
 import FilterTimeTableModal from './FilterTimeTableModal';
 import TimeTableOptionsPanel from './TimeTableOptionsPanel';
 import TimetableRow from './TimetableRow';
-import { RealtimeStateType } from '../constants';
-import SecondaryButton from './SecondaryButton';
-import { addAnalyticsEvent } from '../util/analyticsUtils';
-import DateSelect from './DateSelect';
-import ScrollableWrapper from './ScrollableWrapper';
-import { replaceQueryParams } from '../util/queryUtils';
-import { isBrowser } from '../util/browser';
-import { PREFIX_STOPS } from '../util/path';
+import { RealtimeStateType } from '../../constants';
+import SecondaryButton from '../SecondaryButton';
+import { addAnalyticsEvent } from '../../util/analyticsUtils';
+import DateSelect from '../DateSelect';
+import ScrollableWrapper from '../ScrollableWrapper';
+import { replaceQueryParams } from '../../util/queryUtils';
+import { isBrowser } from '../../util/browser';
+import { PREFIX_STOPS } from '../../util/path';
 
 const mapStopTimes = stoptimesObject =>
   stoptimesObject

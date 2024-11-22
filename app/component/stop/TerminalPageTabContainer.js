@@ -1,21 +1,21 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { createFragmentContainer, graphql } from 'react-relay';
-import { alertShape } from '../util/shapes';
+import { alertShape } from '../../util/shapes';
 import StopPageTabs from './StopPageTabs';
 
-function StopPageTabContainer({ children, stop }) {
+function TerminalPageTabContainer({ children, station }) {
   return (
     <div className="stop-page-content-wrapper">
-      <StopPageTabs stop={stop} />
+      <StopPageTabs stop={station} />
       {children}
     </div>
   );
 }
 
-StopPageTabContainer.propTypes = {
+TerminalPageTabContainer.propTypes = {
   children: PropTypes.node.isRequired,
-  stop: PropTypes.shape({
+  station: PropTypes.shape({
     alerts: PropTypes.arrayOf(alertShape),
     vehicleMode: PropTypes.string,
     stoptimes: PropTypes.arrayOf(
@@ -27,11 +27,6 @@ StopPageTabContainer.propTypes = {
           }),
           route: PropTypes.shape({
             alerts: PropTypes.arrayOf(alertShape),
-            trip: PropTypes.shape({
-              pattern: PropTypes.shape({
-                code: PropTypes.string,
-              }),
-            }),
           }),
         }),
       }),
@@ -39,13 +34,13 @@ StopPageTabContainer.propTypes = {
   }),
 };
 
-StopPageTabContainer.defaultProps = {
-  stop: undefined,
+TerminalPageTabContainer.defaultProps = {
+  station: undefined,
 };
 
-const containerComponent = createFragmentContainer(StopPageTabContainer, {
-  stop: graphql`
-    fragment StopPageTabContainer_stop on Stop
+const containerComponent = createFragmentContainer(TerminalPageTabContainer, {
+  station: graphql`
+    fragment TerminalPageTabContainer_station on Stop
     @argumentDefinitions(
       startTime: { type: "Long" }
       timeRange: { type: "Int", defaultValue: 3600 }
@@ -53,7 +48,17 @@ const containerComponent = createFragmentContainer(StopPageTabContainer, {
       id
       gtfsId
       code
-      alerts(types: [STOP, ROUTES]) {
+      stops {
+        id
+        gtfsId
+        alerts(types: [STOP, ROUTES]) {
+          id
+          alertSeverityLevel
+          effectiveEndDate
+          effectiveStartDate
+        }
+      }
+      alerts(types: [STOP]) {
         id
         alertSeverityLevel
         effectiveEndDate
@@ -71,4 +76,4 @@ const containerComponent = createFragmentContainer(StopPageTabContainer, {
   `,
 });
 
-export { containerComponent as default, StopPageTabContainer as Component };
+export { containerComponent as default, TerminalPageTabContainer as Component };

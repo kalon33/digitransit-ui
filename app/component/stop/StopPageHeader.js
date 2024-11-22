@@ -4,7 +4,7 @@ import getContext from 'recompose/getContext';
 import compose from 'recompose/compose';
 
 import StopCardHeaderContainer from './StopCardHeaderContainer';
-import withBreakpoint from '../util/withBreakpoint';
+import withBreakpoint from '../../util/withBreakpoint';
 
 const StopPageHeader = compose(
   withBreakpoint,
