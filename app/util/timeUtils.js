@@ -166,9 +166,5 @@ export function timeStr(dateTime) {
  * Epoch ms to ISO-8601/RFC3339 datetime str
  */
 export function epochToIso(ms) {
-  const date = new Date(ms);
-  let iso = date.toISOLocaleString();
-  const msSeparator = iso.indexOf('.');
-  iso = iso.subString(0, msSeparator);
-  return iso + date.getISOTimezoneOffset();
+  return moment(ms).format();
 }
