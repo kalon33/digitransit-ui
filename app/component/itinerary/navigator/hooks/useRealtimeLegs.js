@@ -143,7 +143,7 @@ const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
           },
         };
       }
-      return { ...l };
+      return { ...l, start: { ...l.start }, end: { ...l.end } };
     });
     // shift non-transit-legs to match possibly changed transit legs
     matchLegEnds(rtLegs);
