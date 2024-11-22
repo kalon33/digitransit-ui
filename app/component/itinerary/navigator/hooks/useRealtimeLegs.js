@@ -7,7 +7,7 @@ import { epochToIso } from '../../../../util/timeUtils';
 
 function nextTransitIndex(legs, i) {
   for (let j = i; j < legs.length; j++) {
-    if (legs[j].isTransitLeg) {
+    if (legs[j].transitLeg) {
       return j;
     }
   }
