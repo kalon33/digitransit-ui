@@ -16,7 +16,7 @@ import TimetableRow from './TimetableRow';
 import { RealtimeStateType } from '../../constants';
 import SecondaryButton from '../SecondaryButton';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
-import DateSelect from '../DateSelect';
+import DateSelect from './DateSelect';
 import ScrollableWrapper from '../ScrollableWrapper';
 import { replaceQueryParams } from '../../util/queryUtils';
 import { isBrowser } from '../../util/browser';
