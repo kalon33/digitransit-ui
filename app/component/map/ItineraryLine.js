@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import polyUtil from 'polyline-encoded';
 import React from 'react';
-import { intlShape } from 'react-intl';
 import { isBrowser } from '../../util/browser';
 import { getMiddleOf } from '../../util/geo-utils';
 import {
@@ -23,7 +22,6 @@ import SpeechBubble from './SpeechBubble';
 class ItineraryLine extends React.Component {
   static contextTypes = {
     config: configShape.isRequired,
-    intl: intlShape.isRequired,
   };
 
   static propTypes = {
