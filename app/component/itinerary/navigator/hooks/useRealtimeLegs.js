@@ -16,7 +16,7 @@ function nextTransitIndex(legs, i) {
 }
 
 function getLegGap(legs, index) {
-  return legTime(legs[index].end) - legTime(legs[index + 1].start);
+  return legTime(legs[index + 1].start) - legTime(legs[index].end);
 }
 
 // change non-transit legs' scheduled times
@@ -147,7 +147,6 @@ const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
     });
     // shift non-transit-legs to match possibly changed transit legs
     matchLegEnds(rtLegs);
-
     setRealTimeLegs(rtLegs);
   }, [initialLegs, queryAndMapRealtimeLegs]);
 
