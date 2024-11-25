@@ -83,6 +83,10 @@ $itinerary-tab-switch-height: 48px;
   &.scooter {
     @include getCircleSvg($scooter-color, $fill);
   }
+
+  &.taxi-external {
+    @include getCircleSvg($external-feed-color, $fill);
+  }
 }
 
 .itinerary-list-container {
@@ -874,6 +878,10 @@ $itinerary-tab-switch-height: 48px;
 
     &.scooter {
       @include setModeCircles($scooter-color);
+    }
+
+    &.taxi-external {
+      @include setModeCircles($external-feed-color);
     }
   }
 }

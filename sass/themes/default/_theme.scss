@@ -82,11 +82,11 @@ $walk-color: #000;
 $wait-color: #979797;
 $bicycle-color: #666;
 $car-color: #333;
-$scooter-color: #c5cad2;
-$scooter-map-color: #666;
 $call-agency-color: #666;
 $external-feed-color: #c5cad2;
 $external-feed-map-color: #666;
+$scooter-color: $external-feed-color;
+$scooter-map-color: #666;
 
 /* Fonts */
 $font-family: 'Roboto', arial, georgia, serif;

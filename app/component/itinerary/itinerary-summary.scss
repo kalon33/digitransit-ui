@@ -370,7 +370,8 @@
           &.wait,
           &.bicycle_walk,
           &.car,
-          &.scooter {
+          &.scooter,
+          &.taxi-external {
             display: block;
             overflow: hidden;
             min-width: unset;
@@ -463,6 +464,15 @@
               }
             }
           }
+
+          &.taxi-external {
+            .icon {
+              width: inherit;
+              transform: scale(1.25);
+              margin-top: 3px;
+              margin-left: 2px;
+            }
+          }
         }
 
         .ferry-external .itinerary-icon_with-bicycle {
@@ -503,6 +513,10 @@
           .vehicle-number.ferry-external {
             color: $black;
           }
+
+          .vehicle-number.taxi-external {
+            color: $black;
+          }
         }
 
         .leg-duration-container {
@@ -527,6 +541,12 @@
           &.car {
             .leg-duration {
               color: $white;
+            }
+          }
+
+          &.taxi-external {
+            .leg-duration {
+              color: $black;
             }
           }
         }
