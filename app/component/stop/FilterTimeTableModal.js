@@ -4,12 +4,12 @@ import intersection from 'lodash/intersection';
 import { FormattedMessage, intlShape } from 'react-intl';
 import cx from 'classnames';
 import Modal from '@hsl-fi/modal';
-import Icon from './Icon';
-import routeCompare from '../util/route-compare';
-import withBreakpoint from '../util/withBreakpoint';
-import { isKeyboardSelectionEvent } from '../util/browser';
-import { getRouteMode } from '../util/modeUtils';
-import { stopShape } from '../util/shapes';
+import Icon from '../Icon';
+import routeCompare from '../../util/route-compare';
+import withBreakpoint from '../../util/withBreakpoint';
+import { isKeyboardSelectionEvent } from '../../util/browser';
+import { getRouteMode } from '../../util/modeUtils';
+import { stopShape } from '../../util/shapes';
 
 class FilterTimeTableModal extends React.Component {
   static propTypes = {

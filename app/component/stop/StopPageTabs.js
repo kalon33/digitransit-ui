@@ -2,25 +2,25 @@ import cx from 'classnames';
 import React, { useState, useRef } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { matchShape } from 'found';
-import { stopShape } from '../util/shapes';
-import { AlertSeverityLevelType } from '../constants';
+import { stopShape } from '../../util/shapes';
+import { AlertSeverityLevelType } from '../../constants';
 import {
   getCancelationsForStop,
   getAlertsForObject,
   getServiceAlertsForStation,
   getActiveAlertSeverityLevel,
-} from '../util/alertUtils';
-import withBreakpoint from '../util/withBreakpoint';
-import { addAnalyticsEvent } from '../util/analyticsUtils';
-import { unixTime } from '../util/timeUtils';
+} from '../../util/alertUtils';
+import withBreakpoint from '../../util/withBreakpoint';
+import { addAnalyticsEvent } from '../../util/analyticsUtils';
+import { unixTime } from '../../util/timeUtils';
 import {
   PREFIX_DISRUPTION,
   PREFIX_ROUTES,
   PREFIX_STOPS,
   PREFIX_TERMINALS,
   PREFIX_TIMETABLE,
-} from '../util/path';
-import Icon from './Icon';
+} from '../../util/path';
+import Icon from '../Icon';
 
 const Tab = {
   Disruptions: PREFIX_DISRUPTION,

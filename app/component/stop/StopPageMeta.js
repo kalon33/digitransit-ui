@@ -4,30 +4,30 @@ import { createFragmentContainer, graphql } from 'react-relay';
 import compose from 'recompose/compose';
 import getContext from 'recompose/getContext';
 import mapProps from 'recompose/mapProps';
-import { configShape } from '../util/shapes';
+import { configShape } from '../../util/shapes';
 
-import { generateMetaData } from '../util/metaUtils';
+import { generateMetaData } from '../../util/metaUtils';
 
-const TerminalPageMeta = compose(
+const StopPageMeta = compose(
   getContext({ config: configShape, intl: intlShape }),
-  mapProps(({ config, intl, station }) => {
-    if (!station) {
+  mapProps(({ config, intl, stop }) => {
+    if (!stop) {
       return false;
     }
 
     const title = intl.formatMessage(
       {
-        id: 'terminal-page.title',
-        defaultMessage: 'Terminal - {name}',
+        id: 'stop-page.title',
+        defaultMessage: 'Stop - {name} {code}',
       },
-      station,
+      stop,
     );
     const description = intl.formatMessage(
       {
-        id: 'terminal-page.description',
-        defaultMessage: 'Terminal - {name} {code}, {desc}',
+        id: 'stop-page.description',
+        defaultMessage: 'Stop - {name} {code}, {desc}',
       },
-      station,
+      stop,
     );
     return generateMetaData(
       {
@@ -39,9 +39,9 @@ const TerminalPageMeta = compose(
   }),
 )(Helmet);
 
-export default createFragmentContainer(TerminalPageMeta, {
-  station: graphql`
-    fragment TerminalPageMeta_station on Stop {
+export default createFragmentContainer(StopPageMeta, {
+  stop: graphql`
+    fragment StopPageMeta_stop on Stop {
       name
       code
       desc

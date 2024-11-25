@@ -2,15 +2,15 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { intlShape } from 'react-intl';
 import { matchShape } from 'found';
-import { stopShape, stationShape } from '../util/shapes';
-import CardHeader from './CardHeader';
-import { getJson } from '../util/xhrPromise';
-import { saveSearch } from '../action/SearchActions';
-import { isIOS } from '../util/browser';
-import LazilyLoad, { importLazy } from './LazilyLoad';
+import { stopShape, stationShape } from '../../util/shapes';
+import CardHeader from '../CardHeader';
+import { getJson } from '../../util/xhrPromise';
+import { saveSearch } from '../../action/SearchActions';
+import { isIOS } from '../../util/browser';
+import LazilyLoad, { importLazy } from '../LazilyLoad';
 
 const modules = {
-  FavouriteStopContainer: () => importLazy(import('./FavouriteStopContainer')),
+  FavouriteStopContainer: () => importLazy(import('../FavouriteStopContainer')),
 };
 
 class StopCardHeader extends React.Component {

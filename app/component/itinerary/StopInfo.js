@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { FormattedMessage } from 'react-intl';
-import { configShape } from '../util/shapes';
-import { durationToString } from '../util/timeUtils';
-import { isKeyboardSelectionEvent } from '../util/browser';
-import Icon from './Icon';
+import { configShape } from '../../util/shapes';
+import { durationToString } from '../../util/timeUtils';
+import { isKeyboardSelectionEvent } from '../../util/browser';
+import Icon from '../Icon';
 
 export default function StopInfo(
   { intermediateStopCount, toggleFunction, duration, showIntermediateStops },
