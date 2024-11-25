@@ -1,16 +1,16 @@
 import React from 'react';
 import { intlShape } from 'react-intl';
 import { uniq } from 'lodash';
-import AlertList from './AlertList';
+import AlertList from '../AlertList';
 import {
   getCancelationsForStop,
   getAlertsForObject,
   getServiceAlertsForStation,
-} from '../util/alertUtils';
-import { getRouteMode } from '../util/modeUtils';
-import { epochToTime } from '../util/timeUtils';
-import { stopShape, configShape } from '../util/shapes';
-import { AlertSeverityLevelType, AlertEntityType } from '../constants';
+} from '../../util/alertUtils';
+import { getRouteMode } from '../../util/modeUtils';
+import { epochToTime } from '../../util/timeUtils';
+import { stopShape, configShape } from '../../util/shapes';
+import { AlertSeverityLevelType, AlertEntityType } from '../../constants';
 
 export const isRelevantEntity = (entity, stopIds, routeIds) =>
   // eslint-disable-next-line no-underscore-dangle

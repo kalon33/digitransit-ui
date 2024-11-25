@@ -4,7 +4,7 @@ import moment from 'moment';
 import { intlShape } from 'react-intl';
 
 import Select from 'react-select';
-import Icon from './Icon';
+import Icon from '../Icon';
 
 function DateSelect(props, context) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
