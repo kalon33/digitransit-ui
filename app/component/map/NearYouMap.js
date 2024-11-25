@@ -141,6 +141,7 @@ function NearYouMap(
     position,
     showWalkRoute,
     prioritizedStopsNearYou,
+    setMWTRef,
     ...rest
   },
   { ...context },
@@ -153,6 +154,7 @@ function NearYouMap(
   const [walk, setWalk] = useState({ itinerary: null, stop: null });
   const prevPlace = useRef();
   const prevMode = useRef();
+  const mwtRef = useRef();
   const { mode } = match.params;
   const isTransitMode = mode !== 'CITYBIKE';
   const walkRoutingThreshold =
@@ -209,6 +211,15 @@ function NearYouMap(
     }
   };
 
+  // get ref to MapWithTracking.js
+  const setMWTRefNearYou = ref => {
+    mwtRef.current = ref;
+    if (setMWTRef) {
+      // forward to parent component
+      setMWTRef(ref);
+    }
+  };
+
   useEffect(() => {
     prevPlace.current = match.params.place;
     prevMode.current = match.params.mode;
@@ -221,6 +232,7 @@ function NearYouMap(
     const newBounds = handleBounds(position, sortedStopEdges);
     if (newBounds.length > 0) {
       setBounds(newBounds);
+      setTimeout(() => mwtRef.current?.map.updateZoom(), 1);
     }
   }, [position, sortedStopEdges]);
 
@@ -395,6 +407,7 @@ function NearYouMap(
     bounds,
     leafletObjs,
     breakpoint,
+    setMWTRef: setMWTRefNearYou,
     ...rest,
   };
 
@@ -436,6 +449,7 @@ NearYouMap.propTypes = {
   relay: relayShape.isRequired,
   loading: PropTypes.bool,
   showWalkRoute: PropTypes.bool,
+  setMWTRef: PropTypes.func,
 };
 
 NearYouMap.defaultProps = {
@@ -443,6 +457,7 @@ NearYouMap.defaultProps = {
   showWalkRoute: false,
   loading: false,
   favouriteIds: undefined,
+  setMWTRef: undefined,
   prioritizedStopsNearYou: [],
 };
 
