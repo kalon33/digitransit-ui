@@ -615,6 +615,8 @@ const withRelay = createFragmentContainer(
               effectiveStartDate
               alertHeaderText
               alertDescriptionText
+              id
+              alertHash
               entities {
                 __typename
                 ... on Route {

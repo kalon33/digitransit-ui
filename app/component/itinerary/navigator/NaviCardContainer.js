@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape } from 'react-intl';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
+import { matchShape, routerShape } from 'found';
 import { legShape, configShape } from '../../../util/shapes';
 import { legTime, legTimeStr } from '../../../util/legUtils';
 import NaviCard from './NaviCard';
@@ -26,7 +27,7 @@ function getNextLeg(legs, time) {
 }
 function NaviCardContainer(
   { focusToLeg, time, realTimeLegs, position },
-  { intl, config },
+  { intl, config, match, router },
 ) {
   const [currentLeg, setCurrentLeg] = useState(null);
   const [cardExpanded, setCardExpanded] = useState(false);
@@ -51,6 +52,7 @@ function NaviCardContainer(
   useEffect(() => {
     if (cardRef.current) {
       const contentHeight = cardRef.current.clientHeight;
+
       // Navistack top position depending on main card height.
       setTopPosition(contentHeight + 86);
     }
@@ -65,7 +67,13 @@ function NaviCardContainer(
 
     // TODO proper alert handling.
     // Alerts for NaviStack
-    const alerts = getItineraryAlerts(realTimeLegs, intl, messages);
+    const alerts = getItineraryAlerts(
+      realTimeLegs,
+      intl,
+      messages,
+      match.params,
+      router,
+    );
     alerts.forEach(alert => {
       incomingMessages.set(alert.id, alert);
     });
@@ -80,7 +88,12 @@ function NaviCardContainer(
 
       if (nextLeg?.transitLeg) {
         // Messages for NaviStack.
-        const transitLegState = getTransitLegState(nextLeg, intl, messages);
+        const transitLegState = getTransitLegState(
+          nextLeg,
+          intl,
+          messages,
+          time,
+        );
         if (transitLegState) {
           incomingMessages.set(transitLegState.id, transitLegState);
         }
@@ -185,8 +198,9 @@ function NaviCardContainer(
         type="button"
         className={`navitop ${cardExpanded ? 'expanded' : ''}`}
         onClick={handleClick}
+        ref={cardRef}
       >
-        <div className="content" ref={cardRef}>
+        <div className="content">
           <NaviCard
             leg={currentLeg}
             nextLeg={nextLeg}
@@ -229,6 +243,8 @@ NaviCardContainer.defaultProps = {
 NaviCardContainer.contextTypes = {
   intl: intlShape.isRequired,
   config: configShape.isRequired,
+  match: matchShape.isRequired,
+  router: routerShape.isRequired,
 };
 
 export default NaviCardContainer;
