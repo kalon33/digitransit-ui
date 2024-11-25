@@ -815,6 +815,7 @@ export default function ItineraryPage(props, context) {
       // turn off tracking when user navigates away from tracking view
       setNavigation(false);
     }
+    setTimeout(() => mwtRef.current?.map?.updateZoom(), 1);
   }, [hash, secondHash]);
 
   useEffect(() => {
@@ -920,6 +921,7 @@ export default function ItineraryPage(props, context) {
         .filter(a => a[0] && a[1]),
     );
     setMapState({ bounds, center: undefined, zoom: undefined });
+    setTimeout(() => mwtRef.current?.map?.updateZoom(), 1);
   };
 
   const changeHash = index => {
