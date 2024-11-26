@@ -100,21 +100,12 @@ const walkQuery = graphql`
                 platformCode
               }
             }
-            trip {
-              stoptimes {
-                stop {
-                  gtfsId
-                }
-                pickupType
-              }
-            }
             intermediatePlaces {
               stop {
                 gtfsId
                 lat
                 lon
                 name
-                code
                 platformCode
               }
             }

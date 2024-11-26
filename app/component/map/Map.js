@@ -141,9 +141,6 @@ export default class Map extends React.Component {
       startClient(this.context);
     }
     this.updateZoom();
-    if (this.props.mapRef) {
-      this.props.mapRef(this);
-    }
   }
 
   // eslint-disable-next-line camelcase
