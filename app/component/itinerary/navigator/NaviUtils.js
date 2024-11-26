@@ -156,6 +156,7 @@ export const getItineraryAlerts = (
       leg.start.estimated?.delay > DISPLAY_MESSAGE_THRESHOLD ||
       leg.start.estimated?.delay < -DISPLAY_MESSAGE_THRESHOLD,
   );
+  const abortTrip = <FormattedMessage id="navigation-abort-trip" />;
   let content;
   const withShowRoutesBtn = children => (
     <div className="alt-btn">
@@ -174,7 +175,6 @@ export const getItineraryAlerts = (
       content = (
         <div className="notifiler">
           <span className="header"> {alert.alertHeaderText}</span>
-          <span className="description">{alert.alertDescriptionText}</span>
         </div>
       );
       if (!messages.get(alert.id)) {
@@ -187,28 +187,51 @@ export const getItineraryAlerts = (
     });
   }
   // todo no current design
-  if (canceled.length > 0 && !messages.get('canceled')) {
-    content = withShowRoutesBtn(
-      <div className="notifiler">
-        <span> X on peruuntunut</span>
-        <span> Valitettavasti matkasi ei toteudu suunnitellusti</span>
-      </div>,
-    );
+  if (canceled.length > 0) {
+    // show routes button only for first canceled leg.
+    canceled.forEach((leg, i) => {
+      const { legId, mode, route } = leg;
 
-    alerts.push({
-      severity: 'ALERT',
-      content,
-      id: 'canceled',
+      const lMode = intl.formatMessage({
+        id: `${mode.toLowerCase()}`,
+        defaultMessage: `${mode}`,
+      });
+      const routeName = `${lMode} ${route.shortName}`;
+      const m = (
+        <FormattedMessage
+          id="navigation-mode-canceled"
+          values={{ routeName }}
+        />
+      );
+      if (i === 0) {
+        content = withShowRoutesBtn(
+          <div className="notifiler">
+            {m}
+            {abortTrip}
+          </div>,
+        );
+      } else {
+        content = <div className="notifiler">{m}</div>;
+      }
+      if (!messages.get(`canceled-${legId}`)) {
+        alerts.push({
+          severity: 'ALERT',
+          content,
+          id: `canceled-${legId}`,
+        });
+      }
     });
   }
+
   if (transferProblem !== null) {
     const transferId = `transfer-${transferProblem[0].legId}-${transferProblem[1].legId}}`;
     if (!messages.get(transferId)) {
-      // todo no current design
       content = withShowRoutesBtn(
-        <div className="notifiler">{`Vaihto ${transferProblem[0].route.shortName} - ${transferProblem[1].route.shortName} ei onnistu reittisuunnitelman mukaisesti`}</div>,
+        <div className="notifiler">
+          <span>{`Vaihto ${transferProblem[0].route.shortName} - ${transferProblem[1].route.shortName} ei onnistu`}</span>
+          {abortTrip}
+        </div>,
       );
-
       alerts.push({
         severity: 'ALERT',
         content,
@@ -219,11 +242,24 @@ export const getItineraryAlerts = (
   if (late.length && !messages.get(late.legId)) {
     // Todo: No current design
     // Todo add mode and delay time to this message
-    content = <div className="notifiler">Kulkuneuvo on myöhässä</div>;
-    alerts.push({
-      severity: 'WARNING',
-      content,
-      id: late.legId,
+    late.forEach(leg => {
+      const { legId, mode, route } = leg;
+      const lMode = intl.formatMessage({
+        id: `${mode.toLowerCase()}`,
+        defaultMessage: `${mode}`,
+      });
+      const routeName = `${lMode} ${route.shortName}`;
+
+      content = (
+        <div className="notifiler">
+          <FormattedMessage id="navigation-mode-late" values={{ routeName }} />
+        </div>
+      );
+      alerts.push({
+        severity: 'WARNING',
+        content,
+        id: `late-${legId}`,
+      });
     });
   }
 

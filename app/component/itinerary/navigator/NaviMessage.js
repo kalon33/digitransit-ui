@@ -51,9 +51,8 @@ function NaviMessage({ severity, children, index, handleRemove }, { config }) {
         onClick={() => handleRemoveClick()}
       >
         <Icon
-          img="icon-icon_close"
-          height={0.8}
-          width={0.8}
+          img="notification-close"
+          className="notification-close"
           color={config.colors.primary}
         />
       </button>

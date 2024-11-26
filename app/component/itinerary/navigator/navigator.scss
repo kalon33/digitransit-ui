@@ -398,6 +398,10 @@
 
     &.warning {
       background-color: #fff8e8;
+
+      .notifiler {
+        width: 100%;
+      }
     }
 
     &.alert {
@@ -408,19 +412,25 @@
         flex-direction: column;
         margin-left: 8px;
 
-        .header {
+        span:first-child {
           font-weight: $font-weight-medium;
           font-size: $font-size-normal;
         }
 
-        .description {
-          font-size: $font-size-xsmall;
+        span:last-child {
+          font-size: $font-size-small;
+          font-weight: $font-weight-book;
+        }
+
+        .header {
+          font-size: $font-size-small;
         }
       }
 
       .alt-btn {
         display: flex;
         flex-direction: column;
+        width: 100%;
 
         .show-options {
           padding: var(--space-s, 16px) var(--space-xs, 8px)
@@ -445,6 +455,19 @@
     .info-close {
       display: flex;
       align-self: flex-start;
+      margin-left: 1px;
+
+      .icon-container {
+        height: 24px;
+        width: 24px;
+
+        .icon {
+          &.notification-close {
+            width: 24px;
+            height: 24px;
+          }
+        }
+      }
     }
 
     .info-icon {
