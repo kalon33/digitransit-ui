@@ -5,7 +5,7 @@ import cx from 'classnames';
 import { legShape, configShape } from '../../../util/shapes';
 import { legDestination, legTimeStr, legTime } from '../../../util/legUtils';
 import RouteNumber from '../../RouteNumber';
-import { LEGTYPE } from './NaviUtils';
+import { LEGTYPE, getLocalizedMode } from './NaviUtils';
 import { displayDistance } from '../../../util/geo-utils';
 import { durationToString } from '../../../util/timeUtils';
 
@@ -47,10 +47,8 @@ export default function NaviInstructions(
     const { mode, headsign, route, start } = nextLeg;
     const hs = headsign || nextLeg.trip?.tripHeadsign;
     const color = route.color || 'currentColor';
-    const localizedMode = intl.formatMessage({
-      id: `to-${mode.toLowerCase()}`,
-      defaultMessage: `${mode}`,
-    });
+    const localizedMode = getLocalizedMode(mode, intl);
+
     const remainingDuration = Math.ceil((legTime(start) - Date.now()) / 60000); // ms to minutes
     const rt = nextLeg.realtimeState === 'UPDATED';
     const values = {
@@ -103,10 +101,8 @@ export default function NaviInstructions(
       ? intl.formatMessage({ id: 'navileg-from-station' })
       : intl.formatMessage({ id: 'navileg-from-stop' });
     const rt = leg.realtimeState === 'UPDATED';
-    const localizedMode = intl.formatMessage({
-      id: `${leg.mode.toLowerCase()}`,
-      defaultMessage: `${leg.mode}`,
-    });
+    const localizedMode = getLocalizedMode(leg.mode, intl);
+
     const remainingDuration = Math.ceil((t - Date.now()) / 60000); // ms to minutes
     const values = {
       stopOrStation,

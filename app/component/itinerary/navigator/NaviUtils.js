@@ -34,7 +34,7 @@ function findTransferProblem(legs) {
   }
   return null;
 }
-const getLocalizedMode = (mode, intl) => {
+export const getLocalizedMode = (mode, intl) => {
   return intl.formatMessage({
     id: `${mode.toLowerCase()}`,
     defaultMessage: `${mode}`,
