@@ -88,7 +88,7 @@ export default function NaviInstructions(
           <div className="wait-duration">
             <FormattedMessage
               id="navileg-arrive-at"
-              defaultMessage="{duration}min päästä klo {legTime}"
+              defaultMessage="{duration} min päästä klo {legTime}"
               values={values}
             />
           </div>
