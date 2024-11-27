@@ -11,17 +11,13 @@ import {
   getItineraryAlerts,
   getTransitLegState,
   getAdditionalMessages,
+  getFirstLastLegs,
   LEGTYPE,
 } from './NaviUtils';
 
 const DESTINATION_RADIUS = 20; // meters
 const TIME_AT_DESTINATION = 3; // * 10 seconds
 
-function getFirstLastLegs(legs) {
-  const first = legs[0];
-  const last = legs[legs.length - 1];
-  return { first, last };
-}
 function getNextLeg(legs, time) {
   return legs.find(leg => legTime(leg.start) > time);
 }

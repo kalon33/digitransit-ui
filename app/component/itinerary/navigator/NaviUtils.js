@@ -40,7 +40,11 @@ const getLocalizedMode = (mode, intl) => {
     defaultMessage: `${mode}`,
   });
 };
-
+export function getFirstLastLegs(legs) {
+  const first = legs[0];
+  const last = legs[legs.length - 1];
+  return { first, last };
+}
 export const getAdditionalMessages = (leg, time, intl, config, messages) => {
   const msgs = [];
   const ticketMsg = messages.get('ticket');
@@ -146,11 +150,19 @@ export const getItineraryAlerts = (
   const canceled = realTimeLegs.filter(leg => leg.realtimeState === 'CANCELED');
   const legAlerts =
     realTimeLegs.flatMap(leg => {
-      return leg.alerts?.filter(
-        alert =>
+      return leg.alerts?.filter(alert => {
+        const { first } = getFirstLastLegs(realTimeLegs);
+        const startTime = legTime(first.start) / 1000;
+        // show only alerts that are active when
+        // the itinerary starts
+        if (startTime < alert.effectiveStartDate) {
+          return false;
+        }
+        return (
           alert.alertSeverityLevel === 'WARNING' ||
-          alert.alertSeverityLevel === 'SEVERE',
-      );
+          alert.alertSeverityLevel === 'SEVERE'
+        );
+      });
     }) || [];
 
   const transferProblem = findTransferProblem(realTimeLegs);
