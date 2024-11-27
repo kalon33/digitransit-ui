@@ -68,7 +68,7 @@ export const getAdditionalMessages = (leg, time, intl, config, messages) => {
 };
 
 export const getTransitLegState = (leg, intl, messages, time) => {
-  const { start, realtimeState, from, mode, legId } = leg;
+  const { start, realtimeState, from, mode, legId, route } = leg;
   const { scheduledTime, estimated } = start;
   if (mode === 'WALK') {
     return null;
@@ -76,15 +76,28 @@ export const getTransitLegState = (leg, intl, messages, time) => {
   const previousMessage = messages.get(legId);
   const prevSeverity = previousMessage ? previousMessage.severity : null;
 
-  const late = estimated?.delay > DISPLAY_MESSAGE_THRESHOLD;
+  const late =
+    estimated?.delay > DISPLAY_MESSAGE_THRESHOLD ||
+    estimated?.delay < -DISPLAY_MESSAGE_THRESHOLD;
   const localizedMode = getLocalizedMode(mode, intl);
   let content;
   let severity;
   const isRealTime = realtimeState === 'UPDATED';
 
-  if (late && prevSeverity !== 'ALERT') {
+  if (late && prevSeverity !== 'WARNING') {
     // todo: Do this when design is ready.
-    severity = 'ALERT';
+    const lMode = getLocalizedMode(mode, intl);
+    const routeName = `${lMode} ${route.shortName}`;
+    const { delay } = estimated;
+
+    const id = `navigation-mode-${delay > 0 ? 'late' : 'early'}`;
+
+    content = (
+      <div className="notifiler">
+        <FormattedMessage id={id} values={{ routeName }} />
+      </div>
+    );
+    severity = 'WARNING';
     content = <div className="navi-info-content"> Kulkuneuvo on myöhässä </div>;
   } else if (
     !isRealTime &&
@@ -154,7 +167,7 @@ export const getItineraryAlerts = (
         const { first } = getFirstLastLegs(realTimeLegs);
         const startTime = legTime(first.start) / 1000;
         // show only alerts that are active when
-        // the itinerary starts
+        // the journey starts
         if (startTime < alert.effectiveStartDate) {
           return false;
         }
@@ -166,11 +179,6 @@ export const getItineraryAlerts = (
     }) || [];
 
   const transferProblem = findTransferProblem(realTimeLegs);
-  const late = realTimeLegs.filter(
-    leg =>
-      leg.start.estimated?.delay > DISPLAY_MESSAGE_THRESHOLD ||
-      leg.start.estimated?.delay < -DISPLAY_MESSAGE_THRESHOLD,
-  );
   const abortTrip = <FormattedMessage id="navigation-abort-trip" />;
   let content;
   const withShowRoutesBtn = children => (
@@ -215,6 +223,7 @@ export const getItineraryAlerts = (
           values={{ routeName }}
         />
       );
+      // we want to show the show routes button only for the first canceled leg.
       if (i === 0) {
         content = withShowRoutesBtn(
           <div className="notifiler">
@@ -251,27 +260,6 @@ export const getItineraryAlerts = (
       });
     }
   }
-  if (late.length && !messages.get(late.legId)) {
-    // Todo: No current design
-    // Todo add mode and delay time to this message
-    late.forEach(leg => {
-      const { legId, mode, route } = leg;
-      const lMode = getLocalizedMode(mode, intl);
-      const routeName = `${lMode} ${route.shortName}`;
-
-      content = (
-        <div className="notifiler">
-          <FormattedMessage id="navigation-mode-late" values={{ routeName }} />
-        </div>
-      );
-      alerts.push({
-        severity: 'WARNING',
-        content,
-        id: `late-${legId}`,
-      });
-    });
-  }
-
   return alerts;
 };
 

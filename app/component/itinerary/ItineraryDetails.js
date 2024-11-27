@@ -616,7 +616,6 @@ const withRelay = createFragmentContainer(
               alertHeaderText
               alertDescriptionText
               id
-              alertHash
               entities {
                 __typename
                 ... on Route {
