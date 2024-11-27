@@ -55,10 +55,14 @@ export default function NaviInstructions(
     const rt = nextLeg.realtimeState === 'UPDATED';
     const values = {
       duration: (
-        <span className={cx({ realtime: rt })}> {remainingDuration} </span>
+        <span className={cx('bold', { realtime: rt })}>
+          {remainingDuration}
+        </span>
       ),
       legTime: (
-        <span className={cx({ realtime: rt })}>{legTimeStr(start)}</span>
+        <span className={cx('bold', { realtime: rt })}>
+          {legTimeStr(start)}
+        </span>
       ),
     };
     return (
@@ -108,10 +112,14 @@ export default function NaviInstructions(
       stopOrStation,
       stop: leg.to.stop.name,
       duration: (
-        <span className={cx({ realtime: rt })}> {remainingDuration} </span>
+        <span className={cx('bold', { realtime: rt })}>
+          {remainingDuration}
+        </span>
       ),
       legTime: (
-        <span className={cx({ realtime: rt })}>{legTimeStr(leg.end)}</span>
+        <span className={cx('bold', { realtime: rt })}>
+          {legTimeStr(leg.end)}
+        </span>
       ),
     };
 
