@@ -93,12 +93,11 @@ export const getTransitLegState = (leg, intl, messages, time) => {
     const id = `navigation-mode-${delay > 0 ? 'late' : 'early'}`;
 
     content = (
-      <div className="notifiler">
+      <div className="navi-alert-content">
         <FormattedMessage id={id} values={{ routeName }} />
       </div>
     );
     severity = 'WARNING';
-    content = <div className="navi-info-content"> Kulkuneuvo on myöhässä </div>;
   } else if (
     !isRealTime &&
     prevSeverity !== 'WARNING' &&
@@ -146,9 +145,8 @@ export const getTransitLegState = (leg, intl, messages, time) => {
   return state;
 };
 
-const onClick = (e, location, router) => {
-  const f = getItineraryPagePath('POS', location.to);
-  router.push(f);
+const onClick = (location, router) => {
+  router.push(getItineraryPagePath('POS', location.to));
 };
 // We'll need the intl later.
 // eslint-disable-next-line no-unused-vars
@@ -187,7 +185,7 @@ export const getItineraryAlerts = (
       <button
         className="show-options"
         type="button"
-        onClick={e => onClick(e, location, router)}
+        onClick={() => onClick(location, router)}
       >
         <FormattedMessage id="settings-dropdown-open-label" />
       </button>
@@ -196,7 +194,7 @@ export const getItineraryAlerts = (
   if (legAlerts.length > 0) {
     legAlerts.forEach(alert => {
       content = (
-        <div className="notifiler">
+        <div className="navi-alert-content">
           <span className="header"> {alert.alertHeaderText}</span>
         </div>
       );
@@ -226,13 +224,13 @@ export const getItineraryAlerts = (
       // we want to show the show routes button only for the first canceled leg.
       if (i === 0) {
         content = withShowRoutesBtn(
-          <div className="notifiler">
+          <div className="navi-alert-content">
             {m}
             {abortTrip}
           </div>,
         );
       } else {
-        content = <div className="notifiler">{m}</div>;
+        content = <div className="navi-alert-content">{m}</div>;
       }
       if (!messages.get(`canceled-${legId}`)) {
         alerts.push({
@@ -248,8 +246,14 @@ export const getItineraryAlerts = (
     const transferId = `transfer-${transferProblem[0].legId}-${transferProblem[1].legId}}`;
     if (!messages.get(transferId)) {
       content = withShowRoutesBtn(
-        <div className="notifiler">
-          <span>{`Vaihto ${transferProblem[0].route.shortName} - ${transferProblem[1].route.shortName} ei onnistu`}</span>
+        <div className="navi-alert-content">
+          <FormattedMessage
+            id="navigation-transfer-problem"
+            values={{
+              route1: transferProblem[0].route.shortName,
+              route2: transferProblem[1].route.shortName,
+            }}
+          />
           {abortTrip}
         </div>,
       );

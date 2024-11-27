@@ -401,7 +401,7 @@
     &.warning {
       background-color: #fff8e8;
 
-      .notifiler {
+      .navi-alert-content {
         width: 100%;
       }
     }
@@ -409,7 +409,7 @@
     &.alert {
       background-color: #fdf3f6;
 
-      .notifiler {
+      .navi-alert-content {
         display: flex;
         flex-direction: column;
         margin-left: 8px;
