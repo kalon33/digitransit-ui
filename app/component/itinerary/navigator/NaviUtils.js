@@ -85,7 +85,6 @@ export const getTransitLegState = (leg, intl, messages, time) => {
   const isRealTime = realtimeState === 'UPDATED';
 
   if (late && prevSeverity !== 'WARNING') {
-    // todo: Do this when design is ready.
     const lMode = getLocalizedMode(mode, intl);
     const routeName = `${lMode} ${route.shortName}`;
     const { delay } = estimated;
@@ -148,8 +147,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
 const onClick = (location, router) => {
   router.push(getItineraryPagePath('POS', location.to));
 };
-// We'll need the intl later.
-// eslint-disable-next-line no-unused-vars
+
 export const getItineraryAlerts = (
   realTimeLegs,
   intl,
@@ -207,7 +205,6 @@ export const getItineraryAlerts = (
       }
     });
   }
-  // todo no current design
   if (canceled.length > 0) {
     // show routes button only for first canceled leg.
     canceled.forEach((leg, i) => {
