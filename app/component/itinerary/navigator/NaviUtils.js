@@ -34,6 +34,12 @@ function findTransferProblem(legs) {
   }
   return null;
 }
+const getLocalizedMode = (mode, intl) => {
+  return intl.formatMessage({
+    id: `${mode.toLowerCase()}`,
+    defaultMessage: `${mode}`,
+  });
+};
 
 export const getAdditionalMessages = (leg, time, intl, config, messages) => {
   const msgs = [];
@@ -67,10 +73,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
   const prevSeverity = previousMessage ? previousMessage.severity : null;
 
   const late = estimated?.delay > DISPLAY_MESSAGE_THRESHOLD;
-  const localizedMode = intl.formatMessage({
-    id: `${mode.toLowerCase()}`,
-    defaultMessage: `${mode}`,
-  });
+  const localizedMode = getLocalizedMode(mode, intl);
   let content;
   let severity;
   const isRealTime = realtimeState === 'UPDATED';
@@ -192,10 +195,7 @@ export const getItineraryAlerts = (
     canceled.forEach((leg, i) => {
       const { legId, mode, route } = leg;
 
-      const lMode = intl.formatMessage({
-        id: `${mode.toLowerCase()}`,
-        defaultMessage: `${mode}`,
-      });
+      const lMode = getLocalizedMode(mode, intl);
       const routeName = `${lMode} ${route.shortName}`;
       const m = (
         <FormattedMessage
@@ -244,10 +244,7 @@ export const getItineraryAlerts = (
     // Todo add mode and delay time to this message
     late.forEach(leg => {
       const { legId, mode, route } = leg;
-      const lMode = intl.formatMessage({
-        id: `${mode.toLowerCase()}`,
-        defaultMessage: `${mode}`,
-      });
+      const lMode = getLocalizedMode(mode, intl);
       const routeName = `${lMode} ${route.shortName}`;
 
       content = (

@@ -44,21 +44,22 @@ export default function NaviInstructions(
     );
   }
   if (legType === LEGTYPE.WAIT && nextLeg.mode !== 'WALK') {
-    const { mode, headsign, route, end, start } = nextLeg;
+    const { mode, headsign, route, start } = nextLeg;
     const hs = headsign || nextLeg.trip?.tripHeadsign;
     const color = route.color || 'currentColor';
     const localizedMode = intl.formatMessage({
       id: `to-${mode.toLowerCase()}`,
       defaultMessage: `${mode}`,
     });
-    const t = leg ? legTime(end) : legTime(start);
-    const remainingDuration = Math.ceil((t - Date.now()) / 60000); // ms to minutes
+    const remainingDuration = Math.ceil((legTime(start) - Date.now()) / 60000); // ms to minutes
     const rt = nextLeg.realtimeState === 'UPDATED';
     const values = {
       duration: (
         <span className={cx({ realtime: rt })}> {remainingDuration} </span>
       ),
-      legTime: <span className={cx({ realtime: rt })}>{legTimeStr(end)}</span>,
+      legTime: (
+        <span className={cx({ realtime: rt })}>{legTimeStr(start)}</span>
+      ),
     };
     return (
       <>
