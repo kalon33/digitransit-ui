@@ -96,27 +96,22 @@ export default function NaviInstructions(
   }
 
   if (legType === LEGTYPE.TRANSIT) {
+    const rt = leg.realtimeState === 'UPDATED';
+    const withRealTime = children => (
+      <span className={cx('bold', { realtime: rt })}>{children}</span>
+    );
     const t = legTime(leg.end);
     const stopOrStation = leg.to.stop.parentStation
       ? intl.formatMessage({ id: 'navileg-from-station' })
       : intl.formatMessage({ id: 'navileg-from-stop' });
-    const rt = leg.realtimeState === 'UPDATED';
     const localizedMode = getLocalizedMode(leg.mode, intl);
 
     const remainingDuration = Math.ceil((t - Date.now()) / 60000); // ms to minutes
     const values = {
       stopOrStation,
       stop: leg.to.stop.name,
-      duration: (
-        <span className={cx('bold', { realtime: rt })}>
-          {remainingDuration}
-        </span>
-      ),
-      legTime: (
-        <span className={cx('bold', { realtime: rt })}>
-          {legTimeStr(leg.end)}
-        </span>
-      ),
+      duration: withRealTime(remainingDuration),
+      legTime: withRealTime(legTimeStr(leg.end)),
     };
 
     return (

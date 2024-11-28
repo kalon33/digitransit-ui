@@ -139,13 +139,9 @@ export const getTransitLegState = (leg, intl, messages, time) => {
     severity = 'INFO';
   }
   const state = severity
-    ? { severity, content, id: legId, expiresOn: 'legChange' }
-    : null;
+    ? [{ severity, content, id: legId, expiresOn: 'legChange' }]
+    : [];
   return state;
-};
-
-const onClick = (location, router) => {
-  router.push(getItineraryPagePath('POS', location.to));
 };
 
 export const getItineraryAlerts = (
@@ -183,13 +179,13 @@ export const getItineraryAlerts = (
       <button
         className="show-options"
         type="button"
-        onClick={() => onClick(location, router)}
+        onClick={() => router.push(getItineraryPagePath('POS', location.to))}
       >
         <FormattedMessage id="settings-dropdown-open-label" />
       </button>
     </div>
   );
-  if (legAlerts.length > 0) {
+  if (legAlerts) {
     legAlerts.forEach(alert => {
       content = (
         <div className="navi-alert-content">
@@ -205,7 +201,7 @@ export const getItineraryAlerts = (
       }
     });
   }
-  if (canceled.length > 0) {
+  if (canceled) {
     // show routes button only for first canceled leg.
     canceled.forEach((leg, i) => {
       const { legId, mode, route } = leg;

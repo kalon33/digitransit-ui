@@ -21,6 +21,12 @@ const TIME_AT_DESTINATION = 3; // * 10 seconds
 function getNextLeg(legs, time) {
   return legs.find(leg => legTime(leg.start) > time);
 }
+
+function addMessages(incominMessages, newMessages) {
+  newMessages.forEach(m => {
+    incominMessages.set(m.id, m);
+  });
+}
 function NaviCardContainer(
   { focusToLeg, time, realTimeLegs, position },
   { intl, config, match, router },
@@ -44,7 +50,6 @@ function NaviCardContainer(
   const handleClick = () => {
     setCardExpanded(!cardExpanded);
   };
-
   useEffect(() => {
     if (cardRef.current) {
       const contentHeight = cardRef.current.clientHeight;
@@ -61,18 +66,11 @@ function NaviCardContainer(
 
     const incomingMessages = new Map();
 
-    // TODO proper alert handling.
     // Alerts for NaviStack
-    const alerts = getItineraryAlerts(
-      realTimeLegs,
-      intl,
-      messages,
-      match.params,
-      router,
+    addMessages(
+      incomingMessages,
+      getItineraryAlerts(realTimeLegs, intl, messages, match.params, router),
     );
-    alerts.forEach(alert => {
-      incomingMessages.set(alert.id, alert);
-    });
 
     const legChanged = newLeg?.legId
       ? newLeg.legId !== currentLeg?.legId
@@ -84,27 +82,10 @@ function NaviCardContainer(
 
       if (nextLeg?.transitLeg) {
         // Messages for NaviStack.
-        const transitLegState = getTransitLegState(
-          nextLeg,
-          intl,
-          messages,
-          time,
-        );
-        if (transitLegState) {
-          incomingMessages.set(transitLegState.id, transitLegState);
-        }
-        const additionalMsgs = getAdditionalMessages(
-          nextLeg,
-          time,
-          intl,
-          config,
-          messages,
-        );
-        if (additionalMsgs) {
-          additionalMsgs.forEach(m => {
-            incomingMessages.set(m.id, m);
-          });
-        }
+        addMessages(incomingMessages, [
+          ...getTransitLegState(nextLeg, intl, messages, time),
+          ...getAdditionalMessages(nextLeg, time, intl, config, messages),
+        ]);
       }
       if (newLeg && legChanged) {
         focusToLeg?.(newLeg);

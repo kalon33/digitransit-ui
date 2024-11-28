@@ -31,7 +31,7 @@ function ItineraryPageMap(
     topics,
     showDurationBubble,
     itinerary,
-    naviMode,
+    showBackButton,
     ...rest
   },
   { match, router, executeAction, config },
@@ -115,7 +115,7 @@ function ItineraryPageMap(
       zoom={POINT_FOCUS_ZOOM}
       {...rest}
     >
-      {!naviMode && breakpoint !== 'large' && (
+      {showBackButton && breakpoint !== 'large' && (
         <BackButton
           icon="icon-icon_arrow-collapse--left"
           iconClassName="arrow-icon"
@@ -148,7 +148,7 @@ ItineraryPageMap.propTypes = {
   viaPoints: PropTypes.arrayOf(locationShape).isRequired,
   showDurationBubble: PropTypes.bool,
   itinerary: itineraryShape,
-  naviMode: PropTypes.bool,
+  showBackButton: PropTypes.bool,
 };
 
 ItineraryPageMap.defaultProps = {
@@ -157,7 +157,7 @@ ItineraryPageMap.defaultProps = {
   showVehicles: false,
   showDurationBubble: false,
   itinerary: undefined,
-  naviMode: false,
+  showBackButton: true,
 };
 
 ItineraryPageMap.contextTypes = {

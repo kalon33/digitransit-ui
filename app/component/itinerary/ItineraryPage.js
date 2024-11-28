@@ -1064,7 +1064,7 @@ export default function ItineraryPage(props, context) {
         showDurationBubble={planEdges?.[0]?.node.legs?.length === 1}
         objectsToHide={objectsToHide}
         itinerary={explicitItinerary}
-        naviMode={naviMode}
+        showBackButton={!naviMode}
       />
     );
   }
