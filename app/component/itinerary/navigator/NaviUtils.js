@@ -153,26 +153,40 @@ export const getItineraryAlerts = (
 ) => {
   const alerts = [];
   const canceled = realTimeLegs.filter(leg => leg.realtimeState === 'CANCELED');
-  const legAlerts =
-    realTimeLegs.flatMap(leg => {
-      return leg.alerts?.filter(alert => {
-        const { first } = getFirstLastLegs(realTimeLegs);
-        const startTime = legTime(first.start) / 1000;
-        // show only alerts that are active when
-        // the journey starts
-        if (startTime < alert.effectiveStartDate) {
-          return false;
-        }
-        return (
-          alert.alertSeverityLevel === 'WARNING' ||
-          alert.alertSeverityLevel === 'SEVERE'
-        );
+  let content;
+  const legAlerts = realTimeLegs.flatMap(leg => {
+    return leg.alerts?.filter(alert => {
+      const { first } = getFirstLastLegs(realTimeLegs);
+      const startTime = legTime(first.start) / 1000;
+      // show only alerts that are active when
+      // the journey starts
+      if (startTime < alert.effectiveStartDate) {
+        return false;
+      }
+      return (
+        alert.alertSeverityLevel === 'WARNING' ||
+        alert.alertSeverityLevel === 'SEVERE'
+      );
+    });
+  });
+
+  legAlerts.forEach(alert => {
+    content = (
+      <div className="navi-alert-content">
+        <span className="header"> {alert.alertHeaderText}</span>
+      </div>
+    );
+    if (!messages.get(alert.id)) {
+      alerts.push({
+        severity: 'ALERT',
+        content,
+        id: alert.id,
       });
-    }) || [];
+    }
+  });
 
   const transferProblem = findTransferProblem(realTimeLegs);
   const abortTrip = <FormattedMessage id="navigation-abort-trip" />;
-  let content;
   const withShowRoutesBtn = children => (
     <div className="alt-btn">
       {children}
@@ -185,22 +199,7 @@ export const getItineraryAlerts = (
       </button>
     </div>
   );
-  if (legAlerts) {
-    legAlerts.forEach(alert => {
-      content = (
-        <div className="navi-alert-content">
-          <span className="header"> {alert.alertHeaderText}</span>
-        </div>
-      );
-      if (!messages.get(alert.id)) {
-        alerts.push({
-          severity: 'ALERT',
-          content,
-          id: alert.id,
-        });
-      }
-    });
-  }
+
   if (canceled) {
     // show routes button only for first canceled leg.
     canceled.forEach((leg, i) => {

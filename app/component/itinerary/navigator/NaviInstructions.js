@@ -14,7 +14,9 @@ export default function NaviInstructions(
   { intl, config },
 ) {
   const [fadeOut, setFadeOut] = useState(false);
-
+  const withRealTime = (rt, children) => (
+    <span className={cx('bold', { realtime: rt })}>{children}</span>
+  );
   useEffect(() => {
     const timer = setTimeout(() => {
       setFadeOut(true);
@@ -52,16 +54,8 @@ export default function NaviInstructions(
     const remainingDuration = Math.ceil((legTime(start) - Date.now()) / 60000); // ms to minutes
     const rt = nextLeg.realtimeState === 'UPDATED';
     const values = {
-      duration: (
-        <span className={cx('bold', { realtime: rt })}>
-          {remainingDuration}
-        </span>
-      ),
-      legTime: (
-        <span className={cx('bold', { realtime: rt })}>
-          {legTimeStr(start)}
-        </span>
-      ),
+      duration: withRealTime(rt, remainingDuration),
+      legTime: withRealTime(rt, legTimeStr(start)),
     };
     return (
       <>
@@ -97,9 +91,7 @@ export default function NaviInstructions(
 
   if (legType === LEGTYPE.TRANSIT) {
     const rt = leg.realtimeState === 'UPDATED';
-    const withRealTime = children => (
-      <span className={cx('bold', { realtime: rt })}>{children}</span>
-    );
+
     const t = legTime(leg.end);
     const stopOrStation = leg.to.stop.parentStation
       ? intl.formatMessage({ id: 'navileg-from-station' })
@@ -110,8 +102,8 @@ export default function NaviInstructions(
     const values = {
       stopOrStation,
       stop: leg.to.stop.name,
-      duration: withRealTime(remainingDuration),
-      legTime: withRealTime(legTimeStr(leg.end)),
+      duration: withRealTime(rt, remainingDuration),
+      legTime: withRealTime(rt, legTimeStr(leg.end)),
     };
 
     return (
