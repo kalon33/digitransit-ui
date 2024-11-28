@@ -34,13 +34,16 @@ const NaviCardExtension = ({ legType, leg, nextLeg }, { config }) => {
   }
 
   if (legType === LEGTYPE.TRANSIT) {
-    const { intermediatePlaces, headsign, trip } = leg;
+    const { intermediatePlaces, headsign, trip, realtimeState } = leg;
     const hs = headsign || trip.tripHeadsign;
     const now = Date.now();
     const idx = intermediatePlaces.findIndex(p => legTime(p.arrival) > now);
-
     const count = idx > -1 ? intermediatePlaces.length - idx : 0;
-    const stopCount = <span className="realtime"> {count} </span>;
+    const stopCount = (
+      <span className={cx('bold', { realtime: realtimeState === 'UPDATED' })}>
+        {count}
+      </span>
+    );
     const translationId =
       count === 1 ? 'navileg-one-stop-remaining' : 'navileg-stops-remaining';
     const mode = leg.mode.toLowerCase();

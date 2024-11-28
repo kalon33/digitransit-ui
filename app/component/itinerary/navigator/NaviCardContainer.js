@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape } from 'react-intl';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
+import { matchShape, routerShape } from 'found';
 import { legShape, configShape } from '../../../util/shapes';
 import { legTime, legTimeStr } from '../../../util/legUtils';
 import NaviCard from './NaviCard';
@@ -10,23 +11,25 @@ import {
   getItineraryAlerts,
   getTransitLegState,
   getAdditionalMessages,
+  getFirstLastLegs,
   LEGTYPE,
 } from './NaviUtils';
 
 const DESTINATION_RADIUS = 20; // meters
 const TIME_AT_DESTINATION = 3; // * 10 seconds
 
-function getFirstLastLegs(legs) {
-  const first = legs[0];
-  const last = legs[legs.length - 1];
-  return { first, last };
-}
 function getNextLeg(legs, time) {
   return legs.find(leg => legTime(leg.start) > time);
 }
+
+function addMessages(incominMessages, newMessages) {
+  newMessages.forEach(m => {
+    incominMessages.set(m.id, m);
+  });
+}
 function NaviCardContainer(
   { focusToLeg, time, realTimeLegs, position },
-  { intl, config },
+  { intl, config, match, router },
 ) {
   const [currentLeg, setCurrentLeg] = useState(null);
   const [cardExpanded, setCardExpanded] = useState(false);
@@ -47,10 +50,10 @@ function NaviCardContainer(
   const handleClick = () => {
     setCardExpanded(!cardExpanded);
   };
-
   useEffect(() => {
     if (cardRef.current) {
       const contentHeight = cardRef.current.clientHeight;
+
       // Navistack top position depending on main card height.
       setTopPosition(contentHeight + 86);
     }
@@ -63,12 +66,11 @@ function NaviCardContainer(
 
     const incomingMessages = new Map();
 
-    // TODO proper alert handling.
     // Alerts for NaviStack
-    const alerts = getItineraryAlerts(realTimeLegs, intl, messages);
-    alerts.forEach(alert => {
-      incomingMessages.set(alert.id, alert);
-    });
+    addMessages(
+      incomingMessages,
+      getItineraryAlerts(realTimeLegs, intl, messages, match.params, router),
+    );
 
     const legChanged = newLeg?.legId
       ? newLeg.legId !== currentLeg?.legId
@@ -80,22 +82,10 @@ function NaviCardContainer(
 
       if (nextLeg?.transitLeg) {
         // Messages for NaviStack.
-        const transitLegState = getTransitLegState(nextLeg, intl, messages);
-        if (transitLegState) {
-          incomingMessages.set(transitLegState.id, transitLegState);
-        }
-        const additionalMsgs = getAdditionalMessages(
-          nextLeg,
-          time,
-          intl,
-          config,
-          messages,
-        );
-        if (additionalMsgs) {
-          additionalMsgs.forEach(m => {
-            incomingMessages.set(m.id, m);
-          });
-        }
+        addMessages(incomingMessages, [
+          ...getTransitLegState(nextLeg, intl, messages, time),
+          ...getAdditionalMessages(nextLeg, time, intl, config, messages),
+        ]);
       }
       if (newLeg && legChanged) {
         focusToLeg?.(newLeg);
@@ -185,8 +175,9 @@ function NaviCardContainer(
         type="button"
         className={`navitop ${cardExpanded ? 'expanded' : ''}`}
         onClick={handleClick}
+        ref={cardRef}
       >
-        <div className="content" ref={cardRef}>
+        <div className="content">
           <NaviCard
             leg={currentLeg}
             nextLeg={nextLeg}
@@ -229,6 +220,8 @@ NaviCardContainer.defaultProps = {
 NaviCardContainer.contextTypes = {
   intl: intlShape.isRequired,
   config: configShape.isRequired,
+  match: matchShape.isRequired,
+  router: routerShape.isRequired,
 };
 
 export default NaviCardContainer;
