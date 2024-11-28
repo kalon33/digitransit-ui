@@ -158,6 +158,9 @@ export const getItineraryAlerts = (
     return leg.alerts?.filter(alert => {
       const { first } = getFirstLastLegs(realTimeLegs);
       const startTime = legTime(first.start) / 1000;
+      if (messages.get(alert.id)) {
+        return false;
+      }
       // show only alerts that are active when
       // the journey starts
       if (startTime < alert.effectiveStartDate) {
@@ -176,13 +179,11 @@ export const getItineraryAlerts = (
         <span className="header"> {alert.alertHeaderText}</span>
       </div>
     );
-    if (!messages.get(alert.id)) {
-      alerts.push({
-        severity: 'ALERT',
-        content,
-        id: alert.id,
-      });
-    }
+    alerts.push({
+      severity: 'ALERT',
+      content,
+      id: alert.id,
+    });
   });
 
   const transferProblem = findTransferProblem(realTimeLegs);
