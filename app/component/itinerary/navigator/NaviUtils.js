@@ -155,7 +155,7 @@ export const getItineraryAlerts = (
   let content;
   const alerts = realTimeLegs.flatMap(leg => {
     return leg.alerts
-      ?.filter(alert => {
+      .filter(alert => {
         const { first } = getFirstLastLegs(realTimeLegs);
         const startTime = legTime(first.start) / 1000;
         if (messages.get(alert.id)) {
