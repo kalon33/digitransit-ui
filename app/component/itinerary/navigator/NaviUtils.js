@@ -151,41 +151,39 @@ export const getItineraryAlerts = (
   location,
   router,
 ) => {
-  const alerts = [];
   const canceled = realTimeLegs.filter(leg => leg.realtimeState === 'CANCELED');
   let content;
-  const legAlerts = realTimeLegs.flatMap(leg => {
-    return leg.alerts?.filter(alert => {
-      const { first } = getFirstLastLegs(realTimeLegs);
-      const startTime = legTime(first.start) / 1000;
-      if (messages.get(alert.id)) {
+  const alerts = realTimeLegs.flatMap(leg => {
+    return leg.alerts
+      ?.filter(alert => {
+        const { first } = getFirstLastLegs(realTimeLegs);
+        const startTime = legTime(first.start) / 1000;
+        if (messages.get(alert.id)) {
+          return false;
+        }
+        // show only alerts that are active when
+        // the journey starts
+        if (startTime < alert.effectiveStartDate) {
+          return false;
+        }
+        if (
+          alert.alertSeverityLevel === 'WARNING' ||
+          alert.alertSeverityLevel === 'SEVERE'
+        ) {
+          return true;
+        }
         return false;
-      }
-      // show only alerts that are active when
-      // the journey starts
-      if (startTime < alert.effectiveStartDate) {
-        return false;
-      }
-      return (
-        alert.alertSeverityLevel === 'WARNING' ||
-        alert.alertSeverityLevel === 'SEVERE'
-      );
-    });
+      })
+      .map(alert => ({
+        severity: 'ALERT',
+        content: (
+          <div className="navi-alert-content">
+            <span className="header"> {alert.alertHeaderText}</span>
+          </div>
+        ),
+        id: alert.id,
+      }));
   });
-
-  legAlerts.forEach(alert => {
-    content = (
-      <div className="navi-alert-content">
-        <span className="header"> {alert.alertHeaderText}</span>
-      </div>
-    );
-    alerts.push({
-      severity: 'ALERT',
-      content,
-      id: alert.id,
-    });
-  });
-
   const transferProblem = findTransferProblem(realTimeLegs);
   const abortTrip = <FormattedMessage id="navigation-abort-trip" />;
   const withShowRoutesBtn = children => (
@@ -211,7 +209,7 @@ export const getItineraryAlerts = (
       const m = (
         <FormattedMessage
           id="navigation-mode-canceled"
-          values={{ routeName }}
+          values={{ mode: routeName }}
         />
       );
       // we want to show the show routes button only for the first canceled leg.
