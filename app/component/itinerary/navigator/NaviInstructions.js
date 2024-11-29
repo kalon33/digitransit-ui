@@ -10,7 +10,7 @@ import { displayDistance } from '../../../util/geo-utils';
 import { durationToString } from '../../../util/timeUtils';
 
 export default function NaviInstructions(
-  { leg, nextLeg, instructions, legType },
+  { leg, nextLeg, instructions, legType, time },
   { intl, config },
 ) {
   const [fadeOut, setFadeOut] = useState(false);
@@ -51,7 +51,7 @@ export default function NaviInstructions(
     const color = route.color || 'currentColor';
     const localizedMode = getLocalizedMode(mode, intl);
 
-    const remainingDuration = Math.ceil((legTime(start) - Date.now()) / 60000); // ms to minutes
+    const remainingDuration = Math.ceil((legTime(start) - time) / 60000); // ms to minutes
     const rt = nextLeg.realtimeState === 'UPDATED';
     const values = {
       duration: withRealTime(rt, remainingDuration),
@@ -98,7 +98,7 @@ export default function NaviInstructions(
       : intl.formatMessage({ id: 'navileg-from-stop' });
     const localizedMode = getLocalizedMode(leg.mode, intl);
 
-    const remainingDuration = Math.ceil((t - Date.now()) / 60000); // ms to minutes
+    const remainingDuration = Math.ceil((t - time) / 60000); // ms to minutes
     const values = {
       stopOrStation,
       stop: leg.to.stop.name,
@@ -133,6 +133,7 @@ NaviInstructions.propTypes = {
   nextLeg: legShape,
   instructions: PropTypes.string.isRequired,
   legType: PropTypes.string,
+  time: PropTypes.number.isRequired,
 };
 
 NaviInstructions.defaultProps = {

@@ -12,7 +12,7 @@ import { getDestinationProperties, LEGTYPE } from './NaviUtils';
 
 import RouteNumberContainer from '../../RouteNumberContainer';
 
-const NaviCardExtension = ({ legType, leg, nextLeg }, { config }) => {
+const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
   const { stop, name, rentalVehicle, vehicleParking, vehicleRentalStation } =
     leg ? leg.to : nextLeg.from;
   const { code, platformCode, zoneId, vehicleMode } = stop || {};
@@ -36,8 +36,7 @@ const NaviCardExtension = ({ legType, leg, nextLeg }, { config }) => {
   if (legType === LEGTYPE.TRANSIT) {
     const { intermediatePlaces, headsign, trip, realtimeState } = leg;
     const hs = headsign || trip.tripHeadsign;
-    const now = Date.now();
-    const idx = intermediatePlaces.findIndex(p => legTime(p.arrival) > now);
+    const idx = intermediatePlaces.findIndex(p => legTime(p.arrival) > time);
     const count = idx > -1 ? intermediatePlaces.length - idx : 0;
     const stopCount = (
       <span className={cx('bold', { realtime: realtimeState === 'UPDATED' })}>
@@ -111,6 +110,7 @@ NaviCardExtension.propTypes = {
   leg: legShape,
   nextLeg: legShape,
   legType: PropTypes.string,
+  time: PropTypes.number.isRequired,
 };
 
 NaviCardExtension.defaultProps = {
