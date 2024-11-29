@@ -168,6 +168,7 @@ function NaviCardContainer(
   } else {
     legType = LEGTYPE.WAIT;
   }
+
   return (
     <>
       <button
