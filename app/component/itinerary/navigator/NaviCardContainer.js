@@ -28,7 +28,7 @@ function addMessages(incominMessages, newMessages) {
   });
 }
 function NaviCardContainer(
-  { focusToLeg, time, realTimeLegs, position },
+  { focusToLeg, time, legs, position },
   { intl, config, match, router },
 ) {
   const [currentLeg, setCurrentLeg] = useState(null);
@@ -60,16 +60,17 @@ function NaviCardContainer(
   }, [currentLeg, cardExpanded]);
 
   useEffect(() => {
-    const newLeg = realTimeLegs.find(leg => {
+    const newLeg = legs.find(leg => {
       return legTime(leg.start) <= time && time <= legTime(leg.end);
     });
 
+    setCurrentLeg(newLeg);
     const incomingMessages = new Map();
 
     // Alerts for NaviStack
     addMessages(
       incomingMessages,
-      getItineraryAlerts(realTimeLegs, intl, messages, match.params, router),
+      getItineraryAlerts(legs, intl, messages, match.params, router),
     );
 
     const legChanged = newLeg?.legId
@@ -78,7 +79,7 @@ function NaviCardContainer(
     const l = currentLeg || newLeg;
 
     if (l) {
-      const nextLeg = getNextLeg(realTimeLegs, legTime(l.start));
+      const nextLeg = getNextLeg(legs, legTime(l.start));
 
       if (nextLeg?.transitLeg) {
         // Messages for NaviStack.
@@ -91,7 +92,6 @@ function NaviCardContainer(
         focusToLeg?.(newLeg);
       }
       if (legChanged) {
-        setCurrentLeg(newLeg);
         setCardExpanded(false);
       }
     }
@@ -123,7 +123,7 @@ function NaviCardContainer(
         focusToLeg(newLeg);
         destCountRef.current = 0;
       } else {
-        const { first, last } = getFirstLastLegs(realTimeLegs);
+        const { first, last } = getFirstLastLegs(legs);
         if (time < legTime(first.start)) {
           focusToLeg(first);
         } else {
@@ -146,10 +146,10 @@ function NaviCardContainer(
     }
   }, [time]);
 
-  const { first, last } = getFirstLastLegs(realTimeLegs);
+  const { first, last } = getFirstLastLegs(legs);
   let legType;
   const t = currentLeg ? legTime(currentLeg.start) : time;
-  const nextLeg = getNextLeg(realTimeLegs, t);
+  const nextLeg = getNextLeg(legs, t);
 
   if (time < legTime(first.start)) {
     legType = LEGTYPE.PENDING;
@@ -184,6 +184,7 @@ function NaviCardContainer(
             cardExpanded={cardExpanded}
             legType={legType}
             startTime={legTimeStr(first.start)}
+            time={time}
           />
         </div>
       </button>
@@ -201,7 +202,7 @@ function NaviCardContainer(
 NaviCardContainer.propTypes = {
   focusToLeg: PropTypes.func,
   time: PropTypes.number.isRequired,
-  realTimeLegs: PropTypes.arrayOf(legShape).isRequired,
+  legs: PropTypes.arrayOf(legShape).isRequired,
   position: PropTypes.shape({
     lat: PropTypes.number,
     lon: PropTypes.number,
