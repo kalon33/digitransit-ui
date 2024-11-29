@@ -64,6 +64,7 @@ function NaviCardContainer(
       return legTime(leg.start) <= time && time <= legTime(leg.end);
     });
 
+    setCurrentLeg(newLeg);
     const incomingMessages = new Map();
 
     // Alerts for NaviStack
@@ -91,7 +92,6 @@ function NaviCardContainer(
         focusToLeg?.(newLeg);
       }
       if (legChanged) {
-        setCurrentLeg(newLeg);
         setCardExpanded(false);
       }
     }
