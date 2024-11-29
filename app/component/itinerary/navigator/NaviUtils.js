@@ -144,19 +144,13 @@ export const getTransitLegState = (leg, intl, messages, time) => {
   return state;
 };
 
-export const getItineraryAlerts = (
-  realTimeLegs,
-  intl,
-  messages,
-  location,
-  router,
-) => {
-  const canceled = realTimeLegs.filter(leg => leg.realtimeState === 'CANCELED');
+export const getItineraryAlerts = (legs, intl, messages, location, router) => {
+  const canceled = legs.filter(leg => leg.realtimeState === 'CANCELED');
   let content;
-  const alerts = realTimeLegs.flatMap(leg => {
+  const alerts = legs.flatMap(leg => {
     return leg.alerts
       .filter(alert => {
-        const { first } = getFirstLastLegs(realTimeLegs);
+        const { first } = getFirstLastLegs(legs);
         const startTime = legTime(first.start) / 1000;
         if (messages.get(alert.id)) {
           return false;
@@ -184,7 +178,7 @@ export const getItineraryAlerts = (
         id: alert.id,
       }));
   });
-  const transferProblem = findTransferProblem(realTimeLegs);
+  const transferProblem = findTransferProblem(legs);
   const abortTrip = <FormattedMessage id="navigation-abort-trip" />;
   const withShowRoutesBtn = children => (
     <div className="alt-btn">
