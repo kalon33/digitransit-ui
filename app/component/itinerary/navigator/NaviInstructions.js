@@ -38,7 +38,7 @@ export default function NaviInstructions(
         </div>
         {distance && duration && (
           <div className={cx('duration', fadeOut && 'fade-out')}>
-            {displayDistance(distance, config, intl.formatNumber)} &nbsp; (
+            {displayDistance(distance, config, intl.formatNumber)} (
             {durationToString(duration * 1000)})
           </div>
         )}
