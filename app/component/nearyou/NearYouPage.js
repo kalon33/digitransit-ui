@@ -29,7 +29,10 @@ import {
   getReadMessageIds,
   setReadMessageIds,
 } from '../../store/localStorage';
-import withSearchContext from '../WithSearchContext';
+import {
+  withSearchContext,
+  getLocationSearchTargets,
+} from '../WithSearchContext';
 import { PREFIX_NEARYOU } from '../../util/path';
 import StopsNearYouContainer from './StopsNearYouContainer';
 import SwipeableTabs from '../SwipeableTabs';
@@ -387,6 +390,7 @@ class NearYouPage extends React.Component {
     const renderRefetchButton = centerOfMapChanged && !noFavorites;
     const nearByStopModes = this.modes;
     const index = nearByStopModes.indexOf(mode);
+    const { config } = this.context;
     const tabs = nearByStopModes.map(nearByStopMode => {
       const renderSearch =
         nearByStopMode !== 'FERRY' && nearByStopMode !== 'FAVORITE';
@@ -459,7 +463,7 @@ class NearYouPage extends React.Component {
             variables={this.getQueryVariables(nearByStopMode)}
             environment={this.props.relayEnvironment}
             render={({ props }) => {
-              const { vehicleRental } = this.context.config;
+              const { vehicleRental } = config;
               // Use buy instructions if available
               const cityBikeBuyUrl = vehicleRental.buyUrl;
               const buyInstructions = cityBikeBuyUrl
@@ -471,20 +475,18 @@ class NearYouPage extends React.Component {
               if (Object.keys(vehicleRental.networks).length === 1) {
                 cityBikeNetworkUrl = getRentalNetworkConfig(
                   getRentalNetworkId(Object.keys(vehicleRental.networks)),
-                  this.context.config,
+                  config,
                 ).url;
               }
               const prioritizedStops =
-                this.context.config.prioritizedStopsNearYou[
-                  nearByStopMode.toLowerCase()
-                ];
+                config.prioritizedStopsNearYou[nearByStopMode.toLowerCase()];
               return (
                 <div className="stops-near-you-page">
                   {renderDisruptionBanner && (
                     <DisruptionBanner
                       alerts={(props && props.alerts) || []}
                       mode={nearByStopMode}
-                      trafficNowLink={this.context.config.trafficNowLink}
+                      trafficNowLink={config.trafficNowLink}
                     />
                   )}
                   {renderSearch && (
@@ -517,7 +519,7 @@ class NearYouPage extends React.Component {
                             role="button"
                           >
                             <Icon
-                              color={this.context.config.colors.primary}
+                              color={config.colors.primary}
                               img="icon-icon_close"
                             />
                           </div>
@@ -828,18 +830,7 @@ class NearYouPage extends React.Component {
       modeSet: this.context.config.iconModeSet,
       getAutoSuggestIcons: this.context.config.getAutoSuggestIcons,
     };
-    const targets = ['Locations', 'Stations', 'Stops'];
-    if (
-      useCitybikes(
-        this.context.config.vehicleRental?.networks,
-        this.context.config,
-      )
-    ) {
-      targets.push('VehicleRentalStations');
-    }
-    if (this.context.config.includeParkAndRideSuggestions && onMap) {
-      targets.push('ParkingAreas');
-    }
+    const targets = getLocationSearchTargets(this.context.config, false);
     return (
       <DTAutoSuggestWithSearchContext
         appElement="#app"

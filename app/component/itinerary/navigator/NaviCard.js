@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { legShape } from '../../../util/shapes';
 import Icon from '../../Icon';
@@ -20,18 +21,43 @@ const iconMap = {
   FERRY: 'icon-icon_ferry',
 };
 
-export default function NaviCard({ leg, nextLeg, legType, cardExpanded }) {
+export default function NaviCard({
+  leg,
+  nextLeg,
+  legType,
+  cardExpanded,
+  startTime,
+  time,
+}) {
+  if (legType === LEGTYPE.PENDING) {
+    return (
+      <FormattedMessage
+        id="navigation-journey-start"
+        values={{ time: startTime }}
+      />
+    );
+  }
+  if (legType === LEGTYPE.END) {
+    return <FormattedMessage id="navigation-journey-end" />;
+  }
+  if (!leg && !nextLeg) {
+    return null;
+  }
   const iconName = legType === LEGTYPE.WAIT ? iconMap.WAIT : iconMap[leg.mode];
-  let instructions = `navileg-${leg.mode.toLowerCase()}`;
+
+  let instructions = '';
   if (legType === LEGTYPE.TRANSIT) {
     instructions = `navileg-in-transit`;
-  } else if (isRental(leg, nextLeg)) {
+  } else if (legType !== LEGTYPE.WAIT && isRental(leg, nextLeg)) {
     if (leg.mode === 'WALK' && nextLeg?.mode === 'SCOOTER') {
       instructions = `navileg-rent-scooter`;
     } else {
-      instructions = `navileg-rent-cycle`;
+      instructions = 'rent-cycle-at';
     }
+  } else if (legType === LEGTYPE.MOVE) {
+    instructions = `navileg-${leg?.mode.toLowerCase()}`;
   }
+
   return (
     <div className="navi-top-card">
       <div className="main-card">
@@ -42,6 +68,7 @@ export default function NaviCard({ leg, nextLeg, legType, cardExpanded }) {
             nextLeg={nextLeg}
             instructions={instructions}
             legType={legType}
+            time={time}
           />
           <div type="button" className="navitop-arrow">
             <Icon
@@ -51,18 +78,29 @@ export default function NaviCard({ leg, nextLeg, legType, cardExpanded }) {
           </div>
         </div>
       </div>
-      {cardExpanded && <NaviCardExtension legType={legType} leg={leg} />}
+      {cardExpanded && (
+        <NaviCardExtension
+          legType={legType}
+          leg={leg}
+          nextLeg={nextLeg}
+          time={time}
+        />
+      )}
     </div>
   );
 }
 
 NaviCard.propTypes = {
-  leg: legShape.isRequired,
+  leg: legShape,
   nextLeg: legShape,
   legType: PropTypes.string.isRequired,
   cardExpanded: PropTypes.bool,
+  startTime: PropTypes.string,
+  time: PropTypes.number.isRequired,
 };
 NaviCard.defaultProps = {
   cardExpanded: false,
+  leg: undefined,
   nextLeg: undefined,
+  startTime: '',
 };

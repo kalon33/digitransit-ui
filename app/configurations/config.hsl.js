@@ -121,7 +121,7 @@ export default {
   mergeStopsByCode: true,
   useExtendedRouteTypes: true,
   colors: {
-    primary: '#007ac9',
+    primary: '#0074bf',
     accessiblePrimary: '#0074be',
     hover: '#0062a1',
     iconColors: {
