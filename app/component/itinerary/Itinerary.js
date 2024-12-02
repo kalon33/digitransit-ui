@@ -126,6 +126,7 @@ export function RouteLeg(
         isTransitLeg={isTransitLeg}
         withBicycle={withBicycle}
         occupancyStatus={getOccupancyStatus()}
+        duration={Math.floor(leg.duration / 60)}
       />
     );
   }

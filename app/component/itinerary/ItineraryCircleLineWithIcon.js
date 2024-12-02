@@ -148,7 +148,9 @@ class ItineraryCircleLineWithIcon extends React.Component {
             this.props.appendClass,
           )}
         />
-        {this.props.modeClassName === 'scooter' && bottomMarker}
+        {(this.props.modeClassName === 'scooter' ||
+          this.props.modeClassName === 'taxi-external') &&
+          bottomMarker}
       </div>
     );
   }

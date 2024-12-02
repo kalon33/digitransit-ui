@@ -1,0 +1,76 @@
+import { FormattedMessage, intlShape } from 'react-intl';
+import React from 'react';
+import PropTypes from 'prop-types';
+import cx from 'classnames';
+import { useDeepLink } from '../../util/vehicleRentalUtils';
+import Icon from '../Icon';
+import ExternalLink from '../ExternalLink';
+
+export default function TaxiLinkContainer({
+  operatorName,
+  fareUrl,
+  infoUrl,
+  icon,
+}) {
+  const operatorAppText = (
+    <FormattedMessage
+      id="open-operator-app"
+      values={{
+        operator: operatorName,
+      }}
+      defaultMessage="Open the app to use a taxi"
+    />
+  );
+
+  const url = fareUrl.startsWith('www') ? `https://${fareUrl}` : fareUrl;
+  const onClick = url.startsWith('http')
+    ? () => {}
+    : () => useDeepLink(url, infoUrl);
+
+  return (
+    <div>
+      <div className="itinerary-transit-leg-route-bike">
+        <div className="citybike-itinerary">
+          <div className="taxi-icon">
+            <Icon img={icon} viewBox="0 0 32 32" />
+          </div>
+          <div className="citybike-itinerary-text-container">
+            <span className={cx('headsign', 'scooter-headsign')}>
+              <ExternalLink
+                className="rental-vehicle-link"
+                href={url}
+                onClick={onClick}
+              >
+                {operatorAppText}
+              </ExternalLink>
+            </span>
+          </div>
+        </div>
+        <div className="link-to-e-scooter-operator">
+          <ExternalLink
+            className="rental-vehicle-link"
+            href={url}
+            onClick={onClick}
+          >
+            <Icon
+              img="icon-icon_square_right_corner_arrow"
+              height={1}
+              width={1}
+            />
+          </ExternalLink>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+TaxiLinkContainer.propTypes = {
+  operatorName: PropTypes.string.isRequired,
+  fareUrl: PropTypes.string.isRequired,
+  infoUrl: PropTypes.string.isRequired,
+  icon: PropTypes.string.isRequired,
+};
+
+TaxiLinkContainer.contextTypes = {
+  intl: intlShape.isRequired,
+};

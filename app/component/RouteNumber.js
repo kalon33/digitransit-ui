@@ -14,6 +14,7 @@ function RouteNumber(props, context) {
   const mode = props.mode.toLowerCase();
   const { alertSeverityLevel, color, withBicycle, text } = props;
   const isScooter = mode === TransportMode.Scooter.toLowerCase();
+  const isTaxi = mode === TransportMode.Taxi.toLowerCase();
   const textIsText = typeof text === 'string'; // can be also react node
   const longText =
     text && textIsText && text.length >= LONG_ROUTE_NUMBER_LENGTH;
@@ -128,7 +129,7 @@ function RouteNumber(props, context) {
             )}
           </div>
         )}
-        {text && (
+        {text && !isTaxi && (
           <div
             className={cx(
               'vehicle-number-container-v'.concat(props.card ? '-map' : ''),
@@ -153,8 +154,9 @@ function RouteNumber(props, context) {
             )}
           </div>
         )}
-        {!context.config.hideWalkLegDurationSummary &&
-          props.isTransitLeg === false &&
+        {((!context.config.hideWalkLegDurationSummary &&
+          props.isTransitLeg === false) ||
+          isTaxi) &&
           props.duration > 0 && (
             <div className={`leg-duration-container ${mode} `}>
               <span className="leg-duration">{props.duration}</span>

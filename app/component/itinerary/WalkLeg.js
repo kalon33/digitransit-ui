@@ -22,7 +22,15 @@ import { splitStringToAddressAndPlace } from '../../util/otpStrings';
 import VehicleRentalLeg from './VehicleRentalLeg';
 
 function WalkLeg(
-  { children, focusAction, focusToLeg, index, leg, previousLeg },
+  {
+    children,
+    focusAction,
+    focusToLeg,
+    index,
+    leg,
+    previousLeg,
+    useOriginAddress,
+  },
   { config, intl },
 ) {
   const distance = displayDistance(
@@ -35,8 +43,8 @@ function WalkLeg(
     leg.mode !== 'WALK' ? 0 : leg.duration * 1000,
   );
   const startMs = legTime(leg.start);
-  // If mode is not WALK, WalkLeg should get information from "to".
-  const toOrFrom = leg.mode !== 'WALK' ? 'to' : 'from';
+  // If mode is not WALK, WalkLeg should get information from "to". If useOriginAddress is true, force WalkLeg to get information from "from".
+  const toOrFrom = leg.mode !== 'WALK' && !useOriginAddress ? 'to' : 'from';
   const modeClassName = 'walk';
   const fromMode = (leg[toOrFrom].stop && leg[toOrFrom].stop.vehicleMode) || '';
   const isFirstLeg = i => i === 0;
@@ -50,6 +58,7 @@ function WalkLeg(
     config,
   ).type;
   const isScooter = networkType === RentalNetworkType.Scooter;
+  const alightNotice = previousLeg?.mode === 'TAXI' || leg?.mode === 'TAXI'; // Taxi leg is the current leg when the walk leg is added after a taxi leg without a walk leg from data
   const returnNotice = previousLeg?.rentedBike ? (
     <FormattedMessage
       id={
@@ -139,10 +148,11 @@ function WalkLeg(
                 ? 'itinerary-leg-first-row-return-bike'
                 : 'itinerary-leg-first-row',
               isScooter && 'scooter',
+              alightNotice && 'alight',
             )}
           >
             <div className="itinerary-leg-row">
-              {leg[toOrFrom].stop ? (
+              {leg[toOrFrom].stop && !alightNotice ? (
                 <Link
                   onClick={e => {
                     e.stopPropagation();
@@ -167,7 +177,7 @@ function WalkLeg(
                 </Link>
               ) : (
                 <div>
-                  {returnNotice ? (
+                  {returnNotice && (
                     <>
                       <div className="divider" />
                       <VehicleRentalLeg
@@ -180,10 +190,17 @@ function WalkLeg(
                         rentalVehicle={leg.from.rentalVehicle}
                       />
                     </>
-                  ) : (
-                    leg[toOrFrom].name
                   )}
-                  {leg[toOrFrom].stop && (
+                  {alightNotice && (
+                    <div className="itinerary-leg-action-content">
+                      <FormattedMessage
+                        id="get-off-the-ride"
+                        defaultMessage="Get off the taxi"
+                      />
+                    </div>
+                  )}
+                  {!returnNotice && !alightNotice && leg[toOrFrom].name}
+                  {leg[toOrFrom].stop && !alightNotice && (
                     <Icon
                       img="icon-icon_arrow-collapse--right"
                       className="itinerary-arrow-icon"
@@ -240,7 +257,7 @@ function WalkLeg(
             <ItineraryMapAction
               target=""
               ariaLabelId="itinerary-summary-row.clickable-area-description"
-              focusAction={focusToLeg}
+              focusAction={leg.mode === 'WALK' ? focusToLeg : focusAction} // Leg is not a walk leg when it's added without walk leg from data.
             />
           </div>
         </div>
@@ -256,11 +273,13 @@ WalkLeg.propTypes = {
   leg: legShape.isRequired,
   previousLeg: legShape,
   focusToLeg: PropTypes.func.isRequired,
+  useOriginAddress: PropTypes.bool,
 };
 
 WalkLeg.defaultProps = {
   previousLeg: undefined,
   children: undefined,
+  useOriginAddress: false,
 };
 
 WalkLeg.contextTypes = {
