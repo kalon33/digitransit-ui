@@ -396,8 +396,8 @@ export function pathProgress(pos, geom) {
           minF = f;
         }
       }
-      p1 = p2;
     }
+    p1 = p2;
   }
 
   let traversed = minF * lengths[minI]; // last partial segment
