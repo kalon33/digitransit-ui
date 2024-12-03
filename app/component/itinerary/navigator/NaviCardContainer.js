@@ -185,6 +185,7 @@ function NaviCardContainer(
             legType={legType}
             startTime={legTimeStr(first.start)}
             time={time}
+            position={position}
           />
         </div>
       </button>
