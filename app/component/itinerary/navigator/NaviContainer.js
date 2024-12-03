@@ -41,26 +41,6 @@ function NaviContainer(
     return null;
   }
 
-  // recompute estimated arrival
-  let lastTransitLeg;
-  let arrivalChange = 0;
-
-  realTimeLegs.forEach(leg => {
-    if (leg.transitLeg) {
-      lastTransitLeg = leg;
-    }
-  });
-
-  if (lastTransitLeg) {
-    const rtLeg = realTimeLegs.find(leg => {
-      return leg.legId === lastTransitLeg.legId;
-    });
-    arrivalChange = legTime(rtLeg.end) - legTime(lastTransitLeg.end);
-  }
-
-  const arrivalTime =
-    legTime(realTimeLegs[realTimeLegs.length - 1].end) + arrivalChange;
-
   return (
     <>
       <NaviCardContainer
@@ -75,7 +55,7 @@ function NaviContainer(
       />
       <NaviBottom
         setNavigation={setNavigation}
-        arrival={arrivalTime}
+        arrival={legTime(realTimeLegs[realTimeLegs.length - 1].end)}
         time={time}
       />
     </>
