@@ -17,6 +17,7 @@ import {
 
 const DESTINATION_RADIUS = 20; // meters
 const TIME_AT_DESTINATION = 3; // * 10 seconds
+const TOPBAR_PADDING = 8; // pixels
 
 function getNextLeg(legs, time) {
   return legs.find(leg => legTime(leg.start) > time);
@@ -53,10 +54,9 @@ function NaviCardContainer(
 
   useEffect(() => {
     if (cardRef.current) {
-      const contentHeight = cardRef.current.clientHeight;
-
+      const contentHeight = cardRef.current.getBoundingClientRect();
       // Navistack top position depending on main card height.
-      setTopPosition(contentHeight + 86);
+      setTopPosition(contentHeight.bottom + TOPBAR_PADDING);
     }
   }, [currentLeg, cardExpanded]);
 
@@ -169,12 +169,17 @@ function NaviCardContainer(
   } else {
     legType = LEGTYPE.WAIT;
   }
+  const topBar = document
+    .querySelector('.top-bar, [class*="hsl-header-container"]')
+    ?.getBoundingClientRect();
+  const cardTop = topBar.bottom + TOPBAR_PADDING;
 
   return (
     <>
       <button
         type="button"
         className={`navitop ${cardExpanded ? 'expanded' : ''}`}
+        style={{ top: cardTop }}
         onClick={handleClick}
         ref={cardRef}
       >
