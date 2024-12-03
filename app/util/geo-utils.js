@@ -426,11 +426,11 @@ export function getClosestPoint(a, b, c) {
 
 const a = 6378137.0; // WGS-84 Earth semimajor axis (m)
 const b = 6356752.314245; // Derived Earth semiminor axis (m)
-const h = (a + b) / 2; // Use a default distance from earth center
 const f = (a - b) / a; // Ellipsoid Flatness
 const e_sq = f * (2 - f); // Square of Eccentricity
+const inv_e_sq = 1 - e_sq;
 
-// Converts WGS-84 Geodetic point (lat, lon) with a default height to the
+// Converts WGS-84 Geodetic point (lat, lon) at ground level 0 to
 // Earth-Centered Earth-Fixed (ECEF) coordinates (x, y, z)
 export function GeodeticToEcef(lat, lon) {
   const lambda = toRad(lat);
@@ -441,9 +441,9 @@ export function GeodeticToEcef(lat, lon) {
   const sin_phi = Math.sin(phi);
   const N = a / Math.sqrt(1 - e_sq * sin_lambda * sin_lambda);
 
-  const x = 0.5 * (h + N) * cos_lambda * cos_phi;
-  const y = 0.5 * (h + N) * cos_lambda * sin_phi;
-  const z = 0.5 * (h + (1 - e_sq) * N) * sin_lambda;
+  const x = N * cos_lambda * cos_phi;
+  const y = N * cos_lambda * sin_phi;
+  const z = N * inv_e_sq * sin_lambda;
 
   return { x, y, z, sin_lambda, cos_lambda, cos_phi, sin_phi };
 }
@@ -464,8 +464,8 @@ function EcefToEnu(e, origin) {
   return { x: xEast, y: yNorth };
 }
 
-// Converts the geodetic WGS-84 coordinated (lat, lon) at a default height to
-// East-North-Up coordinates in a local tangent plane defined by an ECEF point origin
+// Converts the geodetic WGS-84 coordinated (lat, lon) at ground level to
+// east-north coordinates in a local tangent plane defined by an ECEF point origin
 export function GeodeticToEnu(lat, lon, origin) {
   const ecef = GeodeticToEcef(lat, lon);
   return EcefToEnu(ecef, origin);
