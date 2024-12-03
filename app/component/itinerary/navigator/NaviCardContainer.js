@@ -28,7 +28,7 @@ function addMessages(incominMessages, newMessages) {
   });
 }
 function NaviCardContainer(
-  { focusToLeg, time, legs, position },
+  { focusToLeg, time, legs, position, origin },
   { intl, config, match, router },
 ) {
   const [currentLeg, setCurrentLeg] = useState(null);
@@ -186,6 +186,8 @@ function NaviCardContainer(
             legType={legType}
             startTime={legTimeStr(first.start)}
             time={time}
+            position={position}
+            origin={origin}
           />
         </div>
       </button>
@@ -208,7 +210,10 @@ NaviCardContainer.propTypes = {
     lat: PropTypes.number,
     lon: PropTypes.number,
   }),
-
+  origin: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+  }).isRequired,
   /*
   focusToPoint: PropTypes.func.isRequired,
   */

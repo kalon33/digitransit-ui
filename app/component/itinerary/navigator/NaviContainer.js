@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import polyUtil from 'polyline-encoded';
 import { legTime } from '../../../util/legUtils';
+import { GeodeticToEcef, GeodeticToEnu } from '../../../util/geo-utils';
 import { itineraryShape, relayShape } from '../../../util/shapes';
 import NaviBottom from './NaviBottom';
 import NaviCardContainer from './NaviCardContainer';
@@ -10,33 +12,34 @@ function NaviContainer(
   { itinerary, focusToLeg, relayEnvironment, setNavigation, mapRef },
   { getStore },
 ) {
-  const { legs } = itinerary;
+  const [planarLegs, setPlanarLegs] = useState([]);
+  const [origin, setOrigin] = useState();
+
   const position = getStore('PositionStore').getLocationState();
 
+  useEffect(() => {
+    const { lat, lon } = itinerary.legs[0].from;
+    const orig = GeodeticToEcef(lat, lon);
+    const legs = itinerary.legs.map(leg => {
+      const geometry = polyUtil.decode(leg.legGeometry.points);
+      return {
+        ...leg,
+        geometry: geometry.map(p => GeodeticToEnu(p[0], p[1], orig)),
+      };
+    });
+    setPlanarLegs(legs);
+    setOrigin(orig);
+  }, [itinerary]);
+
   const { realTimeLegs, time, isPositioningAllowed } = useRealtimeLegs(
-    legs,
+    planarLegs,
     mapRef,
     relayEnvironment,
   );
 
-  // recompute estimated arrival
-  let lastTransitLeg;
-  let arrivalChange = 0;
-
-  legs.forEach(leg => {
-    if (leg.transitLeg) {
-      lastTransitLeg = leg;
-    }
-  });
-
-  if (lastTransitLeg) {
-    const rtLeg = realTimeLegs.find(leg => {
-      return leg.legId === lastTransitLeg.legId;
-    });
-    arrivalChange = legTime(rtLeg.end) - legTime(lastTransitLeg.end);
+  if (!realTimeLegs.length) {
+    return null;
   }
-
-  const arrivalTime = legTime(legs[legs.length - 1].end) + arrivalChange;
 
   return (
     <>
@@ -48,10 +51,11 @@ function NaviContainer(
         }
         time={time}
         position={position}
+        origin={origin}
       />
       <NaviBottom
         setNavigation={setNavigation}
-        arrival={arrivalTime}
+        arrival={legTime(realTimeLegs[realTimeLegs.length - 1].end)}
         time={time}
       />
     </>
