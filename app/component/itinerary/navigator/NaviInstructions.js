@@ -39,8 +39,9 @@ export default function NaviInstructions(
           &nbsp;
           {legDestination(intl, leg, null, nextLeg)}
         </div>
+
         <div className={cx('duration')}>
-          {displayDistance(distance, config, intl.formatNumber)} &nbsp; (
+          {displayDistance(distance, config, intl.formatNumber)} (
           {durationToString(duration * 1000)})
         </div>
       </>

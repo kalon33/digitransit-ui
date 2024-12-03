@@ -50,6 +50,7 @@ function NaviCardContainer(
   const handleClick = () => {
     setCardExpanded(!cardExpanded);
   };
+
   useEffect(() => {
     if (cardRef.current) {
       const contentHeight = cardRef.current.clientHeight;

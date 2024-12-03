@@ -74,12 +74,12 @@ export default function NaviCard({
             position={position}
             origin={origin}
           />
-          <div type="button" className="navitop-arrow">
-            <Icon
-              img="icon-icon_arrow-collapse"
-              className={`cursor-pointer ${cardExpanded ? 'inverted' : ''}`}
-            />
-          </div>
+        </div>
+        <div type="button" className="navitop-arrow">
+          <Icon
+            img="icon-icon_arrow-collapse"
+            className={`cursor-pointer ${cardExpanded ? 'inverted' : ''}`}
+          />
         </div>
       </div>
       {cardExpanded && (
