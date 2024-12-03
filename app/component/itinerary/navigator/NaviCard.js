@@ -29,6 +29,7 @@ export default function NaviCard({
   startTime,
   time,
   position,
+  origin,
 }) {
   if (legType === LEGTYPE.PENDING) {
     return (
@@ -71,6 +72,7 @@ export default function NaviCard({
             legType={legType}
             time={time}
             position={position}
+            origin={origin}
           />
           <div type="button" className="navitop-arrow">
             <Icon
@@ -103,6 +105,10 @@ NaviCard.propTypes = {
     lat: PropTypes.number,
     lon: PropTypes.number,
   }),
+  origin: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+  }).isRequired,
 };
 NaviCard.defaultProps = {
   cardExpanded: false,

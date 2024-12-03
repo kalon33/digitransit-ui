@@ -13,21 +13,23 @@ function NaviContainer(
   { getStore },
 ) {
   const [planarLegs, setPlanarLegs] = useState([]);
+  const [origin, setOrigin] = useState();
 
   const position = getStore('PositionStore').getLocationState();
 
   useEffect(() => {
     const { lat, lon } = itinerary.legs[0].from;
-    const origin = GeodeticToEcef(lat, lon);
+    const orig = GeodeticToEcef(lat, lon);
     const legs = itinerary.legs.map(leg => {
       const geometry = polyUtil.decode(leg.legGeometry.points);
       return {
         ...leg,
-        geometry: geometry.map(p => GeodeticToEnu(p[0], p[1], origin)),
+        geometry: geometry.map(p => GeodeticToEnu(p[0], p[1], orig)),
       };
     });
     setPlanarLegs(legs);
-  }, [itinerary.legs]);
+    setOrigin(orig);
+  }, [itinerary]);
 
   const { realTimeLegs, time, isPositioningAllowed } = useRealtimeLegs(
     planarLegs,
@@ -69,6 +71,7 @@ function NaviContainer(
         }
         time={time}
         position={position}
+        origin={origin}
       />
       <NaviBottom
         setNavigation={setNavigation}
