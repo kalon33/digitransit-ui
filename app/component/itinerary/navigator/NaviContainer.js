@@ -2,7 +2,7 @@ import distance from '@digitransit-search-util/digitransit-search-util-distance'
 import PropTypes from 'prop-types';
 import React from 'react';
 import { legTime } from '../../../util/legUtils';
-import { itineraryShape, relayShape } from '../../../util/shapes';
+import { legShape, relayShape } from '../../../util/shapes';
 import NaviBottom from './NaviBottom';
 import NaviCardContainer from './NaviCardContainer';
 import { useRealtimeLegs } from './hooks/useRealtimeLegs';
@@ -13,7 +13,7 @@ const ADDITIONAL_ARRIVAL_TIME = 60000; // 60 seconds in ms
 
 function NaviContainer(
   {
-    itinerary,
+    legs,
     focusToLeg,
     relayEnvironment,
     setNavigation,
@@ -34,7 +34,7 @@ function NaviContainer(
     lastLeg,
     currentLeg,
     nextLeg,
-  } = useRealtimeLegs(mapRef, relayEnvironment, itinerary.legs);
+  } = useRealtimeLegs(mapRef, relayEnvironment, legs);
 
   if (!realTimeLegs?.length) {
     return null;
@@ -82,7 +82,7 @@ function NaviContainer(
 }
 
 NaviContainer.propTypes = {
-  itinerary: itineraryShape.isRequired,
+  legs: PropTypes.arrayOf(legShape).isRequired,
   focusToLeg: PropTypes.func.isRequired,
   relayEnvironment: relayShape.isRequired,
   setNavigation: PropTypes.func.isRequired,
