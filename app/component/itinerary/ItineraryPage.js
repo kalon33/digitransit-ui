@@ -122,6 +122,7 @@ export default function ItineraryPage(props, context) {
   const mwtRef = useRef();
   const mobileRef = useRef();
   const ariaRef = useRef('summary-page.title');
+  const mapLayerRef = useRef();
   const [state, setState] = useState({
     ...emptyState,
     loading: LOADSTATE.UNSET,
@@ -1059,6 +1060,7 @@ export default function ItineraryPage(props, context) {
         mapLayers={props.mapLayers}
         mapLayerOptions={mapLayerOptions}
         setMWTRef={setMWTRef}
+        mapLayerRef={mapLayerRef}
         breakpoint={breakpoint}
         planEdges={planEdges}
         topics={topicsState}
@@ -1186,6 +1188,7 @@ export default function ItineraryPage(props, context) {
             relayEnvironment={props.relayEnvironment}
             setNavigation={setNavigation}
             mapRef={mwtRef.current}
+            mapLayerRef={mapLayerRef}
           />
         </>
       );

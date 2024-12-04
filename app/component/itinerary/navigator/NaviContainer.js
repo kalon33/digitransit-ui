@@ -9,7 +9,14 @@ import NaviCardContainer from './NaviCardContainer';
 import { useRealtimeLegs } from './hooks/useRealtimeLegs';
 
 function NaviContainer(
-  { itinerary, focusToLeg, relayEnvironment, setNavigation, mapRef },
+  {
+    itinerary,
+    focusToLeg,
+    relayEnvironment,
+    setNavigation,
+    mapRef,
+    mapLayerRef,
+  },
   { getStore },
 ) {
   const [planarLegs, setPlanarLegs] = useState([]);
@@ -51,6 +58,7 @@ function NaviContainer(
         }
         time={time}
         position={position}
+        mapLayerRef={mapLayerRef}
         origin={origin}
       />
       <NaviBottom
@@ -69,6 +77,7 @@ NaviContainer.propTypes = {
   setNavigation: PropTypes.func.isRequired,
   // eslint-disable-next-line
   mapRef: PropTypes.object,
+  mapLayerRef: PropTypes.func.isRequired,
 };
 
 NaviContainer.contextTypes = {
