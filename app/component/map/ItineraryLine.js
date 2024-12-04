@@ -71,6 +71,7 @@ class ItineraryLine extends React.Component {
         {
           mode: leg.mode,
           type: leg.route?.type,
+          gtfsId: leg.route?.gtfsId,
         },
         this.context.config,
       );
@@ -174,7 +175,7 @@ class ItineraryLine extends React.Component {
               transit
             />,
           );
-        } else if (leg.transitLeg) {
+        } else if (leg.transitLeg && mode !== 'taxi-external') {
           const name = getLegText(
             leg.route,
             this.context.config,

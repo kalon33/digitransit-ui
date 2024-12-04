@@ -38,11 +38,9 @@ class LegMarker extends React.Component {
     const className = this.props.wide ? 'wide' : '';
     // Do not display route number if it is an external route and the route number is empty.
     const displayRouteNumber = !(
-      (
-        this.context.config.externalFeedIds !== undefined &&
-        this.props.mode.includes('external') &&
-        (this.props.leg.name === '' || this.props.mode === 'taxi-external')
-      ) // Never show route for taxi-external on the map, because taxi routes are generic by design.
+      this.context.config.externalFeedIds !== undefined &&
+      this.props.mode.includes('external') &&
+      this.props.leg.name === ''
     );
     const routeNumber = displayRouteNumber
       ? `<span class="map-route-number ${this.props.mode}" aria-hidden="true">${
