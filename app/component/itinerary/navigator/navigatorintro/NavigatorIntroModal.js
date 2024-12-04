@@ -1,33 +1,17 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { intlShape } from 'react-intl';
 import { configShape } from '../../../../util/shapes';
+import { useLogo } from '../hooks/useLogo';
 import NavigatorModal from '../NavigatorModal';
 import NavigatorIntro from './NavigatorIntro';
 
-const NavigatorIntroModal = ({ onPrimaryClick, onClose }, context) => {
-  const { config } = context;
-  const [logo, setLogo] = useState();
+const NavigatorIntroModal = ({ onPrimaryClick, onClose }, { config }) => {
+  const { logo, loading } = useLogo(config.navigationLogo);
 
-  useEffect(() => {
-    if (!config.navigationLogo) {
-      return;
-    }
-
-    const loadLogo = async () => {
-      try {
-        const importedLogo = await import(
-          /* webpackChunkName: "main" */ `../../../../configurations/images/${config.navigationLogo}`
-        );
-        setLogo(importedLogo.default);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Error loading logo:', error);
-      }
-    };
-
-    loadLogo();
-  }, []);
+  if (loading) {
+    return null;
+  }
 
   return (
     <NavigatorModal isOpen withBackdrop>
