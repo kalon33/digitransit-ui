@@ -1087,7 +1087,6 @@ export default function ItineraryPage(props, context) {
 
   const cancelNavigatorUsage = () => {
     setNavigation(false);
-    toggleNavigatorIntro();
   };
 
   const walkPlan = altStates[PLANTYPE.WALK][0].plan;
