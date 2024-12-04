@@ -90,7 +90,7 @@ function matchLegEnds(legs) {
 
 const useRealtimeLegs = (mapRef, relayEnvironment, initialLegs = []) => {
   const [isPositioningAllowed, setPositioningAllowed] = useState(false);
-  const [realTimeLegs, setRealTimeLegs] = useState(initialLegs);
+  const [realTimeLegs, setRealTimeLegs] = useState();
   const [time, setTime] = useState(Date.now());
 
   const origin = useMemo(
