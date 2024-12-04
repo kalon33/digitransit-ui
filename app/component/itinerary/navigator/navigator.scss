@@ -178,7 +178,8 @@
       margin-bottom: var(--space-s);
 
       .extension-divider {
-        border: 1px solid #ddd;
+        height: 1px;
+        background: #ddd;
         width: 85%;
         margin-left: 35px;
         margin-top: var(--space-s);
