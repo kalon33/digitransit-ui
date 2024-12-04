@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
-import polyUtil from 'polyline-encoded';
+import React from 'react';
 import { legTime } from '../../../util/legUtils';
-import { GeodeticToEcef, GeodeticToEnu } from '../../../util/geo-utils';
 import { itineraryShape, relayShape } from '../../../util/shapes';
 import NaviBottom from './NaviBottom';
 import NaviCardContainer from './NaviCardContainer';
@@ -19,32 +17,15 @@ function NaviContainer(
   },
   { getStore },
 ) {
-  const [planarLegs, setPlanarLegs] = useState([]);
-  const [origin, setOrigin] = useState();
-
   const position = getStore('PositionStore').getLocationState();
 
-  useEffect(() => {
-    const { lat, lon } = itinerary.legs[0].from;
-    const orig = GeodeticToEcef(lat, lon);
-    const legs = itinerary.legs.map(leg => {
-      const geometry = polyUtil.decode(leg.legGeometry.points);
-      return {
-        ...leg,
-        geometry: geometry.map(p => GeodeticToEnu(p[0], p[1], orig)),
-      };
-    });
-    setPlanarLegs(legs);
-    setOrigin(orig);
-  }, [itinerary]);
-
-  const { realTimeLegs, time, isPositioningAllowed } = useRealtimeLegs(
+  const { realTimeLegs, time, isPositioningAllowed, origin } = useRealtimeLegs(
     mapRef,
     relayEnvironment,
-    planarLegs,
+    itinerary.legs,
   );
 
-  if (!realTimeLegs.length) {
+  if (!realTimeLegs?.length) {
     return null;
   }
 

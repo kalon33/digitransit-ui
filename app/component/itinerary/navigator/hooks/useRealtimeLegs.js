@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import polyUtil from 'polyline-encoded';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fetchQuery } from 'react-relay';
 import { checkPositioningPermission } from '../../../../action/PositionActions';
-import { legQuery } from '../../queries/LegQuery';
+import { GeodeticToEcef, GeodeticToEnu } from '../../../../util/geo-utils';
 import { legTime } from '../../../../util/legUtils';
 import { epochToIso } from '../../../../util/timeUtils';
+import { legQuery } from '../../queries/LegQuery';
 
 function nextTransitIndex(legs, i) {
   for (let j = i; j < legs.length; j++) {
@@ -91,6 +93,11 @@ const useRealtimeLegs = (mapRef, relayEnvironment, initialLegs = []) => {
   const [realTimeLegs, setRealTimeLegs] = useState(initialLegs);
   const [time, setTime] = useState(Date.now());
 
+  const origin = useMemo(
+    () => GeodeticToEcef(initialLegs[0].from.lat, initialLegs[0].from.lon),
+    [initialLegs[0]],
+  );
+
   const enableMapTracking = useCallback(async () => {
     const permission = await checkPositioningPermission();
     const isPermissionGranted = permission.state === 'granted' || true;
@@ -133,12 +140,20 @@ const useRealtimeLegs = (mapRef, relayEnvironment, initialLegs = []) => {
       return;
     }
 
-    const rtLegMap = await queryAndMapRealtimeLegs(initialLegs).catch(err =>
+    const planarLegs = initialLegs.map(leg => {
+      const geometry = polyUtil.decode(leg.legGeometry.points);
+      return {
+        ...leg,
+        geometry: geometry.map(p => GeodeticToEnu(p[0], p[1], origin)),
+      };
+    });
+
+    const rtLegMap = await queryAndMapRealtimeLegs(planarLegs).catch(err =>
       // eslint-disable-next-line no-console
       console.error('Failed to query and map real time legs', err),
     );
 
-    const rtLegs = initialLegs.map(l => {
+    const rtLegs = planarLegs.map(l => {
       const rtLeg = l.legId ? rtLegMap[l.legId] : null;
       if (rtLeg) {
         return {
