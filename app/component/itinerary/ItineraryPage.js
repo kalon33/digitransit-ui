@@ -1197,7 +1197,7 @@ export default function ItineraryPage(props, context) {
       const pastSearch =
         Date.parse(combinedEdges[selectedIndex]?.node.end) < Date.now();
       const navigateHook =
-        !desktop && config.experimental.navigation && !pastSearch
+        !desktop && config.experimental?.navigation && !pastSearch
           ? () =>
               storeItineraryAndStartNavigation(
                 combinedEdges[selectedIndex]?.node,
