@@ -35,6 +35,7 @@ function NaviCardContainer(
     currentLeg,
     nextLeg,
     firstLeg,
+    isJourneyCompleted,
   },
   { intl, config, match, router },
 ) {
@@ -170,7 +171,9 @@ function NaviCardContainer(
     mapLayerRef.current.getBoundingClientRect().top + TOPBAR_PADDING;
 
   return (
-    <>
+    <div
+      className={`navi-card-container ${isJourneyCompleted ? 'slide-out' : ''}`}
+    >
       <button
         type="button"
         className={`navitop ${cardExpanded ? 'expanded' : ''}`}
@@ -198,7 +201,7 @@ function NaviCardContainer(
           topPosition={topPosition}
         />
       )}
-    </>
+    </div>
   );
 }
 
@@ -218,6 +221,8 @@ NaviCardContainer.propTypes = {
   currentLeg: legShape,
   nextLeg: legShape,
   firstLeg: legShape,
+  isJourneyCompleted: PropTypes.bool,
+
   /*
   focusToPoint: PropTypes.func.isRequired,
   */
@@ -229,6 +234,7 @@ NaviCardContainer.defaultProps = {
   currentLeg: undefined,
   nextLeg: undefined,
   firstLeg: undefined,
+  isJourneyCompleted: false,
 };
 
 NaviCardContainer.contextTypes = {
