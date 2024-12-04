@@ -39,9 +39,9 @@ function NaviContainer(
   }, [itinerary]);
 
   const { realTimeLegs, time, isPositioningAllowed } = useRealtimeLegs(
-    planarLegs,
     mapRef,
     relayEnvironment,
+    planarLegs,
   );
 
   if (!realTimeLegs.length) {

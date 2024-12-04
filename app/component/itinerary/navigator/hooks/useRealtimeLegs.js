@@ -86,7 +86,7 @@ function matchLegEnds(legs) {
   }
 }
 
-const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
+const useRealtimeLegs = (mapRef, relayEnvironment, initialLegs = []) => {
   const [isPositioningAllowed, setPositioningAllowed] = useState(false);
   const [realTimeLegs, setRealTimeLegs] = useState(initialLegs);
   const [time, setTime] = useState(Date.now());
@@ -126,6 +126,13 @@ const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
   );
 
   const fetchAndSetRealtimeLegs = useCallback(async () => {
+    if (
+      !initialLegs?.length ||
+      time >= legTime(initialLegs[initialLegs.length - 1].end)
+    ) {
+      return;
+    }
+
     const rtLegMap = await queryAndMapRealtimeLegs(initialLegs).catch(err =>
       // eslint-disable-next-line no-console
       console.error('Failed to query and map real time legs', err),
@@ -153,6 +160,7 @@ const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
   useEffect(() => {
     enableMapTracking();
     fetchAndSetRealtimeLegs();
+
     const interval = setInterval(() => {
       fetchAndSetRealtimeLegs();
       setTime(Date.now());
@@ -161,7 +169,28 @@ const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
     return () => clearInterval(interval);
   }, [enableMapTracking, fetchAndSetRealtimeLegs]);
 
-  return { realTimeLegs, time, isPositioningAllowed };
+  let currentIndex = -1;
+
+  if (realTimeLegs) {
+    if (time >= legTime(realTimeLegs[realTimeLegs.length - 1].end)) {
+      currentIndex = realTimeLegs.length - 1;
+    } else {
+      currentIndex = realTimeLegs?.findIndex(
+        l => legTime(l.start) <= time && time <= legTime(l.end),
+      );
+    }
+  }
+
+  return {
+    realTimeLegs,
+    time,
+    isPositioningAllowed,
+    origin,
+    firstLeg: realTimeLegs?.[0],
+    lastLeg: realTimeLegs?.[realTimeLegs.length - 1],
+    currentLeg: realTimeLegs?.[currentIndex],
+    nextLeg: realTimeLegs?.[currentIndex + 1],
+  };
 };
 
 export { useRealtimeLegs };
