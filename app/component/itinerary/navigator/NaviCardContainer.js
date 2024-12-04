@@ -17,6 +17,7 @@ import {
 
 const DESTINATION_RADIUS = 20; // meters
 const TIME_AT_DESTINATION = 3; // * 10 seconds
+const TOPBAR_PADDING = 8; // pixels
 
 function getNextLeg(legs, time) {
   return legs.find(leg => legTime(leg.start) > time);
@@ -28,7 +29,7 @@ function addMessages(incominMessages, newMessages) {
   });
 }
 function NaviCardContainer(
-  { focusToLeg, time, legs, position },
+  { focusToLeg, time, legs, position, origin, mapLayerRef },
   { intl, config, match, router },
 ) {
   const [currentLeg, setCurrentLeg] = useState(null);
@@ -50,12 +51,12 @@ function NaviCardContainer(
   const handleClick = () => {
     setCardExpanded(!cardExpanded);
   };
+
   useEffect(() => {
     if (cardRef.current) {
-      const contentHeight = cardRef.current.clientHeight;
-
+      const contentHeight = cardRef.current.getBoundingClientRect();
       // Navistack top position depending on main card height.
-      setTopPosition(contentHeight + 86);
+      setTopPosition(contentHeight.bottom + TOPBAR_PADDING);
     }
   }, [currentLeg, cardExpanded]);
 
@@ -169,11 +170,15 @@ function NaviCardContainer(
     legType = LEGTYPE.WAIT;
   }
 
+  const cardTop =
+    mapLayerRef.current.getBoundingClientRect().top + TOPBAR_PADDING;
+
   return (
     <>
       <button
         type="button"
         className={`navitop ${cardExpanded ? 'expanded' : ''}`}
+        style={{ top: cardTop }}
         onClick={handleClick}
         ref={cardRef}
       >
@@ -185,6 +190,8 @@ function NaviCardContainer(
             legType={legType}
             startTime={legTimeStr(first.start)}
             time={time}
+            position={position}
+            origin={origin}
           />
         </div>
       </button>
@@ -207,7 +214,11 @@ NaviCardContainer.propTypes = {
     lat: PropTypes.number,
     lon: PropTypes.number,
   }),
-
+  mapLayerRef: PropTypes.func.isRequired,
+  origin: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+  }).isRequired,
   /*
   focusToPoint: PropTypes.func.isRequired,
   */
