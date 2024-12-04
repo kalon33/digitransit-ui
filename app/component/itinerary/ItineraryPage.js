@@ -1189,6 +1189,7 @@ export default function ItineraryPage(props, context) {
             setNavigation={setNavigation}
             mapRef={mwtRef.current}
             mapLayerRef={mapLayerRef}
+            isNavigatorIntroDismissed={isNavigatorIntroDismissed}
           />
         </>
       );
