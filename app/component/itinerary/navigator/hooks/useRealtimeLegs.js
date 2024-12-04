@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
 import { fetchQuery } from 'react-relay';
-import { checkPositioningPermission } from '../../../../action/PositionActions';
 import { legQuery } from '../../queries/LegQuery';
 import { legTime } from '../../../../util/legUtils';
 import { epochToIso } from '../../../../util/timeUtils';
@@ -87,18 +86,8 @@ function matchLegEnds(legs) {
 }
 
 const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
-  const [isPositioningAllowed, setPositioningAllowed] = useState(false);
   const [realTimeLegs, setRealTimeLegs] = useState(initialLegs);
   const [time, setTime] = useState(Date.now());
-
-  const enableMapTracking = useCallback(async () => {
-    const permission = await checkPositioningPermission();
-    const isPermissionGranted = permission.state === 'granted' || true;
-    if (isPermissionGranted) {
-      mapRef?.enableMapTracking();
-    }
-    setPositioningAllowed(isPermissionGranted);
-  }, [mapRef]);
 
   const queryAndMapRealtimeLegs = useCallback(
     async legs => {
@@ -151,7 +140,6 @@ const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
   }, [initialLegs, queryAndMapRealtimeLegs]);
 
   useEffect(() => {
-    enableMapTracking();
     fetchAndSetRealtimeLegs();
     const interval = setInterval(() => {
       fetchAndSetRealtimeLegs();
@@ -159,9 +147,9 @@ const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
     }, 10000);
 
     return () => clearInterval(interval);
-  }, [enableMapTracking, fetchAndSetRealtimeLegs]);
+  }, [fetchAndSetRealtimeLegs]);
 
-  return { realTimeLegs, time, isPositioningAllowed };
+  return { realTimeLegs, time };
 };
 
 export { useRealtimeLegs };
