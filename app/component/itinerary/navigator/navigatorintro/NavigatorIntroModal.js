@@ -1,8 +1,8 @@
-import Modal from '@hsl-fi/modal';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { intlShape } from 'react-intl';
 import { configShape } from '../../../../util/shapes';
+import NavigatorModal from '../NavigatorModal';
 import NavigatorIntro from './NavigatorIntro';
 
 const NavigatorIntroModal = ({ onPrimaryClick, onClose }, context) => {
@@ -30,18 +30,13 @@ const NavigatorIntroModal = ({ onPrimaryClick, onClose }, context) => {
   }, []);
 
   return (
-    <Modal
-      appElement="#app"
-      isOpen
-      className="navigator-intro-modal"
-      overlayClassName="navigator-intro-modal-overlay"
-    >
+    <NavigatorModal isOpen withBackdrop>
       <NavigatorIntro
         logo={logo}
         onPrimaryClick={onPrimaryClick}
         onClose={onClose}
       />
-    </Modal>
+    </NavigatorModal>
   );
 };
 

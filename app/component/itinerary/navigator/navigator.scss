@@ -310,50 +310,35 @@
   }
 }
 
-@keyframes slideIn {
-  from {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+.navigator-modal-container {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  z-index: 1000; // higher than navbar
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
 }
 
-@keyframes slideOut {
-  from {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  to {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
+.navigator-modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 999; // higher than navbar, below modal body
+  height: 100%;
 }
 
-@keyframes slideOutRight {
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-
-  to {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
+.navigator-modal {
+  position: fixed;
+  background: white;
+  width: 100%;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 }
 
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
+.navigator-modal-content {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-xl) var(--space-l) var(--space-l) var(--space-l);
+  gap: var(--space-xl);
 }
 
 .info-stack {
