@@ -50,37 +50,37 @@ export default function TaxiLeg(props, { config, intl }) {
 
   return (
     <>
-      <div key="taxi-start" className="row itinerary-row">
-        <span className="sr-only">
-          <FormattedMessage
-            id="itinerary-details.car-leg"
-            values={{
-              time: legTimeStr(props.leg.start),
-              distance,
-              to: legDestination(intl, props.leg),
-              origin: props.leg.from ? props.leg.from.name : '',
-              destination: props.leg.to ? props.leg.to.name : '',
-              duration,
-            }}
-          />
-        </span>
-        <div
-          className="small-2 columns itinerary-time-column"
-          aria-hidden="true"
-        >
-          <div className="itinerary-time-column-time">
-            {legTimeStr(props.leg.start)}
+      {isFirstLeg(index) && (
+        <div key="taxi-start" className="row itinerary-row">
+          <span className="sr-only">
+            <FormattedMessage
+              id="itinerary-details.car-leg"
+              values={{
+                time: legTimeStr(props.leg.start),
+                distance,
+                to: legDestination(intl, props.leg),
+                origin: props.leg.from ? props.leg.from.name : '',
+                destination: props.leg.to ? props.leg.to.name : '',
+                duration,
+              }}
+            />
+          </span>
+          <div
+            className="small-2 columns itinerary-time-column"
+            aria-hidden="true"
+          >
+            <div className="itinerary-time-column-time">
+              {legTimeStr(props.leg.start)}
+            </div>
           </div>
-        </div>
-        <ItineraryCircleLine
-          index={0}
-          modeClassName="walk"
-          appendClass="taxi"
-        />
-        <div
-          className={`small-9 columns itinerary-instruction-column ${firstLegClassName} ${props.leg.mode.toLowerCase()}`}
-        >
-          {isFirstLeg(index) ? (
+          <ItineraryCircleLine
+            index={0}
+            modeClassName="walk"
+            appendClass="taxi"
+          />
+          <div
+            className={`small-9 columns itinerary-instruction-column ${firstLegClassName} ${props.leg.mode.toLowerCase()}`}
+          >
             <div className={cx('itinerary-leg-first-row', 'walk', 'first')}>
               <div className="address-container">
                 <div className="address">
@@ -96,12 +96,10 @@ export default function TaxiLeg(props, { config, intl }) {
                 <div className="place">{place}</div>
               </div>
             </div>
-          ) : (
-            <div> </div>
-          )}
-          <div className="divider" />
+            <div className="divider" />
+          </div>
         </div>
-      </div>
+      )}
 
       <div key={props.index} className="row itinerary-row">
         <span className="sr-only">
