@@ -75,7 +75,6 @@ export function getSettings(config) {
     TransportMode.Scooter,
   );
 
-  // const allScooterNetworks = getAllScooterNetworks(config);
   const settings = {
     ...defaultSettings,
     ...userSettings,
@@ -287,6 +286,20 @@ export function getPlanParams(
     config,
   );
 
+  // transitModes = transitModes.filter(mode => mode !== 'WALK');
+
+  // if (relaxSettings && planType !== PLANTYPE.SCOOTERTRANSIT) {
+  //   transitModes = transitModes.filter(
+  //     mode =>
+  //       mode !== 'TRAM' &&
+  //       mode !== 'RAIL' &&
+  //       mode !== 'SUBWAY' &&
+  //       mode !== 'BUS' &&
+  //       mode !== 'FERRY' &&
+  //       mode !== 'WALK',
+  //   );
+  // }
+
   let otpModes = transitModes.map(mode => {
     return { mode };
   });
@@ -309,6 +322,12 @@ export function getPlanParams(
   let transfer = ['WALK'];
   let direct = null;
 
+  if (settings.includeTaxiSuggestions) {
+    access = access.concat(['FLEX']);
+    // egress = access;
+    direct = ['FLEX'];
+    transitOnly = false;
+  }
   let noIterationsForShortTrips = false;
 
   switch (planType) {
