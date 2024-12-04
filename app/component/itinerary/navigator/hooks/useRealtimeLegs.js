@@ -95,7 +95,7 @@ const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
     const permission = await checkPositioningPermission();
     const isPermissionGranted = permission.state === 'granted';
     if (isPermissionGranted) {
-      mapRef?.enableMapTracking();
+      setTimeout(() => mapRef?.enableMapTracking(), 500);
     }
     setPositioningAllowed(isPermissionGranted);
   }, [mapRef]);
