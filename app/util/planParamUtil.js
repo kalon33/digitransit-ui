@@ -286,20 +286,6 @@ export function getPlanParams(
     config,
   );
 
-  // transitModes = transitModes.filter(mode => mode !== 'WALK');
-
-  // if (relaxSettings && planType !== PLANTYPE.SCOOTERTRANSIT) {
-  //   transitModes = transitModes.filter(
-  //     mode =>
-  //       mode !== 'TRAM' &&
-  //       mode !== 'RAIL' &&
-  //       mode !== 'SUBWAY' &&
-  //       mode !== 'BUS' &&
-  //       mode !== 'FERRY' &&
-  //       mode !== 'WALK',
-  //   );
-  // }
-
   let otpModes = transitModes.map(mode => {
     return { mode };
   });
