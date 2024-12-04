@@ -29,7 +29,7 @@ function addMessages(incominMessages, newMessages) {
   });
 }
 function NaviCardContainer(
-  { focusToLeg, time, legs, position },
+  { focusToLeg, time, legs, position, mapLayerRef },
   { intl, config, match, router },
 ) {
   const [currentLeg, setCurrentLeg] = useState(null);
@@ -169,10 +169,9 @@ function NaviCardContainer(
   } else {
     legType = LEGTYPE.WAIT;
   }
-  const topBar = document
-    .querySelector('.top-bar, [class*="hsl-header-container"]')
-    ?.getBoundingClientRect();
-  const cardTop = topBar.bottom + TOPBAR_PADDING;
+
+  const cardTop =
+    mapLayerRef.current.getBoundingClientRect().top + TOPBAR_PADDING;
 
   return (
     <>
@@ -213,6 +212,7 @@ NaviCardContainer.propTypes = {
     lat: PropTypes.number,
     lon: PropTypes.number,
   }),
+  mapLayerRef: PropTypes.func.isRequired,
 
   /*
   focusToPoint: PropTypes.func.isRequired,

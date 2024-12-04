@@ -7,7 +7,14 @@ import NaviCardContainer from './NaviCardContainer';
 import { useRealtimeLegs } from './hooks/useRealtimeLegs';
 
 function NaviContainer(
-  { itinerary, focusToLeg, relayEnvironment, setNavigation, mapRef },
+  {
+    itinerary,
+    focusToLeg,
+    relayEnvironment,
+    setNavigation,
+    mapRef,
+    mapLayerRef,
+  },
   { getStore },
 ) {
   const { legs } = itinerary;
@@ -18,7 +25,6 @@ function NaviContainer(
     mapRef,
     relayEnvironment,
   );
-
   // recompute estimated arrival
   let lastTransitLeg;
   let arrivalChange = 0;
@@ -48,6 +54,7 @@ function NaviContainer(
         }
         time={time}
         position={position}
+        mapLayerRef={mapLayerRef}
       />
       <NaviBottom
         setNavigation={setNavigation}
@@ -65,6 +72,7 @@ NaviContainer.propTypes = {
   setNavigation: PropTypes.func.isRequired,
   // eslint-disable-next-line
   mapRef: PropTypes.object,
+  mapLayerRef: PropTypes.func.isRequired,
 };
 
 NaviContainer.contextTypes = {
