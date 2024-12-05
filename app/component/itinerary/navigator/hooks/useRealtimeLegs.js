@@ -1,7 +1,6 @@
 import polyUtil from 'polyline-encoded';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fetchQuery } from 'react-relay';
-import { checkPositioningPermission } from '../../../../action/PositionActions';
 import { GeodeticToEcef, GeodeticToEnu } from '../../../../util/geo-utils';
 import { legTime } from '../../../../util/legUtils';
 import { epochToIso } from '../../../../util/timeUtils';
@@ -88,8 +87,7 @@ function matchLegEnds(legs) {
   }
 }
 
-const useRealtimeLegs = (mapRef, relayEnvironment, initialLegs = []) => {
-  const [isPositioningAllowed, setPositioningAllowed] = useState(false);
+const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
   const [realTimeLegs, setRealTimeLegs] = useState();
   const [time, setTime] = useState(Date.now());
 
@@ -97,15 +95,6 @@ const useRealtimeLegs = (mapRef, relayEnvironment, initialLegs = []) => {
     () => GeodeticToEcef(initialLegs[0].from.lat, initialLegs[0].from.lon),
     [initialLegs[0]],
   );
-
-  const enableMapTracking = useCallback(async () => {
-    const permission = await checkPositioningPermission();
-    const isPermissionGranted = permission.state === 'granted' || true;
-    if (isPermissionGranted) {
-      mapRef?.enableMapTracking();
-    }
-    setPositioningAllowed(isPermissionGranted);
-  }, [mapRef]);
 
   const queryAndMapRealtimeLegs = useCallback(
     async legs => {
@@ -173,7 +162,6 @@ const useRealtimeLegs = (mapRef, relayEnvironment, initialLegs = []) => {
   }, [initialLegs, queryAndMapRealtimeLegs]);
 
   useEffect(() => {
-    enableMapTracking();
     fetchAndSetRealtimeLegs();
 
     const interval = setInterval(() => {
@@ -182,7 +170,7 @@ const useRealtimeLegs = (mapRef, relayEnvironment, initialLegs = []) => {
     }, 10000);
 
     return () => clearInterval(interval);
-  }, [enableMapTracking, fetchAndSetRealtimeLegs]);
+  }, [fetchAndSetRealtimeLegs]);
 
   let currentIndex = -1;
 
@@ -199,7 +187,6 @@ const useRealtimeLegs = (mapRef, relayEnvironment, initialLegs = []) => {
   return {
     realTimeLegs,
     time,
-    isPositioningAllowed,
     origin,
     firstLeg: realTimeLegs?.[0],
     lastLeg: realTimeLegs?.[realTimeLegs.length - 1],

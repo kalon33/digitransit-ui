@@ -1,7 +1,8 @@
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { legTime } from '../../../util/legUtils';
+import { checkPositioningPermission } from '../../../action/PositionActions';
 import { legShape, relayShape } from '../../../util/shapes';
 import NaviBottom from './NaviBottom';
 import NaviCardContainer from './NaviCardContainer';
@@ -23,18 +24,26 @@ function NaviContainer(
   },
   { getStore },
 ) {
+  const [isPositioningAllowed, setPositioningAllowed] = useState(false);
+
   const position = getStore('PositionStore').getLocationState();
 
-  const {
-    realTimeLegs,
-    time,
-    isPositioningAllowed,
-    origin,
-    firstLeg,
-    lastLeg,
-    currentLeg,
-    nextLeg,
-  } = useRealtimeLegs(mapRef, relayEnvironment, legs);
+  const { realTimeLegs, time, origin, firstLeg, lastLeg, currentLeg, nextLeg } =
+    useRealtimeLegs(relayEnvironment, legs);
+
+  useEffect(() => {
+    if (position.hasLocation) {
+      mapRef?.enableMapTracking();
+      setPositioningAllowed(true);
+    } else {
+      checkPositioningPermission().then(permission => {
+        if (permission.state === 'granted') {
+          mapRef?.enableMapTracking();
+          setPositioningAllowed(true);
+        }
+      });
+    }
+  }, [mapRef]);
 
   if (!realTimeLegs?.length) {
     return null;
