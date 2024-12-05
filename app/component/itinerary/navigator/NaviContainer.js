@@ -40,18 +40,18 @@ function NaviContainer(
     setOrigin(orig);
   }, [itinerary]);
 
-  useEffect(async () => {
-    let permissionGranted;
+  useEffect(() => {
     if (position.hasLocation) {
-      permissionGranted = true;
-    } else {
-      const permission = await checkPositioningPermission();
-      permissionGranted = permission.state === 'granted';
-    }
-    if (permissionGranted) {
       mapRef?.enableMapTracking();
+      setPositioningAllowed(true);
+    } else {
+      checkPositioningPermission().then(permission => {
+        if (permission.state === 'granted') {
+          mapRef?.enableMapTracking();
+          setPositioningAllowed(true);
+        }
+      });
     }
-    setPositioningAllowed(permissionGranted);
   }, [mapRef]);
 
   const { realTimeLegs, time } = useRealtimeLegs(
