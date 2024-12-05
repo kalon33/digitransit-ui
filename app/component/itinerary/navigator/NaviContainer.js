@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import polyUtil from 'polyline-encoded';
 import { legTime } from '../../../util/legUtils';
+import { checkPositioningPermission } from '../../../action/PositionActions';
 import { GeodeticToEcef, GeodeticToEnu } from '../../../util/geo-utils';
 import { itineraryShape, relayShape } from '../../../util/shapes';
 import NaviBottom from './NaviBottom';
@@ -21,6 +22,7 @@ function NaviContainer(
 ) {
   const [planarLegs, setPlanarLegs] = useState([]);
   const [origin, setOrigin] = useState();
+  const [isPositioningAllowed, setPositioningAllowed] = useState(false);
 
   const position = getStore('PositionStore').getLocationState();
 
@@ -38,7 +40,21 @@ function NaviContainer(
     setOrigin(orig);
   }, [itinerary]);
 
-  const { realTimeLegs, time, isPositioningAllowed } = useRealtimeLegs(
+  useEffect(() => {
+    if (position.hasLocation) {
+      mapRef?.enableMapTracking();
+      setPositioningAllowed(true);
+    } else {
+      checkPositioningPermission().then(permission => {
+        if (permission.state === 'granted') {
+          mapRef?.enableMapTracking();
+          setPositioningAllowed(true);
+        }
+      });
+    }
+  }, [mapRef]);
+
+  const { realTimeLegs, time } = useRealtimeLegs(
     planarLegs,
     mapRef,
     relayEnvironment,
