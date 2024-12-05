@@ -93,7 +93,8 @@ const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
 
   const enableMapTracking = useCallback(async () => {
     const permission = await checkPositioningPermission();
-    const isPermissionGranted = permission.state === 'granted' || true;
+    alert(permission.state);
+    const isPermissionGranted = permission.state === 'granted';
     if (isPermissionGranted) {
       mapRef?.enableMapTracking();
     }
