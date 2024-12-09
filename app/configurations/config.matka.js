@@ -124,11 +124,6 @@ export default {
     keywords: `reitti,reitit,opas,reittiopas,joukkoliikenne`,
   },
 
-  routeTimetables: {
-    // route timetable data needs to be up-to-date before this is enabled
-    //  HSL: HSLRouteTimetable,
-  },
-
   menu: {
     copyright: { label: `© Matka.fi ${YEAR}` },
     content: [

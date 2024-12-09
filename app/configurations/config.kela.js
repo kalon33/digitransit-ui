@@ -101,10 +101,7 @@ export default {
 
   colors: matkaConfig.colors,
 
-  routeTimetables: {
-    // route timetable data needs to be up-to-date before this is enabled
-    //  HSL: HSLRouteTimetable,
-  },
+  redirectReittiopasParams: true,
   map: { minZoom: 5 },
   hideFavourites: true,
   hideStopRouteSearch: true,
