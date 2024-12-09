@@ -184,6 +184,57 @@ export function getInterliningLegs(legs, index) {
 function bikingEnded(leg1) {
   return leg1.from.vehicleRentalStation && leg1.mode === 'WALK';
 }
+
+function syntheticEndpoint(originalEndpoint, place) {
+  return {
+    ...originalEndpoint,
+    stop: place.stop,
+    lat: place.stop.lat,
+    lon: place.stop.lon,
+    name: place.stop.name,
+  };
+}
+
+export function splitLegsAtViaPoints(originalLegs, viaPlaces) {
+  const splitLegs = [];
+  const viaPoints = viaPlaces.map(p => p.gtfsId);
+  originalLegs.forEach(originalLeg => {
+    const leg = { ...originalLeg };
+    const { intermediatePlaces } = leg;
+    if (intermediatePlaces) {
+      let start = 0;
+      let lastSplit = -1;
+      intermediatePlaces.forEach((place, i) => {
+        if (
+          viaPoints.includes(place.stop.gtfsId) ||
+          (place.stop.parentStation &&
+            viaPoints.includes(place.stop.parentStation.gtfsId))
+        ) {
+          const leftLeg = {
+            ...leg,
+            to: syntheticEndpoint(leg.to, place),
+            end: place.arrival,
+            intermediatePlaces: intermediatePlaces.slice(start, i),
+          };
+          leg.intermediatePlace = true;
+          leg.start = place.arrival;
+          leg.from = syntheticEndpoint(leg.from, place);
+          splitLegs.push(leftLeg);
+          start = i + 1;
+          lastSplit = i;
+        }
+      });
+      if (lastSplit >= 0) {
+        const lastPlace = intermediatePlaces[lastSplit];
+        leg.from = syntheticEndpoint(leg.from, lastPlace);
+        leg.start = lastPlace.arrival;
+        leg.intermediatePlaces = intermediatePlaces.slice(lastSplit + 1);
+      }
+    }
+    splitLegs.push(leg);
+  });
+  return splitLegs;
+}
 /**
  * Compresses the incoming legs (affects only legs with mode BICYCLE, WALK or CITYBIKE). These are combined
  * so that the person will be walking their bicycle and there won't be multiple similar legs

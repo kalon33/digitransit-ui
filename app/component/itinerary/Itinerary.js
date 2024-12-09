@@ -16,6 +16,7 @@ import RouteNumberContainer from '../RouteNumberContainer';
 import { getActiveLegAlertSeverityLevel } from '../../util/alertUtils';
 import {
   getLegMode,
+  splitLegsAtViaPoints,
   compressLegs,
   getLegBadgeProps,
   isCallAgencyPickupType,
@@ -287,7 +288,8 @@ const Itinerary = (
   const mobile = bp => !(bp === 'large');
   const legs = [];
   let noTransitLegs = true;
-  const compressedLegs = compressLegs(itinerary.legs).map(leg => ({
+  const splitLegs = splitLegsAtViaPoints(itinerary.legs, intermediatePlaces);
+  const compressedLegs = compressLegs(splitLegs).map(leg => ({
     ...leg,
   }));
   let intermediateSlack = 0;
@@ -970,6 +972,7 @@ Itinerary.propTypes = {
   intermediatePlaces: PropTypes.arrayOf(locationShape),
   hideSelectionIndicator: PropTypes.bool,
   lowestCo2value: PropTypes.number,
+  viaPoints: PropTypes.arrayOf(locationShape),
 };
 
 Itinerary.defaultProps = {
@@ -977,6 +980,7 @@ Itinerary.defaultProps = {
   intermediatePlaces: [],
   hideSelectionIndicator: true,
   lowestCo2value: 0,
+  viaPoints: [],
 };
 
 Itinerary.contextTypes = {
@@ -1021,6 +1025,16 @@ const containerComponent = createFragmentContainer(ItineraryWithBreakpoint, {
         intermediatePlaces {
           stop {
             zoneId
+            gtfsId
+            parentStation {
+              gtfsId
+            }
+          }
+          arrival {
+            scheduledTime
+            estimated {
+              time
+            }
           }
         }
         route {
@@ -1056,6 +1070,9 @@ const containerComponent = createFragmentContainer(ItineraryWithBreakpoint, {
           name
           stop {
             gtfsId
+            parentStation {
+              gtfsId
+            }
             zoneId
             alerts {
               alertSeverityLevel
@@ -1075,6 +1092,9 @@ const containerComponent = createFragmentContainer(ItineraryWithBreakpoint, {
         to {
           stop {
             gtfsId
+            parentStation {
+              gtfsId
+            }
             zoneId
             alerts {
               alertSeverityLevel
