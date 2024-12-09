@@ -163,6 +163,7 @@ export default {
       corner2: [55.99, 17.75],
     },
   },
+
   suggestBikeMaxDistance: 2000000,
 
   vehicleRental: {

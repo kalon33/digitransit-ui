@@ -109,7 +109,9 @@ export default {
   },
 
   redirectReittiopasParams: true,
-  map: matkaConfig.map,
+
+  map: { minZoom: 5 },
+
   suggestBikeMaxDistance: 2000000,
 
   getAutoSuggestIcons: matkaConfig.getAutoSuggestIcons,
