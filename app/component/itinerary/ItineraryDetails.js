@@ -404,6 +404,12 @@ const withRelay = createFragmentContainer(
           legGeometry {
             points
           }
+          pickupBookingInfo {
+            contactInfo {
+              bookingUrl
+              infoUrl
+            }
+          }
           nextLegs(
             numberOfLegs: 2
             originModesWithParentStation: [RAIL]

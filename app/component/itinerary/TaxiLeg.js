@@ -47,7 +47,7 @@ export default function TaxiLeg(props, { config, intl }) {
   );
 
   const [address, place] = splitStringToAddressAndPlace(leg.from.name);
-
+  const { bookingUrl, infoUrl } = props.leg.pickupBookingInfo.contactInfo;
   return (
     <>
       {isFirstLeg(index) && (
@@ -141,8 +141,8 @@ export default function TaxiLeg(props, { config, intl }) {
           </div>
           <TaxiLinkContainer
             operatorName={props.leg.route.agency.name}
-            fareUrl={props.leg.route.agency.fareUrl}
-            infoUrl={props.leg.route.agency.url}
+            infoUrl={infoUrl}
+            bookingUrl={bookingUrl}
             icon="icon-icon_taxi-external"
           />
           {alternativeOperators &&
@@ -151,8 +151,8 @@ export default function TaxiLeg(props, { config, intl }) {
                 <TaxiLinkContainer
                   key={operator.name}
                   operatorName={operator.name}
-                  fareUrl={operator.fareUrl}
-                  infoUrl={props.leg.route.agency.url}
+                  infoUrl={infoUrl}
+                  bookingUrl={bookingUrl}
                   icon="icon-icon_taxi-external"
                 />
               );

@@ -5,11 +5,12 @@ import cx from 'classnames';
 import { useDeepLink } from '../../util/vehicleRentalUtils';
 import Icon from '../Icon';
 import ExternalLink from '../ExternalLink';
+import { isBrowser } from '../../util/browser';
 
 export default function TaxiLinkContainer({
   operatorName,
-  fareUrl,
   infoUrl,
+  bookingUrl,
   icon,
 }) {
   const operatorAppText = (
@@ -22,7 +23,7 @@ export default function TaxiLinkContainer({
     />
   );
 
-  const url = fareUrl.startsWith('www') ? `https://${fareUrl}` : fareUrl;
+  const url = isBrowser && bookingUrl.startsWith('http') ? bookingUrl : infoUrl;
   const onClick = url.startsWith('http')
     ? () => {}
     : () => useDeepLink(url, infoUrl);
@@ -66,8 +67,8 @@ export default function TaxiLinkContainer({
 
 TaxiLinkContainer.propTypes = {
   operatorName: PropTypes.string.isRequired,
-  fareUrl: PropTypes.string.isRequired,
   infoUrl: PropTypes.string.isRequired,
+  bookingUrl: PropTypes.string.isRequired,
   icon: PropTypes.string.isRequired,
 };
 
