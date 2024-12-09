@@ -14,8 +14,8 @@ const NavigatorOutro = ({ onClose, destination, logo } /* ,context */) => {
       <div className="outro-body">
         <FormattedMessage
           tagName="h2"
-          id="TODO_navigation-outro-header"
-          defaultMessage="Olet perillä!"
+          id="navigation-outro-header"
+          defaultMessage="You have arrived!"
         />
         <div className="destination">
           <p className="place">{place}</p>
