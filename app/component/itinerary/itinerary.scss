@@ -1576,7 +1576,7 @@ $itinerary-tab-switch-height: 48px;
       min-height: 3em;
     }
 
-    .itinerary-leg-row-bike {
+    .itinerary-leg-row-with-link {
       display: flex;
       flex-direction: column;
       color: #333;
@@ -1585,7 +1585,7 @@ $itinerary-tab-switch-height: 48px;
         padding: 0.625em 0;
       }
 
-      .citybike-leg-header {
+      .leg-header {
         font-size: 15px;
         font-weight: $font-weight-book;
         max-height: 33px;
@@ -1713,7 +1713,7 @@ $itinerary-tab-switch-height: 48px;
       }
     }
 
-    .itinerary-transit-leg-route-bike {
+    .itinerary-transit-leg-route-with-link {
       display: flex;
       background-color: #f4f4f5;
       border-radius: 5px;
@@ -1731,11 +1731,11 @@ $itinerary-tab-switch-height: 48px;
         color: $link-color;
       }
 
-      .citybike-itinerary {
+      .itinerary-with-link {
         display: flex;
         padding: 7px;
 
-        .citybike-itinerary-text-container {
+        .itinerary-with-link-text-container {
           display: flex;
           flex-direction: column;
         }

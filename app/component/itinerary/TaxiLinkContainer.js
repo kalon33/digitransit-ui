@@ -30,12 +30,12 @@ export default function TaxiLinkContainer({
 
   return (
     <div>
-      <div className="itinerary-transit-leg-route-bike">
-        <div className="citybike-itinerary">
+      <div className="itinerary-transit-leg-route-with-link">
+        <div className="itinerary-with-link">
           <div className="taxi-icon">
             <Icon img={icon} viewBox="0 0 32 32" />
           </div>
-          <div className="citybike-itinerary-text-container">
+          <div className="itinerary-with-link-text-container">
             <span className={cx('headsign', 'scooter-headsign')}>
               <ExternalLink
                 className="rental-vehicle-link"

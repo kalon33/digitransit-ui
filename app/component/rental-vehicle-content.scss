@@ -92,7 +92,7 @@
       line-height: 18px;
       letter-spacing: -0.03em;
 
-      .itinerary-transit-leg-route-bike {
+      .itinerary-transit-leg-route-with-link {
         display: flex;
         background-color: #f4f4f5;
         border-radius: 5px;
@@ -111,11 +111,11 @@
           color: $link-color;
         }
 
-        .citybike-itinerary {
+        .itinerary-with-link {
           display: flex;
           padding: 7px;
 
-          .citybike-itinerary-text-container {
+          .itinerary-with-link-text-container {
             display: flex;
           }
 

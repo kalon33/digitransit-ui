@@ -41,7 +41,7 @@ export default function TaxiLeg(props, { config, intl }) {
   const modeClassName = 'taxi-external';
 
   const legDescription = (
-    <span className={cx('citybike-leg-header')}>
+    <span className={cx('leg-header')}>
       <FormattedMessage id="rent-taxi-at" defaultMessage="Take a taxi" />
     </span>
   );
@@ -133,7 +133,7 @@ export default function TaxiLeg(props, { config, intl }) {
           className={`small-9 columns itinerary-instruction-column ${firstLegClassName} ${props.leg.mode.toLowerCase()}`}
         >
           <div className={`itinerary-leg-first-row ${firstLegClassName}`}>
-            <div className="itinerary-leg-row-bike">{legDescription}</div>
+            <div className="itinerary-leg-row-with-link">{legDescription}</div>
             <ItineraryMapAction
               target={props.leg.from.name || ''}
               focusAction={props.focusAction}
