@@ -68,7 +68,7 @@ export const getAdditionalMessages = (leg, time, intl, config, messages) => {
 };
 
 export const getTransitLegState = (leg, intl, messages, time) => {
-  const { start, realtimeState, from, mode, legId, route } = leg;
+  const { start, realtimeState, from, mode, legId, route, end } = leg;
   const { scheduledTime, estimated } = start;
   if (mode === 'WALK') {
     return null;
@@ -139,7 +139,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
     severity = 'INFO';
   }
   const state = severity
-    ? [{ severity, content, id: legId, expiresOn: 'legChange' }]
+    ? [{ severity, content, id: legId, expiresOn: legTime(end) }]
     : [];
   return state;
 };
@@ -222,6 +222,7 @@ export const getItineraryAlerts = (legs, intl, messages, location, router) => {
           severity: 'ALERT',
           content,
           id: `canceled-${legId}`,
+          hideClose: true,
         });
       }
     });
@@ -246,6 +247,7 @@ export const getItineraryAlerts = (legs, intl, messages, location, router) => {
         severity: 'ALERT',
         content,
         id: transferId,
+        hideClose: true,
       });
     }
   }

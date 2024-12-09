@@ -97,11 +97,11 @@ function NaviCardContainer(
       }
     }
     if (incomingMessages.size || legChanged) {
-      // Handle messages when new messages arrives or leg is changed.
+      // Handle messages when new messages arrives.
 
-      // Current active messages. Filter away legChange messages when leg changes.
+      // Current active messages. Filter away expired messages.
       const previousValidMessages = legChanged
-        ? activeMessages.filter(m => m.expiresOn !== 'legChange')
+        ? activeMessages.filter(m => m.expiresOn < time)
         : activeMessages;
 
       // handle messages that are updated.
