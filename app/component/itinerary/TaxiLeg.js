@@ -55,19 +55,6 @@ export default function TaxiLeg(props, { config, intl }) {
     <>
       {isFirstLeg(index) && (
         <div key="taxi-start" className="row itinerary-row">
-          <span className="sr-only">
-            <FormattedMessage
-              id="itinerary-details.taxi-start-leg"
-              values={{
-                time: legTimeStr(props.leg.start),
-                distance,
-                to: legDestination(intl, props.leg),
-                origin: props.leg.from ? props.leg.from.name : '',
-                destination: props.leg.to ? props.leg.to.name : '',
-                duration,
-              }}
-            />
-          </span>
           <div
             className="small-2 columns itinerary-time-column"
             aria-hidden="true"
@@ -107,7 +94,7 @@ export default function TaxiLeg(props, { config, intl }) {
       <div key={props.index} className="row itinerary-row">
         <span className="sr-only">
           <FormattedMessage
-            id="itinerary-details.taxi-leg"
+            id="itinerary-details.car-leg"
             values={{
               time: legTimeStr(props.leg.start),
               distance,
