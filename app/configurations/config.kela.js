@@ -26,10 +26,8 @@ export default {
   },
 
   favicon: './app/configurations/images/default/default-favicon.png',
-  feedIds: ['kela', 'kela_varely', 'kela_waltti', 'matkahuolto'],
   textLogo: true,
-  logo: null, // override default logo from matka config
-
+  logo: null,
   meta: {
     description: APP_DESCRIPTION,
   },
