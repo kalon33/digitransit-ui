@@ -167,17 +167,17 @@ function NaviCardContainer(
     legType = LEGTYPE.WAIT;
   }
 
-  const cardTop =
+  const containerTopPosition =
     mapLayerRef.current.getBoundingClientRect().top + TOPBAR_PADDING;
 
   return (
     <div
       className={`navi-card-container ${isJourneyCompleted ? 'slide-out' : ''}`}
+      style={{ top: containerTopPosition }}
     >
       <button
         type="button"
         className={`navitop ${cardExpanded ? 'expanded' : ''}`}
-        style={{ top: cardTop }}
         onClick={handleClick}
         ref={cardRef}
       >

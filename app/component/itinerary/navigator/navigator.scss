@@ -43,18 +43,15 @@
 
 .navi-card-container {
   position: fixed;
-  top: 0;
   width: 100vw;
-  height: 100vh;
 
   &.slide-out {
-    animation: slideUpToTop 3s ease-out forwards;
+    animation: slideUpToTop 1s ease-out forwards;
   }
 }
 
 .navitop {
   margin-bottom: 5px;
-  position: fixed;
   width: 92%;
   margin-left: 8px;
   border-radius: 8px;
@@ -611,7 +608,7 @@
   }
 
   to {
-    transform: translateY(-100%);
+    transform: translateY(calc(-100vh - 100%));
   }
 }
 
