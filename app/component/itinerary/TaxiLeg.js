@@ -42,7 +42,10 @@ export default function TaxiLeg(props, { config, intl }) {
 
   const legDescription = (
     <span className={cx('leg-header')}>
-      <FormattedMessage id="rent-taxi-at" defaultMessage="Take a taxi" />
+      <FormattedMessage
+        id="book-a-lift"
+        defaultMessage="Use an app to book a taxi"
+      />
     </span>
   );
 
@@ -54,7 +57,7 @@ export default function TaxiLeg(props, { config, intl }) {
         <div key="taxi-start" className="row itinerary-row">
           <span className="sr-only">
             <FormattedMessage
-              id="itinerary-details.car-leg"
+              id="itinerary-details.taxi-start-leg"
               values={{
                 time: legTimeStr(props.leg.start),
                 distance,
@@ -104,7 +107,7 @@ export default function TaxiLeg(props, { config, intl }) {
       <div key={props.index} className="row itinerary-row">
         <span className="sr-only">
           <FormattedMessage
-            id="itinerary-details.car-leg"
+            id="itinerary-details.taxi-leg"
             values={{
               time: legTimeStr(props.leg.start),
               distance,
@@ -160,11 +163,7 @@ export default function TaxiLeg(props, { config, intl }) {
           <div className="itinerary-leg-action">
             <div className="itinerary-leg-action-content">
               <FormattedMessage
-                id={
-                  config.hideCarSuggestionDuration
-                    ? 'taxi-distance-no-duration'
-                    : 'taxi-distance-duration'
-                }
+                id="taxi-distance-duration"
                 values={{ distance, duration }}
                 defaultMessage="Travel for {distance} ({duration})}"
               />
