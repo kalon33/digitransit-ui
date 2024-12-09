@@ -105,13 +105,7 @@ export default {
     // route timetable data needs to be up-to-date before this is enabled
     //  HSL: HSLRouteTimetable,
   },
-
-  redirectReittiopasParams: true,
-
   map: { minZoom: 5 },
-
-  suggestBikeMaxDistance: 2000000,
-
   hideFavourites: true,
   hideStopRouteSearch: true,
   hideMapLayersByDefault: true,
