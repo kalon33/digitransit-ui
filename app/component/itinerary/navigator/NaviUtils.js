@@ -222,6 +222,7 @@ export const getItineraryAlerts = (legs, intl, messages, location, router) => {
           severity: 'ALERT',
           content,
           id: `canceled-${legId}`,
+          hideClose: true,
         });
       }
     });
@@ -246,6 +247,7 @@ export const getItineraryAlerts = (legs, intl, messages, location, router) => {
         severity: 'ALERT',
         content,
         id: transferId,
+        hideClose: true,
       });
     }
   }
