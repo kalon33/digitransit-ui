@@ -1,7 +1,6 @@
 /* eslint-disable prefer-template */
 
 const matkaConfig = require('./config.matka').default;
-const HSLParkAndRideUtils = require('../util/ParkAndRideUtils').default.HSL;
 
 const CONFIG = 'kela';
 const APP_TITLE = 'Reittiopas';
@@ -102,46 +101,7 @@ export default {
     locale: 'fi_FI',
   },
 
-  colors: {
-    primary: '#002c74',
-    iconColors: {
-      'mode-airplane': '#0046AD',
-      'mode-bus': '#007ac9',
-      'mode-tram': '#5E7921',
-      'mode-metro': '#CA4000',
-      'mode-rail': '#8E5EA0',
-      'mode-ferry': '#247C7B',
-      'mode-ferry-pier': '#666666',
-      'mode-citybike': '#FCBC19',
-      'mode-citybike-secondary': '#333333',
-    },
-  },
-
-  additionalFeedIds: {
-    estonia: ['Vikingline', 'Viro'],
-  },
-
-  additionalSearchParams: {
-    default: {
-      'boundary.country': 'FIN',
-    },
-    estonia: {
-      'boundary.country': 'EST',
-    },
-  },
-
-  feedIdFiltering: true,
-
-  stopSearchFilter: stop => {
-    const props = stop.properties;
-    if (
-      props?.id?.includes('GTFS:HSL') &&
-      props?.addendum?.GTFS?.modes?.includes('RAIL')
-    ) {
-      return false;
-    }
-    return true;
-  },
+  colors: matkaConfig.colors,
 
   routeTimetables: {
     // route timetable data needs to be up-to-date before this is enabled
@@ -149,33 +109,15 @@ export default {
   },
 
   redirectReittiopasParams: true,
-  map: {
-    minZoom: 5,
-    areaBounds: {
-      corner1: [70.25, 32.25],
-      corner2: [55.99, 17.75],
-    },
-  },
+  map: matkaConfig.map,
   suggestBikeMaxDistance: 2000000,
 
-  getAutoSuggestIcons: {
-    citybikes: station => {
-      if (
-        station.properties.source === 'citybikesdonkey_hamina' ||
-        station.properties.source === 'vantaa'
-      ) {
-        return ['citybike-stop-digitransit-secondary', '#FCBC19'];
-      }
-      return ['citybike-stop-digitransit', '#FCBC19'];
-    },
-  },
+  getAutoSuggestIcons: matkaConfig.getAutoSuggestIcons,
 
   hideFavourites: true,
   hideStopRouteSearch: true,
-
   hideMapLayersByDefault: true,
   hideCarSuggestionDuration: true,
-
   hideWalkLegDurationSummary: true,
   emphasizeDistance: true,
   emphasizeOneWayJourney: true,
@@ -218,159 +160,11 @@ export default {
   staticMessagesUrl: process.env.STATIC_MESSAGE_URL,
 
   showNearYouButtons: false,
-  narrowNearYouButtons: true,
-  nearYouModes: [
-    'bus',
-    'tram',
-    'subway',
-    'rail',
-    'ferry',
-    'citybike',
-    'airplane',
-  ],
-  useAlternativeNameForModes: ['rail'],
-
   showVehiclesOnStopPage: false,
   showVehiclesOnItineraryPage: false,
-
   includeCarSuggestions: true,
-  includeParkAndRideSuggestions: true,
-  // Park and ride and car suggestions separated into two switches
-  separatedParkAndRideSwitch: true,
-  showBikeAndParkItineraries: true,
-
-  parkingAreaSources: ['liipi'],
-
-  parkAndRide: {
-    showParkAndRide: false,
-    parkAndRideMinZoom: 13,
-    pageContent: {
-      default: HSLParkAndRideUtils,
-    },
-  },
-
-  sourceForAlertsAndDisruptions: {
-    HSL: {
-      fi: 'Helsingin seutu',
-      sv: 'Helsingforsregion',
-      en: 'Helsinki region',
-    },
-    tampere: {
-      fi: 'Tampereen seutu',
-      sv: 'Tammerforsregion',
-      en: 'Tampere region',
-    },
-    LINKKI: {
-      fi: 'Jyväskylän seutu',
-      sv: 'Jyväskyläregion',
-      en: 'Jyväskylä region',
-    },
-    OULU: {
-      fi: 'Oulu',
-      sv: 'Uleåborg',
-      en: 'Oulu',
-    },
-    Rauma: {
-      fi: 'Rauma',
-      sv: 'Raumo',
-      en: 'Rauma',
-    },
-    Hameenlinna: {
-      fi: 'Hämeenlinna',
-      sv: 'Tavastehus',
-      en: 'Hämeenlinna',
-    },
-    Kotka: {
-      fi: 'Kotkan seutu',
-      sv: 'Kotkaregion',
-      en: 'Kotka region',
-    },
-    Kouvola: {
-      fi: 'Kouvola',
-      sv: 'Kouvola',
-      en: 'Kouvola',
-    },
-    Lappeenranta: {
-      fi: 'Lappeenranta',
-      sv: 'Villmanstrand',
-      en: 'Lappeenranta',
-    },
-    Mikkeli: {
-      fi: 'Mikkeli',
-      sv: 'S:t Michel',
-      en: 'Mikkeli',
-    },
-    Vaasa: {
-      fi: 'Vaasan seutu',
-      sv: 'Vasaregion',
-      en: 'Vaasa region',
-    },
-    Joensuu: {
-      fi: 'Joensuun seutu',
-      sv: 'Joensuuregion',
-      en: 'Joensuu region',
-    },
-    FOLI: {
-      fi: 'Turun seutu',
-      sv: 'Åboregion',
-      en: 'Turku region',
-    },
-    Lahti: {
-      fi: 'Lahden seutu',
-      sv: 'Lahtisregion',
-      en: 'Lahti region',
-    },
-    Kuopio: {
-      fi: 'Kuopion seutu',
-      sv: 'Kuopioregion',
-      en: 'Kuopio region',
-    },
-    Rovaniemi: {
-      fi: 'Rovaniemi',
-      sv: 'Rovaniemi',
-      en: 'Rovaniemi',
-    },
-    Kajaani: {
-      fi: 'Kajaani',
-      sv: 'Kajana',
-      en: 'Kajaani',
-    },
-    Salo: {
-      fi: 'Salo',
-      sv: 'Salo',
-      en: 'Salo',
-    },
-    Pori: {
-      fi: 'Pori',
-      sv: 'Björneborg',
-      en: 'Pori',
-    },
-    Raasepori: {
-      fi: 'Raasepori',
-      sv: 'Raseborg',
-      en: 'Raasepori',
-    },
-    VARELY: {
-      fi: 'Varsinais-Suomi',
-      sv: 'Egentliga Finland',
-      en: 'Varsinais-Suomi',
-    },
-  },
-  stopCard: {
-    header: {
-      virtualMonitorBaseUrl: 'https://matkamonitori.digitransit.fi/',
-    },
-  },
+  sourceForAlertsAndDisruptions: matkaConfig.sourceForAlertsAndDisruptions,
   // Notice! Turning on this setting forces the search for car routes (for the CO2 comparison only).
   showCO2InItinerarySummary: false,
   useAssembledGeoJsonZones: 'isOnByDefault',
-
-  bikeBoardingModes: {
-    RAIL: { showNotification: true },
-    TRAM: { showNotification: true },
-    FERRY: { showNotification: true },
-    BUS: { showNotification: true },
-  },
-  // Include both bike and park and bike and public, if bike is enabled
-  includePublicWithBikePlan: true,
 };
