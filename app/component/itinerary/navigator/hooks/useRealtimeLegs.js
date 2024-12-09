@@ -87,6 +87,33 @@ function matchLegEnds(legs) {
   }
 }
 
+function getLegsOfInterest(legs, time) {
+  if (!legs?.length) {
+    return {
+      firstLeg: undefined,
+      lastLeg: undefined,
+      currentLeg: undefined,
+      nextLeg: undefined,
+    };
+  }
+
+  const firstLeg = legs[0];
+  const lastLeg = legs[legs.length - 1];
+  const nextLeg = legs.find(({ start }) => legTime(start) > time);
+  const previousLeg = legs.findLast(({ end }) => legTime(end) < time);
+  const currentLeg = legs.find(
+    ({ start, end }) => legTime(start) <= time && legTime(end) >= time,
+  );
+
+  return {
+    firstLeg,
+    lastLeg,
+    previousLeg,
+    currentLeg,
+    nextLeg,
+  };
+}
+
 const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
   const [realTimeLegs, setRealTimeLegs] = useState();
   const [time, setTime] = useState(Date.now());
@@ -172,26 +199,18 @@ const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
     return () => clearInterval(interval);
   }, [fetchAndSetRealtimeLegs]);
 
-  let currentIndex = -1;
-
-  if (realTimeLegs) {
-    if (time >= legTime(realTimeLegs[realTimeLegs.length - 1].end)) {
-      currentIndex = realTimeLegs.length - 1;
-    } else {
-      currentIndex = realTimeLegs?.findIndex(
-        l => legTime(l.start) <= time && time <= legTime(l.end),
-      );
-    }
-  }
+  const { firstLeg, lastLeg, currentLeg, nextLeg, previousLeg } =
+    getLegsOfInterest(realTimeLegs, time);
 
   return {
     realTimeLegs,
     time,
     origin,
-    firstLeg: realTimeLegs?.[0],
-    lastLeg: realTimeLegs?.[realTimeLegs.length - 1],
-    currentLeg: realTimeLegs?.[currentIndex],
-    nextLeg: realTimeLegs?.[currentIndex + 1],
+    firstLeg,
+    lastLeg,
+    previousLeg,
+    currentLeg,
+    nextLeg,
   };
 };
 

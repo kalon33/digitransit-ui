@@ -9,7 +9,6 @@ import NaviCard from './NaviCard';
 import NaviStack from './NaviStack';
 import {
   getAdditionalMessages,
-  getFirstLastLegs,
   getItineraryAlerts,
   getTransitLegState,
   LEGTYPE,
@@ -35,6 +34,7 @@ function NaviCardContainer(
     currentLeg,
     nextLeg,
     firstLeg,
+    lastLeg,
     isJourneyCompleted,
   },
   { intl, config, match, router },
@@ -125,13 +125,10 @@ function NaviCardContainer(
       if (currentLeg) {
         focusToLeg(currentLeg);
         destCountRef.current = 0;
+      } else if (time < legTime(firstLeg.start)) {
+        focusToLeg(firstLeg);
       } else {
-        const { first, last } = getFirstLastLegs(legs);
-        if (time < legTime(first.start)) {
-          focusToLeg(first);
-        } else {
-          focusToLeg(last);
-        }
+        focusToLeg(lastLeg);
       }
       focusRef.current = true;
     }
@@ -221,6 +218,7 @@ NaviCardContainer.propTypes = {
   currentLeg: legShape,
   nextLeg: legShape,
   firstLeg: legShape,
+  lastLeg: legShape,
   isJourneyCompleted: PropTypes.bool,
 
   /*
@@ -234,6 +232,7 @@ NaviCardContainer.defaultProps = {
   currentLeg: undefined,
   nextLeg: undefined,
   firstLeg: undefined,
+  lastLeg: undefined,
   isJourneyCompleted: false,
 };
 

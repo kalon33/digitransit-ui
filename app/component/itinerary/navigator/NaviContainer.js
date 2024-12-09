@@ -28,8 +28,16 @@ function NaviContainer(
 
   const position = getStore('PositionStore').getLocationState();
 
-  const { realTimeLegs, time, origin, firstLeg, lastLeg, currentLeg, nextLeg } =
-    useRealtimeLegs(relayEnvironment, legs);
+  const {
+    realTimeLegs,
+    time,
+    origin,
+    firstLeg,
+    lastLeg,
+    previousLeg,
+    currentLeg,
+    nextLeg,
+  } = useRealtimeLegs(relayEnvironment, legs);
 
   useEffect(() => {
     if (position.hasLocation) {
@@ -49,7 +57,7 @@ function NaviContainer(
     return null;
   }
 
-  const arrivalTime = legTime(realTimeLegs[realTimeLegs.length - 1].end);
+  const arrivalTime = legTime(lastLeg.end);
 
   const isDestinationReached =
     position && lastLeg && distance(position, lastLeg.to) <= DESTINATION_RADIUS;
@@ -69,7 +77,7 @@ function NaviContainer(
         position={position}
         mapLayerRef={mapLayerRef}
         origin={origin}
-        currentLeg={currentLeg}
+        currentLeg={time > arrivalTime ? previousLeg : currentLeg}
         nextLeg={nextLeg}
         firstLeg={firstLeg}
         lastLeg={lastLeg}
