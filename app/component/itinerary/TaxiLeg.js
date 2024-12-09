@@ -77,7 +77,7 @@ export default function TaxiLeg(props, { config, intl }) {
             </div>
           </div>
           <ItineraryCircleLine
-            index={0}
+            index={index}
             modeClassName="walk"
             appendClass="taxi"
           />
@@ -127,10 +127,11 @@ export default function TaxiLeg(props, { config, intl }) {
           </div>
         </div>
         <ItineraryCircleLineWithIcon
-          index={props.index === 0 ? 1 : props.index} // 0 is for the walk-leg
+          index={props.index}
           modeClassName={modeClassName}
           taxi
           style={style}
+          firstLeg={false}
         />
         <div
           className={`small-9 columns itinerary-instruction-column ${firstLegClassName} ${props.leg.mode.toLowerCase()}`}
