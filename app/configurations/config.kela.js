@@ -114,8 +114,6 @@ export default {
 
   suggestBikeMaxDistance: 2000000,
 
-  getAutoSuggestIcons: matkaConfig.getAutoSuggestIcons,
-
   hideFavourites: true,
   hideStopRouteSearch: true,
   hideMapLayersByDefault: true,
