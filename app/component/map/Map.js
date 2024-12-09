@@ -72,7 +72,7 @@ export default class Map extends React.Component {
     mergeStops: PropTypes.bool,
     leafletMapRef: PropTypes.func,
     mapRef: PropTypes.func,
-    mapLayerRef: PropTypes.func,
+    mapLayerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
     locationPopup: PropTypes.string,
     onSelectLocation: PropTypes.func,
     bottomPadding: PropTypes.number,
