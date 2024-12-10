@@ -85,7 +85,7 @@ function NaviContainer(
       />
       {isJourneyCompleted && isNavigatorIntroDismissed && (
         <NavigatorOutroModal
-          destination={realTimeLegs[realTimeLegs.length - 1].to.name}
+          destination={lastLeg.to.name}
           onClose={() => setNavigation(false)}
         />
       )}
