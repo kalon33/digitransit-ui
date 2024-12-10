@@ -195,13 +195,31 @@ function syntheticEndpoint(originalEndpoint, place) {
   };
 }
 
+/**
+ * Adds intermediate: true to legs if their start point should have a via point
+ * marker, possibly splitting legs in case the via point belongs in the middle.
+ *
+ * @param originalLegs Leg objects from graphql query
+ * @param viaPlaces Location objects (otpToLocation) from query parameter
+ * @returns {*[]}
+ */
 export function splitLegsAtViaPoints(originalLegs, viaPlaces) {
   const splitLegs = [];
+  // Once a via place is matched, it is used and will not match again.
+  function includesAndRemove(array, id) {
+    const index = array.indexOf(id);
+    if (index >= 0) {
+      array.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
   const viaPoints = viaPlaces.map(p => p.gtfsId);
   const isViaPointMatch = stop =>
     stop &&
-    (viaPoints.includes(stop.gtfsId) ||
-      (stop.parentStation && viaPoints.includes(stop.parentStation.gtfsId)));
+    (includesAndRemove(viaPoints, stop.gtfsId) ||
+      (stop.parentStation &&
+        includesAndRemove(viaPoints, stop.parentStation.gtfsId)));
   let isFirstTransitLeg = true;
   let nextLegStartsWithIntermediate = false;
   originalLegs.forEach(originalLeg => {
@@ -212,6 +230,7 @@ export function splitLegsAtViaPoints(originalLegs, viaPlaces) {
       (leg.transitLeg && isFirstTransitLeg && isViaPointMatch(leg.from.stop))
     ) {
       leg.intermediatePlace = true;
+      nextLegStartsWithIntermediate = false;
     }
     if (leg.transitLeg) {
       isFirstTransitLeg = false;
