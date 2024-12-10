@@ -165,13 +165,6 @@ export default configMerger(walttiConfig, {
   ticketLink: 'https://linkki.jyvaskyla.fi/liput-ja-hinnat',
   showTicketPrice: true,
 
-  showTicketLinkOnlyWhenTesting: true,
-  settingsForFeatureTesting: {
-    walkSpeed: 0.69,
-    bikeSpeed: 8.33,
-    includeBikeSuggestions: false,
-    transferPenalty: 1600,
-  },
   ticketLinkOperatorCode: 50209,
 
   stopCard: {
