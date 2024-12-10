@@ -122,7 +122,7 @@ export function getLegMode(legOrMode) {
  *   stop.gtfsId
  *   pickupType
  */
-export function isCallAgencyPickupType(leg) {
+export function isCallAgencyLeg(leg) {
   return (
     leg.route?.type === 715 ||
     filterLegStops(leg, stoptime => stoptime.pickupType === 'CALL_AGENCY')
