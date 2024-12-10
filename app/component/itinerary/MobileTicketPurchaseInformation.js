@@ -60,7 +60,7 @@ export default function MobileTicketPurchaseInformation(
   return (
     <div className="itinerary-ticket-information-purchase">
       {faresInfo()}
-      <div className="app-link">
+      <div className="app-link plausible-event-name=Ticket+Purchase+Link">
         <ExternalLink
           href={config.ticketPurchaseLink(fare, config.ticketLinkOperatorCode)}
           onClick={() =>

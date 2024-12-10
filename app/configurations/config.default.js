@@ -836,4 +836,5 @@ export default {
     },
   ],
   navigation: false,
+  sendAnalyticsCustomEventGoals: false,
 };
