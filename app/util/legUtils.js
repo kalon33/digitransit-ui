@@ -128,6 +128,7 @@ export function getLegMode(legOrMode) {
  */
 export function isCallAgencyPickupType(leg) {
   return (
+    leg.route?.type === 715 ||
     filterLegStops(leg, stoptime => stoptime.pickupType === 'CALL_AGENCY')
       .length > 0
   );
