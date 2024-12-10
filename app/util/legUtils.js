@@ -45,10 +45,6 @@ function filterLegStops(leg, filter) {
   return false;
 }
 
-export function isCallAgencyDeparture(departure) {
-  return departure.pickupType === 'CALL_AGENCY';
-}
-
 function sameBicycleNetwork(leg1, leg2) {
   if (leg1.from.vehicleRentalStation && leg2.from.vehicleRentalStation) {
     return (
