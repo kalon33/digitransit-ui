@@ -27,7 +27,10 @@ export default function NaviInstructions(
       remainingTraversal = 1.0 - traversed;
     } else {
       // estimate from elapsed time
-      remainingTraversal = (legTime(leg.end) - time) / (leg.duration * 1000);
+      remainingTraversal = Math.max(
+        (legTime(leg.end) - time) / (leg.duration * 1000),
+        0,
+      );
     }
     const duration = leg.duration * remainingTraversal;
     const distance = leg.distance * remainingTraversal;

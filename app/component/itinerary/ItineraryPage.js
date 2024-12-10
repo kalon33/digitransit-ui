@@ -1087,7 +1087,6 @@ export default function ItineraryPage(props, context) {
 
   const cancelNavigatorUsage = () => {
     setNavigation(false);
-    toggleNavigatorIntro();
   };
 
   const walkPlan = altStates[PLANTYPE.WALK][0].plan;
@@ -1183,12 +1182,13 @@ export default function ItineraryPage(props, context) {
             />
           )}
           <NaviContainer
-            itinerary={itineraryForNavigator}
+            legs={itineraryForNavigator.legs}
             focusToLeg={focusToLeg}
             relayEnvironment={props.relayEnvironment}
             setNavigation={setNavigation}
             mapRef={mwtRef.current}
             mapLayerRef={mapLayerRef}
+            isNavigatorIntroDismissed={isNavigatorIntroDismissed}
           />
         </>
       );

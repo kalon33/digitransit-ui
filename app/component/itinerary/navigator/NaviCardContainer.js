@@ -1,17 +1,16 @@
-import React, { useEffect, useState, useRef } from 'react';
-import PropTypes from 'prop-types';
-import { intlShape } from 'react-intl';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
 import { matchShape, routerShape } from 'found';
-import { legShape, configShape } from '../../../util/shapes';
+import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
+import { intlShape } from 'react-intl';
 import { legTime, legTimeStr } from '../../../util/legUtils';
+import { configShape, legShape } from '../../../util/shapes';
 import NaviCard from './NaviCard';
 import NaviStack from './NaviStack';
 import {
+  getAdditionalMessages,
   getItineraryAlerts,
   getTransitLegState,
-  getAdditionalMessages,
-  getFirstLastLegs,
   LEGTYPE,
 } from './NaviUtils';
 
@@ -19,29 +18,38 @@ const DESTINATION_RADIUS = 20; // meters
 const TIME_AT_DESTINATION = 3; // * 10 seconds
 const TOPBAR_PADDING = 8; // pixels
 
-function getNextLeg(legs, time) {
-  return legs.find(leg => legTime(leg.start) > time);
-}
-
 function addMessages(incominMessages, newMessages) {
   newMessages.forEach(m => {
     incominMessages.set(m.id, m);
   });
 }
 function NaviCardContainer(
-  { focusToLeg, time, legs, position, origin, mapLayerRef },
+  {
+    focusToLeg,
+    time,
+    legs,
+    position,
+    origin,
+    mapLayerRef,
+    currentLeg,
+    nextLeg,
+    firstLeg,
+    lastLeg,
+    isJourneyCompleted,
+  },
   { intl, config, match, router },
 ) {
-  const [currentLeg, setCurrentLeg] = useState(null);
   const [cardExpanded, setCardExpanded] = useState(false);
   // All notifications including those user has dismissed.
   const [messages, setMessages] = useState(new Map());
   // notifications that are shown to the user.
   const [activeMessages, setActiveMessages] = useState([]);
+  const [topPosition, setTopPosition] = useState(0);
+
+  const legRef = useRef(currentLeg);
   const focusRef = useRef(false);
   // Destination counter. How long user has been at the destination. * 10 seconds
   const destCountRef = useRef(0);
-  const [topPosition, setTopPosition] = useState(0);
   const cardRef = useRef(null);
 
   const handleRemove = index => {
@@ -61,12 +69,15 @@ function NaviCardContainer(
   }, [currentLeg, cardExpanded]);
 
   useEffect(() => {
-    const newLeg = legs.find(leg => {
-      return legTime(leg.start) <= time && time <= legTime(leg.end);
-    });
-
-    setCurrentLeg(newLeg);
     const incomingMessages = new Map();
+
+    const legChanged = legRef.current?.legId
+      ? legRef.current.legId !== currentLeg?.legId
+      : legRef.current?.mode !== currentLeg?.mode;
+
+    if (legChanged) {
+      legRef.current = currentLeg;
+    }
 
     // Alerts for NaviStack
     addMessages(
@@ -74,14 +85,7 @@ function NaviCardContainer(
       getItineraryAlerts(legs, intl, messages, match.params, router),
     );
 
-    const legChanged = newLeg?.legId
-      ? newLeg.legId !== currentLeg?.legId
-      : currentLeg?.mode !== newLeg?.mode;
-    const l = currentLeg || newLeg;
-
-    if (l) {
-      const nextLeg = getNextLeg(legs, legTime(l.start));
-
+    if (currentLeg) {
       if (nextLeg?.transitLeg) {
         // Messages for NaviStack.
         addMessages(incomingMessages, [
@@ -89,10 +93,8 @@ function NaviCardContainer(
           ...getAdditionalMessages(nextLeg, time, intl, config, messages),
         ]);
       }
-      if (newLeg && legChanged) {
-        focusToLeg?.(newLeg);
-      }
       if (legChanged) {
+        focusToLeg?.(currentLeg);
         setCardExpanded(false);
       }
     }
@@ -120,16 +122,13 @@ function NaviCardContainer(
 
     if (!focusRef.current && focusToLeg) {
       // handle initial focus when not tracking
-      if (newLeg) {
-        focusToLeg(newLeg);
+      if (currentLeg) {
+        focusToLeg(currentLeg);
         destCountRef.current = 0;
+      } else if (time < legTime(firstLeg.start)) {
+        focusToLeg(firstLeg);
       } else {
-        const { first, last } = getFirstLastLegs(legs);
-        if (time < legTime(first.start)) {
-          focusToLeg(first);
-        } else {
-          focusToLeg(last);
-        }
+        focusToLeg(lastLeg);
       }
       focusRef.current = true;
     }
@@ -147,12 +146,9 @@ function NaviCardContainer(
     }
   }, [time]);
 
-  const { first, last } = getFirstLastLegs(legs);
   let legType;
-  const t = currentLeg ? legTime(currentLeg.start) : time;
-  const nextLeg = getNextLeg(legs, t);
 
-  if (time < legTime(first.start)) {
+  if (time < legTime(firstLeg.start)) {
     legType = LEGTYPE.PENDING;
   } else if (currentLeg) {
     if (!currentLeg.transitLeg) {
@@ -164,21 +160,21 @@ function NaviCardContainer(
     } else {
       legType = LEGTYPE.TRANSIT;
     }
-  } else if (time > legTime(last.end)) {
-    legType = LEGTYPE.END;
   } else {
     legType = LEGTYPE.WAIT;
   }
 
-  const cardTop =
+  const containerTopPosition =
     mapLayerRef.current.getBoundingClientRect().top + TOPBAR_PADDING;
 
   return (
-    <>
+    <div
+      className={`navi-card-container ${isJourneyCompleted ? 'slide-out' : ''}`}
+      style={{ top: containerTopPosition }}
+    >
       <button
         type="button"
         className={`navitop ${cardExpanded ? 'expanded' : ''}`}
-        style={{ top: cardTop }}
         onClick={handleClick}
         ref={cardRef}
       >
@@ -188,7 +184,7 @@ function NaviCardContainer(
             nextLeg={nextLeg}
             cardExpanded={cardExpanded}
             legType={legType}
-            startTime={legTimeStr(first.start)}
+            startTime={legTimeStr(firstLeg.start)}
             time={time}
             position={position}
             origin={origin}
@@ -202,7 +198,7 @@ function NaviCardContainer(
           topPosition={topPosition}
         />
       )}
-    </>
+    </div>
   );
 }
 
@@ -219,6 +215,12 @@ NaviCardContainer.propTypes = {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
   }).isRequired,
+  currentLeg: legShape,
+  nextLeg: legShape,
+  firstLeg: legShape,
+  lastLeg: legShape,
+  isJourneyCompleted: PropTypes.bool,
+
   /*
   focusToPoint: PropTypes.func.isRequired,
   */
@@ -227,6 +229,11 @@ NaviCardContainer.propTypes = {
 NaviCardContainer.defaultProps = {
   focusToLeg: undefined,
   position: undefined,
+  currentLeg: undefined,
+  nextLeg: undefined,
+  firstLeg: undefined,
+  lastLeg: undefined,
+  isJourneyCompleted: false,
 };
 
 NaviCardContainer.contextTypes = {
