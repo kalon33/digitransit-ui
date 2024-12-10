@@ -801,6 +801,7 @@ export default function ItineraryPage(props, context) {
     params.to,
     query.time,
     query.arriveBy,
+    query.intermediatePlaces,
   ]);
 
   useEffect(() => {

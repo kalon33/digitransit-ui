@@ -198,18 +198,29 @@ function syntheticEndpoint(originalEndpoint, place) {
 export function splitLegsAtViaPoints(originalLegs, viaPlaces) {
   const splitLegs = [];
   const viaPoints = viaPlaces.map(p => p.gtfsId);
+  const isViaPointMatch = stop =>
+    stop &&
+    (viaPoints.includes(stop.gtfsId) ||
+      (stop.parentStation && viaPoints.includes(stop.parentStation.gtfsId)));
+  let isFirstTransitLeg = true;
+  let nextLegStartsWithIntermediate = false;
   originalLegs.forEach(originalLeg => {
     const leg = { ...originalLeg };
     const { intermediatePlaces } = leg;
+    if (
+      nextLegStartsWithIntermediate ||
+      (leg.transitLeg && isFirstTransitLeg && isViaPointMatch(leg.from.stop))
+    ) {
+      leg.intermediatePlace = true;
+    }
+    if (leg.transitLeg) {
+      isFirstTransitLeg = false;
+    }
     if (intermediatePlaces) {
       let start = 0;
       let lastSplit = -1;
       intermediatePlaces.forEach((place, i) => {
-        if (
-          viaPoints.includes(place.stop.gtfsId) ||
-          (place.stop.parentStation &&
-            viaPoints.includes(place.stop.parentStation.gtfsId))
-        ) {
+        if (isViaPointMatch(place.stop)) {
           const leftLeg = {
             ...leg,
             to: syntheticEndpoint(leg.to, place),
@@ -232,6 +243,9 @@ export function splitLegsAtViaPoints(originalLegs, viaPlaces) {
       }
     }
     splitLegs.push(leg);
+    if (leg.transitLeg && isViaPointMatch(leg.to.stop)) {
+      nextLegStartsWithIntermediate = true;
+    }
   });
   return splitLegs;
 }
