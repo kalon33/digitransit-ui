@@ -50,6 +50,11 @@
 
     .close-button {
       background-color: $realtime-color;
+
+      &:hover,
+      &:active {
+        background-color: #316a00;
+      }
     }
   }
 }

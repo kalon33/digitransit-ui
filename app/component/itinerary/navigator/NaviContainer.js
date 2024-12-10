@@ -1,8 +1,9 @@
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
+import { routerShape } from 'found';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { legTime } from '../../../util/legUtils';
 import { checkPositioningPermission } from '../../../action/PositionActions';
+import { legTime } from '../../../util/legUtils';
 import { legShape, relayShape } from '../../../util/shapes';
 import NaviBottom from './NaviBottom';
 import NaviCardContainer from './NaviCardContainer';
@@ -22,7 +23,7 @@ function NaviContainer(
     mapRef,
     mapLayerRef,
   },
-  { getStore },
+  { getStore, router },
 ) {
   const [isPositioningAllowed, setPositioningAllowed] = useState(false);
 
@@ -86,7 +87,7 @@ function NaviContainer(
       {isJourneyCompleted && isNavigatorIntroDismissed && (
         <NavigatorOutroModal
           destination={lastLeg.to.name}
-          onClose={() => setNavigation(false)}
+          onClose={() => router.push('/')}
         />
       )}
       <NaviBottom
@@ -111,6 +112,7 @@ NaviContainer.propTypes = {
 
 NaviContainer.contextTypes = {
   getStore: PropTypes.func.isRequired,
+  router: routerShape.isRequired,
 };
 
 NaviContainer.defaultProps = {
