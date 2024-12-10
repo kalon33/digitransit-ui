@@ -842,4 +842,5 @@ export default {
     },
   ],
   navigation: false,
+  allowDirectTaxiJourneys: false,
 };

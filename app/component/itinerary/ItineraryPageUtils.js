@@ -468,34 +468,26 @@ export function mergeBikeTransitPlans(bikeParkPlan, bikeTransitPlan) {
 }
 
 /**
- * Combine a scooter edge with the main transit edges.
+ * Combine an external edge with the main transit edges.
  */
-export function mergeScooterTransitPlan(
-  scooterPlan,
-  transitPlan,
-  allowDirectScooterJourneys,
-) {
+function sortAndMergePlans(externalTransitEdges, externalPlan, transitPlan) {
   const transitPlanEdges = transitPlan.edges || [];
-  const scooterTransitEdges = scooterEdges(
-    scooterPlan.edges,
-    allowDirectScooterJourneys,
-  );
   const maxTransitEdges =
-    scooterTransitEdges.length > 0 ? 4 : transitPlanEdges.length;
+    externalTransitEdges.length > 0 ? 4 : transitPlanEdges.length;
 
-  // special case: if transitplan only has one walk itinerary, don't show scooter plan if it arrives later.
+  // special case: if transitplan only has one walk itinerary, don't show external plan if it arrives later.
   if (
     transitPlanEdges.length === 1 &&
     transitPlanEdges[0].node.legs.every(leg => leg.mode === 'WALK') &&
-    transitPlanEdges[0].node.end < scooterTransitEdges[0]?.node.end
+    transitPlanEdges[0].node.end < externalTransitEdges[0]?.node.end
   ) {
     return transitPlan;
   }
 
   return {
     edges: [
-      ...scooterTransitEdges.slice(0, 1),
-      ...transitPlanEdges.slice(0, maxTransitEdges),
+      ...externalPlan.slice(0, 1),
+      ...transitPlan.slice(0, maxTransitEdges),
     ]
       .sort((a, b) => {
         return a.node.end > b.node.end;
@@ -510,6 +502,29 @@ export function mergeScooterTransitPlan(
         };
       }),
   };
+}
+
+/**
+ * Combine an external edge with the main transit edges.
+ */
+export function mergeExternalTransitPlan(externalPlan, transitPlan, modes) {
+  const externalTransitEdges = filterItineraries(externalPlan.edges, modes);
+  return sortAndMergePlans(externalTransitEdges, externalPlan, transitPlan);
+}
+
+/**
+ * Combine a scooter edge with the main transit edges.
+ */
+export function mergeScooterTransitPlan(
+  scooterPlan,
+  transitPlan,
+  allowDirectScooterJourneys,
+) {
+  const scooterTransitEdges = scooterEdges(
+    scooterPlan.edges,
+    allowDirectScooterJourneys,
+  );
+  return sortAndMergePlans(scooterTransitEdges, scooterPlan, transitPlan);
 }
 
 const ITERATION_CANCEL_TIME = 20000; // ms, stop looking for more if something was found

@@ -65,6 +65,7 @@ import {
   isStoredItineraryRelevant,
   mergeBikeTransitPlans,
   mergeScooterTransitPlan,
+  mergeExternalTransitPlan,
   quitIteration,
   reportError,
   scooterEdges,
@@ -131,6 +132,7 @@ export default function ItineraryPage(props, context) {
   const [relaxScooterState, setRelaxScooterState] = useState(emptyPlan);
   const [scooterState, setScooterState] = useState(unset);
   const [combinedState, setCombinedState] = useState(emptyPlan);
+  const [taxiState, setTaxiState] = useState(unset);
   const [isNavigatorIntroDismissed, setNavigatorIntroDismissed] = useState(
     getDialogState('navi-intro'),
   );
@@ -434,6 +436,29 @@ export default function ItineraryPage(props, context) {
       setRelaxScooterState({ plan: scooterPlan, loading: LOADSTATE.DONE });
     } catch (error) {
       setRelaxScooterState(emptyPlan);
+    }
+  }
+
+  async function makeTaxiQuery() {
+    if (!planQueryNeeded(config, match, PLANTYPE.TAXITRANSIT)) {
+      setTaxiState(emptyPlan);
+      return;
+    }
+    setTaxiState({ loading: LOADSTATE.LOADING });
+
+    const planParams = getPlanParams(
+      config,
+      match,
+      PLANTYPE.TAXITRANSIT,
+      false, // no relaxed settings
+    );
+
+    try {
+      const plan = await iterateQuery(planParams);
+      setTaxiState({ plan, loading: LOADSTATE.DONE });
+    } catch (error) {
+      reportError(error);
+      setTaxiState(emptyPlan);
     }
   }
 
@@ -785,6 +810,7 @@ export default function ItineraryPage(props, context) {
   useEffect(() => {
     setCombinedState({ ...emptyState, loading: LOADSTATE.LOADING });
     makeScooterQuery();
+    makeTaxiQuery();
     makeMainQuery();
     Object.keys(altStates).forEach(key => makeAltQuery(key));
 
@@ -892,6 +918,20 @@ export default function ItineraryPage(props, context) {
       resetItineraryPageSelection();
     }
   }, [scooterState.plan, state.plan]);
+
+  // merge the main plan and the taxi plan into one
+  useEffect(() => {
+    if (
+      state.loading === LOADSTATE.DONE &&
+      taxiState.loading === LOADSTATE.DONE
+    ) {
+      const plan = mergeExternalTransitPlan(taxiState.plan, state.plan, [
+        'TAXI',
+      ]);
+      setCombinedState({ plan, loading: LOADSTATE.DONE });
+      resetItineraryPageSelection();
+    }
+  }, [taxiState.plan, state.plan]);
 
   const setMWTRef = ref => {
     mwtRef.current = ref;

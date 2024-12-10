@@ -16,6 +16,7 @@ export const PLANTYPE = {
   BIKETRANSIT: 'BIKETRANSIT',
   PARKANDRIDE: 'PARKANDRIDE',
   SCOOTERTRANSIT: 'SCOOTERTRANSIT',
+  TAXITRANSIT: 'TAXITRANSIT',
 };
 
 const directModes = [PLANTYPE.WALK, PLANTYPE.BIKE, PLANTYPE.CAR];
@@ -219,6 +220,9 @@ export function planQueryNeeded(
         settings.includeParkAndRideSuggestions
       );
 
+    case PLANTYPE.TAXITRANSIT:
+      return transitModes.length > 0 && settings.includeTaxiSuggestions;
+
     case PLANTYPE.TRANSIT:
     default:
       return true;
@@ -255,7 +259,6 @@ export function getPlanParams(
   },
   planType,
   relaxSettings,
-  // forceScooters = false,
 ) {
   const fromPlace = getLocation(from);
   const toPlace = getLocation(to);
@@ -307,13 +310,6 @@ export function getPlanParams(
   let egress = access;
   let transfer = ['WALK'];
   let direct = null;
-
-  if (settings.includeTaxiSuggestions) {
-    access = access.concat(['FLEX']);
-    // egress = access;
-    direct = ['FLEX'];
-    transitOnly = false;
-  }
   let noIterationsForShortTrips = false;
 
   switch (planType) {
@@ -340,6 +336,12 @@ export function getPlanParams(
       access = ['WALK', 'SCOOTER_RENTAL'];
       egress = access;
       direct = access;
+      break;
+    case PLANTYPE.TAXITRANSIT:
+      access = ['WALK', 'FLEX'];
+      egress = access;
+      direct = config.allowDirectTaxiJourneys ? ['FLEX', 'WALK'] : direct;
+      transitOnly = true;
       break;
     default: // direct modes
       direct = [planType];
