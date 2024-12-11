@@ -9,7 +9,7 @@ import { getZoneLabel, legTime } from '../../../util/legUtils';
 import ZoneIcon from '../../ZoneIcon';
 import { legShape, configShape } from '../../../util/shapes';
 import { getDestinationProperties, LEGTYPE } from './NaviUtils';
-import { ExtendedRouteTypes } from '../../../constants';
+import { getRouteMode } from '../../../util/modeUtils';
 
 import RouteNumberContainer from '../../RouteNumberContainer';
 
@@ -46,14 +46,7 @@ const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
     );
     const translationId =
       count === 1 ? 'navileg-one-stop-remaining' : 'navileg-stops-remaining';
-    let mode;
-    if (route.type === ExtendedRouteTypes.BusExpress) {
-      mode = 'bus-express';
-    } else if (route.type === ExtendedRouteTypes.SpeedTram) {
-      mode = 'speedtram';
-    } else {
-      mode = leg.mode.toLowerCase();
-    }
+    const mode = getRouteMode(route, config) || leg.mode;
 
     return (
       <div className="extension">

@@ -8,6 +8,7 @@ import { legDestination, legTimeStr, legTime } from '../../../util/legUtils';
 import RouteNumber from '../../RouteNumber';
 import { LEGTYPE, getLocalizedMode, pathProgress } from './NaviUtils';
 import { durationToString } from '../../../util/timeUtils';
+import { getRouteMode } from '../../../util/modeUtils';
 
 export default function NaviInstructions(
   { leg, nextLeg, instructions, legType, time, position, origin },
@@ -50,7 +51,6 @@ export default function NaviInstructions(
   if (legType === LEGTYPE.WAIT && nextLeg.mode !== 'WALK') {
     const { mode, headsign, route, start } = nextLeg;
     const hs = headsign || nextLeg.trip?.tripHeadsign;
-    const color = route.color || 'currentColor';
     const localizedMode = getLocalizedMode(mode, intl);
 
     const remainingDuration = Math.ceil((legTime(start) - time) / 60000); // ms to minutes
@@ -59,6 +59,12 @@ export default function NaviInstructions(
       duration: withRealTime(rt, remainingDuration),
       legTime: withRealTime(rt, legTimeStr(start)),
     };
+    const routeMode = getRouteMode(route, config) || mode;
+    const iconColor =
+      config.colors.iconColors[`mode-${routeMode}`] ||
+      route.color ||
+      'currentColor';
+
     return (
       <>
         <div className="destination-header">
@@ -71,11 +77,11 @@ export default function NaviInstructions(
         <div className="wait-leg">
           <div className="route-info">
             <RouteNumber
-              mode={mode.toLowerCase()}
+              mode={routeMode}
               text={route?.shortName}
               withBar
               isTransitLeg
-              color={color}
+              color={iconColor}
             />
             <div className="headsign">{hs}</div>
           </div>

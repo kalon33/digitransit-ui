@@ -7,7 +7,7 @@ import { isRental } from '../../../util/legUtils';
 import NaviInstructions from './NaviInstructions';
 import NaviCardExtension from './NaviCardExtension';
 import { LEGTYPE } from './NaviUtils';
-import { ExtendedRouteTypes } from '../../../constants';
+import { getRouteMode } from '../../../util/modeUtils';
 
 const iconMap = {
   BICYCLE: 'icon-icon_cyclist',
@@ -20,8 +20,9 @@ const iconMap = {
   SUBWAY: 'icon-icon_subway',
   TRAM: 'icon-icon_tram',
   FERRY: 'icon-icon_ferry',
-  BUS_EXPRESS: 'icon-icon_bus-express',
-  SPEED_TRAM: 'icon-icon_speed-tram',
+  'BUS-EXPRESS': 'icon-icon_bus-express',
+  'BUS-LOCAL': 'icon-icon_bus-local',
+  SPEEDTRAM: 'icon-icon_speedtram',
 };
 
 export default function NaviCard(
@@ -42,10 +43,14 @@ export default function NaviCard(
   if (!leg && !nextLeg) {
     return null;
   }
+  let iconColor = 'currentColor';
   let iconName;
-
   let instructions = '';
   if (legType === LEGTYPE.TRANSIT) {
+    const m = getRouteMode(leg.route, config) || leg.mode;
+    iconColor = config.colors.iconColors[`mode-${m}`] || leg.route.color;
+    iconName = iconMap[m.toUpperCase()];
+
     instructions = `navileg-in-transit`;
   } else if (legType !== LEGTYPE.WAIT && isRental(leg, nextLeg)) {
     if (leg.mode === 'WALK' && nextLeg?.mode === 'SCOOTER') {
@@ -53,18 +58,10 @@ export default function NaviCard(
     } else {
       instructions = 'rent-cycle-at';
     }
+    iconName = iconMap[leg.mode];
   } else if (legType === LEGTYPE.MOVE) {
     instructions = `navileg-${leg?.mode.toLowerCase()}`;
-  }
-  let iconColor = 'currentColor';
-  if (leg?.route?.type === ExtendedRouteTypes.BusExpress) {
-    iconColor = config.colors.iconColors['mode-bus-express'];
-    iconName = iconMap.BUS_EXPRESS;
-  } else if (leg?.route?.type === ExtendedRouteTypes.SpeedTram) {
-    iconColor = config.colors.iconColors['mode-speedtram'];
-    iconName = iconMap.SPEED_TRAM;
-  } else {
-    iconName = legType === LEGTYPE.WAIT ? iconMap.WAIT : iconMap[leg.mode];
+    iconName = iconMap.WALK;
   }
 
   return (
