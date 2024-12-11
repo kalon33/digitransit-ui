@@ -46,7 +46,7 @@ const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
     );
     const translationId =
       count === 1 ? 'navileg-one-stop-remaining' : 'navileg-stops-remaining';
-    const mode = getRouteMode(route, config) || leg.mode;
+    const mode = getRouteMode(route, config);
 
     return (
       <div className="extension">

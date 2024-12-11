@@ -47,7 +47,7 @@ export default function NaviCard(
   let iconName;
   let instructions = '';
   if (legType === LEGTYPE.TRANSIT) {
-    const m = getRouteMode(leg.route, config) || leg.mode;
+    const m = getRouteMode(leg.route, config);
     iconColor = config.colors.iconColors[`mode-${m}`] || leg.route.color;
     iconName = iconMap[m.toUpperCase()];
 

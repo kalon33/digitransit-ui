@@ -59,7 +59,7 @@ export default function NaviInstructions(
       duration: withRealTime(rt, remainingDuration),
       legTime: withRealTime(rt, legTimeStr(start)),
     };
-    const routeMode = getRouteMode(route, config) || mode;
+    const routeMode = getRouteMode(route, config);
     const iconColor =
       config.colors.iconColors[`mode-${routeMode}`] ||
       route.color ||
