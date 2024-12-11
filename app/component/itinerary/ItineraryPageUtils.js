@@ -470,7 +470,7 @@ export function mergeBikeTransitPlans(bikeParkPlan, bikeTransitPlan) {
 /**
  * Combine an external edge with the main transit edges.
  */
-function sortAndMergePlans(externalTransitEdges, externalPlan, transitPlan) {
+function sortAndMergePlans(externalTransitEdges, transitPlan) {
   const transitPlanEdges = transitPlan.edges || [];
   const maxTransitEdges =
     externalTransitEdges.length > 0 ? 4 : transitPlanEdges.length;
@@ -486,8 +486,8 @@ function sortAndMergePlans(externalTransitEdges, externalPlan, transitPlan) {
 
   return {
     edges: [
-      ...externalPlan.slice(0, 1),
-      ...transitPlan.slice(0, maxTransitEdges),
+      ...externalTransitEdges.slice(0, 1),
+      ...transitPlanEdges.slice(0, maxTransitEdges),
     ]
       .sort((a, b) => {
         return a.node.end > b.node.end;
@@ -509,7 +509,7 @@ function sortAndMergePlans(externalTransitEdges, externalPlan, transitPlan) {
  */
 export function mergeExternalTransitPlan(externalPlan, transitPlan, modes) {
   const externalTransitEdges = filterItineraries(externalPlan.edges, modes);
-  return sortAndMergePlans(externalTransitEdges, externalPlan, transitPlan);
+  return sortAndMergePlans(externalTransitEdges, transitPlan);
 }
 
 /**
@@ -524,7 +524,7 @@ export function mergeScooterTransitPlan(
     scooterPlan.edges,
     allowDirectScooterJourneys,
   );
-  return sortAndMergePlans(scooterTransitEdges, scooterPlan, transitPlan);
+  return sortAndMergePlans(scooterTransitEdges, transitPlan);
 }
 
 const ITERATION_CANCEL_TIME = 20000; // ms, stop looking for more if something was found
