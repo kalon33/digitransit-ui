@@ -218,7 +218,7 @@ NaviCardContainer.propTypes = {
     lat: PropTypes.number,
     lon: PropTypes.number,
   }),
-  mapLayerRef: PropTypes.func.isRequired,
+  mapLayerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   origin: PropTypes.shape({
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,

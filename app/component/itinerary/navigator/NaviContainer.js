@@ -110,7 +110,7 @@ NaviContainer.propTypes = {
   isNavigatorIntroDismissed: PropTypes.bool,
   // eslint-disable-next-line
   mapRef: PropTypes.object,
-  mapLayerRef: PropTypes.func.isRequired,
+  mapLayerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 };
 
 NaviContainer.contextTypes = {
