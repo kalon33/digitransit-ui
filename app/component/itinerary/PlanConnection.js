@@ -118,6 +118,7 @@ const planConnection = graphql`
               color
               gtfsId
               type
+              mode
               agency {
                 name
               }
