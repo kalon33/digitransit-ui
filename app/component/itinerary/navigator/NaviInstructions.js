@@ -19,12 +19,13 @@ export default function NaviInstructions(
 
   if (legType === LEGTYPE.MOVE) {
     let remainingTraversal;
-
+    let rtDuration;
     if (position) {
       // TODO: maybe apply only when distance is close enough to the path
       const posXY = GeodeticToEnu(position.lat, position.lon, origin);
       const { traversed } = pathProgress(posXY, leg.geometry);
       remainingTraversal = 1.0 - traversed;
+      rtDuration = true;
     } else {
       // estimate from elapsed time
       remainingTraversal = Math.max(
@@ -43,7 +44,7 @@ export default function NaviInstructions(
           {legDestination(intl, leg, null, nextLeg)}
         </div>
 
-        <div className={cx('duration')}>
+        <div className={cx('duration', { realtime: rtDuration })}>
           {displayDistance(distance, config, intl.formatNumber)} (
           {durationToString(duration * 1000)})
         </div>
