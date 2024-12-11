@@ -9,8 +9,8 @@ import NaviBottom from './NaviBottom';
 import NaviCardContainer from './NaviCardContainer';
 import { useRealtimeLegs } from './hooks/useRealtimeLegs';
 import NavigatorOutroModal from './navigatoroutro/NavigatorOutroModal';
+import { DESTINATION_RADIUS } from './NaviUtils';
 
-const DESTINATION_RADIUS = 20; // meters
 const ADDITIONAL_ARRIVAL_TIME = 60000; // 60 seconds in ms
 
 function NaviContainer(

@@ -12,9 +12,9 @@ import {
   getItineraryAlerts,
   getTransitLegState,
   LEGTYPE,
+  DESTINATION_RADIUS,
 } from './NaviUtils';
 
-const DESTINATION_RADIUS = 20; // meters
 const TIME_AT_DESTINATION = 3; // * 10 seconds
 const TOPBAR_PADDING = 8; // pixels
 
