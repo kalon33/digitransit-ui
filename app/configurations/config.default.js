@@ -842,5 +842,6 @@ export default {
     },
   ],
   navigation: false,
+  sendAnalyticsCustomEventGoals: false,
   allowDirectTaxiJourneys: false,
 };
