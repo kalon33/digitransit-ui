@@ -8,7 +8,7 @@ import { getItineraryPagePath } from '../../../util/path';
 
 const TRANSFER_SLACK = 60000;
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
-function findTransferProblem(legs) {
+function findTransferProblem(legs, time) {
   for (let i = 1; i < legs.length - 1; i++) {
     const prev = legs[i - 1];
     const leg = legs[i];
@@ -16,7 +16,8 @@ function findTransferProblem(legs) {
 
     if (prev.transitLeg && leg.transitLeg && !leg.interlineWithPreviousLeg) {
       // transfer at a stop
-      if (legTime(leg.start) - legTime(prev.end) < TRANSFER_SLACK) {
+      const start = legTime(leg.start);
+      if (start > time && start - legTime(prev.end) < TRANSFER_SLACK) {
         return [prev, leg];
       }
     }
@@ -25,10 +26,13 @@ function findTransferProblem(legs) {
       // transfer with some walking
       const t1 = legTime(prev.end);
       const t2 = legTime(next.start);
-      const transferDuration = legTime(leg.end) - legTime(leg.start);
-      const slack = t2 - t1 - transferDuration;
-      if (slack < TRANSFER_SLACK) {
-        return [prev, next];
+      if (t2 > time) {
+        // transfer is not over yet
+        const transferDuration = legTime(leg.end) - legTime(leg.start);
+        const slack = t2 - t1 - transferDuration;
+        if (slack < TRANSFER_SLACK) {
+          return [prev, next];
+        }
       }
     }
   }
@@ -144,8 +148,17 @@ export const getTransitLegState = (leg, intl, messages, time) => {
   return state;
 };
 
-export const getItineraryAlerts = (legs, intl, messages, location, router) => {
-  const canceled = legs.filter(leg => leg.realtimeState === 'CANCELED');
+export const getItineraryAlerts = (
+  legs,
+  time,
+  intl,
+  messages,
+  location,
+  router,
+) => {
+  const canceled = legs.filter(
+    leg => leg.realtimeState === 'CANCELED' && legTime(leg.start) > time,
+  );
   let content;
   const alerts = legs.flatMap(leg => {
     return leg.alerts
@@ -178,7 +191,7 @@ export const getItineraryAlerts = (legs, intl, messages, location, router) => {
         id: alert.id,
       }));
   });
-  const transferProblem = findTransferProblem(legs);
+  const transferProblem = findTransferProblem(legs, time);
   const abortTrip = <FormattedMessage id="navigation-abort-trip" />;
   const withShowRoutesBtn = children => (
     <div className="alt-btn">
