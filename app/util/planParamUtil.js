@@ -341,7 +341,7 @@ export function getPlanParams(
       access = ['WALK', 'FLEX'];
       egress = access;
       direct = config.allowDirectTaxiJourneys ? ['FLEX', 'WALK'] : direct;
-      transitOnly = true;
+      transitOnly = false;
       break;
     default: // direct modes
       direct = [planType];

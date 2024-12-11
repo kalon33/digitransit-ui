@@ -914,8 +914,10 @@ export default function ItineraryPage(props, context) {
         state.plan,
         config.vehicleRental.allowDirectScooterJourneys,
       );
-      setCombinedState({ plan, loading: LOADSTATE.DONE });
-      resetItineraryPageSelection();
+      if (taxiState.loading !== LOADSTATE.LOADING) {
+        setCombinedState({ plan, loading: LOADSTATE.DONE });
+        resetItineraryPageSelection();
+      }
     }
   }, [scooterState.plan, state.plan]);
 
@@ -928,8 +930,10 @@ export default function ItineraryPage(props, context) {
       const plan = mergeExternalTransitPlan(taxiState.plan, state.plan, [
         'TAXI',
       ]);
-      setCombinedState({ plan, loading: LOADSTATE.DONE });
-      resetItineraryPageSelection();
+      if (scooterState.loading !== LOADSTATE.LOADING) {
+        setCombinedState({ plan, loading: LOADSTATE.DONE });
+        resetItineraryPageSelection();
+      }
     }
   }, [taxiState.plan, state.plan]);
 
