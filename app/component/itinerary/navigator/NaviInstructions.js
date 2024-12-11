@@ -20,7 +20,7 @@ export default function NaviInstructions(
   if (legType === LEGTYPE.MOVE) {
     let remainingTraversal;
 
-    if (position?.lat && position?.lon) {
+    if (position) {
       // TODO: maybe apply only when distance is close enough to the path
       const posXY = GeodeticToEnu(position.lat, position.lon, origin);
       const { traversed } = pathProgress(posXY, leg.geometry);

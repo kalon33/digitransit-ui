@@ -27,7 +27,10 @@ function NaviContainer(
 ) {
   const [isPositioningAllowed, setPositioningAllowed] = useState(false);
 
-  const position = getStore('PositionStore').getLocationState();
+  let position = getStore('PositionStore').getLocationState();
+  if (!position.hasLocation) {
+    position = null;
+  }
 
   const {
     realTimeLegs,
@@ -41,7 +44,7 @@ function NaviContainer(
   } = useRealtimeLegs(relayEnvironment, legs);
 
   useEffect(() => {
-    if (position.hasLocation) {
+    if (position) {
       mapRef?.enableMapTracking();
       setPositioningAllowed(true);
     } else {
