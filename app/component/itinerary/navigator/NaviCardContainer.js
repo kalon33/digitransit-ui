@@ -82,7 +82,15 @@ function NaviCardContainer(
     // Alerts for NaviStack
     addMessages(
       incomingMessages,
-      getItineraryAlerts(legs, time, intl, messages, match.params, router),
+      getItineraryAlerts(
+        legs,
+        time,
+        position,
+        intl,
+        messages,
+        match.params,
+        router,
+      ),
     );
 
     if (currentLeg) {

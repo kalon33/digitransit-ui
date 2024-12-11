@@ -1,4 +1,5 @@
 import React from 'react';
+import distance from '@digitransit-search-util/digitransit-search-util-distance';
 import { FormattedMessage } from 'react-intl';
 import { legTime } from '../../../util/legUtils';
 import { timeStr } from '../../../util/timeUtils';
@@ -8,7 +9,10 @@ import { getItineraryPagePath } from '../../../util/path';
 
 const TRANSFER_SLACK = 60000;
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
-function findTransferProblem(legs, time) {
+
+export const DESTINATION_RADIUS = 20; // meters
+
+function findTransferProblem(legs, time, position) {
   for (let i = 1; i < legs.length - 1; i++) {
     const prev = legs[i - 1];
     const leg = legs[i];
@@ -28,9 +32,19 @@ function findTransferProblem(legs, time) {
       const t2 = legTime(next.start);
       if (t2 > time) {
         // transfer is not over yet
-        const transferDuration = legTime(leg.end) - legTime(leg.start);
-        const slack = t2 - t1 - transferDuration;
-        if (slack < TRANSFER_SLACK) {
+        let failed;
+        if (t1 > t2) {
+          // certain failure
+          failed = true;
+        } else {
+          const transferDuration = legTime(leg.end) - legTime(leg.start);
+          const slack = t2 - t1 - transferDuration;
+          // check if user is already at the next departure stop
+          const atStop =
+            position && distance(position, leg.to) <= DESTINATION_RADIUS;
+          failed = !atStop && slack < TRANSFER_SLACK;
+        }
+        if (failed) {
           return [prev, next];
         }
       }
@@ -151,6 +165,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
 export const getItineraryAlerts = (
   legs,
   time,
+  position,
   intl,
   messages,
   location,
@@ -191,7 +206,7 @@ export const getItineraryAlerts = (
         id: alert.id,
       }));
   });
-  const transferProblem = findTransferProblem(legs, time);
+  const transferProblem = findTransferProblem(legs, time, position);
   const abortTrip = <FormattedMessage id="navigation-abort-trip" />;
   const withShowRoutesBtn = children => (
     <div className="alt-btn">
@@ -378,7 +393,7 @@ export function pathProgress(pos, geom) {
   const lengths = [];
 
   let p1 = geom[0];
-  let distance = dist(pos, p1);
+  let dst = dist(pos, p1);
   let minI = 0;
   let minF = 0;
   let totalLength = 0;
@@ -405,8 +420,8 @@ export function pathProgress(pos, geom) {
           f = dp / d; // normalize
           cDist = Math.sqrt(dlt.x * dlt.x + dlt.y * dlt.y - f * f); // pythag.
         }
-        if (cDist < distance) {
-          distance = cDist;
+        if (cDist < dst) {
+          dst = cDist;
           minI = i;
           minF = f;
         }
@@ -426,5 +441,5 @@ export function pathProgress(pos, geom) {
     y: geom[minI].y + minF * dy,
   };
 
-  return { projected, distance, traversed };
+  return { projected, distance: dst, traversed };
 }
