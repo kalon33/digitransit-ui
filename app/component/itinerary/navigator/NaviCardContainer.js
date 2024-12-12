@@ -86,6 +86,7 @@ function NaviCardContainer(
         legs,
         time,
         position,
+        origin,
         intl,
         messages,
         match.params,
@@ -218,7 +219,8 @@ NaviCardContainer.propTypes = {
     lat: PropTypes.number,
     lon: PropTypes.number,
   }),
-  mapLayerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+  mapLayerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
+    .isRequired,
   origin: PropTypes.shape({
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,

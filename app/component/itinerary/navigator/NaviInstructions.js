@@ -2,11 +2,11 @@ import React from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-import { GeodeticToEnu, displayDistance } from '../../../util/geo-utils';
+import { displayDistance } from '../../../util/geo-utils';
 import { legShape, configShape } from '../../../util/shapes';
 import { legDestination, legTimeStr, legTime } from '../../../util/legUtils';
 import RouteNumber from '../../RouteNumber';
-import { LEGTYPE, getLocalizedMode, pathProgress } from './NaviUtils';
+import { LEGTYPE, getLocalizedMode, getRemainingTraversal } from './NaviUtils';
 import { durationToString } from '../../../util/timeUtils';
 
 export default function NaviInstructions(
@@ -18,21 +18,12 @@ export default function NaviInstructions(
   );
 
   if (legType === LEGTYPE.MOVE) {
-    let remainingTraversal;
-    let rtDuration;
-    if (position) {
-      // TODO: maybe apply only when distance is close enough to the path
-      const posXY = GeodeticToEnu(position.lat, position.lon, origin);
-      const { traversed } = pathProgress(posXY, leg.geometry);
-      remainingTraversal = 1.0 - traversed;
-      rtDuration = true;
-    } else {
-      // estimate from elapsed time
-      remainingTraversal = Math.max(
-        (legTime(leg.end) - time) / (leg.duration * 1000),
-        0,
-      );
-    }
+    const remainingTraversal = getRemainingTraversal(
+      leg,
+      position,
+      origin,
+      time,
+    );
     const duration = leg.duration * remainingTraversal;
     const distance = leg.distance * remainingTraversal;
 
@@ -44,7 +35,7 @@ export default function NaviInstructions(
           {legDestination(intl, leg, null, nextLeg)}
         </div>
 
-        <div className={cx('duration', { realtime: rtDuration })}>
+        <div className={cx('duration', { realtime: !!position })}>
           {displayDistance(distance, config, intl.formatNumber)} (
           {durationToString(duration * 1000)})
         </div>
