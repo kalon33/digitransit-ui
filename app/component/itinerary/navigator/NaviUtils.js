@@ -371,7 +371,8 @@ export const getItineraryAlerts = (
       [prob] = transferProblems;
     }
     const transferId = `transfer-${prob.fromLeg.legId}-${prob.toLeg.legId}}`;
-    if (!messages.get(transferId)) {
+    const alert = messages.get(transferId);
+    if (!alert || alert.severity !== prob.severity) {
       content = withShowRoutesBtn(
         <div className="navi-alert-content">
           <FormattedMessage
@@ -385,10 +386,10 @@ export const getItineraryAlerts = (
         </div>,
       );
       alerts.push({
-        severity: 'ALERT',
+        severity: prob.severity,
         content,
         id: transferId,
-        hideClose: true,
+        hideClose: prob.severity === 'ALERT',
       });
     }
   }
