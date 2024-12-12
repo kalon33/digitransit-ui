@@ -391,9 +391,14 @@ const Itinerary = (
       renderBar = false;
       addition += legLength; // carry over the length of the leg to the next
     }
+    // There are two places which inject ViaLegs in this logic, but we certainly
+    // don't want to add it twice in the same place with the same key, so we
+    // record whether we added it here at the first place.
+    let viaAdded = false;
     if (leg.intermediatePlace) {
       onlyIconLegs += 1;
       legs.push(<ViaLeg key={`via_${leg.mode}_${startMs}`} />);
+      viaAdded = true;
     }
     if (isLegOnFoot(leg) && renderBar) {
       const walkingTime = Math.floor(leg.duration / 60);
@@ -557,7 +562,8 @@ const Itinerary = (
       if (
         previousLeg &&
         !previousLeg.intermediatePlace &&
-        connectsFromViaPoint(leg, intermediatePlaces)
+        connectsFromViaPoint(leg, intermediatePlaces) &&
+        !viaAdded
       ) {
         legs.push(<ViaLeg key={`via_${leg.mode}_${startMs}`} />);
       }
