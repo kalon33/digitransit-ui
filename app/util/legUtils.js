@@ -220,20 +220,16 @@ export function splitLegsAtViaPoints(originalLegs, viaPlaces) {
     (includesAndRemove(viaPoints, stop.gtfsId) ||
       (stop.parentStation &&
         includesAndRemove(viaPoints, stop.parentStation.gtfsId)));
-  let isFirstTransitLeg = true;
   let nextLegStartsWithIntermediate = false;
   originalLegs.forEach(originalLeg => {
     const leg = { ...originalLeg };
     const { intermediatePlaces } = leg;
     if (
       nextLegStartsWithIntermediate ||
-      (leg.transitLeg && isFirstTransitLeg && isViaPointMatch(leg.from.stop))
+      (leg.transitLeg && isViaPointMatch(leg.from.stop))
     ) {
       leg.intermediatePlace = true;
       nextLegStartsWithIntermediate = false;
-    }
-    if (leg.transitLeg) {
-      isFirstTransitLeg = false;
     }
     if (intermediatePlaces) {
       let start = 0;
