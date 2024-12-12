@@ -12,9 +12,9 @@ import {
   getItineraryAlerts,
   getTransitLegState,
   LEGTYPE,
+  DESTINATION_RADIUS,
 } from './NaviUtils';
 
-const DESTINATION_RADIUS = 20; // meters
 const TIME_AT_DESTINATION = 3; // * 10 seconds
 const TOPBAR_PADDING = 8; // pixels
 
@@ -82,7 +82,16 @@ function NaviCardContainer(
     // Alerts for NaviStack
     addMessages(
       incomingMessages,
-      getItineraryAlerts(legs, intl, messages, match.params, router),
+      getItineraryAlerts(
+        legs,
+        time,
+        position,
+        origin,
+        intl,
+        messages,
+        match.params,
+        router,
+      ),
     );
 
     if (currentLeg) {
@@ -107,16 +116,11 @@ function NaviCardContainer(
         : activeMessages;
 
       // handle messages that are updated.
-      const updatedMessages = previousValidMessages.map(msg => {
-        const incoming = incomingMessages.get(msg.id);
-        if (incoming) {
-          incomingMessages.delete(msg.id);
-          return incoming;
-        }
-        return msg;
-      });
+      const keptMessages = previousValidMessages.filter(
+        msg => !!incomingMessages.get(msg.id),
+      );
       const newMessages = Array.from(incomingMessages.values());
-      setActiveMessages([...updatedMessages, ...newMessages]);
+      setActiveMessages([...keptMessages, ...newMessages]);
       setMessages(new Map([...messages, ...incomingMessages]));
     }
 
@@ -210,7 +214,8 @@ NaviCardContainer.propTypes = {
     lat: PropTypes.number,
     lon: PropTypes.number,
   }),
-  mapLayerRef: PropTypes.func.isRequired,
+  mapLayerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
+    .isRequired,
   origin: PropTypes.shape({
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
