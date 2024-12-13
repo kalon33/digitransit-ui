@@ -192,9 +192,8 @@ export const getAdditionalMessages = (leg, time, intl, config, messages) => {
   return msgs;
 };
 
-// TODO: DATA SHOULD BE UPDATED
 export const getTransitLegState = (leg, intl, messages, time) => {
-  const { start, realtimeState, from, mode, legId, route, end } = leg;
+  const { start, realtimeState, from, mode, legId, route } = leg;
   const { scheduledTime, estimated } = start;
   if (mode === 'WALK') {
     return null;
@@ -265,7 +264,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
     severity = 'INFO';
   }
   const state = severity
-    ? [{ severity, content, id: legId, expiresOn: legTime(end) }]
+    ? [{ severity, content, id: legId, expiresOn: legTime(start) }]
     : [];
   return state;
 };
