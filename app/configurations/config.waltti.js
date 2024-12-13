@@ -297,6 +297,7 @@ export default {
     // eslint-disable-next-line no-useless-escape
     return `<script defer data-domain="${hostname}" src="${address}"><\/script>\n`;
   },
+  analyticsClass: 'plausible-event-name=Ticket+Purchase+Link',
 
   // features that should not be deployed to production
   experimental: {
