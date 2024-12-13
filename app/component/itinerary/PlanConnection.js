@@ -18,6 +18,7 @@ const planConnection = graphql`
     $first: Int
     $before: String
     $last: Int
+    $via: [PlanViaLocationInput!]
   ) {
     plan: planConnection(
       dateTime: $datetime
@@ -28,6 +29,7 @@ const planConnection = graphql`
       origin: $fromPlace
       destination: $toPlace
       modes: $modes
+      via: $via
       preferences: {
         accessibility: { wheelchair: { enabled: $wheelchair } }
         street: {
