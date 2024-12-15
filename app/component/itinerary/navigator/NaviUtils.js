@@ -129,7 +129,7 @@ function findTransferProblems(legs, time, position, origin) {
             toLeg: next,
           });
         } else {
-          const transferDuration = legTime(leg.end) - legTime(leg.start);
+          const transferDuration = leg.duration * 1000; // this is original duration
           // check if user is already at the next departure stop
           const atStop =
             position && distance(position, leg.to) <= DESTINATION_RADIUS;
@@ -137,8 +137,17 @@ function findTransferProblems(legs, time, position, origin) {
           if (!atStop && slack < TRANSFER_SLACK) {
             // original transfer not possible
             let severity = 'WARNING';
-            const toGo = getRemainingTraversal(leg, position, origin, time);
-            const timeLeft = (t2 - time) / 1000;
+            let toGo;
+            let timeLeft;
+            // has transit walk already started ?
+            if (time > legTime(leg.start)) {
+              // compute how transit is proceeding
+              toGo = getRemainingTraversal(leg, position, origin, time);
+              timeLeft = (t2 - time) / 1000;
+            } else {
+              toGo = 1.0;
+              timeLeft = (t2 - t1) / 1000; // should we consider also transfer slack here?
+            }
             if (toGo > 0 && timeLeft > 0) {
               const originalSpeed = leg.distance / leg.duration;
               const newSpeed = (toGo * leg.distance) / timeLeft;
