@@ -231,7 +231,14 @@ export const getTransitLegState = (leg, intl, messages, time) => {
       </div>
     );
     severity = 'WARNING';
-  } else if (!isRealTime && legTime(start) - time < DISPLAY_MESSAGE_THRESHOLD) {
+  } else if (!isRealTime) {
+    const departure = leg.trip.stoptimesForDate[0];
+    const departed =
+      1000 * (departure.serviceDay + departure.scheduledDeparture);
+    if (time - departed < DISPLAY_MESSAGE_THRESHOLD) {
+      // vehicle just departed, maybe no realtime yet
+      return [];
+    }
     severity = 'WARNING';
     content = (
       <div className="navi-info-content">
@@ -246,7 +253,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
         />
       </div>
     );
-  } else if (isRealTime) {
+  } else {
     const { parentStation, name } = from.stop;
     const stopOrStation = parentStation
       ? intl.formatMessage({ id: 'from-station' })
