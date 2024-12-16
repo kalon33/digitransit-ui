@@ -53,6 +53,8 @@ function NaviCardContainer(
   const cardRef = useRef(null);
 
   const handleRemove = index => {
+    const msg = messages.get(activeMessages[index].id);
+    msg.closed = true; // remember closing action
     setActiveMessages(activeMessages.filter((_, i) => i !== index));
   };
 

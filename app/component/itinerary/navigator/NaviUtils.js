@@ -205,10 +205,11 @@ export const getTransitLegState = (leg, intl, messages, time) => {
   const { start, realtimeState, from, mode, legId, route } = leg;
   const { scheduledTime, estimated } = start;
 
-  const previousMessage = messages.get(legId);
-  const prevSeverity = previousMessage ? previousMessage.severity : null;
+  if (messages.get(legId)?.closed) {
+    return [];
+  }
 
-  const late =
+  const notInSchedule =
     estimated?.delay > DISPLAY_MESSAGE_THRESHOLD ||
     estimated?.delay < -DISPLAY_MESSAGE_THRESHOLD;
   const localizedMode = getLocalizedMode(mode, intl);
@@ -216,24 +217,20 @@ export const getTransitLegState = (leg, intl, messages, time) => {
   let severity;
   const isRealTime = realtimeState === 'UPDATED';
 
-  if (late && prevSeverity !== 'WARNING') {
+  if (notInSchedule) {
     const lMode = getLocalizedMode(mode, intl);
     const routeName = `${lMode} ${route.shortName}`;
     const { delay } = estimated;
 
-    const id = `navigation-mode-${delay > 0 ? 'late' : 'early'}`;
+    const translationId = `navigation-mode-${delay > 0 ? 'late' : 'early'}`;
 
     content = (
       <div className="navi-alert-content">
-        <FormattedMessage id={id} values={{ mode: routeName }} />
+        <FormattedMessage id={translationId} values={{ mode: routeName }} />
       </div>
     );
     severity = 'WARNING';
-  } else if (
-    !isRealTime &&
-    prevSeverity !== 'WARNING' &&
-    legTime(start) - time < DISPLAY_MESSAGE_THRESHOLD
-  ) {
+  } else if (!isRealTime && legTime(start) - time < DISPLAY_MESSAGE_THRESHOLD) {
     severity = 'WARNING';
     content = (
       <div className="navi-info-content">
@@ -247,7 +244,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
         />
       </div>
     );
-  } else if (isRealTime && prevSeverity !== 'INFO') {
+  } else if (isRealTime) {
     const { parentStation, name } = from.stop;
     const stopOrStation = parentStation
       ? intl.formatMessage({ id: 'from-station' })
@@ -270,10 +267,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
     );
     severity = 'INFO';
   }
-  const state = severity
-    ? [{ severity, content, id: legId, expiresOn: legTime(start) }]
-    : [];
-  return state;
+  return [{ severity, content, id: legId, expiresOn: legTime(start) }];
 };
 
 export const getItineraryAlerts = (
