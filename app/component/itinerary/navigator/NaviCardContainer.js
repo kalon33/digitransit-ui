@@ -118,7 +118,7 @@ function NaviCardContainer(
 
       // handle messages that are updated.
       const keptMessages = previousValidMessages.filter(
-        msg => !!incomingMessages.get(msg.id),
+        msg => !incomingMessages.get(msg.id),
       );
       const newMessages = Array.from(incomingMessages.values());
       setActiveMessages([...keptMessages, ...newMessages]);
