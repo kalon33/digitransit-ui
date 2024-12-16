@@ -129,7 +129,7 @@ function findTransferProblems(legs, time, position, origin) {
             toLeg: next,
           });
         } else {
-          const transferDuration = legTime(leg.end) - legTime(leg.start);
+          const transferDuration = leg.duration * 1000; // this is original duration
           // check if user is already at the next departure stop
           const atStop =
             position && distance(position, leg.to) <= DESTINATION_RADIUS;
@@ -137,8 +137,17 @@ function findTransferProblems(legs, time, position, origin) {
           if (!atStop && slack < TRANSFER_SLACK) {
             // original transfer not possible
             let severity = 'WARNING';
-            const toGo = getRemainingTraversal(leg, position, origin, time);
-            const timeLeft = (t2 - time) / 1000;
+            let toGo;
+            let timeLeft;
+            // has transit walk already started ?
+            if (time > legTime(leg.start)) {
+              // compute how transit is proceeding
+              toGo = getRemainingTraversal(leg, position, origin, time);
+              timeLeft = (t2 - time) / 1000;
+            } else {
+              toGo = 1.0;
+              timeLeft = (t2 - t1) / 1000; // should we consider also transfer slack here?
+            }
             if (toGo > 0 && timeLeft > 0) {
               const originalSpeed = leg.distance / leg.duration;
               const newSpeed = (toGo * leg.distance) / timeLeft;
@@ -172,8 +181,8 @@ export function getFirstLastLegs(legs) {
 }
 export const getAdditionalMessages = (leg, time, intl, config, messages) => {
   const msgs = [];
-  const ticketMsg = messages.get('ticket');
-  if (!ticketMsg && legTime(leg.start) - time < DISPLAY_MESSAGE_THRESHOLD) {
+  const closed = messages.get('ticket')?.closed;
+  if (!closed && legTime(leg.start) - time < DISPLAY_MESSAGE_THRESHOLD) {
     // Todo: multiple fares?
     const fare = getFaresFromLegs([leg], config)[0];
     msgs.push({
@@ -195,38 +204,41 @@ export const getAdditionalMessages = (leg, time, intl, config, messages) => {
 export const getTransitLegState = (leg, intl, messages, time) => {
   const { start, realtimeState, from, mode, legId, route } = leg;
   const { scheduledTime, estimated } = start;
-  if (mode === 'WALK') {
-    return null;
-  }
-  const previousMessage = messages.get(legId);
-  const prevSeverity = previousMessage ? previousMessage.severity : null;
 
-  const late =
+  if (messages.get(legId)?.closed) {
+    return [];
+  }
+
+  const notInSchedule =
     estimated?.delay > DISPLAY_MESSAGE_THRESHOLD ||
     estimated?.delay < -DISPLAY_MESSAGE_THRESHOLD;
   const localizedMode = getLocalizedMode(mode, intl);
   let content;
   let severity;
   const isRealTime = realtimeState === 'UPDATED';
+  const shortName = route.shortName || '';
 
-  if (late && prevSeverity !== 'WARNING') {
+  if (notInSchedule) {
     const lMode = getLocalizedMode(mode, intl);
-    const routeName = `${lMode} ${route.shortName}`;
+    const routeName = `${lMode} ${shortName}`;
     const { delay } = estimated;
 
-    const id = `navigation-mode-${delay > 0 ? 'late' : 'early'}`;
+    const translationId = `navigation-mode-${delay > 0 ? 'late' : 'early'}`;
 
     content = (
       <div className="navi-alert-content">
-        <FormattedMessage id={id} values={{ mode: routeName }} />
+        <FormattedMessage id={translationId} values={{ mode: routeName }} />
       </div>
     );
     severity = 'WARNING';
-  } else if (
-    !isRealTime &&
-    prevSeverity !== 'WARNING' &&
-    legTime(start) - time < DISPLAY_MESSAGE_THRESHOLD
-  ) {
+  } else if (!isRealTime) {
+    const departure = leg.trip.stoptimesForDate[0];
+    const departed =
+      1000 * (departure.serviceDay + departure.scheduledDeparture);
+    if (time - departed < DISPLAY_MESSAGE_THRESHOLD) {
+      // vehicle just departed, maybe no realtime yet
+      return [];
+    }
     severity = 'WARNING';
     content = (
       <div className="navi-info-content">
@@ -234,13 +246,14 @@ export const getTransitLegState = (leg, intl, messages, time) => {
         <FormattedMessage
           id="navileg-start-schedule"
           values={{
+            route: shortName,
             time: timeStr(scheduledTime),
             mode: localizedMode,
           }}
         />
       </div>
     );
-  } else if (isRealTime && prevSeverity !== 'INFO') {
+  } else {
     const { parentStation, name } = from.stop;
     const stopOrStation = parentStation
       ? intl.formatMessage({ id: 'from-station' })
@@ -249,12 +262,12 @@ export const getTransitLegState = (leg, intl, messages, time) => {
       <div className="navi-info-content">
         <FormattedMessage
           id="navileg-mode-realtime"
-          values={{ mode: localizedMode }}
+          values={{ route: shortName, mode: localizedMode }}
         />
         <FormattedMessage
           id="navileg-start-realtime"
           values={{
-            time: timeStr(estimated.time),
+            time: <span className="realtime">{timeStr(estimated.time)}</span>,
             stopOrStation,
             stopName: name,
           }}
@@ -263,10 +276,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
     );
     severity = 'INFO';
   }
-  const state = severity
-    ? [{ severity, content, id: legId, expiresOn: legTime(start) }]
-    : [];
-  return state;
+  return [{ severity, content, id: legId, expiresOn: legTime(start) }];
 };
 
 export const getItineraryAlerts = (

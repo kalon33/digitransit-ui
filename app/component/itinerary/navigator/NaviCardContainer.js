@@ -53,6 +53,8 @@ function NaviCardContainer(
   const cardRef = useRef(null);
 
   const handleRemove = index => {
+    const msg = messages.get(activeMessages[index].id);
+    msg.closed = true; // remember closing action
     setActiveMessages(activeMessages.filter((_, i) => i !== index));
   };
 
@@ -94,30 +96,29 @@ function NaviCardContainer(
       ),
     );
 
-    if (currentLeg) {
-      if (nextLeg?.transitLeg) {
-        // Messages for NaviStack.
-        addMessages(incomingMessages, [
-          ...getTransitLegState(nextLeg, intl, messages, time),
-          ...getAdditionalMessages(nextLeg, time, intl, config, messages),
-        ]);
-      }
-      if (legChanged) {
-        focusToLeg?.(currentLeg);
-        setCardExpanded(false);
-      }
+    if (nextLeg?.transitLeg) {
+      // Messages for NaviStack.
+      addMessages(incomingMessages, [
+        ...getTransitLegState(nextLeg, intl, messages, time),
+        ...getAdditionalMessages(nextLeg, time, intl, config, messages),
+      ]);
+    }
+
+    if (currentLeg && legChanged) {
+      focusToLeg?.(currentLeg);
+      setCardExpanded(false);
     }
     if (incomingMessages.size || legChanged) {
       // Handle messages when new messages arrives.
 
       // Current active messages. Filter away expired messages.
       const previousValidMessages = legChanged
-        ? activeMessages.filter(m => m.expiresOn < time)
+        ? activeMessages.filter(m => !m.expiresOn || m.expiresOn > time)
         : activeMessages;
 
       // handle messages that are updated.
       const keptMessages = previousValidMessages.filter(
-        msg => !!incomingMessages.get(msg.id),
+        msg => !incomingMessages.get(msg.id),
       );
       const newMessages = Array.from(incomingMessages.values());
       setActiveMessages([...keptMessages, ...newMessages]);
