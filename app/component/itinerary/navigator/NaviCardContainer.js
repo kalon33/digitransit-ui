@@ -12,10 +12,10 @@ import {
   getItineraryAlerts,
   getTransitLegState,
   LEGTYPE,
+  DESTINATION_RADIUS,
 } from './NaviUtils';
 import { updateClient, getTopics } from '../ItineraryPageUtils';
 
-const DESTINATION_RADIUS = 20; // meters
 const TIME_AT_DESTINATION = 3; // * 10 seconds
 const TOPBAR_PADDING = 8; // pixels
 
@@ -54,6 +54,8 @@ function NaviCardContainer(
   const cardRef = useRef(null);
   const { intl, config, match, router } = context;
   const handleRemove = index => {
+    const msg = messages.get(activeMessages[index].id);
+    msg.closed = true; // remember closing action
     setActiveMessages(activeMessages.filter((_, i) => i !== index));
   };
 
@@ -92,22 +94,30 @@ function NaviCardContainer(
     // Alerts for NaviStack
     addMessages(
       incomingMessages,
-      getItineraryAlerts(legs, intl, messages, match.params, router),
+      getItineraryAlerts(
+        legs,
+        time,
+        position,
+        origin,
+        intl,
+        messages,
+        match.params,
+        router,
+      ),
     );
 
-    if (currentLeg) {
-      if (nextLeg?.transitLeg) {
-        // Messages for NaviStack.
-        addMessages(incomingMessages, [
-          ...getTransitLegState(nextLeg, intl, messages, time),
-          ...getAdditionalMessages(nextLeg, time, intl, config, messages),
-        ]);
-      }
-
-      if (legChanged) {
-        updateClient(topics, context);
+    if (nextLeg?.transitLeg) {
+      // Messages for NaviStack.
+      addMessages(incomingMessages, [
+        ...getTransitLegState(nextLeg, intl, messages, time),
+        ...getAdditionalMessages(nextLeg, time, intl, config, messages),
+      ]);
+    }
+    if (legChanged) {
+      updateClient(topics, context);
+      setCardExpanded(false);
+      if (currentLeg) {
         focusToLeg?.(currentLeg);
-        setCardExpanded(false);
       }
     }
     if (incomingMessages.size || legChanged) {
@@ -115,20 +125,15 @@ function NaviCardContainer(
 
       // Current active messages. Filter away expired messages.
       const previousValidMessages = legChanged
-        ? activeMessages.filter(m => m.expiresOn < time)
+        ? activeMessages.filter(m => !m.expiresOn || m.expiresOn > time)
         : activeMessages;
 
       // handle messages that are updated.
-      const updatedMessages = previousValidMessages.map(msg => {
-        const incoming = incomingMessages.get(msg.id);
-        if (incoming) {
-          incomingMessages.delete(msg.id);
-          return incoming;
-        }
-        return msg;
-      });
+      const keptMessages = previousValidMessages.filter(
+        msg => !incomingMessages.get(msg.id),
+      );
       const newMessages = Array.from(incomingMessages.values());
-      setActiveMessages([...updatedMessages, ...newMessages]);
+      setActiveMessages([...keptMessages, ...newMessages]);
       setMessages(new Map([...messages, ...incomingMessages]));
     }
 
@@ -222,7 +227,8 @@ NaviCardContainer.propTypes = {
     lat: PropTypes.number,
     lon: PropTypes.number,
   }),
-  mapLayerRef: PropTypes.func.isRequired,
+  mapLayerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
+    .isRequired,
   origin: PropTypes.shape({
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
