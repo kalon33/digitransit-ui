@@ -1,8 +1,8 @@
 import polyUtil from 'polyline-encoded';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { fetchQuery } from 'react-relay';
 import { GeodeticToEcef, GeodeticToEnu } from '../../../../util/geo-utils';
-import { legTime } from '../../../../util/legUtils';
+import { legTime, isAnyLegPropertyIdentical } from '../../../../util/legUtils';
 import { epochToIso } from '../../../../util/timeUtils';
 import { legQuery } from '../../queries/LegQuery';
 
@@ -87,7 +87,7 @@ function matchLegEnds(legs) {
   }
 }
 
-function getLegsOfInterest(legs, time) {
+function getLegsOfInterest(legs, time, previousFinishedLeg) {
   if (!legs?.length) {
     return {
       firstLeg: undefined,
@@ -99,11 +99,25 @@ function getLegsOfInterest(legs, time) {
 
   const firstLeg = legs[0];
   const lastLeg = legs[legs.length - 1];
-  const nextLeg = legs.find(({ start }) => legTime(start) > time);
-  const previousLeg = legs.findLast(({ end }) => legTime(end) < time);
-  const currentLeg = legs.find(
+  const nextLegIdx = legs.findIndex(({ start }) => legTime(start) > time);
+  const currentLegIdx = legs.findIndex(
     ({ start, end }) => legTime(start) <= time && legTime(end) >= time,
   );
+
+  let previousLeg = legs.findLast(({ end }) => legTime(end) < time);
+  let nextLeg = legs[nextLegIdx];
+  let currentLeg = legs[currentLegIdx];
+
+  if (
+    isAnyLegPropertyIdentical(currentLeg, previousFinishedLeg, [
+      'legId',
+      'legGeometry.points',
+    ])
+  ) {
+    previousLeg = currentLeg;
+    currentLeg = nextLeg;
+    nextLeg = legs[nextLegIdx + 1];
+  }
 
   return {
     firstLeg,
@@ -117,6 +131,7 @@ function getLegsOfInterest(legs, time) {
 const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
   const [realTimeLegs, setRealTimeLegs] = useState();
   const [time, setTime] = useState(Date.now());
+  const previousFinishedLeg = useRef(undefined);
 
   const origin = useMemo(
     () => GeodeticToEcef(initialLegs[0].from.lat, initialLegs[0].from.lon),
@@ -200,7 +215,9 @@ const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
   }, [fetchAndSetRealtimeLegs]);
 
   const { firstLeg, lastLeg, currentLeg, nextLeg, previousLeg } =
-    getLegsOfInterest(realTimeLegs, time);
+    getLegsOfInterest(realTimeLegs, time, previousFinishedLeg.current);
+
+  previousFinishedLeg.current = previousLeg;
 
   return {
     realTimeLegs,

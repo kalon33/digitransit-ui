@@ -3,6 +3,26 @@ import get from 'lodash/get';
 import { BIKEAVL_UNKNOWN } from './vehicleRentalUtils';
 import { getRouteMode } from './modeUtils';
 
+function getNestedValue(obj, path) {
+  return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+}
+
+export function isAnyLegPropertyIdentical(leg1, leg2, properties) {
+  if (!leg1 || !leg2) {
+    return false;
+  }
+
+  for (let i = 0; i < properties.length; i++) {
+    const property = properties[i];
+    const val1 = getNestedValue(leg1, property);
+    const val2 = getNestedValue(leg2, property);
+    if (val1 && val2 && val1 === val2) {
+      return true;
+    }
+  }
+  return false;
+}
+
 /**
  * Get time as  milliseconds since the Unix Epoch
  */
