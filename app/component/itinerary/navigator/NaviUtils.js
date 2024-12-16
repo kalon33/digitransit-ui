@@ -181,8 +181,8 @@ export function getFirstLastLegs(legs) {
 }
 export const getAdditionalMessages = (leg, time, intl, config, messages) => {
   const msgs = [];
-  const ticketMsg = messages.get('ticket');
-  if (!ticketMsg && legTime(leg.start) - time < DISPLAY_MESSAGE_THRESHOLD) {
+  const closed = messages.get('ticket')?.closed;
+  if (!closed && legTime(leg.start) - time < DISPLAY_MESSAGE_THRESHOLD) {
     // Todo: multiple fares?
     const fare = getFaresFromLegs([leg], config)[0];
     msgs.push({

@@ -113,7 +113,7 @@ function NaviCardContainer(
 
       // Current active messages. Filter away expired messages.
       const previousValidMessages = legChanged
-        ? activeMessages.filter(m => m.expiresOn < time)
+        ? activeMessages.filter(m => !m.expiresOn || m.expiresOn > time)
         : activeMessages;
 
       // handle messages that are updated.
