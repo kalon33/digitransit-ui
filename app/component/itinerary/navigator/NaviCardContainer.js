@@ -96,18 +96,17 @@ function NaviCardContainer(
       ),
     );
 
-    if (currentLeg) {
-      if (nextLeg?.transitLeg) {
-        // Messages for NaviStack.
-        addMessages(incomingMessages, [
-          ...getTransitLegState(nextLeg, intl, messages, time),
-          ...getAdditionalMessages(nextLeg, time, intl, config, messages),
-        ]);
-      }
-      if (legChanged) {
-        focusToLeg?.(currentLeg);
-        setCardExpanded(false);
-      }
+    if (nextLeg?.transitLeg) {
+      // Messages for NaviStack.
+      addMessages(incomingMessages, [
+        ...getTransitLegState(nextLeg, intl, messages, time),
+        ...getAdditionalMessages(nextLeg, time, intl, config, messages),
+      ]);
+    }
+
+    if (currentLeg && legChanged) {
+      focusToLeg?.(currentLeg);
+      setCardExpanded(false);
     }
     if (incomingMessages.size || legChanged) {
       // Handle messages when new messages arrives.
