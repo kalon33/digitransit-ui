@@ -204,9 +204,7 @@ export const getAdditionalMessages = (leg, time, intl, config, messages) => {
 export const getTransitLegState = (leg, intl, messages, time) => {
   const { start, realtimeState, from, mode, legId, route } = leg;
   const { scheduledTime, estimated } = start;
-  if (mode === 'WALK') {
-    return null;
-  }
+
   const previousMessage = messages.get(legId);
   const prevSeverity = previousMessage ? previousMessage.severity : null;
 
