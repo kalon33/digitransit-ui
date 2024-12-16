@@ -13,6 +13,7 @@ import {
   getTransitLegState,
   LEGTYPE,
 } from './NaviUtils';
+import { updateClient, getTopics } from '../ItineraryPageUtils';
 
 const DESTINATION_RADIUS = 20; // meters
 const TIME_AT_DESTINATION = 3; // * 10 seconds
@@ -37,7 +38,7 @@ function NaviCardContainer(
     lastLeg,
     isJourneyCompleted,
   },
-  { intl, config, match, router },
+  context,
 ) {
   const [cardExpanded, setCardExpanded] = useState(false);
   // All notifications including those user has dismissed.
@@ -51,7 +52,7 @@ function NaviCardContainer(
   // Destination counter. How long user has been at the destination. * 10 seconds
   const destCountRef = useRef(0);
   const cardRef = useRef(null);
-
+  const { intl, config, match, router } = context;
   const handleRemove = index => {
     setActiveMessages(activeMessages.filter((_, i) => i !== index));
   };
@@ -59,6 +60,16 @@ function NaviCardContainer(
   const handleClick = () => {
     setCardExpanded(!cardExpanded);
   };
+
+  // track only relevant vehicles for the journey.
+  const topics = getTopics(
+    legs.filter(leg => legTime(leg.end) >= time),
+    config,
+  );
+
+  useEffect(() => {
+    updateClient(topics, context);
+  }, []);
 
   useEffect(() => {
     if (cardRef.current) {
@@ -74,7 +85,6 @@ function NaviCardContainer(
     const legChanged = legRef.current?.legId
       ? legRef.current.legId !== currentLeg?.legId
       : legRef.current?.mode !== currentLeg?.mode;
-
     if (legChanged) {
       legRef.current = currentLeg;
     }
@@ -93,7 +103,9 @@ function NaviCardContainer(
           ...getAdditionalMessages(nextLeg, time, intl, config, messages),
         ]);
       }
+
       if (legChanged) {
+        updateClient(topics, context);
         focusToLeg?.(currentLeg);
         setCardExpanded(false);
       }
@@ -241,6 +253,8 @@ NaviCardContainer.contextTypes = {
   config: configShape.isRequired,
   match: matchShape.isRequired,
   router: routerShape.isRequired,
+  executeAction: PropTypes.func.isRequired,
+  getStore: PropTypes.func.isRequired,
 };
 
 export default NaviCardContainer;
