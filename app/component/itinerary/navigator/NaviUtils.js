@@ -258,7 +258,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
         <FormattedMessage
           id="navileg-start-realtime"
           values={{
-            time: timeStr(estimated.time),
+            time: <span className="realtime">{timeStr(estimated.time)}</span>,
             stopOrStation,
             stopName: name,
           }}
