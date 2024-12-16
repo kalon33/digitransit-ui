@@ -14,6 +14,7 @@ import {
   LEGTYPE,
   DESTINATION_RADIUS,
 } from './NaviUtils';
+import { updateClient, getTopics } from '../ItineraryPageUtils';
 
 const TIME_AT_DESTINATION = 3; // * 10 seconds
 const TOPBAR_PADDING = 8; // pixels
@@ -37,7 +38,7 @@ function NaviCardContainer(
     lastLeg,
     isJourneyCompleted,
   },
-  { intl, config, match, router },
+  context,
 ) {
   const [cardExpanded, setCardExpanded] = useState(false);
   // All notifications including those user has dismissed.
@@ -51,7 +52,7 @@ function NaviCardContainer(
   // Destination counter. How long user has been at the destination. * 10 seconds
   const destCountRef = useRef(0);
   const cardRef = useRef(null);
-
+  const { intl, config, match, router } = context;
   const handleRemove = index => {
     const msg = messages.get(activeMessages[index].id);
     msg.closed = true; // remember closing action
@@ -61,6 +62,16 @@ function NaviCardContainer(
   const handleClick = () => {
     setCardExpanded(!cardExpanded);
   };
+
+  // track only relevant vehicles for the journey.
+  const topics = getTopics(
+    legs.filter(leg => legTime(leg.end) >= time),
+    config,
+  );
+
+  useEffect(() => {
+    updateClient(topics, context);
+  }, []);
 
   useEffect(() => {
     if (cardRef.current) {
@@ -76,7 +87,6 @@ function NaviCardContainer(
     const legChanged = legRef.current?.legId
       ? legRef.current.legId !== currentLeg?.legId
       : legRef.current?.mode !== currentLeg?.mode;
-
     if (legChanged) {
       legRef.current = currentLeg;
     }
@@ -103,10 +113,12 @@ function NaviCardContainer(
         ...getAdditionalMessages(nextLeg, time, intl, config, messages),
       ]);
     }
-
-    if (currentLeg && legChanged) {
-      focusToLeg?.(currentLeg);
+    if (legChanged) {
+      updateClient(topics, context);
       setCardExpanded(false);
+      if (currentLeg) {
+        focusToLeg?.(currentLeg);
+      }
     }
     if (incomingMessages.size || legChanged) {
       // Handle messages when new messages arrives.
@@ -247,6 +259,8 @@ NaviCardContainer.contextTypes = {
   config: configShape.isRequired,
   match: matchShape.isRequired,
   router: routerShape.isRequired,
+  executeAction: PropTypes.func.isRequired,
+  getStore: PropTypes.func.isRequired,
 };
 
 export default NaviCardContainer;

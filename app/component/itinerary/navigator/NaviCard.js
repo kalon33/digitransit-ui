@@ -62,6 +62,8 @@ export default function NaviCard(
   } else if (legType === LEGTYPE.MOVE) {
     instructions = `navileg-${leg?.mode.toLowerCase()}`;
     iconName = iconMap.WALK;
+  } else if (legType === LEGTYPE.WAIT) {
+    iconName = iconMap.WAIT;
   }
 
   return (
