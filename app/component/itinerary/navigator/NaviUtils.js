@@ -216,10 +216,11 @@ export const getTransitLegState = (leg, intl, messages, time) => {
   let content;
   let severity;
   const isRealTime = realtimeState === 'UPDATED';
+  const shortName = route.shortName || '';
 
   if (notInSchedule) {
     const lMode = getLocalizedMode(mode, intl);
-    const routeName = `${lMode} ${route.shortName}`;
+    const routeName = `${lMode} ${shortName}`;
     const { delay } = estimated;
 
     const translationId = `navigation-mode-${delay > 0 ? 'late' : 'early'}`;
@@ -238,6 +239,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
         <FormattedMessage
           id="navileg-start-schedule"
           values={{
+            route: shortName,
             time: timeStr(scheduledTime),
             mode: localizedMode,
           }}
@@ -253,7 +255,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
       <div className="navi-info-content">
         <FormattedMessage
           id="navileg-mode-realtime"
-          values={{ mode: localizedMode }}
+          values={{ route: shortName, mode: localizedMode }}
         />
         <FormattedMessage
           id="navileg-start-realtime"
