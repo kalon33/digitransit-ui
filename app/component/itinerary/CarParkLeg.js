@@ -72,6 +72,13 @@ function CarParkLeg(props, { config, intl }) {
             >
               <div className="address">
                 <FormattedMessage id="car_park" defaultMessage="Park & Ride" />
+                {props.leg.isViaPoint && (
+                  <Icon
+                    img="icon-icon_mapMarker-via"
+                    className="itinerary-mapmarker-icon"
+                    color={config.colors.primary}
+                  />
+                )}
                 {props.carPark && (
                   <Icon
                     img="icon-icon_arrow-collapse--right"

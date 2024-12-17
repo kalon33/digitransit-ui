@@ -49,6 +49,13 @@ function WaitLeg(
               to={`/${PREFIX_STOPS}/${leg.to.stop.gtfsId}`}
             >
               {leg.to.name}
+              {leg.isViaPoint && (
+                <Icon
+                  img="icon-icon_mapMarker-via"
+                  className="itinerary-mapmarker-icon"
+                  color={config.colors.primary}
+                />
+              )}
               <Icon
                 img="icon-icon_arrow-collapse--right"
                 className="itinerary-arrow-icon"

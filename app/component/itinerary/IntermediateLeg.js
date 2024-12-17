@@ -23,6 +23,7 @@ function IntermediateLeg(
     previousZoneId,
     currentZoneId,
     nextZoneId,
+    isViaPoint,
     isCanceled,
     isLastPlace,
   },
@@ -151,6 +152,13 @@ function IntermediateLeg(
               </span>
               {` ${name}`}
             </div>
+            {isViaPoint && (
+              <Icon
+                img="icon-icon_mapMarker-via"
+                className="itinerary-mapmarker-icon"
+                color={config.colors.primary}
+              />
+            )}
             <Icon
               img="icon-icon_arrow-collapse--right"
               className="itinerary-arrow-icon"
@@ -176,6 +184,7 @@ IntermediateLeg.propTypes = {
   previousZoneId: PropTypes.string,
   currentZoneId: PropTypes.string,
   nextZoneId: PropTypes.string,
+  isViaPoint: PropTypes.bool,
   isLastPlace: PropTypes.bool,
   gtfsId: PropTypes.string,
   isCanceled: PropTypes.bool,
@@ -191,6 +200,7 @@ IntermediateLeg.defaultProps = {
   isCanceled: false,
   realTime: false,
   isLastPlace: false,
+  isViaPoint: false,
   gtfsId: undefined,
   color: undefined,
 };

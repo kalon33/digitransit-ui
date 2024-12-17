@@ -150,6 +150,13 @@ function WalkLeg(
                   to={`/${PREFIX_STOPS}/${leg[toOrFrom].stop.gtfsId}`}
                 >
                   {returnNotice || leg[toOrFrom].name}
+                  {leg.isViaPoint && (
+                    <Icon
+                      img="icon-icon_mapMarker-via"
+                      className="itinerary-mapmarker-icon"
+                      color={config.colors.primary}
+                    />
+                  )}
                   {leg[toOrFrom].stop && (
                     <Icon
                       img="icon-icon_arrow-collapse--right"
