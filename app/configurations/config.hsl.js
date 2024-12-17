@@ -121,7 +121,7 @@ export default {
   mergeStopsByCode: true,
   useExtendedRouteTypes: true,
   colors: {
-    primary: '#007ac9',
+    primary: '#0074bf',
     accessiblePrimary: '#0074be',
     hover: '#0062a1',
     iconColors: {
@@ -308,15 +308,14 @@ export default {
     en: 'HSL',
   },
 
-  maxNearbyStopAmount: 5,
   maxNearbyStopDistance: {
-    favorite: 100000,
-    bus: 30000,
-    tram: 100000,
-    subway: 100000,
-    rail: 50000,
-    ferry: 100000,
-    citybike: 100000,
+    favorite: 20000,
+    bus: 20000,
+    tram: 20000,
+    subway: 20000,
+    rail: 20000,
+    ferry: 20000,
+    citybike: 20000,
   },
 
   prioritizedStopsNearYou: {
@@ -426,6 +425,7 @@ export default {
       ? fareId.substring(fareId.indexOf(':') + 1)
       : '';
   },
+  ticketButtonTextId: 'open-app',
 
   trafficNowLink: {
     fi: 'matkustaminen/liikenne',
@@ -579,9 +579,6 @@ export default {
 
   showSimilarRoutesOnRouteDropDown: true,
   useRealtimeTravellerCapacities: true,
-
-  navigation: false,
-  navigationLogo: 'hsl/navigator-logo.svg',
 
   stopCard: {
     header: {
@@ -752,4 +749,14 @@ export default {
   },
 
   startSearchFromUserLocation: true,
+
+  navigationLogo: 'hsl/navigator-logo.svg',
+  thumbsUpGraphic: 'hsl/thumbs-up.svg',
+
+  // features that should not be deployed to production
+  experimental: {
+    navigation:
+      process.env.RUN_ENV === 'development' ||
+      process.env.NODE_ENV !== 'production',
+  },
 };

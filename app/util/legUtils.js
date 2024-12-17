@@ -21,6 +21,15 @@ export function legTimeStr(lt) {
   return `${time[0]}:${time[1]}`;
 }
 
+/**
+ * Get time as 'hh:mm:ss'
+ */
+export function legTimeAcc(lt) {
+  const t = lt.estimated?.time || lt.scheduledTime;
+  const parts = t.split('T')[1].split('+');
+  return parts[0];
+}
+
 function filterLegStops(leg, filter) {
   if (leg.from.stop && leg.to.stop && leg.trip) {
     const stops = [leg.from.stop.gtfsId, leg.to.stop.gtfsId];
@@ -34,10 +43,6 @@ function filterLegStops(leg, filter) {
       .filter(filter);
   }
   return false;
-}
-
-export function isCallAgencyDeparture(departure) {
-  return departure.pickupType === 'CALL_AGENCY';
 }
 
 function sameBicycleNetwork(leg1, leg2) {
@@ -117,8 +122,9 @@ export function getLegMode(legOrMode) {
  *   stop.gtfsId
  *   pickupType
  */
-export function isCallAgencyPickupType(leg) {
+export function isCallAgencyLeg(leg) {
   return (
+    leg.route?.type === 715 ||
     filterLegStops(leg, stoptime => stoptime.pickupType === 'CALL_AGENCY')
       .length > 0
   );
@@ -174,6 +180,86 @@ export function getInterliningLegs(legs, index) {
 
 function bikingEnded(leg1) {
   return leg1.from.vehicleRentalStation && leg1.mode === 'WALK';
+}
+
+function syntheticEndpoint(originalEndpoint, place) {
+  return {
+    ...originalEndpoint,
+    stop: place.stop,
+    lat: place.stop.lat,
+    lon: place.stop.lon,
+    name: place.stop.name,
+  };
+}
+
+/**
+ * Adds intermediate: true to legs if their start point should have a via point
+ * marker, possibly splitting legs in case the via point belongs in the middle.
+ *
+ * @param originalLegs Leg objects from graphql query
+ * @param viaPlaces Location objects (otpToLocation) from query parameter
+ * @returns {*[]}
+ */
+export function splitLegsAtViaPoints(originalLegs, viaPlaces) {
+  const splitLegs = [];
+  // Once a via place is matched, it is used and will not match again.
+  function includesAndRemove(array, id) {
+    const index = array.indexOf(id);
+    if (index >= 0) {
+      array.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
+  const viaPoints = viaPlaces.map(p => p.gtfsId);
+  const isViaPointMatch = stop =>
+    stop &&
+    (includesAndRemove(viaPoints, stop.gtfsId) ||
+      (stop.parentStation &&
+        includesAndRemove(viaPoints, stop.parentStation.gtfsId)));
+  let nextLegStartsWithIntermediate = false;
+  originalLegs.forEach(originalLeg => {
+    const leg = { ...originalLeg };
+    const { intermediatePlaces } = leg;
+    if (
+      nextLegStartsWithIntermediate ||
+      (leg.transitLeg && isViaPointMatch(leg.from.stop))
+    ) {
+      leg.intermediatePlace = true;
+      nextLegStartsWithIntermediate = false;
+    }
+    if (intermediatePlaces) {
+      let start = 0;
+      let lastSplit = -1;
+      intermediatePlaces.forEach((place, i) => {
+        if (isViaPointMatch(place.stop)) {
+          const leftLeg = {
+            ...leg,
+            to: syntheticEndpoint(leg.to, place),
+            end: place.arrival,
+            intermediatePlaces: intermediatePlaces.slice(start, i),
+          };
+          leg.intermediatePlace = true;
+          leg.start = place.arrival;
+          leg.from = syntheticEndpoint(leg.from, place);
+          splitLegs.push(leftLeg);
+          start = i + 1;
+          lastSplit = i;
+        }
+      });
+      if (lastSplit >= 0) {
+        const lastPlace = intermediatePlaces[lastSplit];
+        leg.from = syntheticEndpoint(leg.from, lastPlace);
+        leg.start = lastPlace.arrival;
+        leg.intermediatePlaces = intermediatePlaces.slice(lastSplit + 1);
+      }
+    }
+    splitLegs.push(leg);
+    if (leg.transitLeg && isViaPointMatch(leg.to.stop)) {
+      nextLegStartsWithIntermediate = true;
+    }
+  });
+  return splitLegs;
 }
 /**
  * Compresses the incoming legs (affects only legs with mode BICYCLE, WALK or CITYBIKE). These are combined

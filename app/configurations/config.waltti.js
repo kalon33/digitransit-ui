@@ -136,6 +136,14 @@ export default {
 
   nearbyModeSet: 'waltti',
 
+  maxNearbyStopDistance: {
+    bus: 30000,
+    tram: 30000,
+    rail: 50000,
+    ferry: 50000,
+    citybike: 30000,
+  },
+
   redirectReittiopasParams: true,
   queryMaxAgeDays: 14,
 
@@ -281,9 +289,24 @@ export default {
     }
     return `https://waltti.fi/walttiapp/busTicket/?operator=${operatorCode}&ticketType=single&customerGroup=adult&zones=${zones}`;
   },
+  ticketButtonTextId: 'buy-in-app',
 
-  analyticsScript: function createAnalyticsScript(hostname) {
+  analyticsScript: function createAnalyticsScript(
+    hostname,
+    sendAnalyticsCustomEventGoals,
+  ) {
+    const address = sendAnalyticsCustomEventGoals
+      ? 'https://plausible.io/js/script.tagged-events.js'
+      : 'https://plausible.io/js/script.js';
     // eslint-disable-next-line no-useless-escape
-    return `<script defer data-domain="${hostname}" src="https://plausible.io/js/script.js"><\/script>\n`;
+    return `<script defer data-domain="${hostname}" src="${address}"><\/script>\n`;
+  },
+  analyticsClass: 'plausible-event-name=Ticket+Purchase+Link',
+
+  // features that should not be deployed to production
+  experimental: {
+    navigation:
+      process.env.RUN_ENV === 'development' ||
+      process.env.NODE_ENV !== 'production',
   },
 };

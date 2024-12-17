@@ -18,6 +18,7 @@ const planConnection = graphql`
     $first: Int
     $before: String
     $last: Int
+    $via: [PlanViaLocationInput!]
   ) {
     plan: planConnection(
       dateTime: $datetime
@@ -28,6 +29,7 @@ const planConnection = graphql`
       origin: $fromPlace
       destination: $toPlace
       modes: $modes
+      via: $via
       preferences: {
         accessibility: { wheelchair: { enabled: $wheelchair } }
         street: {
@@ -65,15 +67,39 @@ const planConnection = graphql`
             co2
           }
           legs {
-            ...ItineraryLine_legs
+            legId: id
             mode
+            rentedBike
+            duration
             distance
             transitLeg
-            id
             interlineWithPreviousLeg
-            duration
             headsign
             realtimeState
+            alerts {
+              alertSeverityLevel
+              effectiveStartDate
+              effectiveEndDate
+              alertDescriptionText
+              alertHeaderText
+              id
+            }
+            intermediatePlaces {
+              arrival {
+                scheduledTime
+                estimated {
+                  time
+                }
+              }
+              stop {
+                gtfsId
+                lat
+                lon
+                name
+                code
+                platformCode
+              }
+            }
             start {
               scheduledTime
               estimated {
@@ -93,27 +119,50 @@ const planConnection = graphql`
               shortName
               color
               gtfsId
+              type
+              mode
+              agency {
+                name
+              }
             }
             trip {
               gtfsId
               directionId
               stoptimesForDate {
+                stop {
+                  gtfsId
+                }
                 scheduledDeparture
+                serviceDay
+              }
+              stoptimes {
+                stop {
+                  gtfsId
+                }
+                pickupType
               }
             }
             from {
               lat
               lon
+              name
+              vertexType
               stop {
                 gtfsId
                 name
                 lat
                 lon
+                vehicleMode
+                code
+                platformCode
+                zoneId
                 parentStation {
                   name
                 }
               }
               vehicleRentalStation {
+                lat
+                lon
                 stationId
                 name
                 rentalNetwork {
@@ -125,12 +174,16 @@ const planConnection = graphql`
               }
               rentalVehicle {
                 vehicleId
+                rentalNetwork {
+                  networkId
+                }
               }
             }
             to {
               lat
               lon
               name
+              vertexType
               stop {
                 gtfsId
                 name
@@ -141,11 +194,17 @@ const planConnection = graphql`
                 parentStation {
                   name
                 }
+                routes {
+                  type
+                }
               }
               vehicleParking {
                 name
               }
               vehicleRentalStation {
+                lat
+                lon
+                stationId
                 name
                 rentalNetwork {
                   networkId

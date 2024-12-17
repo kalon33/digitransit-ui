@@ -72,6 +72,7 @@ export default class Map extends React.Component {
     mergeStops: PropTypes.bool,
     leafletMapRef: PropTypes.func,
     mapRef: PropTypes.func,
+    mapLayerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
     locationPopup: PropTypes.string,
     onSelectLocation: PropTypes.func,
     bottomPadding: PropTypes.number,
@@ -86,6 +87,7 @@ export default class Map extends React.Component {
   static defaultProps = {
     animate: true,
     mapRef: null,
+    mapLayerRef: null,
     leafletMapRef: null,
     lat: undefined,
     lon: undefined,
@@ -120,15 +122,10 @@ export default class Map extends React.Component {
     if (props.mapRef) {
       props.mapRef(this);
     }
-    if (this.props.breakpoint === 'large') {
+    if (this.props.breakpoint !== 'large') {
       this.boundsOptions = {
         paddingTopLeft: [0, EXTRA_PADDING],
         paddingBottomRight: [0, (window.innerHeight - 64) / 2],
-      };
-    } else {
-      this.boundsOptions = {
-        paddingTopLeft: [0, 0],
-        paddingBottomRight: [0, 0],
       };
     }
   }
@@ -146,9 +143,6 @@ export default class Map extends React.Component {
       startClient(this.context);
     }
     this.updateZoom();
-    if (this.props.mapRef) {
-      this.props.mapRef(this);
-    }
   }
 
   // eslint-disable-next-line camelcase
@@ -192,13 +186,15 @@ export default class Map extends React.Component {
 
   // eslint-disable-next-line react/no-unused-class-component-methods
   setBottomPadding = padding => {
-    this.boundsOptions.paddingBottomRight = [
-      0,
-      Math.max(
-        Math.min(padding, window.innerHeight - 2 * EXTRA_PADDING),
-        EXTRA_PADDING,
-      ),
-    ];
+    if (this.boundsOptions) {
+      this.boundsOptions.paddingBottomRight = [
+        0,
+        Math.max(
+          Math.min(padding, window.innerHeight - 2 * EXTRA_PADDING),
+          EXTRA_PADDING,
+        ),
+      ];
+    }
   };
 
   render() {
@@ -212,11 +208,12 @@ export default class Map extends React.Component {
       geoJson,
       mapLayers,
       bottomPadding,
+      mapLayerRef,
     } = this.props;
     const { config } = this.context;
 
     const naviProps = {}; // these define map center and zoom
-    if (bottomPadding !== undefined) {
+    if (bottomPadding !== undefined && this.boundsOptions) {
       this.boundsOptions.paddingBottomRight = [
         0,
         Math.min(bottomPadding + EXTRA_PADDING, window.innerHeight - 60),
@@ -226,7 +223,7 @@ export default class Map extends React.Component {
       // bounds overrule center & zoom
       naviProps.bounds = boundWithMinimumArea(this.props.bounds); // validate
     } else if (lat && lon) {
-      if (this.boundsOptions.paddingBottomRight !== undefined) {
+      if (this.boundsOptions?.paddingBottomRight !== undefined) {
         // bounds fitting can take account the wanted padding, so convert to bounds
         naviProps.bounds = boundWithMinimumArea([[lat, lon]], zoom);
       } else {
@@ -316,7 +313,7 @@ export default class Map extends React.Component {
     };
 
     return (
-      <div>
+      <div ref={mapLayerRef}>
         <span>{this.props.topButtons}</span>
         <span
           className="overlay-mover"

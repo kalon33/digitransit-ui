@@ -2,10 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { intlShape, FormattedMessage } from 'react-intl';
 import { configShape, fareShape } from '../../util/shapes';
-
 import { renderZoneTicket } from './ZoneTicket';
 import { getAlternativeFares } from '../../util/fareUtils';
-import ExternalLink from '../ExternalLink';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
 
 export default function MobileTicketPurchaseInformation(
@@ -21,7 +19,10 @@ export default function MobileTicketPurchaseInformation(
     !fare.isUnknown,
     config.availableTickets,
   );
-  const price = `${fare.price.toFixed(2)} €`.replace('.', ',');
+  const price =
+    config.showTicketPrice && fare.price > 0
+      ? `${fare.price.toFixed(2)} €`.replace('.', ',')
+      : '';
 
   const faresInfo = () => {
     const header = `${intl.formatMessage({
@@ -40,16 +41,14 @@ export default function MobileTicketPurchaseInformation(
             defaultMessage="Mobile ticket purchase information. Buy {ticketName} for {price}"
           />
         </div>
-        <div className="ticket-type-title">{header}</div>
+        <div>{header}</div>
         <div className="ticket-type-zone">
-          <div className="fare-container">
-            <div className="ticket-identifier">
-              {config.useTicketIcons
-                ? renderZoneTicket(fare.ticketName, alternativeFares, true)
-                : fare.ticketName}
-            </div>
-
-            <div className="ticket-description">{price}</div>
+          <div className="ticket-identifier">
+            {config.useTicketIcons
+              ? renderZoneTicket(fare.ticketName, alternativeFares, true)
+              : fare.ticketName}
+            &nbsp;
+            <span className="ticket-description">{price}</span>
           </div>
         </div>
       </div>
@@ -58,21 +57,19 @@ export default function MobileTicketPurchaseInformation(
 
   return (
     <div className="itinerary-ticket-information-purchase">
-      <div className="itinerary-pinfo-ticket-type">
-        {faresInfo()}
-        <div className="app-link">
-          <ExternalLink
-            href={config.ticketPurchaseLink(
-              fare,
-              config.ticketLinkOperatorCode,
-            )}
-            onClick={() =>
-              addAnalyticsEvent({ event: 'journey_planner_open_app' })
-            }
-          >
-            <FormattedMessage id="open-app" />
-          </ExternalLink>
-        </div>
+      {faresInfo()}
+      <div className="app-link">
+        <a
+          className={config.analyticsClass}
+          onClick={() =>
+            addAnalyticsEvent({ event: 'journey_planner_open_app' })
+          }
+          href={config.ticketPurchaseLink(fare, config.ticketLinkOperatorCode)}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <FormattedMessage id={config.ticketButtonTextId} />
+        </a>
       </div>
     </div>
   );

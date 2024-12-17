@@ -286,3 +286,15 @@ export function setSavedGeolocationPermission(key, value) {
     [key]: value,
   });
 }
+
+export const setLatestNavigatorItinerary = value => {
+  setItem('latestNavigatorItinerary', value);
+};
+
+export const getLatestNavigatorItinerary = () => {
+  return getItemAsJson('latestNavigatorItinerary', '{}');
+};
+
+export const clearLatestNavigatorItinerary = () => {
+  setItem('latestNavigatorItinerary', {});
+};
