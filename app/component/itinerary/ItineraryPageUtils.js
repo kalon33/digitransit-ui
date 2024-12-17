@@ -428,14 +428,27 @@ export function filterItineraries(edges, modes) {
 /**
  * Pick combination of itineraries for bike and transit
  */
-export function mergeBikeTransitPlans(bikeParkPlan, bikeTransitPlan) {
+export function mergeBikeTransitPlans(
+  bikeDirectPlan,
+  bikeParkPlan,
+  bikeTransitPlan,
+) {
+  const bikeDirectPlanEdges = bikeDirectPlan?.edges || [];
   // filter plain walking / biking away, and also no biking
   const bikeParkEdges = transitEdges(bikeParkPlan?.edges).filter(
     i => getTotalBikingDistance(i.node) > 0,
   );
-  const bikePublicEdges = transitEdges(bikeTransitPlan?.edges).filter(
+  let bikePublicEdges = transitEdges(bikeTransitPlan?.edges).filter(
     i => getTotalBikingDistance(i.node) > 0,
   );
+
+  // If the bike direct plan has a shorter duration than a transit plan, the transit plan is filtered out.
+  if (bikeDirectPlanEdges.length === 1) {
+    bikePublicEdges = bikePublicEdges.filter(
+      itinerary =>
+        itinerary.node.duration <= bikeDirectPlanEdges[0].node.duration,
+    );
+  }
 
   // show 6 bike + transit itineraries, preferably 3 of both kind.
   // If there is not enough of a kind, take more from the other kind
@@ -470,14 +483,22 @@ export function mergeBikeTransitPlans(bikeParkPlan, bikeTransitPlan) {
 /**
  * Merge the direct car plan with the car transit plan.
  */
-export function mergeCarDirectAndTransitPlans(carPlan, carTransitPlan) {
-  const carPlanEdges = carPlan?.edges || [];
-  const carPublicEdges = carTransitPlan?.edges || [];
+export function mergeCarDirectAndTransitPlans(carDirectPlan, carTransitPlan) {
+  const carDirectPlanEdges = carDirectPlan?.edges || [];
+  let carPublicEdges = carTransitPlan?.edges || [];
+
+  // If the car direct plan has a shorter duration than a transit plan, the transit plan is filtered out.
+  if (carDirectPlanEdges.length === 1) {
+    carPublicEdges = carPublicEdges.filter(
+      itinerary =>
+        itinerary.node.duration <= carDirectPlanEdges[0].node.duration,
+    );
+  }
 
   return {
     searchDateTime: carTransitPlan.searchDateTime,
-    edges: [...carPlanEdges, ...carPublicEdges],
-    carDirectItineraryCount: carPlanEdges.length,
+    edges: [...carDirectPlanEdges, ...carPublicEdges],
+    carDirectItineraryCount: carDirectPlanEdges.length,
     carPublicItineraryCount: carPublicEdges.length,
   };
 }

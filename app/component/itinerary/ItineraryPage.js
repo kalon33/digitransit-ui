@@ -836,16 +836,19 @@ export default function ItineraryPage(props, context) {
   // merge two separate bike + transit plans into one
   useEffect(() => {
     if (
+      altStates[PLANTYPE.BIKE][0].loading === LOADSTATE.DONE &&
       altStates[PLANTYPE.BIKEPARK][0].loading === LOADSTATE.DONE &&
       altStates[PLANTYPE.BIKETRANSIT][0].loading === LOADSTATE.DONE
     ) {
       const plan = mergeBikeTransitPlans(
+        altStates[PLANTYPE.BIKE][0].plan,
         altStates[PLANTYPE.BIKEPARK][0].plan,
         altStates[PLANTYPE.BIKETRANSIT][0].plan,
       );
       setBikePublicState({ plan });
     }
   }, [
+    altStates[PLANTYPE.BIKE][0].plan,
     altStates[PLANTYPE.BIKEPARK][0].plan,
     altStates[PLANTYPE.BIKETRANSIT][0].plan,
   ]);
