@@ -133,6 +133,7 @@ const planConnection = graphql`
                   gtfsId
                 }
                 scheduledDeparture
+                serviceDay
               }
               stoptimes {
                 stop {
