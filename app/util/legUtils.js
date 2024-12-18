@@ -122,6 +122,7 @@ export const LegMode = {
   Walk: 'WALK',
   Car: 'CAR',
   Rail: 'RAIL',
+  Wait: 'WAIT',
 };
 
 /**
