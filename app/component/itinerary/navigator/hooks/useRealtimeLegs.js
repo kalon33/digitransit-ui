@@ -2,7 +2,11 @@ import polyUtil from 'polyline-encoded';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { fetchQuery } from 'react-relay';
 import { GeodeticToEcef, GeodeticToEnu } from '../../../../util/geo-utils';
-import { legTime, isAnyLegPropertyIdentical } from '../../../../util/legUtils';
+import {
+  isAnyLegPropertyIdentical,
+  legTime,
+  LegMode,
+} from '../../../../util/legUtils';
 import { epochToIso } from '../../../../util/timeUtils';
 import { legQuery } from '../../queries/LegQuery';
 
@@ -87,8 +91,8 @@ function matchLegEnds(legs) {
   }
 }
 
-function getLegsOfInterest(legs, time, previousFinishedLeg) {
-  if (!legs?.length) {
+function getLegsOfInterest(initialLegs, time, previousFinishedLeg) {
+  if (!initialLegs?.length) {
     return {
       firstLeg: undefined,
       lastLeg: undefined,
@@ -97,18 +101,28 @@ function getLegsOfInterest(legs, time, previousFinishedLeg) {
     };
   }
 
-  const firstLeg = legs[0];
-  const lastLeg = legs[legs.length - 1];
+  const legs = initialLegs.reduce((acc, curr, i, arr) => {
+    acc.push(curr);
+    const next = arr[i + 1];
+
+    // A wait leg is added, if next leg exists but it does not start when current ends
+    if (next && legTime(curr.end) !== legTime(next.start)) {
+      acc.push({ mode: LegMode.Wait, start: curr.end, end: next.start });
+    }
+
+    return acc;
+  }, []);
+
   const nextLegIdx = legs.findIndex(({ start }) => legTime(start) > time);
-  const currentLegIdx = legs.findIndex(
+  let currentLeg = legs.find(
     ({ start, end }) => legTime(start) <= time && legTime(end) >= time,
   );
-
   let previousLeg = legs.findLast(({ end }) => legTime(end) < time);
   let nextLeg = legs[nextLegIdx];
-  let currentLeg = legs[currentLegIdx];
 
+  // Indices are shifted by one if a previously completed leg reappears as current.
   if (
+    nextLeg &&
     isAnyLegPropertyIdentical(currentLeg, previousFinishedLeg, [
       'legId',
       'legGeometry.points',
@@ -119,12 +133,13 @@ function getLegsOfInterest(legs, time, previousFinishedLeg) {
     nextLeg = legs[nextLegIdx + 1];
   }
 
+  // return wait legs as undefined as they are not a global concept
   return {
-    firstLeg,
-    lastLeg,
-    previousLeg,
-    currentLeg,
-    nextLeg,
+    firstLeg: legs[0],
+    lastLeg: legs[legs.length - 1],
+    previousLeg: previousLeg?.mode === LegMode.Wait ? undefined : previousLeg,
+    currentLeg: currentLeg?.mode === LegMode.Wait ? undefined : currentLeg,
+    nextLeg: nextLeg?.mode === LegMode.Wait ? undefined : nextLeg,
   };
 }
 
