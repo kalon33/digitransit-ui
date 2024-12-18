@@ -25,8 +25,13 @@ export default function NaviInstructions(
       origin,
       time,
     );
-    const duration = leg.duration * remainingTraversal;
     const distance = leg.distance * remainingTraversal;
+    let duration = leg.duration * remainingTraversal;
+    const maxDur = (legTime(leg.end) - time) / 1000;
+    if (maxDur < duration) {
+      // duration cannot exceed available time
+      duration = maxDur;
+    }
 
     return (
       <>
