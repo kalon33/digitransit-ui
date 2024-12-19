@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { createRef, useLayoutEffect, useState } from 'react';
 import { graphql, createFragmentContainer } from 'react-relay';
 import { FormattedMessage, intlShape } from 'react-intl';
 import {
@@ -83,6 +83,7 @@ export function RouteLeg(
     interliningWithRoute,
     fitRouteNumber,
     withBicycle,
+    withCar,
     hasOneTransitLeg,
   },
   { config },
@@ -126,6 +127,7 @@ export function RouteLeg(
         withBar
         isTransitLeg={isTransitLeg}
         withBicycle={withBicycle}
+        withCar={withCar}
         occupancyStatus={getOccupancyStatus()}
       />
     );
@@ -150,6 +152,7 @@ RouteLeg.propTypes = {
   interliningWithRoute: PropTypes.string,
   isTransitLeg: PropTypes.bool,
   withBicycle: PropTypes.bool.isRequired,
+  withCar: PropTypes.bool.isRequired,
   hasOneTransitLeg: PropTypes.bool,
 };
 
@@ -277,7 +280,10 @@ const Itinerary = (
     leg => getLegMode(leg) === 'BICYCLE' && leg.rentedBike === false,
   );
   const usingOwnBicycleWholeTrip =
-    usingOwnBicycle && itinerary.legs.every(leg => !leg.to?.vehicleParking);
+    usingOwnBicycle && itinerary.legs.every(leg => !leg.to.vehicleParking);
+  const usingOwnCar = itinerary.legs.some(leg => getLegMode(leg) === 'CAR');
+  const usingOwnCarWholeTrip =
+    usingOwnCar && itinerary.legs.every(leg => !leg.to.vehicleParking);
   const { refTime } = props;
   const startTime = Date.parse(itinerary.start);
   const endTime = Date.parse(itinerary.end);
@@ -559,6 +565,9 @@ const Itinerary = (
       const withBicycle =
         usingOwnBicycleWholeTrip &&
         config.bikeBoardingModes[leg.route.mode] !== undefined;
+      const withCar =
+        usingOwnCarWholeTrip &&
+        config.carBoardingModes[leg.route.mode] !== undefined;
       if (
         previousLeg &&
         !previousLeg.intermediatePlace &&
@@ -584,6 +593,7 @@ const Itinerary = (
             legLength={legLength}
             large={breakpoint === 'large'}
             withBicycle={withBicycle}
+            withCar={withCar}
             hasOneTransitLeg={hasOneTransitLeg(itinerary)}
           />,
         );
@@ -614,6 +624,7 @@ const Itinerary = (
           isTransitLeg={false}
           mode="WAIT"
           large={breakpoint === 'large'}
+          icon={usingOwnCarWholeTrip ? 'icon-icon_wait-car' : undefined}
         />,
       );
     }
@@ -825,6 +836,20 @@ const Itinerary = (
     co2value !== null &&
     co2value >= 0 &&
     !containsScooterLeg;
+
+  const itineraryContainerOverflowRef = createRef();
+  const [showOverflowIcon, setShowOverflowIcon] = useState(false);
+  useLayoutEffect(() => {
+    // If the itinerary length exceeds its boundaries an icon with dots is displayed.
+    if (
+      itineraryContainerOverflowRef.current.clientWidth <
+      itineraryContainerOverflowRef.current.scrollWidth
+    ) {
+      setShowOverflowIcon(true);
+    } else {
+      setShowOverflowIcon(false);
+    }
+  }, [itineraryContainerOverflowRef]);
   return (
     <span role="listitem" className={classes} aria-atomic="true">
       <h3 className="sr-only">
@@ -899,10 +924,19 @@ const Itinerary = (
               aria-hidden="true"
             >
               <div
-                className="itinerary-legs"
+                className={cx(
+                  'itinerary-legs',
+                  showOverflowIcon ? 'overflow-icon' : '',
+                )}
                 style={{ '--plus': `${iconLegsInPercents}%` }}
+                ref={itineraryContainerOverflowRef}
               >
                 {legs}
+              </div>
+              <div className="overflow-icon-container">
+                {showOverflowIcon && (
+                  <Icon img="icon-icon_three-dots" className="overflow-icon" />
+                )}
               </div>
             </div>
             <div
