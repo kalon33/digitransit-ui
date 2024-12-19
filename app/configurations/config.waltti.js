@@ -303,6 +303,8 @@ export default {
   },
   analyticsClass: 'plausible-event-name=Ticket+Purchase+Link',
 
+  viaPointsEnabled: false,
+
   // features that should not be deployed to production
   experimental: {
     navigation:
