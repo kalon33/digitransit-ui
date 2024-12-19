@@ -25,13 +25,7 @@ export default function NaviInstructions(
       origin,
       time,
     );
-    const distance = leg.distance * remainingTraversal;
-    let duration = leg.duration * remainingTraversal;
-    const maxDur = (legTime(leg.end) - time) / 1000;
-    if (maxDur < duration) {
-      // duration cannot exceed available time
-      duration = maxDur;
-    }
+    const distance = remainingTraversal * leg.distance;
 
     return (
       <>
@@ -42,8 +36,8 @@ export default function NaviInstructions(
         </div>
 
         <div className={cx('duration', { realtime: !!position })}>
-          {displayDistance(distance, config, intl.formatNumber)} (
-          {durationToString(duration * 1000)})
+          {displayDistance(distance, config, intl.formatNumber)}
+          {durationToString(legTime(leg.end) - time)}
         </div>
       </>
     );

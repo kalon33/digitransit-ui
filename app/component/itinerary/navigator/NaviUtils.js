@@ -91,10 +91,8 @@ export function getRemainingTraversal(leg, pos, origin, time) {
     return 1.0 - traversed;
   }
   // estimate from elapsed time
-  return Math.min(
-    Math.max((legTime(leg.end) - time) / (leg.duration * 1000), 0),
-    1.0,
-  );
+  const duration = Math.max(legTime(leg.end) - legTime(leg.start), 1); // min 1 ms
+  return Math.min(Math.max((legTime(leg.end) - time) / duration, 0), 1.0);
 }
 
 function findTransferProblems(legs, time, position, origin) {
