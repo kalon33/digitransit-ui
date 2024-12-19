@@ -1103,6 +1103,7 @@ export default function ItineraryPage(props, context) {
         objectsToHide={objectsToHide}
         itinerary={explicitItinerary}
         showBackButton={!naviMode}
+        isLocationPopupEnabled={!naviMode}
       />
     );
   }
