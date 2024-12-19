@@ -428,27 +428,14 @@ export function filterItineraries(edges, modes) {
 /**
  * Pick combination of itineraries for bike and transit
  */
-export function mergeBikeTransitPlans(
-  bikeDirectPlan,
-  bikeParkPlan,
-  bikeTransitPlan,
-) {
-  const bikeDirectPlanEdges = bikeDirectPlan?.edges || [];
+export function mergeBikeTransitPlans(bikeParkPlan, bikeTransitPlan) {
   // filter plain walking / biking away, and also no biking
   const bikeParkEdges = transitEdges(bikeParkPlan?.edges).filter(
     i => getTotalBikingDistance(i.node) > 0,
   );
-  let bikePublicEdges = transitEdges(bikeTransitPlan?.edges).filter(
+  const bikePublicEdges = transitEdges(bikeTransitPlan?.edges).filter(
     i => getTotalBikingDistance(i.node) > 0,
   );
-
-  // If the bike direct plan has a shorter duration than a transit plan, the transit plan is filtered out.
-  if (bikeDirectPlanEdges.length === 1) {
-    bikePublicEdges = bikePublicEdges.filter(
-      itinerary =>
-        itinerary.node.duration <= bikeDirectPlanEdges[0].node.duration,
-    );
-  }
 
   // show 6 bike + transit itineraries, preferably 3 of both kind.
   // If there is not enough of a kind, take more from the other kind
