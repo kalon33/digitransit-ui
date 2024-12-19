@@ -107,7 +107,13 @@ function getLegsOfInterest(initialLegs, time, previousFinishedLeg) {
 
     // A wait leg is added, if next leg exists but it does not start when current ends
     if (next && legTime(curr.end) !== legTime(next.start)) {
-      acc.push({ mode: LegMode.Wait, start: curr.end, end: next.start });
+      acc.push({
+        id: null,
+        legGeometry: { points: null },
+        mode: LegMode.Wait,
+        start: curr.end,
+        end: next.start,
+      });
     }
 
     return acc;
@@ -122,7 +128,6 @@ function getLegsOfInterest(initialLegs, time, previousFinishedLeg) {
 
   // Indices are shifted by one if a previously completed leg reappears as current.
   if (
-    nextLeg &&
     isAnyLegPropertyIdentical(currentLeg, previousFinishedLeg, [
       'legId',
       'legGeometry.points',
@@ -130,16 +135,15 @@ function getLegsOfInterest(initialLegs, time, previousFinishedLeg) {
   ) {
     previousLeg = currentLeg;
     currentLeg = nextLeg;
-    nextLeg = legs[nextLegIdx + 1];
+    nextLeg = nextLegIdx !== -1 ? legs[nextLegIdx + 1] : undefined;
   }
 
-  // return wait legs as undefined as they are not a global concept
   return {
     firstLeg: legs[0],
     lastLeg: legs[legs.length - 1],
-    previousLeg: previousLeg?.mode === LegMode.Wait ? undefined : previousLeg,
-    currentLeg: currentLeg?.mode === LegMode.Wait ? undefined : currentLeg,
-    nextLeg: nextLeg?.mode === LegMode.Wait ? undefined : nextLeg,
+    previousLeg,
+    currentLeg,
+    nextLeg,
   };
 }
 
@@ -234,15 +238,16 @@ const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
 
   previousFinishedLeg.current = previousLeg;
 
+  // return wait legs as undefined as they are not a global concept
   return {
     realTimeLegs,
     time,
     origin,
     firstLeg,
     lastLeg,
-    previousLeg,
-    currentLeg,
-    nextLeg,
+    previousLeg: previousLeg?.mode === LegMode.Wait ? undefined : previousLeg,
+    currentLeg: currentLeg?.mode === LegMode.Wait ? undefined : currentLeg,
+    nextLeg: nextLeg?.mode === LegMode.Wait ? undefined : nextLeg,
   };
 };
 
