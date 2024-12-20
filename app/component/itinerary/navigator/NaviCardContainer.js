@@ -86,13 +86,14 @@ function NaviCardContainer(
   };
 
   // track only relevant vehicles for the journey.
-  const topics = getTopics(
-    legs.filter(leg => legTime(leg.end) >= time),
-    config,
-  );
+  const getNaviTopics = () =>
+    getTopics(
+      legs.filter(leg => legTime(leg.end) >= time),
+      config,
+    );
 
   useEffect(() => {
-    updateClient(topics, context);
+    updateClient(getNaviTopics(), context);
   }, []);
 
   useEffect(() => {
@@ -129,7 +130,7 @@ function NaviCardContainer(
     }
     let timeoutId;
     if (legChanged) {
-      updateClient(topics, context);
+      updateClient(getNaviTopics(), context);
       setCardExpanded(false);
       setLegChanging(true);
       timeoutId = setTimeout(() => {
