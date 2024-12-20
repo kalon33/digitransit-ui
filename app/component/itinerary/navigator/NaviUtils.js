@@ -2,8 +2,8 @@ import React from 'react';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
 import { FormattedMessage } from 'react-intl';
 import { GeodeticToEnu } from '../../../util/geo-utils';
-import { legTime } from '../../../util/legUtils';
-import { timeStr } from '../../../util/timeUtils';
+import { legTime, legTimeAcc } from '../../../util/legUtils';
+import { timeStr, epochToIso } from '../../../util/timeUtils';
 import { getFaresFromLegs } from '../../../util/fareUtils';
 import { ExtendedRouteTypes } from '../../../constants';
 import { getItineraryPagePath } from '../../../util/path';
@@ -12,6 +12,15 @@ const TRANSFER_SLACK = 60000;
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
 
 export const DESTINATION_RADIUS = 20; // meters
+
+export function summaryString(legs, time) {
+  const parts = epochToIso(time).split('T')[1].split('+');
+  let msg = `${parts[0]}: `;
+  legs.forEach(l => {
+    msg += ` ${legTimeAcc(l.start)}-${legTimeAcc(l.end)}`;
+  });
+  return msg;
+}
 
 function dist(p1, p2) {
   const dx = p2.x - p1.x;

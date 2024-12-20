@@ -36,7 +36,7 @@ export default function NaviInstructions(
         </div>
 
         <div className={cx('duration', { realtime: !!position })}>
-          {displayDistance(distance, config, intl.formatNumber)}
+          {displayDistance(distance, config, intl.formatNumber)}&nbsp;
           {durationToString(legTime(leg.end) - time)}
         </div>
       </>
