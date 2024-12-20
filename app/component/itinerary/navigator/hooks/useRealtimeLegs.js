@@ -1,8 +1,12 @@
 import polyUtil from 'polyline-encoded';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { fetchQuery } from 'react-relay';
 import { GeodeticToEcef, GeodeticToEnu } from '../../../../util/geo-utils';
-import { legTime } from '../../../../util/legUtils';
+import {
+  isAnyLegPropertyIdentical,
+  legTime,
+  LegMode,
+} from '../../../../util/legUtils';
 import { epochToIso } from '../../../../util/timeUtils';
 import { legQuery } from '../../queries/LegQuery';
 
@@ -87,8 +91,8 @@ function matchLegEnds(legs) {
   }
 }
 
-function getLegsOfInterest(legs, time) {
-  if (!legs?.length) {
+function getLegsOfInterest(initialLegs, time, previousFinishedLeg) {
+  if (!initialLegs?.length) {
     return {
       firstLeg: undefined,
       lastLeg: undefined,
@@ -97,17 +101,46 @@ function getLegsOfInterest(legs, time) {
     };
   }
 
-  const firstLeg = legs[0];
-  const lastLeg = legs[legs.length - 1];
-  const nextLeg = legs.find(({ start }) => legTime(start) > time);
-  const previousLeg = legs.findLast(({ end }) => legTime(end) < time);
-  const currentLeg = legs.find(
+  const legs = initialLegs.reduce((acc, curr, i, arr) => {
+    acc.push(curr);
+    const next = arr[i + 1];
+
+    // A wait leg is added, if next leg exists but it does not start when current ends
+    if (next && legTime(curr.end) !== legTime(next.start)) {
+      acc.push({
+        id: null,
+        legGeometry: { points: null },
+        mode: LegMode.Wait,
+        start: curr.end,
+        end: next.start,
+      });
+    }
+
+    return acc;
+  }, []);
+
+  const nextLegIdx = legs.findIndex(({ start }) => legTime(start) > time);
+  let currentLeg = legs.find(
     ({ start, end }) => legTime(start) <= time && legTime(end) >= time,
   );
+  let previousLeg = legs.findLast(({ end }) => legTime(end) < time);
+  let nextLeg = legs[nextLegIdx];
+
+  // Indices are shifted by one if a previously completed leg reappears as current.
+  if (
+    isAnyLegPropertyIdentical(currentLeg, previousFinishedLeg, [
+      'legId',
+      'legGeometry.points',
+    ])
+  ) {
+    previousLeg = currentLeg;
+    currentLeg = nextLeg;
+    nextLeg = nextLegIdx !== -1 ? legs[nextLegIdx + 1] : undefined;
+  }
 
   return {
-    firstLeg,
-    lastLeg,
+    firstLeg: legs[0],
+    lastLeg: legs[legs.length - 1],
     previousLeg,
     currentLeg,
     nextLeg,
@@ -117,6 +150,7 @@ function getLegsOfInterest(legs, time) {
 const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
   const [realTimeLegs, setRealTimeLegs] = useState();
   const [time, setTime] = useState(Date.now());
+  const previousFinishedLeg = useRef(undefined);
 
   const origin = useMemo(
     () => GeodeticToEcef(initialLegs[0].from.lat, initialLegs[0].from.lon),
@@ -200,17 +234,20 @@ const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
   }, [fetchAndSetRealtimeLegs]);
 
   const { firstLeg, lastLeg, currentLeg, nextLeg, previousLeg } =
-    getLegsOfInterest(realTimeLegs, time);
+    getLegsOfInterest(realTimeLegs, time, previousFinishedLeg.current);
 
+  previousFinishedLeg.current = previousLeg;
+
+  // return wait legs as undefined as they are not a global concept
   return {
     realTimeLegs,
     time,
     origin,
     firstLeg,
     lastLeg,
-    previousLeg,
-    currentLeg,
-    nextLeg,
+    previousLeg: previousLeg?.mode === LegMode.Wait ? undefined : previousLeg,
+    currentLeg: currentLeg?.mode === LegMode.Wait ? undefined : currentLeg,
+    nextLeg: nextLeg?.mode === LegMode.Wait ? undefined : nextLeg,
   };
 };
 

@@ -92,6 +92,7 @@ function NaviContainer(
         firstLeg={firstLeg}
         lastLeg={lastLeg}
         isJourneyCompleted={isJourneyCompleted}
+        previousLeg={previousLeg}
       />
       {isJourneyCompleted && isNavigatorIntroDismissed && (
         <NavigatorOutroModal
