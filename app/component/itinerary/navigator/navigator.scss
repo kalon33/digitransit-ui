@@ -48,6 +48,15 @@
   &.slide-out {
     animation: slideUpToTop 3s ease-out forwards;
   }
+
+  &.hide-card {
+    animation: hideTopCard 3s ease-out forwards;
+    pointer-events: none;
+  }
+
+  &.show-card {
+    animation: slideDownFromTop 3s ease-out forwards;
+  }
 }
 
 .navitop {
@@ -600,6 +609,16 @@
 
   to {
     transform: translateY(0);
+  }
+}
+
+@keyframes hideTopCard {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-100%);
   }
 }
 

@@ -24,6 +24,26 @@ function addMessages(incominMessages, newMessages) {
     incominMessages.set(m.id, m);
   });
 }
+
+const handleLegChange = (leg, firstLeg, time) => {
+  let legType;
+  if (time < legTime(firstLeg.start)) {
+    legType = LEGTYPE.PENDING;
+  } else if (leg) {
+    if (!leg.transitLeg) {
+      if (leg.current >= TIME_AT_DESTINATION) {
+        legType = LEGTYPE.WAIT;
+      } else {
+        legType = LEGTYPE.MOVE;
+      }
+    } else {
+      legType = LEGTYPE.TRANSIT;
+    }
+  } else {
+    legType = LEGTYPE.WAIT;
+  }
+  return legType;
+};
 function NaviCardContainer(
   {
     focusToLeg,
@@ -45,8 +65,7 @@ function NaviCardContainer(
   const [messages, setMessages] = useState(new Map());
   // notifications that are shown to the user.
   const [activeMessages, setActiveMessages] = useState([]);
-  const [topPosition, setTopPosition] = useState(0);
-
+  const [legChanging, setLegChanging] = useState(false);
   const legRef = useRef(currentLeg);
   const focusRef = useRef(false);
   // Destination counter. How long user has been at the destination. * 10 seconds
@@ -72,14 +91,6 @@ function NaviCardContainer(
   useEffect(() => {
     updateClient(topics, context);
   }, []);
-
-  useEffect(() => {
-    if (cardRef.current) {
-      const contentHeight = cardRef.current.getBoundingClientRect();
-      // Navistack top position depending on main card height.
-      setTopPosition(contentHeight.bottom + TOPBAR_PADDING);
-    }
-  }, [currentLeg, cardExpanded]);
 
   useEffect(() => {
     const incomingMessages = new Map();
@@ -116,6 +127,10 @@ function NaviCardContainer(
     if (legChanged) {
       updateClient(topics, context);
       setCardExpanded(false);
+      setLegChanging(true);
+      setTimeout(() => {
+        setLegChanging(false);
+      }, 3000);
       if (currentLeg) {
         focusToLeg?.(currentLeg);
       }
@@ -163,30 +178,23 @@ function NaviCardContainer(
     }
   }, [time]);
 
-  let legType;
-
-  if (time < legTime(firstLeg.start)) {
-    legType = LEGTYPE.PENDING;
-  } else if (currentLeg) {
-    if (!currentLeg.transitLeg) {
-      if (destCountRef.current >= TIME_AT_DESTINATION) {
-        legType = LEGTYPE.WAIT;
-      } else {
-        legType = LEGTYPE.MOVE;
-      }
-    } else {
-      legType = LEGTYPE.TRANSIT;
-    }
-  } else {
-    legType = LEGTYPE.WAIT;
-  }
+  // LegChange fires animation, we need to keep the old data until card goes ot of the view.
+  const l = legChanging ? lastLeg : currentLeg;
+  const legType = handleLegChange(l, firstLeg, time);
 
   const containerTopPosition =
     mapLayerRef.current.getBoundingClientRect().top + TOPBAR_PADDING;
-
+  let className;
+  if (isJourneyCompleted) {
+    className = 'slide-out';
+  } else if (legChanging) {
+    className = 'hide-card';
+  } else {
+    className = 'show-card';
+  }
   return (
     <div
-      className={`navi-card-container ${isJourneyCompleted ? 'slide-out' : ''}`}
+      className={`navi-card-container ${className}`}
       style={{ top: containerTopPosition }}
     >
       <button
@@ -197,7 +205,7 @@ function NaviCardContainer(
       >
         <div className="content">
           <NaviCard
-            leg={currentLeg}
+            leg={l}
             nextLeg={nextLeg}
             cardExpanded={cardExpanded}
             legType={legType}
@@ -209,11 +217,7 @@ function NaviCardContainer(
         </div>
       </button>
       {activeMessages.length > 0 && (
-        <NaviStack
-          messages={activeMessages}
-          handleRemove={handleRemove}
-          topPosition={topPosition}
-        />
+        <NaviStack messages={activeMessages} handleRemove={handleRemove} />
       )}
     </div>
   );
