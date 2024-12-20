@@ -1,3 +1,5 @@
+$fixed-width-padding: 16px;
+
 .navi-start-container {
   padding: 0 10px;
 
@@ -69,7 +71,7 @@
   align-items: center;
   letter-spacing: -0.3px;
   box-shadow: 0 2px 4px 0 rgba(51, 51, 51, 0.2);
-  width: calc(100vw - var(--space-s) * 2);
+  width: calc(100vw - #{$fixed-width-padding});
 
   &.expanded {
     max-height: unset;
@@ -373,7 +375,7 @@
   position: fixed;
   height: 69px;
   letter-spacing: -0.3px;
-  width: calc(100% - var(--space-s) * 2);
+  width: calc(100% - #{$fixed-width-padding});
   margin-right: 8px;
   margin-left: 8px;
 
