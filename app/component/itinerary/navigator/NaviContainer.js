@@ -73,7 +73,7 @@ function NaviContainer(
 
   if (LEGLOG) {
     // eslint-disable-next-line
-    console.log(summaryString(realTimeLegs, time), previousLeg?.mode, currentLeg?.mode, nextLeg?.mode);
+    console.log(...summaryString(realTimeLegs, time, previousLeg, currentLeg, nextLeg));
   }
 
   return (

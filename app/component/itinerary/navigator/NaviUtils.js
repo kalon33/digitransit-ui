@@ -13,13 +13,26 @@ const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
 
 export const DESTINATION_RADIUS = 20; // meters
 
-export function summaryString(legs, time) {
+export function summaryString(legs, time, previousLeg, currentLeg, nextLeg) {
   const parts = epochToIso(time).split('T')[1].split('+');
-  let msg = `${parts[0]}: `;
+  let msg = `${parts[0]}`;
+  const colors = [];
+
   legs.forEach(l => {
-    msg += ` ${legTimeAcc(l.start)}-${legTimeAcc(l.end)}`;
+    if (legTime(l.start) <= time && time <= legTime(l.end)) {
+      colors.push('color:green');
+    } else if (l.transitLeg) {
+      colors.push('color: #aaaaff');
+    } else {
+      colors.push('color: #aaaaaa');
+    }
+    msg += `%c ${legTimeAcc(l.start)}-${legTimeAcc(l.end)}`;
   });
-  return msg;
+  colors.push('color: #bbbbbb');
+  msg += `%c ${previousLeg?.mode} ${currentLeg?.mode} ${nextLeg?.mode}`;
+  colors.unshift(msg);
+
+  return colors;
 }
 
 function dist(p1, p2) {
