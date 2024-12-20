@@ -130,7 +130,7 @@ function NaviCardContainer(
       setLegChanging(true);
       setTimeout(() => {
         setLegChanging(false);
-      }, 3000);
+      }, 2000);
       if (currentLeg) {
         focusToLeg?.(currentLeg);
       }
@@ -213,6 +213,7 @@ function NaviCardContainer(
             time={time}
             position={position}
             origin={origin}
+            legChanging={legChanging}
           />
         </div>
       </button>

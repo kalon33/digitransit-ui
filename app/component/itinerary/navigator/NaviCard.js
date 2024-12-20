@@ -26,7 +26,17 @@ const iconMap = {
 };
 
 export default function NaviCard(
-  { leg, nextLeg, legType, cardExpanded, startTime, time, position, origin },
+  {
+    leg,
+    nextLeg,
+    legType,
+    cardExpanded,
+    startTime,
+    time,
+    position,
+    origin,
+    legChanging,
+  },
   { config },
 ) {
   if (legType === LEGTYPE.PENDING) {
@@ -79,6 +89,7 @@ export default function NaviCard(
             time={time}
             position={position}
             origin={origin}
+            legChanging={legChanging}
           />
         </div>
         <div type="button" className="navitop-arrow">
@@ -115,6 +126,8 @@ NaviCard.propTypes = {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
   }).isRequired,
+  // Hide distance and duration caluclation when legchange animation is running
+  legChanging: PropTypes.bool,
 };
 NaviCard.defaultProps = {
   cardExpanded: false,
@@ -122,6 +135,7 @@ NaviCard.defaultProps = {
   nextLeg: undefined,
   startTime: '',
   position: undefined,
+  legChanging: false,
 };
 
 NaviCard.contextTypes = {

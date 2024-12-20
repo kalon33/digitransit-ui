@@ -50,12 +50,12 @@
   }
 
   &.hide-card {
-    animation: hideTopCard 3s ease-out forwards;
+    animation: hideTopCard 2s ease-out forwards;
     pointer-events: none;
   }
 
   &.show-card {
-    animation: slideDownFromTop 3s ease-out forwards;
+    animation: slideDownFromTop 2s ease-out forwards;
   }
 }
 
