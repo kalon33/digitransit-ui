@@ -403,7 +403,7 @@ export default {
     FERRY: { showNotification: true },
   },
 
-  disabledLegTextModes: ['FERRY'],
+  disabledLegTextModes: ['ferry'],
 
   // Include both bike and park and bike and public, if bike is enabled
   includePublicWithBikePlan: true,

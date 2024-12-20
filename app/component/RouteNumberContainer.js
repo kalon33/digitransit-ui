@@ -24,12 +24,8 @@ const RouteNumberContainer = (
       isCallAgency={isCallAgency}
       color={route.color ? `#${route.color}` : null}
       mode={mode !== undefined ? mode : route.mode}
-      text={
-        config.disabledLegTextModes?.includes(route.mode) &&
-        className.includes('line')
-          ? ''
-          : getLegText(route, config, interliningWithRoute)
-      }
+      text={getLegText(route, config, interliningWithRoute)}
+      isInItineraryList
       occupancyStatus={occupancyStatus}
       {...props}
     />
