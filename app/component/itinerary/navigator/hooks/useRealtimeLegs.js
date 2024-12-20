@@ -40,8 +40,8 @@ function scaleLegs(legs, i1, i2, k) {
     const leg = legs[j];
     const s = legTime(leg.start);
     const e = legTime(leg.end);
-    leg.start.scheduledTime = epochToIso(s + k * (s - base));
-    leg.end.scheduledTime = epochToIso(e + k * (e - base));
+    leg.start.scheduledTime = epochToIso(base + k * (s - base));
+    leg.end.scheduledTime = epochToIso(base + k * (e - base));
   }
 }
 
