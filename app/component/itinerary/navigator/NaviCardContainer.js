@@ -56,6 +56,7 @@ function NaviCardContainer(
     nextLeg,
     firstLeg,
     lastLeg,
+    previousLeg,
     isJourneyCompleted,
   },
   context,
@@ -179,7 +180,7 @@ function NaviCardContainer(
   }, [time]);
 
   // LegChange fires animation, we need to keep the old data until card goes ot of the view.
-  const l = legChanging ? lastLeg : currentLeg;
+  const l = legChanging ? previousLeg : currentLeg;
   const legType = handleLegChange(l, firstLeg, time);
 
   const containerTopPosition =
@@ -242,6 +243,7 @@ NaviCardContainer.propTypes = {
   nextLeg: legShape,
   firstLeg: legShape,
   lastLeg: legShape,
+  previousLeg: legShape,
   isJourneyCompleted: PropTypes.bool,
 
   /*
@@ -256,6 +258,7 @@ NaviCardContainer.defaultProps = {
   nextLeg: undefined,
   firstLeg: undefined,
   lastLeg: undefined,
+  previousLeg: undefined,
   isJourneyCompleted: false,
 };
 
