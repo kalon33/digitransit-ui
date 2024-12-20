@@ -11,7 +11,7 @@ import { durationToString } from '../../../util/timeUtils';
 import { getRouteMode } from '../../../util/modeUtils';
 
 export default function NaviInstructions(
-  { leg, nextLeg, instructions, legType, time, position, origin, legChanging },
+  { leg, nextLeg, instructions, legType, time, position, origin },
   { intl, config },
 ) {
   const withRealTime = (rt, children) => (
@@ -36,12 +36,10 @@ export default function NaviInstructions(
           {legDestination(intl, leg, null, nextLeg)}
         </div>
 
-        {!legChanging && (
-          <div className={cx('duration', { realtime: !!position })}>
-            {displayDistance(distance, config, intl.formatNumber)} (
-            {durationToString(duration * 1000)})
-          </div>
-        )}
+        <div className={cx('duration', { realtime: !!position })}>
+          {displayDistance(distance, config, intl.formatNumber)} (
+          {durationToString(duration * 1000)})
+        </div>
       </>
     );
   }
@@ -147,7 +145,6 @@ NaviInstructions.propTypes = {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
   }).isRequired,
-  legChanging: PropTypes.bool,
 };
 
 NaviInstructions.defaultProps = {
@@ -155,7 +152,6 @@ NaviInstructions.defaultProps = {
   leg: undefined,
   nextLeg: undefined,
   position: undefined,
-  legChanging: false,
 };
 NaviInstructions.contextTypes = {
   intl: intlShape.isRequired,

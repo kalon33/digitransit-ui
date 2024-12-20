@@ -214,7 +214,6 @@ function NaviCardContainer(
             time={time}
             position={position}
             origin={origin}
-            legChanging={legChanging}
           />
         </div>
       </button>
