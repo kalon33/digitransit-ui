@@ -321,7 +321,7 @@ export const getItineraryAlerts = (
             <span className="header"> {alert.alertHeaderText}</span>
           </div>
         ),
-        id: alert.id,
+        id: `${alert.effectiveStartDate}-${alert.alertDescriptionText}`,
       }));
   });
   const abortTrip = <FormattedMessage id="navigation-abort-trip" />;
@@ -368,6 +368,7 @@ export const getItineraryAlerts = (
           content,
           id: `canceled-${legId}`,
           hideClose: true,
+          expiresOn: alert.effectiveEndDate * 1000,
         });
       }
     });
