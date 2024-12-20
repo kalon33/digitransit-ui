@@ -1,7 +1,48 @@
 import cloneDeep from 'lodash/cloneDeep';
 import get from 'lodash/get';
-import { BIKEAVL_UNKNOWN } from './vehicleRentalUtils';
 import { getRouteMode } from './modeUtils';
+import { BIKEAVL_UNKNOWN } from './vehicleRentalUtils';
+
+/**
+ * Gets a (nested) property value from an object
+ *
+ * @param {Object.<string, any>} obj object with properties i.e. { foo: 'bar', baz: {qux: 'quux'} }
+ * @param {string} propertyString string representation of object property i.e. foo, baz.qux
+ * @returns {Object}
+ */
+function getNestedValue(obj, propertyString) {
+  return propertyString.split('.').reduce((acc, part) => acc && acc[part], obj);
+}
+
+/**
+ * Compares if given legs share any of the given properties.
+ * Can be used to check if two separate leg objects are identical
+ * Returns true if both legs are null|undefined
+ *
+ * @param {Object.<string, any>|undefined} leg1
+ * @param {Object.<string, any>|undefined} leg2
+ * @param {string[]} properties list of object fields to compare i.e. ['foo', 'bar.baz']
+ * @returns {boolean}
+ */
+export function isAnyLegPropertyIdentical(leg1, leg2, properties) {
+  if (leg1 === leg2) {
+    return true;
+  }
+
+  if (!leg1 || !leg2) {
+    return false;
+  }
+
+  for (let i = 0; i < properties.length; i++) {
+    const property = properties[i];
+    const val1 = getNestedValue(leg1, property);
+    const val2 = getNestedValue(leg2, property);
+    if (val1 && val2 && val1 === val2) {
+      return true;
+    }
+  }
+  return false;
+}
 
 /**
  * Get time as  milliseconds since the Unix Epoch
@@ -81,6 +122,7 @@ export const LegMode = {
   Walk: 'WALK',
   Car: 'CAR',
   Rail: 'RAIL',
+  Wait: 'WAIT',
 };
 
 /**

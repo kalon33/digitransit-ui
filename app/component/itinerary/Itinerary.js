@@ -24,6 +24,7 @@ import {
   getTotalDistance,
   legTime,
   legTimeStr,
+  LegMode,
 } from '../../util/legUtils';
 import { dateOrEmpty, isTomorrow, timeStr } from '../../util/timeUtils';
 import withBreakpoint from '../../util/withBreakpoint';
@@ -622,7 +623,7 @@ const Itinerary = (
           renderModeIcons={renderModeIcons}
           duration={waitingTimeinMin}
           isTransitLeg={false}
-          mode="WAIT"
+          mode={LegMode.Wait}
           large={breakpoint === 'large'}
           icon={usingOwnCarWholeTrip ? 'icon-icon_wait-car' : undefined}
         />,
