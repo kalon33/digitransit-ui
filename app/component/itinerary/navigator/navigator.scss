@@ -60,7 +60,7 @@
 }
 
 .navitop {
-  margin: 0 8px 5px 8px;
+  margin: 0 var(--space-s) 5px var(--space-s);
   border-radius: 8px;
   min-height: 70px;
   color: black;
@@ -69,7 +69,7 @@
   align-items: center;
   letter-spacing: -0.3px;
   box-shadow: 0 2px 4px 0 rgba(51, 51, 51, 0.2);
-  width: calc(100vw - 16px);
+  width: calc(100vw - var(--space-s) * 2);
 
   &.expanded {
     max-height: unset;
@@ -373,7 +373,7 @@
   position: fixed;
   height: 69px;
   letter-spacing: -0.3px;
-  width: calc(100% - 16px);
+  width: calc(100% - var(--space-s) * 2);
   margin-right: 8px;
   margin-left: 8px;
 

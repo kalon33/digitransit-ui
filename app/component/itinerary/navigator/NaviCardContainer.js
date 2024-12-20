@@ -18,6 +18,7 @@ import { updateClient, getTopics } from '../ItineraryPageUtils';
 
 const TIME_AT_DESTINATION = 3; // * 10 seconds
 const TOPBAR_PADDING = 8; // pixels
+const HIDE_TOPCARD_DURATION = 2000; // milliseconds
 
 function addMessages(incominMessages, newMessages) {
   newMessages.forEach(m => {
@@ -44,6 +45,7 @@ const handleLegChange = (leg, firstLeg, time) => {
   }
   return legType;
 };
+
 function NaviCardContainer(
   {
     focusToLeg,
@@ -125,13 +127,14 @@ function NaviCardContainer(
         ...getAdditionalMessages(nextLeg, time, intl, config, messages),
       ]);
     }
+    let timeoutId;
     if (legChanged) {
       updateClient(topics, context);
       setCardExpanded(false);
       setLegChanging(true);
-      setTimeout(() => {
+      timeoutId = setTimeout(() => {
         setLegChanging(false);
-      }, 2000);
+      }, HIDE_TOPCARD_DURATION);
       if (currentLeg) {
         focusToLeg?.(currentLeg);
       }
@@ -177,6 +180,8 @@ function NaviCardContainer(
       // Todo: this works in transit legs, but do we need additional logic for bikes / scooters?
       destCountRef.current = 0;
     }
+
+    return () => clearTimeout(timeoutId);
   }, [time]);
 
   // LegChange fires animation, we need to keep the old data until card goes ot of the view.
