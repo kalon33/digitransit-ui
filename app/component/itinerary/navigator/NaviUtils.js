@@ -368,7 +368,7 @@ export const getItineraryAlerts = (
           content,
           id: `canceled-${legId}`,
           hideClose: true,
-          expiresOn: alert.effectiveEndDate,
+          expiresOn: alert.effectiveEndDate * 1000,
         });
       }
     });

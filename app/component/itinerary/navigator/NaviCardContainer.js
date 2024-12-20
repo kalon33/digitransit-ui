@@ -184,7 +184,7 @@ function NaviCardContainer(
     return () => clearTimeout(timeoutId);
   }, [time]);
 
-  // LegChange fires animation, we need to keep the old data until card goes ot of the view.
+  // LegChange fires animation, we need to keep the old data until card goes out of the view.
   const l = legChanging ? previousLeg : currentLeg;
   const legType = handleLegChange(l, firstLeg, time);
 
