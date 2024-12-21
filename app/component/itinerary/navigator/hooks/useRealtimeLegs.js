@@ -215,7 +215,7 @@ const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
           },
         };
       }
-      return { ...l, start: { ...l.start }, end: { ...l.end } };
+      return { ...l };
     });
     // shift non-transit-legs to match possibly changed transit legs
     matchLegEnds(rtLegs);
