@@ -164,7 +164,7 @@ const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
       }
 
       const legQueries = legs
-        .filter(leg => leg.transitLeg)
+        .filter(leg => leg.transitLeg && legTime(leg.end) > time)
         .map(leg =>
           fetchQuery(
             relayEnvironment,
