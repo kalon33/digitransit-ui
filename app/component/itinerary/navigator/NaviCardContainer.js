@@ -125,7 +125,15 @@ function NaviCardContainer(
       // Messages for NaviStack.
       addMessages(incomingMessages, [
         ...getTransitLegState(nextLeg, intl, messages, time),
-        ...getAdditionalMessages(nextLeg, time, intl, config, messages),
+        ...getAdditionalMessages(
+          currentLeg,
+          nextLeg,
+          firstLeg,
+          time,
+          intl,
+          config,
+          messages,
+        ),
       ]);
     }
     let timeoutId;

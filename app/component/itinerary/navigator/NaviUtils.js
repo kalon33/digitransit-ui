@@ -202,12 +202,24 @@ export function getFirstLastLegs(legs) {
   const last = legs[legs.length - 1];
   return { first, last };
 }
-export const getAdditionalMessages = (leg, time, intl, config, messages) => {
+export const getAdditionalMessages = (
+  leg,
+  nextLeg,
+  firstLeg,
+  time,
+  intl,
+  config,
+  messages,
+) => {
   const msgs = [];
   const closed = messages.get('ticket')?.closed;
-  if (!closed && legTime(leg.start) - time < DISPLAY_MESSAGE_THRESHOLD) {
+  if (
+    !closed &&
+    leg === firstLeg &&
+    legTime(leg.end) - time < DISPLAY_MESSAGE_THRESHOLD
+  ) {
     // Todo: multiple fares?
-    const fare = getFaresFromLegs([leg], config)[0];
+    const fare = getFaresFromLegs([nextLeg], config)[0];
     msgs.push({
       severity: 'INFO',
       content: (
