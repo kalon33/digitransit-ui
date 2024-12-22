@@ -140,13 +140,14 @@ function NaviCardContainer(
         focusToLeg?.(currentLeg);
       }
     }
-    if (incomingMessages.size) {
-      // Handle messages when new messages arrives.
 
+    // Update messages if there are changes
+    const expired = activeMessages.find(m => m.expiresOn < time);
+    if (incomingMessages.size || expired) {
       // Current active messages. Filter away expired messages.
-      const previousValidMessages = activeMessages.filter(
-        m => !m.expiresOn || m.expiresOn > time,
-      );
+      const previousValidMessages = expired
+        ? activeMessages.filter(m => !m.expiresOn || m.expiresOn > time)
+        : activeMessages;
 
       // handle messages that are updated.
       const keptMessages = previousValidMessages.filter(
