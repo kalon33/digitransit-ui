@@ -135,13 +135,13 @@ function getLegsOfInterest(initialLegs, time, previousFinishedLeg) {
     previousLeg = currentLeg;
     currentLeg = nextLeg;
   }
-
+  const nextStart = legTime(currentLeg.end);
   return {
     firstLeg: legs[0],
     lastLeg: legs[legs.length - 1],
     previousLeg,
     currentLeg,
-    nextLeg: initialLegs.find(({ start }) => legTime(start) > time),
+    nextLeg: initialLegs.find(({ start }) => legTime(start) >= nextStart),
   };
 }
 
