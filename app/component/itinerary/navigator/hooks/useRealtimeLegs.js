@@ -135,7 +135,7 @@ function getLegsOfInterest(initialLegs, time, previousFinishedLeg) {
     previousLeg = currentLeg;
     currentLeg = nextLeg;
   }
-  const nextStart = legTime(currentLeg.end);
+  const nextStart = currentLeg ? legTime(currentLeg.end) : time;
   return {
     firstLeg: legs[0],
     lastLeg: legs[legs.length - 1],
