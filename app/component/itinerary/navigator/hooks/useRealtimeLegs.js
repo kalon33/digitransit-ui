@@ -119,12 +119,11 @@ function getLegsOfInterest(initialLegs, time, previousFinishedLeg) {
     return acc;
   }, []);
 
-  const nextLegIdx = legs.findIndex(({ start }) => legTime(start) > time);
   let currentLeg = legs.find(
     ({ start, end }) => legTime(start) <= time && legTime(end) >= time,
   );
   let previousLeg = legs.findLast(({ end }) => legTime(end) < time);
-  let nextLeg = legs[nextLegIdx];
+  const nextLeg = legs.find(({ start }) => legTime(start) > time);
 
   // Indices are shifted by one if a previously completed leg reappears as current.
   if (
@@ -135,7 +134,6 @@ function getLegsOfInterest(initialLegs, time, previousFinishedLeg) {
   ) {
     previousLeg = currentLeg;
     currentLeg = nextLeg;
-    nextLeg = nextLegIdx !== -1 ? legs[nextLegIdx + 1] : undefined;
   }
 
   return {
@@ -143,7 +141,7 @@ function getLegsOfInterest(initialLegs, time, previousFinishedLeg) {
     lastLeg: legs[legs.length - 1],
     previousLeg,
     currentLeg,
-    nextLeg,
+    nextLeg: initialLegs.find(({ start }) => legTime(start) > time),
   };
 }
 
