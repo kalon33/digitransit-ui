@@ -215,6 +215,7 @@ const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
           },
         };
       }
+      // copy leg times so that modification will not change original times
       return { ...l, start: { ...l.start }, end: { ...l.end } };
     });
     // shift non-transit-legs to match possibly changed transit legs
