@@ -18,7 +18,7 @@ function RouteNumber(props, context) {
   // Perform text-related processing
   let filteredText = props.text;
   if (
-    props.isInItineraryList &&
+    props.shortenLongText &&
     context.config.disabledLegTextModes?.includes(mode) &&
     props.className.includes('line')
   ) {
@@ -26,15 +26,15 @@ function RouteNumber(props, context) {
   }
   const textFieldIsText = typeof filteredText === 'string'; // can be also react node
   if (
-    props.isInItineraryList &&
-    context.config.shortenLongTextInItineraryListThreshold &&
+    props.shortenLongText &&
+    context.config.shortenLongTextThreshold &&
     filteredText &&
     textFieldIsText &&
-    filteredText.length > context.config.shortenLongTextInItineraryListThreshold
+    filteredText.length > context.config.shortenLongTextThreshold
   ) {
     filteredText = `${filteredText.substring(
       0,
-      context.config.shortenLongTextInItineraryListThreshold - 3,
+      context.config.shortenLongTextThreshold - 3,
     )}...`;
   }
   const longText =
@@ -250,7 +250,7 @@ RouteNumber.propTypes = {
   card: PropTypes.bool,
   appendClass: PropTypes.string,
   occupancyStatus: PropTypes.string,
-  isInItineraryList: PropTypes.bool,
+  shortenLongText: PropTypes.bool,
 };
 
 RouteNumber.defaultProps = {
@@ -274,7 +274,7 @@ RouteNumber.defaultProps = {
   color: undefined,
   duration: undefined,
   occupancyStatus: undefined,
-  isInItineraryList: false,
+  shortenLongText: false,
 };
 
 RouteNumber.contextTypes = {

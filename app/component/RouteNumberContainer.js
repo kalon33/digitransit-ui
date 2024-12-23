@@ -25,7 +25,7 @@ const RouteNumberContainer = (
       color={route.color ? `#${route.color}` : null}
       mode={mode !== undefined ? mode : route.mode}
       text={getLegText(route, config, interliningWithRoute)}
-      isInItineraryList
+      shortenLongText
       occupancyStatus={occupancyStatus}
       {...props}
     />
