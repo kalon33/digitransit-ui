@@ -857,4 +857,5 @@ export default {
   ],
   navigation: false,
   sendAnalyticsCustomEventGoals: false,
+  shortenLongTextThreshold: 10, // for route number in itinerary summary
 };

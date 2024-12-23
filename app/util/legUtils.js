@@ -186,7 +186,7 @@ function continueWithBicycle(leg1, leg2) {
   return isBicycle1 && isBicycle2 && !leg1.to.vehicleParking;
 }
 
-export function getLegText(route, config, interliningWithRoute) {
+export function getRouteText(route, config, interliningWithRoute) {
   const showAgency = get(config, 'agency.show', false);
   if (interliningWithRoute && interliningWithRoute !== route.shortName) {
     return `${route.shortName} / ${interliningWithRoute}`;
