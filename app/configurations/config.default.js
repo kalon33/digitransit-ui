@@ -857,4 +857,5 @@ export default {
   ],
   navigation: false,
   sendAnalyticsCustomEventGoals: false,
+  shortenLongTextInItineraryListThreshold: 10,
 };

@@ -156,5 +156,4 @@ export default {
   showCO2InItinerarySummary: false,
   useAssembledGeoJsonZones: 'isOnByDefault',
   locationSearchTargetsFromOTP: [], // remove stop/station location search
-  shortenLongTextInItineraryListThreshold: 10,
 };
