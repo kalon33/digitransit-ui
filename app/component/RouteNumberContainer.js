@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { routeShape, configShape } from '../util/shapes';
-import { getLegText } from '../util/legUtils';
+import { getRouteText } from '../util/legUtils';
 import RouteNumber from './RouteNumber';
 
 const RouteNumberContainer = (
@@ -24,7 +24,7 @@ const RouteNumberContainer = (
       isCallAgency={isCallAgency}
       color={route.color ? `#${route.color}` : null}
       mode={mode !== undefined ? mode : route.mode}
-      text={getLegText(route, config, interliningWithRoute)}
+      text={getRouteText(route, config, interliningWithRoute)}
       shortenLongText
       occupancyStatus={occupancyStatus}
       {...props}

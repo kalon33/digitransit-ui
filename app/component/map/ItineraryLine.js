@@ -7,7 +7,7 @@ import { isBrowser } from '../../util/browser';
 import { getMiddleOf } from '../../util/geo-utils';
 import {
   getInterliningLegs,
-  getLegText,
+  getRouteText,
   isCallAgencyLeg,
 } from '../../util/legUtils';
 import { getRouteMode } from '../../util/modeUtils';
@@ -175,7 +175,7 @@ class ItineraryLine extends React.Component {
             />,
           );
         } else if (leg.transitLeg) {
-          const name = getLegText(
+          const name = getRouteText(
             leg.route,
             this.context.config,
             interliningWithRoute,
