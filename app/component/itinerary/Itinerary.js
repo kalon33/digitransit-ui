@@ -22,6 +22,7 @@ import {
   isCallAgencyLeg,
   getInterliningLegs,
   getTotalDistance,
+  getRouteText,
   legTime,
   legTimeStr,
 } from '../../util/legUtils';
@@ -37,6 +38,8 @@ import {
 import { getRouteMode } from '../../util/modeUtils';
 import { getCapacityForLeg } from '../../util/occupancyUtil';
 import getCo2Value from '../../util/emissions';
+
+const NAME_LENGTH_THRESHOLD = 65; // for truncating long short names
 
 const Leg = ({
   mode,
@@ -85,6 +88,7 @@ export function RouteLeg(
     withBicycle,
     withCar,
     hasOneTransitLeg,
+    shortenLabels,
   },
   { config },
 ) {
@@ -129,6 +133,7 @@ export function RouteLeg(
         withBicycle={withBicycle}
         withCar={withCar}
         occupancyStatus={getOccupancyStatus()}
+        shortenLongText={shortenLabels}
       />
     );
   }
@@ -154,6 +159,7 @@ RouteLeg.propTypes = {
   withBicycle: PropTypes.bool.isRequired,
   withCar: PropTypes.bool.isRequired,
   hasOneTransitLeg: PropTypes.bool,
+  shortenLabels: PropTypes.bool,
 };
 
 RouteLeg.contextTypes = {
@@ -164,6 +170,7 @@ RouteLeg.defaultProps = {
   isTransitLeg: true,
   interliningWithRoute: undefined,
   hasOneTransitLeg: false,
+  shortenLabels: false,
 };
 
 export const ModeLeg = (
@@ -301,11 +308,14 @@ const Itinerary = (
   let intermediateSlack = 0;
   let transitLegCount = 0;
   let containsScooterLeg = false;
+  let nameLengthSum = 0; // approximate space required for route labels
   compressedLegs.forEach((leg, i) => {
     if (isTransitLeg(leg)) {
       noTransitLegs = false;
       transitLegCount += 1;
+      nameLengthSum += getRouteText(leg.route, config).length;
     }
+    nameLengthSum += 10; // every leg requires some minimum space
     if (
       leg.intermediatePlace ||
       connectsFromViaPoint(leg, intermediatePlaces)
@@ -315,6 +325,7 @@ const Itinerary = (
     }
     containsScooterLeg = leg.mode === 'SCOOTER' || containsScooterLeg;
   });
+  const shortenLabels = nameLengthSum > NAME_LENGTH_THRESHOLD;
   const durationWithoutSlack = duration - intermediateSlack; // don't include time spent at intermediate places in calculations for bar lengths
   const relativeLength = durationMs =>
     (100 * durationMs) / durationWithoutSlack; // as %
@@ -595,6 +606,7 @@ const Itinerary = (
             withBicycle={withBicycle}
             withCar={withCar}
             hasOneTransitLeg={hasOneTransitLeg(itinerary)}
+            shortenLabels={shortenLabels}
           />,
         );
       }
