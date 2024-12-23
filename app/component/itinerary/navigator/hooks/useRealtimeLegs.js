@@ -40,8 +40,8 @@ function scaleLegs(legs, i1, i2, k) {
     const leg = legs[j];
     const s = legTime(leg.start);
     const e = legTime(leg.end);
-    leg.start.scheduledTime = epochToIso(s + k * (s - base));
-    leg.end.scheduledTime = epochToIso(e + k * (e - base));
+    leg.start.scheduledTime = epochToIso(base + k * (s - base));
+    leg.end.scheduledTime = epochToIso(base + k * (e - base));
   }
 }
 
@@ -119,12 +119,11 @@ function getLegsOfInterest(initialLegs, time, previousFinishedLeg) {
     return acc;
   }, []);
 
-  const nextLegIdx = legs.findIndex(({ start }) => legTime(start) > time);
   let currentLeg = legs.find(
     ({ start, end }) => legTime(start) <= time && legTime(end) >= time,
   );
   let previousLeg = legs.findLast(({ end }) => legTime(end) < time);
-  let nextLeg = legs[nextLegIdx];
+  const nextLeg = legs.find(({ start }) => legTime(start) > time);
 
   // Indices are shifted by one if a previously completed leg reappears as current.
   if (
@@ -135,15 +134,14 @@ function getLegsOfInterest(initialLegs, time, previousFinishedLeg) {
   ) {
     previousLeg = currentLeg;
     currentLeg = nextLeg;
-    nextLeg = nextLegIdx !== -1 ? legs[nextLegIdx + 1] : undefined;
   }
-
+  const nextStart = currentLeg ? legTime(currentLeg.end) : time;
   return {
     firstLeg: legs[0],
     lastLeg: legs[legs.length - 1],
     previousLeg,
     currentLeg,
-    nextLeg,
+    nextLeg: initialLegs.find(({ start }) => legTime(start) >= nextStart),
   };
 }
 
@@ -164,7 +162,7 @@ const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
       }
 
       const legQueries = legs
-        .filter(leg => leg.transitLeg)
+        .filter(leg => leg.transitLeg && legTime(leg.end) > time)
         .map(leg =>
           fetchQuery(
             relayEnvironment,
@@ -215,6 +213,7 @@ const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
           },
         };
       }
+      // copy leg times so that modification will not change original times
       return { ...l, start: { ...l.start }, end: { ...l.end } };
     });
     // shift non-transit-legs to match possibly changed transit legs

@@ -25,8 +25,7 @@ export default function NaviInstructions(
       origin,
       time,
     );
-    const duration = leg.duration * remainingTraversal;
-    const distance = leg.distance * remainingTraversal;
+    const distance = remainingTraversal * leg.distance;
 
     return (
       <>
@@ -37,8 +36,8 @@ export default function NaviInstructions(
         </div>
 
         <div className={cx('duration', { realtime: !!position })}>
-          {displayDistance(distance, config, intl.formatNumber)} (
-          {durationToString(duration * 1000)})
+          {displayDistance(distance, config, intl.formatNumber)}&nbsp;
+          {durationToString(legTime(leg.end) - time)}
         </div>
       </>
     );

@@ -86,13 +86,14 @@ function NaviCardContainer(
   };
 
   // track only relevant vehicles for the journey.
-  const topics = getTopics(
-    legs.filter(leg => legTime(leg.end) >= time),
-    config,
-  );
+  const getNaviTopics = () =>
+    getTopics(
+      legs.filter(leg => legTime(leg.end) >= time),
+      config,
+    );
 
   useEffect(() => {
-    updateClient(topics, context);
+    updateClient(getNaviTopics(), context);
   }, []);
 
   useEffect(() => {
@@ -124,12 +125,20 @@ function NaviCardContainer(
       // Messages for NaviStack.
       addMessages(incomingMessages, [
         ...getTransitLegState(nextLeg, intl, messages, time),
-        ...getAdditionalMessages(nextLeg, time, intl, config, messages),
+        ...getAdditionalMessages(
+          currentLeg,
+          nextLeg,
+          firstLeg,
+          time,
+          intl,
+          config,
+          messages,
+        ),
       ]);
     }
     let timeoutId;
     if (legChanged) {
-      updateClient(topics, context);
+      updateClient(getNaviTopics(), context);
       setCardExpanded(false);
       setLegChanging(true);
       timeoutId = setTimeout(() => {
@@ -139,11 +148,12 @@ function NaviCardContainer(
         focusToLeg?.(currentLeg);
       }
     }
-    if (incomingMessages.size || legChanged) {
-      // Handle messages when new messages arrives.
 
+    // Update messages if there are changes
+    const expired = activeMessages.find(m => m.expiresOn < time);
+    if (incomingMessages.size || expired) {
       // Current active messages. Filter away expired messages.
-      const previousValidMessages = legChanged
+      const previousValidMessages = expired
         ? activeMessages.filter(m => !m.expiresOn || m.expiresOn > time)
         : activeMessages;
 
