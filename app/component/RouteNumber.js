@@ -282,5 +282,4 @@ RouteNumber.contextTypes = {
   config: configShape.isRequired,
 };
 
-RouteNumber.displayName = 'RouteNumber';
 export default RouteNumber;
