@@ -215,22 +215,20 @@ function NaviCardContainer(
     >
       <button
         type="button"
-        className={`navitop ${cardExpanded ? 'expanded' : ''}`}
+        className={`navi-top-card-button ${cardExpanded ? 'expanded' : ''}`}
         onClick={handleClick}
         ref={cardRef}
       >
-        <div className="content">
-          <NaviCard
-            leg={l}
-            nextLeg={nextLeg}
-            cardExpanded={cardExpanded}
-            legType={legType}
-            startTime={legTimeStr(firstLeg.start)}
-            time={time}
-            position={position}
-            origin={origin}
-          />
-        </div>
+        <NaviCard
+          leg={l}
+          nextLeg={nextLeg}
+          cardExpanded={cardExpanded}
+          legType={legType}
+          startTime={legTimeStr(firstLeg.start)}
+          time={time}
+          position={position}
+          origin={origin}
+        />
       </button>
       {activeMessages.length > 0 && (
         <NaviStack messages={activeMessages} handleRemove={handleRemove} />

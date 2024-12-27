@@ -61,7 +61,7 @@ $fixed-width-padding: 16px;
   }
 }
 
-.navitop {
+.navi-top-card-button {
   margin: 0 var(--space-s) 5px var(--space-s);
   border-radius: 8px;
   min-height: 70px;
@@ -72,121 +72,120 @@ $fixed-width-padding: 16px;
   letter-spacing: -0.3px;
   box-shadow: 0 2px 4px 0 rgba(51, 51, 51, 0.2);
   width: calc(100vw - #{$fixed-width-padding});
+  cursor: default;
 
   &.expanded {
     max-height: unset;
   }
 
-  .navitop-arrow {
+  .navi-top-card-arrow {
     .inverted {
       transform: rotate(180deg);
     }
   }
 
-  .content {
+  .main-card {
     width: 100%;
+    margin: var(--space-m) var(--space-l);
 
-    .navi-top-card {
-      margin: 16px 24px 16px;
+    .content {
+      display: flex;
+      flex-direction: row;
+      color: black;
+      justify-content: center;
 
-      .main-card {
-        display: flex;
-        flex-direction: row;
+      .mode {
+        width: 32px;
+        height: 32px;
         color: black;
+        margin-right: var(--space-s);
+        margin-top: var(--space-xxs);
+      }
+    }
 
-        .mode {
-          width: 32px;
-          height: 32px;
-          color: black;
-          margin-right: var(--space-s);
-          margin-top: var(--space-xxs);
-        }
+    .instructions {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      font-size: $font-size-normal;
+      font-weight: $font-weight-medium;
+
+      &.expanded {
+        margin-bottom: 0;
       }
 
-      .instructions {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
+      .destination-header {
         font-size: $font-size-normal;
-        font-weight: $font-weight-medium;
-
-        &.expanded {
-          margin-bottom: 0;
-        }
-
-        .destination-header {
-          font-size: $font-size-normal;
-          font-weight: 500;
-          display: flex;
-        }
-
-        .vehicle-leg {
-          display: flex;
-          margin-top: var(--space-xs);
-          font-weight: $font-weight-book;
-          width: 80%;
-          text-align: left;
-        }
-
-        .wait-leg {
-          display: flex;
-          margin-top: 3px;
-          flex-direction: column;
-          align-items: flex-start;
-
-          .route-info {
-            display: flex;
-            align-self: flex-start;
-            margin-bottom: var(--space-xcs);
-          }
-
-          .wait-duration {
-            font-weight: $font-weight-book;
-            margin-top: var(--space-xs);
-          }
-
-          .bar {
-            border-radius: $border-radius;
-          }
-
-          .route-number {
-            .vcenter-children {
-              .vehicle-number {
-                color: white;
-                margin-top: 5px;
-              }
-
-              display: flex;
-            }
-          }
-
-          .headsign {
-            margin-left: 10px;
-            font-size: $font-size-small;
-            font-weight: $font-weight-book;
-            max-width: 85%;
-            text-align: left;
-            align-content: center;
-          }
-
-          .icon {
-            margin-top: 2px;
-            height: 25px;
-            width: 25px;
-          }
-        }
-      }
-
-      .duration {
-        &.fade-out {
-          animation: fadeOut 3s forwards;
-        }
-
-        font-size: $font-size-xsmall;
-        font-weight: $font-weight-book;
+        font-weight: 500;
         display: flex;
-        margin-top: 4px;
       }
+
+      .vehicle-leg {
+        display: flex;
+        margin-top: var(--space-xs);
+        font-weight: $font-weight-book;
+        width: 80%;
+        text-align: left;
+      }
+
+      .wait-leg {
+        display: flex;
+        margin-top: 3px;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .route-info {
+          display: flex;
+          align-self: flex-start;
+          margin-bottom: var(--space-xcs);
+        }
+
+        .wait-duration {
+          font-weight: $font-weight-book;
+          margin-top: var(--space-xs);
+        }
+
+        .bar {
+          border-radius: $border-radius;
+        }
+
+        .route-number {
+          .vcenter-children {
+            .vehicle-number {
+              color: white;
+              margin-top: 5px;
+            }
+
+            display: flex;
+          }
+        }
+
+        .headsign {
+          margin-left: 10px;
+          font-size: $font-size-small;
+          font-weight: $font-weight-book;
+          max-width: 85%;
+          text-align: left;
+          align-content: center;
+        }
+
+        .icon {
+          margin-top: 2px;
+          height: 25px;
+          width: 25px;
+        }
+      }
+    }
+
+    .duration {
+      &.fade-out {
+        animation: fadeOut 3s forwards;
+      }
+
+      font-size: $font-size-xsmall;
+      font-weight: $font-weight-book;
+      display: flex;
+      margin-top: 4px;
     }
 
     .extension {
