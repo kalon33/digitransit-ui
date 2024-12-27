@@ -191,12 +191,21 @@ function findTransferProblems(legs, time, position, origin) {
   }
   return problems;
 }
+
 export const getLocalizedMode = (mode, intl) => {
   return intl.formatMessage({
     id: `${mode.toLowerCase()}`,
     defaultMessage: `${mode}`,
   });
 };
+
+export const getToLocalizedMode = (mode, intl) => {
+  return intl.formatMessage({
+    id: `to-${mode.toLowerCase()}`,
+    defaultMessage: `${mode}`,
+  });
+};
+
 export function getFirstLastLegs(legs) {
   const first = legs[0];
   const last = legs[legs.length - 1];
@@ -272,9 +281,10 @@ export const getTransitLegState = (leg, intl, messages, time) => {
       1000 * (departure.serviceDay + departure.scheduledDeparture);
     if (time - departed < DISPLAY_MESSAGE_THRESHOLD) {
       // vehicle just departed, maybe no realtime yet
-      return [];
+      severity = 'INFO';
+    } else {
+      severity = 'WARNING';
     }
-    severity = 'WARNING';
     content = (
       <div className="navi-info-content">
         <FormattedMessage id="navileg-mode-schedule" />
@@ -290,9 +300,15 @@ export const getTransitLegState = (leg, intl, messages, time) => {
     );
   } else {
     const { parentStation, name } = from.stop;
-    const stopOrStation = parentStation
-      ? intl.formatMessage({ id: 'from-station' })
-      : intl.formatMessage({ id: 'from-stop' });
+
+    const fromId = // eslint-disable-next-line no-nested-ternary
+      mode === 'FERRY'
+        ? 'from-ferrypier'
+        : parentStation
+          ? 'from-station'
+          : 'from-stop';
+    const stopOrStation = intl.formatMessage({ id: fromId });
+
     content = (
       <div className="navi-info-content">
         <FormattedMessage
