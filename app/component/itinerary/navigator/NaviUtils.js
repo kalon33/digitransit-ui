@@ -349,7 +349,7 @@ export const getItineraryAlerts = (
       .filter(alert => {
         const { first } = getFirstLastLegs(legs);
         const startTime = legTime(first.start) / 1000;
-        if (messages.get(alert.id)) {
+        if (messages.get(alert.id)?.closed) {
           return false;
         }
         // show only alerts that are active when
