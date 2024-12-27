@@ -155,6 +155,16 @@ const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
     [initialLegs[0]],
   );
 
+  const planarLegs = useMemo(() => {
+    return initialLegs.map(leg => {
+      const geometry = polyUtil.decode(leg.legGeometry.points);
+      return {
+        ...leg,
+        geometry: geometry.map(p => GeodeticToEnu(p[0], p[1], origin)),
+      };
+    });
+  }, [initialLegs]);
+
   const queryAndMapRealtimeLegs = useCallback(
     async legs => {
       if (!legs.length) {
@@ -188,14 +198,6 @@ const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
       return;
     }
 
-    const planarLegs = initialLegs.map(leg => {
-      const geometry = polyUtil.decode(leg.legGeometry.points);
-      return {
-        ...leg,
-        geometry: geometry.map(p => GeodeticToEnu(p[0], p[1], origin)),
-      };
-    });
-
     const rtLegMap = await queryAndMapRealtimeLegs(planarLegs).catch(err =>
       // eslint-disable-next-line no-console
       console.error('Failed to query and map real time legs', err),
@@ -219,7 +221,7 @@ const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
     // shift non-transit-legs to match possibly changed transit legs
     matchLegEnds(rtLegs);
     setRealTimeLegs(rtLegs);
-  }, [initialLegs, queryAndMapRealtimeLegs]);
+  }, [planarLegs, queryAndMapRealtimeLegs]);
 
   useEffect(() => {
     fetchAndSetRealtimeLegs();
