@@ -8,7 +8,7 @@ import { getFaresFromLegs } from '../../../util/fareUtils';
 import { ExtendedRouteTypes } from '../../../constants';
 import { getItineraryPagePath } from '../../../util/path';
 
-const TRANSFER_SLACK = 60000;
+const TRANSFER_SLACK = 600000;
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
 
 export const DESTINATION_RADIUS = 20; // meters
@@ -340,10 +340,6 @@ export const getItineraryAlerts = (
   location,
   router,
 ) => {
-  const canceled = legs.filter(
-    leg => leg.realtimeState === 'CANCELED' && legTime(leg.start) > time,
-  );
-  let content;
   const alerts = legs.flatMap(leg => {
     return leg.alerts
       .filter(alert => {
@@ -375,12 +371,13 @@ export const getItineraryAlerts = (
         id: `${alert.effectiveStartDate}-${alert.alertDescriptionText}`,
       }));
   });
-  const abortTrip = <FormattedMessage id="navigation-abort-trip" />;
-  const withShowRoutesBtn = children => (
-    <div className="alt-btn">
+
+  const withNewSearchBtn = children => (
+    <div className="navi-alert-content">
       {children}
+      <FormattedMessage id="navigation-abort-trip" />
       <button
-        className="show-options"
+        className="new-itinerary-search"
         type="button"
         onClick={() => router.push(getItineraryPagePath('POS', location.to))}
       >
@@ -389,7 +386,11 @@ export const getItineraryAlerts = (
     </div>
   );
 
-  if (canceled) {
+  const canceled = legs.filter(
+    leg => leg.realtimeState === 'CANCELED' && legTime(leg.start) > time,
+  );
+
+  if (canceled.length) {
     // show routes button only for first canceled leg.
     canceled.forEach((leg, i) => {
       const { legId, mode, route } = leg;
@@ -403,16 +404,13 @@ export const getItineraryAlerts = (
         />
       );
       // we want to show the show routes button only for the first canceled leg.
-      if (i === 0) {
-        content = withShowRoutesBtn(
-          <div className="navi-alert-content">
-            {m}
-            {abortTrip}
-          </div>,
+      const content =
+        i === 0 ? (
+          withNewSearchBtn({ m })
+        ) : (
+          <div className="navi-alert-content">{m}</div>
         );
-      } else {
-        content = <div className="navi-alert-content">{m}</div>;
-      }
+
       if (!messages.get(`canceled-${legId}`)) {
         alerts.push({
           severity: 'ALERT',
@@ -423,36 +421,32 @@ export const getItineraryAlerts = (
         });
       }
     });
-  }
-
-  const transferProblems = findTransferProblems(legs, time, position, origin);
-  if (transferProblems.length) {
-    let prob = transferProblems.find(p => p.severity === 'ALERT');
-    if (!prob) {
-      // just take first
-      [prob] = transferProblems;
-    }
-    const transferId = `transfer-${prob.fromLeg.legId}-${prob.toLeg.legId}}`;
-    const alert = messages.get(transferId);
-    if (!alert || alert.severity !== prob.severity) {
-      content = withShowRoutesBtn(
-        <div className="navi-alert-content">
-          <FormattedMessage
-            id="navigation-transfer-problem"
-            values={{
-              route1: prob.fromLeg.route.shortName,
-              route2: prob.toLeg.route.shortName,
-            }}
-          />
-          {abortTrip}
-        </div>,
-      );
-      alerts.push({
-        severity: prob.severity,
-        content,
-        id: transferId,
-        hideClose: prob.severity === 'ALERT',
-      });
+  } else {
+    const transferProblems = findTransferProblems(legs, time, position, origin);
+    if (transferProblems.length) {
+      let prob = transferProblems.find(p => p.severity === 'ALERT');
+      if (!prob) {
+        // just take first
+        [prob] = transferProblems;
+      }
+      const transferId = `transfer-${prob.fromLeg.legId}-${prob.toLeg.legId}}`;
+      const alert = messages.get(transferId);
+      if (!alert || alert.severity !== prob.severity) {
+        alerts.push({
+          severity: prob.severity,
+          content: withNewSearchBtn(
+            <FormattedMessage
+              id="navigation-transfer-problem"
+              values={{
+                route1: prob.fromLeg.route.shortName,
+                route2: prob.toLeg.route.shortName,
+              }}
+            />,
+          ),
+          id: transferId,
+          hideClose: prob.severity === 'ALERT',
+        });
+      }
     }
   }
   return alerts;
