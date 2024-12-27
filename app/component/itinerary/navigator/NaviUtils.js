@@ -191,12 +191,21 @@ function findTransferProblems(legs, time, position, origin) {
   }
   return problems;
 }
+
 export const getLocalizedMode = (mode, intl) => {
   return intl.formatMessage({
     id: `${mode.toLowerCase()}`,
     defaultMessage: `${mode}`,
   });
 };
+
+export const getToLocalizedMode = (mode, intl) => {
+  return intl.formatMessage({
+    id: `to-${mode.toLowerCase()}`,
+    defaultMessage: `${mode}`,
+  });
+};
+
 export function getFirstLastLegs(legs) {
   const first = legs[0];
   const last = legs[legs.length - 1];
