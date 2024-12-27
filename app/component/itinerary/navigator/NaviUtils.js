@@ -281,9 +281,10 @@ export const getTransitLegState = (leg, intl, messages, time) => {
       1000 * (departure.serviceDay + departure.scheduledDeparture);
     if (time - departed < DISPLAY_MESSAGE_THRESHOLD) {
       // vehicle just departed, maybe no realtime yet
-      return [];
+      severity = 'INFO';
+    } else {
+      severity = 'WARNING';
     }
-    severity = 'WARNING';
     content = (
       <div className="navi-info-content">
         <FormattedMessage id="navileg-mode-schedule" />
