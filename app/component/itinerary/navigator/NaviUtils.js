@@ -299,9 +299,15 @@ export const getTransitLegState = (leg, intl, messages, time) => {
     );
   } else {
     const { parentStation, name } = from.stop;
-    const stopOrStation = parentStation
-      ? intl.formatMessage({ id: 'from-station' })
-      : intl.formatMessage({ id: 'from-stop' });
+
+    const fromId = // eslint-disable-next-line no-nested-ternary
+      mode === 'FERRY'
+        ? 'from-ferrypier'
+        : parentStation
+          ? 'from-station'
+          : 'from-stop';
+    const stopOrStation = intl.formatMessage({ id: fromId });
+
     content = (
       <div className="navi-info-content">
         <FormattedMessage
