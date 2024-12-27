@@ -100,11 +100,15 @@ export default function NaviInstructions(
 
   if (legType === LEGTYPE.TRANSIT) {
     const rt = leg.realtimeState === 'UPDATED';
-
     const t = legTime(leg.end);
-    const stopOrStation = leg.to.stop.parentStation
-      ? intl.formatMessage({ id: 'navileg-from-station' })
-      : intl.formatMessage({ id: 'navileg-from-stop' });
+
+    const destId = // eslint-disable-next-line no-nested-ternary
+      leg.mode === 'FERRY'
+        ? 'navileg-at-ferrypier'
+        : leg.to.stop.parentStation
+          ? 'navileg-at-station'
+          : 'navileg-at-stop';
+    const stopOrStation = intl.formatMessage({ id: destId });
 
     const remainingDuration = Math.max(Math.ceil((t - time) / 60000), 0); // ms to minutes, >= 0
     const values = {
