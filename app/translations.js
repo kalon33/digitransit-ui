@@ -381,8 +381,8 @@ const translations = {
     ferry: 'Fähre',
     'ferry-with-route-number': 'Fähre {routeNumber} {headSign}',
     'fetch-new-route': 'Neue Verbindung anfragen',
-    'from-station': 'von Bahnhof',
-    'from-stop': 'von Halt',
+    'from-station': 'Bahnhof',
+    'from-stop': 'Halt',
     frontpage: 'Startseite',
     'generic-error': 'Ein Fehler ist aufgetreten',
     'geolocate-yourself': 'Lokalisieren',
@@ -450,7 +450,7 @@ const translations = {
     'itinerary-summary-row.first-departure':
       '{vehicle} fährt um {departureTime} von {stopName}.',
     'itinerary-summary-row.first-leg-start-time':
-      'Fährt ab um {firstDepartureTime} {firstDepartureStopType} {firstDepartureStop}',
+      'Fährt ab um {firstDepartureTime} von {firstDepartureStopType} {firstDepartureStop}',
     'itinerary-summary-row.first-leg-start-time-citybike':
       'Abfahrt um {firstDepartureTime} von {firstDepartureStop} Leihrad-Station',
     'itinerary-summary-row.no-transit-legs': 'Start jederzeit möglich',
@@ -1090,8 +1090,8 @@ const translations = {
     'from-ferrypier': 'ferry pier',
     'from-rail': 'train',
     'from-scooter-location': 'the scooter location',
-    'from-station': 'from station',
-    'from-stop': 'from stop',
+    'from-station': 'station',
+    'from-stop': 'stop',
     'from-subway': 'subway',
     'from-tram': 'tram',
     frontpage: 'Frontpage',
@@ -1189,7 +1189,7 @@ const translations = {
     'itinerary-summary-row.first-departure':
       '{vehicle} leaves at {departureTime} from stop {stopName}.',
     'itinerary-summary-row.first-leg-start-time':
-      'Leaves at {firstDepartureTime} {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
+      'Leaves at {firstDepartureTime} from {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
     'itinerary-summary-row.first-leg-start-time-citybike':
       'Departure at {firstDepartureTime} from {firstDepartureStop} bike station',
     'itinerary-summary-row.first-leg-start-time-scooter':
@@ -5299,8 +5299,8 @@ const translations = {
     'from-ferrypier': 'färjerkajen',
     'from-rail': 'tåget',
     'from-scooter-location': 'platsen för sparkcykel',
-    'from-station': 'från stationen',
-    'from-stop': 'från hållplats',
+    'from-station': 'stationen',
+    'from-stop': 'hållplats',
     'from-subway': 'metron',
     'from-tram': 'spårvagnen',
     frontpage: 'Framsidan',
@@ -5396,7 +5396,7 @@ const translations = {
     'itinerary-summary-row.first-departure':
       '{vehicle} avgår från station {stopName} klockan {departureTime}.',
     'itinerary-summary-row.first-leg-start-time':
-      'Avgår kl {firstDepartureTime} {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
+      'Avgår kl {firstDepartureTime} från {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
     'itinerary-summary-row.first-leg-start-time-citybike':
       'Avgång kl {firstDepartureTime} från {firstDepartureStop} stadscykelstation',
     'itinerary-summary-row.first-leg-start-time-scooter':
