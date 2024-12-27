@@ -330,6 +330,22 @@ export const getTransitLegState = (leg, intl, messages, time) => {
   return [{ severity, content, id: legId, expiresOn: legTime(start) }];
 };
 
+function withNewSearchBtn(router, to, children) {
+  return (
+    <div className="navi-alert-content">
+      {children}
+      <FormattedMessage id="navigation-abort-trip" />
+      <button
+        className="new-itinerary-search"
+        type="button"
+        onClick={() => router.push(getItineraryPagePath('POS', to))}
+      >
+        <FormattedMessage id="settings-dropdown-open-label" />
+      </button>
+    </div>
+  );
+}
+
 export const getItineraryAlerts = (
   legs,
   time,
@@ -372,20 +388,6 @@ export const getItineraryAlerts = (
       }));
   });
 
-  const withNewSearchBtn = children => (
-    <div className="navi-alert-content">
-      {children}
-      <FormattedMessage id="navigation-abort-trip" />
-      <button
-        className="new-itinerary-search"
-        type="button"
-        onClick={() => router.push(getItineraryPagePath('POS', location.to))}
-      >
-        <FormattedMessage id="settings-dropdown-open-label" />
-      </button>
-    </div>
-  );
-
   const canceled = legs.filter(
     leg => leg.realtimeState === 'CANCELED' && legTime(leg.start) > time,
   );
@@ -406,7 +408,7 @@ export const getItineraryAlerts = (
       // we want to show the show routes button only for the first canceled leg.
       const content =
         i === 0 ? (
-          withNewSearchBtn({ m })
+          withNewSearchBtn(router, { m }, location.to)
         ) : (
           <div className="navi-alert-content">{m}</div>
         );
@@ -435,6 +437,7 @@ export const getItineraryAlerts = (
         alerts.push({
           severity: prob.severity,
           content: withNewSearchBtn(
+            router,
             <FormattedMessage
               id="navigation-transfer-problem"
               values={{
@@ -442,6 +445,7 @@ export const getItineraryAlerts = (
                 route2: prob.toLeg.route.shortName,
               }}
             />,
+            location.to,
           ),
           id: transferId,
           hideClose: prob.severity === 'ALERT',
