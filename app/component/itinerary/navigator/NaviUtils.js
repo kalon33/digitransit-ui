@@ -330,7 +330,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
   return [{ severity, content, id: legId, expiresOn: legTime(start) }];
 };
 
-function withNewSearchBtn(router, to, children) {
+function withNewSearchBtn(router, children, to) {
   return (
     <div className="navi-alert-content">
       {children}
