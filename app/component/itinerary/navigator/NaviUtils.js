@@ -9,7 +9,7 @@ import { ExtendedRouteTypes } from '../../../constants';
 import { getItineraryPagePath } from '../../../util/path';
 import { locationToUri } from '../../../util/otpStrings';
 
-const TRANSFER_SLACK = 60000;
+const TRANSFER_SLACK = 600000;
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
 
 export const DESTINATION_RADIUS = 20; // meters
@@ -343,7 +343,10 @@ export function itinerarySearchPath(time, leg, position, to) {
   } else {
     from = position || leg.to;
   }
-  const location = from.stop || from.stop; // prefer stops
+  const location = { ...from };
+  if (from.stop) {
+    location.gtfsId = from.stop.gtfsId;
+  }
 
   return getItineraryPagePath(locationToUri(location), to);
 }

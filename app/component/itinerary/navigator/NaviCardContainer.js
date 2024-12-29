@@ -98,7 +98,7 @@ function NaviCardContainer(
       time,
       currentLeg,
       position,
-      match.params.location.to,
+      match.params.to,
     );
     router.push(path);
   };
