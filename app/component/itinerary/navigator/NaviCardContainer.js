@@ -11,6 +11,7 @@ import {
   getAdditionalMessages,
   getItineraryAlerts,
   getTransitLegState,
+  itinerarySearchPath,
   LEGTYPE,
   DESTINATION_RADIUS,
 } from './NaviUtils';
@@ -92,6 +93,16 @@ function NaviCardContainer(
       config,
     );
 
+  const makeNewItinerarySearch = () => {
+    const path = itinerarySearchPath(
+      time,
+      currentLeg,
+      position,
+      match.params.location.to,
+    );
+    router.push(path);
+  };
+
   useEffect(() => {
     updateClient(getNaviTopics(), context);
   }, []);
@@ -116,8 +127,7 @@ function NaviCardContainer(
         origin,
         intl,
         messages,
-        match.params,
-        router,
+        makeNewItinerarySearch,
       ),
     );
 

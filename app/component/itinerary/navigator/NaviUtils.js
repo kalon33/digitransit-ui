@@ -7,8 +7,9 @@ import { timeStr, epochToIso } from '../../../util/timeUtils';
 import { getFaresFromLegs } from '../../../util/fareUtils';
 import { ExtendedRouteTypes } from '../../../constants';
 import { getItineraryPagePath } from '../../../util/path';
+import { locationToUri } from '../../../util/otpStrings';
 
-const TRANSFER_SLACK = 600000;
+const TRANSFER_SLACK = 60000;
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
 
 export const DESTINATION_RADIUS = 20; // meters
@@ -330,7 +331,24 @@ export const getTransitLegState = (leg, intl, messages, time) => {
   return [{ severity, content, id: legId, expiresOn: legTime(start) }];
 };
 
-function withNewSearchBtn(router, children, to) {
+export function itinerarySearchPath(time, leg, position, to) {
+  let from;
+  if (leg.transitLeg) {
+    from = leg.intermediatePlaces.find(
+      p => legTime(p.arrival) > time + TRANSFER_SLACK,
+    );
+    if (!from) {
+      from = leg.to;
+    }
+  } else {
+    from = position || leg.to;
+  }
+  const location = from.stop || from.stop; // prefer stops
+
+  return getItineraryPagePath(locationToUri(location), to);
+}
+
+function withNewSearchBtn(children, searchCallback) {
   return (
     <div className="navi-alert-content">
       {children}
@@ -338,7 +356,7 @@ function withNewSearchBtn(router, children, to) {
       <button
         className="new-itinerary-search"
         type="button"
-        onClick={() => router.push(getItineraryPagePath('POS', to))}
+        onClick={searchCallback}
       >
         <FormattedMessage id="settings-dropdown-open-label" />
       </button>
@@ -353,8 +371,7 @@ export const getItineraryAlerts = (
   origin,
   intl,
   messages,
-  location,
-  router,
+  itinerarySearchCallback,
 ) => {
   const alerts = legs.flatMap(leg => {
     return leg.alerts
@@ -399,6 +416,7 @@ export const getItineraryAlerts = (
 
       const lMode = getLocalizedMode(mode, intl);
       const routeName = `${lMode} ${route.shortName}`;
+
       const m = (
         <FormattedMessage
           id="navigation-mode-canceled"
@@ -408,7 +426,7 @@ export const getItineraryAlerts = (
       // we want to show the show routes button only for the first canceled leg.
       const content =
         i === 0 ? (
-          withNewSearchBtn(router, { m }, location.to)
+          withNewSearchBtn({ m }, itinerarySearchCallback)
         ) : (
           <div className="navi-alert-content">{m}</div>
         );
@@ -437,7 +455,6 @@ export const getItineraryAlerts = (
         alerts.push({
           severity: prob.severity,
           content: withNewSearchBtn(
-            router,
             <FormattedMessage
               id="navigation-transfer-problem"
               values={{
@@ -445,7 +462,7 @@ export const getItineraryAlerts = (
                 route2: prob.toLeg.route.shortName,
               }}
             />,
-            location.to,
+            itinerarySearchCallback,
           ),
           id: transferId,
           hideClose: prob.severity === 'ALERT',
