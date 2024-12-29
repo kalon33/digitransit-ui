@@ -331,9 +331,9 @@ export const getTransitLegState = (leg, intl, messages, time) => {
   return [{ severity, content, id: legId, expiresOn: legTime(start) }];
 };
 
-export function itinerarySearchPath(time, leg, position, to) {
+export function itinerarySearchPath(time, leg, nextLeg, position, to) {
   let from;
-  if (leg.transitLeg) {
+  if (leg?.transitLeg) {
     from = leg.intermediatePlaces.find(
       p => legTime(p.arrival) > time + TRANSFER_SLACK,
     );
@@ -341,7 +341,7 @@ export function itinerarySearchPath(time, leg, position, to) {
       from = leg.to;
     }
   } else {
-    from = position || leg.to;
+    from = position || leg?.to || nextLeg?.from;
   }
   const location = { ...from };
   if (from.stop) {

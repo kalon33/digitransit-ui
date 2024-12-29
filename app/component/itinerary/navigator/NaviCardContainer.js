@@ -97,6 +97,7 @@ function NaviCardContainer(
     const path = itinerarySearchPath(
       time,
       currentLeg,
+      nextLeg,
       position,
       match.params.to,
     );
