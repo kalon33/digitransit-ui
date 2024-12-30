@@ -92,12 +92,12 @@ function matchLegEnds(legs) {
 }
 
 function getLegsOfInterest(
-  initialLegs,
+  realTimeLegs,
   time,
   previousFinishedLeg,
   itineraryStarted,
 ) {
-  if (!initialLegs?.length) {
+  if (!realTimeLegs?.length) {
     return {
       firstLeg: undefined,
       lastLeg: undefined,
@@ -105,7 +105,7 @@ function getLegsOfInterest(
       nextLeg: undefined,
     };
   }
-  const legs = initialLegs.reduce((acc, curr, i, arr) => {
+  const legs = realTimeLegs.reduce((acc, curr, i, arr) => {
     acc.push(curr);
     const next = arr[i + 1];
 
@@ -146,7 +146,7 @@ function getLegsOfInterest(
     lastLeg: legs[legs.length - 1],
     previousLeg,
     currentLeg,
-    nextLeg: initialLegs.find(({ start }) => legTime(start) >= nextStart),
+    nextLeg: realTimeLegs.find(({ start }) => legTime(start) >= nextStart),
   };
 }
 
