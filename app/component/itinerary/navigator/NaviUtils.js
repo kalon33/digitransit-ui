@@ -473,6 +473,7 @@ export const getItineraryAlerts = (
           ),
           id: transferId,
           hideClose: prob.severity === 'ALERT',
+          expiresOn: legTime(prob.toLeg.start) + TRANSFER_SLACK,
         });
       }
     }
