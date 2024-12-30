@@ -7,6 +7,7 @@ import { timeStr, epochToIso } from '../../../util/timeUtils';
 import { getFaresFromLegs } from '../../../util/fareUtils';
 import { ExtendedRouteTypes } from '../../../constants';
 import { getItineraryPagePath } from '../../../util/path';
+import { locationToUri } from '../../../util/otpStrings';
 
 const TRANSFER_SLACK = 60000;
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
@@ -279,7 +280,10 @@ export const getTransitLegState = (leg, intl, messages, time) => {
     const departure = leg.trip.stoptimesForDate[0];
     const departed =
       1000 * (departure.serviceDay + departure.scheduledDeparture);
-    if (time - departed < DISPLAY_MESSAGE_THRESHOLD) {
+    if (
+      time - departed < DISPLAY_MESSAGE_THRESHOLD &&
+      time + DISPLAY_MESSAGE_THRESHOLD > legTime(leg.start)
+    ) {
       // vehicle just departed, maybe no realtime yet
       severity = 'INFO';
     } else {
@@ -330,6 +334,43 @@ export const getTransitLegState = (leg, intl, messages, time) => {
   return [{ severity, content, id: legId, expiresOn: legTime(start) }];
 };
 
+export function itinerarySearchPath(time, leg, nextLeg, position, to) {
+  let from;
+  if (leg?.transitLeg) {
+    from = leg.intermediatePlaces.find(
+      p => legTime(p.arrival) > time + TRANSFER_SLACK,
+    );
+    if (!from) {
+      from = leg.to;
+    }
+  } else {
+    from = position || leg?.to || nextLeg?.from;
+  }
+  const location = { ...from, ...from.stop };
+
+  return getItineraryPagePath(locationToUri(location), to);
+}
+
+function withNewSearchBtn(children, searchCallback) {
+  return (
+    <div className="navi-alert-content">
+      {children}
+      <FormattedMessage id="navigation-abort-trip" />
+      <button
+        className="new-itinerary-search"
+        type="button"
+        onClick={searchCallback}
+      >
+        <FormattedMessage id="settings-dropdown-open-label" />
+      </button>
+    </div>
+  );
+}
+
+function alertId(alert) {
+  return `${alert.effectiveStartDate}-${alert.alertDescriptionText}`;
+}
+
 export const getItineraryAlerts = (
   legs,
   time,
@@ -337,21 +378,16 @@ export const getItineraryAlerts = (
   origin,
   intl,
   messages,
-  location,
-  router,
+  itinerarySearchCallback,
 ) => {
-  const canceled = legs.filter(
-    leg => leg.realtimeState === 'CANCELED' && legTime(leg.start) > time,
-  );
-  let content;
   const alerts = legs.flatMap(leg => {
     return leg.alerts
       .filter(alert => {
-        const { first } = getFirstLastLegs(legs);
-        const startTime = legTime(first.start) / 1000;
-        if (messages.get(alert.id)) {
+        if (messages.get(alertId(alert))?.closed) {
           return false;
         }
+        const { first } = getFirstLastLegs(legs);
+        const startTime = legTime(first.start) / 1000;
         // show only alerts that are active when
         // the journey starts
         if (startTime < alert.effectiveStartDate) {
@@ -372,30 +408,22 @@ export const getItineraryAlerts = (
             <span className="header"> {alert.alertHeaderText}</span>
           </div>
         ),
-        id: `${alert.effectiveStartDate}-${alert.alertDescriptionText}`,
+        id: alertId(alert),
       }));
   });
-  const abortTrip = <FormattedMessage id="navigation-abort-trip" />;
-  const withShowRoutesBtn = children => (
-    <div className="alt-btn">
-      {children}
-      <button
-        className="show-options"
-        type="button"
-        onClick={() => router.push(getItineraryPagePath('POS', location.to))}
-      >
-        <FormattedMessage id="settings-dropdown-open-label" />
-      </button>
-    </div>
+
+  const canceled = legs.filter(
+    leg => leg.realtimeState === 'CANCELED' && legTime(leg.start) > time,
   );
 
-  if (canceled) {
+  if (canceled.length) {
     // show routes button only for first canceled leg.
     canceled.forEach((leg, i) => {
       const { legId, mode, route } = leg;
 
       const lMode = getLocalizedMode(mode, intl);
       const routeName = `${lMode} ${route.shortName}`;
+
       const m = (
         <FormattedMessage
           id="navigation-mode-canceled"
@@ -403,16 +431,13 @@ export const getItineraryAlerts = (
         />
       );
       // we want to show the show routes button only for the first canceled leg.
-      if (i === 0) {
-        content = withShowRoutesBtn(
-          <div className="navi-alert-content">
-            {m}
-            {abortTrip}
-          </div>,
+      const content =
+        i === 0 ? (
+          withNewSearchBtn({ m }, itinerarySearchCallback)
+        ) : (
+          <div className="navi-alert-content">{m}</div>
         );
-      } else {
-        content = <div className="navi-alert-content">{m}</div>;
-      }
+
       if (!messages.get(`canceled-${legId}`)) {
         alerts.push({
           severity: 'ALERT',
@@ -423,36 +448,33 @@ export const getItineraryAlerts = (
         });
       }
     });
-  }
-
-  const transferProblems = findTransferProblems(legs, time, position, origin);
-  if (transferProblems.length) {
-    let prob = transferProblems.find(p => p.severity === 'ALERT');
-    if (!prob) {
-      // just take first
-      [prob] = transferProblems;
-    }
-    const transferId = `transfer-${prob.fromLeg.legId}-${prob.toLeg.legId}}`;
-    const alert = messages.get(transferId);
-    if (!alert || alert.severity !== prob.severity) {
-      content = withShowRoutesBtn(
-        <div className="navi-alert-content">
-          <FormattedMessage
-            id="navigation-transfer-problem"
-            values={{
-              route1: prob.fromLeg.route.shortName,
-              route2: prob.toLeg.route.shortName,
-            }}
-          />
-          {abortTrip}
-        </div>,
-      );
-      alerts.push({
-        severity: prob.severity,
-        content,
-        id: transferId,
-        hideClose: prob.severity === 'ALERT',
-      });
+  } else {
+    const transferProblems = findTransferProblems(legs, time, position, origin);
+    if (transferProblems.length) {
+      let prob = transferProblems.find(p => p.severity === 'ALERT');
+      if (!prob) {
+        // just take first
+        [prob] = transferProblems;
+      }
+      const transferId = `transfer-${prob.fromLeg.legId}-${prob.toLeg.legId}}`;
+      const alert = messages.get(transferId);
+      if (!alert || alert.severity !== prob.severity) {
+        alerts.push({
+          severity: prob.severity,
+          content: withNewSearchBtn(
+            <FormattedMessage
+              id="navigation-transfer-problem"
+              values={{
+                route1: prob.fromLeg.route.shortName,
+                route2: prob.toLeg.route.shortName,
+              }}
+            />,
+            itinerarySearchCallback,
+          ),
+          id: transferId,
+          hideClose: prob.severity === 'ALERT',
+        });
+      }
     }
   }
   return alerts;

@@ -11,6 +11,7 @@ import {
   getAdditionalMessages,
   getItineraryAlerts,
   getTransitLegState,
+  itinerarySearchPath,
   LEGTYPE,
   DESTINATION_RADIUS,
 } from './NaviUtils';
@@ -92,6 +93,17 @@ function NaviCardContainer(
       config,
     );
 
+  const makeNewItinerarySearch = () => {
+    const path = itinerarySearchPath(
+      time,
+      currentLeg,
+      nextLeg,
+      position,
+      match.params.to,
+    );
+    router.push(path);
+  };
+
   useEffect(() => {
     updateClient(getNaviTopics(), context);
   }, []);
@@ -116,8 +128,7 @@ function NaviCardContainer(
         origin,
         intl,
         messages,
-        match.params,
-        router,
+        makeNewItinerarySearch,
       ),
     );
 
@@ -170,11 +181,10 @@ function NaviCardContainer(
       // handle initial focus when not tracking
       if (currentLeg) {
         focusToLeg(currentLeg);
-        destCountRef.current = 0;
       } else if (time < legTime(firstLeg.start)) {
         focusToLeg(firstLeg);
       } else {
-        focusToLeg(lastLeg);
+        focusToLeg(nextLeg || lastLeg);
       }
       focusRef.current = true;
     }
