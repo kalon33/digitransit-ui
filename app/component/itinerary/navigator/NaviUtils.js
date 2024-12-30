@@ -365,6 +365,10 @@ function withNewSearchBtn(children, searchCallback) {
   );
 }
 
+function alertId(alert) {
+  return `${alert.effectiveStartDate}-${alert.alertDescriptionText}`;
+}
+
 export const getItineraryAlerts = (
   legs,
   time,
@@ -377,11 +381,11 @@ export const getItineraryAlerts = (
   const alerts = legs.flatMap(leg => {
     return leg.alerts
       .filter(alert => {
-        const { first } = getFirstLastLegs(legs);
-        const startTime = legTime(first.start) / 1000;
-        if (messages.get(alert.id)?.closed) {
+        if (messages.get(alertId(alert))?.closed) {
           return false;
         }
+        const { first } = getFirstLastLegs(legs);
+        const startTime = legTime(first.start) / 1000;
         // show only alerts that are active when
         // the journey starts
         if (startTime < alert.effectiveStartDate) {
@@ -402,7 +406,7 @@ export const getItineraryAlerts = (
             <span className="header"> {alert.alertHeaderText}</span>
           </div>
         ),
-        id: `${alert.effectiveStartDate}-${alert.alertDescriptionText}`,
+        id: alertId(alert),
       }));
   });
 
