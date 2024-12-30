@@ -280,7 +280,10 @@ export const getTransitLegState = (leg, intl, messages, time) => {
     const departure = leg.trip.stoptimesForDate[0];
     const departed =
       1000 * (departure.serviceDay + departure.scheduledDeparture);
-    if (time - departed < DISPLAY_MESSAGE_THRESHOLD) {
+    if (
+      time - departed < DISPLAY_MESSAGE_THRESHOLD &&
+      time + DISPLAY_MESSAGE_THRESHOLD > legTime(leg.start)
+    ) {
       // vehicle just departed, maybe no realtime yet
       severity = 'INFO';
     } else {
