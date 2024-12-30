@@ -181,11 +181,10 @@ function NaviCardContainer(
       // handle initial focus when not tracking
       if (currentLeg) {
         focusToLeg(currentLeg);
-        destCountRef.current = 0;
       } else if (time < legTime(firstLeg.start)) {
         focusToLeg(firstLeg);
       } else {
-        focusToLeg(lastLeg);
+        focusToLeg(nextLeg || lastLeg);
       }
       focusRef.current = true;
     }
