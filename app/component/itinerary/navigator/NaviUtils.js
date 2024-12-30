@@ -344,10 +344,7 @@ export function itinerarySearchPath(time, leg, nextLeg, position, to) {
   } else {
     from = position || leg?.to || nextLeg?.from;
   }
-  const location = { ...from };
-  if (from.stop) {
-    location.gtfsId = from.stop.gtfsId;
-  }
+  const location = { ...from, ...from.stop };
 
   return getItineraryPagePath(locationToUri(location), to);
 }
