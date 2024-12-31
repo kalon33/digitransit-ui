@@ -1,3 +1,4 @@
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -8,35 +9,47 @@ export default function NaviBottom(
   { setNavigation, arrival, time },
   { config },
 ) {
+  const handleClose = () => setNavigation(false);
+  const handleTicketButtonClick = e => e.stopPropagation();
+
+  const isTicketSaleActive = !!config?.ticketLink;
   const remainingDuration = Math.ceil((arrival - time) / 60000); // ms to minutes
+
+  const controlsClasses = cx('navi-bottom-controls', {
+    'ticket-link': isTicketSaleActive,
+  });
+
+  const closeButton = (
+    <button type="button" onClick={handleClose} className="navi-close-button">
+      <FormattedMessage id="navigation-quit" />
+    </button>
+  );
+
+  const durationDiv = remainingDuration >= 0 && (
+    <div className="navi-time">
+      <span>
+        <FormattedMessage
+          id="travel-time"
+          values={{ min: remainingDuration }}
+        />
+      </span>
+      <span className="navi-daytime">{epochToTime(arrival, config)}</span>
+    </div>
+  );
+
+  const [FirstElement, SecondElement] = isTicketSaleActive
+    ? [closeButton, durationDiv]
+    : [durationDiv, closeButton];
+
   return (
     <div className="navi-bottom-sheet">
-      <div className="navi-bottom-controls">
-        <button
-          type="button"
-          onClick={() => setNavigation(false)}
-          className="navi-close-button"
-        >
-          <FormattedMessage id="navigation-quit" />
-        </button>
-
-        {remainingDuration >= 0 && (
-          <div className="navi-time">
-            <span>
-              <FormattedMessage
-                id="travel-time"
-                values={{ min: remainingDuration }}
-              />
-            </span>
-            <span className="navi-daytime">{epochToTime(arrival, config)}</span>
-          </div>
-        )}
-        {config.ticketLink && (
+      <div className={controlsClasses}>
+        {FirstElement}
+        {SecondElement}
+        {isTicketSaleActive && (
           <button type="button" className="navi-ticket-button">
             <a
-              onClick={e => {
-                e.stopPropagation();
-              }}
+              onClick={handleTicketButtonClick}
               href={config.ticketLink}
               target="_blank"
               rel="noopener noreferrer"

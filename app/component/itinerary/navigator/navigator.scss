@@ -554,7 +554,11 @@ $fixed-width-padding: 16px;
     justify-content: space-between;
     font-size: $font-size-normal;
     text-align: center;
-    margin: 20px 24px 10px 24px;
+    margin: var(--space-m) var(--space-l);
+
+    &.ticket-link {
+      margin: var(--space-l) var(--space-m);
+    }
 
     .navi-close-button {
       border-style: solid;
