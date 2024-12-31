@@ -45,16 +45,16 @@ function scaleLegs(legs, i1, i2, k) {
   }
 }
 
-function matchLegEnds(legs, first) {
+function matchLegEnds(legs) {
   if (legs.length < 2) {
     return;
   }
   let transit;
   let gap;
 
-  transit = nextTransitIndex(legs, first);
   // shift first legs to match transit start
-  if (first === 0 && transit > 0) {
+  transit = nextTransitIndex(legs, 0);
+  if (transit > 0) {
     gap = getLegGap(legs, transit - 1);
     if (gap) {
       shiftLegs(legs, 0, transit - 1, gap);
@@ -155,7 +155,6 @@ const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
   const [time, setTime] = useState(Date.now());
   const previousFinishedLeg = useRef(undefined);
   const itineraryStarted = useRef(false);
-  const tailIndex = useRef(0); // transit legs before this are finished
 
   const origin = useMemo(
     () => GeodeticToEcef(initialLegs[0].from.lat, initialLegs[0].from.lon),
@@ -179,7 +178,7 @@ const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
       }
 
       const legQueries = legs
-        .filter((leg, i) => leg.transitLeg && i >= tailIndex.current)
+        .filter(leg => leg.transitLeg && legTime(leg.end) > time)
         .map(leg =>
           fetchQuery(
             relayEnvironment,
@@ -226,7 +225,7 @@ const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
       return { ...l, start: { ...l.start }, end: { ...l.end } };
     });
     // shift non-transit-legs to match possibly changed transit legs
-    matchLegEnds(rtLegs, tailIndex.current);
+    matchLegEnds(rtLegs);
     setRealTimeLegs(rtLegs);
   }, [planarLegs, queryAndMapRealtimeLegs]);
 
@@ -251,10 +250,8 @@ const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
 
   previousFinishedLeg.current = previousLeg;
   if (currentLeg) {
-    tailIndex.current = realTimeLegs.indexOf(currentLeg);
     itineraryStarted.current = true;
   }
-
   // return wait legs as undefined as they are not a global concept
   return {
     realTimeLegs,
