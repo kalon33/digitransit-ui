@@ -15,7 +15,7 @@ export default function NaviBottom(
   const isTicketSaleActive = !!config?.ticketLink;
   const remainingDuration = Math.ceil((arrival - time) / 60000); // ms to minutes
 
-  const controlsClasses = cx('navi-bottom-controls', {
+  const sheetClasses = cx('navi-bottom-sheet', {
     'ticket-link': isTicketSaleActive,
   });
 
@@ -42,23 +42,21 @@ export default function NaviBottom(
     : [durationDiv, closeButton];
 
   return (
-    <div className="navi-bottom-sheet">
-      <div className={controlsClasses}>
-        {FirstElement}
-        {SecondElement}
-        {isTicketSaleActive && (
-          <button type="button" className="navi-ticket-button">
-            <a
-              onClick={handleTicketButtonClick}
-              href={config.ticketLink}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FormattedMessage id="navigation-ticket" />
-            </a>
-          </button>
-        )}
-      </div>
+    <div className={sheetClasses}>
+      {FirstElement}
+      {SecondElement}
+      {isTicketSaleActive && (
+        <button type="button" className="navi-ticket-button">
+          <a
+            onClick={handleTicketButtonClick}
+            href={config.ticketLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FormattedMessage id="navigation-ticket" />
+          </a>
+        </button>
+      )}
     </div>
   );
 }
