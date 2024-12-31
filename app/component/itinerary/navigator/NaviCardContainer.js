@@ -141,7 +141,6 @@ function NaviCardContainer(
           nextLeg,
           firstLeg,
           time,
-          intl,
           config,
           messages,
         ),
