@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { configShape } from '../../../util/shapes';
 import { epochToTime } from '../../../util/timeUtils';
@@ -9,8 +9,8 @@ export default function NaviBottom(
   { setNavigation, arrival, time },
   { config },
 ) {
-  const handleClose = () => setNavigation(false);
-  const handleTicketButtonClick = e => e.stopPropagation();
+  const handleClose = useCallback(() => setNavigation(false), [setNavigation]);
+  const handleTicketButtonClick = useCallback(e => e.stopPropagation(), []);
 
   const isTicketSaleActive = !!config?.ticketLink;
   const remainingDuration = Math.ceil((arrival - time) / 60000); // ms to minutes
