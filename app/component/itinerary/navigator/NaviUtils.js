@@ -1,13 +1,13 @@
-import React from 'react';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
+import React from 'react';
 import { FormattedMessage } from 'react-intl';
+import { ExtendedRouteTypes } from '../../../constants';
+import { getFaresFromLegs } from '../../../util/fareUtils';
 import { GeodeticToEnu } from '../../../util/geo-utils';
 import { legTime, legTimeAcc } from '../../../util/legUtils';
-import { timeStr, epochToIso } from '../../../util/timeUtils';
-import { getFaresFromLegs } from '../../../util/fareUtils';
-import { ExtendedRouteTypes } from '../../../constants';
-import { getItineraryPagePath } from '../../../util/path';
 import { locationToUri } from '../../../util/otpStrings';
+import { getItineraryPagePath } from '../../../util/path';
+import { epochToIso, timeStr } from '../../../util/timeUtils';
 
 const TRANSFER_SLACK = 60000;
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
@@ -217,7 +217,6 @@ export const getAdditionalMessages = (
   nextLeg,
   firstLeg,
   time,
-  intl,
   config,
   messages,
 ) => {
@@ -229,19 +228,21 @@ export const getAdditionalMessages = (
     legTime(leg.end) - time < DISPLAY_MESSAGE_THRESHOLD
   ) {
     // Todo: multiple fares?
-    const fare = getFaresFromLegs([nextLeg], config)[0];
-    msgs.push({
-      severity: 'INFO',
-      content: (
-        <div className="navi-info-content">
-          <FormattedMessage id="navigation-remember-ticket" />
-          <span>
-            {fare.ticketName} {fare.price} €
-          </span>
-        </div>
-      ),
-      id: 'ticket',
-    });
+    const fares = getFaresFromLegs([nextLeg], config);
+    if (fares?.length) {
+      msgs.push({
+        severity: 'INFO',
+        content: (
+          <div className="navi-info-content">
+            <FormattedMessage id="navigation-remember-ticket" />
+            <span>
+              {fares[0].ticketName} {fares[0].price} €
+            </span>
+          </div>
+        ),
+        id: 'ticket',
+      });
+    }
   }
   return msgs;
 };
