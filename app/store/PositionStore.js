@@ -1,11 +1,5 @@
 import Store from 'fluxible/addons/BaseStore';
-import d from 'debug';
-import { api, init } from '../action/MockGeolocationApi';
-import { isBrowser } from '../util/browser';
-import { parseLatLon } from '../util/otpStrings';
 import { getGeolocationState, setGeolocationState } from './localStorage';
-
-const debug = d('PositionStore.js');
 
 export default class PositionStore extends Store {
   static storeName = 'PositionStore';
@@ -33,33 +27,6 @@ export default class PositionStore extends Store {
   static REVERSE_GEOCODING_STATUS_IN_PROGRESS = 'reverse-geocoding-in-progress';
 
   constructor(dispatcher) {
-    if (
-      isBrowser &&
-      window.location &&
-      window.location.search.indexOf('mock') !== -1
-    ) {
-      let permission = window.location.search.substring(
-        window.location.search.indexOf('mock') + 5,
-      );
-      let lat;
-      let lon;
-      if (permission.length > 1) {
-        const latlon = parseLatLon(permission);
-        if (latlon) {
-          permission = 'granted';
-          ({ lat, lon } = latlon);
-        }
-      } else {
-        // default mock permission = granted
-        permission = 'granted';
-      }
-
-      debug('replacing geolocation api with mock');
-      navigator.geoapi = api;
-      init(permission, lat, lon);
-    } else {
-      navigator.geoapi = navigator.geolocation;
-    }
     super(dispatcher);
     this.lat = 0;
     this.lon = 0;
