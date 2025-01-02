@@ -5,12 +5,12 @@ import { addAnalyticsEvent } from '../util/analyticsUtils';
 
 let geoWatchId;
 
-function reverseGeocodeAddress(actionContext, location) {
+function reverseGeocodeAddress(actionContext, coords) {
   const language = actionContext.getStore('PreferencesStore').getLanguage();
 
   const searchParams = {
-    'point.lat': location.lat,
-    'point.lon': location.lon,
+    'point.lat': coords.latitude,
+    'point.lon': coords.longitude,
     lang: language,
     size: 1,
     layers: 'address',
@@ -20,6 +20,7 @@ function reverseGeocodeAddress(actionContext, location) {
     searchParams['boundary.country'] =
       actionContext.config.searchParams['boundary.country'];
   }
+  actionContext.dispatch('StartReverseGeocoding');
 
   return getJson(
     actionContext.config.URL.PELIAS_REVERSE_GEOCODER,
@@ -40,32 +41,17 @@ function reverseGeocodeAddress(actionContext, location) {
   });
 }
 
-const runReverseGeocodingAction = (actionContext, lat, lon) =>
-  actionContext.executeAction(reverseGeocodeAddress, {
-    lat,
-    lon,
-  });
-
-const debouncedRunReverseGeocodingAction = debounce(
-  runReverseGeocodingAction,
-  10000,
-  {
-    leading: true,
-  },
-);
+const debouncedReverseGeocoding = debounce(reverseGeocodeAddress, 10000, {
+  leading: true,
+});
 
 function geoCallback(actionContext, pos) {
-  actionContext.dispatch('StartReverseGeocoding');
   actionContext.dispatch('GeolocationFound', {
     lat: pos.coords.latitude,
     lon: pos.coords.longitude,
     heading: pos.coords.heading,
   });
-  debouncedRunReverseGeocodingAction(
-    actionContext,
-    pos.coords.latitude,
-    pos.coords.longitude,
-  );
+  debouncedReverseGeocoding(actionContext, pos.coords);
 }
 
 function updateGeolocationMessage(actionContext, newId) {
