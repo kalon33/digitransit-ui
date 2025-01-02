@@ -171,9 +171,12 @@ export function checkPositioningPermission() {
   return p;
 }
 
+let watchPending;
+
 /* starts location watch */
 export function startLocationWatch(actionContext) {
-  if (typeof geoWatchId === 'undefined') {
+  if (typeof geoWatchId === 'undefined' && !watchPending) {
+    watchPending = true;
     checkPositioningPermission().then(status => {
       switch (status.state) {
         case 'granted':
