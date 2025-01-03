@@ -132,6 +132,26 @@ function NaviCardContainer(
       ),
     );
 
+    if (match.location.query?.debug !== undefined && position) {
+      const info1 = `lat: ${position.lat} lon: ${position.lon}`;
+      const info2 = `status: ${position.status}`;
+      const info3 = `locations: ${position.locationCount} watchId: ${position.watchId}`;
+
+      addMessages(incomingMessages, [
+        {
+          severity: 'INFO',
+          content: (
+            <div className="navi-info-content">
+              <span>{info1}</span>
+              <span>{info2}</span>
+              <span>{info3}</span>
+            </div>
+          ),
+          id: 'debug',
+        },
+      ]);
+    }
+
     if (nextLeg?.transitLeg) {
       // Messages for NaviStack.
       addMessages(incomingMessages, [
@@ -253,6 +273,9 @@ NaviCardContainer.propTypes = {
   position: PropTypes.shape({
     lat: PropTypes.number,
     lon: PropTypes.number,
+    status: PropTypes.string,
+    locationCount: PropTypes.number,
+    watchId: PropTypes.string,
   }),
   mapLayerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
     .isRequired,
