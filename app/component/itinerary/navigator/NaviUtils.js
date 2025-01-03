@@ -9,7 +9,7 @@ import { ExtendedRouteTypes } from '../../../constants';
 import { getItineraryPagePath } from '../../../util/path';
 import { locationToUri } from '../../../util/otpStrings';
 
-const TRANSFER_SLACK = 60000;
+const TRANSFER_SLACK = 80000;
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
 
 export const DESTINATION_RADIUS = 20; // meters
@@ -255,8 +255,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
   }
 
   const notInSchedule =
-    estimated?.delay > DISPLAY_MESSAGE_THRESHOLD ||
-    estimated?.delay < -DISPLAY_MESSAGE_THRESHOLD;
+    estimated?.delay > TRANSFER_SLACK || estimated?.delay < -TRANSFER_SLACK;
   const localizedMode = getLocalizedMode(mode, intl);
   let content;
   let severity;
