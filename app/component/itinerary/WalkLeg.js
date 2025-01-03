@@ -154,7 +154,6 @@ function WalkLeg(
                     <Icon
                       img="icon-icon_mapMarker-via"
                       className="itinerary-mapmarker-icon"
-                      color={config.colors.primary}
                     />
                   )}
                   {leg[toOrFrom].stop && (

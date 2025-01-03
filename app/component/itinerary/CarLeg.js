@@ -70,7 +70,6 @@ export default function CarLeg(props, { config, intl }) {
                 <Icon
                   img="icon-icon_mapMarker-via"
                   className="itinerary-mapmarker-icon"
-                  color={config.colors.primary}
                 />
               )}
               {props.leg.from.stop && (

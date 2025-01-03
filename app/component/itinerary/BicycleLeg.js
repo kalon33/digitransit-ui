@@ -280,7 +280,6 @@ export default function BicycleLeg(
                       <Icon
                         img="icon-icon_mapMarker-via"
                         className="itinerary-mapmarker-icon"
-                        color={config.colors.primary}
                       />
                     )}
                     <Icon
