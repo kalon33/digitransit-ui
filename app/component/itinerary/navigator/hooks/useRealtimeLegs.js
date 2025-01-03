@@ -1,8 +1,14 @@
-import { useCallback, useEffect, useState } from 'react';
+import polyUtil from 'polyline-encoded';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { fetchQuery } from 'react-relay';
-import { legQuery } from '../../queries/LegQuery';
-import { legTime } from '../../../../util/legUtils';
+import { GeodeticToEcef, GeodeticToEnu } from '../../../../util/geo-utils';
+import {
+  isAnyLegPropertyIdentical,
+  legTime,
+  LegMode,
+} from '../../../../util/legUtils';
 import { epochToIso } from '../../../../util/timeUtils';
+import { legQuery } from '../../queries/LegQuery';
 
 function nextTransitIndex(legs, i) {
   for (let j = i; j < legs.length; j++) {
@@ -34,8 +40,8 @@ function scaleLegs(legs, i1, i2, k) {
     const leg = legs[j];
     const s = legTime(leg.start);
     const e = legTime(leg.end);
-    leg.start.scheduledTime = epochToIso(s + k * (s - base));
-    leg.end.scheduledTime = epochToIso(e + k * (e - base));
+    leg.start.scheduledTime = epochToIso(base + k * (s - base));
+    leg.end.scheduledTime = epochToIso(base + k * (e - base));
   }
 }
 
@@ -85,9 +91,85 @@ function matchLegEnds(legs) {
   }
 }
 
-const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
-  const [realTimeLegs, setRealTimeLegs] = useState(initialLegs);
+function getLegsOfInterest(
+  realTimeLegs,
+  time,
+  previousFinishedLeg,
+  itineraryStarted,
+) {
+  if (!realTimeLegs?.length) {
+    return {
+      firstLeg: undefined,
+      lastLeg: undefined,
+      currentLeg: undefined,
+      nextLeg: undefined,
+    };
+  }
+  const legs = realTimeLegs.reduce((acc, curr, i, arr) => {
+    acc.push(curr);
+    const next = arr[i + 1];
+
+    // A wait leg is added, if next leg exists but it does not start when current ends
+    if (next && legTime(curr.end) !== legTime(next.start)) {
+      acc.push({
+        id: null,
+        legGeometry: { points: null },
+        mode: LegMode.Wait,
+        start: curr.end,
+        end: next.start,
+      });
+    }
+
+    return acc;
+  }, []);
+
+  let currentLeg = legs.find(
+    ({ start, end }) => legTime(start) <= time && legTime(end) >= time,
+  );
+  let previousLeg = legs.findLast(({ end }) => legTime(end) < time);
+  const nextLeg = legs.find(({ start }) => legTime(start) > time);
+
+  // Indices are shifted by one if a previously completed leg reappears as current.
+  if (
+    isAnyLegPropertyIdentical(currentLeg, previousFinishedLeg, [
+      'legId',
+      'legGeometry.points',
+    ]) &&
+    itineraryStarted // prev and current are both undefined before itinerary starts
+  ) {
+    previousLeg = currentLeg;
+    currentLeg = nextLeg;
+  }
+  const nextStart = currentLeg ? legTime(currentLeg.end) : time;
+  return {
+    firstLeg: legs[0],
+    lastLeg: legs[legs.length - 1],
+    previousLeg,
+    currentLeg,
+    nextLeg: realTimeLegs.find(({ start }) => legTime(start) >= nextStart),
+  };
+}
+
+const useRealtimeLegs = (relayEnvironment, initialLegs = []) => {
+  const [realTimeLegs, setRealTimeLegs] = useState();
   const [time, setTime] = useState(Date.now());
+  const previousFinishedLeg = useRef(undefined);
+  const itineraryStarted = useRef(false);
+
+  const origin = useMemo(
+    () => GeodeticToEcef(initialLegs[0].from.lat, initialLegs[0].from.lon),
+    [initialLegs[0]],
+  );
+
+  const planarLegs = useMemo(() => {
+    return initialLegs.map(leg => {
+      const geometry = polyUtil.decode(leg.legGeometry.points);
+      return {
+        ...leg,
+        geometry: geometry.map(p => GeodeticToEnu(p[0], p[1], origin)),
+      };
+    });
+  }, [initialLegs]);
 
   const queryAndMapRealtimeLegs = useCallback(
     async legs => {
@@ -96,7 +178,7 @@ const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
       }
 
       const legQueries = legs
-        .filter(leg => leg.transitLeg)
+        .filter(leg => leg.transitLeg && legTime(leg.end) > time)
         .map(leg =>
           fetchQuery(
             relayEnvironment,
@@ -115,12 +197,19 @@ const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
   );
 
   const fetchAndSetRealtimeLegs = useCallback(async () => {
-    const rtLegMap = await queryAndMapRealtimeLegs(initialLegs).catch(err =>
+    if (
+      !initialLegs?.length ||
+      time >= legTime(initialLegs[initialLegs.length - 1].end)
+    ) {
+      return;
+    }
+
+    const rtLegMap = await queryAndMapRealtimeLegs(planarLegs).catch(err =>
       // eslint-disable-next-line no-console
       console.error('Failed to query and map real time legs', err),
     );
 
-    const rtLegs = initialLegs.map(l => {
+    const rtLegs = planarLegs.map(l => {
       const rtLeg = l.legId ? rtLegMap[l.legId] : null;
       if (rtLeg) {
         return {
@@ -132,15 +221,17 @@ const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
           },
         };
       }
+      // copy leg times so that modification will not change original times
       return { ...l, start: { ...l.start }, end: { ...l.end } };
     });
     // shift non-transit-legs to match possibly changed transit legs
     matchLegEnds(rtLegs);
     setRealTimeLegs(rtLegs);
-  }, [initialLegs, queryAndMapRealtimeLegs]);
+  }, [planarLegs, queryAndMapRealtimeLegs]);
 
   useEffect(() => {
     fetchAndSetRealtimeLegs();
+
     const interval = setInterval(() => {
       fetchAndSetRealtimeLegs();
       setTime(Date.now());
@@ -149,7 +240,29 @@ const useRealtimeLegs = (initialLegs, mapRef, relayEnvironment) => {
     return () => clearInterval(interval);
   }, [fetchAndSetRealtimeLegs]);
 
-  return { realTimeLegs, time };
+  const { firstLeg, lastLeg, currentLeg, nextLeg, previousLeg } =
+    getLegsOfInterest(
+      realTimeLegs,
+      time,
+      previousFinishedLeg.current,
+      itineraryStarted.current,
+    );
+
+  previousFinishedLeg.current = previousLeg;
+  if (currentLeg) {
+    itineraryStarted.current = true;
+  }
+  // return wait legs as undefined as they are not a global concept
+  return {
+    realTimeLegs,
+    time,
+    origin,
+    firstLeg,
+    lastLeg,
+    previousLeg: previousLeg?.mode === LegMode.Wait ? undefined : previousLeg,
+    currentLeg: currentLeg?.mode === LegMode.Wait ? undefined : currentLeg,
+    nextLeg: nextLeg?.mode === LegMode.Wait ? undefined : nextLeg,
+  };
 };
 
 export { useRealtimeLegs };

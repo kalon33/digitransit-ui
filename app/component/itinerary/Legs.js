@@ -23,10 +23,11 @@ import ViaLeg from './ViaLeg';
 import CallAgencyLeg from './CallAgencyLeg';
 import {
   compressLegs,
-  isCallAgencyPickupType,
+  isCallAgencyLeg,
   isLegOnFoot,
   legTime,
   markViaPoints,
+  getBoardingLeg,
 } from '../../util/legUtils';
 import { getRouteMode } from '../../util/modeUtils';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
@@ -50,6 +51,8 @@ export default class Legs extends React.Component {
     tabIndex: PropTypes.number,
     openSettings: PropTypes.func.isRequired,
     showBikeBoardingInformation: PropTypes.bool,
+    showCarBoardingInformation: PropTypes.bool,
+    usingOwnCarWholeTrip: PropTypes.bool,
     relayEnvironment: relayShape,
   };
 
@@ -63,6 +66,8 @@ export default class Legs extends React.Component {
     changeHash: undefined,
     tabIndex: undefined,
     showBikeBoardingInformation: false,
+    showCarBoardingInformation: false,
+    usingOwnCarWholeTrip: false,
     relayEnvironment: undefined,
   };
 
@@ -86,8 +91,14 @@ export default class Legs extends React.Component {
   };
 
   render() {
-    const { itinerary, fares, showBikeBoardingInformation, relayEnvironment } =
-      this.props;
+    const {
+      itinerary,
+      fares,
+      showBikeBoardingInformation,
+      showCarBoardingInformation,
+      relayEnvironment,
+      usingOwnCarWholeTrip,
+    } = this.props;
     const { waitThreshold } = this.context.config.itinerary;
 
     const { location } = this.context.match;
@@ -95,6 +106,7 @@ export default class Legs extends React.Component {
     const itineraryLegs = markViaPoints(itinerary.legs, intermediatePlaces);
     const compressedLegs = compressLegs(itineraryLegs, true).map(leg => ({
       showBikeBoardingInformation,
+      showCarBoardingInformation,
       ...leg,
       fare:
         (leg.route &&
@@ -145,6 +157,7 @@ export default class Legs extends React.Component {
         focusAction: this.focus(leg.from),
         changeHash: this.props.changeHash,
         tabIndex: this.props.tabIndex,
+        usingOwnCarWholeTrip,
       };
 
       let waitLeg;
@@ -155,7 +168,6 @@ export default class Legs extends React.Component {
           waitTime > waitThresholdInMs &&
           (nextLeg != null ? nextLeg.mode : null) !== 'AIRPLANE' &&
           leg.mode !== 'AIRPLANE' &&
-          leg.mode !== 'CAR' &&
           !nextLeg.intermediatePlace &&
           !isNextLegInterlining &&
           leg.to.stop
@@ -172,13 +184,14 @@ export default class Legs extends React.Component {
               start={leg.end}
               waitTime={waitTime}
               focusAction={this.focus(leg.to)}
+              icon={usingOwnCarWholeTrip ? 'icon-icon_wait-car' : undefined}
             >
               {stopCode(leg.to.stop)}
             </WaitLeg>
           );
         }
       }
-      if (leg.mode !== 'WALK' && isCallAgencyPickupType(leg)) {
+      if (leg.mode !== 'WALK' && isCallAgencyLeg(leg)) {
         legs.push(<CallAgencyLeg {...transitLegProps} />);
       } else if (leg.intermediatePlace) {
         legs.push(<ViaLeg {...legProps} arrival={startTime} />);
@@ -243,35 +256,15 @@ export default class Legs extends React.Component {
         // currently bike walk leg is not rendered if there is waiting at stop, because
         // 'walk bike to train and wait x minutes' is too confusing instruction
         // This cannot be fixed as long as bicycle leg renders also bike walking
-        if (
-          !bikeParked &&
-          ((nextLeg?.transitLeg && !waitLeg) || previousLeg?.transitLeg)
-        ) {
-          let { from, to } = leg;
-          // don't render instructions to walk bike out from vehicle
-          // if biking starts from stop (no transit first)
-          if (!previousLeg?.transitLeg && leg.from.stop) {
-            from = {
-              ...from,
-              stop: undefined,
-            };
-          }
-          if ((!nextLeg?.transitLeg && leg.to.stop) || waitLeg) {
-            to = {
-              ...to,
-              stop: undefined,
-            };
-          }
-          bicycleWalkLeg = {
-            duration: 0,
-            start: leg.start,
-            end: leg.start,
-            distance: -1,
-            rentedBike: leg.rentedBike,
-            to,
-            from,
-            mode: 'BICYCLE_WALK',
-          };
+        const boardingLeg = getBoardingLeg(
+          nextLeg,
+          previousLeg,
+          waitLeg,
+          leg,
+          'BICYCLE_WALK',
+        );
+        if (!bikeParked && boardingLeg !== undefined) {
+          bicycleWalkLeg = boardingLeg;
         }
         legs.push(
           <BicycleLeg
@@ -283,7 +276,19 @@ export default class Legs extends React.Component {
           />,
         );
       } else if (leg.mode === 'CAR') {
-        legs.push(<CarLeg {...legProps}>{stopCode(leg.from.stop)}</CarLeg>);
+        // If there is a transit leg after or before a car leg, render a car boarding leg without distance information.
+        const carBoardingLeg = getBoardingLeg(
+          nextLeg,
+          previousLeg,
+          waitLeg,
+          leg,
+          'CAR_BOARDING',
+        );
+        legs.push(
+          <CarLeg {...legProps} carBoardingLeg={carBoardingLeg}>
+            {stopCode(leg.from.stop)}
+          </CarLeg>,
+        );
       }
 
       if (waitLeg) {

@@ -120,6 +120,7 @@ const planConnection = graphql`
               color
               gtfsId
               type
+              mode
               agency {
                 name
               }
@@ -132,6 +133,7 @@ const planConnection = graphql`
                   gtfsId
                 }
                 scheduledDeparture
+                serviceDay
               }
               stoptimes {
                 stop {

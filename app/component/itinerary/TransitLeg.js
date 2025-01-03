@@ -34,6 +34,7 @@ import {
   getStopHeadsignFromStoptimes,
   getZoneLabel,
   showBikeBoardingNote,
+  showCarBoardingNote,
   legTimeStr,
   legTime,
 } from '../../util/legUtils';
@@ -104,7 +105,7 @@ class TransitLeg extends React.Component {
   getZoneChange() {
     const { leg } = this.props;
     const startZone = leg.from.stop.zoneId;
-    const endZone = leg.to?.stop.zoneId || leg.to.stop.zoneId;
+    const endZone = leg.to.stop.zoneId || leg.to.stop.zoneId;
     const renderZoneIcons = () => {
       return (
         this.context.config.zones.itinerary &&
@@ -236,6 +237,7 @@ class TransitLeg extends React.Component {
       lang,
       omitDivider,
       interliningLegs,
+      usingOwnCarWholeTrip,
     } = this.props;
     const { config, intl } = this.context;
     const startMs = legTime(leg.start);
@@ -326,7 +328,7 @@ class TransitLeg extends React.Component {
         leg.intermediatePlaces.length,
       );
     }
-    const { showBikeBoardingInformation } = leg;
+    const { showBikeBoardingInformation, showCarBoardingInformation } = leg;
 
     const createNotification = notification => {
       return (
@@ -386,6 +388,9 @@ class TransitLeg extends React.Component {
           (showBikeBoardingInformation &&
             notification.showForBikeWithPublic &&
             showBikeBoardingNote(leg, config)) ||
+          (showCarBoardingInformation &&
+            notification.showForCarWithPublic &&
+            showCarBoardingNote(leg, config)) ||
           notification.showForRoute?.(leg.route)
         ) {
           routeNotifications.push(
@@ -586,7 +591,11 @@ class TransitLeg extends React.Component {
             </div>
           )}
           {interliningLegs?.length > 0 ? (
-            <InterlineInfo legs={interliningLegs} leg={leg} />
+            <InterlineInfo
+              legs={interliningLegs}
+              leg={leg}
+              usingOwnCarWholeTrip={usingOwnCarWholeTrip}
+            />
           ) : (
             !omitDivider &&
             routeNotifications.length === 0 && <div className="divider" />
@@ -683,6 +692,7 @@ TransitLeg.propTypes = {
   omitDivider: PropTypes.bool,
   changeHash: PropTypes.func,
   tabIndex: PropTypes.number,
+  usingOwnCarWholeTrip: PropTypes.bool,
 };
 
 TransitLeg.defaultProps = {
@@ -691,6 +701,7 @@ TransitLeg.defaultProps = {
   changeHash: undefined,
   tabIndex: undefined,
   children: undefined,
+  usingOwnCarWholeTrip: false,
 };
 
 TransitLeg.contextTypes = {

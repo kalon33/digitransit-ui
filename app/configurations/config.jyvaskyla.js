@@ -163,15 +163,8 @@ export default configMerger(walttiConfig, {
   showTicketInformation: true,
   useTicketIcons: true,
   ticketLink: 'https://linkki.jyvaskyla.fi/liput-ja-hinnat',
-  showTicketPrice: true,
+  // showTicketPrice: true,
 
-  showTicketLinkOnlyWhenTesting: true,
-  settingsForFeatureTesting: {
-    walkSpeed: 0.69,
-    bikeSpeed: 8.33,
-    includeBikeSuggestions: false,
-    transferPenalty: 1600,
-  },
   ticketLinkOperatorCode: 50209,
 
   stopCard: {
@@ -185,4 +178,5 @@ export default configMerger(walttiConfig, {
   },
   // Notice! Turning on this setting forces the search for car routes (for the CO2 comparison only).
   showCO2InItinerarySummary: true,
+  sendAnalyticsCustomEventGoals: true,
 });

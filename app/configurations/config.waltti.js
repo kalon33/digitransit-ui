@@ -272,6 +272,10 @@ export default {
       value: 600,
     },
   ],
+  carBoardingModes: {
+    FERRY: { showNotification: true },
+  },
+  navigation: false,
 
   ticketPurchaseLink: function purchaseTicketLink(fare, operatorCode) {
     const fareId = fare.fareProducts[0].product.id;
@@ -287,10 +291,19 @@ export default {
   },
   ticketButtonTextId: 'buy-in-app',
 
-  analyticsScript: function createAnalyticsScript(hostname) {
+  analyticsScript: function createAnalyticsScript(
+    hostname,
+    sendAnalyticsCustomEventGoals,
+  ) {
+    const address = sendAnalyticsCustomEventGoals
+      ? 'https://plausible.io/js/script.tagged-events.js'
+      : 'https://plausible.io/js/script.js';
     // eslint-disable-next-line no-useless-escape
-    return `<script defer data-domain="${hostname}" src="https://plausible.io/js/script.js"><\/script>\n`;
+    return `<script defer data-domain="${hostname}" src="${address}"><\/script>\n`;
   },
+  analyticsClass: 'plausible-event-name=Ticket+Purchase+Link',
+
+  viaPointsEnabled: false,
 
   // features that should not be deployed to production
   experimental: {

@@ -64,6 +64,7 @@ import {
   isEqualItineraries,
   isStoredItineraryRelevant,
   mergeBikeTransitPlans,
+  mergeCarDirectAndTransitPlans,
   mergeScooterTransitPlan,
   quitIteration,
   reportError,
@@ -85,9 +86,14 @@ const streetHashes = [
   streetHash.bike,
   streetHash.bikeAndVehicle,
   streetHash.car,
+  streetHash.carAndVehicle,
   streetHash.parkAndRide,
 ];
-const altTransitHash = [streetHash.bikeAndVehicle, streetHash.parkAndRide];
+const altTransitHash = [
+  streetHash.bikeAndVehicle,
+  streetHash.carAndVehicle,
+  streetHash.parkAndRide,
+];
 const noTransitHash = [streetHash.walk, streetHash.bike, streetHash.car];
 
 const LOADSTATE = {
@@ -142,9 +148,12 @@ export default function ItineraryPage(props, context) {
     [PLANTYPE.BIKEPARK]: useState(unset),
     [PLANTYPE.BIKETRANSIT]: useState(unset),
     [PLANTYPE.PARKANDRIDE]: useState(unset),
+    [PLANTYPE.CARTRANSIT]: useState(unset),
   };
   // combination of bikePark and bikeTransit
   const [bikePublicState, setBikePublicState] = useState({ plan: {} });
+  // combination of direct car routing and cars with transit
+  const [carPublicState, setCarPublicState] = useState({ plan: {} });
 
   const [settingsState, setSettingsState] = useState({
     settingsOpen: false,
@@ -225,6 +234,8 @@ export default function ItineraryPage(props, context) {
         return altStates[PLANTYPE.CAR][0].plan;
       case streetHash.bikeAndVehicle:
         return bikePublicState.plan;
+      case streetHash.carAndVehicle:
+        return carPublicState.plan;
       case streetHash.parkAndRide:
         return altStates[PLANTYPE.PARKANDRIDE][0].plan;
       default:
@@ -832,13 +843,14 @@ export default function ItineraryPage(props, context) {
       const selected = combinedEdges.length
         ? combinedEdges[selectedIndex]
         : null;
-      const itineraryTopics = getTopics(selected, config);
+
+      const itineraryTopics = getTopics(selected?.node.legs, config);
       const { client } = context.getStore('RealTimeInformationStore');
       // Client may not be initialized yet if there was an client before ComponentDidMount
-      if (!isEqual(itineraryTopics, topicsState) || !client) {
+      if (!naviMode && (!isEqual(itineraryTopics, topicsState) || !client)) {
         updateClient(itineraryTopics, context);
       }
-      if (!isEqual(itineraryTopics, topicsState)) {
+      if (!isEqual(itineraryTopics, topicsState) && !naviMode) {
         // eslint-disable-next-line react/no-did-update-set-state
         setTopicsState(itineraryTopics);
       }
@@ -850,9 +862,11 @@ export default function ItineraryPage(props, context) {
     combinedState.plan,
     relaxState.plan,
     bikePublicState.plan,
+    carPublicState.plan,
     altStates[PLANTYPE.PARKANDRIDE][0].plan,
     location.state?.selectedItineraryIndex,
     relaxScooterState.plan,
+    naviMode,
   ]);
 
   useEffect(() => {
@@ -877,6 +891,23 @@ export default function ItineraryPage(props, context) {
     altStates[PLANTYPE.BIKEPARK][0].plan,
     altStates[PLANTYPE.BIKETRANSIT][0].plan,
   ]);
+
+  // merge direct car and car transit plans into one
+  useEffect(() => {
+    const settings = getSettings(config);
+    if (
+      altStates[PLANTYPE.CAR][0].loading === LOADSTATE.DONE &&
+      altStates[PLANTYPE.CARTRANSIT][0].loading === LOADSTATE.DONE &&
+      settings.includeCarSuggestions &&
+      config.carBoardingModes !== undefined
+    ) {
+      const plan = mergeCarDirectAndTransitPlans(
+        altStates[PLANTYPE.CAR][0].plan,
+        altStates[PLANTYPE.CARTRANSIT][0].plan,
+      );
+      setCarPublicState({ plan });
+    }
+  }, [altStates[PLANTYPE.CAR][0].plan, altStates[PLANTYPE.CARTRANSIT][0].plan]);
 
   // merge the main plan and the scooter plan into one
   useEffect(() => {
@@ -1036,7 +1067,7 @@ export default function ItineraryPage(props, context) {
 
     const itineraryContainsDepartureFromVehicleRentalStation = planEdges?.[
       activeIndex
-    ]?.node.legs.some(leg => leg.from?.vehicleRentalStation);
+    ]?.node.legs.some(leg => leg.from.vehicleRentalStation);
 
     const mapLayerOptions = itineraryContainsDepartureFromVehicleRentalStation
       ? addBikeStationMapForRentalVehicleItineraries(planEdges)
@@ -1072,6 +1103,7 @@ export default function ItineraryPage(props, context) {
         objectsToHide={objectsToHide}
         itinerary={explicitItinerary}
         showBackButton={!naviMode}
+        isLocationPopupEnabled={!naviMode}
       />
     );
   }
@@ -1088,7 +1120,6 @@ export default function ItineraryPage(props, context) {
 
   const cancelNavigatorUsage = () => {
     setNavigation(false);
-    toggleNavigatorIntro();
   };
 
   const walkPlan = altStates[PLANTYPE.WALK][0].plan;
@@ -1096,6 +1127,7 @@ export default function ItineraryPage(props, context) {
   const carPlan = altStates[PLANTYPE.CAR][0].plan;
   const parkRidePlan = altStates[PLANTYPE.PARKANDRIDE][0].plan;
   const bikePublicPlan = bikePublicState.plan;
+  const carPublicPlan = carPublicState.plan;
 
   const settings = getSettings(config);
 
@@ -1184,12 +1216,13 @@ export default function ItineraryPage(props, context) {
             />
           )}
           <NaviContainer
-            itinerary={itineraryForNavigator}
+            legs={itineraryForNavigator.legs}
             focusToLeg={focusToLeg}
             relayEnvironment={props.relayEnvironment}
             setNavigation={setNavigation}
             mapRef={mwtRef.current}
             mapLayerRef={mapLayerRef}
+            isNavigatorIntroDismissed={isNavigatorIntroDismissed}
           />
         </>
       );
@@ -1215,7 +1248,8 @@ export default function ItineraryPage(props, context) {
           focusToPoint={focusToPoint}
           focusToLeg={focusToLeg}
           carEmissions={carEmissions}
-          bikeAndPublicItineraryCount={bikePublicPlan.bikePublicItineraryCount}
+          bikePublicItineraryCount={bikePublicPlan.bikePublicItineraryCount}
+          carPublicItineraryCount={carPublicPlan.carPublicItineraryCount}
           openSettings={showSettingsPanel}
           relayEnvironment={props.relayEnvironment}
           startNavigation={navigateHook}
@@ -1240,6 +1274,7 @@ export default function ItineraryPage(props, context) {
         planEdges={combinedEdges}
         params={params}
         bikeParkItineraryCount={bikePublicPlan.bikeParkItineraryCount}
+        carDirectItineraryCount={carPublicPlan.carDirectItineraryCount}
         showRelaxedPlanNotifier={showRelaxedPlanNotifier}
         showRentalVehicleNotifier={showRentalVehicleNotifier}
         separatorPosition={hash ? undefined : state.separatorPosition}
@@ -1263,11 +1298,14 @@ export default function ItineraryPage(props, context) {
         biking={bikePlan?.edges?.length > 0 || !!bikePublicPlan?.edges?.length}
         driving={
           (settings.includeCarSuggestions && carPlan?.edges?.length > 0) ||
+          !!carPublicPlan?.edges?.length ||
           !!parkRidePlan?.edges?.length
         }
       />
     );
   }
+
+  const showCarPublicPlan = carPublicPlan.carPublicItineraryCount > 0;
 
   const showAltBar =
     !detailView &&
@@ -1278,7 +1316,8 @@ export default function ItineraryPage(props, context) {
       bikePlan?.edges?.length ||
       bikePublicPlan?.edges?.length ||
       parkRidePlan?.edges?.length ||
-      (settings.includeCarSuggestions && carPlan?.edges?.length));
+      (settings.includeCarSuggestions && carPlan?.edges?.length) ||
+      carPublicPlan?.edges?.length);
 
   const alternativeItineraryBar = showAltBar ? (
     <AlternativeItineraryBar
@@ -1288,7 +1327,12 @@ export default function ItineraryPage(props, context) {
       bikePlan={bikePlan}
       bikePublicPlan={bikePublicPlan}
       parkRidePlan={parkRidePlan}
-      carPlan={settings.includeCarSuggestions ? carPlan : undefined}
+      carPlan={
+        settings.includeCarSuggestions && !showCarPublicPlan
+          ? carPlan
+          : undefined
+      }
+      carPublicPlan={showCarPublicPlan ? carPublicPlan : undefined}
       loading={loading || loadingAlt || weatherState.loading}
     />
   ) : null;
