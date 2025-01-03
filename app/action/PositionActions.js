@@ -125,6 +125,7 @@ function watchPosition(actionContext) {
       },
       { enableHighAccuracy: true, timeout: 60000, maximumAge: 60000 },
     );
+    actionContext.dispatch('storeWatchId', geoWatchId);
   } catch (error) {
     if (timeout !== null) {
       clearTimeout(timeout);

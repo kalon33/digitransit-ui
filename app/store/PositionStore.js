@@ -37,6 +37,7 @@ export default class PositionStore extends Store {
     this.layer = undefined;
     this.status = PositionStore.STATUS_NO_LOCATION;
     this.savedState = getGeolocationState();
+    this.locationCount = 0;
     this.emitChange();
   }
 
@@ -99,7 +100,7 @@ export default class PositionStore extends Store {
     }
     this.heading = location.heading ? location.heading : this.heading;
     this.status = PositionStore.STATUS_FOUND_LOCATION;
-
+    this.locationCount += 1;
     this.emitChange();
   }
 
@@ -133,6 +134,8 @@ export default class PositionStore extends Store {
       name: this.name,
       layer: this.layer,
       status: this.status,
+      locationCount: this.locationCount,
+      watchId: this.watchId,
       hasLocation:
         (this.status === PositionStore.STATUS_FOUND_ADDRESS ||
           this.status === PositionStore.STATUS_FOUND_LOCATION) &&
@@ -181,5 +184,6 @@ export default class PositionStore extends Store {
     GeolocationWatchStarted: 'storeWatchId',
     GeolocationWatchStopped: 'clearWatchId',
     StartReverseGeocoding: 'startReverseGeocoding',
+    storeWatchId: 'storeWatchId',
   };
 }
