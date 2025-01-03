@@ -303,7 +303,7 @@ export default class Legs extends React.Component {
       legs.push(
         <WalkLeg
           index={numberOfLegs}
-          leg={lastLeg}
+          leg={{ ...lastLeg, isViaPoint: false }}
           previousLeg={lastLeg}
           focusAction={this.focus(lastLeg.to)}
           focusToLeg={this.focusToLeg(lastLeg)}
