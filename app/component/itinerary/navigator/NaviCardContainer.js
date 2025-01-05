@@ -17,7 +17,7 @@ import {
 } from './NaviUtils';
 import { updateClient, getTopics } from '../ItineraryPageUtils';
 
-const TIME_AT_DESTINATION = 3; // * 10 seconds
+const COUNT_AT_LEG_END = 2; // update cycles within DESTINATION_RADIUS from leg.to
 const TOPBAR_PADDING = 8; // pixels
 const HIDE_TOPCARD_DURATION = 2000; // milliseconds
 
@@ -27,13 +27,13 @@ function addMessages(incominMessages, newMessages) {
   });
 }
 
-const handleLegChange = (leg, firstLeg, time) => {
+const handleLegChange = (leg, firstLeg, time, countAtLegEnd) => {
   let legType;
   if (time < legTime(firstLeg.start)) {
     legType = LEGTYPE.PENDING;
   } else if (leg) {
     if (!leg.transitLeg) {
-      if (leg.current >= TIME_AT_DESTINATION) {
+      if (countAtLegEnd >= COUNT_AT_LEG_END) {
         legType = LEGTYPE.WAIT;
       } else {
         legType = LEGTYPE.MOVE;
@@ -206,7 +206,7 @@ function NaviCardContainer(
 
   // LegChange fires animation, we need to keep the old data until card goes out of the view.
   const l = legChanging ? previousLeg : currentLeg;
-  const legType = handleLegChange(l, firstLeg, time);
+  const legType = handleLegChange(l, firstLeg, time, destCountRef.current);
 
   const containerTopPosition =
     mapLayerRef.current.getBoundingClientRect().top + TOPBAR_PADDING;
