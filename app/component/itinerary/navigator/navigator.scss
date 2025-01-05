@@ -78,6 +78,8 @@ $fixed-width-padding: 16px;
   box-shadow: 0 2px 4px 0 rgba(51, 51, 51, 0.2);
   width: calc(100vw - #{$fixed-width-padding});
   cursor: default;
+  font-size: $font-size-normal;
+  font-weight: $font-weight-book;
 
   &.expanded {
     max-height: unset;
@@ -113,8 +115,6 @@ $fixed-width-padding: 16px;
       align-items: flex-start;
       flex-direction: column;
       width: 100%;
-      font-size: $font-size-normal;
-      font-weight: $font-weight-medium;
 
       &.expanded {
         margin-bottom: 0;
@@ -123,7 +123,6 @@ $fixed-width-padding: 16px;
       .vehicle-leg {
         display: flex;
         margin-top: var(--space-xs);
-        font-weight: $font-weight-book;
         width: 80%;
         text-align: left;
       }
@@ -141,7 +140,6 @@ $fixed-width-padding: 16px;
         }
 
         .wait-duration {
-          font-weight: $font-weight-book;
           margin-top: var(--space-xs);
         }
 
@@ -163,7 +161,6 @@ $fixed-width-padding: 16px;
         .headsign {
           margin-left: 10px;
           font-size: $font-size-small;
-          font-weight: $font-weight-book;
           max-width: 85%;
           text-align: left;
           align-content: center;
@@ -205,13 +202,11 @@ $fixed-width-padding: 16px;
       .stop-count {
         display: flex;
         margin-left: 35px;
-        font-weight: $font-weight-book;
       }
 
       .extension-routenumber {
         display: flex;
         flex-direction: row;
-        font-weight: $font-weight-book;
         margin-left: 35px;
         margin-bottom: var(--space-s);
         text-align: left;
@@ -307,7 +302,6 @@ $fixed-width-padding: 16px;
       }
 
       .destination {
-        font-weight: $font-weight-book;
         text-align: left;
 
         .details {
