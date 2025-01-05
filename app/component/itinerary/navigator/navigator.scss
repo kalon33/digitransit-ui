@@ -498,21 +498,6 @@ $fixed-width-padding: 16px;
         fadeOut 0.5s ease-out forwards;
     }
 
-    .navi-info {
-      display: flex;
-      flex-direction: column;
-      margin-left: 25px;
-
-      span:first-child {
-        font-weight: $font-weight-medium;
-        font-size: $font-size-normal;
-      }
-
-      span:last-child {
-        font-size: $font-size-xsmall;
-      }
-    }
-
     .navi-info-content {
       display: flex;
       flex-direction: column;
