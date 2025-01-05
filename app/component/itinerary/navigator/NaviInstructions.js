@@ -47,7 +47,7 @@ export default function NaviInstructions(
       </>
     );
   }
-  if (legType === LEGTYPE.WAIT && nextLeg.mode !== 'WALK') {
+  if (legType === LEGTYPE.WAIT && nextLeg.transitLeg) {
     const { mode, headsign, route, start } = nextLeg;
     const hs = headsign || nextLeg.trip?.tripHeadsign;
 
