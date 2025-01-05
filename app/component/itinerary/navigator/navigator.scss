@@ -43,6 +43,11 @@ $fixed-width-padding: 16px;
   font-weight: $font-weight-medium;
 }
 
+.navi-header {
+  font-size: $font-size-normal;
+  font-weight: $font-weight-medium;
+}
+
 .navi-card-container {
   position: fixed;
   width: 100vw;
@@ -105,6 +110,7 @@ $fixed-width-padding: 16px;
 
     .instructions {
       display: flex;
+      align-items: flex-start;
       flex-direction: column;
       width: 100%;
       font-size: $font-size-normal;
@@ -112,12 +118,6 @@ $fixed-width-padding: 16px;
 
       &.expanded {
         margin-bottom: 0;
-      }
-
-      .destination-header {
-        font-size: $font-size-normal;
-        font-weight: 500;
-        display: flex;
       }
 
       .vehicle-leg {
