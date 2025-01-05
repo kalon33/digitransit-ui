@@ -225,7 +225,7 @@ function NaviCardContainer(
     >
       <button
         type="button"
-        className={`navi-top-card-button ${cardExpanded ? 'expanded' : ''}`}
+        className={`navi-top-card ${cardExpanded ? 'expanded' : ''}`}
         onClick={handleClick}
         ref={cardRef}
       >
