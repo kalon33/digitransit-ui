@@ -27,7 +27,7 @@ function addMessages(incominMessages, newMessages) {
   });
 }
 
-const handleLegChange = (leg, firstLeg, time, countAtLegEnd) => {
+const getLegType = (leg, firstLeg, time, countAtLegEnd) => {
   let legType;
   if (time < legTime(firstLeg.start)) {
     legType = LEGTYPE.PENDING;
@@ -207,7 +207,7 @@ function NaviCardContainer(
 
   // LegChange fires animation, we need to keep the old data until card goes out of the view.
   const l = legChanging ? previousLeg : currentLeg;
-  const legType = handleLegChange(l, firstLeg, time, legEndRef.current);
+  const legType = getLegType(l, firstLeg, time, legEndRef.current);
 
   const containerTopPosition =
     mapLayerRef.current.getBoundingClientRect().top + TOPBAR_PADDING;
