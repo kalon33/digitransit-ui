@@ -9,7 +9,7 @@ import { locationToUri } from '../../../util/otpStrings';
 import { getItineraryPagePath } from '../../../util/path';
 import { epochToIso, timeStr } from '../../../util/timeUtils';
 
-const TRANSFER_SLACK = 80000;
+const TRANSFER_SLACK = 60000;
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
 
 export const DESTINATION_RADIUS = 20; // meters
