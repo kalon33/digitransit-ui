@@ -9,7 +9,7 @@ import { locationToUri } from '../../../util/otpStrings';
 import { getItineraryPagePath } from '../../../util/path';
 import { epochToIso, timeStr } from '../../../util/timeUtils';
 
-const TRANSFER_SLACK = 60000;
+const TRANSFER_SLACK = 80000;
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
 
 export const DESTINATION_RADIUS = 20; // meters
@@ -234,7 +234,9 @@ export const getAdditionalMessages = (
         severity: 'INFO',
         content: (
           <div className="navi-info-content">
-            <FormattedMessage id="navigation-remember-ticket" />
+            <span className="notification-header">
+              <FormattedMessage id="navigation-remember-ticket" />
+            </span>
             <span>
               {fares[0].ticketName} {fares[0].price} €
             </span>
@@ -256,8 +258,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
   }
 
   const notInSchedule =
-    estimated?.delay > DISPLAY_MESSAGE_THRESHOLD ||
-    estimated?.delay < -DISPLAY_MESSAGE_THRESHOLD;
+    estimated?.delay > TRANSFER_SLACK || estimated?.delay < -TRANSFER_SLACK;
   const localizedMode = getLocalizedMode(mode, intl);
   let content;
   let severity;
@@ -272,7 +273,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
     const translationId = `navigation-mode-${delay > 0 ? 'late' : 'early'}`;
 
     content = (
-      <div className="navi-alert-content">
+      <div className="navi-alert-content notification-header">
         <FormattedMessage id={translationId} values={{ mode: routeName }} />
       </div>
     );
@@ -292,7 +293,9 @@ export const getTransitLegState = (leg, intl, messages, time) => {
     }
     content = (
       <div className="navi-info-content">
-        <FormattedMessage id="navileg-mode-schedule" />
+        <span className="notification-header">
+          <FormattedMessage id="navileg-mode-schedule" />
+        </span>
         <FormattedMessage
           id="navileg-start-schedule"
           values={{
@@ -316,10 +319,12 @@ export const getTransitLegState = (leg, intl, messages, time) => {
 
     content = (
       <div className="navi-info-content">
-        <FormattedMessage
-          id="navileg-mode-realtime"
-          values={{ route: shortName, mode: localizedMode }}
-        />
+        <span className="notification-header">
+          <FormattedMessage
+            id="navileg-mode-realtime"
+            values={{ route: shortName, mode: localizedMode }}
+          />
+        </span>
         <FormattedMessage
           id="navileg-start-realtime"
           values={{
@@ -354,7 +359,7 @@ export function itinerarySearchPath(time, leg, nextLeg, position, to) {
 
 function withNewSearchBtn(children, searchCallback) {
   return (
-    <div className="navi-alert-content">
+    <div className="navi-info-content">
       {children}
       <FormattedMessage id="navigation-abort-trip" />
       <button
@@ -362,7 +367,9 @@ function withNewSearchBtn(children, searchCallback) {
         type="button"
         onClick={searchCallback}
       >
-        <FormattedMessage id="settings-dropdown-open-label" />
+        <span className="notification-header">
+          <FormattedMessage id="settings-dropdown-open-label" />
+        </span>
       </button>
     </div>
   );
@@ -405,8 +412,8 @@ export const getItineraryAlerts = (
       .map(alert => ({
         severity: 'ALERT',
         content: (
-          <div className="navi-alert-content">
-            <span className="header"> {alert.alertHeaderText}</span>
+          <div className="navi-info-content">
+            <span className="notification-header">{alert.alertHeaderText}</span>
           </div>
         ),
         id: alertId(alert),
@@ -426,17 +433,19 @@ export const getItineraryAlerts = (
       const routeName = `${lMode} ${route.shortName}`;
 
       const m = (
-        <FormattedMessage
-          id="navigation-mode-canceled"
-          values={{ mode: routeName }}
-        />
+        <span className="notification-header">
+          <FormattedMessage
+            id="navigation-mode-canceled"
+            values={{ mode: routeName }}
+          />
+        </span>
       );
       // we want to show the show routes button only for the first canceled leg.
       const content =
         i === 0 ? (
           withNewSearchBtn({ m }, itinerarySearchCallback)
         ) : (
-          <div className="navi-alert-content">{m}</div>
+          <div className="navi-info-content notification-header">{m}</div>
         );
 
       if (!messages.get(`canceled-${legId}`)) {
@@ -463,17 +472,20 @@ export const getItineraryAlerts = (
         alerts.push({
           severity: prob.severity,
           content: withNewSearchBtn(
-            <FormattedMessage
-              id="navigation-transfer-problem"
-              values={{
-                route1: prob.fromLeg.route.shortName,
-                route2: prob.toLeg.route.shortName,
-              }}
-            />,
+            <span className="notification-header">
+              <FormattedMessage
+                id="navigation-transfer-problem"
+                values={{
+                  route1: prob.fromLeg.route.shortName,
+                  route2: prob.toLeg.route.shortName,
+                }}
+              />
+            </span>,
             itinerarySearchCallback,
           ),
           id: transferId,
           hideClose: prob.severity === 'ALERT',
+          expiresOn: legTime(prob.toLeg.start),
         });
       }
     }

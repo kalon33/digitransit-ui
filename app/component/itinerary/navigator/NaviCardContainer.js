@@ -17,7 +17,7 @@ import {
 } from './NaviUtils';
 import { updateClient, getTopics } from '../ItineraryPageUtils';
 
-const TIME_AT_DESTINATION = 3; // * 10 seconds
+const COUNT_AT_LEG_END = 2; // update cycles within DESTINATION_RADIUS from leg.to
 const TOPBAR_PADDING = 8; // pixels
 const HIDE_TOPCARD_DURATION = 2000; // milliseconds
 
@@ -27,13 +27,13 @@ function addMessages(incominMessages, newMessages) {
   });
 }
 
-const handleLegChange = (leg, firstLeg, time) => {
+const getLegType = (leg, firstLeg, time, countAtLegEnd) => {
   let legType;
   if (time < legTime(firstLeg.start)) {
     legType = LEGTYPE.PENDING;
   } else if (leg) {
     if (!leg.transitLeg) {
-      if (leg.current >= TIME_AT_DESTINATION) {
+      if (countAtLegEnd >= COUNT_AT_LEG_END) {
         legType = LEGTYPE.WAIT;
       } else {
         legType = LEGTYPE.MOVE;
@@ -73,7 +73,7 @@ function NaviCardContainer(
   const legRef = useRef(currentLeg);
   const focusRef = useRef(false);
   // Destination counter. How long user has been at the destination. * 10 seconds
-  const destCountRef = useRef(0);
+  const legEndRef = useRef(0);
   const cardRef = useRef(null);
   const { intl, config, match, router } = context;
   const handleRemove = index => {
@@ -212,12 +212,13 @@ function NaviCardContainer(
     if (
       position &&
       currentLeg &&
+      nextLeg && // itinerary end has its own logic
       distance(position, currentLeg.to) <= DESTINATION_RADIUS
     ) {
-      destCountRef.current += 1;
+      legEndRef.current += 1;
     } else {
       // Todo: this works in transit legs, but do we need additional logic for bikes / scooters?
-      destCountRef.current = 0;
+      legEndRef.current = 0;
     }
 
     return () => clearTimeout(timeoutId);
@@ -225,7 +226,7 @@ function NaviCardContainer(
 
   // LegChange fires animation, we need to keep the old data until card goes out of the view.
   const l = legChanging ? previousLeg : currentLeg;
-  const legType = handleLegChange(l, firstLeg, time);
+  const legType = getLegType(l, firstLeg, time, legEndRef.current);
 
   const containerTopPosition =
     mapLayerRef.current.getBoundingClientRect().top + TOPBAR_PADDING;
@@ -244,7 +245,7 @@ function NaviCardContainer(
     >
       <button
         type="button"
-        className={`navi-top-card-button ${cardExpanded ? 'expanded' : ''}`}
+        className={`navi-top-card ${cardExpanded ? 'expanded' : ''}`}
         onClick={handleClick}
         ref={cardRef}
       >
@@ -289,10 +290,6 @@ NaviCardContainer.propTypes = {
   lastLeg: legShape,
   previousLeg: legShape,
   isJourneyCompleted: PropTypes.bool,
-
-  /*
-  focusToPoint: PropTypes.func.isRequired,
-  */
 };
 
 NaviCardContainer.defaultProps = {
