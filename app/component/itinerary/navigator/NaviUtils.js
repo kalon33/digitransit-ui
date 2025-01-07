@@ -234,7 +234,9 @@ export const getAdditionalMessages = (
         severity: 'INFO',
         content: (
           <div className="navi-info-content">
-            <FormattedMessage id="navigation-remember-ticket" />
+            <span className="navi-header">
+              <FormattedMessage id="navigation-remember-ticket" />
+            </span>
             <span>
               {fares[0].ticketName} {fares[0].price} €
             </span>
