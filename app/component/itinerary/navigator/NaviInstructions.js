@@ -34,7 +34,7 @@ export default function NaviInstructions(
 
     return (
       <>
-        <div className="navi-header">
+        <div className="notification-header">
           <FormattedMessage id={instructions} defaultMessage="Go to" />
           &nbsp;
           {legDestination(intl, leg, null, nextLeg)}
@@ -68,7 +68,7 @@ export default function NaviInstructions(
 
     return (
       <>
-        <div className="navi-header">
+        <div className="notification-header">
           <FormattedMessage
             id="navigation-get-mode"
             values={{ mode: getToLocalizedMode(mode, intl) }}
@@ -120,7 +120,7 @@ export default function NaviInstructions(
 
     return (
       <>
-        <div className="navi-header">
+        <div className="notification-header">
           <FormattedMessage
             id={instructions}
             defaultMessage="{mode}trip"

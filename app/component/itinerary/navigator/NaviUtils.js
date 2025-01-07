@@ -234,7 +234,7 @@ export const getAdditionalMessages = (
         severity: 'INFO',
         content: (
           <div className="navi-info-content">
-            <span className="navi-header">
+            <span className="notification-header">
               <FormattedMessage id="navigation-remember-ticket" />
             </span>
             <span>
@@ -273,7 +273,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
     const translationId = `navigation-mode-${delay > 0 ? 'late' : 'early'}`;
 
     content = (
-      <div className="navi-alert-content navi-header">
+      <div className="navi-alert-content notification-header">
         <FormattedMessage id={translationId} values={{ mode: routeName }} />
       </div>
     );
@@ -293,7 +293,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
     }
     content = (
       <div className="navi-info-content">
-        <span className="navi-header">
+        <span className="notification-header">
           <FormattedMessage id="navileg-mode-schedule" />
         </span>
         <FormattedMessage
@@ -319,7 +319,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
 
     content = (
       <div className="navi-info-content">
-        <span className="navi-header">
+        <span className="notification-header">
           <FormattedMessage
             id="navileg-mode-realtime"
             values={{ route: shortName, mode: localizedMode }}
@@ -367,7 +367,7 @@ function withNewSearchBtn(children, searchCallback) {
         type="button"
         onClick={searchCallback}
       >
-        <span className="navi-header">
+        <span className="notification-header">
           <FormattedMessage id="settings-dropdown-open-label" />
         </span>
       </button>
@@ -413,7 +413,7 @@ export const getItineraryAlerts = (
         severity: 'ALERT',
         content: (
           <div className="navi-info-content">
-            <span className="navi-header">{alert.alertHeaderText}</span>
+            <span className="notification-header">{alert.alertHeaderText}</span>
           </div>
         ),
         id: alertId(alert),
@@ -433,7 +433,7 @@ export const getItineraryAlerts = (
       const routeName = `${lMode} ${route.shortName}`;
 
       const m = (
-        <span className="navi-header">
+        <span className="notification-header">
           <FormattedMessage
             id="navigation-mode-canceled"
             values={{ mode: routeName }}
@@ -445,7 +445,7 @@ export const getItineraryAlerts = (
         i === 0 ? (
           withNewSearchBtn({ m }, itinerarySearchCallback)
         ) : (
-          <div className="navi-info-content navi-header">{m}</div>
+          <div className="navi-info-content notification-header">{m}</div>
         );
 
       if (!messages.get(`canceled-${legId}`)) {
@@ -472,7 +472,7 @@ export const getItineraryAlerts = (
         alerts.push({
           severity: prob.severity,
           content: withNewSearchBtn(
-            <span className="navi-header">
+            <span className="notification-header">
               <FormattedMessage
                 id="navigation-transfer-problem"
                 values={{
