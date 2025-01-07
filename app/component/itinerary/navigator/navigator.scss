@@ -482,14 +482,22 @@ $fixed-width-padding: 16px;
   }
 }
 
-.navi-bottom-controls {
+.navi-bottom-sheet {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   font-size: $font-size-normal;
   text-align: center;
-  margin: 20px 24px 10px 24px;
+  margin: var(--space-m) var(--space-l);
+
+  &.ticket-link {
+    margin: var(--space-l) var(--space-m);
+
+    .navi-time {
+      align-items: inherit;
+    }
+  }
 
   .navi-close-button {
     border-style: solid;
@@ -506,6 +514,7 @@ $fixed-width-padding: 16px;
   .navi-time {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     color: $black;
 
     .navi-daytime {

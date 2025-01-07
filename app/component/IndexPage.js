@@ -113,7 +113,7 @@ class IndexPage extends React.Component {
       this.context.executeAction(storeDestination, destination);
     }
 
-    if (this.context.config.startSearchFromUserLocation) {
+    if (this.context.config.startSearchFromUserLocation && !origin.lat) {
       checkPositioningPermission().then(permission => {
         if (
           permission.state === 'granted' &&
