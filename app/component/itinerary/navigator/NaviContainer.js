@@ -50,7 +50,7 @@ function NaviContainer(
       setPositioningAllowed(true);
     } else {
       checkPositioningPermission().then(permission => {
-        if (permission.state === 'granted') {
+        if (permission.state !== 'denied') {
           mapRef?.enableMapTracking();
           setPositioningAllowed(true);
         }
