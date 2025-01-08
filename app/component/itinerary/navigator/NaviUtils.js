@@ -274,7 +274,7 @@ export const getTransitLegState = (leg, intl, messages, time) => {
 
     content = (
       <div className="navi-alert-content notification-header">
-        <FormattedMessage id={translationId} values={{ mode: routeName }} />
+        <FormattedMessage id={translationId} values={{ name: routeName }} />
       </div>
     );
     severity = 'WARNING';
@@ -436,7 +436,7 @@ export const getItineraryAlerts = (
         <span className="notification-header">
           <FormattedMessage
             id="navigation-mode-canceled"
-            values={{ mode: routeName }}
+            values={{ name: routeName }}
           />
         </span>
       );
