@@ -1303,10 +1303,15 @@ const translations = {
     'navidest-show-on-map': 'Show route on map',
     navigate: 'Navigate',
     'navigation-abort-trip':
-      'TODO_Valitettavasti matkasi ei toteudu suunnitellusti.',
+      'Unfortunately your journey plan is not possible because of too short transfer time',
     'navigation-description': 'Journey guidance',
     'navigation-get-mode': 'Get on the {mode}',
     'navigation-header': 'Journey tracking',
+    'navigation-hurry-transfer': 'Shorter transfer time',
+    'navigation-hurry-transfer-solved': 'Transfer time returned to normal',
+    'navigation-hurry-transfer-solved-details':
+      'Transfer time for {transfer} is again {time}',
+    'navigation-hurry-transfer-value': 'Transfer time for {transfer} is {time}',
     'navigation-intro-begin': 'TODO_navigation-intro-begin_EN',
     'navigation-intro-header': 'TODO_navigation-intro-login-prompt_EN',
     'navigation-intro-help-body': 'TODO_navigation-intro-login-prompt_EN',
@@ -1326,7 +1331,8 @@ const translations = {
     'navigation-remember-ticket': 'TODO_Muistithan ostaa lipun?',
     'navigation-start': 'Start journey',
     'navigation-ticket': 'Ticket',
-    'navigation-transfer-problem': 'TODO_Vaihto {route1} - {route2} ei onnistu',
+    'navigation-transfer-problem':
+      'Transfer {route1} - {route2} is no longer possible',
     'navigation-wait': 'Wait at the stop',
     'navileg-arrive-at': 'TODO_{duration} min päästä klo {legTime}',
     'navileg-at-ferrypier': 'ferry pier',
@@ -2580,10 +2586,16 @@ const translations = {
     'navidest-show-on-map': 'Näytä reitti kartalla',
     navigate: 'Navigoi',
     'navigation-abort-trip':
-      'Valitettavasti matkasi ei toteudu suunnitellusti.',
+      'Valitettavasti matkasi ei toteudu suunnitellusti  liian lyhyen vaihtoajan takia',
     'navigation-description': 'Löydä perille ohjatusti',
     'navigation-get-mode': 'Nouse {mode}',
     'navigation-header': 'Matkan seuranta',
+    'navigation-hurry-transfer': 'Vaihtoaika lyhentynyt',
+    'navigation-hurry-transfer-solved': 'Vaihtoaika palautunut normaaliksi',
+    'navigation-hurry-transfer-solved-details':
+      'Vaihdon {transfer} kesto on taas {time}',
+    'navigation-hurry-transfer-value':
+      'Vaihdon {transfer} uusi kesto on {time}',
     'navigation-intro-begin': 'Aloita matka',
     'navigation-intro-header': 'Mitä matkanseuranta tarjoaa?',
     'navigation-intro-help-body': 'Löydä perille vaihe kerrallaan',
@@ -2603,7 +2615,7 @@ const translations = {
     'navigation-remember-ticket': 'Muistithan ostaa lipun?',
     'navigation-start': 'Matkalle',
     'navigation-ticket': 'Lippu',
-    'navigation-transfer-problem': 'Vaihto {route1} - {route2} ei onnistu',
+    'navigation-transfer-problem': 'Vaihto {route1} - {route2} ei enää onnistu',
     'navigation-wait': 'Odota pysäkillä',
     'navileg-arrive-at': '{duration} min päästä klo {legTime}',
     'navileg-at-ferrypier': 'lauttalaiturilla',
@@ -5510,10 +5522,16 @@ const translations = {
     'navidest-show-on-map': 'Visa rutt på kartan',
     navigate: 'Navigera',
     'navigation-abort-trip':
-      'TODO_Valitettavasti matkasi ei toteudu suunnitellusti.',
+      'TODO_Valitettavasti matkasi ei toteudu suunnitellusti liian lyhyen vaihtoajan takia',
     'navigation-description': 'Hitta fram med vägledning.',
     'navigation-get-mode': 'Gå på {mode}',
     'navigation-header': 'Följa',
+    'navigation-hurry-transfer': 'Kortare bytestid',
+    'navigation-hurry-transfer-solved': 'Bytestiden återgick till det normala',
+    'navigation-hurry-transfer-solved-details':
+      'Bytestiden for byte {transfer} är igen {time}',
+    'navigation-hurry-transfer-value':
+      'Den nya tiden for byte {transfer} är {time}',
     'navigation-intro-begin': 'TODO_navigation-intro-begin_SV',
     'navigation-intro-header': 'TODO_navigation-intro-login-prompt_SV',
     'navigation-intro-help-body': 'TODO_navigation-intro-login-prompt_SV',
@@ -5533,7 +5551,8 @@ const translations = {
     'navigation-remember-ticket': 'TODO_Muistithan ostaa lipun?',
     'navigation-start': 'På resa',
     'navigation-ticket': 'Biljett',
-    'navigation-transfer-problem': 'TODO_Vaihto {route1} - {route2} ei onnistu',
+    'navigation-transfer-problem':
+      'TODO_Vaihto {route1} - {route2} ei enää onnistu',
     'navigation-wait': 'Vänta på hållplatsen',
     'navileg-arrive-at': 'TODO_{duration} min päästä klo {legTime}',
     'navileg-at-ferrypier': 'färjekajen',
