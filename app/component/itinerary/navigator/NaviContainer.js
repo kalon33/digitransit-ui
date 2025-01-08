@@ -2,6 +2,7 @@ import distance from '@digitransit-search-util/digitransit-search-util-distance'
 import { routerShape } from 'found';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import { checkPositioningPermission } from '../../../action/PositionActions';
 import { legTime } from '../../../util/legUtils';
 import { legShape, relayShape } from '../../../util/shapes';
 import NaviBottom from './NaviBottom';
@@ -44,8 +45,17 @@ function NaviContainer(
   } = useRealtimeLegs(relayEnvironment, legs);
 
   useEffect(() => {
-    mapRef?.enableMapTracking();
-    setPositioningAllowed(true);
+    if (position) {
+      mapRef?.enableMapTracking();
+      setPositioningAllowed(true);
+    } else {
+      checkPositioningPermission().then(permission => {
+        if (permission.state === 'granted') {
+          setPositioningAllowed(true);
+        }
+        mapRef?.enableMapTracking();
+      });
+    }
   }, [mapRef]);
 
   if (!realTimeLegs?.length) {
