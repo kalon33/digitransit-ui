@@ -485,10 +485,9 @@ export const getItineraryAlerts = (
   } else {
     const transfers = findTransferProblems(legs, time, position, origin);
     if (transfers.length) {
-      let prob = transfers.find(p => p.severity === 'ALERT');
-      if (!prob) {
-        prob = transfers.find(p => p.severity === 'WARNING');
-      }
+      const prob =
+        transfers.find(p => p.severity === 'ALERT') ||
+        transfers.find(p => p.severity === 'WARNING');
       if (prob) {
         const transferId = `transfer-${prob.fromLeg.legId}-${prob.toLeg.legId}}`;
         const alert = messages.get(transferId);
