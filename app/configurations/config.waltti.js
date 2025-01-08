@@ -272,6 +272,10 @@ export default {
       value: 600,
     },
   ],
+  carBoardingModes: {
+    FERRY: { showNotification: true },
+  },
+  navigation: false,
 
   ticketPurchaseLink: function purchaseTicketLink(fare, operatorCode) {
     const fareId = fare.fareProducts[0].product.id;
@@ -297,6 +301,9 @@ export default {
     // eslint-disable-next-line no-useless-escape
     return `<script defer data-domain="${hostname}" src="${address}"><\/script>\n`;
   },
+  analyticsClass: 'plausible-event-name=Ticket+Purchase+Link',
+
+  viaPointsEnabled: false,
 
   // features that should not be deployed to production
   experimental: {

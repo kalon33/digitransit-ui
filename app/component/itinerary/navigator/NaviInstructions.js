@@ -2,12 +2,18 @@ import React from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-import { GeodeticToEnu, displayDistance } from '../../../util/geo-utils';
+import { displayDistance } from '../../../util/geo-utils';
 import { legShape, configShape } from '../../../util/shapes';
 import { legDestination, legTimeStr, legTime } from '../../../util/legUtils';
 import RouteNumber from '../../RouteNumber';
-import { LEGTYPE, getLocalizedMode, pathProgress } from './NaviUtils';
+import {
+  LEGTYPE,
+  getLocalizedMode,
+  getToLocalizedMode,
+  getRemainingTraversal,
+} from './NaviUtils';
 import { durationToString } from '../../../util/timeUtils';
+import { getRouteMode } from '../../../util/modeUtils';
 
 export default function NaviInstructions(
   { leg, nextLeg, instructions, legType, time, position, origin },
@@ -18,67 +24,65 @@ export default function NaviInstructions(
   );
 
   if (legType === LEGTYPE.MOVE) {
-    let remainingTraversal;
-
-    if (position?.lat && position?.lon) {
-      // TODO: maybe apply only when distance is close enough to the path
-      const posXY = GeodeticToEnu(position.lat, position.lon, origin);
-      const { traversed } = pathProgress(posXY, leg.geometry);
-      remainingTraversal = 1.0 - traversed;
-    } else {
-      // estimate from elapsed time
-      remainingTraversal = Math.max(
-        (legTime(leg.end) - time) / (leg.duration * 1000),
-        0,
-      );
-    }
-    const duration = leg.duration * remainingTraversal;
-    const distance = leg.distance * remainingTraversal;
+    const remainingTraversal = getRemainingTraversal(
+      leg,
+      position,
+      origin,
+      time,
+    );
+    const distance = remainingTraversal * leg.distance;
 
     return (
       <>
-        <div className="destination-header">
+        <div className="notification-header">
           <FormattedMessage id={instructions} defaultMessage="Go to" />
           &nbsp;
           {legDestination(intl, leg, null, nextLeg)}
         </div>
 
-        <div className={cx('duration')}>
-          {displayDistance(distance, config, intl.formatNumber)} (
-          {durationToString(duration * 1000)})
+        <div className={cx('duration', { realtime: !!position })}>
+          {displayDistance(distance, config, intl.formatNumber)}&nbsp;
+          {durationToString(legTime(leg.end) - time)}
         </div>
       </>
     );
   }
-  if (legType === LEGTYPE.WAIT && nextLeg.mode !== 'WALK') {
+  if (legType === LEGTYPE.WAIT && nextLeg.transitLeg) {
     const { mode, headsign, route, start } = nextLeg;
     const hs = headsign || nextLeg.trip?.tripHeadsign;
-    const color = route.color || 'currentColor';
-    const localizedMode = getLocalizedMode(mode, intl);
 
-    const remainingDuration = Math.ceil((legTime(start) - time) / 60000); // ms to minutes
+    const remainingDuration = Math.max(
+      Math.ceil((legTime(start) - time) / 60000),
+      0,
+    ); // ms to minutes, >= 0
     const rt = nextLeg.realtimeState === 'UPDATED';
     const values = {
       duration: withRealTime(rt, remainingDuration),
       legTime: withRealTime(rt, legTimeStr(start)),
     };
+    const routeMode = getRouteMode(route, config);
+    const iconColor =
+      config.colors.iconColors[`mode-${routeMode}`] ||
+      route.color ||
+      'currentColor';
+
     return (
       <>
-        <div className="destination-header">
+        <div className="notification-header">
           <FormattedMessage
-            id="navigation-wait-mode"
-            values={{ mode: localizedMode }}
-            defaultMessage="Wait for {mode}"
+            id="navigation-get-mode"
+            values={{ mode: getToLocalizedMode(mode, intl) }}
+            defaultMessage="Get on the {mode}"
           />
         </div>
         <div className="wait-leg">
           <div className="route-info">
             <RouteNumber
-              mode={mode.toLowerCase()}
+              mode={routeMode}
               text={route?.shortName}
               withBar
               isTransitLeg
-              color={color}
+              color={iconColor}
             />
             <div className="headsign">{hs}</div>
           </div>
@@ -96,14 +100,17 @@ export default function NaviInstructions(
 
   if (legType === LEGTYPE.TRANSIT) {
     const rt = leg.realtimeState === 'UPDATED';
-
     const t = legTime(leg.end);
-    const stopOrStation = leg.to.stop.parentStation
-      ? intl.formatMessage({ id: 'navileg-from-station' })
-      : intl.formatMessage({ id: 'navileg-from-stop' });
-    const localizedMode = getLocalizedMode(leg.mode, intl);
 
-    const remainingDuration = Math.ceil((t - time) / 60000); // ms to minutes
+    const destId = // eslint-disable-next-line no-nested-ternary
+      leg.mode === 'FERRY'
+        ? 'navileg-at-ferrypier'
+        : leg.to.stop.parentStation
+          ? 'navileg-at-station'
+          : 'navileg-at-stop';
+    const stopOrStation = intl.formatMessage({ id: destId });
+
+    const remainingDuration = Math.max(Math.ceil((t - time) / 60000), 0); // ms to minutes, >= 0
     const values = {
       stopOrStation,
       stop: leg.to.stop.name,
@@ -113,11 +120,11 @@ export default function NaviInstructions(
 
     return (
       <>
-        <div className="destination-header">
+        <div className="notification-header">
           <FormattedMessage
             id={instructions}
             defaultMessage="{mode}trip"
-            values={{ mode: localizedMode }}
+            values={{ mode: getLocalizedMode(leg.mode, intl) }}
           />
         </div>
         <div className="vehicle-leg">

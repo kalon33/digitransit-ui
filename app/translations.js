@@ -381,8 +381,8 @@ const translations = {
     ferry: 'Fähre',
     'ferry-with-route-number': 'Fähre {routeNumber} {headSign}',
     'fetch-new-route': 'Neue Verbindung anfragen',
-    'from-station': 'von Bahnhof',
-    'from-stop': 'von Halt',
+    'from-station': 'Bahnhof',
+    'from-stop': 'Halt',
     frontpage: 'Startseite',
     'generic-error': 'Ein Fehler ist aufgetreten',
     'geolocate-yourself': 'Lokalisieren',
@@ -450,7 +450,7 @@ const translations = {
     'itinerary-summary-row.first-departure':
       '{vehicle} fährt um {departureTime} von {stopName}.',
     'itinerary-summary-row.first-leg-start-time':
-      'Fährt ab um {firstDepartureTime} {firstDepartureStopType} {firstDepartureStop}',
+      'Fährt ab um {firstDepartureTime} von {firstDepartureStopType} {firstDepartureStop}',
     'itinerary-summary-row.first-leg-start-time-citybike':
       'Abfahrt um {firstDepartureTime} von {firstDepartureStop} Leihrad-Station',
     'itinerary-summary-row.no-transit-legs': 'Start jederzeit möglich',
@@ -965,6 +965,9 @@ const translations = {
     car: 'Car',
     'car-distance-duration': 'Drive {duration} ({distance})',
     'car-distance-no-duration': 'Drive {distance}',
+    'car-drive-from-transit-no-duration':
+      'Drive your car from the {transportMode}',
+    'car-drive-to-transit-no-duration': 'Drive your car to the {transportMode}',
     'car-park': 'Park & ride',
     'car-park-disclaimer':
       'You can conveniently combine car and public transport: leave your car at a Park & Ride and continue by train, bus, metro or tram. Car parking is free of charge and there are no time limits.',
@@ -1084,10 +1087,11 @@ const translations = {
     'free-of-charge': 'Free',
     'from-bus': 'bus',
     'from-ferry': 'ferry',
+    'from-ferrypier': 'ferry pier',
     'from-rail': 'train',
     'from-scooter-location': 'the scooter location',
-    'from-station': 'from station',
-    'from-stop': 'from stop',
+    'from-station': 'station',
+    'from-stop': 'stop',
     'from-subway': 'subway',
     'from-tram': 'tram',
     frontpage: 'Frontpage',
@@ -1186,7 +1190,7 @@ const translations = {
     'itinerary-summary-row.first-departure':
       '{vehicle} leaves at {departureTime} from stop {stopName}.',
     'itinerary-summary-row.first-leg-start-time':
-      'Leaves at {firstDepartureTime} {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
+      'Leaves at {firstDepartureTime} from {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
     'itinerary-summary-row.first-leg-start-time-citybike':
       'Departure at {firstDepartureTime} from {firstDepartureStop} bike station',
     'itinerary-summary-row.first-leg-start-time-scooter':
@@ -1208,6 +1212,10 @@ const translations = {
     'itinerary-summary.bikeAndPublic-subway-title': 'Take your bike to metro',
     'itinerary-summary.bikeAndPublic-tram-title': 'Take your bike to tram',
     'itinerary-summary.bikePark-title': 'Leave your bike at a Park & Ride',
+    'itinerary-summary.car-boarding-information':
+      'You can take your car on board. Check with the transport operator if an additional fee will be charged for the transportation of cars.',
+    'itinerary-summary.carAndPublic-ferry-title': 'Drive your car to the ferry',
+    'itinerary-summary.carAndPublic-rail-title': 'Drive your car to the train',
     'itinerary-summary.interline-wait':
       'The route number ({shortName}) and destination ({destination}) will change at the {stop} stop. Waiting time at the stop is {time}. Please wait onboard.',
     'itinerary-summary.interline-wait-multiple-legs':
@@ -1299,6 +1307,7 @@ const translations = {
     'navigation-abort-trip':
       'TODO_Valitettavasti matkasi ei toteudu suunnitellusti.',
     'navigation-description': 'Journey guidance',
+    'navigation-get-mode': 'Get on the {mode}',
     'navigation-header': 'Journey tracking',
     'navigation-intro-begin': 'TODO_navigation-intro-begin_EN',
     'navigation-intro-header': 'TODO_navigation-intro-login-prompt_EN',
@@ -1321,24 +1330,24 @@ const translations = {
     'navigation-ticket': 'Ticket',
     'navigation-transfer-problem': 'TODO_Vaihto {route1} - {route2} ei onnistu',
     'navigation-wait': 'Wait at the stop',
-    'navigation-wait-mode': 'Nouse {mode}',
     'navileg-arrive-at': 'TODO_{duration} min päästä klo {legTime}',
+    'navileg-at-ferrypier': 'ferry pier',
+    'navileg-at-station': 'station',
+    'navileg-at-stop': 'stop',
     'navileg-bicycle': 'Cycle to',
     'navileg-car': 'Drive to',
-    'navileg-from-station': 'asemalla',
-    'navileg-from-stop': 'pysäkillä',
     'navileg-in-transit': 'TODO_{mode}matka',
     'navileg-leave-at':
       'Jää pois {stopOrStation} {stop} {duration} min päästä klo {legTime}',
     'navileg-mode-citybike': 'Kaupunkipyöriä on asemalla {available} kpl',
-    'navileg-mode-realtime': '{mode} on aikataulussa',
+    'navileg-mode-realtime': '{mode} {route} on aikataulussa',
     'navileg-mode-schedule': 'The {mode} is on schedule',
     'navileg-one-stop-remaining': 'TODO_{stopCount} pysähdys ennen poistumista',
     'navileg-rent-cycle': 'Pick up citybike',
     'navileg-rent-scooter': 'Pick up scooter',
     'navileg-scooter': 'Travel by scooter to',
     'navileg-start-realtime': 'Lähtee klo {time} {stop} {stopName}',
-    'navileg-start-schedule': '{mode}n aikataulun muk. lähtö {time}',
+    'navileg-start-schedule': '{mode} {route} aikataulun mukainen lähtö {time}',
     'navileg-stops-remaining': 'TODO_{stopCount} pysähdystä ennen poistumista',
     'navileg-walk': 'Walk to',
     nearest: '{ mode } near you',
@@ -1649,6 +1658,8 @@ const translations = {
       'Show a combination of cycling and public transport. Duration {duration}, distance {length}',
     'street-mode-car-aria':
       'Show driving route. Duration {duration}, distance {length}',
+    'street-mode-carandvehicle-aria':
+      'Show a route that may include other modes of transport, such as car ferries. Duration {duration}, distance {length}',
     'street-mode-parkandride-aria':
       'Show park and ride route. Duration {duration}, driving distance {length}',
     'street-mode-walk-aria':
@@ -1699,7 +1710,7 @@ const translations = {
     'to-ferry': 'ferry',
     'to-frontpage': 'To the front page',
     'to-rail': 'train',
-    'to-speedtram': 'TODO_pikaraitiovaunuun',
+    'to-speedtram': 'light rail',
     'to-subway': 'subway',
     'to-tram': 'tram',
     today: 'Today',
@@ -2243,6 +2254,8 @@ const translations = {
     car: 'Auto',
     'car-distance-duration': 'Autoile {duration} ({distance})',
     'car-distance-no-duration': 'Autoile {distance}',
+    'car-drive-from-transit-no-duration': 'Aja autosi {transportMode}',
+    'car-drive-to-transit-no-duration': 'Aja autosi {transportMode}',
     'car-park': 'Liityntäpysäköinti',
     'car-park-disclaimer':
       'Voit yhdistää kätevästi joukkoliikenteen ja autoilun, kun jätät autosi liityntäpysäköintiin ja jatkat matkaasi junalla, bussilla, metrolla tai ratikalla. Auton pysäköinti on useissa paikoissa maksutonta eikä siinä ole aikarajaa.',
@@ -2365,6 +2378,7 @@ const translations = {
     'free-of-charge': 'Maksuton',
     'from-bus': 'bussista',
     'from-ferry': 'lautasta',
+    'from-ferrypier': 'lauttalaiturilta',
     'from-rail': 'junasta',
     'from-scooter-location': 'potkulaudan sijainti',
     'from-station': 'asemalta',
@@ -2482,6 +2496,10 @@ const translations = {
     'itinerary-summary.bikeAndPublic-tram-title':
       'Ota pyöräsi mukaan raitiovaunuun',
     'itinerary-summary.bikePark-title': 'Jätä pyöräsi liityntäpysäköintiin',
+    'itinerary-summary.car-boarding-information':
+      'Kulkuneuvossa mahdollisuus kuljettaa autoa. Tarkasta auton kuljettamisen mahdollinen maksullisuus operaattorilta.',
+    'itinerary-summary.carAndPublic-ferry-title': 'Aja autosi lauttaan',
+    'itinerary-summary.carAndPublic-rail-title': 'Aja autosi junaan',
     'itinerary-summary.interline-wait':
       'Linjatunnus ({shortName}) ja määränpää ({destination}) vaihtuvat pysäkillä {stop}. Matka jatkuu {time} odotuksen jälkeen. Odota kulkuneuvossa.',
     'itinerary-summary.interline-wait-multiple-legs':
@@ -2573,6 +2591,7 @@ const translations = {
     'navigation-abort-trip':
       'Valitettavasti matkasi ei toteudu suunnitellusti.',
     'navigation-description': 'Löydä perille ohjatusti',
+    'navigation-get-mode': 'Nouse {mode}',
     'navigation-header': 'Matkan seuranta',
     'navigation-intro-begin': 'Aloita matka',
     'navigation-intro-header': 'Mitä matkanseuranta tarjoaa?',
@@ -2595,24 +2614,25 @@ const translations = {
     'navigation-ticket': 'Lippu',
     'navigation-transfer-problem': 'Vaihto {route1} - {route2} ei onnistu',
     'navigation-wait': 'Odota pysäkillä',
-    'navigation-wait-mode': 'Nouse {mode}',
     'navileg-arrive-at': '{duration} min päästä klo {legTime}',
+    'navileg-at-ferrypier': 'lauttalaiturilla',
+    'navileg-at-station': 'asemalla',
+    'navileg-at-stop': 'pysäkillä',
     'navileg-bicycle': 'Pyöräile',
     'navileg-car': 'Aja',
-    'navileg-from-station': 'asemalla',
-    'navileg-from-stop': 'pysäkillä',
     'navileg-in-transit': '{mode}matka',
     'navileg-leave-at':
       'Jää pois {stopOrStation} {stop} {duration} min päästä klo {legTime}',
     'navileg-mode-citybike': 'Kaupunkipyöriä on asemalla {available} kpl',
-    'navileg-mode-realtime': '{mode} on aikataulussa',
+    'navileg-mode-realtime': '{mode}  {route} on aikataulussa',
     'navileg-mode-schedule': 'Reaaliaikaista tietoa ei ole saatavilla',
     'navileg-one-stop-remaining': '{stopCount} pysähdys ennen poistumista',
     'navileg-rent-cycle': 'Nouda kapunkipyörä',
     'navileg-rent-scooter': 'Nouda sähköpotkulauta',
     'navileg-scooter': 'Potkulautaile',
     'navileg-start-realtime': 'Lähtee klo {time} {stopOrStation} {stopName}',
-    'navileg-start-schedule': '{mode}n aikataulun muk. lähtö {time}',
+    'navileg-start-schedule':
+      '{mode}  {route} aikataulun mukainen lähtö {time}',
     'navileg-stops-remaining': '{stopCount} pysähdystä ennen poistumista',
     'navileg-walk': 'Kävele',
     nearest: 'Lähimmät {mode}',
@@ -2920,6 +2940,8 @@ const translations = {
       'Näytä pyöräilyn ja julkisen liikenteen yhdistelmä. Kesto {duration}, pyöräilyn pituus {length}',
     'street-mode-car-aria':
       'Näytä ajoreitti. Kesto {duration}, pituus {length}',
+    'street-mode-carandvehicle-aria':
+      'Näytä ajoreitti, joka voi sisältää muita kulkuvälineitä kuten esimerkiksi autolauttoja. Kesto {duration}, pituus {length}',
     'street-mode-parkandride-aria':
       'Näytä liityntäpysäköintireitti. Kesto {duration}, autoilun pituus {length}',
     'street-mode-walk-aria':
@@ -2972,7 +2994,7 @@ const translations = {
     'to-ferry': 'lauttaan',
     'to-frontpage': 'Etusivulle',
     'to-rail': 'junaan',
-    'to-speedtram': 'TODO_pikaraitiovaunuun',
+    'to-speedtram': 'pikaraitiovaunuun',
     'to-subway': 'metroon',
     'to-tram': 'raitiovaunuun',
     today: 'Tänään',
@@ -5166,6 +5188,8 @@ const translations = {
     car: 'Bil',
     'car-distance-duration': 'Kör {duration} ({distance})',
     'car-distance-no-duration': 'Kör {distance}',
+    'car-drive-from-transit-no-duration': 'Kör din bil av {transportMode}',
+    'car-drive-to-transit-no-duration': 'Kör din bil ombord på {transportMode}',
     'car-park': 'Infartsparkering',
     'car-park-disclaimer':
       'Du kan enkelt kombinera kollektivtrafiken med bilkörning, när du lämnar din bil i anslutningsparkering och fortsätter din resa med tåg, buss, metro eller spårvagn. Parkeringen är gratis och den har inte en begränsad parkeringstid.',
@@ -5287,10 +5311,11 @@ const translations = {
     'free-of-charge': 'Kostnadsfri',
     'from-bus': 'bussen',
     'from-ferry': 'färjan',
+    'from-ferrypier': 'färjerkajen',
     'from-rail': 'tåget',
     'from-scooter-location': 'platsen för sparkcykel',
-    'from-station': 'från stationen',
-    'from-stop': 'från hållplats',
+    'from-station': 'stationen',
+    'from-stop': 'hållplats',
     'from-subway': 'metron',
     'from-tram': 'spårvagnen',
     frontpage: 'Framsidan',
@@ -5387,7 +5412,7 @@ const translations = {
     'itinerary-summary-row.first-departure':
       '{vehicle} avgår från station {stopName} klockan {departureTime}.',
     'itinerary-summary-row.first-leg-start-time':
-      'Avgår kl {firstDepartureTime} {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
+      'Avgår kl {firstDepartureTime} från {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
     'itinerary-summary-row.first-leg-start-time-citybike':
       'Avgång kl {firstDepartureTime} från {firstDepartureStop} stadscykelstation',
     'itinerary-summary-row.first-leg-start-time-scooter':
@@ -5407,6 +5432,11 @@ const translations = {
     'itinerary-summary.bikeAndPublic-tram-title': 'Ta cykeln med på spårvagnen',
     'itinerary-summary.bikePark-title':
       'Lämna din cykel till anslutningsparkeringen',
+    'itinerary-summary.car-boarding-information':
+      'Du kan ta med bilen ombord. Kontrollera med trafikoperatören om det är avgiftsbelagt att transportera bilar.',
+    'itinerary-summary.carAndPublic-ferry-title':
+      'Kör din bil ombord på färjan',
+    'itinerary-summary.carAndPublic-rail-title': 'Kör din bil ombord på tåget',
     'itinerary-summary.interline-wait':
       'Linjenumret ({shortName}) och destinationen ({destination}) ändras vid hållplats {stop}. Resan fortsätter om {time}. Vänta ombord på bussen.',
     'itinerary-summary.interline-wait-multiple-legs':
@@ -5498,6 +5528,7 @@ const translations = {
     'navigation-abort-trip':
       'TODO_Valitettavasti matkasi ei toteudu suunnitellusti.',
     'navigation-description': 'Hitta fram med vägledning.',
+    'navigation-get-mode': 'Gå på {mode}',
     'navigation-header': 'Följa',
     'navigation-intro-begin': 'TODO_navigation-intro-begin_SV',
     'navigation-intro-header': 'TODO_navigation-intro-login-prompt_SV',
@@ -5520,24 +5551,24 @@ const translations = {
     'navigation-ticket': 'Biljett',
     'navigation-transfer-problem': 'TODO_Vaihto {route1} - {route2} ei onnistu',
     'navigation-wait': 'Vänta på hållplatsen',
-    'navigation-wait-mode': 'Odota {mode}',
     'navileg-arrive-at': 'TODO_{duration} min päästä klo {legTime}',
+    'navileg-at-ferrypier': 'färjekajen',
+    'navileg-at-station': 'station',
+    'navileg-at-stop': 'hållplats',
     'navileg-bicycle': 'Cycla till',
     'navileg-car': 'Kör till',
-    'navileg-from-station': 'TODO_asemalla',
-    'navileg-from-stop': 'TODO_pysäkillä',
     'navileg-in-transit': 'TODO_{mode}matka',
     'navileg-leave-at':
       'TODO_Jää pois {stopOrStation} {stop} {duration} min päästä klo {legTime}',
     'navileg-mode-citybike': 'Kaupunkipyöriä on asemalla {available} kpl',
-    'navileg-mode-realtime': '{mode} on aikataulussa',
+    'navileg-mode-realtime': '{mode} {route} on aikataulussa',
     'navileg-mode-schedule': 'Reaaliaikaista tietoa ei ole saatavilla',
     'navileg-one-stop-remaining': 'TODO_{stopCount} pysähdys ennen poistumista',
     'navileg-rent-cycle': 'Hämta  stadscykel',
     'navileg-rent-scooter': 'Hämta elsparkcykel',
     'navileg-scooter': 'Åk elsparkcykel',
     'navileg-start-realtime': 'Lähtee klo {time} {stop} {stopName}',
-    'navileg-start-schedule': '{mode}n aikataulun muk. lähtö {time}',
+    'navileg-start-schedule': '{mode} {route} aikataulun mukainen lähtö {time}',
     'navileg-stops-remaining': 'TODO_{stopCount} pysähdystä ennen poistumista',
     'navileg-walk': 'Gå till',
     nearest: 'Närmaste { mode }',
@@ -5847,6 +5878,8 @@ const translations = {
     'street-mode-bikeandvehicle-aria':
       'Visa kombinationen av cykling och kollektivtrafik. Tid {duration}, längd {length}',
     'street-mode-car-aria': 'Visa bilrutt. Tid {duration}, längd {length}',
+    'street-mode-carandvehicle-aria':
+      'Visa en rutt som kan innehålla andra trafikmedel, såsom bilfärjor. Varaktighet {duration}, längd {length}',
     'street-mode-parkandride-aria':
       'Visa anslutningsparkeringrutt. Tid {duration}, längd {length}',
     'street-mode-walk-aria':
@@ -5900,7 +5933,7 @@ const translations = {
     'to-ferry': 'färjan',
     'to-frontpage': 'Till startsidan',
     'to-rail': 'tåget',
-    'to-speedtram': 'TODO_pikaraitiovaunuun',
+    'to-speedtram': 'snabbspårvagnen',
     'to-subway': 'metron',
     'to-tram': 'spårvagnen',
     today: 'I dag',

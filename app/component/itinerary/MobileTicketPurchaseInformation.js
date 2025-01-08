@@ -2,10 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { intlShape, FormattedMessage } from 'react-intl';
 import { configShape, fareShape } from '../../util/shapes';
-
 import { renderZoneTicket } from './ZoneTicket';
 import { getAlternativeFares } from '../../util/fareUtils';
-import ExternalLink from '../ExternalLink';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
 
 export default function MobileTicketPurchaseInformation(
@@ -60,15 +58,18 @@ export default function MobileTicketPurchaseInformation(
   return (
     <div className="itinerary-ticket-information-purchase">
       {faresInfo()}
-      <div className="app-link plausible-event-name=Ticket+Purchase+Link">
-        <ExternalLink
-          href={config.ticketPurchaseLink(fare, config.ticketLinkOperatorCode)}
+      <div className="app-link">
+        <a
+          className={config.analyticsClass}
           onClick={() =>
             addAnalyticsEvent({ event: 'journey_planner_open_app' })
           }
+          href={config.ticketPurchaseLink(fare, config.ticketLinkOperatorCode)}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           <FormattedMessage id={config.ticketButtonTextId} />
-        </ExternalLink>
+        </a>
       </div>
     </div>
   );

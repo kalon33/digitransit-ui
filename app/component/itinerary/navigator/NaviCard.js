@@ -1,11 +1,12 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import PropTypes from 'prop-types';
-import { legShape } from '../../../util/shapes';
-import Icon from '../../Icon';
 import { isRental } from '../../../util/legUtils';
-import NaviInstructions from './NaviInstructions';
+import { getRouteMode } from '../../../util/modeUtils';
+import { configShape, legShape } from '../../../util/shapes';
+import Icon from '../../Icon';
 import NaviCardExtension from './NaviCardExtension';
+import NaviInstructions from './NaviInstructions';
 import { LEGTYPE } from './NaviUtils';
 
 const iconMap = {
@@ -19,51 +20,54 @@ const iconMap = {
   SUBWAY: 'icon-icon_subway',
   TRAM: 'icon-icon_tram',
   FERRY: 'icon-icon_ferry',
+  'BUS-EXPRESS': 'icon-icon_bus-express',
+  'BUS-LOCAL': 'icon-icon_bus-local',
+  SPEEDTRAM: 'icon-icon_speedtram',
 };
 
-export default function NaviCard({
-  leg,
-  nextLeg,
-  legType,
-  cardExpanded,
-  startTime,
-  time,
-  position,
-  origin,
-}) {
+export default function NaviCard(
+  { leg, nextLeg, legType, cardExpanded, startTime, time, position, origin },
+  { config },
+) {
+  let mainCardContent;
   if (legType === LEGTYPE.PENDING) {
-    return (
+    mainCardContent = (
       <FormattedMessage
         id="navigation-journey-start"
         values={{ time: startTime }}
       />
     );
-  }
-  if (legType === LEGTYPE.END) {
-    return <FormattedMessage id="navigation-journey-end" />;
-  }
-  if (!leg && !nextLeg) {
+  } else if (legType === LEGTYPE.END) {
+    mainCardContent = <FormattedMessage id="navigation-journey-end" />;
+  } else if (!leg && !nextLeg) {
     return null;
-  }
-  const iconName = legType === LEGTYPE.WAIT ? iconMap.WAIT : iconMap[leg.mode];
+  } else {
+    let iconColor = 'currentColor';
+    let iconName;
+    let instructions = '';
+    if (legType === LEGTYPE.TRANSIT) {
+      const m = getRouteMode(leg.route, config);
+      iconColor = config.colors.iconColors[`mode-${m}`] || leg.route.color;
+      iconName = iconMap[m.toUpperCase()];
 
-  let instructions = '';
-  if (legType === LEGTYPE.TRANSIT) {
-    instructions = `navileg-in-transit`;
-  } else if (legType !== LEGTYPE.WAIT && isRental(leg, nextLeg)) {
-    if (leg.mode === 'WALK' && nextLeg?.mode === 'SCOOTER') {
-      instructions = `navileg-rent-scooter`;
-    } else {
-      instructions = 'rent-cycle-at';
+      instructions = `navileg-in-transit`;
+    } else if (legType !== LEGTYPE.WAIT && isRental(leg, nextLeg)) {
+      if (leg.mode === 'WALK' && nextLeg?.mode === 'SCOOTER') {
+        instructions = `navileg-rent-scooter`;
+      } else {
+        instructions = 'rent-cycle-at';
+      }
+      iconName = iconMap[leg.mode];
+    } else if (legType === LEGTYPE.MOVE) {
+      instructions = `navileg-${leg?.mode.toLowerCase()}`;
+      iconName = iconMap.WALK;
+    } else if (legType === LEGTYPE.WAIT) {
+      iconName = iconMap.WAIT;
     }
-  } else if (legType === LEGTYPE.MOVE) {
-    instructions = `navileg-${leg?.mode.toLowerCase()}`;
-  }
 
-  return (
-    <div className="navi-top-card">
-      <div className="main-card">
-        <Icon img={iconName} className="mode" />
+    mainCardContent = (
+      <>
+        <Icon img={iconName} className="mode" color={iconColor} />
         <div className={`instructions ${cardExpanded ? 'expanded' : ''}`}>
           <NaviInstructions
             leg={leg}
@@ -75,13 +79,18 @@ export default function NaviCard({
             origin={origin}
           />
         </div>
-        <div type="button" className="navitop-arrow">
+        <div type="button" className="navi-top-card-arrow">
           <Icon
             img="icon-icon_arrow-collapse"
             className={`cursor-pointer ${cardExpanded ? 'inverted' : ''}`}
           />
         </div>
-      </div>
+      </>
+    );
+  }
+  return (
+    <div className="main-card">
+      <div className="content">{mainCardContent}</div>
       {cardExpanded && (
         <NaviCardExtension
           legType={legType}
@@ -116,4 +125,8 @@ NaviCard.defaultProps = {
   nextLeg: undefined,
   startTime: '',
   position: undefined,
+};
+
+NaviCard.contextTypes = {
+  config: configShape.isRequired,
 };

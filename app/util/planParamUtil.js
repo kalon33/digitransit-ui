@@ -11,6 +11,7 @@ export const PLANTYPE = {
   WALK: 'WALK',
   BIKE: 'BICYCLE',
   CAR: 'CAR',
+  CARTRANSIT: 'CARTRANSIT',
   TRANSIT: 'TRANSIT',
   BIKEPARK: 'BIKEPARK',
   BIKETRANSIT: 'BIKETRANSIT',
@@ -115,6 +116,12 @@ function filterTransitModes(modes, planType, config) {
     }
     return [];
   }
+  if (planType === PLANTYPE.CARTRANSIT) {
+    if (config.carBoardingModes) {
+      return modes.filter(m => config.carBoardingModes[m]);
+    }
+    return [];
+  }
   return modes;
 }
 
@@ -196,6 +203,9 @@ export function planQueryNeeded(
         settings.includeBikeSuggestions
       );
 
+    case PLANTYPE.CARTRANSIT:
+      return transitModes.length > 0 && settings.includeCarSuggestions;
+
     case PLANTYPE.SCOOTERTRANSIT:
       /* special logic: relaxed scooter query is made only if no networks allowed */
       /* special logic: scooter queries are not made if the search is n minutes or more into the future or if arrival time is too late */
@@ -269,6 +279,11 @@ export function getPlanParams(
   const intermediateLocations = getIntermediatePlaces({
     intermediatePlaces,
   });
+  const via = intermediateLocations.map(loc => ({
+    passThrough: {
+      stopLocationIds: [loc.gtfsId],
+    },
+  }));
   const distance = estimateItineraryDistance(
     fromLocation,
     toLocation,
@@ -324,6 +339,17 @@ export function getPlanParams(
       transfer = ['BICYCLE'];
       transitOnly = true;
       noIterationsForShortTrips = shortTrip;
+      break;
+    case PLANTYPE.CARTRANSIT:
+      access = ['CAR'];
+      egress = ['CAR'];
+      transfer = ['CAR'];
+      transitOnly = true;
+      // This is done to enable more cache hits. New cache entries are generated for different speeds otherwise.
+      settings.walkSpeed = null;
+      settings.bikeSpeed = null;
+      settings.walkReluctance = null;
+      settings.bikeReluctance = null;
       break;
     case PLANTYPE.PARKANDRIDE:
       access = ['CAR_PARKING'];
@@ -408,5 +434,6 @@ export function getPlanParams(
     modes,
     planType,
     noIterationsForShortTrips,
+    via,
   };
 }

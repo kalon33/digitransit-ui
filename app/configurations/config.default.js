@@ -15,7 +15,6 @@ const STOP_TIMETABLES_URL =
   process.env.STOP_TIMETABLES_URL || 'https://dev.kartat.hsl.fi';
 const APP_PATH = process.env.APP_CONTEXT || '';
 const {
-  SENTRY_DSN,
   // AXE,
   NODE_ENV,
   API_SUBSCRIPTION_QUERY_PARAMETER_NAME,
@@ -34,7 +33,6 @@ const realtime = require('./realtimeUtils').default;
 const REALTIME_PATCH = safeJsonParse(process.env.REALTIME_PATCH) || {};
 
 export default {
-  SENTRY_DSN,
   PORT,
   // AXE,
   CONFIG,
@@ -790,7 +788,7 @@ export default {
     itinerary: false,
   },
 
-  viaPointsEnabled: false,
+  viaPointsEnabled: true,
 
   // Toggling this off shows the alert bodytext instead of the header
   showAlertHeader: true,
@@ -840,8 +838,29 @@ export default {
         ],
       },
     },
+    {
+      showForCarWithPublic: true,
+
+      id: 'externalCostWithCar',
+
+      content: {
+        fi: [
+          'Kulkuneuvossa mahdollisuus kuljettaa autoa. ',
+          'Tarkasta auton kuljettamisen mahdollinen maksullisuus operaattorilta.',
+        ],
+        en: [
+          'You can take your car on board. ',
+          'Check with the transport operator if an additional fee will be charged for the transportation of cars.',
+        ],
+        sv: [
+          'Du kan ta med bilen ombord. ',
+          'Kontrollera med trafikoperatören om det är avgiftsbelagt att transportera bilar.',
+        ],
+      },
+    },
   ],
   navigation: false,
   sendAnalyticsCustomEventGoals: false,
   allowDirectTaxiJourneys: false,
+  shortenLongTextThreshold: 10, // for route number in itinerary summary
 };

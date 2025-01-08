@@ -52,7 +52,7 @@ export function locationToUri(location) {
   if (!location.lat) {
     return '-';
   }
-  let address = location.address || '';
+  let address = location.address || location.name || '';
   if (location.gtfsId) {
     address = `${address}**${location.gtfsId}`;
   }
@@ -63,7 +63,10 @@ export function locationToOTP(location) {
   if (location.lat) {
     const address = location.address || '';
     const slack = location.locationSlack ? `::${location.locationSlack}` : '';
-    return `${address}::${location.lat},${location.lon}${slack}`;
+    const addressParts = location.gtfsId
+      ? `${address}**${location.gtfsId}`
+      : address;
+    return `${addressParts}::${location.lat},${location.lon}${slack}`;
   }
   if (location.type === 'SelectFromMap') {
     return location.type;

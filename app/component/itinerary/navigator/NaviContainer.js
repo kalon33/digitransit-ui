@@ -9,9 +9,10 @@ import NaviBottom from './NaviBottom';
 import NaviCardContainer from './NaviCardContainer';
 import { useRealtimeLegs } from './hooks/useRealtimeLegs';
 import NavigatorOutroModal from './navigatoroutro/NavigatorOutroModal';
+import { DESTINATION_RADIUS, summaryString } from './NaviUtils';
 
-const DESTINATION_RADIUS = 20; // meters
 const ADDITIONAL_ARRIVAL_TIME = 60000; // 60 seconds in ms
+const LEGLOG = true;
 
 function NaviContainer(
   {
@@ -27,7 +28,10 @@ function NaviContainer(
 ) {
   const [isPositioningAllowed, setPositioningAllowed] = useState(false);
 
-  const position = getStore('PositionStore').getLocationState();
+  let position = getStore('PositionStore').getLocationState();
+  if (!position.hasLocation) {
+    position = null;
+  }
 
   const {
     realTimeLegs,
@@ -41,7 +45,7 @@ function NaviContainer(
   } = useRealtimeLegs(relayEnvironment, legs);
 
   useEffect(() => {
-    if (position.hasLocation) {
+    if (position) {
       mapRef?.enableMapTracking();
       setPositioningAllowed(true);
     } else {
@@ -61,11 +65,16 @@ function NaviContainer(
   const arrivalTime = legTime(lastLeg.end);
 
   const isDestinationReached =
-    position && lastLeg && distance(position, lastLeg.to) <= DESTINATION_RADIUS;
+    position && distance(position, lastLeg.to) <= DESTINATION_RADIUS;
 
   const isPastExpectedArrival = time > arrivalTime + ADDITIONAL_ARRIVAL_TIME;
 
   const isJourneyCompleted = isDestinationReached || isPastExpectedArrival;
+
+  if (LEGLOG) {
+    // eslint-disable-next-line
+    console.log(...summaryString(realTimeLegs, time, previousLeg, currentLeg, nextLeg));
+  }
 
   return (
     <>
@@ -83,6 +92,7 @@ function NaviContainer(
         firstLeg={firstLeg}
         lastLeg={lastLeg}
         isJourneyCompleted={isJourneyCompleted}
+        previousLeg={previousLeg}
       />
       {isJourneyCompleted && isNavigatorIntroDismissed && (
         <NavigatorOutroModal
@@ -107,7 +117,8 @@ NaviContainer.propTypes = {
   isNavigatorIntroDismissed: PropTypes.bool,
   // eslint-disable-next-line
   mapRef: PropTypes.object,
-  mapLayerRef: PropTypes.func.isRequired,
+  mapLayerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
+    .isRequired,
 };
 
 NaviContainer.contextTypes = {
