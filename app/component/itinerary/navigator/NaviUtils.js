@@ -407,28 +407,30 @@ export const getItineraryAlerts = (
 ) => {
   const alerts = [];
   legs.forEach(leg => {
-    const id = `alert-${leg.legId}`; // allow only one alert per leg
-    if (!messages.get(id)?.closed) {
-      const alert = leg.alerts.find(al => {
-        return (
-          // show only alerts that are active during the leg
-          legTime(leg.end) / 1000 > al.effectiveStartDate &&
-          legTime(leg.start) / 1000 < al.effectiveEndDate &&
-          notedSeverity.includes(al.alertSeverityLevel)
-        );
-      });
-      if (alert) {
-        alerts.push({
-          severity: 'ALERT',
-          content: (
-            <div className="navi-info-content">
-              <span className="notification-header">
-                {alert.alertHeaderText}
-              </span>
-            </div>
-          ),
-          id,
+    if (leg.transitLeg && legTime(leg.end) > time) {
+      const id = `alert-${leg.legId}`; // allow only one alert per leg
+      if (!messages.get(id)?.closed) {
+        const alert = leg.alerts.find(al => {
+          return (
+            // show only alerts that are active during the leg
+            legTime(leg.end) / 1000 > al.effectiveStartDate &&
+            legTime(leg.start) / 1000 < al.effectiveEndDate &&
+            notedSeverity.includes(al.alertSeverityLevel)
+          );
         });
+        if (alert) {
+          alerts.push({
+            severity: 'ALERT',
+            content: (
+              <div className="navi-info-content">
+                <span className="notification-header">
+                  {alert.alertHeaderText}
+                </span>
+              </div>
+            ),
+            id,
+          });
+        }
       }
     }
   });
