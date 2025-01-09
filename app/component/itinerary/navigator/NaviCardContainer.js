@@ -32,7 +32,7 @@ const getLegType = (
   firstLeg,
   time,
   countAtLegEnd,
-  interliningWithRoute,
+  interlineWithPreviousLeg,
 ) => {
   let legType;
   if (time < legTime(firstLeg.start)) {
@@ -48,7 +48,7 @@ const getLegType = (
       legType = LEGTYPE.TRANSIT;
     }
   } else {
-    legType = interliningWithRoute ? LEGTYPE.WAIT_IN_VEHICLE : LEGTYPE.WAIT;
+    legType = interlineWithPreviousLeg ? LEGTYPE.WAIT_IN_VEHICLE : LEGTYPE.WAIT;
   }
   return legType;
 };
