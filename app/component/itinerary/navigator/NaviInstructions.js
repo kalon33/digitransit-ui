@@ -98,6 +98,31 @@ export default function NaviInstructions(
     );
   }
 
+  if (legType === LEGTYPE.WAIT_IN_VEHICLE) {
+    const totalWait = legTime(nextLeg.start) - time;
+    return (
+      <>
+        <div className="notification-header">
+          <FormattedMessage
+            id="wait-in-vehicle"
+            defaultMessage="Wait in the vehicle"
+          />
+        </div>
+        <div className="wait-leg">
+          <FormattedMessage
+            id="navigation-interline-resume"
+            values={{
+              duration: withRealTime(
+                nextLeg.realtimeState === 'UPDATED',
+                durationToString(totalWait),
+              ),
+            }}
+          />
+        </div>
+      </>
+    );
+  }
+
   if (legType === LEGTYPE.TRANSIT) {
     const rt = leg.realtimeState === 'UPDATED';
     const t = legTime(leg.end);

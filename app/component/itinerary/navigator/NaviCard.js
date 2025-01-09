@@ -23,6 +23,7 @@ const iconMap = {
   'BUS-EXPRESS': 'icon-icon_bus-express',
   'BUS-LOCAL': 'icon-icon_bus-local',
   SPEEDTRAM: 'icon-icon_speedtram',
+  WAIT_IN_VEHICLE: 'icon-icon_wait',
 };
 
 export default function NaviCard(
@@ -51,7 +52,11 @@ export default function NaviCard(
       iconName = iconMap[m.toUpperCase()];
 
       instructions = `navileg-in-transit`;
-    } else if (legType !== LEGTYPE.WAIT && isRental(leg, nextLeg)) {
+    } else if (
+      legType !== LEGTYPE.WAIT &&
+      legType !== LEGTYPE.WAIT_IN_VEHICLE &&
+      isRental(leg, nextLeg)
+    ) {
       if (leg.mode === 'WALK' && nextLeg?.mode === 'SCOOTER') {
         instructions = `navileg-rent-scooter`;
       } else {
@@ -63,6 +68,8 @@ export default function NaviCard(
       iconName = iconMap.WALK;
     } else if (legType === LEGTYPE.WAIT) {
       iconName = iconMap.WAIT;
+    } else if (legType === LEGTYPE.WAIT_IN_VEHICLE) {
+      iconName = iconMap.WAIT_IN_VEHICLE;
     }
 
     mainCardContent = (

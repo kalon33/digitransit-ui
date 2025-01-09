@@ -1307,6 +1307,10 @@ const translations = {
     'navigation-description': 'Journey guidance',
     'navigation-get-mode': 'Get on the {mode}',
     'navigation-header': 'Journey tracking',
+    'navigation-interline-resume':
+      'TODO_Matka jatkuu {duration} odotuksen jälkeen',
+    'navigation-interline-wait':
+      'TODO_Linjatunnus {line} Ja määränpää {destination} Vaihtuvat pysäkillä',
     'navigation-intro-begin': 'TODO_navigation-intro-begin_EN',
     'navigation-intro-header': 'TODO_navigation-intro-login-prompt_EN',
     'navigation-intro-help-body': 'TODO_navigation-intro-login-prompt_EN',
@@ -1750,6 +1754,7 @@ const translations = {
     vr_ticket: 'VR ticket',
     wait: 'Wait',
     'wait-amount-of-time': 'Wait {duration}',
+    'wait-in-vehicle': 'TODO_odota kulkuneuvossa',
     walk: 'walking',
     'walk-bike-itinerary-1': 'Your search returned only walking routes.',
     'walk-bike-itinerary-2': 'Your search returned only cycling routes.',
@@ -2584,6 +2589,9 @@ const translations = {
     'navigation-description': 'Löydä perille ohjatusti',
     'navigation-get-mode': 'Nouse {mode}',
     'navigation-header': 'Matkan seuranta',
+    'navigation-interline-resume': 'Matka jatkuu {duration} odotuksen jälkeen',
+    'navigation-interline-wait':
+      'Linjatunnus ({line}) Ja määränpää ({destination}) Vaihtuvat pysäkillä',
     'navigation-intro-begin': 'Aloita matka',
     'navigation-intro-header': 'Mitä matkanseuranta tarjoaa?',
     'navigation-intro-help-body': 'Löydä perille vaihe kerrallaan',
@@ -3027,6 +3035,7 @@ const translations = {
     vr_ticket: 'VR-lipulla',
     wait: 'Odota',
     'wait-amount-of-time': 'Odota {duration}',
+    'wait-in-vehicle': 'Odota kulkuneuvossa',
     walk: 'kävelyn',
     'walk-bike-itinerary-1':
       'Löysimme valitsemallesi reitille vain kävelyyn liittyviä reittiehdotuksia.',
@@ -5514,6 +5523,10 @@ const translations = {
     'navigation-description': 'Hitta fram med vägledning.',
     'navigation-get-mode': 'Gå på {mode}',
     'navigation-header': 'Följa',
+    'navigation-interline-resume':
+      'TODO_Matka jatkuu {duration} odotuksen jälkeen',
+    'navigation-interline-wait':
+      'TODO_Linjatunnus {line} Ja määränpää {destination} Vaihtuvat pysäkillä',
     'navigation-intro-begin': 'TODO_navigation-intro-begin_SV',
     'navigation-intro-header': 'TODO_navigation-intro-login-prompt_SV',
     'navigation-intro-help-body': 'TODO_navigation-intro-login-prompt_SV',
@@ -5960,6 +5973,7 @@ const translations = {
     vr_ticket: 'VR-biljetten',
     wait: 'Vänta',
     'wait-amount-of-time': 'Vänta {duration}',
+    'wait-in-vehicle': 'TODO_Odota kulkuneuvossa',
     walk: 'gång',
     'walk-bike-itinerary-1':
       'Vi har endast hittat ruttförslag i vilka ingår promenad.',

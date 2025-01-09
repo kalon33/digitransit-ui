@@ -5,7 +5,11 @@ import { FormattedMessage } from 'react-intl';
 import Icon from '../../Icon';
 import StopCode from '../../StopCode';
 import PlatformNumber from '../../PlatformNumber';
-import { getZoneLabel, legTime } from '../../../util/legUtils';
+import {
+  getZoneLabel,
+  legTime,
+  getHeadsignFromRouteLongName,
+} from '../../../util/legUtils';
 import ZoneIcon from '../../ZoneIcon';
 import { legShape, configShape } from '../../../util/shapes';
 import { getDestinationProperties, LEGTYPE } from './NaviUtils';
@@ -72,9 +76,8 @@ const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
       </div>
     );
   }
-  return (
-    <div className="extension">
-      <div className="extension-divider" />
+  const stopInformation = () => {
+    return (
       <div className="extension-walk">
         <Icon img="navi-expand" className="icon-expand" />
         <Icon
@@ -104,6 +107,35 @@ const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
           </div>
         </div>
       </div>
+    );
+  };
+
+  if (legType === LEGTYPE.WAIT_IN_VEHICLE) {
+    const { route, trip } = nextLeg;
+    return (
+      <div className="extension">
+        <div className="extension-divider" />
+        <div className="wait-in-vehicle">
+          <FormattedMessage
+            id="navigation-interline-wait"
+            values={{
+              line: <span className="bold">{route.shortName}</span>,
+              destination: (
+                <span className="bold">
+                  {trip.tripHeadsign || getHeadsignFromRouteLongName(route)}
+                </span>
+              ),
+            }}
+          />
+        </div>
+        {stopInformation()}
+      </div>
+    );
+  }
+  return (
+    <div className="extension">
+      <div className="extension-divider" />
+      {stopInformation()}
     </div>
   );
 };

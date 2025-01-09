@@ -251,6 +251,13 @@ $fixed-width-padding: 16px;
         margin-top: var(--space-xs);
       }
 
+      .wait-in-vehicle {
+        display: flex;
+        align-items: flex-start;
+        text-align: start;
+        margin-left: var(--space-xl);
+      }
+
       .icon-expand {
         margin-top: 5px;
         width: var(--space-m);
