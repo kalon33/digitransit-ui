@@ -399,10 +399,6 @@ function withNewSearchBtn(children, searchCallback) {
   );
 }
 
-function alertId(alert) {
-  return `${alert.effectiveStartDate}-${alert.alertDescriptionText}`;
-}
-
 export const getItineraryAlerts = (
   legs,
   time,
@@ -413,9 +409,10 @@ export const getItineraryAlerts = (
   itinerarySearchCallback,
 ) => {
   const alerts = legs.flatMap(leg => {
+    const id = `alert-${leg.legId}`; // allow only one alert per leg
     return leg.alerts
       .filter(alert => {
-        if (messages.get(alertId(alert))?.closed) {
+        if (messages.get(id)?.closed) {
           return false;
         }
         const { first } = getFirstLastLegs(legs);
@@ -440,7 +437,7 @@ export const getItineraryAlerts = (
             <span className="notification-header">{alert.alertHeaderText}</span>
           </div>
         ),
-        id: alertId(alert),
+        id,
       }));
   });
 
