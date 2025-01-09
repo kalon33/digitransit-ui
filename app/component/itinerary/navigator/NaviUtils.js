@@ -414,7 +414,7 @@ export const getItineraryAlerts = (
           // show only alerts that are active during the leg
           legTime(leg.end) / 1000 > al.effectiveStartDate &&
           legTime(leg.start) / 1000 < al.effectiveEndDate &&
-          notedSeverity.includes(al.severity)
+          notedSeverity.includes(al.alertSeverityLevel)
         );
       });
       if (alert) {
