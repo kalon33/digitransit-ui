@@ -234,9 +234,29 @@ function syntheticEndpoint(originalEndpoint, place) {
   };
 }
 
+// Once a via place is matched, it is used and will not match again.
+function includesAndRemove(array, id) {
+  const index = array.indexOf(id);
+  if (index >= 0) {
+    array.splice(index, 1);
+    return true;
+  }
+  return false;
+}
+
+function isViaPointMatch(stop, viaPoints) {
+  return (
+    stop &&
+    (includesAndRemove(viaPoints, stop.gtfsId) ||
+      (stop.parentStation &&
+        includesAndRemove(viaPoints, stop.parentStation.gtfsId)))
+  );
+}
+
 /**
  * Adds intermediate: true to legs if their start point should have a via point
  * marker, possibly splitting legs in case the via point belongs in the middle.
+ * Once a via point is used, it is not matched again.
  *
  * @param originalLegs Leg objects from graphql query
  * @param viaPlaces Location objects (otpToLocation) from query parameter
@@ -245,27 +265,14 @@ function syntheticEndpoint(originalEndpoint, place) {
 export function splitLegsAtViaPoints(originalLegs, viaPlaces) {
   const splitLegs = [];
   // Once a via place is matched, it is used and will not match again.
-  function includesAndRemove(array, id) {
-    const index = array.indexOf(id);
-    if (index >= 0) {
-      array.splice(index, 1);
-      return true;
-    }
-    return false;
-  }
   const viaPoints = viaPlaces.map(p => p.gtfsId);
-  const isViaPointMatch = stop =>
-    stop &&
-    (includesAndRemove(viaPoints, stop.gtfsId) ||
-      (stop.parentStation &&
-        includesAndRemove(viaPoints, stop.parentStation.gtfsId)));
   let nextLegStartsWithIntermediate = false;
   originalLegs.forEach(originalLeg => {
     const leg = { ...originalLeg };
     const { intermediatePlaces } = leg;
     if (
       nextLegStartsWithIntermediate ||
-      (leg.transitLeg && isViaPointMatch(leg.from.stop))
+      (leg.transitLeg && isViaPointMatch(leg.from.stop, viaPoints))
     ) {
       leg.intermediatePlace = true;
       nextLegStartsWithIntermediate = false;
@@ -274,7 +281,7 @@ export function splitLegsAtViaPoints(originalLegs, viaPlaces) {
       let start = 0;
       let lastSplit = -1;
       intermediatePlaces.forEach((place, i) => {
-        if (isViaPointMatch(place.stop)) {
+        if (isViaPointMatch(place.stop, viaPoints)) {
           const leftLeg = {
             ...leg,
             to: syntheticEndpoint(leg.to, place),
@@ -297,12 +304,50 @@ export function splitLegsAtViaPoints(originalLegs, viaPlaces) {
       }
     }
     splitLegs.push(leg);
-    if (leg.transitLeg && isViaPointMatch(leg.to.stop)) {
+    if (leg.transitLeg && isViaPointMatch(leg.to.stop, viaPoints)) {
       nextLegStartsWithIntermediate = true;
     }
   });
   return splitLegs;
 }
+
+/**
+ * Mark via points to legs and possible intermediatePlaces in them. Once a via
+ * point is matched, it is not used again. Used for expanded view of the
+ * itinerary.
+ *
+ * @param originalLegs Leg objects from graphql query
+ * @param viaPlaces Location objects (otpToLocation) from query parameter
+ * @returns {*[]}
+ */
+export function markViaPoints(originalLegs, viaPlaces) {
+  const legs = [];
+  const viaPoints = viaPlaces.map(p => p.gtfsId);
+  originalLegs.forEach(leg => {
+    const isViaPoint = isViaPointMatch(leg.from.stop, viaPoints);
+    if (leg.intermediatePlaces) {
+      const intermediatePlaces = [];
+      leg.intermediatePlaces.forEach(place => {
+        intermediatePlaces.push({
+          ...place,
+          isViaPoint: isViaPointMatch(place.stop, viaPoints),
+        });
+      });
+      legs.push({
+        ...leg,
+        intermediatePlaces,
+        isViaPoint,
+      });
+    } else {
+      legs.push({
+        ...leg,
+        isViaPoint,
+      });
+    }
+  });
+  return legs;
+}
+
 /**
  * Compresses the incoming legs (affects only legs with mode BICYCLE, WALK or CITYBIKE). These are combined
  * so that the person will be walking their bicycle and there won't be multiple similar legs
