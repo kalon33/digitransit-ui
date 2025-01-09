@@ -442,9 +442,6 @@ $fixed-width-padding: 16px;
       border-radius: 999px; // var(--radius-radius-medium, 8px);
       margin-top: var(--space-xxs);
       width: 220px;
-
-      /* box-shadow-card-s-strong */
-      box-shadow: 0 2px 4px 0 var(--color-shadow-strong, rgba(51, 51, 51, 0.2));
     }
 
     &.slide-out-right {
