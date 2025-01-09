@@ -231,11 +231,6 @@ export const getToLocalizedMode = (mode, intl) => {
   });
 };
 
-export function getFirstLastLegs(legs) {
-  const first = legs[0];
-  const last = legs[legs.length - 1];
-  return { first, last };
-}
 export const getAdditionalMessages = (
   leg,
   nextLeg,
@@ -399,6 +394,8 @@ function withNewSearchBtn(children, searchCallback) {
   );
 }
 
+const notedSeverity = ['WARNING', 'ALERT'];
+
 export const getItineraryAlerts = (
   legs,
   time,
@@ -408,37 +405,32 @@ export const getItineraryAlerts = (
   messages,
   itinerarySearchCallback,
 ) => {
-  const alerts = legs.flatMap(leg => {
+  const alerts = [];
+  legs.forEach(leg => {
     const id = `alert-${leg.legId}`; // allow only one alert per leg
-    return leg.alerts
-      .filter(alert => {
-        if (messages.get(id)?.closed) {
-          return false;
-        }
-        const { first } = getFirstLastLegs(legs);
-        const startTime = legTime(first.start) / 1000;
-        // show only alerts that are active when
-        // the journey starts
-        if (startTime < alert.effectiveStartDate) {
-          return false;
-        }
-        if (
-          alert.alertSeverityLevel === 'WARNING' ||
-          alert.alertSeverityLevel === 'SEVERE'
-        ) {
-          return true;
-        }
-        return false;
-      })
-      .map(alert => ({
-        severity: 'ALERT',
-        content: (
-          <div className="navi-info-content">
-            <span className="notification-header">{alert.alertHeaderText}</span>
-          </div>
-        ),
-        id,
-      }));
+    if (!messages.get(id)?.closed) {
+      const alert = leg.alerts.find(al => {
+        return (
+          // show only alerts that are active during the leg
+          legTime(leg.end) / 1000 > al.effectiveStartDate &&
+          legTime(leg.start) / 1000 < al.effectiveEndDate &&
+          notedSeverity.includes(al.severity)
+        );
+      });
+      if (alert) {
+        alerts.push({
+          severity: 'ALERT',
+          content: (
+            <div className="navi-info-content">
+              <span className="notification-header">
+                {alert.alertHeaderText}
+              </span>
+            </div>
+          ),
+          id,
+        });
+      }
+    }
   });
 
   const canceled = legs.filter(
