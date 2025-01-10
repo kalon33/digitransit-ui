@@ -1310,7 +1310,7 @@ const translations = {
     'navigation-interline-resume':
       'TODO_Matka jatkuu {duration} odotuksen jälkeen',
     'navigation-interline-wait':
-      'TODO_Linjatunnus {line} Ja määränpää {destination} Vaihtuvat pysäkillä',
+      'TODO_Linjatunnus {line} Ja määränpää {destination} vaihtuvat pysäkillä',
     'navigation-intro-begin': 'TODO_navigation-intro-begin_EN',
     'navigation-intro-header': 'TODO_navigation-intro-login-prompt_EN',
     'navigation-intro-help-body': 'TODO_navigation-intro-login-prompt_EN',
@@ -2591,7 +2591,7 @@ const translations = {
     'navigation-header': 'Matkan seuranta',
     'navigation-interline-resume': 'Matka jatkuu {duration} odotuksen jälkeen',
     'navigation-interline-wait':
-      'Linjatunnus ({line}) Ja määränpää ({destination}) Vaihtuvat pysäkillä',
+      'Linjatunnus ({line}) Ja määränpää ({destination}) vaihtuvat pysäkillä',
     'navigation-intro-begin': 'Aloita matka',
     'navigation-intro-header': 'Mitä matkanseuranta tarjoaa?',
     'navigation-intro-help-body': 'Löydä perille vaihe kerrallaan',
@@ -5526,7 +5526,7 @@ const translations = {
     'navigation-interline-resume':
       'TODO_Matka jatkuu {duration} odotuksen jälkeen',
     'navigation-interline-wait':
-      'TODO_Linjatunnus {line} Ja määränpää {destination} Vaihtuvat pysäkillä',
+      'TODO_Linjatunnus {line} Ja määränpää {destination} vaihtuvat pysäkillä',
     'navigation-intro-begin': 'TODO_navigation-intro-begin_SV',
     'navigation-intro-header': 'TODO_navigation-intro-login-prompt_SV',
     'navigation-intro-help-body': 'TODO_navigation-intro-login-prompt_SV',
