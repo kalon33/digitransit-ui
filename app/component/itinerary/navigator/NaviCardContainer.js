@@ -138,7 +138,11 @@ function NaviCardContainer(
       ),
     );
 
-    if (match.location.query?.debug !== undefined && position) {
+    if (
+      match.location.query?.debug !== undefined &&
+      position &&
+      !messages.get('debug')?.closed
+    ) {
       const info1 = `lat: ${position.lat} lon: ${position.lon}`;
       const info2 = `status: ${position.status}`;
       const info3 = `locations: ${position.locationCount} watchId: ${position.watchId}`;

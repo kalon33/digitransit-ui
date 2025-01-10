@@ -318,8 +318,8 @@ const Itinerary = (
     }
     nameLengthSum += 10; // every leg requires some minimum space
     if (
-      leg.intermediatePlace ||
-      connectsFromViaPoint(leg, intermediatePlaces)
+      i > 0 &&
+      (leg.intermediatePlace || connectsFromViaPoint(leg, intermediatePlaces))
     ) {
       intermediateSlack +=
         legTime(leg.start) - legTime(compressedLegs[i - 1].end); // calculate time spent at each intermediate place
@@ -364,8 +364,9 @@ const Itinerary = (
     const isNextLegLast = i + 1 === compressedLegs.length - 1;
     const shouldRenderLastLeg =
       isNextLegLast && lastLegLength < renderBarThreshold;
-    const previousLeg = compressedLegs[i - 1];
-    const nextLeg = compressedLegs[i + 1];
+    const previousLeg = i > 0 ? compressedLegs[i - 1] : null;
+    const nextLeg =
+      i < compressedLegs.length - 1 ? compressedLegs[i + 1] : null;
     let legLength = relativeLength(endMs - startMs);
     const longName = !leg?.route?.shortName || leg?.route?.shortName.length > 5;
 
