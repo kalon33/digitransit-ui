@@ -1,8 +1,7 @@
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
 import { routerShape } from 'found';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
-import { checkPositioningPermission } from '../../../action/PositionActions';
+import React, { useEffect, useRef } from 'react';
 import { legTime } from '../../../util/legUtils';
 import { legShape, relayShape } from '../../../util/shapes';
 import NaviBottom from './NaviBottom';
@@ -26,11 +25,13 @@ function NaviContainer(
   },
   { getStore, router },
 ) {
-  const [isPositioningAllowed, setPositioningAllowed] = useState(false);
+  const hasPosition = useRef(false);
 
   let position = getStore('PositionStore').getLocationState();
   if (!position.hasLocation) {
     position = null;
+  } else {
+    hasPosition.current = true;
   }
 
   const {
@@ -45,18 +46,8 @@ function NaviContainer(
   } = useRealtimeLegs(relayEnvironment, legs);
 
   useEffect(() => {
-    if (position) {
-      mapRef?.enableMapTracking();
-      setPositioningAllowed(true);
-    } else {
-      checkPositioningPermission().then(permission => {
-        if (permission.state === 'granted') {
-          mapRef?.enableMapTracking();
-          setPositioningAllowed(true);
-        }
-      });
-    }
-  }, [mapRef]);
+    mapRef?.enableMapTracking(); // try always, shows annoying notifier
+  }, [mapRef, hasPosition.current]);
 
   if (!realTimeLegs?.length) {
     return null;
@@ -80,9 +71,7 @@ function NaviContainer(
     <>
       <NaviCardContainer
         legs={realTimeLegs}
-        focusToLeg={
-          mapRef?.state.mapTracking || isPositioningAllowed ? null : focusToLeg
-        }
+        focusToLeg={position ? null : focusToLeg}
         time={time}
         position={position}
         mapLayerRef={mapLayerRef}
