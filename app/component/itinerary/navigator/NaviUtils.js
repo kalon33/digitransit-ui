@@ -2,7 +2,7 @@ import distance from '@digitransit-search-util/digitransit-search-util-distance'
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { ExtendedRouteTypes } from '../../../constants';
-import { getFaresFromLegs } from '../../../util/fareUtils';
+import { getFaresFromLegs, formatFare } from '../../../util/fareUtils';
 import { GeodeticToEnu } from '../../../util/geo-utils';
 import { legTime, legTimeAcc } from '../../../util/legUtils';
 import { locationToUri } from '../../../util/otpStrings';
@@ -257,7 +257,7 @@ export const getAdditionalMessages = (
               <FormattedMessage id="navigation-remember-ticket" />
             </span>
             <span>
-              {fares[0].ticketName} {fares[0].price} €
+              {fares[0].ticketName} {formatFare(fares[0])}
             </span>
           </div>
         ),
