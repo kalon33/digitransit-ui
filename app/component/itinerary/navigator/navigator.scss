@@ -189,6 +189,7 @@ $fixed-width-padding: 16px;
       flex-direction: column;
       max-height: 250px;
       margin-bottom: var(--space-s);
+      margin-top: var(--space-m);
 
       .extension-divider {
         height: 1px;
@@ -202,6 +203,11 @@ $fixed-width-padding: 16px;
       .stop-count {
         display: flex;
         margin-left: 35px;
+
+        .icon {
+          height: 16px;
+          width: 16px;
+        }
       }
 
       .extension-routenumber {

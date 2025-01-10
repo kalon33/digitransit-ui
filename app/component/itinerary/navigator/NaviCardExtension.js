@@ -7,7 +7,6 @@ import StopCode from '../../StopCode';
 import PlatformNumber from '../../PlatformNumber';
 import {
   getZoneLabel,
-  legTime,
   getHeadsignFromRouteLongName,
 } from '../../../util/legUtils';
 import ZoneIcon from '../../ZoneIcon';
@@ -17,7 +16,7 @@ import { getRouteMode } from '../../../util/modeUtils';
 
 import RouteNumberContainer from '../../RouteNumberContainer';
 
-const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
+const NaviCardExtension = ({ legType, leg, nextLeg }, { config }) => {
   const { stop, name, rentalVehicle, vehicleParking, vehicleRentalStation } =
     leg ? leg.to : nextLeg.from;
   const { code, platformCode, zoneId, vehicleMode } = stop || {};
@@ -39,22 +38,17 @@ const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
   }
 
   if (legType === LEGTYPE.TRANSIT) {
-    const { intermediatePlaces, headsign, trip, realtimeState, route } = leg;
+    const { intermediatePlaces, headsign, trip, route } = leg;
     const hs = headsign || trip.tripHeadsign;
-    const idx = intermediatePlaces.findIndex(p => legTime(p.arrival) > time);
-    const count = idx > -1 ? intermediatePlaces.length - idx : 0;
-    const stopCount = (
-      <span className={cx('bold', { realtime: realtimeState === 'UPDATED' })}>
-        {count}
-      </span>
-    );
+    const stopCount = <span className="bold">{intermediatePlaces.length}</span>;
     const translationId =
-      count === 1 ? 'navileg-one-stop-remaining' : 'navileg-stops-remaining';
+      intermediatePlaces.length === 1
+        ? 'navileg-one-intermediate-stop'
+        : 'navileg-intermediate-stops';
     const mode = getRouteMode(route, config);
 
     return (
       <div className="extension">
-        <div className="extension-divider" />
         <div className="extension-routenumber">
           <RouteNumberContainer
             className={cx('line', mode)}
@@ -66,7 +60,9 @@ const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
           />
           <div className="headsign">{hs}</div>
         </div>
+        <div className="extension-divider" />
         <div className="stop-count">
+          <Icon img={`navi-intermediatestops-${mode.toLowerCase()}`} />
           <FormattedMessage
             id={translationId}
             values={{ stopCount }}
@@ -144,7 +140,6 @@ NaviCardExtension.propTypes = {
   leg: legShape,
   nextLeg: legShape,
   legType: PropTypes.string,
-  time: PropTypes.number.isRequired,
 };
 
 NaviCardExtension.defaultProps = {
