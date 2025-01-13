@@ -242,7 +242,7 @@ const useRealtimeLegs = (relayEnvironment, initialLegs) => {
       matchLegEnds(rtLegs, now);
       return { ...prev, time: now, realTimeLegs: rtLegs };
     });
-  }, [time, realTimeLegs, origin, queryAndMapRealtimeLegs]);
+  }, [queryAndMapRealtimeLegs]);
 
   useEffect(() => {
     fetchAndSetRealtimeLegs();
