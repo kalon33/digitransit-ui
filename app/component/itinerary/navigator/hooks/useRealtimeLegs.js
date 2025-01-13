@@ -194,29 +194,43 @@ const useRealtimeLegs = (relayEnvironment, initialLegs) => {
     );
 
     setTimeAndRealTimeLegs(prev => {
+      // Maps previous legs with fresh real time transit legs. If transit leg start is in the past according to previous state,
+      // the transit leg is marked as frozen to prevent the start from shifting in UI.
+      // rtLegMap does not contain legs that have ended in the past as they've been filtered before updates are queried
       const rtLegs = prev.realTimeLegs.map(l => {
+        const freezeStart = l.freezeStart || legTime(l.start) <= now;
         const rtLeg =
           l.legId && rtLegMap[l.legId] ? { ...rtLegMap[l.legId] } : null;
         if (rtLeg) {
+          // If start is frozen, the property is deleted to prevent it from affecting any views
+          if (freezeStart) {
+            delete rtLeg.start;
+          }
+
           return {
             ...l,
-            ...rtLeg,
+            ...rtLeg, // delete above prevent this from overwriting a previous, frozen state
             to: {
               ...l.to,
               vehicleRentalStation: rtLeg.to.vehicleRentalStation,
             },
+            freezeStart,
           };
         }
-
+        // Non-transit legs are kept unfrozen for now to allow them to be scaled or shifted
         return l;
       });
-      // shift non-transit-legs to match possibly changed transit legs
+
+      // Shift unfrozen, non-transit-legs to match possibly changed transit legs
       matchLegEnds(rtLegs, now);
+
+      // Freezes any leg.start|end in the past
       const rtLegsWithFreezes = rtLegs.map(l => ({
         ...l,
-        freezeStart: legTime(l.start) <= now,
-        freezeEnd: legTime(l.end) <= now,
+        freezeStart: l.freezeStart || legTime(l.start) <= now,
+        freezeEnd: l.freezeEnd || legTime(l.end) <= now,
       }));
+
       return { ...prev, time: now, realTimeLegs: rtLegsWithFreezes };
     });
   }, [queryAndMapRealtimeLegs]);
@@ -234,6 +248,7 @@ const useRealtimeLegs = (relayEnvironment, initialLegs) => {
   const { firstLeg, lastLeg, currentLeg, nextLeg, previousLeg } =
     getLegsOfInterest(realTimeLegs, time);
 
+  // return wait legs as undefined as they are not a global concept
   return {
     realTimeLegs,
     time,
