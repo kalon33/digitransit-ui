@@ -61,10 +61,6 @@ div.map {
     position: absolute;
     width: 100%;
 
-    &.no-scroll {
-      overflow-y: hidden;
-    }
-
     .drawer-padding {
       height: 90%;
       width: 0;

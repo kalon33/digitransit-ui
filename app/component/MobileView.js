@@ -78,7 +78,7 @@ const MobileView = forwardRef(
       mapRef,
       searchBox,
       match,
-      enableBottomScroll,
+      showHandle,
     },
     ref,
   ) => {
@@ -93,7 +93,7 @@ const MobileView = forwardRef(
     const [bottomPadding, setBottomPadding] = useState(getMiddlePosition());
 
     const onScroll = e => {
-      if (enableBottomScroll && e.target.className === 'drawer-container') {
+      if (e.target.className === 'drawer-container') {
         mapRef?.setBottomPadding(e.target.scrollTop);
         setBottomPadding(e.target.scrollTop);
       }
@@ -162,16 +162,14 @@ const MobileView = forwardRef(
               {map}
             </MapBottomsheetContext.Provider>
             <div
-              className={`drawer-container ${
-                !enableBottomScroll && 'no-scroll'
-              }`}
+              className="drawer-container"
               onScroll={onScroll}
               ref={scrollRef}
               role="main"
             >
               <div className="drawer-padding" />
               <div className="drawer-content">
-                {enableBottomScroll && <div className="drag-line" />}
+                {showHandle && <div className="drag-line" />}
                 <div className="content-container">
                   {header}
                   {content}
@@ -204,7 +202,7 @@ MobileView.propTypes = {
   // eslint-disable-next-line
   mapRef: PropTypes.object,
   match: matchShape.isRequired,
-  enableBottomScroll: PropTypes.bool,
+  showHandle: PropTypes.bool,
 };
 
 MobileView.defaultProps = {
@@ -215,7 +213,7 @@ MobileView.defaultProps = {
   selectFromMapHeader: undefined,
   searchBox: undefined,
   mapRef: undefined,
-  enableBottomScroll: true,
+  showHandle: true,
 };
 
 export default MobileView;
