@@ -207,6 +207,8 @@ $fixed-width-padding: 16px;
         .icon {
           height: 16px;
           width: 16px;
+          margin-right: var(--space-xxs);
+          margin-top: 2px;
         }
       }
 
