@@ -46,13 +46,14 @@ const NaviCardExtension = ({ legType, leg, nextLeg }, { config }) => {
         ? 'navileg-one-intermediate-stop'
         : 'navileg-intermediate-stops';
     const mode = getRouteMode(route, config);
-
+    const iconColor =
+      config.colors.iconColors[`mode-${mode}`] || leg.route.color;
     return (
       <div className="extension">
         <div className="extension-routenumber">
           <RouteNumberContainer
             className={cx('line', mode)}
-            route={leg.route}
+            route={route}
             mode={mode}
             isTransitLeg
             vertical
@@ -62,7 +63,7 @@ const NaviCardExtension = ({ legType, leg, nextLeg }, { config }) => {
         </div>
         <div className="extension-divider" />
         <div className="stop-count">
-          <Icon img={`navi-intermediatestops-${mode.toLowerCase()}`} />
+          <Icon img="navi-intermediatestops" color={iconColor} />
           <FormattedMessage
             id={translationId}
             values={{ stopCount }}
