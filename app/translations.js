@@ -1312,6 +1312,10 @@ const translations = {
     'navigation-hurry-transfer-solved-details':
       'Transfer time for {transfer} is again {time}',
     'navigation-hurry-transfer-value': 'Transfer time for {transfer} is {time}',
+    'navigation-interline-resume':
+      'TODO_Matka jatkuu {duration} odotuksen jälkeen',
+    'navigation-interline-wait':
+      'TODO_Linjatunnus {line} Ja määränpää {destination} vaihtuvat pysäkillä',
     'navigation-intro-begin': 'TODO_navigation-intro-begin_EN',
     'navigation-intro-header': 'TODO_navigation-intro-login-prompt_EN',
     'navigation-intro-help-body': 'TODO_navigation-intro-login-prompt_EN',
@@ -1341,18 +1345,20 @@ const translations = {
     'navileg-bicycle': 'Cycle to',
     'navileg-car': 'Drive to',
     'navileg-in-transit': 'TODO_{mode}matka',
+    'navileg-in-transit-interline':
+      'TODO_Matka jatkuu {stopOrStation} {stop}  samassa kulkuneuvossa {duration} päästä klo {legTime}',
+    'navileg-intermediate-stops': 'TODO_{stopCount} välipysäkkiä',
     'navileg-leave-at':
       'Jää pois {stopOrStation} {stop} {duration} min päästä klo {legTime}',
     'navileg-mode-citybike': 'Kaupunkipyöriä on asemalla {available} kpl',
     'navileg-mode-realtime': '{mode} {route} on aikataulussa',
     'navileg-mode-schedule': 'The {mode} is on schedule',
-    'navileg-one-stop-remaining': 'TODO_{stopCount} pysähdys ennen poistumista',
+    'navileg-one-intermediate-stop': 'TODO_{stopCount} välipysäkki',
     'navileg-rent-cycle': 'Pick up citybike',
     'navileg-rent-scooter': 'Pick up scooter',
     'navileg-scooter': 'Travel by scooter to',
     'navileg-start-realtime': 'Lähtee klo {time} {stop} {stopName}',
     'navileg-start-schedule': '{mode} {route} aikataulun mukainen lähtö {time}',
-    'navileg-stops-remaining': 'TODO_{stopCount} pysähdystä ennen poistumista',
     'navileg-walk': 'Walk to',
     nearest: '{ mode } near you',
     'nearest-favorites': 'Stops nearby me',
@@ -1756,6 +1762,7 @@ const translations = {
     vr_ticket: 'VR ticket',
     wait: 'Wait',
     'wait-amount-of-time': 'Wait {duration}',
+    'wait-in-vehicle': 'TODO_odota kulkuneuvossa',
     walk: 'walking',
     'walk-bike-itinerary-1': 'Your search returned only walking routes.',
     'walk-bike-itinerary-2': 'Your search returned only cycling routes.',
@@ -2596,6 +2603,9 @@ const translations = {
       'Vaihdon {transfer} kesto on taas {time}',
     'navigation-hurry-transfer-value':
       'Vaihdon {transfer} uusi kesto on {time}',
+    'navigation-interline-resume': 'Matka jatkuu {duration} odotuksen jälkeen',
+    'navigation-interline-wait':
+      'Linjatunnus ({line}) Ja määränpää ({destination}) vaihtuvat pysäkillä',
     'navigation-intro-begin': 'Aloita matka',
     'navigation-intro-header': 'Mitä matkanseuranta tarjoaa?',
     'navigation-intro-help-body': 'Löydä perille vaihe kerrallaan',
@@ -2624,19 +2634,21 @@ const translations = {
     'navileg-bicycle': 'Pyöräile',
     'navileg-car': 'Aja',
     'navileg-in-transit': '{mode}matka',
+    'navileg-in-transit-interline':
+      'Matka jatkuu {stopOrStation} {stop}  samassa kulkuneuvossa {duration} min päästä klo {legTime}',
+    'navileg-intermediate-stops': '{stopCount} välipysäkkiä',
     'navileg-leave-at':
       'Jää pois {stopOrStation} {stop} {duration} min päästä klo {legTime}',
     'navileg-mode-citybike': 'Kaupunkipyöriä on asemalla {available} kpl',
     'navileg-mode-realtime': '{mode}  {route} on aikataulussa',
     'navileg-mode-schedule': 'Reaaliaikaista tietoa ei ole saatavilla',
-    'navileg-one-stop-remaining': '{stopCount} pysähdys ennen poistumista',
+    'navileg-one-intermediate-stop': '{stopCount} välipysäkki',
     'navileg-rent-cycle': 'Nouda kapunkipyörä',
     'navileg-rent-scooter': 'Nouda sähköpotkulauta',
     'navileg-scooter': 'Potkulautaile',
     'navileg-start-realtime': 'Lähtee klo {time} {stopOrStation} {stopName}',
     'navileg-start-schedule':
       '{mode}  {route} aikataulun mukainen lähtö {time}',
-    'navileg-stops-remaining': '{stopCount} pysähdystä ennen poistumista',
     'navileg-walk': 'Kävele',
     nearest: 'Lähimmät {mode}',
     'nearest-favorites': 'Omat lähipysäkit',
@@ -3039,6 +3051,7 @@ const translations = {
     vr_ticket: 'VR-lipulla',
     wait: 'Odota',
     'wait-amount-of-time': 'Odota {duration}',
+    'wait-in-vehicle': 'Odota kulkuneuvossa',
     walk: 'kävelyn',
     'walk-bike-itinerary-1':
       'Löysimme valitsemallesi reitille vain kävelyyn liittyviä reittiehdotuksia.',
@@ -5532,6 +5545,10 @@ const translations = {
       'Bytestiden for byte {transfer} är igen {time}',
     'navigation-hurry-transfer-value':
       'Den nya tiden for byte {transfer} är {time}',
+    'navigation-interline-resume':
+      'TODO_Matka jatkuu {duration} odotuksen jälkeen',
+    'navigation-interline-wait':
+      'TODO_Linjatunnus {line} Ja määränpää {destination} vaihtuvat pysäkillä',
     'navigation-intro-begin': 'TODO_navigation-intro-begin_SV',
     'navigation-intro-header': 'TODO_navigation-intro-login-prompt_SV',
     'navigation-intro-help-body': 'TODO_navigation-intro-login-prompt_SV',
@@ -5561,18 +5578,20 @@ const translations = {
     'navileg-bicycle': 'Cycla till',
     'navileg-car': 'Kör till',
     'navileg-in-transit': 'TODO_{mode}matka',
+    'navileg-in-transit-interline':
+      'TODO_Matka jatkuu {stopOrStation} {stop}  samassa kulkuneuvossa {duration} päästä klo {legTime}',
+    'navileg-intermediate-stops': 'TODO_{stopCount} välipysäkkiä',
     'navileg-leave-at':
       'TODO_Jää pois {stopOrStation} {stop} {duration} min päästä klo {legTime}',
     'navileg-mode-citybike': 'Kaupunkipyöriä on asemalla {available} kpl',
     'navileg-mode-realtime': '{mode} {route} on aikataulussa',
     'navileg-mode-schedule': 'Reaaliaikaista tietoa ei ole saatavilla',
-    'navileg-one-stop-remaining': 'TODO_{stopCount} pysähdys ennen poistumista',
+    'navileg-one-intermediate-stop': 'TODO_{stopCount} välipysäkki',
     'navileg-rent-cycle': 'Hämta  stadscykel',
     'navileg-rent-scooter': 'Hämta elsparkcykel',
     'navileg-scooter': 'Åk elsparkcykel',
     'navileg-start-realtime': 'Lähtee klo {time} {stop} {stopName}',
     'navileg-start-schedule': '{mode} {route} aikataulun mukainen lähtö {time}',
-    'navileg-stops-remaining': 'TODO_{stopCount} pysähdystä ennen poistumista',
     'navileg-walk': 'Gå till',
     nearest: 'Närmaste { mode }',
     'nearest-favorites': 'Hållplatser nära mig',
@@ -5979,6 +5998,7 @@ const translations = {
     vr_ticket: 'VR-biljetten',
     wait: 'Vänta',
     'wait-amount-of-time': 'Vänta {duration}',
+    'wait-in-vehicle': 'TODO_Odota kulkuneuvossa',
     walk: 'gång',
     'walk-bike-itinerary-1':
       'Vi har endast hittat ruttförslag i vilka ingår promenad.',
