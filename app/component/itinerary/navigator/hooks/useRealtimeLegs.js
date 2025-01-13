@@ -3,7 +3,7 @@ import polyUtil from 'polyline-encoded';
 import { useCallback, useEffect, useState } from 'react';
 import { fetchQuery } from 'react-relay';
 import { GeodeticToEcef, GeodeticToEnu } from '../../../../util/geo-utils';
-import { LegMode, legTime } from '../../../../util/legUtils';
+import { legTime } from '../../../../util/legUtils';
 import { epochToIso } from '../../../../util/timeUtils';
 import { legQuery } from '../../queries/LegQuery';
 
@@ -96,8 +96,8 @@ function matchLegEnds(legs) {
   }
 }
 
-function getLegsOfInterest(realTimeLegs, now) {
-  if (!realTimeLegs?.length) {
+function getLegsOfInterest(legs, now) {
+  if (!legs?.length) {
     return {
       firstLeg: undefined,
       lastLeg: undefined,
@@ -105,23 +105,6 @@ function getLegsOfInterest(realTimeLegs, now) {
       nextLeg: undefined,
     };
   }
-  const legs = realTimeLegs.reduce((acc, curr, i, arr) => {
-    acc.push(curr);
-    const next = arr[i + 1];
-
-    // A wait leg is added, if next leg exists but it does not start when current ends
-    if (next && legTime(curr.end) !== legTime(next.start)) {
-      acc.push({
-        id: null,
-        legGeometry: { points: null },
-        mode: LegMode.Wait,
-        start: curr.end,
-        end: next.start,
-      });
-    }
-
-    return acc;
-  }, []);
 
   const currentLeg = legs.find(
     ({ start, end }) => legTime(start) <= now && legTime(end) >= now,
@@ -134,7 +117,7 @@ function getLegsOfInterest(realTimeLegs, now) {
     lastLeg: legs[legs.length - 1],
     previousLeg,
     currentLeg,
-    nextLeg: realTimeLegs.find(({ start }) => legTime(start) >= nextStart),
+    nextLeg: legs.find(({ start }) => legTime(start) >= nextStart),
   };
 }
 
@@ -212,18 +195,9 @@ const useRealtimeLegs = (relayEnvironment, initialLegs) => {
 
     setTimeAndRealTimeLegs(prev => {
       const rtLegs = prev.realTimeLegs.map(l => {
-        const freezeStart = legTime(l.start) <= now;
-        const freezeEnd = legTime(l.end) <= now;
         const rtLeg =
           l.legId && rtLegMap[l.legId] ? { ...rtLegMap[l.legId] } : null;
         if (rtLeg) {
-          if (l.freezeStart) {
-            delete rtLeg.start;
-          }
-          if (l.freezeEnd) {
-            delete rtLeg.end;
-          }
-
           return {
             ...l,
             ...rtLeg,
@@ -231,16 +205,19 @@ const useRealtimeLegs = (relayEnvironment, initialLegs) => {
               ...l.to,
               vehicleRentalStation: rtLeg.to.vehicleRentalStation,
             },
-            freezeStart,
-            freezeEnd,
           };
         }
 
-        return { ...l, freezeStart, freezeEnd };
+        return l;
       });
       // shift non-transit-legs to match possibly changed transit legs
       matchLegEnds(rtLegs, now);
-      return { ...prev, time: now, realTimeLegs: rtLegs };
+      const rtLegsWithFreezes = rtLegs.map(l => ({
+        ...l,
+        freezeStart: legTime(l.start) <= now,
+        freezeEnd: legTime(l.end) <= now,
+      }));
+      return { ...prev, time: now, realTimeLegs: rtLegsWithFreezes };
     });
   }, [queryAndMapRealtimeLegs]);
 
@@ -257,16 +234,15 @@ const useRealtimeLegs = (relayEnvironment, initialLegs) => {
   const { firstLeg, lastLeg, currentLeg, nextLeg, previousLeg } =
     getLegsOfInterest(realTimeLegs, time);
 
-  // return wait legs as undefined as they are not a global concept
   return {
     realTimeLegs,
     time,
     origin,
     firstLeg,
     lastLeg,
-    previousLeg: previousLeg?.mode === LegMode.Wait ? undefined : previousLeg,
-    currentLeg: currentLeg?.mode === LegMode.Wait ? undefined : currentLeg,
-    nextLeg: nextLeg?.mode === LegMode.Wait ? undefined : nextLeg,
+    previousLeg,
+    currentLeg,
+    nextLeg,
   };
 };
 
