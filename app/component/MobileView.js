@@ -78,7 +78,6 @@ const MobileView = forwardRef(
       mapRef,
       searchBox,
       match,
-      showHandle,
     },
     ref,
   ) => {
@@ -169,7 +168,7 @@ const MobileView = forwardRef(
             >
               <div className="drawer-padding" />
               <div className="drawer-content">
-                {showHandle && <div className="drag-line" />}
+                <div className="drag-line" />
                 <div className="content-container">
                   {header}
                   {content}
@@ -202,7 +201,6 @@ MobileView.propTypes = {
   // eslint-disable-next-line
   mapRef: PropTypes.object,
   match: matchShape.isRequired,
-  showHandle: PropTypes.bool,
 };
 
 MobileView.defaultProps = {
@@ -213,7 +211,6 @@ MobileView.defaultProps = {
   selectFromMapHeader: undefined,
   searchBox: undefined,
   mapRef: undefined,
-  showHandle: true,
 };
 
 export default MobileView;
