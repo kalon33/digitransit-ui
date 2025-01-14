@@ -177,16 +177,6 @@ const useRealtimeLegs = (relayEnvironment, initialLegs) => {
 
   const fetchAndSetRealtimeLegs = useCallback(async () => {
     const now = Date.now();
-    if (
-      !realTimeLegs?.length ||
-      now >= legTime(realTimeLegs[realTimeLegs.length - 1].end)
-    ) {
-      setTimeAndRealTimeLegs(prev => ({
-        ...prev,
-        time: now,
-      }));
-    }
-
     const rtLegMap = await queryAndMapRealtimeLegs(realTimeLegs, now).catch(
       err =>
         // eslint-disable-next-line no-console
