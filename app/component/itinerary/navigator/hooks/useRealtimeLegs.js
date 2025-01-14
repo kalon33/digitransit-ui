@@ -185,8 +185,8 @@ const useRealtimeLegs = (relayEnvironment, initialLegs) => {
     );
 
     setTimeAndRealTimeLegs(prev => {
-      // Maps previous legs with fresh real time transit legs. If transit leg start is in the past according to previous state,
-      // the transit leg is marked as frozen to prevent the start from shifting in UI.
+      // Maps previous legs with fresh real time transit legs. If transit leg start or end time is in the past according
+      // to previous state, the time is marked as frozen to stabilize the current navigation state.
       // rtLegMap does not contain legs that have ended in the past as they've been filtered before updates are queried
       const rtLegs = prev.realTimeLegs.map(l => {
         const rtLeg =
