@@ -16,21 +16,25 @@ export const DESTINATION_RADIUS = 20; // meters
 
 export function summaryString(legs, time, previousLeg, currentLeg, nextLeg) {
   const parts = epochToIso(time).split('T')[1].split('+');
-  let msg = `${parts[0]}`;
+  let msg = `${parts[0]} `;
   const colors = [];
 
   legs.forEach(l => {
+    let color = 'color:gray';
     if (legTime(l.start) <= time && time <= legTime(l.end)) {
-      colors.push('color:green');
+      color = 'color:green';
     } else if (l.transitLeg) {
-      colors.push('color: #aaaaff');
-    } else {
-      colors.push('color: #aaaaaa');
+      color = 'color:pink';
     }
-    msg += `%c ${legTimeAcc(l.start)}-${legTimeAcc(l.end)}`;
+    colors.push(l.freezeStart ? 'color:lightblue' : color);
+    msg += `\n%c${legTimeAcc(l.start)}`;
+    colors.push('color:gray');
+    msg += `%c-`;
+    colors.push(l.freezeEnd ? 'color:lightblue' : color);
+    msg += `%c${legTimeAcc(l.end)} `;
   });
-  colors.push('color: #bbbbbb');
-  msg += `%c ${previousLeg?.mode} ${currentLeg?.mode} ${nextLeg?.mode}`;
+  colors.push('color:gray');
+  msg += `\n%c${previousLeg?.mode} ${currentLeg?.mode} ${nextLeg?.mode}`;
   colors.unshift(msg);
 
   return colors;
