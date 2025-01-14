@@ -200,8 +200,18 @@ export function startLocationWatch(actionContext) {
           watchPosition(actionContext);
           break;
       }
+      watchPending = false;
     });
   }
+}
+
+/* stops location watch */
+export function stopLocationWatch() {
+  if (typeof geoWatchId === 'undefined') {
+    navigator.geolocation.clearWatch(geoWatchId);
+    geoWatchId = undefined;
+  }
+  watchPending = false;
 }
 
 export function showGeolocationDeniedMessage(actionContext) {
