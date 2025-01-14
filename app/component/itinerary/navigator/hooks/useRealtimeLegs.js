@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import cloneDeep from 'lodash/cloneDeep';
 import polyUtil from 'polyline-encoded';
 import { useCallback, useEffect, useState } from 'react';
@@ -213,13 +214,12 @@ const useRealtimeLegs = (relayEnvironment, initialLegs) => {
       matchLegEnds(rtLegs, now);
 
       // Freezes any leg.start|end in the past
-      const rtLegsWithFreezes = rtLegs.map(l => ({
-        ...l,
-        freezeStart: l.freezeStart || legTime(l.start) <= now,
-        freezeEnd: l.freezeEnd || legTime(l.end) <= now,
-      }));
+      rtLegs.forEach(l => {
+        l.freezeStart = legTime(l.start) <= now;
+        l.freezeEnd = legTime(l.end) <= now;
+      });
 
-      return { ...prev, time: now, realTimeLegs: rtLegsWithFreezes };
+      return { ...prev, time: now, realTimeLegs: rtLegs };
     });
   }, [queryAndMapRealtimeLegs]);
 
