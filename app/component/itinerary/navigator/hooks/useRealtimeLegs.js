@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import cloneDeep from 'lodash/cloneDeep';
 import polyUtil from 'polyline-encoded';
 import { useCallback, useEffect, useState } from 'react';
@@ -124,8 +125,9 @@ function getLegsOfInterest(legs, now) {
 function getInitialState(legs) {
   const time = Date.now();
   if (legs.length) {
+    const origin = GeodeticToEcef(legs[0].from.lat, legs[0].from.lon);
     return {
-      origin: GeodeticToEcef(legs[0].from.lat, legs[0].from.lon),
+      origin,
       time,
       realTimeLegs: legs.map(leg => {
         const geometry = polyUtil.decode(leg.legGeometry.points);
@@ -177,16 +179,6 @@ const useRealtimeLegs = (relayEnvironment, initialLegs) => {
 
   const fetchAndSetRealtimeLegs = useCallback(async () => {
     const now = Date.now();
-    if (
-      !realTimeLegs?.length ||
-      now >= legTime(realTimeLegs[realTimeLegs.length - 1].end)
-    ) {
-      setTimeAndRealTimeLegs(prev => ({
-        ...prev,
-        time: now,
-      }));
-    }
-
     const rtLegMap = await queryAndMapRealtimeLegs(realTimeLegs, now).catch(
       err =>
         // eslint-disable-next-line no-console
@@ -194,8 +186,8 @@ const useRealtimeLegs = (relayEnvironment, initialLegs) => {
     );
 
     setTimeAndRealTimeLegs(prev => {
-      // Maps previous legs with fresh real time transit legs. If transit leg start is in the past according to previous state,
-      // the transit leg is marked as frozen to prevent the start from shifting in UI.
+      // Maps previous legs with fresh real time transit legs. If transit leg start or end time is in the past according
+      // to previous state, the time is marked as frozen to stabilize the current navigation state.
       // rtLegMap does not contain legs that have ended in the past as they've been filtered before updates are queried
       const rtLegs = prev.realTimeLegs.map(l => {
         const rtLeg =
@@ -223,13 +215,12 @@ const useRealtimeLegs = (relayEnvironment, initialLegs) => {
       matchLegEnds(rtLegs, now);
 
       // Freezes any leg.start|end in the past
-      const rtLegsWithFreezes = rtLegs.map(l => ({
-        ...l,
-        freezeStart: l.freezeStart || legTime(l.start) <= now,
-        freezeEnd: l.freezeEnd || legTime(l.end) <= now,
-      }));
+      rtLegs.forEach(l => {
+        l.freezeStart = legTime(l.start) <= now;
+        l.freezeEnd = legTime(l.end) <= now;
+      });
 
-      return { ...prev, time: now, realTimeLegs: rtLegsWithFreezes };
+      return { ...prev, time: now, realTimeLegs: rtLegs };
     });
   }, [queryAndMapRealtimeLegs]);
 

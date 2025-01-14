@@ -27,14 +27,14 @@ export function summaryString(legs, time, previousLeg, currentLeg, nextLeg) {
       color = 'color:pink';
     }
     colors.push(l.freezeStart ? 'color:lightblue' : color);
-    msg += `\n%c${legTimeAcc(l.start)}`;
+    msg += `%c${legTimeAcc(l.start)}`;
     colors.push('color:gray');
     msg += `%c-`;
     colors.push(l.freezeEnd ? 'color:lightblue' : color);
     msg += `%c${legTimeAcc(l.end)} `;
   });
   colors.push('color:gray');
-  msg += `\n%c${previousLeg?.mode} ${currentLeg?.mode} ${nextLeg?.mode}`;
+  msg += `%c${previousLeg?.mode} ${currentLeg?.mode} ${nextLeg?.mode}`;
   colors.unshift(msg);
 
   return colors;

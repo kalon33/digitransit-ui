@@ -4,6 +4,10 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { legTime } from '../../../util/legUtils';
 import { legShape, relayShape } from '../../../util/shapes';
+import {
+  startLocationWatch,
+  stopLocationWatch,
+} from '../../../action/PositionActions';
 import NaviBottom from './NaviBottom';
 import NaviCardContainer from './NaviCardContainer';
 import { useRealtimeLegs } from './hooks/useRealtimeLegs';
@@ -23,9 +27,11 @@ function NaviContainer(
     mapRef,
     mapLayerRef,
   },
-  { getStore, router },
+  { executeAction, getStore, router },
 ) {
   const hasPosition = useRef(false);
+  const prevPos = useRef(undefined);
+  const posFrozen = useRef(0);
 
   let position = getStore('PositionStore').getLocationState();
   if (!position.hasLocation) {
@@ -48,6 +54,25 @@ function NaviContainer(
   useEffect(() => {
     mapRef?.enableMapTracking(); // try always, shows annoying notifier
   }, [mapRef, hasPosition.current]);
+
+  useEffect(() => {
+    if (position && prevPos.current) {
+      if (
+        prevPos.current.lat === position.lat &&
+        prevPos.current.lon === position.lon
+      ) {
+        posFrozen.current += 1;
+        if (posFrozen.current === 3) {
+          // window.alert('Restarting geolocation watch');
+          executeAction(stopLocationWatch);
+          setTimeout(() => executeAction(startLocationWatch), 10);
+        }
+      } else {
+        posFrozen.current = 0;
+      }
+    }
+    prevPos.current = position;
+  }, [time]);
 
   if (!realTimeLegs?.length) {
     return null;
@@ -111,6 +136,7 @@ NaviContainer.propTypes = {
 };
 
 NaviContainer.contextTypes = {
+  executeAction: PropTypes.func,
   getStore: PropTypes.func.isRequired,
   router: routerShape.isRequired,
 };
