@@ -207,7 +207,7 @@ export function startLocationWatch(actionContext) {
 
 /* stops location watch */
 export function stopLocationWatch() {
-  if (typeof geoWatchId === 'undefined') {
+  if (typeof geoWatchId !== 'undefined') {
     navigator.geolocation.clearWatch(geoWatchId);
     geoWatchId = undefined;
   }
