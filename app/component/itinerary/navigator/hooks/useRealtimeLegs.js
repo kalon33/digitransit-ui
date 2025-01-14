@@ -125,8 +125,9 @@ function getLegsOfInterest(legs, now) {
 function getInitialState(legs) {
   const time = Date.now();
   if (legs.length) {
+    const origin = GeodeticToEcef(legs[0].from.lat, legs[0].from.lon);
     return {
-      origin: GeodeticToEcef(legs[0].from.lat, legs[0].from.lon),
+      origin,
       time,
       realTimeLegs: legs.map(leg => {
         const geometry = polyUtil.decode(leg.legGeometry.points);
