@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext, useState, useRef } from 'react';
 import { matchShape, routerShape } from 'found';
 import { connectToStores } from 'fluxible-addons-react';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
@@ -57,9 +57,9 @@ function StopPageMap(
   const maxShowRouteDistance = breakpoint === 'large' ? 900 : 470;
   const { environment } = useContext(ReactRelayContext);
   const [walk, setWalk] = useState(null);
+  const isRouting = useRef(false);
 
   useEffect(() => {
-    let isMounted = true;
     const fetchWalk = async targetStop => {
       if (locationState.hasLocation && locationState.address) {
         if (distance(locationState, stop) < maxShowRouteDistance) {
@@ -87,22 +87,19 @@ function StopPageMap(
           fetchQuery(environment, walkQuery, variables)
             .toPromise()
             .then(result => {
-              if (isMounted) {
-                setWalk(
-                  result.plan.edges.length ? result.plan.edges?.[0].node : null,
-                );
-              }
+              setWalk(
+                result.plan.edges.length ? result.plan.edges?.[0].node : null,
+              );
             });
         }
       }
     };
-    if (stop && locationState.hasLocation) {
+    if (!walk && stop && locationState.hasLocation && !isRouting.current) {
+      isRouting.current = true;
       fetchWalk(stop);
     }
-    return () => {
-      isMounted = false;
-    };
   }, [locationState.status]);
+
   if (locationState.loadingPosition) {
     return <Loading />;
   }
