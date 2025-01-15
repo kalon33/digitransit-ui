@@ -115,6 +115,17 @@ const planConnection = graphql`
             legGeometry {
               points
             }
+            steps {
+              feature {
+                __typename
+                ... on Entrance {
+                  publicCode
+                  wheelchairAccessible
+                }
+              }
+              lat
+              lon
+            }
             route {
               shortName
               longName
