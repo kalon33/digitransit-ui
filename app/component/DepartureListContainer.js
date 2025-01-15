@@ -117,7 +117,7 @@ class DepartureListContainer extends Component {
     if (this.context.config.showVehiclesOnStopPage && this.props.isStopPage) {
       const departures = asDepartures(this.props.stoptimes)
         .filter(departure => !(this.props.isTerminal && departure.isArrival))
-        .filter(departure => this.props.currentTime < departure.stoptime);
+        .filter(departure => this.props.currentTime < departure.time);
       this.startClient(departures);
     }
   }
@@ -126,7 +126,7 @@ class DepartureListContainer extends Component {
     if (this.context.config.showVehiclesOnStopPage && this.props.isStopPage) {
       const departures = asDepartures(this.props.stoptimes)
         .filter(departure => !(this.props.isTerminal && departure.isArrival))
-        .filter(departure => this.props.currentTime < departure.stoptime)
+        .filter(departure => this.props.currentTime < departure.time)
         .filter(departure => departure.realtime);
 
       this.updateClient(departures);
