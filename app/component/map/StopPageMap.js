@@ -57,11 +57,12 @@ function StopPageMap(
   const maxShowRouteDistance = breakpoint === 'large' ? 900 : 470;
   const { environment } = useContext(ReactRelayContext);
   const [walk, setWalk] = useState(null);
+  const [bounds, setBounds] = useState(null);
   const isRouting = useRef(false);
 
   useEffect(() => {
     const fetchWalk = async targetStop => {
-      if (locationState.hasLocation && locationState.address) {
+      if (locationState.hasLocation) {
         if (distance(locationState, stop) < maxShowRouteDistance) {
           const settings = getSettings(config);
           const variables = {
@@ -98,7 +99,20 @@ function StopPageMap(
       isRouting.current = true;
       fetchWalk(stop);
     }
-  }, [locationState.status]);
+    if (
+      locationState.lat &&
+      locationState.lon &&
+      distance(locationState, stop) < maxShowRouteDistance
+    ) {
+      setBounds([
+        [locationState.lat, locationState.lon],
+        [
+          stop.lat + (stop.lat - locationState.lat),
+          stop.lon + (stop.lon - locationState.lon),
+        ],
+      ]);
+    }
+  }, [stop, locationState.status]);
 
   if (locationState.loadingPosition) {
     return <Loading />;
@@ -142,26 +156,12 @@ function StopPageMap(
   }
   const id = match.params.stopId || match.params.terminalId || match.params.id;
 
-  const mwtProps = {};
-  if (
-    locationState &&
-    locationState.lat &&
-    locationState.lon &&
-    stop.lat &&
-    stop.lon &&
-    distance(locationState, stop) < maxShowRouteDistance
-  ) {
-    mwtProps.bounds = [
-      [locationState.lat, locationState.lon],
-      [
-        stop.lat + (stop.lat - locationState.lat),
-        stop.lon + (stop.lon - locationState.lon),
-      ],
-    ];
+  const mwtProps = { zoom: 18 };
+  if (bounds) {
+    mwtProps.bounds = bounds;
   } else {
     mwtProps.lat = stop.lat;
     mwtProps.lon = stop.lon;
-    mwtProps.zoom = !match.params.stopId || stop.platformCode ? 18 : 16;
   }
 
   return (
