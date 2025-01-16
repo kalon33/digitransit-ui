@@ -1181,7 +1181,6 @@
 </symbol>
 
 <symbol id="icon-icon_calendar" viewBox="0 0 20 18">
-  <title>icon-calendar</title>
   <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
       <g transform="translate(-224.000000, -266.000000)" fill="#007AC9">
           <g transform="translate(50.000000, 50.000000)">
@@ -1235,7 +1234,6 @@
 </symbol>
 
 <symbol id="icon-icon_map_hybrid_stop" viewBox="0 0 17 37" version="1.1">
- <title>icon-stop-hybrid-small</title>
  <defs>
   <polygon id="path-1" points="0 0 10.3999376 0 10.3999376 10.4 0 10.4"></polygon>
   <polygon id="path-3" points="0 10.4 10.4 10.4 10.4 0 0 0"></polygon>
@@ -1305,7 +1303,6 @@
 </symbol>
 
 <symbol id="icon-icon_stop_tram" viewBox="0 0 16 22" version="1.1">
- <title>icon-stop-tram-small</title>
  <defs>
   <polygon id="path-1" points="0 3.38271078e-20 10.3999168 3.38271078e-20 10.3999168 10.3999168 0 10.3999168"></polygon>
  </defs>
@@ -1348,7 +1345,6 @@
 </symbol>
 
 <symbol id="icon-icon_stop_ferry" viewBox="0 0 16 22" version="1.1">
- <title>icon-stop-hsl_ferry-small</title>
  <defs>
   <polygon id="path-1" points="0 0 10.3802254 0 10.3802254 10.3802254 0 10.3802254"></polygon>
  </defs>
@@ -1374,7 +1370,6 @@
 </symbol>
 
 <symbol id="icon-icon_stop_rail" viewBox="0 0 16 22" version="1.1">
- <title>icon-stop-train-small</title>
  <defs>
   <polygon id="path-1" points="0 0 10.4 0 10.4 10.4 0 10.4"></polygon>
  </defs>
@@ -1401,7 +1396,6 @@
 </symbol>
 
 <symbol id="icon-icon_stop_bus" viewBox="0 0 16 22" version="1.1">
- <title>icon-stop-bus-small</title>
  <defs>
   <polygon id="path-1" points="0 0 10.3999376 0 10.3999376 10.4 0 10.4"></polygon>
   <polygon id="path-3" points="0 10.4 10.4 10.4 10.4 0 0 0"></polygon>
@@ -1435,7 +1429,6 @@
 </symbol>
 
 <symbol id="icon-icon_stop_funicular" viewBox="0 0 16 22" version="1.1">
- <title>icon-stop-funicular-small</title>
  <defs>
   <polygon points="0 0 10.3999376 0 10.3999376 10.4 0 10.4" id="path-1"/>
   <polygon points="0 10.4 10.4 10.4 10.4 0 0 0" id="path-3"/>
@@ -1455,7 +1448,6 @@
 </symbol>
 
 <symbol id="icon-icon_citybike_station_green_small" viewBox="0 0 16 22" version="1.1">
- <title>icon-citybike_station-green-small</title>
  <defs>
   <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
  </defs>
@@ -1489,7 +1481,6 @@
 </symbol>
 
 <symbol id="icon-icon_citybike_station_green_large" viewBox="0 0 34 43" version="1.1">
- <title>icon-citybike_station-green-large</title>
  <defs>
   <circle id="path-1" cx="10.8" cy="10.8" r="10.8"></circle>
  </defs>
@@ -1525,7 +1516,6 @@
 </symbol>
 
 <symbol id="icon-icon_citybike_station_closed_small" viewBox="0 0 16 22" version="1.1">
- <title>icon-citybike_station_closed-small</title>
  <defs>
   <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
  </defs>
@@ -1556,7 +1546,6 @@
   </symbol>
 
 <symbol id="icon-icon_citybike_station_closed_large" viewBox="0 0 34 43" version="1.1">
- <title>icon-citybike_station_closed-large</title>
  <defs>
   <circle id="path-1" cx="10.8" cy="10.8" r="10.8"></circle>
  </defs>
@@ -1595,7 +1584,6 @@
 </symbol>
 
 <symbol id="icon-icon_citybike_station_red_small" viewBox="0 0 16 22" version="1.1">
- <title>icon-citybike_station-red-small</title>
  <defs>
   <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
  </defs>
@@ -1629,7 +1617,6 @@
 </symbol>
 
 <symbol id="icon-icon_citybike_station_red_large" viewBox="0 0 34 43" version="1.1">
- <title>icon-citybike_station-red-large</title>
  <defs>
   <circle id="path-1" cx="10.8" cy="10.8" r="10.8"></circle>
  </defs>
@@ -1665,7 +1652,6 @@
 </symbol>
 
 <symbol id="icon-icon_citybike_station_yellow_small" viewBox="0 0 16 22" version="1.1">
- <title>icon-citybike_station-yellow-small</title>
  <defs>
   <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
  </defs>
@@ -1699,7 +1685,6 @@
 </symbol>
 
 <symbol id="icon-icon_citybike_station_yellow_large" viewBox="0 0 34 43" version="1.1">
- <title>icon-citybike_station-yellow-large</title>
  <defs>
   <circle id="path-1" cx="10.8" cy="10.8" r="10.8"></circle>
  </defs>
@@ -1735,7 +1720,6 @@
 </symbol>
 
 <symbol id="icon-icon_citybike-secondary_station_yellow_large" viewBox="0 0 34 43" version="1.1">
-  <title>icon-citybike_secondary_station-yellow-large</title>
  <defs>
   <circle id="path-1" cx="10.8" cy="10.8" r="10.8"></circle>
  </defs>
@@ -1771,7 +1755,6 @@
 </symbol>
 
 <symbol id="icon-icon_citybike_station_small" viewBox="0 0 16 22" version="1.1">
- <title>icon-citybike_station-small</title>
  <defs>
   <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
  </defs>
@@ -1804,7 +1787,6 @@
 </symbol>
 
 <symbol id="icon-icon_citybike-secondary_station_green_large" viewBox="0 0 34 43" version="1.1">
- <title>icon-citybike_station-green-large</title>
  <defs>
   <circle id="path-1" cx="10.8" cy="10.8" r="10.8"></circle>
  </defs>
@@ -1840,7 +1822,6 @@
 </symbol>
 
 <symbol id="icon-icon_citybike-secondary_station_green_small" viewBox="0 0 16 22" version="1.1">
- <title>icon-citybike_station-green-small</title>
  <defs>
   <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
  </defs>
@@ -1874,7 +1855,6 @@
 </symbol>
 
 <symbol id="icon-icon_citybike-secondary_station_red_large" viewBox="0 0 34 43" version="1.1">
- <title>icon-citybike_station-red-large</title>
  <defs>
   <circle id="path-1" cx="10.8" cy="10.8" r="10.8"></circle>
  </defs>
@@ -1910,7 +1890,6 @@
 </symbol>
 
 <symbol id="icon-icon_citybike-secondary_station_red_small" viewBox="0 0 16 22" version="1.1">
- <title>icon-citybike_station-red-small</title>
  <defs>
   <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
  </defs>
@@ -1944,7 +1923,6 @@
 </symbol>
 
 <symbol id="icon-icon_citybike-secondary_station_yellow_small" viewBox="0 0 16 22" version="1.1">
- <title>icon-citybike_station-yellow-small</title>
  <defs>
   <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
  </defs>
@@ -2010,7 +1988,6 @@
 </symbol>
 
 <symbol id="icon-icon_citybike_station_small" viewBox="0 0 16 22" version="1.1">
- <title>icon-citybike_station-small</title>
  <defs>
   <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
  </defs>
@@ -2043,7 +2020,6 @@
 </symbol>
 
 <symbol id="icon-icon_citybike-secondary_station_small" viewBox="0 0 16 22" version="1.1">
- <title>icon-citybike_station-small</title>
  <defs>
   <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
  </defs>
