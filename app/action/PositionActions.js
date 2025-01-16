@@ -3,6 +3,7 @@ import { getJson } from '../util/xhrPromise';
 import geolocationMessages from '../util/geolocationMessages';
 import { addAnalyticsEvent } from '../util/analyticsUtils';
 
+const MOCKPOS = false;
 let geoWatchId;
 
 function reverseGeocodeAddress(actionContext, coords) {
@@ -87,6 +88,20 @@ function dispatchGeolocationError(actionContext, error) {
   }
 }
 
+function mockPositionChange(actionContext) {
+  const pos = actionContext.getStore('PositionStore').getLocationState();
+  if (pos.hasLocation) {
+    const newPos = {
+      coords: {
+        latitude: pos.lat + (Math.random() - 0.5) * 0.001,
+        longitude: pos.lon + (Math.random() - 0.5) * 0.001,
+        heading: 0,
+      },
+    };
+    geoCallback(actionContext, newPos);
+  }
+}
+
 // set watcher for geolocation
 function watchPosition(actionContext) {
   const quietTimeoutSeconds = 20;
@@ -96,6 +111,9 @@ function watchPosition(actionContext) {
     updateGeolocationMessage(actionContext, 'timeout');
   }, quietTimeoutSeconds * 1000);
   try {
+    if (MOCKPOS) {
+      setInterval(mockPositionChange, 5000, actionContext);
+    }
     geoWatchId = navigator.geolocation.watchPosition(
       position => {
         updateGeolocationMessage(actionContext);
