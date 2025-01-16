@@ -455,7 +455,7 @@
    <g transform="translate(56.000000, 119.000000)">
     <g transform="translate(360.000000, 0.000000)">
      <g transform="translate(5.000000, 5.000000)">
-      <circle fill="#E750AF" cx="15" cy="15" r="15"></circle>
+      <circle fill="#E750AF" cx="15" cy="15" r="15"/>
       <path d="M21.9631925,13.0590859 C22.046584,13.3370577 21.9909896,13.6428266 21.7686122,13.865204 L19.1000834,16.6449216 L19.6282297,20.4531346 C19.6560269,20.7589035 19.5448382,21.0646725 19.2946636,21.2314555 C19.044489,21.3982386 18.7387201,21.4260358 18.4607483,21.3148471 L14.9861014,19.6192194 L11.5114545,21.3148471 C11.4002658,21.3704414 11.2890771,21.3704414 11.1778884,21.3704414 C11.0111053,21.3704414 10.8443223,21.3426442 10.7053364,21.2314555 C10.4551618,21.0646725 10.3161759,20.7589035 10.3717703,20.4531346 L10.8721194,16.6449216 L8.23138777,13.865204 C8.00901037,13.6428266 7.95341602,13.3370577 8.03680754,13.0590859 C8.12019907,12.753317 8.37037365,12.5587368 8.67614258,12.5031424 L12.4565584,11.808213 L14.291172,8.41695763 C14.4301579,8.13898588 14.7081297,8 14.9861014,8 C15.2918703,8 15.5698421,8.13898588 15.708828,8.41695763 L17.5434416,11.808213 L21.3238574,12.5031424 C21.6296264,12.5587368 21.8520038,12.753317 21.9631925,13.0590859 Z" fill="#FFFFFF"/>
      </g>
     </g>
@@ -465,7 +465,7 @@
 </symbol>
 
 <symbol id="icon-icon_star-unselected" viewBox="0 0 30 30">
- <circle cx="15" cy="15" r="14.5"></circle>
+ <circle cx="15" cy="15" r="14.5"/>
  <path d="M21.9631925,13.0590859 C22.046584,13.3370577 21.9909896,13.6428266 21.7686122,13.865204 L19.1000834,16.6449216 L19.6282297,20.4531346 C19.6560269,20.7589035 19.5448382,21.0646725 19.2946636,21.2314555 C19.044489,21.3982386 18.7387201,21.4260358 18.4607483,21.3148471 L14.9861014,19.6192194 L11.5114545,21.3148471 C11.4002658,21.3704414 11.2890771,21.3704414 11.1778884,21.3704414 C11.0111053,21.3704414 10.8443223,21.3426442 10.7053364,21.2314555 C10.4551618,21.0646725 10.3161759,20.7589035 10.3717703,20.4531346 L10.8721194,16.6449216 L8.23138777,13.865204 C8.00901037,13.6428266 7.95341602,13.3370577 8.03680754,13.0590859 C8.12019907,12.753317 8.37037365,12.5587368 8.67614258,12.5031424 L12.4565584,11.808213 L14.291172,8.41695763 C14.4301579,8.13898588 14.7081297,8 14.9861014,8 C15.2918703,8 15.5698421,8.13898588 15.708828,8.41695763 L17.5434416,11.808213 L21.3238574,12.5031424 C21.6296264,12.5587368 21.8520038,12.753317 21.9631925,13.0590859 Z" stroke="#666666"/>
 </symbol>
 
@@ -556,7 +556,7 @@
 
 <symbol id="icon-icon_vehicle-live-marker" viewBox="0 0 80 80">
   <path d="M12,-0.5 C15.4517797,-0.5 18.5767797,0.899110157 20.8388348,3.16116524 C23.1008898,5.42322031 24.5,8.54822031 24.5,12 C24.5,15.3285348 23.1989974,18.3531937 21.0684384,20.6028911 L21.0684384,20.6028911 L12.0001286,29.6777981 L3.16116524,20.8388348 C0.899110157,18.5767797 -0.5,15.4517797 -0.5,12 C-0.5,8.54822031 0.899110157,5.42322031 3.16116524,3.16116524 C5.42322031,0.899110157 8.54822031,-0.5 12,-0.5 Z" stroke="#FFFFFF"/>
-  <circle fill="#FFFFFF" cx="12" cy="12" r="10.5"></circle>
+  <circle fill="#FFFFFF" cx="12" cy="12" r="10.5"/>
 </symbol>
 
 <symbol id="icon-icon_vehicle-live-marker-without-direction" viewBox="0 0 80 80">
@@ -963,23 +963,23 @@
 <symbol id="icon-icon_locate" width="38px" height="38px" viewBox="0 0 38 38">
  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g stroke="currentColor">
-   <circle stroke-width="2.197" cx="18.6884032" cy="19.2455103" r="17.5265812"></circle>
-   <circle stroke-width="2" cx="18.6884032" cy="19.2455103" r="13.3151577"></circle>
-   <circle stroke-width="6" fill="currentColor" fill-rule="evenodd" cx="18.6884032" cy="19.2455103" r="7.32737159"></circle>
+   <circle stroke-width="2.197" cx="18.6884032" cy="19.2455103" r="17.5265812"/>
+   <circle stroke-width="2" cx="18.6884032" cy="19.2455103" r="13.3151577"/>
+   <circle stroke-width="6" fill="currentColor" fill-rule="evenodd" cx="18.6884032" cy="19.2455103" r="7.32737159"/>
   </g>
  </g>
 </symbol>
 
 <symbol id="icon-icon_current-location" viewBox="0 0 48 49" version="1.1">
- <circle cx="24" cy="24" r="12"></circle>
+ <circle cx="24" cy="24" r="12"/>
  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g transform="translate(-943.000000, -453.000000)" fill-rule="nonzero">
    <g transform="translate(520.000000, 70.000000)">
     <g transform="translate(423.000000, 383.305087)">
-     <circle fill-opacity="0.15" fill="#007AC9" cx="24" cy="24" r="24"></circle>
+     <circle fill-opacity="0.15" fill="#007AC9" cx="24" cy="24" r="24"/>
      <g>
-      <circle stroke="#FFFFFF" stroke-width="3" stroke-linejoin="square" fill="#007AC9" fill-rule="evenodd" cx="24" cy="24" r="10.5"></circle>
-      <circle stroke-opacity="0.1" stroke="#000000" stroke-width="1" cx="24" cy="24" r="12.5"></circle>
+      <circle stroke="#FFFFFF" stroke-width="3" stroke-linejoin="square" fill="#007AC9" fill-rule="evenodd" cx="24" cy="24" r="10.5"/>
+      <circle stroke-opacity="0.1" stroke="#000000" stroke-width="1" cx="24" cy="24" r="12.5"/>
      </g>
     </g>
    </g>
@@ -1112,7 +1112,7 @@
     <g transform="translate(85.000000, 705.000000)">
      <g transform="translate(46.000000, 42.000000)">
       <g transform="translate(0.000000, 6.000000)">
-       <rect fill="#007AC9" x="0" y="0" width="30" height="30" rx="3"></rect>
+       <rect fill="#007AC9" x="0" y="0" width="30" height="30" rx="3"/>
        <g transform="translate(7.000000, 7.000000)" fill="#FFFFFF">
         <path d="M13.0382979,2.67035503 L5.95744681,9.57491928 L2.89361702,6.58736747 C2.21276596,5.92346702 1.19148936,5.92346702 0.510638298,6.58736747 L0.510638298,6.58736747 C-0.170212766,7.25126785 -0.170212766,8.24711845 0.510638298,8.9110189 L5.95744681,14.2222222 L15.4893617,4.99400646 C16.1702128,4.33010608 16.1702128,3.33425541 15.4893617,2.67035503 L15.4893617,2.67035503 C14.7404255,2.07284462 13.7191489,2.07284462 13.0382979,2.67035503 Z"/>
        </g>
@@ -1133,7 +1133,7 @@
  <g id="Page-1" stroke="none" stroke-width="1" fill-rule="evenodd">
   <g id="icons-generic" transform="translate(-52.000000, -444.000000)">
    <g id="hybrid-alt3-copy-2" transform="translate(46.000000, 445.000000)">
-    <rect id="Rectangle" stroke="#FFFFFF" stroke-width="0.8" fill="#D8D8D8" x="6.8" y="-0.4" width="15.2" height="29.6" rx="7.2"></rect>
+    <rect id="Rectangle" stroke="#FFFFFF" stroke-width="0.8" fill="#D8D8D8" x="6.8" y="-0.4" width="15.2" height="29.6" rx="7.2"/>
     <path d="M13.6,28.8 L15.2,28.8 L15.2,34.4 C15.2,34.8418278 14.8418278,35.2 14.4,35.2 C13.9581722,35.2 13.6,34.8418278 13.6,34.4 L13.6,28.8 L13.6,28.8 Z" id="Rectangle" fill="#333333"/>
     <g id="icon-bus" transform="translate(7.200000, 14.400000)">
      <path d="M0,0 L14.4,0 L14.4,7.2 C14.4,11.1764502 11.1764502,14.4 7.2,14.4 C3.2235498,14.4 4.86974701e-16,11.1764502 0,7.2 L0,0 L0,0 Z" id="Rectangle"/>
@@ -1201,7 +1201,7 @@
   <g id="icons-generic" transform="translate(-52.000000, -233.000000)">
    <g id="icon-stop-tram-small" transform="translate(36.000000, 217.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(16.800000, 16.800000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"/>
      <g id="Group" transform="translate(2.000000, 2.000000)">
       <g id="icon_tram-generic" transform="translate(0.000083, 0.000083)">
        <g id="Group-3">
@@ -1243,7 +1243,7 @@
   <g id="icons-generic" transform="translate(-52.000000, -1032.000000)">
    <g id="icon-stop-hsl_ferry-small-copy" transform="translate(36.000000, 1016.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(16.800000, 16.800000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"/>
      <g id="Group" transform="translate(2.000000, 2.000000)">
       <g id="Lauttasatama" transform="translate(0.000000, 0.019775)">
        <g id="Group" transform="translate(1.040000, 1.228225)" fill="#FFFFFF">
@@ -1268,7 +1268,7 @@
   <g id="icons-generic" transform="translate(-52.000000, -106.000000)">
    <g id="icon-stop-train-small" transform="translate(36.000000, 90.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(16.800000, 16.800000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"/>
      <g id="icon_train" transform="translate(2.000000, 2.000000)">
       <g id="Group-3">
        <mask id="mask-2" fill="white">
@@ -1295,7 +1295,7 @@
   <g id="icons-generic" transform="translate(-52.000000, -374.000000)">
    <g id="icon-stop-bus-small" transform="translate(36.000000, 358.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(16.800000, 16.800000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"/>
      <g id="icon_bus-generic" transform="translate(2.000000, 2.000000)">
       <g id="Group-3">
        <mask id="mask-2" fill="white">
@@ -1340,18 +1340,18 @@
 
 <symbol id="icon-icon_citybike_station_green_small" viewBox="0 0 16 22" version="1.1">
  <defs>
-  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
+  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"/>
  </defs>
  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g id="icons-generic" transform="translate(-52.000000, -680.000000)">
    <g id="icon-citybike_station-green-small" transform="translate(36.000000, 664.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(16.800000, 16.800000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#FBB800" cx="7.2" cy="7.2" r="7.6"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#FBB800" cx="7.2" cy="7.2" r="7.6"/>
      <g id="icon-citybike">
       <mask id="mask-2" fill="white">
        <use xlink:href="#path-1"></use>
       </mask>
-      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"></circle>
+      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"/>
       <g id="Group" mask="url(#mask-2)">
        <g transform="translate(1.200000, 1.200000)" id="Citybike">
         <path d="M2.4870914,8.64446226 C1.78303247,8.36155037 1.44122941,7.56100668 1.7249765,6.85694295 C1.93431402,6.33604715 2.43884182,5.99505528 2.9997984,5.99505528 C3.19768793,5.99505528 3.39311985,6.03758327 3.57220298,6.12100723 L3.90746365,5.81433535 C3.04967998,5.31307155 1.94821481,5.60174344 1.446135,6.4595031 C0.944871199,7.31731077 1.23352869,8.41876635 2.09131236,8.92084615 C2.94910082,9.42292596 4.050566,9.13343807 4.5526458,8.2756784 C4.62623938,8.14972645 4.68429535,8.0156145 4.72518174,7.87497456 L4.27543631,7.88236655 C3.99251002,8.58638228 3.19196153,8.92819015 2.4870914,8.64446226 Z" id="Path" fill="#333333" fill-rule="nonzero"/>
@@ -1360,7 +1360,7 @@
        </g>
       </g>
      </g>
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#008855" cx="12" cy="2.4" r="2.8"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#008855" cx="12" cy="2.4" r="2.8"/>
     </g>
     <path d="M23.2,31.2 L24.8,31.2 L24.8,36.8 C24.8,37.2418278 24.4418278,37.6 24,37.6 C23.5581722,37.6 23.2,37.2418278 23.2,36.8 L23.2,31.2 L23.2,31.2 Z" id="Rectangle" fill="#333333"/>
     <g id="Group" transform="translate(9.600000, 9.600000)" opacity="0.5">
@@ -1373,18 +1373,18 @@
 
 <symbol id="icon-icon_citybike_station_green_large" viewBox="0 0 34 43" version="1.1">
  <defs>
-  <circle id="path-1" cx="10.8" cy="10.8" r="10.8"></circle>
+  <circle id="path-1" cx="10.8" cy="10.8" r="10.8"/>
  </defs>
  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g id="icons-generic" transform="translate(-228.000000, -666.000000)">
    <g id="icon-citybike_station-green-large" transform="translate(204.000000, 652.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(25.200000, 25.200000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="1.2" fill="#FBB800" cx="10.8" cy="10.8" r="11.4"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="1.2" fill="#FBB800" cx="10.8" cy="10.8" r="11.4"/>
      <g id="icon-citybike">
       <mask id="mask-2" fill="white">
        <use xlink:href="#path-1"></use>
       </mask>
-      <circle stroke="#FFFFFF" stroke-width="1.2" cx="10.8" cy="10.8" r="11.4"></circle>
+      <circle stroke="#FFFFFF" stroke-width="1.2" cx="10.8" cy="10.8" r="11.4"/>
       <g id="Group" mask="url(#mask-2)">
        <g transform="translate(1.800000, 1.800000)" id="Citybike">
         <path d="M3.7306371,12.9666934 C2.67454871,12.5423256 2.16184411,11.34151 2.58746475,10.2854144 C2.90147102,9.50407073 3.65826273,8.99258292 4.49969761,8.99258292 C4.79653189,8.99258292 5.08967978,9.0563749 5.35830447,9.18151085 L5.86119548,8.72150303 C4.57451998,7.96960732 2.92232222,8.40261515 2.16920251,9.68925466 C1.4173068,10.9759662 1.85029303,12.6281495 3.13696853,13.3812692 C4.42365124,14.1343889 6.075849,13.7001571 6.82896871,12.4135176 C6.93935906,12.2245897 7.02644303,12.0234218 7.08777261,11.8124618 L6.41315447,11.8235498 C5.98876503,12.8795734 4.78794229,13.3922852 3.7306371,12.9666934 Z" id="Path" fill="#333333" fill-rule="nonzero"/>
@@ -1394,7 +1394,7 @@
       </g>
      </g>
      <g id="Group" transform="translate(10.800000, -10.800000)" fill="#008854" stroke="#FFFFFF" stroke-width="1.2">
-      <circle id="Oval" cx="10.8" cy="10.8" r="10.2"></circle>
+      <circle id="Oval" cx="10.8" cy="10.8" r="10.2"/>
      </g>
     </g>
     <path d="M34.8,46.8 L37.2,46.8 L37.2,55.2 C37.2,55.8627417 36.6627417,56.4 36,56.4 C35.3372583,56.4 34.8,55.8627417 34.8,55.2 L34.8,46.8 L34.8,46.8 Z" id="Rectangle" fill="#333333"/>
@@ -1408,18 +1408,18 @@
 
 <symbol id="icon-icon_citybike_station_closed_small" viewBox="0 0 16 22" version="1.1">
  <defs>
-  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
+  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"/>
  </defs>
  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g id="icons-generic" transform="translate(-52.000000, -914.000000)">
    <g id="icon-citybike_station_closed-small" transform="translate(36.000000, 898.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(16.800000, 16.800000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#BBBBBB" cx="7.2" cy="7.2" r="7.6"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#BBBBBB" cx="7.2" cy="7.2" r="7.6"/>
      <g id="icon-citybike">
       <mask id="mask-2" fill="white">
        <use xlink:href="#path-1"></use>
       </mask>
-      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"></circle>
+      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"/>
       <g id="Group" mask="url(#mask-2)">
        <g transform="translate(1.200000, 1.200000)" id="Citybike">
         <path d="M2.4870914,8.64446226 C1.78303247,8.36155037 1.44122941,7.56100668 1.7249765,6.85694295 C1.93431402,6.33604715 2.43884182,5.99505528 2.9997984,5.99505528 C3.19768793,5.99505528 3.39311985,6.03758327 3.57220298,6.12100723 L3.90746365,5.81433535 C3.04967998,5.31307155 1.94821481,5.60174344 1.446135,6.4595031 C0.944871199,7.31731077 1.23352869,8.41876635 2.09131236,8.92084615 C2.94910082,9.42292596 4.050566,9.13343807 4.5526458,8.2756784 C4.62623938,8.14972645 4.68429535,8.0156145 4.72518174,7.87497456 L4.27543631,7.88236655 C3.99251002,8.58638228 3.19196153,8.92819015 2.4870914,8.64446226 Z" id="Path" fill="#333333" fill-rule="nonzero"/>
@@ -1428,7 +1428,7 @@
        </g>
       </g>
      </g>
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#DC0451" cx="12" cy="2.4" r="2.8"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#DC0451" cx="12" cy="2.4" r="2.8"/>
     </g>
     <path d="M23.2,31.2 L24.8,31.2 L24.8,36.8 C24.8,37.2418278 24.4418278,37.6 24,37.6 C23.5581722,37.6 23.2,37.2418278 23.2,36.8 L23.2,31.2 L23.2,31.2 Z" id="Rectangle" fill="#333333"/>
    </g>
@@ -1438,18 +1438,18 @@
 
 <symbol id="icon-icon_citybike_station_closed_large" viewBox="0 0 34 43" version="1.1">
  <defs>
-  <circle id="path-1" cx="10.8" cy="10.8" r="10.8"></circle>
+  <circle id="path-1" cx="10.8" cy="10.8" r="10.8"/>
  </defs>
  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g id="icons-generic" transform="translate(-228.000000, -900.000000)">
    <g id="icon-citybike_station_closed-large" transform="translate(204.000000, 886.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(25.200000, 25.200000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="1.2" fill="#BBBBBB" cx="10.8" cy="10.8" r="11.4"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="1.2" fill="#BBBBBB" cx="10.8" cy="10.8" r="11.4"/>
      <g id="icon-citybike">
       <mask id="mask-2" fill="white">
        <use xlink:href="#path-1"></use>
       </mask>
-      <circle stroke="#FFFFFF" stroke-width="1.2" cx="10.8" cy="10.8" r="11.4"></circle>
+      <circle stroke="#FFFFFF" stroke-width="1.2" cx="10.8" cy="10.8" r="11.4"/>
       <g id="Group" mask="url(#mask-2)">
        <g transform="translate(1.800000, 1.800000)" id="Citybike">
         <path d="M3.7306371,12.9666934 C2.67454871,12.5423256 2.16184411,11.34151 2.58746475,10.2854144 C2.90147102,9.50407073 3.65826273,8.99258292 4.49969761,8.99258292 C4.79653189,8.99258292 5.08967978,9.0563749 5.35830447,9.18151085 L5.86119548,8.72150303 C4.57451998,7.96960732 2.92232222,8.40261515 2.16920251,9.68925466 C1.4173068,10.9759662 1.85029303,12.6281495 3.13696853,13.3812692 C4.42365124,14.1343889 6.075849,13.7001571 6.82896871,12.4135176 C6.93935906,12.2245897 7.02644303,12.0234218 7.08777261,11.8124618 L6.41315447,11.8235498 C5.98876503,12.8795734 4.78794229,13.3922852 3.7306371,12.9666934 Z" id="Path" fill="#333333" fill-rule="nonzero"/>
@@ -1459,7 +1459,7 @@
       </g>
      </g>
      <g id="Group" transform="translate(10.800000, -10.800000)">
-      <circle id="Oval" stroke="#FFFFFF" stroke-width="1.2" fill="#DC0451" cx="10.8" cy="10.8" r="10.2"></circle>
+      <circle id="Oval" stroke="#FFFFFF" stroke-width="1.2" fill="#DC0451" cx="10.8" cy="10.8" r="10.2"/>
       <g transform="translate(3.600000, 3.600000)" fill="#FFFFFF" id="icon-close-small">
        <path d="M7.2,2.54117647 C7.66781767,2.54117647 8.04705882,2.92041762 8.04705882,3.38823529 L8.04617647,6.35217647 L11.0117647,6.35294118 C11.4795824,6.35294118 11.8588235,6.73218233 11.8588235,7.2 C11.8588235,7.66781767 11.4795824,8.04705882 11.0117647,8.04705882 L8.04617647,8.04617647 L8.04705882,11.0117647 C8.04705882,11.4795824 7.66781767,11.8588235 7.2,11.8588235 C6.73218233,11.8588235 6.35294118,11.4795824 6.35294118,11.0117647 L6.35217647,8.04617647 L3.38823529,8.04705882 C2.92041762,8.04705882 2.54117647,7.66781767 2.54117647,7.2 C2.54117647,6.73218233 2.92041762,6.35294118 3.38823529,6.35294118 L6.35217647,6.35217647 L6.35294118,3.38823529 C6.35294118,2.92041762 6.73218233,2.54117647 7.2,2.54117647 Z" transform="translate(7.200000, 7.200000) rotate(45.000000) translate(-7.200000, -7.200000) "/>
       </g>
@@ -1476,18 +1476,18 @@
 
 <symbol id="icon-icon_citybike_station_red_small" viewBox="0 0 16 22" version="1.1">
  <defs>
-  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
+  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"/>
  </defs>
  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g id="icons-generic" transform="translate(-52.000000, -836.000000)">
    <g id="icon-citybike_station-red-small" transform="translate(36.000000, 820.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(16.800000, 16.800000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#FBB800" cx="7.2" cy="7.2" r="7.6"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#FBB800" cx="7.2" cy="7.2" r="7.6"/>
      <g id="icon-citybike">
       <mask id="mask-2" fill="white">
        <use xlink:href="#path-1"></use>
       </mask>
-      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"></circle>
+      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"/>
       <g id="Group" mask="url(#mask-2)">
        <g transform="translate(1.200000, 1.200000)" id="Citybike">
         <path d="M2.4870914,8.64446226 C1.78303247,8.36155037 1.44122941,7.56100668 1.7249765,6.85694295 C1.93431402,6.33604715 2.43884182,5.99505528 2.9997984,5.99505528 C3.19768793,5.99505528 3.39311985,6.03758327 3.57220298,6.12100723 L3.90746365,5.81433535 C3.04967998,5.31307155 1.94821481,5.60174344 1.446135,6.4595031 C0.944871199,7.31731077 1.23352869,8.41876635 2.09131236,8.92084615 C2.94910082,9.42292596 4.050566,9.13343807 4.5526458,8.2756784 C4.62623938,8.14972645 4.68429535,8.0156145 4.72518174,7.87497456 L4.27543631,7.88236655 C3.99251002,8.58638228 3.19196153,8.92819015 2.4870914,8.64446226 Z" id="Path" fill="#333333" fill-rule="nonzero"/>
@@ -1496,7 +1496,7 @@
        </g>
       </g>
      </g>
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#DC0451" cx="12" cy="2.4" r="2.8"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#DC0451" cx="12" cy="2.4" r="2.8"/>
     </g>
     <path d="M23.2,31.2 L24.8,31.2 L24.8,36.8 C24.8,37.2418278 24.4418278,37.6 24,37.6 C23.5581722,37.6 23.2,37.2418278 23.2,36.8 L23.2,31.2 L23.2,31.2 Z" id="Rectangle" fill="#333333"/>
     <g id="Group" transform="translate(9.600000, 9.600000)" opacity="0.5">
@@ -1509,18 +1509,18 @@
 
 <symbol id="icon-icon_citybike_station_red_large" viewBox="0 0 34 43" version="1.1">
  <defs>
-  <circle id="path-1" cx="10.8" cy="10.8" r="10.8"></circle>
+  <circle id="path-1" cx="10.8" cy="10.8" r="10.8"/>
  </defs>
  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g id="icons-generic" transform="translate(-228.000000, -822.000000)">
    <g id="icon-citybike_station-red-large" transform="translate(204.000000, 808.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(25.200000, 25.200000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="1.2" fill="#FBB800" cx="10.8" cy="10.8" r="11.4"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="1.2" fill="#FBB800" cx="10.8" cy="10.8" r="11.4"/>
      <g id="icon-citybike">
       <mask id="mask-2" fill="white">
        <use xlink:href="#path-1"></use>
       </mask>
-      <circle stroke="#FFFFFF" stroke-width="1.2" cx="10.8" cy="10.8" r="11.4"></circle>
+      <circle stroke="#FFFFFF" stroke-width="1.2" cx="10.8" cy="10.8" r="11.4"/>
       <g id="Group" mask="url(#mask-2)">
        <g transform="translate(1.800000, 1.800000)" id="Citybike">
         <path d="M3.7306371,12.9666934 C2.67454871,12.5423256 2.16184411,11.34151 2.58746475,10.2854144 C2.90147102,9.50407073 3.65826273,8.99258292 4.49969761,8.99258292 C4.79653189,8.99258292 5.08967978,9.0563749 5.35830447,9.18151085 L5.86119548,8.72150303 C4.57451998,7.96960732 2.92232222,8.40261515 2.16920251,9.68925466 C1.4173068,10.9759662 1.85029303,12.6281495 3.13696853,13.3812692 C4.42365124,14.1343889 6.075849,13.7001571 6.82896871,12.4135176 C6.93935906,12.2245897 7.02644303,12.0234218 7.08777261,11.8124618 L6.41315447,11.8235498 C5.98876503,12.8795734 4.78794229,13.3922852 3.7306371,12.9666934 Z" id="Path" fill="#333333" fill-rule="nonzero"/>
@@ -1530,7 +1530,7 @@
       </g>
      </g>
      <g id="Group" transform="translate(10.800000, -10.800000)" fill="#DC0451" stroke="#FFFFFF" stroke-width="1.2">
-      <circle id="Oval" cx="10.8" cy="10.8" r="10.2"></circle>
+      <circle id="Oval" cx="10.8" cy="10.8" r="10.2"/>
      </g>
     </g>
     <path d="M34.8,46.8 L37.2,46.8 L37.2,55.2 C37.2,55.8627417 36.6627417,56.4 36,56.4 C35.3372583,56.4 34.8,55.8627417 34.8,55.2 L34.8,46.8 L34.8,46.8 Z" id="Rectangle" fill="#333333"/>
@@ -1544,18 +1544,18 @@
 
 <symbol id="icon-icon_citybike_station_yellow_small" viewBox="0 0 16 22" version="1.1">
  <defs>
-  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
+  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"/>
  </defs>
  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g id="icons-generic" transform="translate(-52.000000, -758.000000)">
    <g id="icon-citybike_station-yellow-small" transform="translate(36.000000, 742.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(16.800000, 16.800000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#FBB800" cx="7.2" cy="7.2" r="7.6"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#FBB800" cx="7.2" cy="7.2" r="7.6"/>
      <g id="icon-citybike">
       <mask id="mask-2" fill="white">
        <use xlink:href="#path-1"></use>
       </mask>
-      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"></circle>
+      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"/>
       <g id="Group" mask="url(#mask-2)">
        <g transform="translate(1.200000, 1.200000)" id="Citybike">
         <path d="M2.4870914,8.64446226 C1.78303247,8.36155037 1.44122941,7.56100668 1.7249765,6.85694295 C1.93431402,6.33604715 2.43884182,5.99505528 2.9997984,5.99505528 C3.19768793,5.99505528 3.39311985,6.03758327 3.57220298,6.12100723 L3.90746365,5.81433535 C3.04967998,5.31307155 1.94821481,5.60174344 1.446135,6.4595031 C0.944871199,7.31731077 1.23352869,8.41876635 2.09131236,8.92084615 C2.94910082,9.42292596 4.050566,9.13343807 4.5526458,8.2756784 C4.62623938,8.14972645 4.68429535,8.0156145 4.72518174,7.87497456 L4.27543631,7.88236655 C3.99251002,8.58638228 3.19196153,8.92819015 2.4870914,8.64446226 Z" id="Path" fill="#333333" fill-rule="nonzero"/>
@@ -1564,7 +1564,7 @@
        </g>
       </g>
      </g>
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#FBB800" cx="12" cy="2.4" r="2.8"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#FBB800" cx="12" cy="2.4" r="2.8"/>
     </g>
     <path d="M23.2,31.2 L24.8,31.2 L24.8,36.8 C24.8,37.2418278 24.4418278,37.6 24,37.6 C23.5581722,37.6 23.2,37.2418278 23.2,36.8 L23.2,31.2 L23.2,31.2 Z" id="Rectangle" fill="#333333"/>
     <g id="Group" transform="translate(9.600000, 9.600000)" opacity="0.5">
@@ -1577,18 +1577,18 @@
 
 <symbol id="icon-icon_citybike_station_yellow_large" viewBox="0 0 34 43" version="1.1">
  <defs>
-  <circle id="path-1" cx="10.8" cy="10.8" r="10.8"></circle>
+  <circle id="path-1" cx="10.8" cy="10.8" r="10.8"/>
  </defs>
  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g id="icons-generic" transform="translate(-228.000000, -744.000000)">
    <g id="icon-citybike_station-yellow-large" transform="translate(204.000000, 730.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(25.200000, 25.200000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="1.2" fill="#FBB800" cx="10.8" cy="10.8" r="11.4"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="1.2" fill="#FBB800" cx="10.8" cy="10.8" r="11.4"/>
      <g id="icon-citybike">
       <mask id="mask-2" fill="white">
        <use xlink:href="#path-1"></use>
       </mask>
-      <circle stroke="#FFFFFF" stroke-width="1.2" cx="10.8" cy="10.8" r="11.4"></circle>
+      <circle stroke="#FFFFFF" stroke-width="1.2" cx="10.8" cy="10.8" r="11.4"/>
       <g id="Group" mask="url(#mask-2)">
        <g transform="translate(1.800000, 1.800000)" id="Citybike">
         <path d="M3.7306371,12.9666934 C2.67454871,12.5423256 2.16184411,11.34151 2.58746475,10.2854144 C2.90147102,9.50407073 3.65826273,8.99258292 4.49969761,8.99258292 C4.79653189,8.99258292 5.08967978,9.0563749 5.35830447,9.18151085 L5.86119548,8.72150303 C4.57451998,7.96960732 2.92232222,8.40261515 2.16920251,9.68925466 C1.4173068,10.9759662 1.85029303,12.6281495 3.13696853,13.3812692 C4.42365124,14.1343889 6.075849,13.7001571 6.82896871,12.4135176 C6.93935906,12.2245897 7.02644303,12.0234218 7.08777261,11.8124618 L6.41315447,11.8235498 C5.98876503,12.8795734 4.78794229,13.3922852 3.7306371,12.9666934 Z" id="Path" fill="#333333" fill-rule="nonzero"/>
@@ -1598,7 +1598,7 @@
       </g>
      </g>
      <g id="Group" transform="translate(10.800000, -10.800000)" fill="#FBB800" stroke="#FFFFFF" stroke-width="1.2">
-      <circle id="Oval" cx="10.8" cy="10.8" r="10.2"></circle>
+      <circle id="Oval" cx="10.8" cy="10.8" r="10.2"/>
      </g>
     </g>
     <path d="M34.8,46.8 L37.2,46.8 L37.2,55.2 C37.2,55.8627417 36.6627417,56.4 36,56.4 C35.3372583,56.4 34.8,55.8627417 34.8,55.2 L34.8,46.8 L34.8,46.8 Z" id="Rectangle" fill="#333333"/>
@@ -1612,18 +1612,18 @@
 
 <symbol id="icon-icon_citybike-secondary_station_yellow_large" viewBox="0 0 34 43" version="1.1">
  <defs>
-  <circle id="path-1" cx="10.8" cy="10.8" r="10.8"></circle>
+  <circle id="path-1" cx="10.8" cy="10.8" r="10.8"/>
  </defs>
  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g id="icons-generic" transform="translate(-228.000000, -744.000000)">
    <g id="icon-citybike_station-yellow-large" transform="translate(204.000000, 730.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(25.200000, 25.200000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="1.2" fill="#333333" cx="10.8" cy="10.8" r="11.4"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="1.2" fill="#333333" cx="10.8" cy="10.8" r="11.4"/>
      <g id="icon-citybike">
       <mask id="mask-2" fill="white">
        <use xlink:href="#path-1"></use>
       </mask>
-      <circle stroke="#FFFFFF" stroke-width="1.2" cx="10.8" cy="10.8" r="11.4"></circle>
+      <circle stroke="#FFFFFF" stroke-width="1.2" cx="10.8" cy="10.8" r="11.4"/>
       <g id="Group" mask="url(#mask-2)">
        <g transform="translate(1.800000, 1.800000)" id="Citybike">
         <path d="M3.7306371,12.9666934 C2.67454871,12.5423256 2.16184411,11.34151 2.58746475,10.2854144 C2.90147102,9.50407073 3.65826273,8.99258292 4.49969761,8.99258292 C4.79653189,8.99258292 5.08967978,9.0563749 5.35830447,9.18151085 L5.86119548,8.72150303 C4.57451998,7.96960732 2.92232222,8.40261515 2.16920251,9.68925466 C1.4173068,10.9759662 1.85029303,12.6281495 3.13696853,13.3812692 C4.42365124,14.1343889 6.075849,13.7001571 6.82896871,12.4135176 C6.93935906,12.2245897 7.02644303,12.0234218 7.08777261,11.8124618 L6.41315447,11.8235498 C5.98876503,12.8795734 4.78794229,13.3922852 3.7306371,12.9666934 Z" id="Path" fill="#FBB800" fill-rule="nonzero"/>
@@ -1633,7 +1633,7 @@
       </g>
      </g>
      <g id="Group" transform="translate(10.800000, -10.800000)" fill="#FBB800" stroke="#FFFFFF" stroke-width="1.2">
-      <circle id="Oval" cx="10.8" cy="10.8" r="10.2"></circle>
+      <circle id="Oval" cx="10.8" cy="10.8" r="10.2"/>
      </g>
     </g>
     <path d="M34.8,46.8 L37.2,46.8 L37.2,55.2 C37.2,55.8627417 36.6627417,56.4 36,56.4 C35.3372583,56.4 34.8,55.8627417 34.8,55.2 L34.8,46.8 L34.8,46.8 Z" id="Rectangle" fill="#333333"/>
@@ -1647,18 +1647,18 @@
 
 <symbol id="icon-icon_citybike_station_small" viewBox="0 0 16 22" version="1.1">
  <defs>
-  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
+  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"/>
  </defs>
  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g id="icons-generic" transform="translate(-52.000000, -605.000000)">
    <g id="icon-citybike_station-small" transform="translate(36.000000, 589.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(16.800000, 16.800000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#FBB800" cx="7.2" cy="7.2" r="7.6"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#FBB800" cx="7.2" cy="7.2" r="7.6"/>
      <g id="icon-citybike">
       <mask id="mask-2" fill="white">
        <use xlink:href="#path-1"></use>
       </mask>
-      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"></circle>
+      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"/>
       <g id="Group" mask="url(#mask-2)">
        <g transform="translate(1.200000, 1.200000)" id="Citybike">
         <path d="M2.4870914,8.64446226 C1.78303247,8.36155037 1.44122941,7.56100668 1.7249765,6.85694295 C1.93431402,6.33604715 2.43884182,5.99505528 2.9997984,5.99505528 C3.19768793,5.99505528 3.39311985,6.03758327 3.57220298,6.12100723 L3.90746365,5.81433535 C3.04967998,5.31307155 1.94821481,5.60174344 1.446135,6.4595031 C0.944871199,7.31731077 1.23352869,8.41876635 2.09131236,8.92084615 C2.94910082,9.42292596 4.050566,9.13343807 4.5526458,8.2756784 C4.62623938,8.14972645 4.68429535,8.0156145 4.72518174,7.87497456 L4.27543631,7.88236655 C3.99251002,8.58638228 3.19196153,8.92819015 2.4870914,8.64446226 Z" id="Path" fill="#333333" fill-rule="nonzero"/>
@@ -1679,18 +1679,18 @@
 
 <symbol id="icon-icon_citybike-secondary_station_green_large" viewBox="0 0 34 43" version="1.1">
  <defs>
-  <circle id="path-1" cx="10.8" cy="10.8" r="10.8"></circle>
+  <circle id="path-1" cx="10.8" cy="10.8" r="10.8"/>
  </defs>
  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g id="icons-generic" transform="translate(-228.000000, -666.000000)">
    <g id="icon-citybike_station-green-large" transform="translate(204.000000, 652.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(25.200000, 25.200000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="1.2" fill="#333333" cx="10.8" cy="10.8" r="11.4"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="1.2" fill="#333333" cx="10.8" cy="10.8" r="11.4"/>
      <g id="icon-citybike">
       <mask id="mask-2" fill="white">
        <use xlink:href="#path-1"></use>
       </mask>
-      <circle stroke="#FFFFFF" stroke-width="1.2" cx="10.8" cy="10.8" r="11.4"></circle>
+      <circle stroke="#FFFFFF" stroke-width="1.2" cx="10.8" cy="10.8" r="11.4"/>
       <g id="Group" mask="url(#mask-2)">
        <g transform="translate(1.800000, 1.800000)" id="Citybike">
         <path d="M3.7306371,12.9666934 C2.67454871,12.5423256 2.16184411,11.34151 2.58746475,10.2854144 C2.90147102,9.50407073 3.65826273,8.99258292 4.49969761,8.99258292 C4.79653189,8.99258292 5.08967978,9.0563749 5.35830447,9.18151085 L5.86119548,8.72150303 C4.57451998,7.96960732 2.92232222,8.40261515 2.16920251,9.68925466 C1.4173068,10.9759662 1.85029303,12.6281495 3.13696853,13.3812692 C4.42365124,14.1343889 6.075849,13.7001571 6.82896871,12.4135176 C6.93935906,12.2245897 7.02644303,12.0234218 7.08777261,11.8124618 L6.41315447,11.8235498 C5.98876503,12.8795734 4.78794229,13.3922852 3.7306371,12.9666934 Z" id="Path" fill="#FBB800" fill-rule="nonzero"/>
@@ -1700,7 +1700,7 @@
       </g>
      </g>
      <g id="Group" transform="translate(10.800000, -10.800000)" fill="#008854" stroke="#FFFFFF" stroke-width="1.2">
-      <circle id="Oval" cx="10.8" cy="10.8" r="10.2"></circle>
+      <circle id="Oval" cx="10.8" cy="10.8" r="10.2"/>
      </g>
     </g>
     <path d="M34.8,46.8 L37.2,46.8 L37.2,55.2 C37.2,55.8627417 36.6627417,56.4 36,56.4 C35.3372583,56.4 34.8,55.8627417 34.8,55.2 L34.8,46.8 L34.8,46.8 Z" id="Rectangle" fill="#333333"/>
@@ -1714,18 +1714,18 @@
 
 <symbol id="icon-icon_citybike-secondary_station_green_small" viewBox="0 0 16 22" version="1.1">
  <defs>
-  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
+  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"/>
  </defs>
  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g id="icons-generic" transform="translate(-52.000000, -680.000000)">
    <g id="icon-citybike_station-green-small" transform="translate(36.000000, 664.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(16.800000, 16.800000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#333333" cx="7.2" cy="7.2" r="7.6"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#333333" cx="7.2" cy="7.2" r="7.6"/>
      <g id="icon-citybike">
       <mask id="mask-2" fill="white">
        <use xlink:href="#path-1"></use>
       </mask>
-      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"></circle>
+      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"/>
       <g id="Group" mask="url(#mask-2)">
        <g transform="translate(1.200000, 1.200000)" id="Citybike">
         <path d="M2.4870914,8.64446226 C1.78303247,8.36155037 1.44122941,7.56100668 1.7249765,6.85694295 C1.93431402,6.33604715 2.43884182,5.99505528 2.9997984,5.99505528 C3.19768793,5.99505528 3.39311985,6.03758327 3.57220298,6.12100723 L3.90746365,5.81433535 C3.04967998,5.31307155 1.94821481,5.60174344 1.446135,6.4595031 C0.944871199,7.31731077 1.23352869,8.41876635 2.09131236,8.92084615 C2.94910082,9.42292596 4.050566,9.13343807 4.5526458,8.2756784 C4.62623938,8.14972645 4.68429535,8.0156145 4.72518174,7.87497456 L4.27543631,7.88236655 C3.99251002,8.58638228 3.19196153,8.92819015 2.4870914,8.64446226 Z" id="Path" fill="#FBB800" fill-rule="nonzero"/>
@@ -1734,7 +1734,7 @@
        </g>
       </g>
      </g>
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#008855" cx="12" cy="2.4" r="2.8"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#008855" cx="12" cy="2.4" r="2.8"/>
     </g>
     <path d="M23.2,31.2 L24.8,31.2 L24.8,36.8 C24.8,37.2418278 24.4418278,37.6 24,37.6 C23.5581722,37.6 23.2,37.2418278 23.2,36.8 L23.2,31.2 L23.2,31.2 Z" id="Rectangle" fill="#333333"/>
     <g id="Group" transform="translate(9.600000, 9.600000)" opacity="0.5">
@@ -1747,18 +1747,18 @@
 
 <symbol id="icon-icon_citybike-secondary_station_red_large" viewBox="0 0 34 43" version="1.1">
  <defs>
-  <circle id="path-1" cx="10.8" cy="10.8" r="10.8"></circle>
+  <circle id="path-1" cx="10.8" cy="10.8" r="10.8"/>
  </defs>
  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g id="icons-generic" transform="translate(-228.000000, -822.000000)">
    <g id="icon-citybike_station-red-large" transform="translate(204.000000, 808.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(25.200000, 25.200000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="1.2" fill="#333333" cx="10.8" cy="10.8" r="11.4"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="1.2" fill="#333333" cx="10.8" cy="10.8" r="11.4"/>
      <g id="icon-citybike">
       <mask id="mask-2" fill="white">
        <use xlink:href="#path-1"></use>
       </mask>
-      <circle stroke="#FFFFFF" stroke-width="1.2" cx="10.8" cy="10.8" r="11.4"></circle>
+      <circle stroke="#FFFFFF" stroke-width="1.2" cx="10.8" cy="10.8" r="11.4"/>
       <g id="Group" mask="url(#mask-2)">
        <g transform="translate(1.800000, 1.800000)" id="Citybike">
         <path d="M3.7306371,12.9666934 C2.67454871,12.5423256 2.16184411,11.34151 2.58746475,10.2854144 C2.90147102,9.50407073 3.65826273,8.99258292 4.49969761,8.99258292 C4.79653189,8.99258292 5.08967978,9.0563749 5.35830447,9.18151085 L5.86119548,8.72150303 C4.57451998,7.96960732 2.92232222,8.40261515 2.16920251,9.68925466 C1.4173068,10.9759662 1.85029303,12.6281495 3.13696853,13.3812692 C4.42365124,14.1343889 6.075849,13.7001571 6.82896871,12.4135176 C6.93935906,12.2245897 7.02644303,12.0234218 7.08777261,11.8124618 L6.41315447,11.8235498 C5.98876503,12.8795734 4.78794229,13.3922852 3.7306371,12.9666934 Z" id="Path" fill="#FBB800" fill-rule="nonzero"/>
@@ -1768,7 +1768,7 @@
       </g>
      </g>
      <g id="Group" transform="translate(10.800000, -10.800000)" fill="#DC0451" stroke="#FFFFFF" stroke-width="1.2">
-      <circle id="Oval" cx="10.8" cy="10.8" r="10.2"></circle>
+      <circle id="Oval" cx="10.8" cy="10.8" r="10.2"/>
      </g>
     </g>
     <path d="M34.8,46.8 L37.2,46.8 L37.2,55.2 C37.2,55.8627417 36.6627417,56.4 36,56.4 C35.3372583,56.4 34.8,55.8627417 34.8,55.2 L34.8,46.8 L34.8,46.8 Z" id="Rectangle" fill="#333333"/>
@@ -1782,18 +1782,18 @@
 
 <symbol id="icon-icon_citybike-secondary_station_red_small" viewBox="0 0 16 22" version="1.1">
  <defs>
-  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
+  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"/>
  </defs>
  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g id="icons-generic" transform="translate(-52.000000, -836.000000)">
    <g id="icon-citybike_station-red-small" transform="translate(36.000000, 820.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(16.800000, 16.800000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#333333" cx="7.2" cy="7.2" r="7.6"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#333333" cx="7.2" cy="7.2" r="7.6"/>
      <g id="icon-citybike">
       <mask id="mask-2" fill="white">
        <use xlink:href="#path-1"></use>
       </mask>
-      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"></circle>
+      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"/>
       <g id="Group" mask="url(#mask-2)">
        <g transform="translate(1.200000, 1.200000)" id="Citybike">
         <path d="M2.4870914,8.64446226 C1.78303247,8.36155037 1.44122941,7.56100668 1.7249765,6.85694295 C1.93431402,6.33604715 2.43884182,5.99505528 2.9997984,5.99505528 C3.19768793,5.99505528 3.39311985,6.03758327 3.57220298,6.12100723 L3.90746365,5.81433535 C3.04967998,5.31307155 1.94821481,5.60174344 1.446135,6.4595031 C0.944871199,7.31731077 1.23352869,8.41876635 2.09131236,8.92084615 C2.94910082,9.42292596 4.050566,9.13343807 4.5526458,8.2756784 C4.62623938,8.14972645 4.68429535,8.0156145 4.72518174,7.87497456 L4.27543631,7.88236655 C3.99251002,8.58638228 3.19196153,8.92819015 2.4870914,8.64446226 Z" id="Path" fill="#FBB800" fill-rule="nonzero"/>
@@ -1802,7 +1802,7 @@
        </g>
       </g>
      </g>
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#DC0451" cx="12" cy="2.4" r="2.8"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#DC0451" cx="12" cy="2.4" r="2.8"/>
     </g>
     <path d="M23.2,31.2 L24.8,31.2 L24.8,36.8 C24.8,37.2418278 24.4418278,37.6 24,37.6 C23.5581722,37.6 23.2,37.2418278 23.2,36.8 L23.2,31.2 L23.2,31.2 Z" id="Rectangle" fill="#333333"/>
     <g id="Group" transform="translate(9.600000, 9.600000)" opacity="0.5">
@@ -1815,18 +1815,18 @@
 
 <symbol id="icon-icon_citybike-secondary_station_yellow_small" viewBox="0 0 16 22" version="1.1">
  <defs>
-  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
+  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"/>
  </defs>
  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g id="icons-generic" transform="translate(-52.000000, -758.000000)">
    <g id="icon-citybike_station-yellow-small" transform="translate(36.000000, 742.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(16.800000, 16.800000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#333333" cx="7.2" cy="7.2" r="7.6"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#333333" cx="7.2" cy="7.2" r="7.6"/>
      <g id="icon-citybike">
       <mask id="mask-2" fill="white">
        <use xlink:href="#path-1"></use>
       </mask>
-      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"></circle>
+      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"/>
       <g id="Group" mask="url(#mask-2)">
        <g transform="translate(1.200000, 1.200000)" id="Citybike">
         <path d="M2.4870914,8.64446226 C1.78303247,8.36155037 1.44122941,7.56100668 1.7249765,6.85694295 C1.93431402,6.33604715 2.43884182,5.99505528 2.9997984,5.99505528 C3.19768793,5.99505528 3.39311985,6.03758327 3.57220298,6.12100723 L3.90746365,5.81433535 C3.04967998,5.31307155 1.94821481,5.60174344 1.446135,6.4595031 C0.944871199,7.31731077 1.23352869,8.41876635 2.09131236,8.92084615 C2.94910082,9.42292596 4.050566,9.13343807 4.5526458,8.2756784 C4.62623938,8.14972645 4.68429535,8.0156145 4.72518174,7.87497456 L4.27543631,7.88236655 C3.99251002,8.58638228 3.19196153,8.92819015 2.4870914,8.64446226 Z" id="Path" fill="#FBB800" fill-rule="nonzero"/>
@@ -1835,7 +1835,7 @@
        </g>
       </g>
      </g>
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#FBB800" cx="12" cy="2.4" r="2.8"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#FBB800" cx="12" cy="2.4" r="2.8"/>
     </g>
     <path d="M23.2,31.2 L24.8,31.2 L24.8,36.8 C24.8,37.2418278 24.4418278,37.6 24,37.6 C23.5581722,37.6 23.2,37.2418278 23.2,36.8 L23.2,31.2 L23.2,31.2 Z" id="Rectangle" fill="#333333"/>
     <g id="Group" transform="translate(9.600000, 9.600000)" opacity="0.5">
@@ -1871,18 +1871,18 @@
 
 <symbol id="icon-icon_citybike_station_small" viewBox="0 0 16 22" version="1.1">
  <defs>
-  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
+  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"/>
  </defs>
  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g id="icons-generic" transform="translate(-52.000000, -605.000000)">
    <g id="icon-citybike_station-small" transform="translate(36.000000, 589.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(16.800000, 16.800000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#FBB800" cx="7.2" cy="7.2" r="7.6"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#FBB800" cx="7.2" cy="7.2" r="7.6"/>
      <g id="icon-citybike">
       <mask id="mask-2" fill="white">
        <use xlink:href="#path-1"></use>
       </mask>
-      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"></circle>
+      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"/>
       <g id="Group" mask="url(#mask-2)">
        <g transform="translate(1.200000, 1.200000)" id="icon_citybike">
         <path d="M4.823688,5.56068 L5.332248,6.88476 L3.837048,7.02876 L4.823688,5.56068 Z M7.728408,5.47284 L8.127768,6.51516 C8.287368,6.93732 8.549688,7.34052 8.746728,7.56564 C8.953128,7.80948 9.243768,7.55628 9.065688,7.33116 C8.868648,7.08732 8.652888,6.72156 8.502888,6.33708 L7.778568,4.4238 L8.361048,4.4238 L8.679768,5.23044 C8.726808,5.343 8.792568,5.3898 8.895528,5.3898 L9.673848,5.3898 C9.786648,5.3898 9.861528,5.33364 9.889608,5.2398 L10.283688,4.09572 C10.377288,3.83292 10.058568,3.7206 9.955368,3.94548 C9.645768,4.6302 9.008328,4.53636 8.773848,4.26444 C8.679768,4.15188 8.614248,4.09572 8.492328,4.09572 L7.654248,4.09572 L7.651848,4.089 C7.653768,4.08588 7.655928,4.08276 7.657848,4.07964 C7.833048,3.81252 7.882248,3.72156 7.923768,3.51852 C7.964568,3.32028 7.924008,3.13524 7.808808,2.9958 C7.684488,2.84556 7.500168,2.751 7.275048,2.75556 C6.961848,2.7606 6.720648,3.0114 6.694008,3.04044 C6.617928,3.12228 6.622728,3.25068 6.705048,3.32724 C6.787848,3.40308 6.910248,3.39492 6.992328,3.31644 C7.038888,3.27132 7.162248,3.15612 7.281048,3.15444 C7.382328,3.15156 7.437288,3.19548 7.468728,3.22836 C7.516008,3.27804 7.546488,3.37188 7.523448,3.46068 C7.506648,3.52548 7.487448,3.58692 7.352808,3.80244 L7.352328,3.80196 C7.242888,3.93348 7.188648,4.05564 7.235448,4.18692 L7.572408,5.06604 C6.939048,5.4906 6.468648,6.10716 6.290568,6.90348 C6.164808,6.83628 6.024648,6.81612 5.858328,6.83412 L5.756808,6.84396 L4.654488,3.96948 C4.758168,3.94116 4.877448,3.91716 5.023608,3.90804 L5.145528,3.89868 C5.267448,3.88932 5.361048,3.81444 5.361048,3.70164 C5.361048,3.58932 5.276808,3.49548 5.126808,3.49548 L4.526568,3.49548 C4.085688,3.49548 4.010568,3.48852 3.757608,3.48852 C3.607368,3.48852 3.513768,3.54228 3.513768,3.65484 C3.513768,3.88932 3.823128,4.10508 4.113768,4.10508 C4.163688,4.10508 4.210968,4.09884 4.258488,4.089 L4.645848,5.09796 L4.254648,5.68068 C3.860568,5.3898 3.391848,5.23044 2.913528,5.23044 C2.359368,5.23044 1.840728,5.43252 1.467768,5.74332 C1.455528,5.75364 1.377048,5.8278 1.365768,5.83908 C1.257048,5.9478 1.291848,6.1422 1.443528,6.16932 C1.457688,6.17172 1.534728,6.19332 1.548648,6.19668 C2.124648,6.33564 2.670888,6.68916 3.106248,7.1574 C2.986968,7.23684 2.913528,7.36428 2.913528,7.49988 C2.913528,7.74372 3.072888,7.91268 3.344808,7.94076 L5.792568,8.20332 C6.252168,8.25036 6.627288,8.05332 6.664728,7.49076 L6.674088,7.35924 C6.718728,6.63372 7.097928,5.9346 7.728408,5.47284 L7.728408,5.47284 Z" id="Fill-4" fill="#333333"/>
@@ -1903,18 +1903,18 @@
 
 <symbol id="icon-icon_citybike-secondary_station_small" viewBox="0 0 16 22" version="1.1">
  <defs>
-  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"></circle>
+  <circle id="path-1" cx="7.2" cy="7.2" r="7.2"/>
  </defs>
  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
   <g id="icons-generic" transform="translate(-52.000000, -605.000000)">
    <g id="icon-citybike_station-small" transform="translate(36.000000, 589.000000)">
     <g id="stop-ball/tram-alt3" transform="translate(16.800000, 16.800000)">
-     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#333333" cx="7.2" cy="7.2" r="7.6"></circle>
+     <circle id="Oval" stroke="#FFFFFF" stroke-width="0.8" fill="#333333" cx="7.2" cy="7.2" r="7.6"/>
      <g id="icon-citybike">
       <mask id="mask-2" fill="white">
        <use xlink:href="#path-1"></use>
       </mask>
-      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"></circle>
+      <circle stroke="#FFFFFF" stroke-width="0.8" cx="7.2" cy="7.2" r="7.6"/>
       <g id="Group" mask="url(#mask-2)">
        <g transform="translate(1.200000, 1.200000)" id="icon_citybike">
         <path d="M4.823688,5.56068 L5.332248,6.88476 L3.837048,7.02876 L4.823688,5.56068 Z M7.728408,5.47284 L8.127768,6.51516 C8.287368,6.93732 8.549688,7.34052 8.746728,7.56564 C8.953128,7.80948 9.243768,7.55628 9.065688,7.33116 C8.868648,7.08732 8.652888,6.72156 8.502888,6.33708 L7.778568,4.4238 L8.361048,4.4238 L8.679768,5.23044 C8.726808,5.343 8.792568,5.3898 8.895528,5.3898 L9.673848,5.3898 C9.786648,5.3898 9.861528,5.33364 9.889608,5.2398 L10.283688,4.09572 C10.377288,3.83292 10.058568,3.7206 9.955368,3.94548 C9.645768,4.6302 9.008328,4.53636 8.773848,4.26444 C8.679768,4.15188 8.614248,4.09572 8.492328,4.09572 L7.654248,4.09572 L7.651848,4.089 C7.653768,4.08588 7.655928,4.08276 7.657848,4.07964 C7.833048,3.81252 7.882248,3.72156 7.923768,3.51852 C7.964568,3.32028 7.924008,3.13524 7.808808,2.9958 C7.684488,2.84556 7.500168,2.751 7.275048,2.75556 C6.961848,2.7606 6.720648,3.0114 6.694008,3.04044 C6.617928,3.12228 6.622728,3.25068 6.705048,3.32724 C6.787848,3.40308 6.910248,3.39492 6.992328,3.31644 C7.038888,3.27132 7.162248,3.15612 7.281048,3.15444 C7.382328,3.15156 7.437288,3.19548 7.468728,3.22836 C7.516008,3.27804 7.546488,3.37188 7.523448,3.46068 C7.506648,3.52548 7.487448,3.58692 7.352808,3.80244 L7.352328,3.80196 C7.242888,3.93348 7.188648,4.05564 7.235448,4.18692 L7.572408,5.06604 C6.939048,5.4906 6.468648,6.10716 6.290568,6.90348 C6.164808,6.83628 6.024648,6.81612 5.858328,6.83412 L5.756808,6.84396 L4.654488,3.96948 C4.758168,3.94116 4.877448,3.91716 5.023608,3.90804 L5.145528,3.89868 C5.267448,3.88932 5.361048,3.81444 5.361048,3.70164 C5.361048,3.58932 5.276808,3.49548 5.126808,3.49548 L4.526568,3.49548 C4.085688,3.49548 4.010568,3.48852 3.757608,3.48852 C3.607368,3.48852 3.513768,3.54228 3.513768,3.65484 C3.513768,3.88932 3.823128,4.10508 4.113768,4.10508 C4.163688,4.10508 4.210968,4.09884 4.258488,4.089 L4.645848,5.09796 L4.254648,5.68068 C3.860568,5.3898 3.391848,5.23044 2.913528,5.23044 C2.359368,5.23044 1.840728,5.43252 1.467768,5.74332 C1.455528,5.75364 1.377048,5.8278 1.365768,5.83908 C1.257048,5.9478 1.291848,6.1422 1.443528,6.16932 C1.457688,6.17172 1.534728,6.19332 1.548648,6.19668 C2.124648,6.33564 2.670888,6.68916 3.106248,7.1574 C2.986968,7.23684 2.913528,7.36428 2.913528,7.49988 C2.913528,7.74372 3.072888,7.91268 3.344808,7.94076 L5.792568,8.20332 C6.252168,8.25036 6.627288,8.05332 6.664728,7.49076 L6.674088,7.35924 C6.718728,6.63372 7.097928,5.9346 7.728408,5.47284 L7.728408,5.47284 Z" id="Fill-4" fill="#FBB800"/>
