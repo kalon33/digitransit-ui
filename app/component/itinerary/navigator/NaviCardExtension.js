@@ -155,7 +155,7 @@ const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
         <div className="wait-leg">
           <div className="route-info">
             <div className="expand">
-              <Icon img="navi-expand" className="icon-expand" />
+              <Icon img="navi-expand" className="icon-expand-small" />
               <div className="wait-duration">
                 <FormattedMessage
                   id="navileg-arrive-at"

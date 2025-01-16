@@ -313,8 +313,14 @@ $fixed-width-padding: 16px;
 
       .icon-expand {
         margin-top: 5px;
-        width: var(--space-m);
-        height: var(--space-m);
+        width: 24px;
+        height: 24px;
+      }
+
+      .icon-expand-small {
+        margin-top: 5px;
+        width: 16px;
+        height: 16px;
       }
 
       .destination-icon {
