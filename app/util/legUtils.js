@@ -201,7 +201,7 @@ export function getRouteText(route, config, interliningWithRoute) {
 }
 
 /**
- * Returns all legs after a given index in which the user can wait in the vehilce for the next transit leg
+ * Returns all legs after a given index in which the user can wait in the vehicle for the next transit leg
  * to start.
  * @param {*} legs An array of itinerary legs
  * @param {*} index Current index on the array
@@ -218,6 +218,19 @@ export function getInterliningLegs(legs, index) {
   const uniqueLines = Array.from(new Set(interliningLines));
 
   return [uniqueLines, interliningLegs];
+}
+
+/**
+ * Checks if the given index is the first interlining leg in a set of interlining legs.
+ * @param {*} legs An array of itinerary legs
+ * @param {*} index Current index on the array
+ */
+export function isFirstInterliningLeg(legs, i) {
+  return (
+    i + 1 < legs.length &&
+    !legs[i].interlineWithPreviousLeg &&
+    legs[i + 1].interlineWithPreviousLeg
+  );
 }
 
 function bikingEnded(leg1) {
