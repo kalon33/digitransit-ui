@@ -6,17 +6,12 @@ import { displayDistance } from '../../../util/geo-utils';
 import { legShape, configShape } from '../../../util/shapes';
 import { legDestination, legTimeStr, legTime } from '../../../util/legUtils';
 import RouteNumber from '../../RouteNumber';
-import {
-  LEGTYPE,
-  getLocalizedMode,
-  getToLocalizedMode,
-  getRemainingTraversal,
-} from './NaviUtils';
+import { LEGTYPE, getLocalizedMode, getToLocalizedMode } from './NaviUtils';
 import { durationToString } from '../../../util/timeUtils';
 import { getRouteMode } from '../../../util/modeUtils';
 
 export default function NaviInstructions(
-  { leg, nextLeg, instructions, legType, time, position, origin },
+  { leg, nextLeg, instructions, legType, time, position, tailLength },
   { intl, config },
 ) {
   const withRealTime = (rt, children) => (
@@ -24,14 +19,6 @@ export default function NaviInstructions(
   );
 
   if (legType === LEGTYPE.MOVE) {
-    const remainingTraversal = getRemainingTraversal(
-      leg,
-      position,
-      origin,
-      time,
-    );
-    const distance = remainingTraversal * leg.distance;
-
     return (
       <>
         <div className="notification-header">
@@ -41,7 +28,7 @@ export default function NaviInstructions(
         </div>
 
         <div className={cx('duration', { realtime: !!position })}>
-          {displayDistance(distance, config, intl.formatNumber)}&nbsp;
+          {displayDistance(tailLength, config, intl.formatNumber)}&nbsp;
           {durationToString(legTime(leg.end) - time)}
         </div>
       </>
@@ -177,10 +164,7 @@ NaviInstructions.propTypes = {
     lat: PropTypes.number,
     lon: PropTypes.number,
   }),
-  origin: PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-  }).isRequired,
+  tailLength: PropTypes.number.isRequired,
 };
 
 NaviInstructions.defaultProps = {
