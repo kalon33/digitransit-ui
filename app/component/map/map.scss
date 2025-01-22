@@ -244,6 +244,15 @@ div.leaflet-marker-icon.via {
   }
 }
 
+div.leaflet-marker-icon.map-subway-entrance-info-icon-metro {
+  > span {
+    svg.icon {
+      width: 24px;
+      height: 24px;
+    }
+  }
+}
+
 div.leaflet-marker-icon.via {
   color: $black;
 }
