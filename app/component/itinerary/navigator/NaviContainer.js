@@ -43,13 +43,13 @@ function NaviContainer(
   const {
     realTimeLegs,
     time,
-    origin,
+    tailLength,
     firstLeg,
     lastLeg,
     previousLeg,
     currentLeg,
     nextLeg,
-  } = useRealtimeLegs(relayEnvironment, legs);
+  } = useRealtimeLegs(relayEnvironment, legs, position);
 
   useEffect(() => {
     mapRef?.enableMapTracking(); // try always, shows annoying notifier
@@ -100,7 +100,7 @@ function NaviContainer(
         time={time}
         position={position}
         mapLayerRef={mapLayerRef}
-        origin={origin}
+        tailLength={tailLength}
         currentLeg={time > arrivalTime ? previousLeg : currentLeg}
         nextLeg={nextLeg}
         firstLeg={firstLeg}
