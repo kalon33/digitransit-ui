@@ -238,7 +238,10 @@ const useRealtimeLegs = (relayEnvironment, initialLegs, position) => {
   const { firstLeg, lastLeg, currentLeg, nextLeg, previousLeg } =
     getLegsOfInterest(realTimeLegs, time);
 
-  const tailLength = getRemainingTraversal(currentLeg, position, origin, time);
+  const tailLength = currentLeg
+    ? getRemainingTraversal(currentLeg, position, origin, time) *
+      currentLeg.distance
+    : 0;
 
   return {
     realTimeLegs,

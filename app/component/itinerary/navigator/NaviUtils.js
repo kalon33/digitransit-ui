@@ -111,9 +111,6 @@ export function pathProgress(pos, geom) {
 }
 
 export function getRemainingTraversal(leg, pos, origin, time) {
-  if (!leg) {
-    return 0;
-  }
   if (pos) {
     // TODO: maybe apply only when distance is close enough to the path
     const posXY = GeodeticToEnu(pos.lat, pos.lon, origin);
