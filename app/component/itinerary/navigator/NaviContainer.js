@@ -1,4 +1,3 @@
-import distance from '@digitransit-search-util/digitransit-search-util-distance';
 import { routerShape } from 'found';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
@@ -79,12 +78,11 @@ function NaviContainer(
   }
 
   const arrivalTime = legTime(lastLeg.end);
-
   const isDestinationReached =
-    position && distance(position, lastLeg.to) <= DESTINATION_RADIUS;
-
+    (currentLeg === lastLeg || time > arrivalTime) &&
+    position &&
+    tailLength <= DESTINATION_RADIUS;
   const isPastExpectedArrival = time > arrivalTime + ADDITIONAL_ARRIVAL_TIME;
-
   const isJourneyCompleted = isDestinationReached || isPastExpectedArrival;
 
   if (LEGLOG) {
