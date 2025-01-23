@@ -90,6 +90,39 @@ $fixed-width-padding: 16px;
   }
 }
 
+.route-info {
+  display: flex;
+  align-self: flex-start;
+  margin-bottom: var(--space-xcs);
+
+  .route-number {
+    display: flex;
+    flex-direction: row;
+    margin-top: 4px;
+
+    .vcenter-children {
+      .vehicle-number {
+        color: white;
+        margin-top: 5px;
+      }
+
+      display: flex;
+    }
+  }
+
+  .expand {
+    margin-left: var(--space-m);
+    display: flex;
+
+    .icon {
+      margin-right: var(--space-s);
+      margin-top: 5px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
 .navi-top-card {
   margin: 0 var(--space-s) 5px var(--space-s);
   border-radius: 8px;
@@ -118,6 +151,32 @@ $fixed-width-padding: 16px;
   .main-card {
     width: 100%;
     margin: var(--space-m) var(--space-l);
+
+    .boarding {
+      display: flex;
+      margin-top: 3px;
+      align-items: flex-start;
+      flex-direction: column;
+
+      &.with-icon {
+        margin-left: var(--space-xl);
+
+        .wait-duration {
+          margin-top: var(--space-xs);
+          margin-left: var(--space-l);
+        }
+      }
+
+      .wait-duration {
+        margin-top: var(--space-xs);
+      }
+
+      .icon {
+        margin-top: 2px;
+        height: 25px;
+        width: 25px;
+      }
+    }
 
     .content {
       display: flex;
@@ -157,12 +216,6 @@ $fixed-width-padding: 16px;
         flex-direction: column;
         align-items: flex-start;
 
-        .route-info {
-          display: flex;
-          align-self: flex-start;
-          margin-bottom: var(--space-xcs);
-        }
-
         .wait-duration {
           margin-top: var(--space-xs);
         }
@@ -191,6 +244,11 @@ $fixed-width-padding: 16px;
       max-height: 250px;
       margin-bottom: var(--space-s);
       margin-top: var(--space-m);
+
+      &.no-gap {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
 
       .extension-divider {
         height: 1px;
@@ -321,6 +379,7 @@ $fixed-width-padding: 16px;
         margin-top: 5px;
         width: 16px;
         height: 16px;
+        margin-right: var(--space-s);
       }
 
       .destination-icon {

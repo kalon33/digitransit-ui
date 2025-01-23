@@ -1,9 +1,13 @@
-import distance from '@digitransit-search-util/digitransit-search-util-distance';
+import connectToStores from 'fluxible-addons-react/connectToStores';
 import { routerShape } from 'found';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { legTime } from '../../../util/legUtils';
 import { legShape, relayShape } from '../../../util/shapes';
+import {
+  startLocationWatch,
+  stopLocationWatch,
+} from '../../../action/PositionActions';
 import NaviBottom from './NaviBottom';
 import NaviCardContainer from './NaviCardContainer';
 import { useRealtimeLegs } from './hooks/useRealtimeLegs';
@@ -23,9 +27,11 @@ function NaviContainer(
     mapRef,
     mapLayerRef,
   },
-  { getStore, router },
+  { executeAction, getStore, router },
 ) {
   const hasPosition = useRef(false);
+  const prevPos = useRef(undefined);
+  const posFrozen = useRef(0);
 
   let position = getStore('PositionStore').getLocationState();
   if (!position.hasLocation) {
@@ -37,29 +43,47 @@ function NaviContainer(
   const {
     realTimeLegs,
     time,
-    origin,
+    tailLength,
     firstLeg,
     lastLeg,
     previousLeg,
     currentLeg,
     nextLeg,
-  } = useRealtimeLegs(relayEnvironment, legs);
+  } = useRealtimeLegs(relayEnvironment, legs, position);
 
   useEffect(() => {
     mapRef?.enableMapTracking(); // try always, shows annoying notifier
   }, [mapRef, hasPosition.current]);
+
+  useEffect(() => {
+    if (position && prevPos.current) {
+      if (
+        prevPos.current.lat === position.lat &&
+        prevPos.current.lon === position.lon
+      ) {
+        posFrozen.current += 1;
+        if (posFrozen.current === 3) {
+          // window.alert('Restarting geolocation watch');
+          executeAction(stopLocationWatch);
+          setTimeout(() => executeAction(startLocationWatch), 10);
+        }
+      } else {
+        posFrozen.current = 0;
+      }
+    }
+    prevPos.current = position;
+  }, [time]);
 
   if (!realTimeLegs?.length) {
     return null;
   }
 
   const arrivalTime = legTime(lastLeg.end);
-
   const isDestinationReached =
-    position && distance(position, lastLeg.to) <= DESTINATION_RADIUS;
-
+    (currentLeg === lastLeg || time > arrivalTime) &&
+    position &&
+    tailLength <= DESTINATION_RADIUS;
   const isPastExpectedArrival = time > arrivalTime + ADDITIONAL_ARRIVAL_TIME;
-
   const isJourneyCompleted = isDestinationReached || isPastExpectedArrival;
 
   if (LEGLOG) {
@@ -75,7 +99,7 @@ function NaviContainer(
         time={time}
         position={position}
         mapLayerRef={mapLayerRef}
-        origin={origin}
+        tailLength={tailLength}
         currentLeg={time > arrivalTime ? previousLeg : currentLeg}
         nextLeg={nextLeg}
         firstLeg={firstLeg}
@@ -111,6 +135,7 @@ NaviContainer.propTypes = {
 };
 
 NaviContainer.contextTypes = {
+  executeAction: PropTypes.func,
   getStore: PropTypes.func.isRequired,
   router: routerShape.isRequired,
 };
@@ -120,4 +145,12 @@ NaviContainer.defaultProps = {
   isNavigatorIntroDismissed: false,
 };
 
-export default NaviContainer;
+const connectedComponent = connectToStores(
+  NaviContainer,
+  ['MessageStore'],
+  context => ({
+    messages: context.getStore('MessageStore').getMessages(),
+  }),
+);
+
+export default connectedComponent;

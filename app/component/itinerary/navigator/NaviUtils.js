@@ -17,21 +17,25 @@ export const DESTINATION_RADIUS = 20; // meters
 
 export function summaryString(legs, time, previousLeg, currentLeg, nextLeg) {
   const parts = epochToIso(time).split('T')[1].split('+');
-  let msg = `${parts[0]}`;
+  let msg = `${parts[0]} `;
   const colors = [];
 
   legs.forEach(l => {
+    let color = 'color:gray';
     if (legTime(l.start) <= time && time <= legTime(l.end)) {
-      colors.push('color:green');
+      color = 'color:green';
     } else if (l.transitLeg) {
-      colors.push('color: #aaaaff');
-    } else {
-      colors.push('color: #aaaaaa');
+      color = 'color:pink';
     }
-    msg += `%c ${legTimeAcc(l.start)}-${legTimeAcc(l.end)}`;
+    colors.push(l.freezeStart ? 'color:lightblue' : color);
+    msg += `%c${legTimeAcc(l.start)}`;
+    colors.push('color:gray');
+    msg += `%c-`;
+    colors.push(l.freezeEnd ? 'color:lightblue' : color);
+    msg += `%c${legTimeAcc(l.end)} `;
   });
-  colors.push('color: #bbbbbb');
-  msg += `%c ${previousLeg?.mode} ${currentLeg?.mode} ${nextLeg?.mode}`;
+  colors.push('color:gray');
+  msg += `%c${previousLeg?.mode} ${currentLeg?.mode} ${nextLeg?.mode}`;
   colors.unshift(msg);
 
   return colors;
@@ -119,7 +123,7 @@ export function getRemainingTraversal(leg, pos, origin, time) {
   return Math.min(Math.max((legTime(leg.end) - time) / duration, 0), 1.0);
 }
 
-function findTransferProblems(legs, time, position, origin) {
+function findTransferProblems(legs, time, position, tailLength) {
   const transfers = [];
 
   for (let i = 1; i < legs.length - 1; i++) {
@@ -179,15 +183,15 @@ function findTransferProblems(legs, time, position, origin) {
             // has transit walk already started ?
             if (time > legTime(leg.start)) {
               // compute how transit is proceeding
-              toGo = getRemainingTraversal(leg, position, origin, time);
+              toGo = tailLength;
               timeLeft = (t2 - time) / 1000;
             } else {
-              toGo = 1.0;
+              toGo = leg.distance;
               timeLeft = duration / 1000; // should we consider also transfer slack here?
             }
             if (toGo > 0) {
               const originalSpeed = leg.distance / leg.duration;
-              const newSpeed = (toGo * leg.distance) / (timeLeft + 0.0001);
+              const newSpeed = toGo / (timeLeft + 0.0001);
               if (newSpeed > 1.5 * originalSpeed) {
                 // too high speed compared to user's routing preference
                 severity = 'ALERT';
@@ -398,7 +402,7 @@ export const getItineraryAlerts = (
   legs,
   time,
   position,
-  origin,
+  tailLength,
   intl,
   messages,
   itinerarySearchCallback,
@@ -472,7 +476,7 @@ export const getItineraryAlerts = (
       }
     });
   } else {
-    const transfers = findTransferProblems(legs, time, position, origin);
+    const transfers = findTransferProblems(legs, time, position, tailLength);
     if (transfers.length) {
       const prob =
         transfers.find(p => p.severity === 'ALERT') ||

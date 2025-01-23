@@ -8,8 +8,8 @@ import PlatformNumber from '../../PlatformNumber';
 import {
   getZoneLabel,
   getHeadsignFromRouteLongName,
-  legTimeStr,
   legTime,
+  legTimeStr,
 } from '../../../util/legUtils';
 import ZoneIcon from '../../ZoneIcon';
 import { legShape, configShape } from '../../../util/shapes';
@@ -17,6 +17,7 @@ import { getDestinationProperties, LEGTYPE, withRealTime } from './NaviUtils';
 import { getRouteMode } from '../../../util/modeUtils';
 import RouteNumber from '../../RouteNumber';
 import RouteNumberContainer from '../../RouteNumberContainer';
+import NaviBoardingInfo from './NaviBoardingInfo';
 
 const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
   const { stop, name, rentalVehicle, vehicleParking, vehicleRentalStation } =
@@ -127,7 +128,34 @@ const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
             }}
           />
         </div>
+        {stopInformation(true)}
+      </div>
+    );
+  }
+  if (legType === LEGTYPE.MOVE && nextLeg?.transitLeg) {
+    const { headsign, route, start } = nextLeg;
+    const hs = headsign || nextLeg.trip?.tripHeadsign;
+    const remainingDuration = Math.max(
+      Math.ceil((legTime(start) - time) / 60000),
+      0,
+    ); // ms to minutes, >= 0
+    const rt = nextLeg.realtimeState === 'UPDATED';
+    const values = {
+      duration: withRealTime(rt, remainingDuration),
+      legTime: withRealTime(rt, legTimeStr(start)),
+    };
+    const routeMode = getRouteMode(route, config);
+    return (
+      <div className={cx('extension', 'no-gap')}>
         {stopInformation()}
+        <div className="extension-divider" />
+        <NaviBoardingInfo
+          route={route}
+          mode={routeMode}
+          headsign={hs}
+          translationValues={values}
+          showExpand
+        />
       </div>
     );
   }
