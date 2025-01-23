@@ -11,12 +11,14 @@ const NaviBoardingInfo = ({
   mode,
   headsign,
   translationValues,
-  showExpand,
+  withExpandIcon,
 }) => {
   return (
-    <div className={cx('boarding', showExpand && 'with-icon')}>
+    <div className={cx('boarding', withExpandIcon && 'with-icon')}>
       <div className="route-info">
-        {showExpand && <Icon img="navi-expand" className="icon-expand-small" />}
+        {withExpandIcon && (
+          <Icon img="navi-expand" className="icon-expand-small" />
+        )}
         <RouteNumberContainer
           className={cx('line', mode)}
           route={route}
@@ -44,10 +46,10 @@ NaviBoardingInfo.propTypes = {
   headsign: PropTypes.string.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   translationValues: PropTypes.object.isRequired,
-  showExpand: PropTypes.bool,
+  withExpandIcon: PropTypes.bool,
 };
 NaviBoardingInfo.defaultProps = {
-  showExpand: false,
+  withExpandIcon: false,
 };
 
 export default NaviBoardingInfo;

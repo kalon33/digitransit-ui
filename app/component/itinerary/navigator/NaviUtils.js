@@ -253,7 +253,7 @@ export const getAdditionalMessages = (
   ) {
     // Todo: multiple fares?
     const fares = getFaresFromLegs([nextLeg], config);
-    if (fares?.length) {
+    if (fares?.length && !fares[0].isUnknown) {
       msgs.push({
         severity: 'INFO',
         content: (

@@ -153,7 +153,7 @@ const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
           mode={routeMode}
           headsign={hs}
           translationValues={values}
-          showExpand
+          withExpandIcon
         />
       </div>
     );
