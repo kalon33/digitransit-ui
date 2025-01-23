@@ -1,5 +1,6 @@
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
 import React from 'react';
+import cx from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { ExtendedRouteTypes } from '../../../constants';
 import { getFaresFromLegs, formatFare } from '../../../util/fareUtils';
@@ -252,7 +253,7 @@ export const getAdditionalMessages = (
   ) {
     // Todo: multiple fares?
     const fares = getFaresFromLegs([nextLeg], config);
-    if (fares?.length) {
+    if (fares?.length && !fares[0].isUnknown) {
       msgs.push({
         severity: 'INFO',
         content: (
@@ -650,3 +651,7 @@ export const LEGTYPE = {
   END: 'END',
   WAIT_IN_VEHICLE: 'WAIT_IN_VEHICLE',
 };
+
+export const withRealTime = (rt, children) => (
+  <span className={cx('bold', { realtime: rt })}>{children}</span>
+);

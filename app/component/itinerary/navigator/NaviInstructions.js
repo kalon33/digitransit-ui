@@ -5,19 +5,20 @@ import cx from 'classnames';
 import { displayDistance } from '../../../util/geo-utils';
 import { legShape, configShape } from '../../../util/shapes';
 import { legDestination, legTimeStr, legTime } from '../../../util/legUtils';
-import RouteNumber from '../../RouteNumber';
-import { LEGTYPE, getLocalizedMode, getToLocalizedMode } from './NaviUtils';
+import {
+  LEGTYPE,
+  getLocalizedMode,
+  getToLocalizedMode,
+  withRealTime,
+} from './NaviUtils';
 import { durationToString } from '../../../util/timeUtils';
 import { getRouteMode } from '../../../util/modeUtils';
+import NaviBoardingInfo from './NaviBoardingInfo';
 
 export default function NaviInstructions(
   { leg, nextLeg, instructions, legType, time, position, tailLength },
   { intl, config },
 ) {
-  const withRealTime = (rt, children) => (
-    <span className={cx('bold', { realtime: rt })}>{children}</span>
-  );
-
   if (legType === LEGTYPE.MOVE) {
     return (
       <>
@@ -25,6 +26,10 @@ export default function NaviInstructions(
           <FormattedMessage id={instructions} defaultMessage="Go to" />
           &nbsp;
           {legDestination(intl, leg, null, nextLeg)}
+          &nbsp;
+          {nextLeg?.transitLeg && (
+            <FormattedMessage id="navileg-hop-on" defaultMessage="by" />
+          )}
         </div>
 
         <div className={cx('duration', { realtime: !!position })}>
@@ -34,7 +39,7 @@ export default function NaviInstructions(
       </>
     );
   }
-  if (legType === LEGTYPE.WAIT && nextLeg.transitLeg) {
+  if (legType === LEGTYPE.WAIT && nextLeg?.transitLeg) {
     const { mode, headsign, route, start } = nextLeg;
     const hs = headsign || nextLeg.trip?.tripHeadsign;
 
@@ -48,11 +53,6 @@ export default function NaviInstructions(
       legTime: withRealTime(rt, legTimeStr(start)),
     };
     const routeMode = getRouteMode(route, config);
-    const iconColor =
-      config.colors.iconColors[`mode-${routeMode}`] ||
-      route.color ||
-      'currentColor';
-
     return (
       <>
         <div className="notification-header">
@@ -62,25 +62,12 @@ export default function NaviInstructions(
             defaultMessage="Get on the {mode}"
           />
         </div>
-        <div className="wait-leg">
-          <div className="route-info">
-            <RouteNumber
-              mode={routeMode}
-              text={route?.shortName}
-              withBar
-              isTransitLeg
-              color={iconColor}
-            />
-            <div className="headsign">{hs}</div>
-          </div>
-          <div className="wait-duration">
-            <FormattedMessage
-              id="navileg-arrive-at"
-              defaultMessage="{duration} min päästä klo {legTime}"
-              values={values}
-            />
-          </div>
-        </div>
+        <NaviBoardingInfo
+          route={route}
+          mode={routeMode}
+          headsign={hs}
+          translationValues={values}
+        />
       </>
     );
   }
