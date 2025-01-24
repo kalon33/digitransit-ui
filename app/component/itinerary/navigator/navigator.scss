@@ -43,14 +43,6 @@ $fixed-width-padding: 16px;
   border-radius: $border-radius;
 }
 
-.headsign {
-  margin-left: 10px;
-  font-size: $font-size-small;
-  max-width: 85%;
-  text-align: left;
-  align-content: center;
-}
-
 .bold {
   font-weight: $font-weight-medium;
 }
@@ -112,6 +104,40 @@ $fixed-width-padding: 16px;
   }
 }
 
+.boarding {
+  display: flex;
+  margin-top: 3px;
+  align-items: flex-start;
+  flex-direction: column;
+
+  &.with-icon {
+    margin-left: var(--space-xl);
+
+    .wait-duration {
+      margin-top: var(--space-xs);
+      margin-left: var(--space-l);
+    }
+  }
+
+  .wait-duration {
+    margin-top: var(--space-xs);
+  }
+
+  .icon {
+    margin-top: 2px;
+    height: 25px;
+    width: 25px;
+  }
+
+  .headsign {
+    margin-left: 10px;
+    font-size: $font-size-small;
+    max-width: 85%;
+    text-align: left;
+    align-content: center;
+  }
+}
+
 .navi-top-card {
   margin: 0 var(--space-s) 5px var(--space-s);
   border-radius: 8px;
@@ -140,32 +166,6 @@ $fixed-width-padding: 16px;
   .main-card {
     width: 100%;
     margin: var(--space-m) var(--space-l);
-
-    .boarding {
-      display: flex;
-      margin-top: 3px;
-      align-items: flex-start;
-      flex-direction: column;
-
-      &.with-icon {
-        margin-left: var(--space-xl);
-
-        .wait-duration {
-          margin-top: var(--space-xs);
-          margin-left: var(--space-l);
-        }
-      }
-
-      .wait-duration {
-        margin-top: var(--space-xs);
-      }
-
-      .icon {
-        margin-top: 2px;
-        height: 25px;
-        width: 25px;
-      }
-    }
 
     .content {
       display: flex;
