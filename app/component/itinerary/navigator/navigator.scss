@@ -43,17 +43,6 @@ $fixed-width-padding: 16px;
   border-radius: $border-radius;
 }
 
-.route-number {
-  .vcenter-children {
-    .vehicle-number {
-      color: white;
-      margin-top: 5px;
-    }
-
-    display: flex;
-  }
-}
-
 .headsign {
   margin-left: 10px;
   font-size: $font-size-small;

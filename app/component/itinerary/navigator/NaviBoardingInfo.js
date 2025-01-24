@@ -14,7 +14,7 @@ const NaviBoardingInfo = ({
   withExpandIcon,
 }) => {
   return (
-    <div className={cx('boarding', withExpandIcon && 'with-icon')}>
+    <div className={cx('boarding', { 'with-icon': withExpandIcon })}>
       <div className="route-info">
         {withExpandIcon && (
           <Icon img="navi-expand" className="icon-expand-small" />
