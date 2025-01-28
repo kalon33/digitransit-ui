@@ -3,27 +3,32 @@ import { matchShape, routerShape } from 'found';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { intlShape } from 'react-intl';
-import { legTime, legTimeStr } from '../../../util/legUtils';
+import {
+  isAnyLegPropertyIdentical,
+  legTime,
+  legTimeStr,
+} from '../../../util/legUtils';
 import { configShape, legShape } from '../../../util/shapes';
+import { getTopics, updateClient } from '../ItineraryPageUtils';
 import NaviCard from './NaviCard';
 import NaviStack from './NaviStack';
 import {
+  DESTINATION_RADIUS,
   getAdditionalMessages,
   getItineraryAlerts,
   getTransitLegState,
   itinerarySearchPath,
   LEGTYPE,
-  DESTINATION_RADIUS,
 } from './NaviUtils';
-import { updateClient, getTopics } from '../ItineraryPageUtils';
+import usePrevious from './hooks/usePrevious';
 
 const COUNT_AT_LEG_END = 2; // update cycles within DESTINATION_RADIUS from leg.to
 const TOPBAR_PADDING = 8; // pixels
 const HIDE_TOPCARD_DURATION = 2000; // milliseconds
 
-function addMessages(incominMessages, newMessages) {
+function addMessages(incomingMessages, newMessages) {
   newMessages.forEach(m => {
-    incominMessages.set(m.id, m);
+    incomingMessages.set(m.id, m);
   });
 }
 
@@ -70,26 +75,22 @@ function NaviCardContainer(
   },
   context,
 ) {
-  const [cardExpanded, setCardExpanded] = useState(false);
   // All notifications including those user has dismissed.
   const [messages, setMessages] = useState(new Map());
   // notifications that are shown to the user.
   const [activeMessages, setActiveMessages] = useState([]);
   const [legChanging, setLegChanging] = useState(false);
-  const legRef = useRef(currentLeg);
+  const { isEqual: legChanged } = usePrevious(currentLeg, (prev, current) =>
+    isAnyLegPropertyIdentical(prev, current, ['legId', 'mode']),
+  );
   const focusRef = useRef(false);
   // Destination counter. How long user has been at the destination. * 10 seconds
   const legEndRef = useRef(0);
-  const cardRef = useRef(null);
   const { intl, config, match, router } = context;
   const handleRemove = index => {
     const msg = messages.get(activeMessages[index].id);
     msg.closed = true; // remember closing action
     setActiveMessages(activeMessages.filter((_, i) => i !== index));
-  };
-
-  const handleClick = () => {
-    setCardExpanded(!cardExpanded);
   };
 
   // track only relevant vehicles for the journey.
@@ -116,13 +117,6 @@ function NaviCardContainer(
 
   useEffect(() => {
     const incomingMessages = new Map();
-
-    const legChanged = legRef.current?.legId
-      ? legRef.current.legId !== currentLeg?.legId
-      : legRef.current?.mode !== currentLeg?.mode;
-    if (legChanged) {
-      legRef.current = currentLeg;
-    }
 
     // Alerts for NaviStack
     addMessages(
@@ -179,7 +173,6 @@ function NaviCardContainer(
     let timeoutId;
     if (legChanged) {
       updateClient(getNaviTopics(), context);
-      setCardExpanded(false);
       setLegChanging(true);
       timeoutId = setTimeout(() => {
         setLegChanging(false);
@@ -259,23 +252,15 @@ function NaviCardContainer(
       className={`navi-card-container ${className}`}
       style={{ top: containerTopPosition }}
     >
-      <button
-        type="button"
-        className={`navi-top-card ${cardExpanded ? 'expanded' : ''}`}
-        onClick={handleClick}
-        ref={cardRef}
-      >
-        <NaviCard
-          leg={l}
-          nextLeg={nextLeg}
-          cardExpanded={cardExpanded}
-          legType={legType}
-          startTime={legTimeStr(firstLeg.start)}
-          time={time}
-          position={position}
-          tailLength={tailLength}
-        />
-      </button>
+      <NaviCard
+        leg={l}
+        nextLeg={nextLeg}
+        legType={legType}
+        startTime={legTimeStr(firstLeg.start)}
+        time={time}
+        position={position}
+        tailLength={tailLength}
+      />
       {activeMessages.length > 0 && (
         <NaviStack messages={activeMessages} handleRemove={handleRemove} />
       )}
