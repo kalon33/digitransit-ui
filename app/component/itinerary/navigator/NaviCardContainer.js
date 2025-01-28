@@ -12,6 +12,7 @@ import { configShape, legShape } from '../../../util/shapes';
 import { getTopics, updateClient } from '../ItineraryPageUtils';
 import NaviCard from './NaviCard';
 import NaviStack from './NaviStack';
+import NaviStarter from './NaviStarter';
 import {
   DESTINATION_RADIUS,
   getAdditionalMessages,
@@ -40,7 +41,7 @@ const getLegType = (
   interlineWithPreviousLeg,
 ) => {
   let legType;
-  if (time < legTime(firstLeg.start)) {
+  if (!firstLeg.forceStart && time < legTime(firstLeg.start)) {
     legType = LEGTYPE.PENDING;
   } else if (leg) {
     if (!leg.transitLeg) {
@@ -72,6 +73,7 @@ function NaviCardContainer(
     lastLeg,
     previousLeg,
     isJourneyCompleted,
+    startItinerary,
   },
   context,
 ) {
@@ -83,6 +85,7 @@ function NaviCardContainer(
   const { isEqual: legChanged } = usePrevious(currentLeg, (prev, current) =>
     isAnyLegPropertyIdentical(prev, current, ['legId', 'mode']),
   );
+  const { isEqual: forceStart } = usePrevious(firstLeg?.forceStart);
   const focusRef = useRef(false);
   // Destination counter. How long user has been at the destination. * 10 seconds
   const legEndRef = useRef(0);
@@ -171,7 +174,7 @@ function NaviCardContainer(
       ]);
     }
     let timeoutId;
-    if (legChanged) {
+    if (legChanged || forceStart) {
       updateClient(getNaviTopics(), context);
       setLegChanging(true);
       timeoutId = setTimeout(() => {
@@ -225,7 +228,7 @@ function NaviCardContainer(
     }
 
     return () => clearTimeout(timeoutId);
-  }, [time]);
+  }, [time, firstLeg]);
 
   // LegChange fires animation, we need to keep the old data until card goes out of the view.
   const l = legChanging ? previousLeg : currentLeg;
@@ -252,15 +255,23 @@ function NaviCardContainer(
       className={`navi-card-container ${className}`}
       style={{ top: containerTopPosition }}
     >
-      <NaviCard
-        leg={l}
-        nextLeg={nextLeg}
-        legType={legType}
-        startTime={legTimeStr(firstLeg.start)}
-        time={time}
-        position={position}
-        tailLength={tailLength}
-      />
+      {(!firstLeg.forceStart && time < legTime(firstLeg.start)) ||
+      (firstLeg.forceStart && time < legTime(firstLeg.start) && legChanging) ? (
+        <NaviStarter
+          time={legTimeStr(firstLeg.start)}
+          startItinerary={startItinerary}
+        />
+      ) : (
+        <NaviCard
+          leg={l}
+          nextLeg={nextLeg}
+          legType={legType}
+          startTime={legTimeStr(firstLeg.start)}
+          time={time}
+          position={position}
+          tailLength={tailLength}
+        />
+      )}
       {activeMessages.length > 0 && (
         <NaviStack messages={activeMessages} handleRemove={handleRemove} />
       )}
@@ -288,6 +299,7 @@ NaviCardContainer.propTypes = {
   lastLeg: legShape,
   previousLeg: legShape,
   isJourneyCompleted: PropTypes.bool,
+  startItinerary: PropTypes.func,
 };
 
 NaviCardContainer.defaultProps = {
@@ -299,6 +311,7 @@ NaviCardContainer.defaultProps = {
   lastLeg: undefined,
   previousLeg: undefined,
   isJourneyCompleted: false,
+  startItinerary: () => {},
 };
 
 NaviCardContainer.contextTypes = {

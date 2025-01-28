@@ -402,6 +402,40 @@
   }
 }
 
+.navi-initializer-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxs);
+  font-weight: 325;
+  font-size: 14px;
+  line-height: 21px;
+
+  .navi-initializer-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xxs);
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    flex-wrap: wrap;
+    background-color: white;
+    border-radius: var(--radius-m);
+    padding: var(--space-m);
+    box-shadow: 0 2px 4px 0 rgba(51, 51, 51, 0.2);
+    text-align: center;
+
+    &.success {
+      background-color: $success-color;
+      gap: var(--space-xs);
+
+      button {
+        color: white;
+        background-color: $realtime-color;
+      }
+    }
+  }
+}
+
 .navigator-modal-container {
   position: fixed;
   width: 100%;
