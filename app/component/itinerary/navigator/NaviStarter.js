@@ -1,6 +1,6 @@
 import Button from '@hsl-fi/button';
 import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import React from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
 import { configShape } from '../../../util/shapes';
 import Icon from '../../Icon';
@@ -9,10 +9,7 @@ import { useLogo } from './hooks/useLogo';
 const NaviStarter = ({ time, startItinerary }, { config, intl }) => {
   const { logo } = useLogo(config.trafficLightGraphic);
 
-  const handleClick = useCallback(
-    () => startItinerary(Date.now()),
-    [startItinerary],
-  );
+  const handleClick = () => startItinerary(Date.now());
 
   return (
     <div className="navi-initializer-container">
