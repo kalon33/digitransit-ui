@@ -39,7 +39,7 @@ function NaviContainer(
   } else {
     hasPosition.current = true;
   }
-
+  const { vehicles } = getStore('RealTimeInformationStore');
   const {
     realTimeLegs,
     time,
@@ -49,7 +49,7 @@ function NaviContainer(
     previousLeg,
     currentLeg,
     nextLeg,
-  } = useRealtimeLegs(relayEnvironment, legs, position);
+  } = useRealtimeLegs(relayEnvironment, legs, position, vehicles);
 
   useEffect(() => {
     mapRef?.enableMapTracking(); // try always, shows annoying notifier
