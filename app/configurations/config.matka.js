@@ -22,7 +22,7 @@ export default {
   CONFIG,
   OTPTimeout: process.env.OTP_TIMEOUT || 30000,
   URL: {
-    FONT: 'https://digitransit-prod-cdn-origin.azureedge.net/matka-fonts/roboto/roboto+montserrat.css',
+    FONT: 'https://cdn.digitransit.fi/matka-fonts/roboto/roboto+montserrat.css',
   },
 
   mainMenu: {
@@ -436,4 +436,10 @@ export default {
       value: 1800,
     },
   ],
+  // features that should not be deployed to production
+  experimental: {
+    navigation:
+      process.env.RUN_ENV === 'development' ||
+      process.env.NODE_ENV !== 'production',
+  },
 };

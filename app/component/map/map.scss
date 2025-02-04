@@ -57,6 +57,7 @@ div.map {
 
   .drawer-container {
     overflow-y: scroll;
+    scrollbar-width: none;
     height: 100%;
     position: absolute;
     width: 100%;
@@ -73,10 +74,10 @@ div.map {
       z-index: index($zindex, mobile-drawer);
 
       .drag-line {
-        width: 30px;
+        width: 48px;
         height: 4px;
         border-radius: 2px;
-        background-color: #ccc;
+        background-color: #ddd;
         display: block;
         z-index: index($zindex, mobile-drawer-drag-line);
         margin: auto;

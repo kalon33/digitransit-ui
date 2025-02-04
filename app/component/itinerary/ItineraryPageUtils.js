@@ -468,25 +468,30 @@ export function mergeBikeTransitPlans(bikeParkPlan, bikeTransitPlan) {
 }
 
 /**
- * Merge the direct car plan with the car transit plan.
+ * Parse the car transit plan which possibly includes a direct route.
  */
-export function mergeCarDirectAndTransitPlans(carDirectPlan, carTransitPlan) {
-  const carDirectPlanEdges = carDirectPlan?.edges || [];
-  let carPublicEdges = carTransitPlan?.edges || [];
+export function parseCarTransitPlan(carTransitPlan) {
+  let carEdges = carTransitPlan?.edges || [];
+  let carDirectItineraryCount = 0;
+  let carPublicItineraryCount = carEdges.length;
+  const maxCarPublicCount = 5;
 
-  // If the car direct plan has a shorter duration than a transit plan, the transit plan is filtered out.
-  if (carDirectPlanEdges.length === 1) {
-    carPublicEdges = carPublicEdges.filter(
-      itinerary =>
-        itinerary.node.duration <= carDirectPlanEdges[0].node.duration,
-    );
+  if (carEdges.length > 0) {
+    // If the first route is a direct route.
+    if (carEdges?.[0]?.node.legs.every(leg => !leg.transitLeg)) {
+      carDirectItineraryCount = 1;
+      carPublicItineraryCount -= 1;
+    } else if (carEdges.length > maxCarPublicCount) {
+      carPublicItineraryCount = maxCarPublicCount;
+      carEdges = carEdges.slice(0, maxCarPublicCount);
+    }
   }
 
   return {
     searchDateTime: carTransitPlan.searchDateTime,
-    edges: [...carDirectPlanEdges, ...carPublicEdges],
-    carDirectItineraryCount: carDirectPlanEdges.length,
-    carPublicItineraryCount: carPublicEdges.length,
+    edges: carEdges,
+    carDirectItineraryCount,
+    carPublicItineraryCount,
   };
 }
 

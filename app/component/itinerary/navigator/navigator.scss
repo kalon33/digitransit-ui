@@ -1,10 +1,9 @@
-$fixed-width-padding: 16px;
-
 .navi-start-container {
   padding: 0 10px;
+  width: 100%;
 
   button {
-    width: 100%;
+    width: inherit;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -39,6 +38,10 @@ $fixed-width-padding: 16px;
   }
 }
 
+.bar {
+  border-radius: $border-radius;
+}
+
 .bold {
   font-weight: $font-weight-medium;
 }
@@ -46,11 +49,19 @@ $fixed-width-padding: 16px;
 .notification-header {
   font-size: $font-size-normal;
   font-weight: $font-weight-medium;
+  text-align: left;
 }
 
 .navi-card-container {
   position: fixed;
-  width: 100vw;
+  width: 100%;
+  padding: 0 var(--space-s);
+
+  svg.mode {
+    width: 32px;
+    height: 32px;
+    color: black;
+  }
 
   &.slide-out {
     animation: slideUpToTop 3s ease-out forwards;
@@ -66,9 +77,75 @@ $fixed-width-padding: 16px;
   }
 }
 
+.route-info {
+  display: flex;
+  align-self: flex-start;
+  margin-bottom: var(--space-xcs);
+
+  .route-number {
+    display: flex;
+    flex-direction: row;
+    margin-top: 4px;
+
+    .vcenter-children {
+      .vehicle-number {
+        color: white;
+        margin-top: 5px;
+      }
+
+      display: flex;
+    }
+  }
+
+  .expand {
+    margin-left: var(--space-m);
+    display: flex;
+
+    .icon {
+      margin-right: var(--space-s);
+      margin-top: 5px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+.boarding {
+  display: flex;
+  margin-top: 3px;
+  align-items: flex-start;
+  flex-direction: column;
+
+  &.with-icon {
+    margin-left: var(--space-xl);
+
+    .wait-duration {
+      margin-top: var(--space-xs);
+      margin-left: var(--space-l);
+    }
+  }
+
+  .wait-duration {
+    margin-top: var(--space-xs);
+  }
+
+  .icon {
+    margin-top: 2px;
+    height: 25px;
+    width: 25px;
+  }
+
+  .headsign {
+    margin-left: 10px;
+    font-size: $font-size-small;
+    max-width: 85%;
+    text-align: left;
+    align-content: center;
+  }
+}
+
 .navi-top-card {
-  margin: 0 var(--space-s) 5px var(--space-s);
-  border-radius: 8px;
+  border-radius: var(--radius-m);
   min-height: 70px;
   color: black;
   background-color: white !important;
@@ -76,7 +153,7 @@ $fixed-width-padding: 16px;
   align-items: center;
   letter-spacing: -0.3px;
   box-shadow: 0 2px 4px 0 rgba(51, 51, 51, 0.2);
-  width: calc(100vw - #{$fixed-width-padding});
+  width: inherit;
   cursor: default;
   font-size: $font-size-normal;
   font-weight: $font-weight-book;
@@ -92,7 +169,7 @@ $fixed-width-padding: 16px;
   }
 
   .main-card {
-    width: 100%;
+    width: inherit;
     margin: var(--space-m) var(--space-l);
 
     .content {
@@ -101,10 +178,7 @@ $fixed-width-padding: 16px;
       color: black;
       justify-content: center;
 
-      .mode {
-        width: 32px;
-        height: 32px;
-        color: black;
+      svg.mode {
         margin-right: var(--space-s);
         margin-top: var(--space-xxs);
       }
@@ -126,52 +200,6 @@ $fixed-width-padding: 16px;
         width: 80%;
         text-align: left;
       }
-
-      .wait-leg {
-        display: flex;
-        margin-top: 3px;
-        flex-direction: column;
-        align-items: flex-start;
-
-        .route-info {
-          display: flex;
-          align-self: flex-start;
-          margin-bottom: var(--space-xcs);
-        }
-
-        .wait-duration {
-          margin-top: var(--space-xs);
-        }
-
-        .bar {
-          border-radius: $border-radius;
-        }
-
-        .route-number {
-          .vcenter-children {
-            .vehicle-number {
-              color: white;
-              margin-top: 5px;
-            }
-
-            display: flex;
-          }
-        }
-
-        .headsign {
-          margin-left: 10px;
-          font-size: $font-size-small;
-          max-width: 85%;
-          text-align: left;
-          align-content: center;
-        }
-
-        .icon {
-          margin-top: 2px;
-          height: 25px;
-          width: 25px;
-        }
-      }
     }
 
     .duration {
@@ -190,6 +218,11 @@ $fixed-width-padding: 16px;
       max-height: 250px;
       margin-bottom: var(--space-s);
       margin-top: var(--space-m);
+
+      &.no-gap {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
 
       .extension-divider {
         height: 1px;
@@ -266,10 +299,35 @@ $fixed-width-padding: 16px;
         margin-left: var(--space-xl);
       }
 
+      .wait-leg {
+        display: flex;
+        margin-top: 3px;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-left: var(--space-m);
+
+        .wait-duration {
+          margin-top: var(--space-xs);
+        }
+
+        .icon {
+          margin-top: 2px;
+          height: 25px;
+          width: 25px;
+        }
+      }
+
       .icon-expand {
         margin-top: 5px;
-        width: var(--space-m);
-        height: var(--space-m);
+        width: 24px;
+        height: 24px;
+      }
+
+      .icon-expand-small {
+        margin-top: 5px;
+        width: 16px;
+        height: 16px;
+        margin-right: var(--space-s);
       }
 
       .destination-icon {
@@ -344,6 +402,40 @@ $fixed-width-padding: 16px;
   }
 }
 
+.navi-initializer-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxs);
+  font-weight: 325;
+  font-size: 14px;
+  line-height: 21px;
+
+  .navi-initializer-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xxs);
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    flex-wrap: wrap;
+    background-color: white;
+    border-radius: var(--radius-m);
+    padding: var(--space-m);
+    box-shadow: 0 2px 4px 0 rgba(51, 51, 51, 0.2);
+    text-align: center;
+
+    &.success {
+      background-color: $success-color;
+      gap: var(--space-xs);
+
+      button {
+        color: white;
+        background-color: $realtime-color;
+      }
+    }
+  }
+}
+
 .navigator-modal-container {
   position: fixed;
   width: 100%;
@@ -380,20 +472,9 @@ $fixed-width-padding: 16px;
 }
 
 .info-stack {
-  position: fixed;
-  height: 69px;
+  position: relative;
   letter-spacing: -0.3px;
-  width: calc(100% - #{$fixed-width-padding});
-  margin-right: 8px;
-  margin-left: 8px;
-
-  div:first-child {
-    margin-top: 0;
-  }
-
-  .info-stack-item:not(:first-child) {
-    margin-top: 5px;
-  }
+  width: inherit;
 
   &.slide-out {
     animation:
@@ -420,6 +501,7 @@ $fixed-width-padding: 16px;
       fadeIn 0.5s ease-out forwards;
     font-size: $font-size-xsmall;
     font-weight: $font-weight-book;
+    margin-top: 5px;
 
     .icon-container {
       display: flex;

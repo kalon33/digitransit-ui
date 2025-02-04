@@ -1328,7 +1328,9 @@ const translations = {
     'navigation-intro-notifications-header':
       'TODO_navigation-intro-login-prompt_EN',
     'navigation-journey-end': 'Journey has ended',
-    'navigation-journey-start': 'Your journey starts {time}',
+    'navigation-journey-start': 'Your journey starts at',
+    'navigation-journey-start-early-prompt':
+      'TODO_navigation-journey-start-early-prompt_EN',
     'navigation-mode-canceled': 'TODO_{name} on peruuntunut',
     'navigation-mode-early': 'TODO_{name} on etuajassa',
     'navigation-mode-late:': 'TODO_{name} on myöhässä',
@@ -1340,12 +1342,13 @@ const translations = {
     'navigation-transfer-problem':
       'Transfer {route1} - {route2} is no longer possible',
     'navigation-wait': 'Wait at the stop',
-    'navileg-arrive-at': 'TODO_{duration} min päästä klo {legTime}',
     'navileg-at-ferrypier': 'ferry pier',
     'navileg-at-station': 'station',
     'navileg-at-stop': 'stop',
     'navileg-bicycle': 'Cycle to',
     'navileg-car': 'Drive to',
+    'navileg-departing-at': 'TODO_{duration} min päästä klo {legTime}',
+    'navileg-hop-on': 'TODO_ja nouse kyytiin',
     'navileg-in-transit': 'TODO_{mode}matka',
     'navileg-in-transit-interline':
       'TODO_Matka jatkuu {stopOrStation} {stop}  samassa kulkuneuvossa {duration} päästä klo {legTime}',
@@ -2620,7 +2623,8 @@ const translations = {
       'Pysy ajan tasalla matkasi vaiheista',
     'navigation-intro-notifications-header': 'Ilmoitukset ja muutokset',
     'navigation-journey-end': 'Matka on päättynyt',
-    'navigation-journey-start': 'Matkasi alkaa {time}',
+    'navigation-journey-start': 'Matkasi alkaa klo',
+    'navigation-journey-start-early-prompt': 'Etkö halua odottaa?',
     'navigation-mode-canceled': '{name} on peruuntunut',
     'navigation-mode-early': '{name} on etuajassa',
     'navigation-mode-late:': '{name} on myöhässä',
@@ -2631,12 +2635,13 @@ const translations = {
     'navigation-ticket': 'Lippu',
     'navigation-transfer-problem': 'Vaihto {route1} - {route2} ei enää onnistu',
     'navigation-wait': 'Odota pysäkillä',
-    'navileg-arrive-at': '{duration} min päästä klo {legTime}',
     'navileg-at-ferrypier': 'lauttalaiturilla',
     'navileg-at-station': 'asemalla',
     'navileg-at-stop': 'pysäkillä',
     'navileg-bicycle': 'Pyöräile',
     'navileg-car': 'Aja',
+    'navileg-departing-at': '{duration} min päästä klo {legTime}',
+    'navileg-hop-on': 'ja nouse kyytiin',
     'navileg-in-transit': '{mode}matka',
     'navileg-in-transit-interline':
       'Matka jatkuu {stopOrStation} {stop}  samassa kulkuneuvossa {duration} min päästä klo {legTime}',
@@ -5565,7 +5570,9 @@ const translations = {
     'navigation-intro-notifications-header':
       'TODO_navigation-intro-login-prompt_SV',
     'navigation-journey-end': 'Resan är över',
-    'navigation-journey-start': 'Din resa börjar {time}',
+    'navigation-journey-start': 'Din resa börjar',
+    'navigation-journey-start-early-prompt':
+      'TODO_navigation-journey-start-early-prompt_SV',
     'navigation-mode-canceled': 'TODO_{name} on peruuntunut',
     'navigation-mode-early': 'TODO_{name} on etuajassa',
     'navigation-mode-late:': 'TODO_{name} on myöhässä',
@@ -5577,12 +5584,13 @@ const translations = {
     'navigation-transfer-problem':
       'TODO_Vaihto {route1} - {route2} ei enää onnistu',
     'navigation-wait': 'Vänta på hållplatsen',
-    'navileg-arrive-at': 'TODO_{duration} min päästä klo {legTime}',
     'navileg-at-ferrypier': 'färjekajen',
     'navileg-at-station': 'station',
     'navileg-at-stop': 'hållplats',
     'navileg-bicycle': 'Cycla till',
     'navileg-car': 'Kör till',
+    'navileg-departing-at': 'TODO_{duration} min päästä klo {legTime}',
+    'navileg-hop-on': 'TODO_ja nouse kyytiin',
     'navileg-in-transit': 'TODO_{mode}matka',
     'navileg-in-transit-interline':
       'TODO_Matka jatkuu {stopOrStation} {stop}  samassa kulkuneuvossa {duration} päästä klo {legTime}',
