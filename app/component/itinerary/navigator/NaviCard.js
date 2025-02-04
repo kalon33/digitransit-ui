@@ -72,8 +72,8 @@ export default function NaviCard(
     }
     iconName = iconMap[leg.mode];
   } else if (legType === LEGTYPE.MOVE) {
-    instructions = `navileg-${leg?.mode.toLowerCase()}`;
-    iconName = iconMap.WALK;
+    instructions = `navileg-${leg.mode.toLowerCase()}`;
+    iconName = iconMap[leg.mode] || iconMap.WALK;
   } else if (legType === LEGTYPE.WAIT) {
     iconName = iconMap.WAIT;
   } else if (legType === LEGTYPE.WAIT_IN_VEHICLE) {
