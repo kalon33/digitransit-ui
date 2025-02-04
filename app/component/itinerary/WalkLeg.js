@@ -162,7 +162,7 @@ function WalkLeg(
                   {returnNotice || leg[toOrFrom].name}
                   {leg.isViaPoint && (
                     <Icon
-                      img="icon-icon_mapMarker-via"
+                      img="icon-icon_mapMarker"
                       className="itinerary-mapmarker-icon"
                     />
                   )}
