@@ -525,9 +525,12 @@ export const getItineraryAlerts = (
           let content;
           if (prob.severity === 'ALERT') {
             content = withNewSearchBtn(
-              <span className="notification-header">
+              <>
+                <span className="notification-header">
+                  <FormattedMessage id="navigation-transfer-problem" />
+                </span>
                 <FormattedMessage
-                  id="navigation-transfer-problem"
+                  id="navigation-transfer-problem-details"
                   values={{
                     transfer: Transfer(
                       prob.fromLeg.route,
@@ -536,7 +539,7 @@ export const getItineraryAlerts = (
                     ),
                   }}
                 />
-              </span>,
+              </>,
               itinerarySearchCallback,
             );
           } else {
