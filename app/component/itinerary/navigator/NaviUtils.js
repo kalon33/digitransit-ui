@@ -404,26 +404,28 @@ function Transfer(route1, route2, config) {
   const mode2 = getRouteMode(route2, config);
 
   return (
-    <span className="navi-transfer">
-      <RouteNumberContainer
-        className={cx('line', mode1)}
-        route={route1}
-        mode={mode1}
-        isTransitLeg
-        vertical
-        withBar
-      />
-      &nbsp;
-      <Icon img="icon-icon_arrow-right" />
-      &nbsp;
-      <RouteNumberContainer
-        className={cx('line', mode2)}
-        route={route2}
-        mode={mode2}
-        isTransitLeg
-        vertical
-        withBar
-      />
+    <span className="navi-transfer-container">
+      <div className="navi-transfer">
+        <RouteNumberContainer
+          className={cx('line', mode1)}
+          route={route1}
+          mode={mode1}
+          isTransitLeg
+          vertical
+          withBar
+        />
+        &nbsp;
+        <Icon img="icon-icon_arrow-right" />
+        &nbsp;
+        <RouteNumberContainer
+          className={cx('line', mode2)}
+          route={route2}
+          mode={mode2}
+          isTransitLeg
+          vertical
+          withBar
+        />
+      </div>
     </span>
   );
 }
@@ -541,19 +543,17 @@ export const getItineraryAlerts = (
                 <span className="notification-header">
                   <FormattedMessage id="navigation-hurry-transfer" />
                 </span>
-                <span className="navi-transfer-container">
-                  <FormattedMessage
-                    id="navigation-hurry-transfer-value"
-                    values={{
-                      transfer: Transfer(
-                        prob.fromLeg.route,
-                        prob.toLeg.route,
-                        config,
-                      ),
-                      time: durationToString(prob.duration),
-                    }}
-                  />
-                </span>
+                <FormattedMessage
+                  id="navigation-hurry-transfer-value"
+                  values={{
+                    transfer: Transfer(
+                      prob.fromLeg.route,
+                      prob.toLeg.route,
+                      config,
+                    ),
+                    time: durationToString(prob.duration),
+                  }}
+                />
               </div>
             );
           }

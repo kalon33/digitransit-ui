@@ -78,23 +78,21 @@
 }
 
 .navi-transfer-container {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
+  display: inline-flex;
 
   .navi-transfer {
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap;
 
     .route-number {
-      display: flex;
-      flex-direction: row;
+      font-size: $font-size-xxxsmall;
+      min-width: 12px;
+      min-height: 16px;
 
       .vcenter-children {
         .vehicle-number {
           color: white;
-          margin-top: 0;
+          padding: 1px;
         }
 
         display: flex;
