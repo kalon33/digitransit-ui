@@ -84,15 +84,26 @@
     display: flex;
     flex-direction: row;
 
+    .arrow-center {
+      padding-top: 4px;
+    }
+
+    height: 18px;
+
     .route-number {
-      font-size: $font-size-xxxsmall;
+      font-size: $font-size-xxsmall;
       min-width: 12px;
-      min-height: 16px;
 
       .vcenter-children {
         .vehicle-number {
           color: white;
-          padding: 1px;
+          padding: 0 8px 0 2px;
+          margin-top: -1px;
+        }
+
+        .special-icon {
+          padding: 2px 2px 0 1px;
+          height: 14px;
         }
 
         display: flex;

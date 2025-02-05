@@ -415,7 +415,9 @@ function Transfer(route1, route2, config) {
           withBar
         />
         &nbsp;
-        <Icon img="icon-icon_arrow-right" />
+        <div className="arrow-center">
+          <Icon img="icon-icon_arrow-right" width="0.8" height="0.8" />
+        </div>
         &nbsp;
         <RouteNumberContainer
           className={cx('line', mode2)}
