@@ -1337,8 +1337,7 @@ const translations = {
     'navigation-remember-ticket': 'TODO_Muistithan ostaa lipun?',
     'navigation-start': 'Start journey',
     'navigation-ticket': 'Ticket',
-    'navigation-transfer-problem':
-      'Transfer {route1} - {route2} is no longer possible',
+    'navigation-transfer-problem': 'Transfer {transfer} is no longer possible',
     'navigation-wait': 'Wait at the stop',
     'navileg-at-ferrypier': 'ferry pier',
     'navileg-at-station': 'station',
@@ -2629,7 +2628,7 @@ const translations = {
     'navigation-remember-ticket': 'Muistithan ostaa lipun?',
     'navigation-start': 'Matkalle',
     'navigation-ticket': 'Lippu',
-    'navigation-transfer-problem': 'Vaihto {route1} - {route2} ei enää onnistu',
+    'navigation-transfer-problem': 'Vaihto {transfer} ei enää onnistu',
     'navigation-wait': 'Odota pysäkillä',
     'navileg-at-ferrypier': 'lauttalaiturilla',
     'navileg-at-station': 'asemalla',
@@ -5575,8 +5574,7 @@ const translations = {
     'navigation-remember-ticket': 'TODO_Muistithan ostaa lipun?',
     'navigation-start': 'På resa',
     'navigation-ticket': 'Biljett',
-    'navigation-transfer-problem':
-      'TODO_Vaihto {route1} - {route2} ei enää onnistu',
+    'navigation-transfer-problem': 'TODO_Vaihto {transfer} ei enää onnistu',
     'navigation-wait': 'Vänta på hållplatsen',
     'navileg-at-ferrypier': 'färjekajen',
     'navileg-at-station': 'station',

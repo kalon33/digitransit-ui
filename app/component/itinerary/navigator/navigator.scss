@@ -77,6 +77,32 @@
   }
 }
 
+.navi-transfer-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+
+  .navi-transfer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+
+    .route-number {
+      display: flex;
+      flex-direction: row;
+
+      .vcenter-children {
+        .vehicle-number {
+          color: white;
+          margin-top: 0;
+        }
+
+        display: flex;
+      }
+    }
+  }
+}
+
 .route-info {
   display: flex;
   align-self: flex-start;
