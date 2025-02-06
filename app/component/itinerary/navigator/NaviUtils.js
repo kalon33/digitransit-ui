@@ -13,7 +13,7 @@ import { getRouteMode } from '../../../util/modeUtils';
 import RouteNumberContainer from '../../RouteNumberContainer';
 import Icon from '../../Icon';
 
-const TRANSFER_SLACK = 600000;
+const TRANSFER_SLACK = 60000;
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
 
 export const DESTINATION_RADIUS = 20; // meters
