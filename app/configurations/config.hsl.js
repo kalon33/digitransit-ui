@@ -763,8 +763,6 @@ export default {
 
   // features that should not be deployed to production
   experimental: {
-    navigation:
-      process.env.RUN_ENV === 'development' ||
-      process.env.NODE_ENV !== 'production',
+    navigation: IS_DEV,
   },
 };
