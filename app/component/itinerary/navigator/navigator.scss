@@ -83,12 +83,11 @@
   .navi-transfer {
     display: flex;
     flex-direction: row;
-
+    height: 18px;
+    
     .arrow-center {
       padding-top: 4px;
     }
-
-    height: 18px;
 
     .route-number {
       font-size: $font-size-xxsmall;
