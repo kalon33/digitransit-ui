@@ -91,6 +91,9 @@ export default {
     'Harma',
     'PohjolanMatka',
     'Korsisaari',
+    'KoivistonAuto',
+    'PahkakankaanLiikenne',
+    'IngvesSvanback',
   ],
 
   additionalFeedIds: {
