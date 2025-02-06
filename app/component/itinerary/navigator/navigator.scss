@@ -94,6 +94,8 @@
       min-width: 12px;
 
       .vcenter-children {
+        display: flex;
+        
         .vehicle-number {
           color: white;
           padding: 0 8px 0 2px;
@@ -104,8 +106,6 @@
           padding: 2px 2px 0 1px;
           height: 14px;
         }
-
-        display: flex;
       }
     }
   }
