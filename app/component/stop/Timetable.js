@@ -321,7 +321,7 @@ class Timetable extends React.Component {
       this.context.config.stopCard?.header?.virtualMonitorBaseUrl &&
       `${
         this.context.config.stopCard.header.virtualMonitorBaseUrl
-      }${locationType.toLowerCase()}/${this.props.stop.gtfsId}`;
+      }/${locationType.toLowerCase()}/${this.props.stop.gtfsId}`;
     const timeTableRows = this.createTimeTableRows(timetableMap);
     const timeDifferenceDays = moment
       .duration(moment(this.props.date).diff(moment()))
