@@ -77,6 +77,40 @@
   }
 }
 
+.navi-transfer-container {
+  display: inline-flex;
+
+  .navi-transfer {
+    display: flex;
+    flex-direction: row;
+    height: 18px;
+    
+    .arrow-center {
+      padding-top: 4px;
+    }
+
+    .route-number {
+      font-size: $font-size-xxsmall;
+      min-width: 12px;
+
+      .vcenter-children {
+        display: flex;
+        
+        .vehicle-number {
+          color: white;
+          padding: 0 8px 0 2px;
+          margin-top: -1px;
+        }
+
+        .special-icon {
+          padding: 2px 2px 0 1px;
+          height: 14px;
+        }
+      }
+    }
+  }
+}
+
 .route-info {
   display: flex;
   align-self: flex-start;

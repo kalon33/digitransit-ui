@@ -132,6 +132,7 @@ function NaviCardContainer(
         intl,
         messages,
         makeNewItinerarySearch,
+        config,
       ),
     );
 
