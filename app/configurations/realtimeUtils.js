@@ -147,6 +147,9 @@ export default {
   PohjolanMatka: elyMqtt(true),
   Harma: elyMqtt(false),
   Korsisaari: elyMqtt(true),
+  KoivistonAuto: elyMqtt(true),
+  PahkakankaanLiikenne: elyMqtt(true),
+  IngvesSvanback: elyMqtt(true),
   FOLI: {
     mqttTopicResolver: function mqttTopicResolver(
       route,
