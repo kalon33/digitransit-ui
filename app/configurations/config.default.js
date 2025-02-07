@@ -93,7 +93,7 @@ export default {
     }`,
     ROUTE_TIMETABLES: {
       HSL: `${HSL_TIMETABLES_URL}/julkaisin-render/?component=LineTimetable`,
-      tampere: 'https://www.nysse.fi/aikataulut-ja-reitit/linjat/',
+      tampere: 'https://www.nysse.fi/matkan-suunnittelu/linjat/',
     },
     STOP_TIMETABLES: {
       HSL: `${HSL_TIMETABLES_URL}/julkaisin-render/?component=Timetable`,
