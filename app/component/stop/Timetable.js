@@ -310,7 +310,7 @@ class Timetable extends React.Component {
       this.context.config.URL.STOP_TIMETABLES[stopIdSplitted[0]] &&
       locationType !== 'STATION' &&
       date
-        ? stopTimetableHandler.stopPdfUrlResolver(
+        ? stopTimetableHandler.stopTimetableUrlResolver(
             this.context.config.URL.STOP_TIMETABLES[stopIdSplitted[0]],
             this.props.stop,
             date,

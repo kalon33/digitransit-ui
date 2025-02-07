@@ -23,9 +23,6 @@ const virtualMonitorBaseUrl = IS_DEV
   ? 'https://dev-matkamonitori.digitransit.fi'
   : 'https://matkamonitori.digitransit.fi';
 
-// route timetable data needs to be up-to-date before this is enabled
-// const HSLRouteTimetable = require('./timetableConfigUtils').default.HSLRoutes;
-
 export default {
   CONFIG,
   OTPTimeout: process.env.OTP_TIMEOUT || 30000,
