@@ -19,8 +19,6 @@ import StopMarker from './non-tile-layer/StopMarker';
 import TransitLegMarkers from './non-tile-layer/TransitLegMarkers';
 import VehicleMarker from './non-tile-layer/VehicleMarker';
 import SpeechBubble from './SpeechBubble';
-// import IconMarker from './IconMarker';
-// import Icon from '../Icon';
 import EntranceMarker from './EntranceMarker';
 
 class ItineraryLine extends React.Component {
@@ -158,7 +156,7 @@ class ItineraryLine extends React.Component {
             0,
           );
 
-          if (entranceCoordinates) {
+          if (entranceCoordinates && !this.props.passive) {
             objs.push(
               <EntranceMarker
                 position={entranceCoordinates}
