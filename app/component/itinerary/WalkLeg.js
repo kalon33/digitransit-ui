@@ -250,17 +250,17 @@ function WalkLeg(
               </div>
               <Icon
                 img="icon-icon_subway_entrance"
-                className="subway-entrance-info-icon-metro"
+                className="subway-entrance-info-icon"
               />
               {entranceName && (
                 <Icon
-                  className="subway-entrance-info-icon-code"
+                  className="subway-entrance-info-icon"
                   img={`icon-icon_subway_entrance_${entranceName.toLowerCase()}`}
                 />
               )}
               {entranceAccessible === 'POSSIBLE' && (
                 <Icon
-                  className="subway-entrance-info-icon-code"
+                  className="subway-entrance-info-icon"
                   img="icon-icon_wheelchair_filled"
                 />
               )}
@@ -295,17 +295,17 @@ function WalkLeg(
               </div>
               <Icon
                 img="icon-icon_subway_entrance"
-                className="subway-entrance-info-icon-metro"
+                className="subway-entrance-info-icon"
               />
               {entranceName && (
                 <Icon
-                  className="subway-entrance-info-icon-code"
+                  className="subway-entrance-info-icon"
                   img={`icon-icon_subway_entrance_${entranceName.toLowerCase()}`}
                 />
               )}
               {entranceAccessible === 'POSSIBLE' && (
                 <Icon
-                  className="subway-entrance-info-icon-code"
+                  className="subway-entrance-info-icon"
                   img="icon-icon_wheelchair_filled"
                 />
               )}

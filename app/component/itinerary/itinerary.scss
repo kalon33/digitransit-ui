@@ -2142,7 +2142,7 @@ $itinerary-tab-switch-height: 48px;
       margin-top: 1px;
 
       .subway-entrance-info-text {
-        margin-right: 0.2em;
+        margin-right: 0.4em;
         align-items: center;
       }
 
@@ -2150,18 +2150,12 @@ $itinerary-tab-switch-height: 48px;
         display: flex;
       }
 
-      .subway-entrance-info-icon-metro {
+      .subway-entrance-info-icon {
         width: 24px;
         height: 100%;
         vertical-align: middle;
         display: flex;
-      }
-
-      .subway-entrance-info-icon-code {
-        width: 24px;
-        height: 100%;
-        vertical-align: middle;
-        display: flex;
+        margin-right: 1px;
       }
     }
 
