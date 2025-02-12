@@ -161,9 +161,6 @@ class ItineraryLine extends React.Component {
               <EntranceMarker
                 position={entranceCoordinates}
                 code={entranceObject?.feature?.publicCode?.toLowerCase()}
-                wheelchairAccesible={
-                  entranceObject?.feature?.wheelchairAccessible
-                }
               />,
             );
           }
