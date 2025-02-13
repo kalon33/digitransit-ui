@@ -1,6 +1,10 @@
 import moment from 'moment';
 import isEqual from 'lodash/isEqual';
-import { getTransitModes, isTransportModeAvailable } from './modeUtils';
+import {
+  getTransitModes,
+  isTransportModeAvailable,
+  networkIsActive,
+} from './modeUtils';
 import { otpToLocation, getIntermediatePlaces } from './otpStrings';
 import { getAllNetworksOfType, getDefaultNetworks } from './vehicleRentalUtils';
 import { getCustomizedSettings } from '../store/localStorage';
@@ -60,6 +64,41 @@ export function getDefaultSettings(config) {
       : [],
     scooterNetworks: [],
   };
+}
+
+/**
+ * The number of settings that differ from the default settings.
+ * @param {*} config the configuration for the software installation
+ */
+export function getNumberOfCustomizedSettings(config) {
+  const defaultSettings = getDefaultSettings(config);
+  const customizedSettings = getCustomizedSettings();
+  if (Object.keys(customizedSettings).length === 0) {
+    return 0;
+  }
+  return Object.keys(customizedSettings).reduce((count, key) => {
+    if (key === 'allowedBikeRentalNetworks') {
+      return (
+        count +
+        customizedSettings.allowedBikeRentalNetworks.filter(network =>
+          networkIsActive(config.vehicleRental.networks[network]),
+        ).length
+      );
+    }
+    if (
+      Array.isArray(customizedSettings[key]) &&
+      Array.isArray(defaultSettings[key])
+    ) {
+      return (
+        count +
+        Math.abs(customizedSettings[key].length - defaultSettings[key].length)
+      );
+    }
+    if (customizedSettings[key] !== defaultSettings[key]) {
+      return count + 1;
+    }
+    return count;
+  }, 0);
 }
 
 /**

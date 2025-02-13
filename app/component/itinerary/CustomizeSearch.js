@@ -13,6 +13,7 @@ import AccessibilityOptionSection from './customizesearch/AccessibilityOptionSec
 import TransferOptionsSection from './customizesearch/TransferOptionsSection';
 import RentalNetworkSelector from './customizesearch/RentalNetworkSelector';
 import ScooterNetworkSelector from './customizesearch/ScooterNetworkSelector';
+import RestoreDefaultSettingSection from './customizesearch/RestoreDefaultSettingSection';
 import { getReadMessageIds, setReadMessageIds } from '../../store/localStorage';
 import { isKeyboardSelectionEvent } from '../../util/browser';
 import {
@@ -21,7 +22,10 @@ import {
   useScooters,
 } from '../../util/modeUtils';
 import ScrollableWrapper from '../ScrollableWrapper';
-import { getDefaultSettings } from '../../util/planParamUtil';
+import {
+  getDefaultSettings,
+  getNumberOfCustomizedSettings,
+} from '../../util/planParamUtil';
 import {
   getCitybikeNetworks,
   getScooterNetworks,
@@ -83,6 +87,7 @@ class CustomizeSearch extends React.Component {
     ) : (
       <Icon className="close-icon" img="icon-icon_close" />
     );
+    const numberOfCustomizedSettings = getNumberOfCustomizedSettings(config);
     return (
       <form className="customize-search">
         <button
@@ -108,10 +113,18 @@ class CustomizeSearch extends React.Component {
         </button>
         <div className="settings-option-container">
           <h2>
-            {intl.formatMessage({
-              id: 'settings',
-              defaultMessage: 'Settings',
-            })}
+            {intl.formatMessage(
+              {
+                id: 'settings',
+                defaultMessage: 'Settings',
+              },
+              {
+                numberOfCustomizedSettings:
+                  numberOfCustomizedSettings > 0
+                    ? ` (${numberOfCustomizedSettings})`
+                    : '',
+              },
+            )}
           </h2>
         </div>
         <ScrollableWrapper>
@@ -265,6 +278,11 @@ class CustomizeSearch extends React.Component {
               </div>
             </div>
           )}
+          <div className="settings-section background">
+            <div className="settings-option-container">
+              <RestoreDefaultSettingSection config={config} />
+            </div>
+          </div>
         </ScrollableWrapper>
       </form>
     );
