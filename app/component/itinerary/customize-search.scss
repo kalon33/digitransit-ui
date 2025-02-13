@@ -187,6 +187,17 @@
       }
     }
   }
+
+  .restore-settings-button-text {
+    color: $link-color;
+    text-decoration: none;
+    font-weight: $font-weight-medium;
+    text-align: center;
+    display: block;
+    width: fit-content;
+    padding: 8px;
+    margin: 0 auto;
+  }
 }
 
 .settings-section {
@@ -204,6 +215,10 @@
 
   &.compact-settings-section {
     padding-bottom: 0;
+  }
+
+  &.background {
+    background: #f4f4f5;
   }
 }
 
