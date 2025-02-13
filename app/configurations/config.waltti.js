@@ -289,6 +289,7 @@ export default {
     }, '');
     return `https://waltti.fi/${appName}/busTicket/?operator=${operatorCode}&ticketType=single&customerGroup=adult&zones=${zones}`;
   },
+  appName: 'walttiapp',
   ticketButtonTextId: 'buy-in-app',
 
   analyticsScript: function createAnalyticsScript(
