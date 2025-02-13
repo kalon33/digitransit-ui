@@ -67,11 +67,15 @@ export default function TaxiLinkContainer({
 
 TaxiLinkContainer.propTypes = {
   operatorName: PropTypes.string.isRequired,
-  infoUrl: PropTypes.string.isRequired,
+  infoUrl: PropTypes.string,
   bookingUrl: PropTypes.string.isRequired,
   icon: PropTypes.string.isRequired,
 };
 
 TaxiLinkContainer.contextTypes = {
   intl: intlShape.isRequired,
+};
+
+TaxiLinkContainer.defaultProps = {
+  infoUrl: undefined,
 };

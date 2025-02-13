@@ -64,7 +64,7 @@ class ItineraryCircleLine extends React.Component {
       const startIcon = (
         <div className="itinerary-icon-container start">
           <Icon
-            img="icon-icon_mapMarker-from"
+            img="icon-icon_mapMarker"
             className="itinerary-icon from from-it"
           />
         </div>
