@@ -140,18 +140,18 @@ class ItineraryLine extends React.Component {
           };
 
           const entranceIndex = geometry.reduce(
-            (closestIdx, currentCoord, currentIdx) => {
+            (closestIndex, currentCoord, currentIndex) => {
               const currentDistance = getDistance(
                 entranceCoordinates,
                 currentCoord,
               );
               const closestDistance = getDistance(
                 entranceCoordinates,
-                geometry[closestIdx],
+                geometry[closestIndex],
               );
               return currentDistance < closestDistance
-                ? currentIdx
-                : closestIdx;
+                ? currentIndex
+                : closestIndex;
             },
             0,
           );
@@ -159,7 +159,10 @@ class ItineraryLine extends React.Component {
           if (entranceCoordinates && !this.props.passive) {
             objs.push(
               <EntranceMarker
-                position={entranceCoordinates}
+                position={{
+                  lat: entranceCoordinates[0],
+                  lon: entranceCoordinates[1],
+                }}
                 code={entranceObject?.feature?.publicCode?.toLowerCase()}
               />,
             );

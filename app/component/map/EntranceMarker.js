@@ -2,50 +2,73 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Icon from '../Icon';
-import IconMarker from './IconMarker';
+import { locationShape } from '../../util/shapes';
+import GenericMarker from './GenericMarker';
+import { isBrowser } from '../../util/browser';
+import { getCaseRadius } from '../../util/mapIconUtils';
+
+let L;
+
+/* eslint-disable global-require */
+if (isBrowser) {
+  L = require('leaflet');
+}
 
 export default function EntranceMarker({ position, code }) {
   const objs = [];
 
-  const subwayIconAnchor = code ? 61 : 36;
-  const codeIconAnchor = 36;
+  const getSubwayIcon = zoom => {
+    const iconId = `icon-icon_subway_entrance`;
+    const icon = Icon.asString({ img: iconId });
+
+    const iconSize = Math.max(getCaseRadius(zoom) * 2, 8);
+
+    return L.divIcon({
+      html: icon,
+      iconSize: [iconSize, iconSize],
+      iconAnchor: [iconSize / 2, 2.5 * iconSize + 1],
+      className: 'map-subway-entrance-info-icon-metro',
+    });
+  };
+
+  const getCodeIcon = zoom => {
+    const iconId = `icon-icon_subway_entrance_${code}`;
+    const icon = Icon.asString({ img: iconId });
+    const iconSize = Math.max(getCaseRadius(zoom) * 2, 8);
+
+    return L.divIcon({
+      html: icon,
+      iconSize: [iconSize, iconSize],
+      iconAnchor: [iconSize / 2, 1.5 * iconSize],
+      className: 'map-subway-entrance-info-icon-metro',
+    });
+  };
 
   objs.push(
-    <IconMarker
-      className="map-subway-entrance-info-icon-metro"
+    <GenericMarker
       key="icon-icon_subway_entrance"
       position={position}
-      icon={{
-        element: <Icon img="icon-icon_subway_entrance" />,
-        iconAnchor: [12, subwayIconAnchor],
-        className: 'map-subway-entrance-info-icon-metro',
-      }}
+      getIcon={getSubwayIcon}
     />,
   );
 
   if (code) {
     objs.push(
-      <IconMarker
-        className="map-subway-entrance-info-icon-metro"
-        key="icon-icon_subway_entrance_a"
+      <GenericMarker
+        key="icon-icon_subway_entrance_code"
         position={position}
-        icon={{
-          element: <Icon img={`icon-icon_subway_entrance_${code}`} />,
-          iconAnchor: [12, codeIconAnchor],
-          className: 'map-subway-entrance-info-icon-metro',
-        }}
+        getIcon={getCodeIcon}
       />,
     );
   }
-  return <div className="map-entrance-info-container">{objs}</div>;
+  return <div>{objs}</div>;
 }
 
 EntranceMarker.propTypes = {
-  position: IconMarker.propTypes.position,
+  position: locationShape.isRequired,
   code: PropTypes.string,
 };
 
 EntranceMarker.defaultProps = {
-  position: undefined,
   code: undefined,
 };
