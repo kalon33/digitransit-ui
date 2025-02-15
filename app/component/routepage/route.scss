@@ -1229,7 +1229,6 @@ $margin-left-right: 21.3px;
   }
 
   .icon {
-    color: $primary-color;
     position: absolute;
     right: 1rem;
     top: 15px;
@@ -1239,6 +1238,11 @@ $margin-left-right: 21.3px;
     @media print {
       display: none;
     }
+  }
+
+  .dropdown-arrow,
+  .in-text-arrow {
+    color: $primary-color;
   }
 
   .in-text-arrow {
