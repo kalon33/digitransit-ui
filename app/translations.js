@@ -880,6 +880,8 @@ const translations = {
     'set-time-earlier-button-label': 'Set travel time to earlier',
     'set-time-later-button-label': 'Set travel time to later',
     'set-time-now-button-label': 'Set travel time to current',
+    'station-entrance': 'Entrance',
+    'station-exit': 'Exit',
     'time-navigation-buttons': 'Time navigation buttons',
     'time-selector-form': 'Edit time',
     // eslint-disable-next-line sort-keys
@@ -2182,6 +2184,8 @@ const translations = {
     'set-time-earlier-button-label': 'Aikaista matkustusajankohtaa',
     'set-time-later-button-label': 'Myöhäistä matkustusajankohtaa',
     'set-time-now-button-label': 'Aseta matkustusajankohdaksi nyt',
+    'station-entrance': 'Sisäänkäynti',
+    'station-exit': 'Uloskäynti',
     'time-navigation-buttons': 'Matkustusajankohdan muokkausnapit',
     'time-selector-form': 'Muokkaa Matkustusajankohtaa',
     // eslint-disable-next-line sort-keys
@@ -5131,6 +5135,8 @@ const translations = {
     'set-time-earlier-button-label': 'Ställ in restid till tidigare',
     'set-time-later-button-label': 'Ställ in restid till senare',
     'set-time-now-button-label': 'Ställ in restid till nu',
+    'station-entrance': 'Ingång',
+    'station-exit': 'Utgång',
     'time-navigation-buttons': 'Tidsnavigeringsknappar',
     'time-selector-form': 'Redigera tid',
     // eslint-disable-next-line sort-keys

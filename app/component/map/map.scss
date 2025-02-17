@@ -245,6 +245,15 @@ div.leaflet-marker-icon.via {
   }
 }
 
+div.leaflet-marker-icon.map-subway-entrance-info-icon-metro {
+  > span {
+    svg.icon {
+      width: auto;
+      height: auto;
+    }
+  }
+}
+
 div.leaflet-marker-icon.via {
   color: $black;
 }
@@ -1311,6 +1320,16 @@ div.origin-popup {
 
 .map-line.scooter.leg {
   color: $scooter-map-color;
+}
+
+.map-line.walk-inside.leg {
+  color: #fff;
+  stroke: round;
+  stroke-dasharray: 0.1 11;
+}
+
+.leg-halo.walk-inside.map-line {
+  stroke: $walk-inside-color;
 }
 
 /* Fix to default leaflet behavior */
