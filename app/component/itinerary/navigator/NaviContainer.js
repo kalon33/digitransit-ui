@@ -15,7 +15,7 @@ import NavigatorOutroModal from './navigatoroutro/NavigatorOutroModal';
 import { DESTINATION_RADIUS, summaryString } from './NaviUtils';
 
 const ADDITIONAL_ARRIVAL_TIME = 60000; // 60 seconds in ms
-const LEGLOG = true;
+const LEGLOG = false;
 
 function NaviContainer(
   {
@@ -89,7 +89,9 @@ function NaviContainer(
 
   if (LEGLOG) {
     // eslint-disable-next-line
-    console.log(...summaryString(realTimeLegs, time, previousLeg, currentLeg, nextLeg));
+    console.log(
+      ...summaryString(realTimeLegs, time, previousLeg, currentLeg, nextLeg),
+    );
   }
 
   return (
