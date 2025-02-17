@@ -206,7 +206,9 @@ export function getOldSearchesStorage() {
   return {
     ...storage,
     items: storage.items.filter(
-      search => search.item.address !== 'SelectFromMap',
+      search =>
+        search.item.address !== 'SelectFromMap' &&
+        search.item.address !== 'back',
     ),
   };
 }
