@@ -12,7 +12,11 @@ import { FormattedMessage } from 'react-intl';
 export const renderZoneTicket = (fareId, alternativeFares, hasPurchaseLink) => {
   if (Array.isArray(alternativeFares) && alternativeFares.length > 0) {
     const options = [
-      <ZoneTicket key={fareId} ticketType={fareId} hasPurchaseLink />,
+      <ZoneTicket
+        key={fareId}
+        ticketType={fareId}
+        hasPurchaseLink={hasPurchaseLink}
+      />,
     ];
     for (let i = 0; i < alternativeFares.length; i++) {
       options.push(
@@ -24,7 +28,7 @@ export const renderZoneTicket = (fareId, alternativeFares, hasPurchaseLink) => {
         <ZoneTicket
           key={alternativeFares[i]}
           ticketType={alternativeFares[i]}
-          hasPurchaseLink
+          hasPurchaseLink={hasPurchaseLink}
         />,
       );
     }
