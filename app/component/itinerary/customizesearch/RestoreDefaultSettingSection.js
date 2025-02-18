@@ -2,11 +2,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
+import cx from 'classnames';
 import { isKeyboardSelectionEvent } from '../../../util/browser';
 import { saveRoutingSettings } from '../../../action/SearchSettingsActions';
 import {
   getDefaultSettings,
-  getNumberOfCustomizedSettings,
+  hasCustomizedSettings,
 } from '../../../util/planParamUtil';
 import { configShape } from '../../../util/shapes';
 
@@ -16,33 +17,26 @@ const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
       ...getDefaultSettings(config),
     });
   };
-  const numberOfCustomizedSettings = getNumberOfCustomizedSettings(config);
-
+  const userHasCustomizedSettings = hasCustomizedSettings(config);
   return (
     <button
       type="button"
       tabIndex="0"
       onClick={restoreDefaultSettings}
       onKeyPress={e => isKeyboardSelectionEvent(e) && restoreDefaultSettings()}
-      className="noborder cursor-pointer restore-settings-button-text"
-      aria-label={intl.formatMessage(
-        {
-          id: 'restore-default-settings-aria-label',
-          defaultMessage: `Restore default settings. ${numberOfCustomizedSettings} settings changed.`,
-        },
-        {
-          numberOfCustomizedSettings,
-        },
-      )}
+      className={cx('noborder cursor-pointer restore-settings-button-text', {
+        inactive: !userHasCustomizedSettings,
+      })}
+      aria-label={intl.formatMessage({
+        id: 'restore-default-settings-aria-label',
+        defaultMessage: 'Restore default settings',
+      })}
     >
       <FormattedMessage
         id="restore-default-settings"
         defaultMessage="Restore default settings"
         values={{
-          numberOfCustomizedSettings:
-            numberOfCustomizedSettings > 0
-              ? ` (${numberOfCustomizedSettings})`
-              : '',
+          changedSettingsIndicator: userHasCustomizedSettings ? '' : '', // Indicator coming later
         }}
       />
     </button>

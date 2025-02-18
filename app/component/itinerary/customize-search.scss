@@ -197,6 +197,10 @@
     width: fit-content;
     padding: 8px;
     margin: 0 auto;
+
+    &.inactive {
+      color: $gray;
+    }
   }
 }
 
