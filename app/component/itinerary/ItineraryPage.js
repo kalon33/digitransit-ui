@@ -666,7 +666,10 @@ export default function ItineraryPage(props, context) {
 
   const setNavigation = isEnabled => {
     if (mobileRef.current) {
-      mobileRef.current.setBottomSheet(isEnabled ? 'bottom' : 'middle');
+      setTimeout(
+        () => mobileRef.current.setBottomSheet(isEnabled ? 'bottom' : 'middle'),
+        10,
+      );
     }
     if (!isEnabled) {
       setMapState(noFocus);
