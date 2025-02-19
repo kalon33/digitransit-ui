@@ -104,7 +104,7 @@ export function setCustomizedSettings(data) {
   const oldSettings = getCustomizedSettings();
 
   const newSettings = {
-    accessibilityOption: getNumberValueOrDefault(
+    accessibilityOption: getValueOrDefault(
       data.accessibilityOption,
       oldSettings.accessibilityOption,
     ),
