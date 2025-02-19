@@ -1117,6 +1117,7 @@ export default function ItineraryPage(props, context) {
         itinerary={explicitItinerary}
         showBackButton={!naviMode}
         isLocationPopupEnabled={!naviMode}
+        realtimeTransfers={!!explicitItinerary}
       />
     );
   }

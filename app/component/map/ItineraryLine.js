@@ -33,6 +33,7 @@ class ItineraryLine extends React.Component {
     showIntermediateStops: PropTypes.bool,
     showDurationBubble: PropTypes.bool,
     streetMode: PropTypes.string,
+    realtimeTransfers: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -41,6 +42,7 @@ class ItineraryLine extends React.Component {
     streetMode: undefined,
     showIntermediateStops: false,
     showDurationBubble: false,
+    realtimeTransfers: false,
   };
 
   checkStreetMode(leg) {
@@ -320,7 +322,11 @@ class ItineraryLine extends React.Component {
     // Add dynamic transit leg and transfer stop markers
     if (!this.props.passive) {
       objs.push(
-        <TransitLegMarkers key="transitlegmarkers" transitLegs={transitLegs} />,
+        <TransitLegMarkers
+          key="transitlegmarkers"
+          transitLegs={transitLegs}
+          realtimeTransfers={this.props.realtimeTransfers}
+        />,
       );
     }
 
