@@ -2,7 +2,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
-import cx from 'classnames';
 import { isKeyboardSelectionEvent } from '../../../util/browser';
 import { saveRoutingSettings } from '../../../action/SearchSettingsActions';
 import {
@@ -29,15 +28,25 @@ const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
     });
   };
   const userHasCustomizedSettings = hasCustomizedSettings(config);
+
+  if (!userHasCustomizedSettings) {
+    return (
+      <span className="sr-only">
+        <FormattedMessage
+          id="restore-default-settings-aria-label-done"
+          defaultMessage="Default settings are in use."
+        />
+      </span>
+    );
+  }
+
   return (
     <button
       type="button"
       tabIndex="0"
       onClick={restoreDefaultSettings}
       onKeyPress={e => isKeyboardSelectionEvent(e) && restoreDefaultSettings()}
-      className={cx('noborder cursor-pointer restore-settings-button-text', {
-        inactive: !userHasCustomizedSettings,
-      })}
+      className="noborder cursor-pointer restore-settings-button-text"
       aria-label={intl.formatMessage({
         id: 'restore-default-settings-aria-label',
         defaultMessage: 'Restore default settings',
