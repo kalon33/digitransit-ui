@@ -10,11 +10,22 @@ import {
   hasCustomizedSettings,
 } from '../../../util/planParamUtil';
 import { configShape } from '../../../util/shapes';
+import { getCustomizedSettings } from '../../../store/localStorage';
 
 const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
   const restoreDefaultSettings = () => {
+    const customizedSettings = getCustomizedSettings(config);
+    const defaultSettings = getDefaultSettings(config);
+    const restoredSettings = Object.keys(customizedSettings).reduce(
+      (acc, setting) => ({
+        ...acc,
+        [setting]: defaultSettings[setting],
+      }),
+      {},
+    );
+
     executeAction(saveRoutingSettings, {
-      ...getDefaultSettings(config),
+      ...restoredSettings,
     });
   };
   const userHasCustomizedSettings = hasCustomizedSettings(config);
