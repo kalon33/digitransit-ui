@@ -53,7 +53,6 @@ function ItineraryPageMap(
         hash={active}
         streetMode={hash}
         legs={itinerary.legs}
-        showTransferLabels={showActiveOnly}
         showIntermediateStops
         showDurationBubble={showDurationBubble}
       />,
@@ -80,7 +79,6 @@ function ItineraryPageMap(
           hash={active}
           streetMode={hash}
           legs={planEdges[active].node.legs}
-          showTransferLabels={showActiveOnly}
           showIntermediateStops
           showDurationBubble={showDurationBubble}
         />,

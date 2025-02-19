@@ -30,7 +30,6 @@ class ItineraryLine extends React.Component {
     legs: PropTypes.arrayOf(legShape).isRequired,
     passive: PropTypes.bool,
     hash: PropTypes.number,
-    showTransferLabels: PropTypes.bool,
     showIntermediateStops: PropTypes.bool,
     showDurationBubble: PropTypes.bool,
     streetMode: PropTypes.string,
@@ -40,7 +39,6 @@ class ItineraryLine extends React.Component {
     hash: 0,
     passive: false,
     streetMode: undefined,
-    showTransferLabels: false,
     showIntermediateStops: false,
     showDurationBubble: false,
   };
@@ -299,7 +297,6 @@ class ItineraryLine extends React.Component {
                 transfer: true,
               }}
               mode={isCallAgencyLeg(leg) ? 'call' : mode.toLowerCase()}
-              renderText={leg.transitLeg && this.props.showTransferLabels}
             />,
           );
           objs.push(
@@ -314,7 +311,6 @@ class ItineraryLine extends React.Component {
                 transfer: true,
               }}
               mode={isCallAgencyLeg(leg) ? 'call' : mode.toLowerCase()}
-              renderText={leg.transitLeg && this.props.showTransferLabels}
             />,
           );
         }
