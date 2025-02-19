@@ -1503,6 +1503,7 @@ const translations = {
     'restore-default-settings':
       'Restore default settings {changedSettingsIndicator}',
     'restore-default-settings-aria-label': 'Restore default settings.',
+    'restore-default-settings-aria-label-done': 'Default settings are in use.',
     'return-cycle-to': 'Return the bike:',
     'return-e-scooter-to': 'Leave the scooter in a safe location',
     'return-scooter-to': 'Return the kick scooter to {station} station',
@@ -2800,6 +2801,7 @@ const translations = {
     'restore-default-settings':
       'Palauta oletusasetukset {changedSettingsIndicator}',
     'restore-default-settings-aria-label': 'Palauta oletusasetukset.',
+    'restore-default-settings-aria-label-done': 'Oletusasetukset käytössä.',
     'return-cycle-to': 'Palauta kaupunkipyörä:',
     'return-e-scooter-to': 'Jätä potkulauta turvalliseen paikkaan',
     'return-scooter-to': 'Palauta potkulauta asemalle {station}',
@@ -5750,6 +5752,8 @@ const translations = {
     'restore-default-settings':
       'Återställ standardinställningar {changedSettingsIndicator}',
     'restore-default-settings-aria-label': 'Återställ standardinställningar.',
+    'restore-default-settings-aria-label-done':
+      'Standardinställningar är aktiverade.',
     'return-cycle-to': 'Returnera stadscykeln: ',
     'return-e-scooter-to': 'Lämna elsparkcykeln på ett säkert ställe',
     'return-scooter-to': 'Returnera sparkcykeln till stationen {station}',
