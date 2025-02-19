@@ -29,6 +29,11 @@ const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
     });
   };
   const userHasCustomizedSettings = hasCustomizedSettings(config);
+
+  if (!userHasCustomizedSettings) {
+    return null;
+  }
+
   return (
     <button
       type="button"
