@@ -1735,7 +1735,7 @@ $itinerary-tab-switch-height: 48px;
         padding: 3px 10px 3px 10px;
         border-radius: 5px;
         margin: 0 3px 0 3px;
-        background-color: #f4f4f5;
+        background-color: $background-color-lighter;
         font-weight: $font-weight-medium;
       }
 
@@ -1785,7 +1785,7 @@ $itinerary-tab-switch-height: 48px;
 
     .itinerary-transit-leg-route-bike {
       display: flex;
-      background-color: #f4f4f5;
+      background-color: $background-color-lighter;
       border-radius: 5px;
       margin-bottom: 8px;
       color: $black;
@@ -1887,7 +1887,7 @@ $itinerary-tab-switch-height: 48px;
 
     .itinerary-transit-leg-route {
       display: flex;
-      background-color: #f4f4f5;
+      background-color: $background-color-lighter;
       border-radius: 5px;
       margin-bottom: 2px;
 
@@ -1984,7 +1984,7 @@ $itinerary-tab-switch-height: 48px;
       }
 
       &.alternative-leg-suggestion {
-        border: 2px solid #f4f4f5;
+        border: 2px solid $background-color-lighter;
         background-color: white;
       }
 
@@ -3137,7 +3137,7 @@ $font-print-decrease: 0.7;
   font-size: 14px;
 
   &.caution {
-    background: #f4f4f5;
+    background: $background-color-lighter;
   }
 
   &.info {
