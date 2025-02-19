@@ -225,7 +225,7 @@ const useRealtimeLegs = (
         l.freezeStart = l.freezeStart || legTime(l.start) <= now;
         l.freezeEnd = l.freezeEnd || legTime(l.end) <= now;
       });
-      updateLegs(rtLegs);
+      updateLegs?.(rtLegs);
       return { ...prev, time: now, realTimeLegs: rtLegs };
     });
   }, [realTimeLegs, queryAndMapRealtimeLegs]);
