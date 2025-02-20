@@ -696,6 +696,16 @@ export default function ItineraryPage(props, context) {
     setStoredItinerary(itineraryWithParams);
   };
 
+  const updateStoredItinerary = legs => {
+    setStoredItinerary({
+      ...storedItinerary,
+      itinerary: {
+        ...storedItinerary.itinerary,
+        legs,
+      },
+    });
+  };
+
   // save url-defined location to old searches
   function saveUrlSearch(endpoint) {
     const parts = endpoint.split('::'); // label::lat,lon
@@ -1107,6 +1117,7 @@ export default function ItineraryPage(props, context) {
         itinerary={explicitItinerary}
         showBackButton={!naviMode}
         isLocationPopupEnabled={!naviMode}
+        realtimeTransfers={!!explicitItinerary}
       />
     );
   }
@@ -1226,6 +1237,7 @@ export default function ItineraryPage(props, context) {
             mapRef={mwtRef.current}
             mapLayerRef={mapLayerRef}
             isNavigatorIntroDismissed={isNavigatorIntroDismissed}
+            updateLegs={updateStoredItinerary}
           />
         </>
       );

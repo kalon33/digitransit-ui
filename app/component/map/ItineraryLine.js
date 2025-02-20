@@ -30,19 +30,19 @@ class ItineraryLine extends React.Component {
     legs: PropTypes.arrayOf(legShape).isRequired,
     passive: PropTypes.bool,
     hash: PropTypes.number,
-    showTransferLabels: PropTypes.bool,
     showIntermediateStops: PropTypes.bool,
     showDurationBubble: PropTypes.bool,
     streetMode: PropTypes.string,
+    realtimeTransfers: PropTypes.bool,
   };
 
   static defaultProps = {
     hash: 0,
     passive: false,
     streetMode: undefined,
-    showTransferLabels: false,
     showIntermediateStops: false,
     showDurationBubble: false,
+    realtimeTransfers: false,
   };
 
   checkStreetMode(leg) {
@@ -299,7 +299,6 @@ class ItineraryLine extends React.Component {
                 transfer: true,
               }}
               mode={isCallAgencyLeg(leg) ? 'call' : mode.toLowerCase()}
-              renderText={leg.transitLeg && this.props.showTransferLabels}
             />,
           );
           objs.push(
@@ -314,7 +313,6 @@ class ItineraryLine extends React.Component {
                 transfer: true,
               }}
               mode={isCallAgencyLeg(leg) ? 'call' : mode.toLowerCase()}
-              renderText={leg.transitLeg && this.props.showTransferLabels}
             />,
           );
         }
@@ -324,7 +322,11 @@ class ItineraryLine extends React.Component {
     // Add dynamic transit leg and transfer stop markers
     if (!this.props.passive) {
       objs.push(
-        <TransitLegMarkers key="transitlegmarkers" transitLegs={transitLegs} />,
+        <TransitLegMarkers
+          key="transitlegmarkers"
+          transitLegs={transitLegs}
+          realtimeTransfers={this.props.realtimeTransfers}
+        />,
       );
     }
 
