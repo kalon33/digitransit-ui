@@ -64,7 +64,7 @@ import {
   isEqualItineraries,
   isStoredItineraryRelevant,
   mergeBikeTransitPlans,
-  mergeCarDirectAndTransitPlans,
+  parseCarTransitPlan,
   mergeScooterTransitPlan,
   quitIteration,
   reportError,
@@ -353,7 +353,11 @@ export default function ItineraryPage(props, context) {
     altState[1]({ loading: LOADSTATE.LOADING });
     const planParams = getPlanParams(config, match, planType);
     try {
-      const plan = await iterateQuery(planParams);
+      let reps;
+      if (planType === PLANTYPE.CARTRANSIT) {
+        reps = 1;
+      }
+      const plan = await iterateQuery(planParams, reps);
       altState[1]({ plan, loading: LOADSTATE.DONE });
     } catch (error) {
       altState[1]({ plan: {}, loading: LOADSTATE.DONE });
@@ -662,7 +666,10 @@ export default function ItineraryPage(props, context) {
 
   const setNavigation = isEnabled => {
     if (mobileRef.current) {
-      mobileRef.current.setBottomSheet(isEnabled ? 'bottom' : 'middle');
+      setTimeout(
+        () => mobileRef.current.setBottomSheet(isEnabled ? 'bottom' : 'middle'),
+        10,
+      );
     }
     if (!isEnabled) {
       setMapState(noFocus);
@@ -687,6 +694,16 @@ export default function ItineraryPage(props, context) {
     };
     setLatestNavigatorItinerary(itineraryWithParams);
     setStoredItinerary(itineraryWithParams);
+  };
+
+  const updateStoredItinerary = legs => {
+    setStoredItinerary({
+      ...storedItinerary,
+      itinerary: {
+        ...storedItinerary.itinerary,
+        legs,
+      },
+    });
   };
 
   // save url-defined location to old searches
@@ -896,18 +913,14 @@ export default function ItineraryPage(props, context) {
   useEffect(() => {
     const settings = getSettings(config);
     if (
-      altStates[PLANTYPE.CAR][0].loading === LOADSTATE.DONE &&
       altStates[PLANTYPE.CARTRANSIT][0].loading === LOADSTATE.DONE &&
       settings.includeCarSuggestions &&
       config.carBoardingModes !== undefined
     ) {
-      const plan = mergeCarDirectAndTransitPlans(
-        altStates[PLANTYPE.CAR][0].plan,
-        altStates[PLANTYPE.CARTRANSIT][0].plan,
-      );
+      const plan = parseCarTransitPlan(altStates[PLANTYPE.CARTRANSIT][0].plan);
       setCarPublicState({ plan });
     }
-  }, [altStates[PLANTYPE.CAR][0].plan, altStates[PLANTYPE.CARTRANSIT][0].plan]);
+  }, [altStates[PLANTYPE.CARTRANSIT][0].plan]);
 
   // merge the main plan and the scooter plan into one
   useEffect(() => {
@@ -1104,6 +1117,7 @@ export default function ItineraryPage(props, context) {
         itinerary={explicitItinerary}
         showBackButton={!naviMode}
         isLocationPopupEnabled={!naviMode}
+        realtimeTransfers={!!explicitItinerary}
       />
     );
   }
@@ -1223,6 +1237,7 @@ export default function ItineraryPage(props, context) {
             mapRef={mwtRef.current}
             mapLayerRef={mapLayerRef}
             isNavigatorIntroDismissed={isNavigatorIntroDismissed}
+            updateLegs={updateStoredItinerary}
           />
         </>
       );
@@ -1382,6 +1397,7 @@ export default function ItineraryPage(props, context) {
       mapRef={mwtRef.current}
       ref={mobileRef}
       match={match}
+      enableBottomScroll={!naviMode}
     />
   );
 }

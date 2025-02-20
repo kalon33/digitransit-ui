@@ -16,7 +16,7 @@ export default function MobileTicketPurchaseInformation(
   const fare = fares[0]; // Show buy option only if there is single ticket available
   const alternativeFares = getAlternativeFares(
     zones,
-    !fare.isUnknown,
+    fares.filter(f => !f.isUnknown),
     config.availableTickets,
   );
   const price =
@@ -62,7 +62,12 @@ export default function MobileTicketPurchaseInformation(
           onClick={() =>
             addAnalyticsEvent({ event: 'journey_planner_open_app' })
           }
-          href={config.ticketPurchaseLink(fare, config.ticketLinkOperatorCode)}
+          href={config.ticketPurchaseLink(
+            fare,
+            config.ticketLinkOperatorCode,
+            config.appName,
+            config.availableTickets,
+          )}
           target="_blank"
           rel="noopener noreferrer"
         >

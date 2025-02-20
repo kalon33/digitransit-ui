@@ -1,6 +1,10 @@
 import moment from 'moment';
 import isEqual from 'lodash/isEqual';
-import { getTransitModes, isTransportModeAvailable } from './modeUtils';
+import {
+  getTransitModes,
+  isTransportModeAvailable,
+  networkIsActive,
+} from './modeUtils';
 import { otpToLocation, getIntermediatePlaces } from './otpStrings';
 import { getAllNetworksOfType, getDefaultNetworks } from './vehicleRentalUtils';
 import { getCustomizedSettings } from '../store/localStorage';
@@ -60,6 +64,33 @@ export function getDefaultSettings(config) {
       : [],
     scooterNetworks: [],
   };
+}
+
+/**
+ * Whether user has customized any settings that are visible and make a difference.
+ * @param {*} config the configuration for the software installation
+ */
+export function hasCustomizedSettings(config) {
+  const defaultSettings = getDefaultSettings(config);
+  const customizedSettings = getCustomizedSettings();
+  if (Object.keys(customizedSettings).length === 0) {
+    return false;
+  }
+
+  return Object.keys(customizedSettings).some(key => {
+    if (key === 'allowedBikeRentalNetworks') {
+      return customizedSettings.allowedBikeRentalNetworks.some(network =>
+        networkIsActive(config.vehicleRental.networks[network]),
+      );
+    }
+    if (
+      Array.isArray(customizedSettings[key]) &&
+      Array.isArray(defaultSettings[key])
+    ) {
+      return customizedSettings[key].length !== defaultSettings[key].length;
+    }
+    return customizedSettings[key] !== defaultSettings[key];
+  });
 }
 
 /**
@@ -323,6 +354,8 @@ export function getPlanParams(
   let egress = access;
   let transfer = ['WALK'];
   let direct = null;
+  let numItineraries = directOnly ? 1 : 5;
+  let carReluctance = null;
 
   let noIterationsForShortTrips = false;
 
@@ -340,10 +373,14 @@ export function getPlanParams(
       noIterationsForShortTrips = shortTrip;
       break;
     case PLANTYPE.CARTRANSIT:
+      // For cars the direct mode is included to allow OTP to filter out unwanted routes.
+      direct = ['CAR'];
       access = ['CAR'];
       egress = ['CAR'];
       transfer = ['CAR'];
-      transitOnly = true;
+      transitOnly = false;
+      numItineraries = 6;
+      carReluctance = 1.75;
       // This is done to enable more cache hits. New cache entries are generated for different speeds otherwise.
       settings.walkSpeed = null;
       settings.bikeSpeed = null;
@@ -406,7 +443,6 @@ export function getPlanParams(
   const datetime = useLatestArrival
     ? { latestArrival: timeStr }
     : { earliestDeparture: timeStr };
-  const numItineraries = directOnly ? 1 : 5;
 
   return {
     ...settings,
@@ -428,5 +464,6 @@ export function getPlanParams(
     planType,
     noIterationsForShortTrips,
     via,
+    carReluctance,
   };
 }

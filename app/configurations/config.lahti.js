@@ -177,13 +177,5 @@ export default configMerger(walttiConfig, {
   useTicketIcons: true,
   ticketLink: 'https://www.lsl.fi/liput-ja-hinnat/',
   showTicketPrice: false,
-
-  showTicketLinkOnlyWhenTesting: true,
-  settingsForFeatureTesting: {
-    walkSpeed: 0.69,
-    bikeSpeed: 8.33,
-    includeBikeSuggestions: false,
-    transferPenalty: 1600,
-  },
   ticketLinkOperatorCode: 50223,
 });

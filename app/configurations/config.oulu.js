@@ -7,6 +7,14 @@ const APP_TITLE = 'Reittiopas';
 
 const walttiConfig = require('./config.waltti').default;
 
+const IS_DEV =
+  process.env.RUN_ENV === 'development' ||
+  process.env.NODE_ENV !== 'production';
+
+const virtualMonitorBaseUrl = IS_DEV
+  ? 'https://dev-oulumonitori.digitransit.fi'
+  : 'https://pysakkinaytto.osl.fi';
+
 export default configMerger(walttiConfig, {
   CONFIG,
 
@@ -146,14 +154,22 @@ export default configMerger(walttiConfig, {
   },
   stopCard: {
     header: {
-      virtualMonitorBaseUrl: 'https://pysakkinaytto.osl.fi/',
+      virtualMonitorBaseUrl,
     },
   },
 
   mainMenu: {
     stopMonitor: {
       show: true,
-      url: 'https://pysakkinaytto.osl.fi/createview',
+      url: `${virtualMonitorBaseUrl}/createview`,
     },
   },
+
+  showTicketInformation: true,
+  useTicketIcons: true,
+  ticketLink: 'https://www.osl.fi/liput-ja-hinnat/osl-sovellus/',
+  showTicketPrice: true,
+  showTicketLinkOnlyWhenTesting: true,
+  ticketLinkOperatorCode: 50229,
+  appName: 'oslapp',
 });
