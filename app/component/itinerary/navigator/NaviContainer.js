@@ -54,7 +54,7 @@ function NaviContainer(
   } = useRealtimeLegs(relayEnvironment, legs, position, vehicles, updateLegs);
 
   useEffect(() => {
-    mapRef?.enableMapTracking(); // try always, shows annoying notifier
+    setTimeout(() => mapRef?.enableMapTracking(), 10); // try always, shows annoying notifier
   }, [mapRef, hasPosition.current]);
 
   useEffect(() => {
