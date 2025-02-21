@@ -1,17 +1,13 @@
 /* eslint-disable no-param-reassign */
 import cloneDeep from 'lodash/cloneDeep';
 import polyUtil from 'polyline-encoded';
-import { useCallback, useEffect, useState, useRef } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { fetchQuery } from 'react-relay';
-import {
-  GeodeticToEcef,
-  GeodeticToEnu,
-  estimateItineraryDistance,
-} from '../../../../util/geo-utils';
+import { GeodeticToEcef, GeodeticToEnu } from '../../../../util/geo-utils';
 import { legTime } from '../../../../util/legUtils';
 import { epochToIso } from '../../../../util/timeUtils';
 import { legQuery } from '../../queries/LegQuery';
-import { getRemainingTraversal } from '../NaviUtils';
+import { getRemainingTraversal, validateTransitLeg } from '../NaviUtils';
 
 function nextTransitIndex(legs, i) {
   for (let j = i; j < legs.length; j++) {
@@ -102,7 +98,7 @@ function matchLegEnds(legs) {
   }
 }
 
-function getLegsOfInterest(legs, now, vehicles, vehicleDistanceRef) {
+function getLegsOfInterest(legs, now) {
   if (!legs?.length) {
     return {
       firstLeg: undefined,
@@ -114,29 +110,11 @@ function getLegsOfInterest(legs, now, vehicles, vehicleDistanceRef) {
   const currentLeg = legs.find(
     ({ start, end }) => legTime(start) <= now && legTime(end) >= now,
   );
+
   const nextStart = currentLeg ? legTime(currentLeg.end) : now;
-
   const nextLeg = legs.find(({ start }) => legTime(start) >= nextStart);
-  const shortName = currentLeg?.route
-    ? currentLeg.route.shortName
-    : nextLeg?.route?.shortName;
-  const vehicle = Object.values(vehicles).find(v => v.shortName === shortName);
-  // TODO: this is just testing around. Currently it's
-  // just comparing the distance of the vehicle to stop where users hop in the vehicle.
-  if (vehicle) {
-    // Todo: stop needs to be changed after the vehicle has passed it.
-    // We need to track the leg's end stop as
-    const stop = legs.find(l => l.route?.gtfsId === vehicle.route).from;
-    const vehiclePosition = { lat: vehicle.lat, lon: vehicle.long };
-    const toStop = estimateItineraryDistance(stop, vehiclePosition);
-    if (toStop > vehicleDistanceRef.current) {
-      // TODO
-    } else {
-      vehicleDistanceRef.current = toStop;
-    }
-  }
-
   const previousLeg = legs.findLast(({ end }) => legTime(end) < now);
+
   return {
     firstLeg: legs[0],
     lastLeg: legs[legs.length - 1],
@@ -206,7 +184,6 @@ const useRealtimeLegs = (
     },
     [relayEnvironment],
   );
-  const vehicleDistanceRef = useRef(null);
 
   const fetchAndSetRealtimeLegs = useCallback(async () => {
     const now = Date.now();
@@ -296,12 +273,14 @@ const useRealtimeLegs = (
   }, []);
 
   const { firstLeg, lastLeg, currentLeg, nextLeg, previousLeg } =
-    getLegsOfInterest(realTimeLegs, time, vehicles, vehicleDistanceRef);
+    getLegsOfInterest(realTimeLegs, time);
 
   const tailLength = currentLeg
     ? getRemainingTraversal(currentLeg, position, origin, time) *
       currentLeg.distance
     : 0;
+
+  const validated = validateTransitLeg(currentLeg, origin, vehicles);
 
   return {
     realTimeLegs,
@@ -313,6 +292,7 @@ const useRealtimeLegs = (
     currentLeg,
     nextLeg,
     startItinerary,
+    validated,
   };
 };
 
