@@ -1,4 +1,3 @@
-import distance from '@digitransit-search-util/digitransit-search-util-distance';
 import { matchShape, routerShape } from 'found';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
@@ -220,7 +219,7 @@ function NaviCardContainer(
       position &&
       currentLeg &&
       nextLeg && // itinerary end has its own logic
-      distance(position, currentLeg.to) <= DESTINATION_RADIUS
+      tailLength <= DESTINATION_RADIUS
     ) {
       legEndRef.current += 1;
     } else {
