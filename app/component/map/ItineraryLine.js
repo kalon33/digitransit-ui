@@ -159,6 +159,7 @@ class ItineraryLine extends React.Component {
           if (entranceCoordinates && !this.props.passive) {
             objs.push(
               <EntranceMarker
+                key={`entrance_${entranceCoordinates[0]}_${entranceCoordinates[1]}`}
                 position={{
                   lat: entranceCoordinates[0],
                   lon: entranceCoordinates[1],
