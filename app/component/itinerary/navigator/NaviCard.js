@@ -13,7 +13,7 @@ const iconMap = {
   BICYCLE: 'icon-icon_cyclist',
   CAR: 'icon-icon_car-withoutBox',
   SCOOTER: 'icon-icon_scooter_rider',
-  WALK: 'icon-icon_walk',
+  WALK: 'icon-icon_walking',
   WAIT: 'icon-icon_navigation_wait',
   BUS: 'icon-icon_bus',
   RAIL: 'icon-icon_rail',
@@ -88,7 +88,7 @@ export default function NaviCard(
     >
       <div className="main-card">
         <div className="content">
-          <Icon img={iconName} className="mode" color={iconColor} />
+          <Icon img={iconName} className="mode" color={iconColor} omitViewBox />
           <div className={`instructions ${cardExpanded ? 'expanded' : ''}`}>
             <NaviInstructions
               leg={leg}

@@ -62,7 +62,7 @@
   svg.mode {
     width: 32px;
     height: 32px;
-    color: black;
+    color: $black;
   }
 
   &.slide-out {
@@ -206,7 +206,7 @@
 
   .main-card {
     width: inherit;
-    margin: var(--space-m) var(--space-l);
+    margin: var(--space-m) var(--space-m);
 
     .content {
       display: flex;
@@ -216,7 +216,7 @@
 
       svg.mode {
         margin-right: var(--space-s);
-        margin-top: var(--space-xxs);
+        margin-top: 2px;
       }
     }
 
@@ -246,7 +246,6 @@
       font-size: $font-size-xsmall;
       font-weight: $font-weight-book;
       display: flex;
-      margin-top: 4px;
     }
 
     .extension {
