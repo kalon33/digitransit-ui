@@ -1386,6 +1386,7 @@ const translations = {
     // eslint-disable-next-line sort-keys
     neighbourhood: 'Neighbourhood ',
     'new-feature': 'New feature!',
+    'new-route': 'Is the route new for you?',
     next: 'Next',
     'no-bike-allowed-popup-train':
       'Bicycles are allowed on commuter trains but on long distance trains you have to pay an extra fee and it might require a reservation.',
@@ -2691,6 +2692,7 @@ const translations = {
     // eslint-disable-next-line sort-keys
     neighbourhood: 'Naapurusto',
     'new-feature': 'Uusi ominaisuus!',
+    'new-route': 'Onko reitti sinulle uusi?',
     next: 'Seuraava',
     'no-bike-allowed-popup-train':
       'Lähiliikenteen juniin pyörän voi ottaa mukaan ilmaiseksi, mutta pitkän matkan junissa peritään lisämaksu ja mahdollisesti vaaditaan etukäteisvaraus.',
@@ -5649,6 +5651,7 @@ const translations = {
     // eslint-disable-next-line sort-keys
     neighbourhood: 'Gransskap',
     'new-feature': 'TODO_new-feature_SV',
+    'new-route': 'TODO_new_route_SV',
     next: 'Nästa',
     'no-bike-allowed-popup-train':
       'Du kan ta med cykeln i närtågen avgiftsfritt, men i andra tåg är det avgiftsbelagt och kräver möjligtvis en förhandsreservation.',

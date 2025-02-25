@@ -7,12 +7,13 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    background-color: $infobox-color-generic-blue;
+    background-color: $navigation-background-color;
     margin: 4px 0 0 0;
     padding: var(--space-m);
     gap: var(--space-s);
     font-weight: normal;
     border-radius: $border-radius-bigger;
+    letter-spacing: $letter-spacing;
 
     .content {
       display: flex;
