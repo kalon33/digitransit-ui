@@ -431,6 +431,12 @@
             }
           }
 
+          &.walk {
+            .icon {
+              width: 22px;
+            }
+          }
+
           &.wait {
             .icon {
               margin-left: 1px;

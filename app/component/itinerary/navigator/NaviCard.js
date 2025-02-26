@@ -13,7 +13,7 @@ const iconMap = {
   BICYCLE: 'icon-icon_cyclist',
   CAR: 'icon-icon_car-withoutBox',
   SCOOTER: 'icon-icon_scooter_rider',
-  WALK: 'icon-icon_walking',
+  WALK: 'icon-icon_walk',
   WAIT: 'icon-icon_navigation_wait',
   BUS: 'icon-icon_bus',
   RAIL: 'icon-icon_rail',

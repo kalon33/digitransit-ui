@@ -116,7 +116,7 @@
 .route-info {
   display: flex;
   align-self: flex-start;
-  margin-bottom: var(--space-xcs);
+  margin-bottom: var(--space-xs);
 
   .expand {
     margin-left: var(--space-m);
@@ -171,19 +171,8 @@
     margin-left: var(--space-xl);
 
     .wait-duration {
-      margin-top: var(--space-xs);
       margin-left: var(--space-l);
     }
-  }
-
-  .wait-duration {
-    margin-top: var(--space-xs);
-  }
-
-  .icon {
-    margin-top: 2px;
-    height: 25px;
-    width: 25px;
   }
 
   .headsign {
@@ -231,7 +220,7 @@
 
       svg.mode {
         margin-right: var(--space-s);
-        margin-top: 2px;
+        margin-top: 1px;
       }
     }
 
@@ -247,7 +236,6 @@
 
       .vehicle-leg {
         display: flex;
-        margin-top: var(--space-xs);
         width: 80%;
         text-align: left;
       }
@@ -332,14 +320,9 @@
 
       .wait-leg {
         display: flex;
-        margin-top: 3px;
         flex-direction: column;
         align-items: flex-start;
         margin-left: var(--space-m);
-
-        .wait-duration {
-          margin-top: var(--space-xs);
-        }
 
         .icon {
           margin-top: 2px;
