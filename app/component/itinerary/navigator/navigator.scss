@@ -118,21 +118,6 @@
   align-self: flex-start;
   margin-bottom: var(--space-xcs);
 
-  .route-number {
-    display: flex;
-    flex-direction: row;
-    margin-top: 4px;
-
-    .vcenter-children {
-      .vehicle-number {
-        color: white;
-        margin-top: 5px;
-      }
-
-      display: flex;
-    }
-  }
-
   .expand {
     margin-left: var(--space-m);
     display: flex;
@@ -142,6 +127,36 @@
       margin-top: 5px;
       width: 16px;
       height: 16px;
+    }
+  }
+}
+
+.extension-routenumber,
+.route-info {
+  .route-number {
+    min-width: fit-content;
+
+    .vcenter-children {
+      .vehicle-number {
+        color: white;
+        margin-top: 5px;
+      }
+
+      display: flex;
+    }
+
+    .icon,
+    .special-icon {
+      height: 24px;
+      font-size: 24px;
+    }
+
+    .vehicle-number-container-v {
+      .vehicle-number {
+        margin: 0;
+        vertical-align: middle;
+        padding: 0 var(--space-s) 0 var(--space-xxs);
+      }
     }
   }
 }
@@ -289,25 +304,6 @@
 
         .bar {
           border-radius: $border-radius;
-        }
-
-        .route-number {
-          .vcenter-children {
-            .vehicle-number {
-              color: white;
-              margin-top: 5px;
-            }
-
-            display: flex;
-          }
-        }
-
-        .line {
-          text-align: center;
-
-          .icon {
-            font-size: 24px;
-          }
         }
 
         .headsign {
