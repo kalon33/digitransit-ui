@@ -37,6 +37,11 @@
       margin-left: auto;
     }
   }
+
+  .navigation-icon {
+    width: $navigation-icon-size;
+    height: $navigation-icon-size;
+  }
 }
 
 .bar {
