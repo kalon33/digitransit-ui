@@ -3,6 +3,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import polyUtil from 'polyline-encoded';
 import { useCallback, useEffect, useState } from 'react';
 import { fetchQuery } from 'react-relay';
+import { updateLatestNavigatorItineraryParams } from '../../../../store/localStorage';
 import { GeodeticToEcef, GeodeticToEnu } from '../../../../util/geo-utils';
 import { legTime } from '../../../../util/legUtils';
 import { epochToIso } from '../../../../util/timeUtils';
@@ -153,6 +154,7 @@ const useRealtimeLegs = (
   initialLegs,
   position,
   updateLegs,
+  forceStartAt,
 ) => {
   const [{ origin, time, realTimeLegs }, setTimeAndRealTimeLegs] = useState(
     () => getInitialState(initialLegs),
@@ -257,6 +259,7 @@ const useRealtimeLegs = (
           realTimeLegs: prev.realTimeLegs,
         };
       });
+      updateLatestNavigatorItineraryParams({ forceStartAt: startTimeInMS });
     }
   };
 
@@ -266,6 +269,10 @@ const useRealtimeLegs = (
     const interval = setInterval(() => {
       fetchAndSetRealtimeLegs();
     }, 10000);
+
+    if (forceStartAt) {
+      startItinerary(forceStartAt);
+    }
 
     return () => clearInterval(interval);
   }, []);

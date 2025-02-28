@@ -27,6 +27,7 @@ function NaviContainer(
     mapRef,
     mapLayerRef,
     updateLegs,
+    forceStartAt,
   },
   { executeAction, getStore, router },
 ) {
@@ -51,7 +52,13 @@ function NaviContainer(
     currentLeg,
     nextLeg,
     startItinerary,
-  } = useRealtimeLegs(relayEnvironment, legs, position, updateLegs);
+  } = useRealtimeLegs(
+    relayEnvironment,
+    legs,
+    position,
+    updateLegs,
+    forceStartAt,
+  );
 
   useEffect(() => {
     mapRef?.enableMapTracking(); // try always, shows annoying notifier
@@ -135,6 +142,7 @@ NaviContainer.propTypes = {
   mapLayerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
     .isRequired,
   updateLegs: PropTypes.func.isRequired,
+  forceStartAt: PropTypes.number,
 };
 
 NaviContainer.contextTypes = {
@@ -146,6 +154,7 @@ NaviContainer.contextTypes = {
 NaviContainer.defaultProps = {
   mapRef: undefined,
   isNavigatorIntroDismissed: false,
+  forceStartAt: undefined,
 };
 
 const connectedComponent = connectToStores(
