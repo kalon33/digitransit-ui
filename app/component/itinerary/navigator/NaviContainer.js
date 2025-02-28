@@ -54,6 +54,7 @@ function NaviContainer(
     currentLeg,
     nextLeg,
     startItinerary,
+    loading,
   } = useRealtimeLegs(
     relayEnvironment,
     legs,
@@ -84,7 +85,7 @@ function NaviContainer(
     prevPos.current = position;
   }, [time]);
 
-  if (!realTimeLegs?.length) {
+  if (loading || !realTimeLegs?.length) {
     return null;
   }
 

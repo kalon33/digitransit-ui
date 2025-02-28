@@ -159,6 +159,7 @@ const useRealtimeLegs = (
   const [{ origin, time, realTimeLegs }, setTimeAndRealTimeLegs] = useState(
     () => getInitialState(initialLegs),
   );
+  const [loading, setLoading] = useState(true);
 
   const queryAndMapRealtimeLegs = useCallback(
     async (legs, now) => {
@@ -274,6 +275,8 @@ const useRealtimeLegs = (
       startItinerary(forceStartAt);
     }
 
+    setLoading(false);
+
     return () => clearInterval(interval);
   }, []);
 
@@ -295,6 +298,7 @@ const useRealtimeLegs = (
     currentLeg,
     nextLeg,
     startItinerary,
+    loading,
   };
 };
 
