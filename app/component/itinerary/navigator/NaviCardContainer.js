@@ -12,7 +12,6 @@ import { configShape, legShape } from '../../../util/shapes';
 import { getTopics, updateClient } from '../ItineraryPageUtils';
 import NaviCard from './NaviCard';
 import NaviStack from './NaviStack';
-import NaviStarter from './NaviStarter';
 import {
   DESTINATION_RADIUS,
   getAdditionalMessages,
@@ -24,7 +23,6 @@ import {
 import usePrevious from './hooks/usePrevious';
 
 const COUNT_AT_LEG_END = 2; // update cycles within DESTINATION_RADIUS from leg.to
-const TOPBAR_PADDING = 8; // pixels
 const HIDE_TOPCARD_DURATION = 2000; // milliseconds
 
 function addMessages(incomingMessages, newMessages) {
@@ -66,14 +64,13 @@ function NaviCardContainer(
     legs,
     position,
     tailLength,
-    mapLayerRef,
     currentLeg,
     nextLeg,
     firstLeg,
     lastLeg,
     previousLeg,
     isJourneyCompleted,
-    startItinerary,
+    containerTopPosition,
   },
   context,
 ) {
@@ -82,14 +79,16 @@ function NaviCardContainer(
   // notifications that are shown to the user.
   const [activeMessages, setActiveMessages] = useState([]);
   const [legChanging, setLegChanging] = useState(false);
+
   const { isEqual: legChanged } = usePrevious(currentLeg, (prev, current) =>
     isAnyLegPropertyIdentical(prev, current, ['legId', 'mode']),
   );
-  const { isEqual: forceStart } = usePrevious(firstLeg?.forceStart);
   const focusRef = useRef(false);
   // Destination counter. How long user has been at the destination. * 10 seconds
   const legEndRef = useRef(0);
+
   const { intl, config, match, router } = context;
+
   const handleRemove = index => {
     const msg = messages.get(activeMessages[index].id);
     msg.closed = true; // remember closing action
@@ -175,7 +174,7 @@ function NaviCardContainer(
       ]);
     }
     let timeoutId;
-    if (legChanged || forceStart) {
+    if (legChanged) {
       updateClient(getNaviTopics(), context);
       setLegChanging(true);
       timeoutId = setTimeout(() => {
@@ -241,8 +240,6 @@ function NaviCardContainer(
     nextLeg?.interlineWithPreviousLeg,
   );
 
-  const containerTopPosition =
-    mapLayerRef.current.getBoundingClientRect().top + TOPBAR_PADDING;
   let className;
   if (isJourneyCompleted) {
     className = 'slide-out';
@@ -256,23 +253,15 @@ function NaviCardContainer(
       className={`navi-card-container ${className}`}
       style={{ top: containerTopPosition }}
     >
-      {(!firstLeg.forceStart && time < legTime(firstLeg.start)) ||
-      (firstLeg.forceStart && time < legTime(firstLeg.start) && legChanging) ? (
-        <NaviStarter
-          time={legTimeStr(firstLeg.start)}
-          startItinerary={startItinerary}
-        />
-      ) : (
-        <NaviCard
-          leg={l}
-          nextLeg={nextLeg}
-          legType={legType}
-          startTime={legTimeStr(firstLeg.start)}
-          time={time}
-          position={position}
-          tailLength={tailLength}
-        />
-      )}
+      <NaviCard
+        leg={l}
+        nextLeg={nextLeg}
+        legType={legType}
+        startTime={legTimeStr(firstLeg.start)}
+        time={time}
+        position={position}
+        tailLength={tailLength}
+      />
       {activeMessages.length > 0 && (
         <NaviStack messages={activeMessages} handleRemove={handleRemove} />
       )}
@@ -291,16 +280,14 @@ NaviCardContainer.propTypes = {
     locationCount: PropTypes.number,
     watchId: PropTypes.string,
   }),
-  mapLayerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
-    .isRequired,
   tailLength: PropTypes.number.isRequired,
+  containerTopPosition: PropTypes.number.isRequired,
   currentLeg: legShape,
   nextLeg: legShape,
   firstLeg: legShape,
   lastLeg: legShape,
   previousLeg: legShape,
   isJourneyCompleted: PropTypes.bool,
-  startItinerary: PropTypes.func,
 };
 
 NaviCardContainer.defaultProps = {
@@ -312,7 +299,6 @@ NaviCardContainer.defaultProps = {
   lastLeg: undefined,
   previousLeg: undefined,
   isJourneyCompleted: false,
-  startItinerary: () => {},
 };
 
 NaviCardContainer.contextTypes = {
