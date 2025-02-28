@@ -3,11 +3,7 @@ import { matchShape, routerShape } from 'found';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { intlShape } from 'react-intl';
-import {
-  isAnyLegPropertyIdentical,
-  legTime,
-  legTimeStr,
-} from '../../../util/legUtils';
+import { isAnyLegPropertyIdentical, legTime } from '../../../util/legUtils';
 import { configShape, legShape } from '../../../util/shapes';
 import { getTopics, updateClient } from '../ItineraryPageUtils';
 import NaviCard from './NaviCard';
@@ -257,7 +253,6 @@ function NaviCardContainer(
         leg={l}
         nextLeg={nextLeg}
         legType={legType}
-        startTime={legTimeStr(firstLeg.start)}
         time={time}
         position={position}
         tailLength={tailLength}
