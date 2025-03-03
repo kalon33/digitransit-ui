@@ -98,11 +98,10 @@
 
     .route-number {
       font-size: $font-size-xxsmall;
-      min-width: 12px;
+      min-width: fit-content;
 
       .vcenter-children {
         display: flex;
-        margin-top: 1px;
 
         .vehicle-number {
           color: white;
@@ -111,7 +110,6 @@
 
         .special-icon {
           padding: 2px 2px 0 1px;
-          height: 14px;
         }
       }
     }
@@ -485,6 +483,7 @@
   width: 100%;
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   box-shadow: 0 -10px 10px 0 rgba(0, 52, 86, 0.1);
+  outline: none;
 
   &.slide-in {
     animation: slideUpFromBottom 0.5s ease-in-out;
