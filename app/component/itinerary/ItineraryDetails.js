@@ -418,17 +418,6 @@ const withRelay = createFragmentContainer(
           legGeometry {
             points
           }
-          steps {
-            feature {
-              __typename
-              ... on Entrance {
-                publicCode
-                wheelchairAccessible
-              }
-            }
-            lat
-            lon
-          }
           nextLegs(
             numberOfLegs: 2
             originModesWithParentStation: [RAIL]

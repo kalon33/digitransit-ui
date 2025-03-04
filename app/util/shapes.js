@@ -206,11 +206,6 @@ export const legTimeShape = PropTypes.shape({
   estimated: PropTypes.shape({ time: PropTypes.string }),
 });
 
-export const entranceShape = PropTypes.shape({
-  publicCode: PropTypes.string,
-  wheelchairAccessible: PropTypes.string,
-});
-
 export const legShape = PropTypes.shape({
   start: legTimeShape,
   end: legTimeShape,
@@ -223,13 +218,6 @@ export const legShape = PropTypes.shape({
   trip: tripShape,
   agency: agencyShape,
   fare: fareShape,
-  steps: PropTypes.arrayOf(
-    PropTypes.shape({
-      entrance: entranceShape,
-      lat: PropTypes.number,
-      lon: PropTypes.number,
-    }),
-  ),
   from: PropTypes.shape({
     name: PropTypes.string,
     stop: stopShape,
