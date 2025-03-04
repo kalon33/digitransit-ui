@@ -2113,8 +2113,7 @@ $itinerary-tab-switch-height: 48px;
       border-top: 1px solid #ddd;
       padding: 1.2em 0;
       margin-bottom: 1em;
-      min-height: 60px;
-      height: auto;
+      height: 60px;
       font-size: 0.9375rem;
 
       @extend .itinerary-leg-text-gray;

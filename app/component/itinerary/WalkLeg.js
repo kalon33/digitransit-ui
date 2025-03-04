@@ -244,23 +244,8 @@ function WalkLeg(
 
         <div className="itinerary-leg-action">
           {previousLeg?.mode === 'SUBWAY' && (
-            <div
-              className="subway-entrance-info-container"
-              aria-labelledby="subway-entrance-label"
-            >
-              <span id="subway-entrance-label" className="sr-only">
-                <FormattedMessage
-                  id={
-                    entranceAccessible === 'POSSIBLE'
-                      ? 'subway-exit.sr-description.accessible'
-                      : 'subway-exit.sr-description'
-                  }
-                  defaultMessage="Exit {entranceName}"
-                  values={{ entranceName: entranceName || '' }}
-                />
-              </span>
-
-              <div className="subway-entrance-info-text" aria-hidden="true">
+            <div className="subway-entrance-info-container">
+              <div className="subway-entrance-info-text">
                 <FormattedMessage id="station-exit" defaultMessage="Exit" />
               </div>
               <Icon
@@ -301,22 +286,8 @@ function WalkLeg(
             />
           </div>
           {nextLeg?.mode === 'SUBWAY' && (
-            <div
-              className="subway-entrance-info-container"
-              aria-labelledby="subway-entrance-label"
-            >
-              <span id="subway-entrance-label" className="sr-only">
-                <FormattedMessage
-                  id={
-                    entranceAccessible === 'POSSIBLE'
-                      ? 'subway-entrance.sr-description.accessible'
-                      : 'subway-entrance.sr-description'
-                  }
-                  defaultMessage="Exit {entranceName}"
-                  values={{ entranceName: entranceName || '' }}
-                />
-              </span>
-              <div className="subway-entrance-info-text" aria-hidden="true">
+            <div className="subway-entrance-info-container">
+              <div className="subway-entrance-info-text">
                 <FormattedMessage
                   id="station-entrance"
                   defaultMessage="Entrance"

@@ -1685,12 +1685,6 @@ const translations = {
     // eslint-disable-next-line sort-keys
     street: 'Street',
     subway: 'Metro',
-    'subway-entrance.sr-description': 'Metro station entrance {entranceName}',
-    'subway-entrance.sr-description.accessible':
-      'Metro station entrance {entranceName}, accessible',
-    'subway-exit.sr-description': 'Metro station exit {entranceName}}',
-    'subway-exit.sr-description.accessible':
-      'Metro station exit {entranceName}, accessible',
     'subway-with-route-number': 'Metro {routeNumber} {headSign}',
     'summary-page.description': '{from} - {to}',
     'summary-page.row-label': 'Itinerary suggestion {number}',
@@ -2987,12 +2981,6 @@ const translations = {
     // eslint-disable-next-line sort-keys
     street: 'Katu',
     subway: 'Metro',
-    'subway-entrance.sr-description': 'Metroaseman sisäänkäynti {entranceName}',
-    'subway-entrance.sr-description.accessible':
-      'Metroaseman sisäänkäynti {entranceName}, esteetön',
-    'subway-exit.sr-description': 'Metroaseman uloskäynti {entranceName}',
-    'subway-exit.sr-description.accessible':
-      'Metroaseman uloskäynti {entranceName}, esteetön',
     'subway-with-route-number': 'Metro {routeNumber} {headSign}',
     'summary-page.description': '{from} - {to}',
     'summary-page.row-label': 'Reittiehdotus {number}',
@@ -5948,12 +5936,6 @@ const translations = {
     // eslint-disable-next-line sort-keys
     street: 'Gata',
     subway: 'Metro',
-    'subway-entrance.sr-description': 'Metro stationens ingång {entranceName}',
-    'subway-entrance.sr-description.accessible':
-      'Metro stationens ingång {entranceName}, tillgänglig',
-    'subway-exit.sr-description': 'Metro stationens utgång {entranceName}',
-    'subway-exit.sr-description.accessible':
-      'Metro stationens utgång {entranceName}, tillgänglig',
     'subway-with-route-number': 'Metro {routeNumber} {headSign}',
     'summary-page.description': '{from} - {to}',
     'summary-page.row-label': 'Ruttförslag {number}',
