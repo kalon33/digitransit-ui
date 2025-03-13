@@ -175,7 +175,11 @@ export default configMerger(walttiConfig, {
 
   showTicketInformation: true,
   useTicketIcons: true,
-  ticketLink: 'https://www.lsl.fi/liput-ja-hinnat/',
+  ticketLink: {
+    fi: 'https://www.lsl.fi/liput-ja-hinnat/',
+    sv: 'https://www.lsl.fi/liput-ja-hinnat/',
+    en: 'https://www.lsl.fi/liput-ja-hinnat/',
+  },
   showTicketPrice: false,
   ticketLinkOperatorCode: 50223,
 });

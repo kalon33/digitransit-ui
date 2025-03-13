@@ -317,6 +317,7 @@ class ItineraryDetails extends React.Component {
                   fares={fares}
                   zones={getZones(itinerary.legs)}
                   legs={itinerary.legs}
+                  ticketLink={config.ticketLink?.[currentLanguage]}
                 />
               )),
 

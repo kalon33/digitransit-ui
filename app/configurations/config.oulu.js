@@ -167,7 +167,11 @@ export default configMerger(walttiConfig, {
 
   showTicketInformation: true,
   useTicketIcons: true,
-  ticketLink: 'https://www.osl.fi/liput-ja-hinnat/osl-sovellus/',
+  ticketLink: {
+    fi: 'https://www.osl.fi/liput-ja-hinnat/osl-sovellus/',
+    sv: 'https://www.osl.fi/liput-ja-hinnat/osl-sovellus/',
+    en: 'https://www.osl.fi/liput-ja-hinnat/osl-sovellus/',
+  },
   showTicketPrice: true,
   showTicketLinkOnlyWhenTesting: true,
   ticketLinkOperatorCode: 50229,
