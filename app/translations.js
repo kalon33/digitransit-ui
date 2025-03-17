@@ -1300,6 +1300,15 @@ const translations = {
     'more-settings': 'More settings',
     'move-on-map': 'Move on the map',
     'move-to-tab': 'Go to tab {number}',
+    'navi-change-info': 'TODO_Saat tiedon muutoksista',
+    'navi-geolocation-approval':
+      'TODO_Suostumuksesi sijaintitietoihin palvelua käytettäessä',
+    'navi-geolocation-details':
+      'TODO_Opastuksen alkaessa palvelu voi pyytää suostumuksesi sijaintiedon käyttämiseen. Voit määrittää luvan laitteesi ja selaimen asetuksista milloin tahansa.',
+    'navi-geolocation-purpose':
+      'TODO_Sallimalla laitteesi paikannuksen saat parhaan mahdollisen tuen reitillesi.',
+    'navi-more-guidance': 'TODO_Entistä opastetummin perille!',
+    'navi-support': 'TODO_Saat tukea reitilläsi',
     'navidest-show-on-map': 'Show route on map',
     navigate: 'Navigate',
     'navigation-abort-trip': 'Unfortunately your journey plan is not possible.',
@@ -2597,6 +2606,15 @@ const translations = {
     'more-settings': 'Lisäasetukset',
     'move-on-map': 'Siirry kartalla',
     'move-to-tab': 'Siirry välilehdelle {number}',
+    'navi-change-info': 'Saat tiedon muutoksista',
+    'navi-geolocation-approval':
+      'Suostumuksesi sijaintitietoihin palvelua käytettäessä',
+    'navi-geolocation-details':
+      'Opastuksen alkaessa palvelu voi pyytää suostumuksesi sijaintiedon käyttämiseen. Voit määrittää luvan laitteesi ja selaimen asetuksista milloin tahansa.',
+    'navi-geolocation-purpose':
+      'Sallimalla laitteesi paikannuksen saat parhaan mahdollisen tuen reitillesi.',
+    'navi-more-guidance': 'Entistä opastetummin perille!',
+    'navi-support': 'Saat tukea reitilläsi',
     'navidest-show-on-map': 'Näytä reitti kartalla',
     navigate: 'Navigoi',
     'navigation-abort-trip':
@@ -5543,6 +5561,15 @@ const translations = {
     'more-settings': 'Fler inställningar',
     'move-on-map': 'Flytta på kartan',
     'move-to-tab': 'Gå till fliken {number}',
+    'navi-change-info': 'TODO_Saat tiedon muutoksista',
+    'navi-geolocation-approval':
+      'TODO_Suostumuksesi sijaintitietoihin palvelua käytettäessä',
+    'navi-geolocation-details':
+      'TODO_Opastuksen alkaessa palvelu voi pyytää suostumuksesi sijaintiedon käyttämiseen. Voit määrittää luvan laitteesi ja selaimen asetuksista milloin tahansa.',
+    'navi-geolocation-purpose':
+      'TODO_Sallimalla laitteesi paikannuksen saat parhaan mahdollisen tuen reitillesi.',
+    'navi-more-guidance': 'TODO_Entistä opastetummin perille!',
+    'navi-support': 'TODO_Saat tukea reitilläsi',
     'navidest-show-on-map': 'Visa rutt på kartan',
     navigate: 'Navigera',
     'navigation-abort-trip':
