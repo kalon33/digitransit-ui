@@ -42,8 +42,6 @@ export default configMerger(walttiConfig, {
 
   ticketLink: {
     fi: 'https://vilkku.kuopio.fi/lipputyypit-hinnat/lippujen-hinnat',
-    sv: 'https://vilkku.kuopio.fi/lipputyypit-hinnat/lippujen-hinnat',
-    en: 'https://vilkku.kuopio.fi/lipputyypit-hinnat/lippujen-hinnat',
   },
 
   searchParams: {

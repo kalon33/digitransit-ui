@@ -139,8 +139,6 @@ export default configMerger(walttiConfig, {
   useTicketIcons: true,
   ticketLink: {
     fi: 'https://pjl.pori.fi/etusivu/liput-ja-hinnat/',
-    sv: 'https://pjl.pori.fi/etusivu/liput-ja-hinnat/',
-    en: 'https://pjl.pori.fi/etusivu/liput-ja-hinnat/',
   },
   showTicketPrice: true,
   showTicketLinkOnlyWhenTesting: true,

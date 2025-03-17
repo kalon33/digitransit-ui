@@ -435,8 +435,6 @@ export default {
   },
   ticketLink: {
     fi: 'https://open.app.hsl.fi/tickets',
-    sv: 'https://open.app.hsl.fi/tickets',
-    en: 'https://open.app.hsl.fi/tickets',
   },
   ticketLinkOperatorCode: 'hsl',
   // mapping fareId from OTP fare identifiers to human readable form

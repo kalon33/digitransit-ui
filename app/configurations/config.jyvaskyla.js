@@ -171,8 +171,6 @@ export default configMerger(walttiConfig, {
   useTicketIcons: true,
   ticketLink: {
     fi: 'https://linkki.jyvaskyla.fi/liput-ja-hinnat',
-    sv: 'https://linkki.jyvaskyla.fi/liput-ja-hinnat',
-    en: 'https://linkki.jyvaskyla.fi/liput-ja-hinnat',
   },
   showTicketPrice: true,
 

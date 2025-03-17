@@ -169,8 +169,6 @@ export default configMerger(walttiConfig, {
   useTicketIcons: true,
   ticketLink: {
     fi: 'https://www.osl.fi/liput-ja-hinnat/osl-sovellus/',
-    sv: 'https://www.osl.fi/liput-ja-hinnat/osl-sovellus/',
-    en: 'https://www.osl.fi/liput-ja-hinnat/osl-sovellus/',
   },
   showTicketPrice: true,
   showTicketLinkOnlyWhenTesting: true,

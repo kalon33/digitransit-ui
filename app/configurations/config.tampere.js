@@ -74,8 +74,6 @@ export default configMerger(walttiConfig, {
 
   ticketLink: {
     fi: 'https://www.nysse.fi/liput-ja-hinnat.html',
-    sv: 'https://www.nysse.fi/liput-ja-hinnat.html',
-    en: 'https://www.nysse.fi/liput-ja-hinnat.html',
   },
 
   callAgencyInfo: {
