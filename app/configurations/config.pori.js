@@ -141,7 +141,7 @@ export default configMerger(walttiConfig, {
   showTicketPrice: true,
   showTicketLinkOnlyWhenTesting: true,
   ticketLinkOperatorCode: 50231,
-  externalFareRoutes: [
+  externalFareRouteIds: [
     '301',
     '302',
     '303',
