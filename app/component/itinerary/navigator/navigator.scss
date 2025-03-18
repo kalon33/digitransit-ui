@@ -191,7 +191,7 @@
   }
 
   .headsign {
-    margin-left: 10px;
+    margin-left: var(--space-xs);
     font-size: $font-size-small;
     max-width: 85%;
     text-align: left;
@@ -290,10 +290,14 @@
         display: flex;
         margin-left: 35px;
 
-        .icon {
-          height: 16px;
-          width: 16px;
-          padding: 1px 1px 0 1px;
+        .icon-container {
+          display: flex;
+          align-items: center;
+
+          .icon {
+            height: 16px;
+            width: 16px;
+          }
         }
       }
 
