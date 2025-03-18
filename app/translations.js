@@ -860,6 +860,7 @@ const translations = {
     'as-destination': 'Destination',
     'as-origin': 'Origin',
     'as-viapoint': 'Viapoint',
+    back: 'Back',
     'buy-in-app': 'Buy in App',
     'search-autosuggest-label': 'Venue, place and stopsearch.',
     'search-autosuggest-label-instructions':
@@ -2213,6 +2214,7 @@ const translations = {
     'at-time': 'klo',
     'avoid-transfers': 'Vältä vaihtoja',
     'avoid-walking': 'Vältä kävelyä',
+    back: 'Takaisin',
     'back-button-title': 'Siirry takaisin edelliselle sivulle',
     'back-to-front-page': 'Siirry etusivulle ›',
     bicycle: 'Polkupyörä',
@@ -5131,6 +5133,7 @@ const translations = {
     'as-destination': 'Destination',
     'as-origin': 'Avfärdsplats',
     'as-viapoint': 'Via punkt',
+    back: 'Tillbaka',
     'book-a-lift':
       'Tilaa kyyti sovelluksella ja jää odottamaan sen saapumista:',
     'buy-in-app': 'Köp i appen',

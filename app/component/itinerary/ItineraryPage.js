@@ -76,6 +76,7 @@ import {
   updateClient,
 } from './ItineraryPageUtils';
 import ItineraryTabs from './ItineraryTabs';
+import NaviGeolocationInfoModal from './navigator/navigatorgeolocation/NaviGeolocationInfoModal';
 import planConnection from './PlanConnection';
 import NaviContainer from './navigator/NaviContainer';
 import NavigatorIntroModal from './navigator/navigatorintro/NavigatorIntroModal';
@@ -144,6 +145,7 @@ export default function ItineraryPage(props, context) {
   );
   const [locationPermissionsLoadState, setLocationPermissionsLoadState] =
     useState(LOADSTATE.UNSET);
+  const [isGeolocationInfoOpen, setGeolocationInfoOpen] = useState(false);
 
   const altStates = {
     [PLANTYPE.WALK]: useState(unset),
@@ -1185,6 +1187,10 @@ export default function ItineraryPage(props, context) {
     setLocationPermissionsLoadState(LOADSTATE.LOADING);
   };
 
+  const toggleGeolocationInfo = () => {
+    setGeolocationInfoOpen(!isGeolocationInfoOpen);
+  };
+
   const cancelNavigatorUsage = () => {
     setNavigation(false);
   };
@@ -1276,11 +1282,20 @@ export default function ItineraryPage(props, context) {
         <div>
           {!isNavigatorIntroDismissed ||
           locationPermissionsLoadState === LOADSTATE.LOADING ? (
-            <NavigatorIntroModal
-              isOpen
-              onPrimaryClick={toggleNavigatorIntro}
-              onClose={cancelNavigatorUsage}
-            />
+            <>
+              <NavigatorIntroModal
+                isOpen
+                onPrimaryClick={toggleNavigatorIntro}
+                onClose={cancelNavigatorUsage}
+                onOpenGeolocationInfo={toggleGeolocationInfo}
+              />
+              {isGeolocationInfoOpen && (
+                <NaviGeolocationInfoModal
+                  isOpen
+                  onClose={toggleGeolocationInfo}
+                />
+              )}
+            </>
           ) : (
             <NaviContainer
               legs={itineraryForNavigator.legs}
