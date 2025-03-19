@@ -3,6 +3,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import polyUtil from 'polyline-encoded';
 import { useCallback, useEffect, useState } from 'react';
 import { fetchQuery } from 'react-relay';
+import { updateLatestNavigatorItineraryParams } from '../../../../store/localStorage';
 import { GeodeticToEcef, GeodeticToEnu } from '../../../../util/geo-utils';
 import { legTime } from '../../../../util/legUtils';
 import { epochToIso } from '../../../../util/timeUtils';
@@ -155,10 +156,12 @@ const useRealtimeLegs = (
   position,
   vehicles,
   updateLegs,
+  forceStartAt,
 ) => {
   const [{ origin, time, realTimeLegs }, setTimeAndRealTimeLegs] = useState(
     () => getInitialState(initialLegs),
   );
+  const [loading, setLoading] = useState(true);
 
   const queryAndMapRealtimeLegs = useCallback(
     async (legs, now) => {
@@ -184,6 +187,10 @@ const useRealtimeLegs = (
     },
     [relayEnvironment],
   );
+
+  useEffect(() => {
+    updateLegs?.(realTimeLegs);
+  }, [realTimeLegs]);
 
   const fetchAndSetRealtimeLegs = useCallback(async () => {
     const now = Date.now();
@@ -227,7 +234,6 @@ const useRealtimeLegs = (
         l.freezeStart = l.freezeStart || legTime(l.start) <= now;
         l.freezeEnd = l.freezeEnd || legTime(l.end) <= now;
       });
-      updateLegs?.(rtLegs);
       return { ...prev, time: now, realTimeLegs: rtLegs };
     });
   }, [realTimeLegs, queryAndMapRealtimeLegs]);
@@ -259,6 +265,7 @@ const useRealtimeLegs = (
           realTimeLegs: prev.realTimeLegs,
         };
       });
+      updateLatestNavigatorItineraryParams({ forceStartAt: startTimeInMS });
     }
   };
 
@@ -268,6 +275,12 @@ const useRealtimeLegs = (
     const interval = setInterval(() => {
       fetchAndSetRealtimeLegs();
     }, 10000);
+
+    if (forceStartAt) {
+      startItinerary(forceStartAt);
+    }
+
+    setLoading(false);
 
     return () => clearInterval(interval);
   }, []);
@@ -280,7 +293,9 @@ const useRealtimeLegs = (
       currentLeg.distance
     : 0;
 
-  const validated = validateTransitLeg(currentLeg, origin, vehicles);
+  const validated = currentLeg.transitLeg
+    ? validateTransitLeg(currentLeg, origin, vehicles)
+    : true;
 
   return {
     realTimeLegs,
@@ -292,6 +307,7 @@ const useRealtimeLegs = (
     currentLeg,
     nextLeg,
     startItinerary,
+    loading,
     validated,
   };
 };

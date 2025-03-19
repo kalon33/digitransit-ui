@@ -504,7 +504,7 @@ $itinerary-tab-switch-height: 48px;
 .citybike-duration-infobox {
   display: flex;
   height: auto;
-  background: #e5f2fa;
+  background: $infobox-color-generic-blue;
   border-radius: 5px;
   margin: 15px;
   padding: 15px;
@@ -2112,7 +2112,7 @@ $itinerary-tab-switch-height: 48px;
     .itinerary-leg-action {
       border-top: 1px solid #ddd;
       padding: 1.2em 0;
-      margin-bottom: 1em;
+      margin-bottom: 0.1em;
       min-height: 60px;
       height: auto;
       font-size: 0.9375rem;

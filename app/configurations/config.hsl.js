@@ -20,9 +20,6 @@ const SUGGESTION_URL = process.env.CONTENT_DOMAIN
   ? `${process.env.CONTENT_DOMAIN}/api/v1/search/suggestions`
   : 'https://content.hsl.fi/api/v1/search/suggestions'; // old url
 
-const localStorageEmitter =
-  process.env.USE_EMITTER && rootLink + '/local-storage-emitter';
-
 const IS_DEV =
   process.env.RUN_ENV === 'development' ||
   process.env.NODE_ENV !== 'production';
@@ -105,6 +102,19 @@ export default {
   nearbyRoutes: {
     radius: 500,
     bucketSize: 100,
+  },
+
+  defaultSettings: {
+    walkSpeed: 1.28,
+  },
+
+  /**
+   * These are used for dropdown selection of values to override the default
+   * settings. This means that values ought to be relative to the current default.
+   * If not, the selection may not make any sense.
+   */
+  defaultOptions: {
+    walkSpeed: [0.69, 0.97, 1.28, 1.67, 2.22],
   },
 
   omitNonPickups: true,
@@ -439,8 +449,6 @@ export default {
     en: 'travelling/services-now',
     sv: 'att-resa/Trafiken-just-nu',
   },
-
-  localStorageEmitter,
 
   vehicleRental: {
     minZoomStopsNearYou: 10,

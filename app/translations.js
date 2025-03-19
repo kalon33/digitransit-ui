@@ -116,7 +116,6 @@ const translations = {
     navigate: 'Naviger',
     nearest: 'Forrige',
     'network-error': 'Netværksfejl',
-    'new-feature': 'TODO_new-feature_DA',
     next: 'Næste',
     'no-position': 'Ingen position',
     'no-position-no-stops':
@@ -537,7 +536,6 @@ const translations = {
       'Position auf der Karte hat sich geändert',
     neighbourhood: 'Viertel ',
     'network-error': 'Ein Netzwerkfehler ist aufgetreten.',
-    'new-feature': 'TODO_new-feature_DE',
     next: 'Nächste',
     'no-bike-allowed-popup-train':
       'Die Fahrradmitnahme ist in Pendlerzügen erlaubt, in Fernverkehrszügen ist jedoch ein Zuschlag nötig und es könnte eine Reservierung erforderlich sein.',
@@ -1307,7 +1305,6 @@ const translations = {
     'navigation-abort-trip': 'Unfortunately your journey plan is not possible.',
     'navigation-description': 'Journey guidance',
     'navigation-get-mode': 'Get on the {mode}',
-    'navigation-header': 'Journey tracking',
     'navigation-hurry-transfer': 'Shorter transfer time',
     'navigation-hurry-transfer-solved': 'Transfer time returned to normal',
     'navigation-hurry-transfer-solved-details':
@@ -1321,12 +1318,10 @@ const translations = {
     'navigation-intro-header': 'TODO_navigation-intro-login-prompt_EN',
     'navigation-intro-help-body': 'TODO_navigation-intro-login-prompt_EN',
     'navigation-intro-help-header': 'TODO_navigation-intro-login-prompt_EN',
-    'navigation-intro-login-prompt': 'TODO_navigation-intro-login-prompt_EN',
     'navigation-intro-notifications-body':
       'TODO_navigation-intro-login-prompt_EN',
     'navigation-intro-notifications-header':
       'TODO_navigation-intro-login-prompt_EN',
-    'navigation-journey-end': 'Journey has ended',
     'navigation-journey-start': 'Your journey starts at',
     'navigation-journey-start-early-prompt':
       'TODO_navigation-journey-start-early-prompt_EN',
@@ -1336,25 +1331,22 @@ const translations = {
     'navigation-outro-header': 'TODO_navigation-outro-header_EN',
     'navigation-quit': 'Return',
     'navigation-remember-ticket': 'TODO_Muistithan ostaa lipun?',
-    'navigation-start': 'Start journey',
     'navigation-ticket': 'Ticket',
     'navigation-transfer-problem': 'Transfer is no longer possible',
     'navigation-transfer-problem-details': 'Transfer {transfer} is too fast.',
-    'navigation-wait': 'Wait at the stop',
     'navileg-at-ferrypier': 'ferry pier',
     'navileg-at-station': 'station',
     'navileg-at-stop': 'stop',
     'navileg-bicycle': 'Cycle to',
     'navileg-car': 'Drive to',
-    'navileg-departing-at': 'TODO_{duration} min päästä klo {legTime}',
+    'navileg-departing-at': 'TODO_{duration} päästä klo {legTime}',
     'navileg-hop-on': 'TODO_ja nouse kyytiin',
     'navileg-in-transit': 'TODO_{mode}matka',
     'navileg-in-transit-interline':
       'TODO_Matka jatkuu {stopOrStation} {stop}  samassa kulkuneuvossa {duration} päästä klo {legTime}',
     'navileg-intermediate-stops': 'TODO_{stopCount} välipysäkkiä',
     'navileg-leave-at':
-      'Jää pois {stopOrStation} {stop} {duration} min päästä klo {legTime}',
-    'navileg-mode-citybike': 'Kaupunkipyöriä on asemalla {available} kpl',
+      'Jää pois {stopOrStation} {stop} {duration} päästä klo {legTime}',
     'navileg-mode-realtime': '{mode} {route} on aikataulussa',
     'navileg-mode-schedule': 'The {mode} is on schedule',
     'navileg-one-intermediate-stop': 'TODO_{stopCount} välipysäkki',
@@ -1385,7 +1377,7 @@ const translations = {
     'network-error': 'Network error',
     // eslint-disable-next-line sort-keys
     neighbourhood: 'Neighbourhood ',
-    'new-feature': 'New feature!',
+    'new-route': 'Is the route new for you?',
     next: 'Next',
     'no-bike-allowed-popup-train':
       'Bicycles are allowed on commuter trains but on long distance trains you have to pay an extra fee and it might require a reservation.',
@@ -1975,7 +1967,6 @@ const translations = {
     navigate: 'Navegar',
     nearest: 'Más cercano',
     'network-error': 'Error de red',
-    'new-feature': 'TODO_new-feature_ES',
     next: 'Siguiente',
     'no-position': 'Sin localización',
     'no-position-no-stops':
@@ -2612,7 +2603,6 @@ const translations = {
       'Valitettavasti matkasi ei toteudu suunnitellusti.',
     'navigation-description': 'Löydä perille ohjatusti',
     'navigation-get-mode': 'Nouse {mode}',
-    'navigation-header': 'Matkan seuranta',
     'navigation-hurry-transfer': 'Vaihtoaika lyhentynyt',
     'navigation-hurry-transfer-solved': 'Vaihtoaika palautunut normaaliksi',
     'navigation-hurry-transfer-solved-details':
@@ -2621,17 +2611,14 @@ const translations = {
       'Vaihdon {transfer} uusi kesto on {time}',
     'navigation-interline-resume': 'Matka jatkuu {duration} odotuksen jälkeen',
     'navigation-interline-wait':
-      'Linjatunnus ({line}) Ja määränpää ({destination}) vaihtuvat pysäkillä',
+      'Linjatunnus ({line}) ja määränpää ({destination}) vaihtuvat pysäkillä',
     'navigation-intro-begin': 'Aloita matka',
     'navigation-intro-header': 'Mitä matkanseuranta tarjoaa?',
     'navigation-intro-help-body': 'Löydä perille vaihe kerrallaan',
     'navigation-intro-help-header': 'Apua navigointiin',
-    'navigation-intro-login-prompt':
-      'Kirjaudu käyttäjätilillesi niin voit palata takaisin matkallesi',
     'navigation-intro-notifications-body':
       'Pysy ajan tasalla matkasi vaiheista',
     'navigation-intro-notifications-header': 'Ilmoitukset ja muutokset',
-    'navigation-journey-end': 'Matka on päättynyt',
     'navigation-journey-start': 'Matkasi alkaa klo',
     'navigation-journey-start-early-prompt': 'Etkö halua odottaa?',
     'navigation-mode-canceled': '{name} on peruuntunut',
@@ -2640,25 +2627,22 @@ const translations = {
     'navigation-outro-header': 'Olet perillä!',
     'navigation-quit': 'Palaa',
     'navigation-remember-ticket': 'Muistithan ostaa lipun?',
-    'navigation-start': 'Matkalle',
     'navigation-ticket': 'Lippu',
     'navigation-transfer-problem': 'Vaihto ei enää onnistu',
     'navigation-transfer-problem-details': 'Vaihto {transfer} on liian nopea.',
-    'navigation-wait': 'Odota pysäkillä',
     'navileg-at-ferrypier': 'lauttalaiturilla',
     'navileg-at-station': 'asemalla',
     'navileg-at-stop': 'pysäkillä',
     'navileg-bicycle': 'Pyöräile',
     'navileg-car': 'Aja',
-    'navileg-departing-at': '{duration} min päästä klo {legTime}',
+    'navileg-departing-at': '{duration} päästä klo {legTime}',
     'navileg-hop-on': 'ja nouse kyytiin',
     'navileg-in-transit': '{mode}matka',
     'navileg-in-transit-interline':
       'Matka jatkuu {stopOrStation} {stop}  samassa kulkuneuvossa {duration} min päästä klo {legTime}',
     'navileg-intermediate-stops': '{stopCount} välipysäkkiä',
     'navileg-leave-at':
-      'Jää pois {stopOrStation} {stop} {duration} min päästä klo {legTime}',
-    'navileg-mode-citybike': 'Kaupunkipyöriä on asemalla {available} kpl',
+      'Jää pois {stopOrStation} {stop} {duration} päästä klo {legTime}',
     'navileg-mode-realtime': '{mode}  {route} on aikataulussa',
     'navileg-mode-schedule': 'Reaaliaikaista tietoa ei ole saatavilla',
     'navileg-one-intermediate-stop': '{stopCount} välipysäkki',
@@ -2690,7 +2674,7 @@ const translations = {
     'network-error': 'Verkkovirhe',
     // eslint-disable-next-line sort-keys
     neighbourhood: 'Naapurusto',
-    'new-feature': 'Uusi ominaisuus!',
+    'new-route': 'Onko reitti sinulle uusi?',
     next: 'Seuraava',
     'no-bike-allowed-popup-train':
       'Lähiliikenteen juniin pyörän voi ottaa mukaan ilmaiseksi, mutta pitkän matkan junissa peritään lisämaksu ja mahdollisesti vaaditaan etukäteisvaraus.',
@@ -3291,7 +3275,6 @@ const translations = {
     navigate: 'Voyager',
     nearest: 'Le plus proche',
     'network-error': 'Erreur réseau',
-    'new-feature': 'TODO_new-feature_FR',
     next: 'Suivant',
     'no-bike-allowed-popup-train':
       'Bicycles are allowed on commuter trains but on long distance trains you have to pay an extra fee and it might require a reservation.',
@@ -3584,7 +3567,6 @@ const translations = {
     navigate: 'Naviger',
     nearest: 'Forrige',
     'network-error': 'Nettverksfeil',
-    'new-feature': 'TODO_new-feature_NB',
     next: 'Neste',
     'no-position': 'Ingen posisjon',
     'no-position-no-stops':
@@ -4201,7 +4183,6 @@ const translations = {
     'network-error': 'Błąd sieciowy',
     // eslint-disable-next-line sort-keys
     neighbourhood: 'Okolice ',
-    'new-feature': 'TODO_new-feature_PL',
     next: 'Next',
     'no-bike-allowed-popup-train':
       'Bicycles are allowed on commuter trains but on long distance trains you have to pay an extra fee and it might require a reservation.',
@@ -4855,7 +4836,6 @@ const translations = {
     'network-error': 'Eroare de rețea',
     // eslint-disable-next-line sort-keys
     neighbourhood: 'Cartier ',
-    'new-feature': 'TODO_new-feature_RO',
     next: 'Următorul',
     'no-bike-allowed-popup-train':
       'Bicicletele sunt permise în trenurile de navetă, însă e posibil să aveți nevoie de un bilet suplimentar sau de rezervare prealabilă.',
@@ -5569,7 +5549,6 @@ const translations = {
       'TODO_Valitettavasti matkasi ei toteudu suunnitellusti.',
     'navigation-description': 'Hitta fram med vägledning.',
     'navigation-get-mode': 'Gå på {mode}',
-    'navigation-header': 'Följa',
     'navigation-hurry-transfer': 'Kortare bytestid',
     'navigation-hurry-transfer-solved': 'Bytestiden återgick till det normala',
     'navigation-hurry-transfer-solved-details':
@@ -5584,12 +5563,10 @@ const translations = {
     'navigation-intro-header': 'TODO_navigation-intro-login-prompt_SV',
     'navigation-intro-help-body': 'TODO_navigation-intro-login-prompt_SV',
     'navigation-intro-help-header': 'TODO_navigation-intro-login-prompt_SV',
-    'navigation-intro-login-prompt': 'TODO_navigation-intro-login-prompt_SV',
     'navigation-intro-notifications-body':
       'TODO_navigation-intro-login-prompt_SV',
     'navigation-intro-notifications-header':
       'TODO_navigation-intro-login-prompt_SV',
-    'navigation-journey-end': 'Resan är över',
     'navigation-journey-start': 'Din resa börjar',
     'navigation-journey-start-early-prompt':
       'TODO_navigation-journey-start-early-prompt_SV',
@@ -5599,25 +5576,22 @@ const translations = {
     'navigation-outro-header': 'TODO_navigation-outro-header_SV',
     'navigation-quit': 'Återgå',
     'navigation-remember-ticket': 'TODO_Muistithan ostaa lipun?',
-    'navigation-start': 'På resa',
     'navigation-ticket': 'Biljett',
     'navigation-transfer-problem': 'Byten är inte längre möjlig',
     'navigation-transfer-problem-details': 'Byten {transfer} är för snabb.',
-    'navigation-wait': 'Vänta på hållplatsen',
     'navileg-at-ferrypier': 'färjekajen',
     'navileg-at-station': 'station',
     'navileg-at-stop': 'hållplats',
     'navileg-bicycle': 'Cycla till',
     'navileg-car': 'Kör till',
-    'navileg-departing-at': 'TODO_{duration} min päästä klo {legTime}',
+    'navileg-departing-at': 'TODO_{duration} päästä klo {legTime}',
     'navileg-hop-on': 'TODO_ja nouse kyytiin',
     'navileg-in-transit': 'TODO_{mode}matka',
     'navileg-in-transit-interline':
       'TODO_Matka jatkuu {stopOrStation} {stop}  samassa kulkuneuvossa {duration} päästä klo {legTime}',
     'navileg-intermediate-stops': 'TODO_{stopCount} välipysäkkiä',
     'navileg-leave-at':
-      'TODO_Jää pois {stopOrStation} {stop} {duration} min päästä klo {legTime}',
-    'navileg-mode-citybike': 'Kaupunkipyöriä on asemalla {available} kpl',
+      'TODO_Jää pois {stopOrStation} {stop} {duration} päästä klo {legTime}',
     'navileg-mode-realtime': '{mode} {route} on aikataulussa',
     'navileg-mode-schedule': 'Reaaliaikaista tietoa ei ole saatavilla',
     'navileg-one-intermediate-stop': 'TODO_{stopCount} välipysäkki',
@@ -5648,7 +5622,7 @@ const translations = {
     'network-error': 'Nätverksfel',
     // eslint-disable-next-line sort-keys
     neighbourhood: 'Gransskap',
-    'new-feature': 'TODO_new-feature_SV',
+    'new-route': 'TODO_new_route_SV',
     next: 'Nästa',
     'no-bike-allowed-popup-train':
       'Du kan ta med cykeln i närtågen avgiftsfritt, men i andra tåg är det avgiftsbelagt och kräver möjligtvis en förhandsreservation.',
