@@ -8,7 +8,7 @@ import { GeodeticToEcef, GeodeticToEnu } from '../../../../util/geo-utils';
 import { legTime } from '../../../../util/legUtils';
 import { epochToIso } from '../../../../util/timeUtils';
 import { legQuery } from '../../queries/LegQuery';
-import { getRemainingTraversal } from '../NaviUtils';
+import { getRemainingTraversal, validateTransitLeg } from '../NaviUtils';
 
 function nextTransitIndex(legs, i) {
   for (let j = i; j < legs.length; j++) {
@@ -108,19 +108,20 @@ function getLegsOfInterest(legs, now) {
       nextLeg: undefined,
     };
   }
-
   const currentLeg = legs.find(
     ({ start, end }) => legTime(start) <= now && legTime(end) >= now,
   );
-  const previousLeg = legs.findLast(({ end }) => legTime(end) < now);
+
   const nextStart = currentLeg ? legTime(currentLeg.end) : now;
+  const nextLeg = legs.find(({ start }) => legTime(start) >= nextStart);
+  const previousLeg = legs.findLast(({ end }) => legTime(end) < now);
 
   return {
     firstLeg: legs[0],
     lastLeg: legs[legs.length - 1],
     previousLeg,
     currentLeg,
-    nextLeg: legs.find(({ start }) => legTime(start) >= nextStart),
+    nextLeg,
   };
 }
 
@@ -153,6 +154,7 @@ const useRealtimeLegs = (
   relayEnvironment,
   initialLegs,
   position,
+  vehicles,
   updateLegs,
   forceStartAt,
 ) => {
@@ -248,15 +250,14 @@ const useRealtimeLegs = (
             time: startTimeInMS,
           };
         }
-        const adjustment = legTime(realTimeLegs[0].start) - startTimeInMS;
-
-        firstLeg.start.scheduledTime = epochToIso(startTimeInMS);
-        firstLeg.end.scheduledTime = epochToIso(
-          legTime(realTimeLegs[0].end) - adjustment,
-        );
-        firstLeg.freezeStart = true;
-        firstLeg.freezeEnd = true;
-
+        const adjustment = startTimeInMS - legTime(realTimeLegs[0].start);
+        const lastShifted = nextTransitIndex(realTimeLegs, 0) - 1;
+        shiftLegs(realTimeLegs, 0, lastShifted, adjustment);
+        for (let i = 0; i <= lastShifted; i++) {
+          const leg = realTimeLegs[i];
+          leg.freezeStart = true;
+          leg.freezeEnd = true;
+        }
         return {
           ...prev,
           time: startTimeInMS,
@@ -291,6 +292,10 @@ const useRealtimeLegs = (
       currentLeg.distance
     : 0;
 
+  const validated = currentLeg?.transitLeg
+    ? validateTransitLeg(currentLeg, origin, vehicles)
+    : true;
+
   return {
     realTimeLegs,
     time,
@@ -302,6 +307,7 @@ const useRealtimeLegs = (
     nextLeg,
     startItinerary,
     loading,
+    validated,
   };
 };
 
