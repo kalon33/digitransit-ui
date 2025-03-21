@@ -250,15 +250,14 @@ const useRealtimeLegs = (
             time: startTimeInMS,
           };
         }
-        const adjustment = legTime(realTimeLegs[0].start) - startTimeInMS;
-
-        firstLeg.start.scheduledTime = epochToIso(startTimeInMS);
-        firstLeg.end.scheduledTime = epochToIso(
-          legTime(realTimeLegs[0].end) - adjustment,
-        );
-        firstLeg.freezeStart = true;
-        firstLeg.freezeEnd = true;
-
+        const adjustment = startTimeInMS - legTime(realTimeLegs[0].start);
+        const lastShifted = nextTransitIndex(realTimeLegs, 0) - 1;
+        shiftLegs(realTimeLegs, 0, lastShifted, adjustment);
+        for (let i = 0; i <= lastShifted; i++) {
+          const leg = realTimeLegs[i];
+          leg.freezeStart = true;
+          leg.freezeEnd = true;
+        }
         return {
           ...prev,
           time: startTimeInMS,
@@ -293,7 +292,7 @@ const useRealtimeLegs = (
       currentLeg.distance
     : 0;
 
-  const validated = currentLeg.transitLeg
+  const validated = currentLeg?.transitLeg
     ? validateTransitLeg(currentLeg, origin, vehicles)
     : true;
 
