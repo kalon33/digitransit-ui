@@ -212,6 +212,7 @@
   cursor: default;
   font-size: $font-size-normal;
   font-weight: $font-weight-book;
+  z-index: 1;
 
   .navi-top-card-arrow {
     .inverted {
@@ -578,9 +579,7 @@
     }
 
     &.slide-out-right {
-      animation:
-        slideLeft 0.5s ease-out forwards,
-        fadeOut 0.5s ease-out forwards;
+      animation: slideLeft 0.5s cubic-bezier(0.3, -0.05, 0.7, -0.5);
       pointer-events: none;
     }
 
