@@ -695,6 +695,15 @@ export default function ItineraryPage(props, context) {
     storedItinerary.current = itineraryWithParams;
   };
 
+  const storeItineraryAndStartNavigationWithAnalytics = itinerary => {
+    addAnalyticsEvent({
+      category: 'Itinerary',
+      event: 'navigator',
+      action: 'cta_click',
+    });
+    storeItineraryAndStartNavigation(itinerary);
+  };
+
   const updateStoredItinerary = legs => {
     storedItinerary.current = {
       ...storedItinerary.current,
@@ -1251,7 +1260,7 @@ export default function ItineraryPage(props, context) {
       const navigateHook =
         !desktop && config.experimental?.navigation && !pastSearch
           ? () =>
-              storeItineraryAndStartNavigation(
+              storeItineraryAndStartNavigationWithAnalytics(
                 combinedEdges[selectedIndex]?.node,
               )
           : undefined;
