@@ -9,7 +9,7 @@ const NavigatorOutro = ({ onClose, destination, logo }, context) => {
   return (
     <>
       <div className="outro-logo-container">
-        {logo && <img src={logo} alt="thumbs up" />}
+        {logo && <img src={logo} alt="Navigator outro icon" />}
       </div>
       <div className="outro-body">
         <FormattedMessage
