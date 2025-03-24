@@ -73,6 +73,7 @@ import {
   settingsLimitRouting,
   stopClient,
   updateClient,
+  getSortedEdges,
 } from './ItineraryPageUtils';
 import ItineraryTabs from './ItineraryTabs';
 import planConnection from './PlanConnection';
@@ -489,7 +490,7 @@ export default function ItineraryPage(props, context) {
       setState({ ...state, loadingMore: undefined });
       return;
     }
-    const { edges } = plan;
+    const edges = getSortedEdges(plan.edges, arriveBy);
     if (edges.length === 0) {
       const newState = arriveBy
         ? { topNote: 'no-more-route-msg' }
@@ -577,7 +578,7 @@ export default function ItineraryPage(props, context) {
       setState({ ...state, loadingMore: undefined });
       return;
     }
-    const { edges } = plan;
+    const edges = getSortedEdges(plan.edges, arriveBy);
     if (edges.length === 0) {
       const newState = arriveBy
         ? { bottomNote: 'no-more-route-msg' }
@@ -931,6 +932,7 @@ export default function ItineraryPage(props, context) {
         scooterState.plan,
         state.plan,
         config.vehicleRental.allowDirectScooterJourneys,
+        match.location.query.arriveBy,
       );
       setCombinedState({ plan, loading: LOADSTATE.DONE });
       resetItineraryPageSelection();
