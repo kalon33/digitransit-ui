@@ -1348,7 +1348,7 @@ const translations = {
     'navileg-leave-at':
       'Jää pois {stopOrStation} {stop} {duration} päästä klo {legTime}',
     'navileg-mode-realtime': '{mode} {route} on aikataulussa',
-    'navileg-mode-schedule': 'The {mode} is on schedule',
+    'navileg-mode-schedule': 'No up-to-date traffic data available',
     'navileg-one-intermediate-stop': 'TODO_{stopCount} välipysäkki',
     'navileg-rent-cycle': 'Pick up citybike',
     'navileg-rent-scooter': 'Pick up scooter',
@@ -2644,7 +2644,7 @@ const translations = {
     'navileg-leave-at':
       'Jää pois {stopOrStation} {stop} {duration} päästä klo {legTime}',
     'navileg-mode-realtime': '{mode}  {route} on aikataulussa',
-    'navileg-mode-schedule': 'Reaaliaikaista tietoa ei ole saatavilla',
+    'navileg-mode-schedule': 'Ei ajantasaisia liikennetietoja saatavilla',
     'navileg-one-intermediate-stop': '{stopCount} välipysäkki',
     'navileg-rent-cycle': 'Nouda kapunkipyörä',
     'navileg-rent-scooter': 'Nouda sähköpotkulauta',
@@ -5593,7 +5593,7 @@ const translations = {
     'navileg-leave-at':
       'TODO_Jää pois {stopOrStation} {stop} {duration} päästä klo {legTime}',
     'navileg-mode-realtime': '{mode} {route} on aikataulussa',
-    'navileg-mode-schedule': 'Reaaliaikaista tietoa ei ole saatavilla',
+    'navileg-mode-schedule': 'Inga aktuella trafikdata tillgängliga',
     'navileg-one-intermediate-stop': 'TODO_{stopCount} välipysäkki',
     'navileg-rent-cycle': 'Hämta  stadscykel',
     'navileg-rent-scooter': 'Hämta elsparkcykel',
