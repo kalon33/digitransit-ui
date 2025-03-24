@@ -1,11 +1,23 @@
 import Button from '@hsl-fi/button';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
+import { addAnalyticsEvent } from '../../../../util/analyticsUtils';
 
 const NavigatorOutro = ({ onClose, destination, logo }, context) => {
   const { intl } = context;
   const [place, address] = destination?.split(/, (.+)/) || [];
+
+  useEffect(
+    () =>
+      addAnalyticsEvent({
+        category: 'Itinerary',
+        event: 'navigator',
+        action: 'navigaton_end',
+      }),
+    [],
+  );
+
   return (
     <>
       <div className="outro-logo-container">
