@@ -200,11 +200,12 @@ const useRealtimeLegs = (
         console.error('Failed to query and map real time legs', err),
     );
 
+    let newRtLegs;
     setTimeAndRealTimeLegs(prev => {
       // Maps previous legs with fresh real time transit legs. If transit leg start or end time is in the past according
       // to previous state, the time is marked as frozen to stabilize the current navigation state.
       // rtLegMap does not contain legs that have ended in the past as they've been filtered before updates are queried
-      const rtLegs = prev.realTimeLegs.map(l => {
+      newRtLegs = prev.realTimeLegs.map(l => {
         const rtLeg =
           l.legId && rtLegMap?.[l.legId] ? { ...rtLegMap?.[l.legId] } : null;
         if (rtLeg) {
@@ -227,16 +228,17 @@ const useRealtimeLegs = (
       });
 
       // Shift unfrozen, non-transit-legs to match possibly changed transit legs
-      matchLegEnds(rtLegs, now);
+      matchLegEnds(newRtLegs, now);
 
       // Freezes any leg.start|end in the past
-      rtLegs.forEach(l => {
+      newRtLegs.forEach(l => {
         l.freezeStart = l.freezeStart || legTime(l.start) <= now;
         l.freezeEnd = l.freezeEnd || legTime(l.end) <= now;
       });
-      return { ...prev, time: now, realTimeLegs: rtLegs };
+      return { ...prev, time: now, realTimeLegs: newRtLegs };
     });
-  }, [realTimeLegs, queryAndMapRealtimeLegs]);
+    updateLegs?.(newRtLegs);
+  }, [queryAndMapRealtimeLegs, realTimeLegs, updateLegs]);
 
   const startItinerary = startTimeInMS => {
     if (startTimeInMS < legTime(realTimeLegs[0].start)) {
@@ -258,6 +260,8 @@ const useRealtimeLegs = (
           leg.freezeStart = true;
           leg.freezeEnd = true;
         }
+        updateLatestNavigatorItineraryParams({ forceStartAt: startTimeInMS });
+
         return {
           ...prev,
           time: startTimeInMS,
