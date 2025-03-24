@@ -1343,7 +1343,7 @@ const translations = {
     'navileg-hop-on': 'TODO_ja nouse kyytiin',
     'navileg-in-transit': 'TODO_{mode}matka',
     'navileg-in-transit-interline':
-      'TODO_Matka jatkuu {stopOrStation} {stop}  samassa kulkuneuvossa {duration} päästä klo {legTime}',
+      'TODO_Matka jatkuu {stopOrStation} {stop} samassa kulkuneuvossa {duration} päästä klo {legTime}',
     'navileg-intermediate-stops': 'TODO_{stopCount} välipysäkkiä',
     'navileg-leave-at':
       'Jää pois {stopOrStation} {stop} {duration} päästä klo {legTime}',
@@ -2640,10 +2640,10 @@ const translations = {
     'navileg-hop-on': 'ja nouse kyytiin',
     'navileg-in-transit': '{mode}matka',
     'navileg-in-transit-interline':
-      'Matka jatkuu {stopOrStation} {stop}  samassa kulkuneuvossa {duration} min päästä klo {legTime}',
+      'Matka jatkuu {stopOrStation} {stop} samassa kulkuneuvossa {duration} päästä klo {legTime}',
     'navileg-intermediate-stops': '{stopCount} välipysäkkiä',
     'navileg-leave-at':
-      'Jää pois {stopOrStation} {stop} {duration} min päästä klo {legTime}',
+      'Jää pois {stopOrStation} {stop} {duration} päästä klo {legTime}',
     'navileg-mode-citybike': 'Kaupunkipyöriä on asemalla {available} kpl',
     'navileg-mode-realtime': '{mode} {route} on aikataulussa',
     'navileg-mode-schedule': 'Reaaliaikaista tietoa ei ole saatavilla',
@@ -5589,7 +5589,7 @@ const translations = {
     'navileg-hop-on': 'TODO_ja nouse kyytiin',
     'navileg-in-transit': 'TODO_{mode}matka',
     'navileg-in-transit-interline':
-      'TODO_Matka jatkuu {stopOrStation} {stop}  samassa kulkuneuvossa {duration} päästä klo {legTime}',
+      'TODO_Matka jatkuu {stopOrStation} {stop} samassa kulkuneuvossa {duration} päästä klo {legTime}',
     'navileg-intermediate-stops': 'TODO_{stopCount} välipysäkkiä',
     'navileg-leave-at':
       'TODO_Jää pois {stopOrStation} {stop} {duration} päästä klo {legTime}',
