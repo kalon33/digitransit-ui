@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
 
-const NavigatorOutro = ({ onClose, destination, logo } /* ,context */) => {
-  // const { intl } = context;
+const NavigatorOutro = ({ onClose, destination, logo }, context) => {
+  const { intl } = context;
   const [place, address] = destination?.split(/, (.+)/) || [];
   return (
     <>
@@ -27,7 +27,10 @@ const NavigatorOutro = ({ onClose, destination, logo } /* ,context */) => {
           className="close-button"
           size="large"
           fullWidth
-          value="Poistu opastuksesta"
+          value={intl.formatMessage({
+            id: 'navigation-outro-dismiss',
+            defaultMessage: 'Exit Navigator',
+          })}
           onClick={onClose}
           variant="black"
         />
