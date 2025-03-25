@@ -48,14 +48,14 @@ export default function NaviInstructions(
   if (legType === LEGTYPE.MOVE) {
     return (
       <>
-        <div className="notification-header">
+        <div className={cx('notification-header', 'navi-header-chain')}>
           <FormattedMessage id={instructions} defaultMessage="Go to" />
           &nbsp;
           {legDestination(intl, leg, null, nextLeg)}
           &nbsp;
-          <div className={cx('duration', { realtime: !!position })}>
+          <span className={cx({ realtime: !!position })}>
             {displayDistance(tailLength, config, intl.formatNumber)}&nbsp;
-          </div>
+          </span>
           {nextLeg?.transitLeg && (
             <FormattedMessage id="navileg-hop-on" defaultMessage="by" />
           )}
@@ -66,6 +66,7 @@ export default function NaviInstructions(
             mode={routeMode}
             headsign={hs}
             translationValues={values}
+            compact
           />
         )}
       </>
