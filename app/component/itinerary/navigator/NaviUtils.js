@@ -730,5 +730,5 @@ export const LEGTYPE = {
 };
 
 export const withRealTime = (rt, children) => (
-  <span className={cx('bold', { realtime: rt })}>{children}</span>
+  <span className={cx({ bold: rt, realtime: rt })}>{children}</span>
 );
