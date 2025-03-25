@@ -60,9 +60,9 @@ function NaviContainer(
     relayEnvironment,
     legs,
     position,
+    vehicles,
     updateLegs,
     forceStartAt,
-    vehicles,
   );
 
   useEffect(() => {
