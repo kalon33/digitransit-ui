@@ -65,8 +65,8 @@ import {
   isEqualItineraries,
   isStoredItineraryRelevant,
   mergeBikeTransitPlans,
-  parseCarTransitPlan,
   mergeScooterTransitPlan,
+  parseCarTransitPlan,
   quitIteration,
   reportError,
   scooterEdges,
@@ -74,6 +74,7 @@ import {
   settingsLimitRouting,
   stopClient,
   updateClient,
+  getSortedEdges,
 } from './ItineraryPageUtils';
 import ItineraryTabs from './ItineraryTabs';
 import NaviGeolocationInfoModal from './navigator/navigatorgeolocation/NaviGeolocationInfoModal';
@@ -132,6 +133,8 @@ export default function ItineraryPage(props, context) {
   const mobileRef = useRef();
   const ariaRef = useRef('summary-page.title');
   const mapLayerRef = useRef();
+  const storedItinerary = useRef(getLatestNavigatorItinerary());
+
   const [state, setState] = useState({
     ...emptyState,
     loading: LOADSTATE.UNSET,
@@ -169,9 +172,6 @@ export default function ItineraryPage(props, context) {
   const [topicsState, setTopicsState] = useState(null);
   const [mapState, setMapState] = useState({});
   const [naviMode, setNaviMode] = useState(false);
-  const [storedItinerary, setStoredItinerary] = useState(
-    getLatestNavigatorItinerary(),
-  );
 
   const { config, router } = context;
   const { match, breakpoint } = props;
@@ -497,7 +497,7 @@ export default function ItineraryPage(props, context) {
       setState({ ...state, loadingMore: undefined });
       return;
     }
-    const { edges } = plan;
+    const edges = getSortedEdges(plan.edges, arriveBy);
     if (edges.length === 0) {
       const newState = arriveBy
         ? { topNote: 'no-more-route-msg' }
@@ -585,7 +585,7 @@ export default function ItineraryPage(props, context) {
       setState({ ...state, loadingMore: undefined });
       return;
     }
-    const { edges } = plan;
+    const edges = getSortedEdges(plan.edges, arriveBy);
     if (edges.length === 0) {
       const newState = arriveBy
         ? { bottomNote: 'no-more-route-msg' }
@@ -730,8 +730,9 @@ export default function ItineraryPage(props, context) {
         secondHash,
       },
     };
+
     setLatestNavigatorItinerary(itineraryWithParams);
-    setStoredItinerary(itineraryWithParams);
+    storedItinerary.current = itineraryWithParams;
 
     if (
       locationPermissionsLoadState === LOADSTATE.DONE ||
@@ -746,14 +747,24 @@ export default function ItineraryPage(props, context) {
     }
   };
 
+  const storeItineraryAndStartNavigationWithAnalytics = itinerary => {
+    addAnalyticsEvent({
+      category: 'Itinerary',
+      event: 'navigator',
+      action: 'cta_click',
+    });
+    storeItineraryAndStartNavigation(itinerary);
+  };
+
   const updateStoredItinerary = legs => {
-    setStoredItinerary({
-      ...storedItinerary,
+    storedItinerary.current = {
+      ...storedItinerary.current,
       itinerary: {
-        ...storedItinerary.itinerary,
+        ...storedItinerary.current.itinerary,
         legs,
       },
-    });
+    };
+    mwtRef.current?.forceRerender();
   };
 
   // save url-defined location to old searches
@@ -847,7 +858,7 @@ export default function ItineraryPage(props, context) {
     updateLocalStorage(true);
     addFeedbackly(context);
 
-    if (isStoredItineraryRelevant(storedItinerary, match)) {
+    if (isStoredItineraryRelevant(storedItinerary.current, match)) {
       setNavigation(true);
     } else {
       clearLatestNavigatorItinerary();
@@ -982,6 +993,7 @@ export default function ItineraryPage(props, context) {
         scooterState.plan,
         state.plan,
         config.vehicleRental.allowDirectScooterJourneys,
+        match.location.query.arriveBy,
       );
       setCombinedState({ plan, loading: LOADSTATE.DONE });
       resetItineraryPageSelection();
@@ -1142,8 +1154,8 @@ export default function ItineraryPage(props, context) {
     );
 
     const explicitItinerary =
-      !!detailView && naviMode && !!storedItinerary.itinerary
-        ? storedItinerary.itinerary
+      !!detailView && naviMode && !!storedItinerary.current.itinerary
+        ? storedItinerary.current.itinerary
         : undefined;
 
     return (
@@ -1274,7 +1286,9 @@ export default function ItineraryPage(props, context) {
   } else if (detailView) {
     if (naviMode) {
       const itineraryForNavigator =
-        storedItinerary.itinerary || combinedEdges[selectedIndex]?.node;
+        storedItinerary.current?.itinerary ||
+        combinedEdges[selectedIndex]?.node;
+
       content = (
         <div>
           {!isNavigatorIntroDismissed ||
@@ -1303,7 +1317,7 @@ export default function ItineraryPage(props, context) {
               mapLayerRef={mapLayerRef}
               isNavigatorIntroDismissed={isNavigatorIntroDismissed}
               updateLegs={updateStoredItinerary}
-              forceStartAt={storedItinerary?.params?.forceStartAt}
+              forceStartAt={storedItinerary.current?.params?.forceStartAt}
             />
           )}
         </div>
@@ -1315,7 +1329,7 @@ export default function ItineraryPage(props, context) {
       const navigateHook =
         !desktop && config.experimental?.navigation && !pastSearch
           ? () =>
-              storeItineraryAndStartNavigation(
+              storeItineraryAndStartNavigationWithAnalytics(
                 combinedEdges[selectedIndex]?.node,
               )
           : undefined;

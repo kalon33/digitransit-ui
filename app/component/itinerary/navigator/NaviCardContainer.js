@@ -1,4 +1,3 @@
-import distance from '@digitransit-search-util/digitransit-search-util-distance';
 import { matchShape, routerShape } from 'found';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
@@ -179,6 +178,7 @@ function NaviCardContainer(
       if (currentLeg) {
         focusToLeg?.(currentLeg);
       }
+      legEndRef.current = 0;
     }
 
     // Update messages if there are changes
@@ -215,12 +215,9 @@ function NaviCardContainer(
       position &&
       currentLeg &&
       nextLeg && // itinerary end has its own logic
-      distance(position, currentLeg.to) <= DESTINATION_RADIUS
+      tailLength <= DESTINATION_RADIUS
     ) {
       legEndRef.current += 1;
-    } else {
-      // Todo: this works in transit legs, but do we need additional logic for bikes / scooters?
-      legEndRef.current = 0;
     }
 
     return () => clearTimeout(timeoutId);

@@ -14,6 +14,7 @@ import NaviCardContainer from './NaviCardContainer';
 import NavigatorOutroModal from './navigatoroutro/NavigatorOutroModal';
 import NaviStarter from './NaviStarter';
 import { DESTINATION_RADIUS, summaryString } from './NaviUtils';
+import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 
 const ADDITIONAL_ARRIVAL_TIME = 60000; // 60 seconds in ms
 const LEGLOG = true;
@@ -43,7 +44,7 @@ function NaviContainer(
   } else {
     hasPosition.current = true;
   }
-
+  const { vehicles } = getStore('RealTimeInformationStore');
   const {
     realTimeLegs,
     time,
@@ -59,12 +60,13 @@ function NaviContainer(
     relayEnvironment,
     legs,
     position,
+    vehicles,
     updateLegs,
     forceStartAt,
   );
 
   useEffect(() => {
-    mapRef?.enableMapTracking(); // try always, shows annoying notifier
+    setTimeout(() => mapRef?.enableMapTracking(), 10); // try always, shows annoying notifier
   }, [mapRef, hasPosition.current]);
 
   useEffect(() => {
@@ -107,6 +109,15 @@ function NaviContainer(
 
   const isPastStart = time > legTime(firstLeg.start);
 
+  const handleNavigatorEndClick = () => {
+    addAnalyticsEvent({
+      category: 'Itinerary',
+      event: 'navigator',
+      action: 'navigation_end_manual',
+    });
+    router.push('/');
+  };
+
   return (
     <>
       <NaviStarter
@@ -134,7 +145,7 @@ function NaviContainer(
       {isJourneyCompleted && isNavigatorIntroDismissed && (
         <NavigatorOutroModal
           destination={lastLeg.to.name}
-          onClose={() => router.push('/')}
+          onClose={handleNavigatorEndClick}
         />
       )}
       <NaviBottom
