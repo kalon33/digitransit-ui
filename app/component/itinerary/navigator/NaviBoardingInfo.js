@@ -16,11 +16,11 @@ const NaviBoardingInfo = ({
 }) => {
   return (
     <div
-      className={cx(
-        { boarding: !compact },
-        { 'compact-boarding': compact },
-        { 'with-icon': withExpandIcon },
-      )}
+      className={cx({
+        boarding: !compact,
+        'compact-boarding': compact,
+        'with-icon': withExpandIcon,
+      })}
     >
       <div className="route-info">
         {withExpandIcon && (

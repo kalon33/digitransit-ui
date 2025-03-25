@@ -48,7 +48,7 @@ export default function NaviInstructions(
   if (legType === LEGTYPE.MOVE) {
     return (
       <>
-        <div className={cx('notification-header', 'navi-header-chain')}>
+        <div className="notification-header navi-header-chain">
           <FormattedMessage id={instructions} defaultMessage="Go to" />
           &nbsp;
           {legDestination(intl, leg, null, nextLeg)}
