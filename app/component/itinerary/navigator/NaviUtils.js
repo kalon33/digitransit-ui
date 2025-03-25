@@ -399,7 +399,7 @@ export function itinerarySearchPath(time, leg, nextLeg, position, to) {
 }
 
 function withNewSearchBtn(children, searchCallback) {
-  const handleClick = callback => {
+  const handleClick = callback => () => {
     addAnalyticsEvent({
       category: 'Itinerary',
       event: 'navigator',
