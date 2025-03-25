@@ -408,9 +408,9 @@
         text-align: left;
 
         .details {
-          > * {
-            margin-right: var(--space-xs);
-          }
+          display: flex;
+          flex-direction: row;
+          align-items: center;
 
           .address {
             color: #888;
@@ -418,14 +418,31 @@
 
           .platform-short {
             width: unset;
+            font-family: $font-family;
+            font-size: $font-size-small;
+            letter-spacing: $letter-spacing;
+            display: inline-flex;
+            align-items: center;
+
+            .platform-number-wrapper {
+              padding: 0 var(--space-xxs);
+              height: 16px;
+              display: inline-flex;
+              justify-content: center;
+              align-items: center;
+              line-height: 13px;
+              font-size: 11px;
+            }
           }
 
           .zone-icon-container {
-            margin-top: 2px;
+            .circle {
+              width: 16px;
+              height: 16px;
+              font-size: 0.9rem;
+              padding: 0 2px 0 2px;
+            }
           }
-
-          display: flex;
-          flex-direction: row;
         }
       }
     }
