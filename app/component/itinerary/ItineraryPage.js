@@ -695,10 +695,7 @@ export default function ItineraryPage(props, context) {
       const startTime = Date.now();
       interval = setInterval(() => {
         const geolocationState = getGeolocationState();
-        if (
-          (geolocationState !== 'prompt' && geolocationState !== 'unknown') ||
-          Date.now() - startTime > 30000
-        ) {
+        if (geolocationState !== 'prompt' || Date.now() - startTime > 30000) {
           clearInterval(interval);
           setLocationPermissionsLoadState(LOADSTATE.DONE);
         }
