@@ -397,7 +397,7 @@ const SuggestionItem = pure(
                   styles[className],
                 )}
               >
-                {item.properties.origin.name}
+                {item.properties.origin.name?.split('*')[0]}
                 <span
                   className={cx(
                     styles['suggestion-name'],
@@ -418,7 +418,7 @@ const SuggestionItem = pure(
                   styles[className],
                 )}
               >
-                {item.properties.destination.name}
+                {item.properties.destination.name?.split('*')[0]}
                 <span
                   className={cx(
                     styles['suggestion-name'],
