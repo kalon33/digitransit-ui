@@ -107,7 +107,7 @@ function NaviContainer(
   const containerTopPosition =
     mapLayerRef.current.getBoundingClientRect().top + TOPBAR_PADDING;
 
-  const isPastStart = time > legTime(firstLeg.start);
+  const isPastStart = time > legTime(firstLeg.start) || !!firstLeg.forceStart;
 
   const handleNavigatorEndClick = () => {
     addAnalyticsEvent({
