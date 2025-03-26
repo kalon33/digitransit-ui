@@ -19,7 +19,6 @@ import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 const ADDITIONAL_ARRIVAL_TIME = 300000; // 5 min in ms
 const LEGLOG = true;
 const TOPBAR_PADDING = 8; // pixels
-const START_BUFFER = 120000; // 2 min in ms
 
 function NaviContainer(
   {
@@ -86,10 +85,6 @@ function NaviContainer(
       }
     }
     prevPos.current = position;
-
-    if (time > legTime(firstLeg.start) - START_BUFFER) {
-      startItinerary(Date.now());
-    }
   }, [time]);
 
   if (loading || !realTimeLegs?.length) {
@@ -106,9 +101,7 @@ function NaviContainer(
 
   if (LEGLOG) {
     // eslint-disable-next-line
-    console.log(
-      ...summaryString(realTimeLegs, time, previousLeg, currentLeg, nextLeg),
-    );
+    console.log(...summaryString(realTimeLegs, time, previousLeg, currentLeg, nextLeg));
   }
 
   const containerTopPosition =
