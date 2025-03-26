@@ -397,7 +397,7 @@ const SuggestionItem = pure(
                   styles[className],
                 )}
               >
-                {item.properties.origin.name?.split('*')[0]}
+                {item.properties.origin.name}
                 <span
                   className={cx(
                     styles['suggestion-name'],
@@ -407,7 +407,7 @@ const SuggestionItem = pure(
                   )}
                 >
                   {item.properties.origin.localadmin
-                    ? `, ${item.properties.origin.localadmin}`
+                    ? `, ${item.properties.origin.localadmin.split('*')[0]}`
                     : ''}
                 </span>
               </div>
@@ -418,7 +418,7 @@ const SuggestionItem = pure(
                   styles[className],
                 )}
               >
-                {item.properties.destination.name?.split('*')[0]}
+                {item.properties.destination.name}
                 <span
                   className={cx(
                     styles['suggestion-name'],
@@ -428,7 +428,9 @@ const SuggestionItem = pure(
                   )}
                 >
                   {item.properties.destination.localadmin
-                    ? `, ${item.properties.destination.localadmin}`
+                    ? `, ${
+                        item.properties.destination.localadmin.split('*')[0]
+                      }`
                     : ''}
                 </span>
               </div>
