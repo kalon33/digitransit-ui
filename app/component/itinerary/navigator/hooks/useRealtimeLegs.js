@@ -37,6 +37,15 @@ function shiftLegs(legs, i1, i2, gap) {
   }
 }
 
+/* function shiftLeg(leg, gap) {
+  if (!leg.freezeStart) {
+    leg.start.estimated = epochToIso(legTime(leg.start) + gap);
+  }
+  if (!leg.freezeEnd) {
+    leg.end.estimated = epochToIso(legTime(leg.end) + gap);
+  }
+} */
+
 // scale non-transit legs' scheduled times
 function scaleLegs(legs, i1, i2, k) {
   const base = legTime(legs[i1].start);
