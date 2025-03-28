@@ -600,7 +600,7 @@ export const getItineraryAlerts = (
       }
       // show notification when problem gets solved
       transfers.forEach(tr => {
-        if (tr.severity === 'INFO' && tr.slack > 1.5 * TRANSFER_SLACK) {
+        if (tr.severity === 'INFO' && tr.slack > 1.1 * TRANSFER_SLACK) {
           const id = `transfer-${tr.fromLeg.legId}-${tr.toLeg.legId}}`;
           const alert = messages.get(id);
           if (alert && alert.severity !== 'INFO') {
