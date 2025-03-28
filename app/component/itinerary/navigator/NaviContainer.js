@@ -63,6 +63,7 @@ function NaviContainer(
     vehicles,
     updateLegs,
     forceStartAt,
+    true,
   );
 
   useEffect(() => {
