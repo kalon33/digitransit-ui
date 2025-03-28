@@ -58,6 +58,7 @@ function shiftLeg(leg, gap) {
         delay: gap,
       },
     };
+    leg.realtimeState = 'UPDATED';
   }
 }
 
