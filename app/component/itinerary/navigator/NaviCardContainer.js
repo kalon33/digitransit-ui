@@ -66,6 +66,7 @@ function NaviCardContainer(
     previousLeg,
     isJourneyCompleted,
     containerTopPosition,
+    settings,
   },
   context,
 ) {
@@ -127,6 +128,7 @@ function NaviCardContainer(
         messages,
         makeNewItinerarySearch,
         config,
+        settings,
       ),
     );
 
@@ -157,7 +159,7 @@ function NaviCardContainer(
     if (nextLeg?.transitLeg) {
       // Messages for NaviStack.
       addMessages(incomingMessages, [
-        ...getTransitLegState(nextLeg, intl, messages, time),
+        ...getTransitLegState(nextLeg, intl, messages, time, settings),
         ...getAdditionalMessages(
           currentLeg,
           nextLeg,
@@ -280,6 +282,8 @@ NaviCardContainer.propTypes = {
   lastLeg: legShape,
   previousLeg: legShape,
   isJourneyCompleted: PropTypes.bool,
+  // eslint-disable-next-line
+  settings: PropTypes.object.isRequired,
 };
 
 NaviCardContainer.defaultProps = {

@@ -146,6 +146,7 @@ function NaviContainer(
           isJourneyCompleted={isJourneyCompleted}
           previousLeg={previousLeg}
           containerTopPosition={containerTopPosition}
+          settings={settings}
         />
       )}
       {isJourneyCompleted && isNavigatorIntroDismissed && (
