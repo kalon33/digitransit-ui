@@ -45,6 +45,7 @@ function shiftLeg(leg, gap) {
       estimated: {
         ...leg.start.estimated,
         time: epochToIso(legTime(leg.start) + gap),
+        delay: gap,
       },
     };
   }
@@ -54,6 +55,7 @@ function shiftLeg(leg, gap) {
       estimated: {
         ...leg.end.estimated,
         time: epochToIso(legTime(leg.end) + gap),
+        delay: gap,
       },
     };
   }
