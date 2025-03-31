@@ -181,6 +181,5 @@ export {
   matchLegEnds,
   nextTransitIndex,
   shiftLeg,
-  shiftLegs
+  shiftLegs,
 };
-
