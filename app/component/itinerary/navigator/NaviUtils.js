@@ -399,7 +399,7 @@ export function itinerarySearchPath(time, leg, nextLeg, position, to) {
 }
 
 function withNewSearchBtn(children, searchCallback) {
-  const handleClick = callback => {
+  const handleClick = callback => () => {
     addAnalyticsEvent({
       category: 'Itinerary',
       event: 'navigator',
@@ -730,5 +730,5 @@ export const LEGTYPE = {
 };
 
 export const withRealTime = (rt, children) => (
-  <span className={cx('bold', { realtime: rt })}>{children}</span>
+  <span className={cx({ bold: rt, realtime: rt })}>{children}</span>
 );
