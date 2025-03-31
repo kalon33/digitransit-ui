@@ -1,13 +1,11 @@
 /* eslint-disable no-param-reassign */
-import cloneDeep from 'lodash/cloneDeep';
-import polyUtil from 'polyline-encoded';
 import { useCallback, useEffect, useState, useRef } from 'react';
 import { fetchQuery } from 'react-relay';
 import { updateLatestNavigatorItineraryParams } from '../../../../store/localStorage';
-import { GeodeticToEcef, GeodeticToEnu } from '../../../../util/geo-utils';
 import { legTime } from '../../../../util/legUtils';
 import { legQuery } from '../../queries/LegQuery';
 import { getRemainingTraversal, validateTransitLeg } from '../NaviUtils';
+import useInitialLegState from './useInitialLegState';
 import {
   getLegsOfInterest,
   matchLegEnds,
@@ -15,31 +13,6 @@ import {
   shiftLeg,
   shiftLegs,
 } from './utils/realtimeLegUtils';
-
-function getInitialState(legs) {
-  const time = Date.now();
-  if (legs.length) {
-    const origin = GeodeticToEcef(legs[0].from.lat, legs[0].from.lon);
-    return {
-      origin,
-      time,
-      realTimeLegs: legs.map(leg => {
-        const geometry = polyUtil.decode(leg.legGeometry.points);
-        const clonedLeg = cloneDeep(leg);
-        clonedLeg.geometry = geometry.map(p =>
-          GeodeticToEnu(p[0], p[1], origin),
-        );
-        clonedLeg.freezeStart = legTime(clonedLeg.start) <= time;
-        clonedLeg.freezeEnd = legTime(clonedLeg.end) <= time;
-        return clonedLeg;
-      }),
-    };
-  }
-  return {
-    time,
-    realTimeLegs: [],
-  };
-}
 
 const useRealtimeLegs = (
   relayEnvironment,
@@ -50,9 +23,8 @@ const useRealtimeLegs = (
   forceStartAt,
   simulateTransferProblem,
 ) => {
-  const [{ origin, time, realTimeLegs }, setTimeAndRealTimeLegs] = useState(
-    () => getInitialState(initialLegs),
-  );
+  const [{ origin, time, realTimeLegs }, setTimeAndRealTimeLegs] =
+    useInitialLegState(initialLegs);
   const [loading, setLoading] = useState(true);
   const simCounter = useRef(0);
 
