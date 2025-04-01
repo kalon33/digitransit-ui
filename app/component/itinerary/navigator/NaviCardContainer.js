@@ -2,7 +2,7 @@ import { matchShape, routerShape } from 'found';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { intlShape } from 'react-intl';
-import addAnalyticsEvent from '../../../util/analyticsUtils';
+import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { isAnyLegPropertyIdentical, legTime } from '../../../util/legUtils';
 import { configShape, legShape } from '../../../util/shapes';
 import { getTopics, updateClient } from '../ItineraryPageUtils';

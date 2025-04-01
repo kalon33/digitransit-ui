@@ -2,7 +2,7 @@ import Button from '@hsl-fi/button';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
-import addAnalyticsEvent from '../../../util/analyticsUtils';
+import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { configShape } from '../../../util/shapes';
 import Icon from '../../Icon';
 import { useLogo } from './hooks/useLogo';
