@@ -97,51 +97,49 @@
   .navi-transfer {
     display: flex;
     flex-direction: row;
+    align-items: center;
 
     .arrow-center {
-      display: flex;
-      align-self: stretch;
-      align-items: center;
-
       .icon-container {
         display: flex;
         align-self: stretch;
-        height: unset;
+        height: 18px;
         width: 14px;
 
         .icon {
-          width: 1em;
-          height: 1em;
-          align-self: center;
+          padding: 1px;
         }
       }
     }
 
-    .route-number {
-      font-size: $font-size-xxsmall;
-      min-width: fit-content;
+    .bar {
       height: 18px;
-      display: inline-flex;
-      vertical-align: middle;
 
-      .vcenter-children {
-        display: flex;
+      .route-number {
+        font-size: $font-size-xxsmall;
+        min-width: fit-content;
+        height: 18px;
+        display: inline-flex;
 
-        .vehicle-number-container-v {
+        .vcenter-children {
           display: flex;
+          align-items: center;
 
-          .vehicle-number {
-            color: white;
-            padding: 0 8px 0 2px;
-            font-size: 15px;
-            line-height: 15px;
-            align-items: stretch;
-          }
+          .vehicle-number-container-v {
+            display: flex;
 
-          .special-icon {
-            .icon {
-              width: 16px;
-              height: 16px;
+            .vehicle-number {
+              color: white;
+              padding: 0 8px 0 2px;
+              font-size: 15px;
+              line-height: 15px;
+            }
+
+            .special-icon {
+              .icon {
+                width: 16px;
+                height: 16px;
+              }
             }
           }
         }
@@ -250,6 +248,7 @@
 
       .special-icon {
         font-size: $font-size-xsmall;
+        height: 18px;
 
         .icon {
           width: 16px;
