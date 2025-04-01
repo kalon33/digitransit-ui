@@ -396,7 +396,7 @@ export function itinerarySearchPath(time, leg, nextLeg, position, to) {
   return getItineraryPagePath(locationToUri(location), to);
 }
 
-function withNewSearchBtn(children, searchCallback) {
+function withNewSearchBtn(children, searchCallback, alertType) {
   addAnalyticsEvent({
     category: 'Itinerary',
     event: 'navigator',
@@ -407,7 +407,8 @@ function withNewSearchBtn(children, searchCallback) {
     addAnalyticsEvent({
       category: 'Itinerary',
       event: 'navigator',
-      action: 'cancel_navigation',
+      action: 'notification_alert_click',
+      type: alertType,
     });
     callback();
   };
@@ -529,7 +530,11 @@ export const getItineraryAlerts = (
       // we want to show the show routes button only for the first canceled leg.
       const content =
         i === 0 ? (
-          withNewSearchBtn({ m }, itinerarySearchCallback)
+          withNewSearchBtn(
+            { m },
+            itinerarySearchCallback,
+            `canceled_${route.shortName}${mode.toLowerCase()}`,
+          )
         ) : (
           <div className="navi-info-content notification-header">{m}</div>
         );
@@ -579,6 +584,11 @@ export const getItineraryAlerts = (
                 />
               </>,
               itinerarySearchCallback,
+              `transfer-${
+                prob.fromLeg.route.shortName
+              }${prob.fromLeg.mode.toLowerCase()}-${
+                prob.toLeg.route.shortName
+              }${prob.toLeg.mode.toLowerCase()}`,
             );
           } else {
             content = (
