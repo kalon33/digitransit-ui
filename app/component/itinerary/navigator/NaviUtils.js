@@ -13,6 +13,7 @@ import { durationToString, epochToIso, timeStr } from '../../../util/timeUtils';
 import { getRouteMode } from '../../../util/modeUtils';
 import RouteNumberContainer from '../../RouteNumberContainer';
 import Icon from '../../Icon';
+import { getModeIconColor } from '../../../util/colorUtils';
 
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
 const EARLIEST_NEXT_STOP = 60 * 1000;
@@ -720,6 +721,7 @@ export const getDestinationProperties = (
     }
     destination = {
       ...iconProps,
+      iconColor: getModeIconColor(config, mode),
       name: stop.name,
     };
   }

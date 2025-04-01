@@ -87,6 +87,7 @@ const NaviCardExtension = (
           height={2}
           width={2}
           className={`destination-icon ${destination.className}`}
+          color={destination.iconColor}
         />
         <div className="destination">
           {destination.name}
