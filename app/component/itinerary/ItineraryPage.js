@@ -130,6 +130,7 @@ const noFocus = { center: undefined, zoom: undefined, bounds: undefined };
 export default function ItineraryPage(props, context) {
   const headerRef = useRef(null);
   const mwtRef = useRef();
+  const iMapRef = useRef(); // for itinerary page map
   const mobileRef = useRef();
   const ariaRef = useRef('summary-page.title');
   const mapLayerRef = useRef();
@@ -173,7 +174,7 @@ export default function ItineraryPage(props, context) {
   const [mapState, setMapState] = useState({});
   const [naviMode, setNaviMode] = useState(false);
 
-  const { config, router } = context;
+  const { config, router, executeAction } = context;
   const { match, breakpoint } = props;
   const { params, location } = match;
   const { hash, secondHash } = params;
@@ -678,6 +679,9 @@ export default function ItineraryPage(props, context) {
       );
     }
     if (!isEnabled) {
+      if (iMapRef.current) {
+        iMapRef.current.forceRerender(null);
+      }
       setMapState(noFocus);
       navigateMap();
       clearLatestNavigatorItinerary();
@@ -742,7 +746,7 @@ export default function ItineraryPage(props, context) {
       setNavigation(true);
     } else if (isNavigatorIntroDismissed) {
       // trigger location permission check before navigator.
-      context.executeAction(startLocationWatch);
+      executeAction(startLocationWatch);
       setLocationPermissionsLoadState(LOADSTATE.LOADING);
     }
   };
@@ -764,7 +768,9 @@ export default function ItineraryPage(props, context) {
         legs,
       },
     };
-    mwtRef.current?.forceRerender();
+    if (iMapRef.current) {
+      iMapRef.current.forceRerender(storedItinerary.current.itinerary);
+    }
   };
 
   // save url-defined location to old searches
@@ -782,7 +788,7 @@ export default function ItineraryPage(props, context) {
     const layer =
       /\d/.test(names[0]) && names[0].indexOf(' ') >= 0 ? 'address' : 'venue';
 
-    context.executeAction(saveSearch, {
+    executeAction(saveSearch, {
       item: {
         geometry: { coordinates: [ll.lon, ll.lat] },
         properties: {
@@ -833,7 +839,7 @@ export default function ItineraryPage(props, context) {
       },
       query,
     };
-    context.executeAction(saveFutureRoute, itinerarySearch);
+    executeAction(saveFutureRoute, itinerarySearch);
   }
 
   function showVehicles() {
@@ -1180,6 +1186,11 @@ export default function ItineraryPage(props, context) {
         showBackButton={!naviMode}
         isLocationPopupEnabled={!naviMode}
         realtimeTransfers={!!explicitItinerary}
+        match={match}
+        router={router}
+        config={config}
+        executeAction={executeAction}
+        ref={iMapRef}
       />
     );
   }
@@ -1192,7 +1203,7 @@ export default function ItineraryPage(props, context) {
   const toggleNavigatorIntro = () => {
     setDialogState('navi-intro');
     setNavigatorIntroDismissed(true);
-    context.executeAction(startLocationWatch);
+    executeAction(startLocationWatch);
     setLocationPermissionsLoadState(LOADSTATE.LOADING);
   };
 

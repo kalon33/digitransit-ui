@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import { matchShape, routerShape } from 'found';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { onLocationPopup } from '../../util/queryUtils';
 import {
   configShape,
@@ -18,124 +18,139 @@ import VehicleMarkerContainer from './VehicleMarkerContainer';
 
 const POINT_FOCUS_ZOOM = 17; // default
 
-function ItineraryPageMap(
-  {
-    planEdges,
-    active,
-    showActiveOnly,
-    from,
-    to,
-    viaPoints,
-    breakpoint,
-    showVehicles,
-    topics,
-    showDurationBubble,
-    itinerary,
-    showBackButton,
-    isLocationPopupEnabled,
-    realtimeTransfers,
-    ...rest
-  },
-  { match, router, executeAction, config },
-) {
-  const { hash } = match.params;
-  const leafletObjs = [];
+const ItineraryPageMap = forwardRef(
+  (
+    {
+      planEdges,
+      active,
+      showActiveOnly,
+      from,
+      to,
+      viaPoints,
+      breakpoint,
+      showVehicles,
+      topics,
+      showDurationBubble,
+      itinerary,
+      showBackButton,
+      isLocationPopupEnabled,
+      realtimeTransfers,
+      match,
+      router,
+      executeAction,
+      config,
+      ...rest
+    },
+    ref,
+  ) => {
+    const { hash } = match.params;
+    const leafletObjs = [];
+    // eslint-disable-next-line
+    const [forcedItinerary, setForcedItinerary] = useState(null);
 
-  if (showVehicles) {
-    leafletObjs.push(
-      <VehicleMarkerContainer key="vehicles" useLargeIcon topics={topics} />,
-    );
-  }
+    useImperativeHandle(ref, () => ({
+      forceRerender: itin => setForcedItinerary(itin),
+    }));
 
-  if (itinerary) {
-    leafletObjs.push(
-      <ItineraryLine
-        key={`line_${active}`}
-        hash={active}
-        streetMode={hash}
-        legs={itinerary.legs}
-        showIntermediateStops
-        showDurationBubble={showDurationBubble}
-        realtimeTransfers={realtimeTransfers}
-      />,
-    );
-  } else {
-    if (!showActiveOnly) {
-      planEdges.forEach((edge, i) => {
-        if (i !== active) {
-          leafletObjs.push(
-            <ItineraryLine
-              key={`line_${i}`}
-              hash={i}
-              legs={edge.node.legs}
-              passive
-            />,
-          );
-        }
-      });
+    if (showVehicles) {
+      leafletObjs.push(
+        <VehicleMarkerContainer key="vehicles" useLargeIcon topics={topics} />,
+      );
     }
-    if (active < planEdges.length) {
+
+    const itin = forcedItinerary || itinerary;
+    if (itin) {
       leafletObjs.push(
         <ItineraryLine
           key={`line_${active}`}
           hash={active}
           streetMode={hash}
-          legs={planEdges[active].node.legs}
+          legs={itin.legs}
           showIntermediateStops
           showDurationBubble={showDurationBubble}
           realtimeTransfers={realtimeTransfers}
         />,
       );
+    } else {
+      if (!showActiveOnly) {
+        planEdges.forEach((edge, i) => {
+          if (i !== active) {
+            leafletObjs.push(
+              <ItineraryLine
+                key={`line_${i}`}
+                hash={i}
+                legs={edge.node.legs}
+                passive
+              />,
+            );
+          }
+        });
+      }
+      if (active < planEdges.length) {
+        leafletObjs.push(
+          <ItineraryLine
+            key={`line_${active}`}
+            hash={active}
+            streetMode={hash}
+            legs={planEdges[active].node.legs}
+            showIntermediateStops
+            showDurationBubble={showDurationBubble}
+            realtimeTransfers={realtimeTransfers}
+          />,
+        );
+      }
     }
-  }
 
-  if (from.lat && from.lon) {
-    leafletObjs.push(
-      <LocationMarker key="fromMarker" position={from} type="from" />,
+    if (from.lat && from.lon) {
+      leafletObjs.push(
+        <LocationMarker key="fromMarker" position={from} type="from" />,
+      );
+    }
+    if (to.lat && to.lon) {
+      leafletObjs.push(
+        <LocationMarker key="toMarker" position={to} type="to" />,
+      );
+    }
+    viaPoints.forEach((via, i) => {
+      leafletObjs.push(<LocationMarker key={`via_${i}`} position={via} />);
+    });
+
+    let locationPopup = 'none';
+    let onSelectLocation;
+
+    if (isLocationPopupEnabled) {
+      // max 5 viapoints
+      locationPopup =
+        config.viaPointsEnabled && viaPoints.length < 5
+          ? 'all'
+          : 'origindestination';
+      onSelectLocation = (item, id) =>
+        onLocationPopup(item, id, router, match, executeAction);
+    }
+
+    return (
+      <MapWithTracking
+        leafletObjs={leafletObjs}
+        locationPopup={locationPopup}
+        onSelectLocation={onSelectLocation}
+        zoom={POINT_FOCUS_ZOOM}
+        {...rest}
+      >
+        {showBackButton && breakpoint !== 'large' && (
+          <BackButton
+            icon="icon-icon_arrow-collapse--left"
+            iconClassName="arrow-icon"
+            fallback="pop"
+          />
+        )}
+
+        {breakpoint === 'large' && config.useCookiesPrompt && (
+          <CookieSettingsButton />
+        )}
+      </MapWithTracking>
     );
-  }
-  if (to.lat && to.lon) {
-    leafletObjs.push(<LocationMarker key="toMarker" position={to} type="to" />);
-  }
-  viaPoints.forEach((via, i) => {
-    leafletObjs.push(<LocationMarker key={`via_${i}`} position={via} />);
-  });
-
-  let locationPopup = 'none';
-  let onSelectLocation;
-
-  if (isLocationPopupEnabled) {
-    // max 5 viapoints
-    locationPopup =
-      config.viaPointsEnabled && viaPoints.length < 5
-        ? 'all'
-        : 'origindestination';
-    onSelectLocation = (item, id) =>
-      onLocationPopup(item, id, router, match, executeAction);
-  }
-
-  return (
-    <MapWithTracking
-      leafletObjs={leafletObjs}
-      locationPopup={locationPopup}
-      onSelectLocation={onSelectLocation}
-      zoom={POINT_FOCUS_ZOOM}
-      {...rest}
-    >
-      {showBackButton && breakpoint !== 'large' && (
-        <BackButton
-          icon="icon-icon_arrow-collapse--left"
-          iconClassName="arrow-icon"
-          fallback="pop"
-        />
-      )}
-
-      {breakpoint === 'large' && config.useCookiesPrompt && (
-        <CookieSettingsButton />
-      )}
-    </MapWithTracking>
-  );
-}
+  },
+);
 
 ItineraryPageMap.propTypes = {
   planEdges: PropTypes.arrayOf(planEdgeShape).isRequired,
@@ -158,6 +173,10 @@ ItineraryPageMap.propTypes = {
   showBackButton: PropTypes.bool,
   isLocationPopupEnabled: PropTypes.bool,
   realtimeTransfers: PropTypes.bool,
+  match: matchShape.isRequired,
+  router: routerShape.isRequired,
+  config: configShape.isRequired,
+  executeAction: PropTypes.func.isRequired,
 };
 
 ItineraryPageMap.defaultProps = {
@@ -169,13 +188,6 @@ ItineraryPageMap.defaultProps = {
   showBackButton: true,
   isLocationPopupEnabled: false,
   realtimeTransfers: false,
-};
-
-ItineraryPageMap.contextTypes = {
-  match: matchShape.isRequired,
-  router: routerShape.isRequired,
-  config: configShape,
-  executeAction: PropTypes.func.isRequired,
 };
 
 export default ItineraryPageMap;
