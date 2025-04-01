@@ -442,7 +442,7 @@ function Transfer(route1, route2, config) {
         />
         &nbsp;
         <div className="arrow-center">
-          <Icon img="icon-icon_arrow-right" width={0.8} height={0.8} />
+          <Icon img="icon-icon_arrow-right" omitViewBox />
         </div>
         &nbsp;
         <RouteNumberContainer
@@ -542,6 +542,7 @@ export const getItineraryAlerts = (
     const transfers = findTransferProblems(legs, time, position, tailLength);
     if (transfers.length) {
       const prob =
+        transfers.find(p => p.severity === 'INFO') ||
         transfers.find(p => p.severity === 'ALERT') ||
         transfers.find(p => p.severity === 'WARNING');
       if (prob) {

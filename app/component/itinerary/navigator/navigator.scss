@@ -60,7 +60,7 @@
 }
 
 .navi-header-chain {
-  display: flex;
+  display: block;
   flex-direction: row;
 }
 
@@ -97,33 +97,52 @@
   .navi-transfer {
     display: flex;
     flex-direction: row;
-    height: 18px;
 
     .arrow-center {
-      padding-top: 2px;
+      display: flex;
+      align-self: stretch;
+      align-items: center;
+
+      .icon-container {
+        display: flex;
+        align-self: stretch;
+        height: unset;
+        width: 14px;
+
+        .icon {
+          width: 1em;
+          height: 1em;
+          align-self: center;
+        }
+      }
     }
 
     .route-number {
       font-size: $font-size-xxsmall;
       min-width: fit-content;
       height: 18px;
+      display: inline-flex;
+      vertical-align: middle;
 
       .vcenter-children {
         display: flex;
 
-        .vehicle-number {
-          color: white;
-          padding: 0 8px 0 2px;
-          font-size: 15px;
-          line-height: 18px;
-        }
+        .vehicle-number-container-v {
+          display: flex;
 
-        .special-icon {
-          padding: 1px 1px 0 1px;
+          .vehicle-number {
+            color: white;
+            padding: 0 8px 0 2px;
+            font-size: 15px;
+            line-height: 15px;
+            align-items: stretch;
+          }
 
-          .icon {
-            width: 16px;
-            height: 16px;
+          .special-icon {
+            .icon {
+              width: 16px;
+              height: 16px;
+            }
           }
         }
       }
@@ -152,7 +171,11 @@
 .extension-routenumber,
 .route-info {
   .route-number {
+    font-size: $font-size-xxsmall;
     min-width: fit-content;
+    height: fit-content;
+    display: inline-flex;
+    vertical-align: middle;
 
     .vcenter-children {
       .vehicle-number {
@@ -188,7 +211,7 @@
   flex-direction: column;
 
   &.with-icon {
-    margin-left: var(--space-xl);
+    margin-left: 40px;
 
     .wait-duration {
       margin-left: var(--space-l);
@@ -201,6 +224,7 @@
     max-width: 85%;
     text-align: left;
     align-content: center;
+    line-height: 100%;
   }
 }
 
@@ -212,11 +236,18 @@
   font-size: $font-size-xsmall;
   font-weight: $font-weight-book;
 
+  .bar {
+    display: flex;
+  }
+
   .route-number {
     margin-top: 1px;
-    height: 18px;
+    height: 16px;
 
     .vcenter-children {
+      display: inline-flex;
+      align-self: stretch;
+
       .special-icon {
         font-size: $font-size-xsmall;
 
@@ -275,6 +306,7 @@
       align-items: flex-start;
       flex-direction: column;
       width: 100%;
+      margin-right: var(--space-m);
 
       &.expanded {
         margin-bottom: 0;
@@ -299,8 +331,6 @@
 
     .extension {
       flex-direction: column;
-      margin-bottom: var(--space-s);
-      margin-top: var(--space-m);
       transition: all 0.4s ease;
       overflow-y: hidden;
 
@@ -336,9 +366,10 @@
       .extension-routenumber {
         display: flex;
         flex-direction: row;
-        margin-left: 35px;
+        margin-left: 40px;
         margin-bottom: var(--space-s);
         text-align: left;
+        margin-top: var(--space-m);
 
         .bar {
           border-radius: $border-radius;
@@ -351,6 +382,7 @@
           justify-content: center;
           font-size: $font-size-small;
           max-width: 85%;
+          line-height: 100%;
         }
       }
 
@@ -598,8 +630,12 @@
     .icon-container {
       display: flex;
       align-self: flex-start;
-      height: 16px;
-      width: 16px;
+      align-items: center;
+
+      .icon {
+        width: 16px;
+        height: 16px;
+      }
     }
 
     .navi-info-content {
