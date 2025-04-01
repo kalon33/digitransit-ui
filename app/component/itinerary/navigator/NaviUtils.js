@@ -397,6 +397,12 @@ export function itinerarySearchPath(time, leg, nextLeg, position, to) {
 }
 
 function withNewSearchBtn(children, searchCallback) {
+  addAnalyticsEvent({
+    category: 'Itinerary',
+    event: 'navigator',
+    action: 'notification_alert',
+  });
+
   const handleClick = callback => () => {
     addAnalyticsEvent({
       category: 'Itinerary',
