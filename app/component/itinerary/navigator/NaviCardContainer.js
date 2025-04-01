@@ -34,8 +34,12 @@ const getLegType = (
   interlineWithPreviousLeg,
 ) => {
   let legType;
-  if (!firstLeg.forceStart && time < legTime(firstLeg.start)) {
-    legType = LEGTYPE.PENDING;
+  if (time < legTime(firstLeg.start)) {
+    if (!firstLeg.forceStart) {
+      legType = LEGTYPE.PENDING;
+    } else {
+      legType = LEGTYPE.WAIT;
+    }
   } else if (leg) {
     if (!leg.transitLeg) {
       if (countAtLegEnd >= COUNT_AT_LEG_END) {
@@ -66,6 +70,7 @@ function NaviCardContainer(
     previousLeg,
     isJourneyCompleted,
     containerTopPosition,
+    settings,
   },
   context,
 ) {
@@ -127,6 +132,7 @@ function NaviCardContainer(
         messages,
         makeNewItinerarySearch,
         config,
+        settings,
       ),
     );
 
@@ -157,7 +163,7 @@ function NaviCardContainer(
     if (nextLeg?.transitLeg) {
       // Messages for NaviStack.
       addMessages(incomingMessages, [
-        ...getTransitLegState(nextLeg, intl, messages, time),
+        ...getTransitLegState(nextLeg, intl, messages, time, settings),
         ...getAdditionalMessages(
           currentLeg,
           nextLeg,
@@ -280,6 +286,8 @@ NaviCardContainer.propTypes = {
   lastLeg: legShape,
   previousLeg: legShape,
   isJourneyCompleted: PropTypes.bool,
+  // eslint-disable-next-line
+  settings: PropTypes.object.isRequired,
 };
 
 NaviCardContainer.defaultProps = {

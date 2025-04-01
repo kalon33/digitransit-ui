@@ -16,7 +16,7 @@ import NaviStarter from './NaviStarter';
 import { DESTINATION_RADIUS, summaryString } from './NaviUtils';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 
-const ADDITIONAL_ARRIVAL_TIME = 60000; // 60 seconds in ms
+const ADDITIONAL_ARRIVAL_TIME = 300000; // 5 min in ms
 const LEGLOG = true;
 const TOPBAR_PADDING = 8; // pixels
 
@@ -31,6 +31,7 @@ function NaviContainer(
     mapLayerRef,
     updateLegs,
     forceStartAt,
+    settings,
   },
   { executeAction, getStore, router },
 ) {
@@ -45,6 +46,10 @@ function NaviContainer(
     hasPosition.current = true;
   }
   const { vehicles } = getStore('RealTimeInformationStore');
+
+  // TODO disable after testing
+  const simulateTransferProblem = LEGLOG && settings.bikeSpeed > 8;
+
   const {
     realTimeLegs,
     time,
@@ -63,6 +68,7 @@ function NaviContainer(
     vehicles,
     updateLegs,
     forceStartAt,
+    simulateTransferProblem,
   );
 
   useEffect(() => {
@@ -107,7 +113,7 @@ function NaviContainer(
   const containerTopPosition =
     mapLayerRef.current.getBoundingClientRect().top + TOPBAR_PADDING;
 
-  const isPastStart = time > legTime(firstLeg.start);
+  const isPastStart = time > legTime(firstLeg.start) || !!firstLeg.forceStart;
 
   const handleNavigatorEndClick = () => {
     addAnalyticsEvent({
@@ -140,6 +146,7 @@ function NaviContainer(
           isJourneyCompleted={isJourneyCompleted}
           previousLeg={previousLeg}
           containerTopPosition={containerTopPosition}
+          settings={settings}
         />
       )}
       {isJourneyCompleted && isNavigatorIntroDismissed && (
@@ -169,6 +176,8 @@ NaviContainer.propTypes = {
     .isRequired,
   updateLegs: PropTypes.func.isRequired,
   forceStartAt: PropTypes.number,
+  // eslint-disable-next-line
+  settings: PropTypes.object.isRequired,
 };
 
 NaviContainer.contextTypes = {
