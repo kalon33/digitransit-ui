@@ -158,10 +158,6 @@ ItineraryPageMap.propTypes = {
   showBackButton: PropTypes.bool,
   isLocationPopupEnabled: PropTypes.bool,
   realtimeTransfers: PropTypes.bool,
-  match: matchShape.isRequired,
-  router: routerShape.isRequired,
-  config: configShape.isRequired,
-  executeAction: PropTypes.func.isRequired,
 };
 
 ItineraryPageMap.defaultProps = {
