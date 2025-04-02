@@ -130,11 +130,9 @@ const noFocus = { center: undefined, zoom: undefined, bounds: undefined };
 export default function ItineraryPage(props, context) {
   const headerRef = useRef(null);
   const mwtRef = useRef();
-  const iMapRef = useRef(); // for itinerary page map
   const mobileRef = useRef();
   const ariaRef = useRef('summary-page.title');
   const mapLayerRef = useRef();
-  const storedItinerary = useRef(getLatestNavigatorItinerary());
 
   const [state, setState] = useState({
     ...emptyState,
@@ -173,6 +171,9 @@ export default function ItineraryPage(props, context) {
   const [topicsState, setTopicsState] = useState(null);
   const [mapState, setMapState] = useState({});
   const [naviMode, setNaviMode] = useState(false);
+  const [storedItinerary, setStoredItinerary] = useState(
+    getLatestNavigatorItinerary(),
+  );
 
   const { config, router, executeAction } = context;
   const { match, breakpoint } = props;
@@ -679,9 +680,6 @@ export default function ItineraryPage(props, context) {
       );
     }
     if (!isEnabled) {
-      if (iMapRef.current) {
-        iMapRef.current.forceRerender(null);
-      }
       setMapState(noFocus);
       navigateMap();
       clearLatestNavigatorItinerary();
@@ -736,7 +734,7 @@ export default function ItineraryPage(props, context) {
     };
 
     setLatestNavigatorItinerary(itineraryWithParams);
-    storedItinerary.current = itineraryWithParams;
+    setStoredItinerary(itineraryWithParams);
 
     if (
       locationPermissionsLoadState === LOADSTATE.DONE ||
@@ -761,16 +759,13 @@ export default function ItineraryPage(props, context) {
   };
 
   const updateStoredItinerary = legs => {
-    storedItinerary.current = {
-      ...storedItinerary.current,
+    setStoredItinerary({
+      ...storedItinerary,
       itinerary: {
-        ...storedItinerary.current.itinerary,
+        ...storedItinerary.itinerary,
         legs,
       },
-    };
-    if (iMapRef.current) {
-      iMapRef.current.forceRerender(storedItinerary.current.itinerary);
-    }
+    });
   };
 
   // save url-defined location to old searches
@@ -864,7 +859,7 @@ export default function ItineraryPage(props, context) {
     updateLocalStorage(true);
     addFeedbackly(context);
 
-    if (isStoredItineraryRelevant(storedItinerary.current, match)) {
+    if (isStoredItineraryRelevant(storedItinerary, match)) {
       setNavigation(true);
     } else {
       clearLatestNavigatorItinerary();
@@ -1160,8 +1155,8 @@ export default function ItineraryPage(props, context) {
     );
 
     const explicitItinerary =
-      !!detailView && naviMode && !!storedItinerary.current.itinerary
-        ? storedItinerary.current.itinerary
+      !!detailView && naviMode && !!storedItinerary.itinerary
+        ? storedItinerary.itinerary
         : undefined;
 
     return (
@@ -1186,11 +1181,6 @@ export default function ItineraryPage(props, context) {
         showBackButton={!naviMode}
         isLocationPopupEnabled={!naviMode}
         realtimeTransfers={!!explicitItinerary}
-        match={match}
-        router={router}
-        config={config}
-        executeAction={executeAction}
-        ref={iMapRef}
       />
     );
   }
@@ -1297,8 +1287,7 @@ export default function ItineraryPage(props, context) {
   } else if (detailView) {
     if (naviMode) {
       const itineraryForNavigator =
-        storedItinerary.current?.itinerary ||
-        combinedEdges[selectedIndex]?.node;
+        storedItinerary.itinerary || combinedEdges[selectedIndex]?.node;
 
       content = (
         <div>
@@ -1328,7 +1317,7 @@ export default function ItineraryPage(props, context) {
               mapLayerRef={mapLayerRef}
               isNavigatorIntroDismissed={isNavigatorIntroDismissed}
               updateLegs={updateStoredItinerary}
-              forceStartAt={storedItinerary.current?.params?.forceStartAt}
+              forceStartAt={storedItinerary.params?.forceStartAt}
               settings={settings}
             />
           )}
