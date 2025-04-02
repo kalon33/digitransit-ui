@@ -276,7 +276,7 @@ NaviCardContainer.propTypes = {
     lon: PropTypes.number,
     status: PropTypes.string,
     locationCount: PropTypes.number,
-    watchId: PropTypes.string,
+    watchId: PropTypes.number,
   }),
   tailLength: PropTypes.number.isRequired,
   containerTopPosition: PropTypes.number.isRequired,
