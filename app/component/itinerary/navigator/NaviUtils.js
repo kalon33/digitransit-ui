@@ -1,22 +1,33 @@
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
-import React from 'react';
 import cx from 'classnames';
+import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { ExtendedRouteTypes } from '../../../constants';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
-import { getFaresFromLegs, formatFare } from '../../../util/fareUtils';
+import { formatFare, getFaresFromLegs } from '../../../util/fareUtils';
 import { GeodeticToEnu } from '../../../util/geo-utils';
 import { legTime, legTimeAcc } from '../../../util/legUtils';
+import { getRouteMode } from '../../../util/modeUtils';
 import { locationToUri } from '../../../util/otpStrings';
 import { getItineraryPagePath } from '../../../util/path';
 import { durationToString, epochToIso, timeStr } from '../../../util/timeUtils';
-import { getRouteMode } from '../../../util/modeUtils';
-import RouteNumberContainer from '../../RouteNumberContainer';
 import Icon from '../../Icon';
+import RouteNumberContainer from '../../RouteNumberContainer';
 
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
 const EARLIEST_NEXT_STOP = 60 * 1000;
+const NOTED_SEVERITY = ['WARNING', 'ALERT'];
+
 export const DESTINATION_RADIUS = 20; // meters
+
+export const LEGTYPE = {
+  WAIT: 'WAIT',
+  MOVE: 'MOVE',
+  TRANSIT: 'TRANSIT',
+  PENDING: 'PENDING',
+  END: 'END',
+  WAIT_IN_VEHICLE: 'WAIT_IN_VEHICLE',
+};
 
 export function summaryString(legs, time, previousLeg, currentLeg, nextLeg) {
   const parts = epochToIso(time).split('T')[1].split('+');
@@ -396,12 +407,19 @@ export function itinerarySearchPath(time, leg, nextLeg, position, to) {
   return getItineraryPagePath(locationToUri(location), to);
 }
 
-function withNewSearchBtn(children, searchCallback) {
+function withNewSearchBtn(children, searchCallback, alertType) {
+  addAnalyticsEvent({
+    category: 'Itinerary',
+    event: 'navigator',
+    action: 'notification_alert',
+  });
+
   const handleClick = callback => () => {
     addAnalyticsEvent({
       category: 'Itinerary',
       event: 'navigator',
-      action: 'cancel_navigation',
+      action: 'notification_alert_click',
+      type: alertType,
     });
     callback();
   };
@@ -456,8 +474,6 @@ function Transfer(route1, route2, config) {
   );
 }
 
-const notedSeverity = ['WARNING', 'ALERT'];
-
 export const getItineraryAlerts = (
   legs,
   time,
@@ -480,7 +496,7 @@ export const getItineraryAlerts = (
             // show only alerts that are active during the leg
             legTime(leg.end) / 1000 > al.effectiveStartDate &&
             legTime(leg.start) / 1000 < al.effectiveEndDate &&
-            notedSeverity.includes(al.alertSeverityLevel)
+            NOTED_SEVERITY.includes(al.alertSeverityLevel)
           );
         });
         if (alert) {
@@ -523,16 +539,20 @@ export const getItineraryAlerts = (
       // we want to show the show routes button only for the first canceled leg.
       const content =
         i === 0 ? (
-          withNewSearchBtn({ m }, itinerarySearchCallback)
+          withNewSearchBtn(
+            { m },
+            itinerarySearchCallback,
+            `canceled_${route.shortName}${mode.toLowerCase()}`,
+          )
         ) : (
           <div className="navi-info-content notification-header">{m}</div>
         );
-
-      if (!messages.get(`canceled-${legId}`)) {
+      const id = `canceled-${legId}`;
+      if (!messages.get(id)) {
         alerts.push({
           severity: 'ALERT',
           content,
-          id: `canceled-${legId}`,
+          id,
           hideClose: true,
           expiresOn: alert.effectiveEndDate * 1000,
         });
@@ -551,7 +571,7 @@ export const getItineraryAlerts = (
         transfers.find(p => p.severity === 'ALERT') ||
         transfers.find(p => p.severity === 'WARNING');
       if (prob) {
-        const transferId = `transfer-${prob.fromLeg.legId}-${prob.toLeg.legId}}`;
+        const transferId = `transfer-${prob.fromLeg.legId}-${prob.toLeg.legId}`;
         const alert = messages.get(transferId);
         if (!alert?.closed || alert?.severity !== prob.severity) {
           let content;
@@ -573,6 +593,11 @@ export const getItineraryAlerts = (
                 />
               </>,
               itinerarySearchCallback,
+              `transfer-${
+                prob.fromLeg.route.shortName
+              }${prob.fromLeg.mode.toLowerCase()}-${
+                prob.toLeg.route.shortName
+              }${prob.toLeg.mode.toLowerCase()}`,
             );
           } else {
             content = (
@@ -724,15 +749,6 @@ export const getDestinationProperties = (
   }
 
   return destination;
-};
-
-export const LEGTYPE = {
-  WAIT: 'WAIT',
-  MOVE: 'MOVE',
-  TRANSIT: 'TRANSIT',
-  PENDING: 'PENDING',
-  END: 'END',
-  WAIT_IN_VEHICLE: 'WAIT_IN_VEHICLE',
 };
 
 export const withRealTime = (rt, children) => (
