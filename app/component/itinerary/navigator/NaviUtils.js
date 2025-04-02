@@ -12,6 +12,7 @@ import { locationToUri } from '../../../util/otpStrings';
 import { getItineraryPagePath } from '../../../util/path';
 import { durationToString, epochToIso, timeStr } from '../../../util/timeUtils';
 import Icon from '../../Icon';
+import { getModeIconColor } from '../../../util/colorUtils';
 import RouteNumberContainer from '../../RouteNumberContainer';
 
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
@@ -462,7 +463,7 @@ function Transfer(route1, route2, config) {
         />
         &nbsp;
         <div className="arrow-center">
-          <Icon img="icon-icon_arrow-right" width={0.8} height={0.8} />
+          <Icon img="icon-icon_arrow-right" omitViewBox />
         </div>
         &nbsp;
         <RouteNumberContainer
@@ -572,6 +573,7 @@ export const getItineraryAlerts = (
     );
     if (transfers.length) {
       const prob =
+        transfers.find(p => p.severity === 'INFO') ||
         transfers.find(p => p.severity === 'ALERT') ||
         transfers.find(p => p.severity === 'WARNING');
       if (prob) {
@@ -748,6 +750,7 @@ export const getDestinationProperties = (
     }
     destination = {
       ...iconProps,
+      iconColor: getModeIconColor(config, mode),
       name: stop.name,
     };
   }

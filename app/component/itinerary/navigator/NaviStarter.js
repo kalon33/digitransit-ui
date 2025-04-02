@@ -47,7 +47,12 @@ const NaviStarter = (
         {logo ? (
           <img src={logo} alt="navigator logo" />
         ) : (
-          <Icon img="icon-icon_navigation_wait" className="mode" />
+          <Icon
+            img="icon-icon_navigation_wait"
+            className="mode"
+            height={2}
+            width={2}
+          />
         )}
         <FormattedMessage id="navigation-journey-start" />
         <h3>{time}</h3>
