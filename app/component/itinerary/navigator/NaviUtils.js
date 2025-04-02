@@ -19,6 +19,7 @@ const EARLIEST_NEXT_STOP = 60 * 1000;
 const NOTED_SEVERITY = ['WARNING', 'ALERT'];
 
 export const DESTINATION_RADIUS = 20; // meters
+const ACCEPT_LOCATION_RADIUS = 200;
 
 export const LEGTYPE = {
   WAIT: 'WAIT',
@@ -127,10 +128,11 @@ export function pathProgress(pos, geom) {
 
 export function getRemainingTraversal(leg, pos, origin, time) {
   if (pos) {
-    // TODO: maybe apply only when distance is close enough to the path
     const posXY = GeodeticToEnu(pos.lat, pos.lon, origin);
-    const { traversed } = pathProgress(posXY, leg.geometry);
-    return 1.0 - traversed;
+    const { traversed, orthogonalDistance } = pathProgress(posXY, leg.geometry);
+    if (orthogonalDistance < ACCEPT_LOCATION_RADIUS) {
+      return 1.0 - traversed;
+    }
   }
   // estimate from elapsed time
   const duration = Math.max(legTime(leg.end) - legTime(leg.start), 1); // min 1 ms
@@ -145,7 +147,9 @@ export function validateTransitLeg(leg, origin, vehicles) {
     const posXY = GeodeticToEnu(vehiclePos.lat, vehiclePos.lon, origin);
     const { traversed, orthogonalDistance } = pathProgress(posXY, leg.geometry);
     return (
-      orthogonalDistance < DESTINATION_RADIUS && traversed > 0 && traversed < 1
+      orthogonalDistance < ACCEPT_LOCATION_RADIUS &&
+      traversed > 0 &&
+      traversed < 1
     );
   }
   return true;
