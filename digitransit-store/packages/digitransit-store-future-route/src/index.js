@@ -106,17 +106,14 @@ const DEFAULT_ITINERARY_PREFIX = 'reitti';
 export function createUrl(routeIn, pathOpts) {
   const route = extractRoute(routeIn);
   if (
-    route &&
-    route.origin &&
-    route.origin.address &&
+    route?.origin?.address &&
     route.origin.coordinates &&
-    route.destination &&
-    route.destination.address &&
-    route.destination.coordinates &&
+    route.destination?.address &&
+    route.destination?.coordinates &&
     route.time
   ) {
     let prefix;
-    if (pathOpts && pathOpts.itinerarySummaryPrefix) {
+    if (pathOpts?.itinerarySummaryPrefix) {
       prefix = pathOpts.itinerarySummaryPrefix;
     } else {
       prefix = DEFAULT_ITINERARY_PREFIX;
