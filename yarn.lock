@@ -2326,6 +2326,9 @@ __metadata:
 "@digitransit-store/digitransit-store-future-route@workspace:digitransit-store/packages/digitransit-store-future-route":
   version: 0.0.0-use.local
   resolution: "@digitransit-store/digitransit-store-future-route@workspace:digitransit-store/packages/digitransit-store-future-route"
+  peerDependencies:
+    lodash: 4.17.21
+    lodash-es: 4.17.21
   languageName: unknown
   linkType: soft
 
