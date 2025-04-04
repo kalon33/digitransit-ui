@@ -19,7 +19,9 @@
   "license": "(AGPL-3.0 OR EUPL-1.2)",
   "dependencies": {
     "@digitransit-util/digitransit-util-day-range-allowed-diff": "^1.0.4",
-    "@digitransit-util/digitransit-util-day-range-pattern": "^1.1.0",
+    "@digitransit-util/digitransit-util-day-range-pattern": "^1.1.0"
+  },
+  "peerDependencies": {
     "lodash": "4.17.21",
     "lodash-es": "4.17.21"
   }
