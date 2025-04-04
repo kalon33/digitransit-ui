@@ -25,6 +25,10 @@ class FutureRouteStore extends Store {
 
   saveFutureRoute(itinSearch) {
     const { origin, destination, query } = itinSearch;
+    if (query.time < new Date().getTime() / 1000 + 300) {
+      // saved search must be at least 5 minutes in future
+      return;
+    }
     const route = {
       origin: {
         address: origin.address,
