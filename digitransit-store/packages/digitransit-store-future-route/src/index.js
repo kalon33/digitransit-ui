@@ -41,7 +41,7 @@ function searchId(props) {
   return `${props.origin.name}, ${props.origin.localadmin} - ${props.destination.name}, ${props.destination.localadmin}`;
 }
 
-export function addFutureRoute(item, collection, pathOpts) {
+export function addFutureRoute(item, collection) {
   const now = new Date().getTime() / 1000;
   if (item && item.time > now) {
     const originAddress = item.origin.address.split(', ');
@@ -80,7 +80,6 @@ export function addFutureRoute(item, collection, pathOpts) {
         },
         arriveBy: item.arriveBy,
         time: item.time,
-        url: createUrl(item, pathOpts),
       },
     };
 
