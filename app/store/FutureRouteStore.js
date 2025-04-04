@@ -24,30 +24,11 @@ class FutureRouteStore extends Store {
   }
 
   saveFutureRoute(itinSearch) {
-    const { origin, destination, query } = itinSearch;
-    if (query.time < new Date().getTime() / 1000 + 300) {
+    if (itinSearch.time < new Date().getTime() / 1000 + 300) {
       // saved search must be at least 5 minutes in future
       return;
     }
-    const route = {
-      origin: {
-        address: origin.address,
-        coordinates: {
-          lat: origin.lat,
-          lon: origin.lon,
-        },
-      },
-      destination: {
-        address: destination.address,
-        coordinates: {
-          lat: destination.lat,
-          lon: destination.lon,
-        },
-      },
-      arriveBy: query.arriveBy ? query.arriveBy : false,
-      time: query.time,
-    };
-    const storage = addFutureRoute(route, this.getFutureRoutes(), {
+    const storage = addFutureRoute(itinSearch, this.getFutureRoutes(), {
       itinerarySummaryPrefix: PREFIX_ITINERARY_SUMMARY,
     });
     setFutureRoutesStorage(storage);
