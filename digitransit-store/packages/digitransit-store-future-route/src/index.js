@@ -37,15 +37,20 @@ export function createUrl(item, pathOpts) {
   return '';
 }
 
-export function addFutureRoute(newRoute, routeCollection, pathOpts) {
-  if (newRoute && newRoute.time > new Date().getTime() / 1000) {
-    const originAddress = newRoute.origin.address.split(', ');
+function searchId(props) {
+  return `${props.origin.name}, ${props.origin.localadmin} - ${props.destination.name}, ${props.destination.localadmin}`;
+}
+
+export function addFutureRoute(item, collection, pathOpts) {
+  const now = new Date().getTime() / 1000;
+  if (item && item.time > now) {
+    const originAddress = item.origin.address.split(', ');
     const originName = originAddress[0];
     originAddress.shift();
     const originLocalAdmin =
       originAddress.length === 1 ? originAddress[0] : originAddress.join(', ');
 
-    const destinationAddress = newRoute.destination.address.split(', ');
+    const destinationAddress = item.destination.address.split(', ');
     const destinationName = destinationAddress[0];
     destinationAddress.shift();
     const destinationLocalAdmin =
@@ -61,31 +66,29 @@ export function addFutureRoute(newRoute, routeCollection, pathOpts) {
           name: originName,
           localadmin: originLocalAdmin,
           coordinates: {
-            lat: newRoute.origin.coordinates.lat,
-            lon: newRoute.origin.coordinates.lon,
+            lat: item.origin.coordinates.lat,
+            lon: item.origin.coordinates.lon,
           },
         },
         destination: {
           name: destinationName,
           localadmin: destinationLocalAdmin,
           coordinates: {
-            lat: newRoute.destination.coordinates.lat,
-            lon: newRoute.destination.coordinates.lon,
+            lat: item.destination.coordinates.lat,
+            lon: item.destination.coordinates.lon,
           },
         },
-        arriveBy: newRoute.arriveBy,
-        time: newRoute.time,
-        url: createUrl(newRoute, pathOpts),
+        arriveBy: item.arriveBy,
+        time: item.time,
+        url: createUrl(item, pathOpts),
       },
     };
 
-    const newRouteOriginAndDestination = `${routeToAdd.properties.origin.name}, ${routeToAdd.properties.origin.localadmin} - ${routeToAdd.properties.destination.name}, ${routeToAdd.properties.destination.localadmin}`;
-    const futureRoutes = routeCollection
-      ? routeCollection.filter(
-          r =>
-            r.properties.time >= new Date().getTime() / 1000 &&
-            `${r.properties.origin.name}, ${r.properties.origin.localadmin} - ${r.properties.destination.name}, ${r.properties.destination.localadmin}` !==
-              newRouteOriginAndDestination,
+    const newId = searchId(routeToAdd.properties);
+
+    const futureRoutes = collection
+      ? collection.filter(
+          r => r.properties.time >= now && searchId(r.properties) !== newId,
         )
       : [];
     const sortedItems = sortBy(
@@ -98,5 +101,5 @@ export function addFutureRoute(newRoute, routeCollection, pathOpts) {
     );
     return sortedItems;
   }
-  return routeCollection || JSON.parse('[]');
+  return collection || [];
 }
