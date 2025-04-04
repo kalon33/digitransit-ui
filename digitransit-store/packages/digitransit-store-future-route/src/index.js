@@ -1,138 +1,36 @@
 import sortBy from 'lodash/sortBy';
 
-/**
- * @example
- * const oldRouteCollection = {
- *   [
- *     {
- *       type: 'FutureRoute',
- *       properties: {
- *         layer: 'futureRoute',
- *         origin: {
- *           name: 'Pasila',
- *           localadmin: 'Helsinki',
- *           coordinates: {
- *             lat: 60.198828,
- *             lon: 24.933514,
- *           },
- *         },
- *         destination: {
- *           name: 'Ilmala',
- *           localadmin: 'Helsinki',
- *           coordinates: {
- *             lat: 60.208466,
- *             lon: 24.919756,
- *           },
- *         },
- *         arriveBy: 'true',
- *         time: 1600866900,
- *         url: '/reitti/Pasila%2C%20Helsinki%3A%3A60.198828%2C24.933514/Ilmala%2C%20Helsinki%3A%3A60.208466%2C24.919756?arriveBy=true&time=1600866900',
- *       },
- *     },
- *     {
- *       type: 'FutureRoute',
- *       properties: {
- *         layer: 'futureRoute',
- *         origin: {
- *           name: 'Ilmala',
- *           localadmin: 'Helsinki',
- *           coordinates: {
- *             lat: 60.208466,
- *             lon: 24.919756,
- *           },
- *         },
- *         destination: {
- *           name: 'Pasila',
- *           localadmin: 'Helsinki',
- *           coordinates: {
- *             lat: 60.198828,
- *             lon: 24.933514,
- *           },
- *         },
- *         time: 1600877700,
- *         url: '/reitti/Ilmala%2C%20Helsinki%3A%3A60.208466%2C24.919756/Pasila%2C%20Helsinki%3A%3A60.198828%2C24.933514?arriveBy=true&time=1600877700',
- *       },
- *     },
- *   ],
- * }
- *
- * const newRoute = {
- *   origin: {
- *     address: 'Pasila, Helsinki',
- *     coordinates: { lat: 60.198828, lon: 24.933514 },
- *   },
- *   destination: {
- *     address: 'Myyrmäki, Vantaa',
- *     coordinates: { lat: 60.261238, lon: 24.854782 },
- *   },
- *   arriveBy: false,
- *   time: 1600888888,
- * };
- *
- * //add newRoute to oldRouteCollection
- * const newRouteCollection = addFutureRoute(newRoute, oldRouteCollection, { prefixItinerarySummary: 'reitti' });
- *
- * const url = createUrl(newRoute, { prefixItinerarySummary: 'reitti' });
- * //'/reitti/Pasila%2C%20Helsinki%3A%3A60.198828%2C24.933514/Myyrmäki%2C%20Vantaa%3A%3A60.261238%2C24.854782?time=1600888888'
- */
-
-function extractRoute(routeIn) {
-  let extractedRoute = routeIn;
-  if (routeIn.properties) {
-    const route = routeIn.properties;
-    const oLoc = route.origin.localadmin ? `, ${route.origin.localadmin}` : '';
-    const dLoc = route.destination.localadmin
-      ? `, ${route.destination.localadmin}`
-      : '';
-
-    extractedRoute = {
-      origin: {
-        address: `${route.origin.name}${oLoc}`,
-        coordinates: route.origin.coordinates,
-      },
-      destination: {
-        address: `${route.destination.name}${dLoc}`,
-        coordinates: route.destination.coordinates,
-      },
-      arriveBy: route.arriveBy ? route.arriveBy : false,
-      time: route.time,
-    };
-  }
-  return extractedRoute;
-}
-
 const DEFAULT_ITINERARY_PREFIX = 'reitti';
 
-export function createUrl(routeIn, pathOpts) {
-  const route = extractRoute(routeIn);
+export function createUrl(item, pathOpts) {
+  const props = item.properties;
   if (
-    route?.origin?.address &&
-    route.origin.coordinates &&
-    route.destination?.address &&
-    route.destination?.coordinates &&
-    route.time
+    props.origin?.coordinates &&
+    props.destination?.coordinates &&
+    props.time
   ) {
+    const oLoc = props.origin.localadmin ? `, ${props.origin.localadmin}` : '';
+    const oAddr = `${props.origin.name}${oLoc}`;
+    const dLoc = props.destination.localadmin
+      ? `, ${props.destination.localadmin}`
+      : '';
+    const dAddr = `${props.destination.name}${dLoc}`;
+
     let prefix;
     if (pathOpts?.itinerarySummaryPrefix) {
       prefix = pathOpts.itinerarySummaryPrefix;
     } else {
       prefix = DEFAULT_ITINERARY_PREFIX;
     }
-
-    let url = `/${prefix}/`;
-    // set origin
-    url += `${encodeURIComponent(
-      `${route.origin.address}::${route.origin.coordinates.lat},${route.origin.coordinates.lon}`,
-    )}/`;
-    // set destination
-    url += encodeURIComponent(
-      `${route.destination.address}::${route.destination.coordinates.lat},${route.destination.coordinates.lon}`,
+    const from = encodeURIComponent(
+      `${oAddr}::${props.origin.coordinates.lat},${props.origin.coordinates.lon}`,
     );
-    // set arrive by and time
-    if (route.arriveBy) {
-      url += `?arriveBy=true&time=${route.time}`;
-    } else {
-      url += `?time=${route.time}`;
+    const to = encodeURIComponent(
+      `${dAddr}::${props.destination.coordinates.lat},${props.destination.coordinates.lon}`,
+    );
+    let url = `/${prefix}/${from}/${to}?time=${props.time}`;
+    if (props.arriveBy) {
+      url += '&arriveBy=true';
     }
     return url;
   }
