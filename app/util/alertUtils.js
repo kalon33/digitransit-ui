@@ -290,9 +290,7 @@ export const checkActiveDisruptions = (
     return true;
   }
 
-  return (
-    alerts.filter(alert => isAlertActive(referenceUnixTime, alert)).length > 0
-  );
+  return !!alerts.find(alert => isAlertActive(referenceUnixTime, alert));
 };
 
 /**
