@@ -113,8 +113,8 @@ const useRealtimeLegs = (
           default:
             break;
         }
+        simCounter.current += 1;
       }
-      simCounter.current += 1;
 
       // Shift unfrozen, non-transit-legs to match possibly changed transit legs
       matchLegEnds(newRtLegs, now);

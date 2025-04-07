@@ -184,6 +184,8 @@ function findTransferProblems(legs, time, position, tailLength, slack) {
           toLeg: leg,
           duration,
           slack: duration,
+          originalDuration:
+            legTime(leg.originalStart) - legTime(prev.originalEnd),
         });
       }
     }
@@ -193,6 +195,8 @@ function findTransferProblems(legs, time, position, tailLength, slack) {
       const t1 = legTime(prev.end);
       const t2 = legTime(next.start);
       const duration = t2 - t1;
+      const originalDuration =
+        legTime(next.originalStart) - legTime(prev.originalEnd);
       if (t2 > time) {
         // transfer is not over yet
         if (t1 > t2) {
@@ -235,6 +239,7 @@ function findTransferProblems(legs, time, position, tailLength, slack) {
               fromLeg: prev,
               toLeg: next,
               duration,
+              originalDuration,
             });
           } else {
             if (atStop) {
@@ -245,6 +250,7 @@ function findTransferProblems(legs, time, position, tailLength, slack) {
               fromLeg: prev,
               toLeg: next,
               duration,
+              originalDuration,
               slack: currentSlack,
             });
           }
@@ -620,6 +626,7 @@ export const getItineraryAlerts = (
                       config,
                     ),
                     time: durationToString(prob.duration),
+                    originalTime: durationToString(prob.originalDuration),
                   }}
                 />
               </div>
@@ -658,6 +665,7 @@ export const getItineraryAlerts = (
                         config,
                       ),
                       time: durationToString(tr.duration),
+                      originalTime: durationToString(prob.originalDuration),
                     }}
                   />
                 </div>
