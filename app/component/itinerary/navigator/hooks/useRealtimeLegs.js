@@ -1,14 +1,10 @@
 /* eslint-disable no-param-reassign */
-import { useCallback, useEffect, useState, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { fetchQuery } from 'react-relay';
 import { updateLatestNavigatorItineraryParams } from '../../../../store/localStorage';
 import { legTime } from '../../../../util/legUtils';
 import { legQuery } from '../../queries/LegQuery';
-import {
-  getRemainingTraversal,
-  validateLeg,
-  getVehiclePosition,
-} from '../NaviUtils';
+import { getRemainingTraversal } from '../NaviUtils';
 import useInitialLegState from './useInitialLegState';
 import {
   getLegsOfInterest,
@@ -16,24 +12,8 @@ import {
   nextTransitIndex,
   shiftLeg,
   shiftLegs,
+  shiftLegsByGeolocation,
 } from './utils/realtimeLegUtils';
-
-/*
-const BOARD_DELAY = 20000; // 20s, default delay for card change in transit board/alight
-*/
-
-function shiftLegsByGeolocation(legs, time, vehicles, position, origin) {
-  const { prev } = getLegsOfInterest(legs, time);
-
-  if (prev && !prev.freezeEnd) {
-    if (prev.transitLeg) {
-      const vPos = getVehiclePosition(prev, origin, vehicles);
-      if (vPos) {
-        validateLeg(prev, origin, vPos);
-      }
-    }
-  }
-}
 
 const useRealtimeLegs = (
   relayEnvironment,
