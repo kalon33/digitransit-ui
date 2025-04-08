@@ -140,20 +140,24 @@ export function getRemainingTraversal(leg, pos, origin, time) {
   return Math.min(Math.max((legTime(leg.end) - time) / duration, 0), 1.0);
 }
 
-export function validateTransitLeg(leg, origin, vehicles) {
+export function getVehiclePosition(leg, origin, vehicles) {
   const shortName = leg?.route?.shortName;
   const vehicle = Object.values(vehicles).find(v => v.shortName === shortName);
   if (vehicle) {
-    const vehiclePos = { lat: vehicle.lat, lon: vehicle.long };
-    const posXY = GeodeticToEnu(vehiclePos.lat, vehiclePos.lon, origin);
-    const { traversed, orthogonalDistance } = pathProgress(posXY, leg.geometry);
-    return (
-      orthogonalDistance < ACCEPT_LOCATION_RADIUS &&
-      traversed > 0 &&
-      traversed < 1
-    );
+    return { lat: vehicle.lat, lon: vehicle.long };
   }
-  return true;
+  return null;
+}
+
+export function validateLeg(leg, origin, pos) {
+  const posXY = GeodeticToEnu(pos.lat, pos.lon, origin);
+  const { traversed, orthogonalDistance } = pathProgress(posXY, leg.geometry);
+  const d = traversed * leg.distance;
+  return (
+    orthogonalDistance < ACCEPT_LOCATION_RADIUS &&
+    d > DESTINATION_RADIUS &&
+    d < leg.distance - DESTINATION_RADIUS
+  );
 }
 
 function findTransferProblems(legs, time, position, tailLength, slack) {
