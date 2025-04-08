@@ -1316,9 +1316,9 @@ const translations = {
     'navigation-description': 'Journey guidance',
     'navigation-get-mode': 'Get on the {mode}',
     'navigation-hurry-transfer': 'Transfer time has changed',
-    'navigation-hurry-transfer-solved': 'Transfer time returned to normal',
+    'navigation-hurry-transfer-solved': 'Transfer time is sufficient again',
     'navigation-hurry-transfer-solved-details':
-      'Transfer time for {transfer} is again {time}',
+      'Transfer time for {transfer} is {time}',
     'navigation-hurry-transfer-value':
       'Transfer time for {transfer} is {time}. Change from planned {change} min.',
     'navigation-interline-resume':
@@ -2627,9 +2627,9 @@ const translations = {
     'navigation-description': 'Löydä perille ohjatusti',
     'navigation-get-mode': 'Nouse {mode}',
     'navigation-hurry-transfer': 'Vaihtoaika muuttunut',
-    'navigation-hurry-transfer-solved': 'Vaihtoaika palautunut normaaliksi',
+    'navigation-hurry-transfer-solved': 'Vaihtoaika palautunut riittäväksi',
     'navigation-hurry-transfer-solved-details':
-      'Vaihdon {transfer} kesto on taas {time}',
+      'Vaihdon {transfer} kesto on nyt {time}',
     'navigation-hurry-transfer-value':
       'Vaihdon {transfer} uusi kesto {time}. Muutos suunniteltuun {change} min.',
     'navigation-interline-resume': 'Matka jatkuu {duration} odotuksen jälkeen',
@@ -5584,9 +5584,9 @@ const translations = {
     'navigation-description': 'Hitta fram med vägledning.',
     'navigation-get-mode': 'Gå på {mode}',
     'navigation-hurry-transfer': 'Bytestid ändrat',
-    'navigation-hurry-transfer-solved': 'Bytestiden återgick till det normala',
+    'navigation-hurry-transfer-solved': 'Bytestiden är tillräcklig',
     'navigation-hurry-transfer-solved-details':
-      'Bytestiden for byte {transfer} är igen {time}',
+      'Bytestiden for byte {transfer} är {time}',
     'navigation-hurry-transfer-value':
       'Den nya tiden for byte {transfer} är {time}. Förändringen {change} min.',
     'navigation-interline-resume':
