@@ -583,7 +583,6 @@ export const getItineraryAlerts = (
     );
     if (transfers.length) {
       const prob =
-        transfers.find(p => p.severity === 'INFO') ||
         transfers.find(p => p.severity === 'ALERT') ||
         transfers.find(p => p.severity === 'WARNING');
       if (prob) {
