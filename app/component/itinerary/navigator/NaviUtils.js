@@ -630,7 +630,9 @@ export const getItineraryAlerts = (
                       config,
                     ),
                     time: durationToString(prob.duration),
-                    originalTime: durationToString(prob.originalDuration),
+                    change: Math.floor(
+                      (prob.duration - prob.originalDuration) / 60000,
+                    ),
                   }}
                 />
               </div>
@@ -669,7 +671,6 @@ export const getItineraryAlerts = (
                         config,
                       ),
                       time: durationToString(tr.duration),
-                      originalTime: durationToString(prob.originalDuration),
                     }}
                   />
                 </div>
