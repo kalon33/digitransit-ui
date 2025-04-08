@@ -160,6 +160,10 @@ export function validateLeg(leg, origin, pos) {
   );
 }
 
+function transferId(transfer) {
+  return `transfer-${transfer.fromLeg.legId}-${transfer.toLeg.legId}`;
+}
+
 function findTransferProblems(legs, time, position, tailLength, slack) {
   const transfers = [];
 
@@ -586,8 +590,8 @@ export const getItineraryAlerts = (
         transfers.find(p => p.severity === 'ALERT') ||
         transfers.find(p => p.severity === 'WARNING');
       if (prob) {
-        const transferId = `transfer-${prob.fromLeg.legId}-${prob.toLeg.legId}`;
-        const alert = messages.get(transferId);
+        const id = transferId(prob);
+        const alert = messages.get(id);
         if (!alert?.closed || alert?.severity !== prob.severity) {
           let content;
           if (prob.severity === 'ALERT') {
@@ -641,7 +645,7 @@ export const getItineraryAlerts = (
           alerts.push({
             severity: prob.severity,
             content,
-            id: transferId,
+            id,
             hideClose: prob.severity === 'ALERT',
             expiresOn: legTime(prob.toLeg.start),
           });
@@ -650,7 +654,7 @@ export const getItineraryAlerts = (
       // show notification when problem gets solved
       transfers.forEach(tr => {
         if (tr.severity === 'INFO' && tr.slack > 1.1 * slack) {
-          const id = `transfer-${tr.fromLeg.legId}-${tr.toLeg.legId}}`;
+          const id = transferId(tr);
           const alert = messages.get(id);
           if (alert && alert.severity !== 'INFO') {
             // a warning/alert has been showm

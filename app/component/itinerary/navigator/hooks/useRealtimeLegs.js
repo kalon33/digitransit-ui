@@ -115,7 +115,7 @@ const useRealtimeLegs = (
       // fake transfer problem by delaying 1st transfer leg and then back to normal
       if (simulateTransferProblem) {
         const rtLeg = newRtLegs.find(tl => tl.transitLeg);
-        switch (Math.floor(simCounter.current / 3)) {
+        switch (Math.floor(simCounter.current / 2)) {
           case 1:
             shiftLeg(rtLeg, 90000);
             break;
