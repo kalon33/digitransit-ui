@@ -4,7 +4,11 @@ import { fetchQuery } from 'react-relay';
 import { updateLatestNavigatorItineraryParams } from '../../../../store/localStorage';
 import { legTime } from '../../../../util/legUtils';
 import { legQuery } from '../../queries/LegQuery';
-import { getRemainingTraversal, validateTransitLeg } from '../NaviUtils';
+import {
+  getRemainingTraversal,
+  validateLeg,
+  getVehiclePosition,
+} from '../NaviUtils';
 import useInitialLegState from './useInitialLegState';
 import {
   getLegsOfInterest,
@@ -13,6 +17,23 @@ import {
   shiftLeg,
   shiftLegs,
 } from './utils/realtimeLegUtils';
+
+/*
+const BOARD_DELAY = 20000; // 20s, default delay for card change in transit board/alight
+*/
+
+function shiftLegsByGeolocation(legs, time, vehicles, position, origin) {
+  const { prev } = getLegsOfInterest(legs, time);
+
+  if (prev && !prev.freezeEnd) {
+    if (prev.transitLeg) {
+      const vPos = getVehiclePosition(prev, origin, vehicles);
+      if (vPos) {
+        validateLeg(prev, origin, vPos);
+      }
+    }
+  }
+}
 
 const useRealtimeLegs = (
   relayEnvironment,
@@ -115,9 +136,10 @@ const useRealtimeLegs = (
         }
         simCounter.current += 1;
       }
-
       // Shift unfrozen, non-transit-legs to match possibly changed transit legs
       matchLegEnds(newRtLegs, now);
+
+      shiftLegsByGeolocation(newRtLegs, time, vehicles, position, origin);
 
       // Freezes any leg.start|end in the past
       newRtLegs.forEach(l => {
@@ -185,10 +207,6 @@ const useRealtimeLegs = (
       currentLeg.distance
     : 0;
 
-  const validated = currentLeg?.transitLeg
-    ? validateTransitLeg(currentLeg, origin, vehicles)
-    : true;
-
   return {
     realTimeLegs,
     time,
@@ -200,7 +218,6 @@ const useRealtimeLegs = (
     nextLeg,
     startItinerary,
     loading,
-    validated,
   };
 };
 
