@@ -181,7 +181,7 @@
     "passport": "0.7.0",
     "pbf": "3.2.1",
     "point-in-polygon": "1.0.1",
-    "polyfill-library": "3.96.0",
+    "polyfill-library": "4.8.0",
     "polyline-encoded": "0.0.9",
     "prop-types": "15.7.2",
     "raven": "2.6.4",
