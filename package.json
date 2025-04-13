@@ -221,8 +221,8 @@
     "typescript": ">2.7"
   },
   "devDependencies": {
-    "@axe-core/react": "^4.7.3",
-    "@axe-core/webdriverjs": "^4.7.3",
+    "@axe-core/react": "^4.10.1",
+    "@axe-core/webdriverjs": "^4.10.1",
     "@azure/storage-blob": "^12.8.0",
     "@babel/cli": "7.27.0",
     "@babel/eslint-parser": "7.27.0",
@@ -241,7 +241,7 @@
     "@testing-library/react-hooks": "^8.0.0",
     "async": "^3.2.2",
     "autoprefixer": "9.8.6",
-    "axe-core": "^4.7.2",
+    "axe-core": "^4.10.3",
     "babel-loader": "8.2.5",
     "babel-plugin-inline-react-svg": "2.0.2",
     "babel-plugin-optimize-clsx": "2.6.2",

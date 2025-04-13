@@ -31,24 +31,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@axe-core/react@npm:^4.7.3":
-  version: 4.8.4
-  resolution: "@axe-core/react@npm:4.8.4"
+"@axe-core/react@npm:^4.10.1":
+  version: 4.10.1
+  resolution: "@axe-core/react@npm:4.10.1"
   dependencies:
-    axe-core: ~4.8.3
+    axe-core: ~4.10.2
     requestidlecallback: ^0.3.0
-  checksum: e5de323ef783f032e4ef203d487ab4a73009f446137da16bbc4c1b88d0251ab76ddd527c696ff8559f351f2f36d7dd0791846596cbdf88b3cefe11f72984e8d3
+  checksum: 6337078cf25846976b418947134c3e8f741489cb8591bd99ea9e9dcd9e1c423ac5dfaacedbb3ac803faa634d299027b210a4f82c57da56c5b7291bf96a6270f9
   languageName: node
   linkType: hard
 
-"@axe-core/webdriverjs@npm:^4.7.3":
-  version: 4.8.4
-  resolution: "@axe-core/webdriverjs@npm:4.8.4"
+"@axe-core/webdriverjs@npm:^4.10.1":
+  version: 4.10.1
+  resolution: "@axe-core/webdriverjs@npm:4.10.1"
   dependencies:
-    axe-core: ~4.8.3
+    axe-core: ~4.10.2
   peerDependencies:
     selenium-webdriver: ">3.0.0-beta  || >=2.53.1 || >4.0.0-alpha"
-  checksum: c7a776cc0429b1c87cdea8c061f9badd19e77a2fd184e7d1da0f554e48cfc35b84e84381c573d74ccfd36d8549267a53f42c7f077a94d353d4105e3117000443
+  checksum: 4bb05b77d1424293f791d15e1e660a41cfc6171ff4aba456f8ab098889abd07ab931d89060791677e473d042265aba004f711056bdc9606cb5a37e91074d0eb7
   languageName: node
   linkType: hard
 
@@ -7662,10 +7662,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axe-core@npm:^4.7.2, axe-core@npm:~4.8.3":
-  version: 4.8.4
-  resolution: "axe-core@npm:4.8.4"
-  checksum: 644da2fec17bcf6f834edaab1baa5a75a9a3ee370c323215c73da6d7e45fac11d01470d92d0a3d5f26695e15c1d9b781733dfbe1fe09d505076c58f09ed74e02
+"axe-core@npm:^4.10.3, axe-core@npm:~4.10.2":
+  version: 4.10.3
+  resolution: "axe-core@npm:4.10.3"
+  checksum: e89fa5bcad9216f2de29bbdf95d6211d8c5b1025cbdcf56b6695c18b2e9a1eebd0b997a0141334169f6f062fc68fd39a5b97f86348d9f5be05958eade5c1ec78
   languageName: node
   linkType: hard
 
@@ -11228,8 +11228,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "digitransit-ui@workspace:."
   dependencies:
-    "@axe-core/react": ^4.7.3
-    "@axe-core/webdriverjs": ^4.7.3
+    "@axe-core/react": ^4.10.1
+    "@axe-core/webdriverjs": ^4.10.1
     "@azure/cosmos": ^4.0.0
     "@azure/storage-blob": ^12.8.0
     "@babel/cli": 7.27.0
@@ -11262,7 +11262,7 @@ __metadata:
     "@testing-library/react-hooks": ^8.0.0
     async: ^3.2.2
     autoprefixer: 9.8.6
-    axe-core: ^4.7.2
+    axe-core: ^4.10.3
     axios: 1.8.4
     babel-loader: 8.2.5
     babel-plugin-dynamic-import-node: 2.3.3
