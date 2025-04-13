@@ -8034,10 +8034,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"base64-arraybuffer@npm:0.1.5":
-  version: 0.1.5
-  resolution: "base64-arraybuffer@npm:0.1.5"
-  checksum: 44588c1b4460faf59643cf3bcf346a7ede9df70d97aec6dbee4fbae15f6b6220d679b8db076771ea4ef5713dd710e7db7a4a3f81bbb04c71fb06764697d9a021
+"base64-arraybuffer@npm:1.0.2":
+  version: 1.0.2
+  resolution: "base64-arraybuffer@npm:1.0.2"
+  checksum: 15e6400d2d028bf18be4ed97702b11418f8f8779fb8c743251c863b726638d52f69571d4cc1843224da7838abef0949c670bde46936663c45ad078e89fee5c62
   languageName: node
   linkType: hard
 
@@ -11373,7 +11373,7 @@ __metadata:
     babel-plugin-optimize-clsx: 2.6.2
     babel-plugin-relay: 16.2.0
     babel-plugin-transform-react-remove-prop-types: 0.4.24
-    base64-arraybuffer: 0.1.5
+    base64-arraybuffer: 1.0.2
     body-parser: 1.20.3
     chai: 4.4.1
     classnames: 2.5.1

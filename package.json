@@ -246,7 +246,7 @@
     "babel-plugin-inline-react-svg": "2.0.2",
     "babel-plugin-optimize-clsx": "2.6.2",
     "babel-plugin-transform-react-remove-prop-types": "0.4.24",
-    "base64-arraybuffer": "0.1.5",
+    "base64-arraybuffer": "1.0.2",
     "chai": "4.4.1",
     "compression-webpack-plugin": "5.0.2",
     "copy-webpack-plugin": "6.1.0",
