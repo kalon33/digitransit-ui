@@ -1357,7 +1357,7 @@ const translations = {
       'Your journey will continue in {duration} minutes at {legTime}. Wait onboard.',
     'navileg-intermediate-stops': '{stopCount} intermediate stops',
     'navileg-leave-at':
-      'Get off at {stopOrStation} {stop} in {duration} min at {legTime}',
+      'Get off at {stopOrStation} {stop} in {duration} at {legTime}',
     'navileg-mode-citybike': '{available} city bikes available at the station',
     'navileg-mode-realtime': '{mode} {route} is on schedule',
     'navileg-mode-schedule': 'No up-to-date service information available',
@@ -2666,7 +2666,7 @@ const translations = {
       'Matka jatkuu {duration} min päästä kello {legTime}. Odota kulkuneuvossa',
     'navileg-intermediate-stops': '{stopCount} välipysäkkiä',
     'navileg-leave-at':
-      'Jää pois {stopOrStation} {stop} {duration} min päästä kello {legTime}',
+      'Jää pois {stopOrStation} {stop} {duration} päästä kello {legTime}',
     'navileg-mode-citybike': 'Kaupunkipyöriä on asemalla {available} kpl',
     'navileg-mode-realtime': '{mode} {route} on aikataulussa',
     'navileg-mode-schedule': 'Ei ajantasaisia liikennetietoja saatavilla',
@@ -5622,7 +5622,7 @@ const translations = {
       'Din resa fortsätter om {duration} min klockan {legTime}. Vänta i fordonet',
     'navileg-intermediate-stops': '{stopCount} mellanhållplatser',
     'navileg-leave-at':
-      'Stig av vid {stopOrStation} {stop} om {duration} min klockan {legTime}',
+      'Stig av vid {stopOrStation} {stop} om {duration} klockan {legTime}',
     'navileg-mode-citybike': 'Det finns {available} stadscyklar på stationen',
     'navileg-mode-realtime': '{mode} {route} är i tid',
     'navileg-mode-schedule': 'Trafikinformation inte tillgänglig i realtid',
