@@ -122,6 +122,7 @@ export default function NaviCard(
             maxHeight,
           }}
           ref={contentRef}
+          aria-hidden={!cardExpanded}
         >
           <NaviCardExtension
             legType={legType}
