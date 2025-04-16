@@ -8,7 +8,7 @@ const NaviStack = ({ messages, handleRemove, cardAnimation }) => {
     <div
       className={cx('info-stack', cardAnimation)}
       aria-live="polite"
-      aria-atomic="true"
+      role="status"
     >
       {messages.map((notification, index) => (
         <NaviMessage
