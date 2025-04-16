@@ -50,8 +50,8 @@ const NaviStarter = (
     >
       <div
         className="navi-initializer-card"
+        aria-live="polite"
         role="status"
-        aria-atomic="true"
         ref={initializerCardRef}
         tabIndex="-1"
       >
