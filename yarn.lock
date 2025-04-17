@@ -1867,7 +1867,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:7.27.0":
+"@babel/runtime@npm:7.27.0, @babel/runtime@npm:^7.25.0":
   version: 7.27.0
   resolution: "@babel/runtime@npm:7.27.0"
   dependencies:
@@ -11482,6 +11482,7 @@ __metadata:
     redis: 2.8.0
     relay-compiler: 16.2.0
     relay-runtime: 16.2.0
+    relay-test-utils: ^18.2.0
     rollup: 2.79.2
     rollup-plugin-babel: 4.4.0
     rollup-plugin-commonjs: 10.1.0
@@ -24492,6 +24493,29 @@ __metadata:
     fbjs: ^3.0.2
     invariant: ^2.2.4
   checksum: 7a6378b48495d014404bf08ba3ed4afa07838727800141ead3cd1b908c61556ef56d1ae7756f4b72134fd4e62b916b9522e65fde4144806feed29aecf57d3bfc
+  languageName: node
+  linkType: hard
+
+"relay-runtime@npm:18.2.0":
+  version: 18.2.0
+  resolution: "relay-runtime@npm:18.2.0"
+  dependencies:
+    "@babel/runtime": ^7.25.0
+    fbjs: ^3.0.2
+    invariant: ^2.2.4
+  checksum: 725fb975221a74be660c17631fbd69f29f4c1f7cf409f9e6b4a082358317e91665f8633140ac491bac7c0c638d004b93ea7786d62a9f752589d7ded19efc2ef1
+  languageName: node
+  linkType: hard
+
+"relay-test-utils@npm:^18.2.0":
+  version: 18.2.0
+  resolution: "relay-test-utils@npm:18.2.0"
+  dependencies:
+    "@babel/runtime": ^7.25.0
+    fbjs: ^3.0.2
+    invariant: ^2.2.4
+    relay-runtime: 18.2.0
+  checksum: 76834957f196deecaa9860676f2fc29115c9a9ab4ca90add09bf4d094b40b69b00375f9fa213b015542848f33ba42754c81198c9421a677affb294e7c8ed0ebb
   languageName: node
   linkType: hard
 

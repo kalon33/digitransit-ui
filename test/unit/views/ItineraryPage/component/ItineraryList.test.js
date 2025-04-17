@@ -1,6 +1,7 @@
 import React from 'react';
-
-import { Component as ItineraryList } from '../../../../../app/component/itinerary/ItineraryList';
+import { createMockEnvironment } from 'relay-test-utils';
+import { RelayEnvironmentProvider } from 'react-relay';
+import ItineraryList from '../../../../../app/component/itinerary/ItineraryList';
 import {
   mockChildContextTypes,
   mockContext,
@@ -41,6 +42,7 @@ const PROPS_TEMPLATE = {
 describe('<ItineraryList />', () => {
   xit('should render the component for canceled itineraries', () => {
     // TODO: enzyme is currently missing support for react hooks
+    const environment = createMockEnvironment();
     const props = {
       ...PROPS_TEMPLATE,
       currentTime: 1234567890,
@@ -48,7 +50,9 @@ describe('<ItineraryList />', () => {
     };
     const wrapper = mountWithIntl(
       <div>
-        <ItineraryList {...props} />
+        <RelayEnvironmentProvider environment={environment}>
+          <ItineraryList {...props} />
+        </RelayEnvironmentProvider>
       </div>,
       { context: mockContext, childContextTypes: mockChildContextTypes },
     );
@@ -60,10 +64,12 @@ describe('<ItineraryList />', () => {
     const props = {
       ...PROPS_TEMPLATE,
     };
-
+    const environment = createMockEnvironment();
     const wrapper = mountWithIntl(
       <div>
-        <ItineraryList {...props} />
+        <RelayEnvironmentProvider environment={environment}>
+          <ItineraryList {...props} />
+        </RelayEnvironmentProvider>
       </div>,
       { context: mockContext, childContextTypes: mockChildContextTypes },
     );
