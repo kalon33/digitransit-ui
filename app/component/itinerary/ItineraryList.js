@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { createFragmentContainer, graphql } from 'react-relay';
+import { useFragment, graphql } from 'react-relay';
 import { FormattedMessage } from 'react-intl';
 import cx from 'classnames';
 import { matchShape } from 'found';
@@ -47,12 +47,34 @@ function ItineraryList(
   const { location } = context.match;
   const { hash } = context.match.params;
 
-  const co2s = planEdges
+  const planEdgesData = useFragment(
+    graphql`
+      fragment ItineraryList_planEdges on PlanEdge @relay(plural: true) {
+        node {
+          ...Itinerary_itinerary
+          emissionsPerPerson {
+            co2
+          }
+          legs {
+            transitLeg
+            mode
+            route {
+              mode
+              type
+            }
+          }
+        }
+      }
+    `,
+    planEdges,
+  );
+
+  const co2s = planEdgesData
     .filter(e => e.node.emissionsPerPerson?.co2 >= 0)
     .map(e => e.node.emissionsPerPerson.co2);
   const lowestCo2value = Math.round(Math.min(...co2s));
 
-  const summaries = planEdges.map((edge, i) => (
+  const summaries = planEdgesData.map((edge, i) => (
     <Itinerary
       refTime={searchTime}
       key={i} // eslint-disable-line react/no-array-index-key
@@ -62,7 +84,7 @@ function ItineraryList(
       onSelect={onSelect}
       onSelectImmediately={onSelectImmediately}
       intermediatePlaces={getIntermediatePlaces(location.query)}
-      hideSelectionIndicator={i !== activeIndex || planEdges.length === 1}
+      hideSelectionIndicator={i !== activeIndex || planEdgesData.length === 1}
       lowestCo2value={lowestCo2value}
     />
   ));
@@ -80,7 +102,7 @@ function ItineraryList(
   }
   if (hash === streetHash.bikeAndVehicle) {
     // bikeParkItineraryCount tells how many itineraries in array start use bike parking
-    if (bikeParkItineraryCount > 0 || !planEdges.length) {
+    if (bikeParkItineraryCount > 0 || !planEdgesData.length) {
       summaries.splice(
         0,
         0,
@@ -90,14 +112,16 @@ function ItineraryList(
         />,
       );
     }
-    if (planEdges.length > bikeParkItineraryCount) {
+    if (planEdgesData.length > bikeParkItineraryCount) {
       // the rest use bike + public
       const mode =
         getExtendedMode(
-          planEdges[bikeParkItineraryCount].node.legs.find(l => l.transitLeg),
+          planEdgesData[bikeParkItineraryCount].node.legs.find(
+            l => l.transitLeg,
+          ),
           config,
         ) || 'rail';
-      const legs = planEdges
+      const legs = planEdgesData
         .slice(bikeParkItineraryCount)
         .flatMap(edge => edge.node.legs);
       const showBikeBoardingInfo = legs.some(leg =>
@@ -118,14 +142,16 @@ function ItineraryList(
   }
   if (hash === streetHash.carAndVehicle) {
     // carDirectItineraryCount tells how many itineraries in array use the direct mode (should be 1 or 0).
-    if (planEdges.length > carDirectItineraryCount) {
+    if (planEdgesData.length > carDirectItineraryCount) {
       // the rest use car + public
       const mode =
         getExtendedMode(
-          planEdges[carDirectItineraryCount].node.legs.find(l => l.transitLeg),
+          planEdgesData[carDirectItineraryCount].node.legs.find(
+            l => l.transitLeg,
+          ),
           config,
         ) || 'ferry';
-      const legs = planEdges
+      const legs = planEdgesData
         .slice(carDirectItineraryCount)
         .flatMap(edge => edge.node.legs);
       const showCarBoardingInfo = legs.some(leg =>
@@ -223,7 +249,7 @@ function ItineraryList(
           <Loading />
         </div>
       )}
-      {!planEdges.length && (
+      {!planEdgesData.length && (
         <ItinerariesNotFound searchTime={searchTime} {...rest} />
       )}
     </div>
@@ -261,29 +287,4 @@ ItineraryList.contextTypes = {
   match: matchShape.isRequired,
 };
 
-const containerComponent = createFragmentContainer(ItineraryList, {
-  planEdges: graphql`
-    fragment ItineraryList_planEdges on PlanEdge @relay(plural: true) {
-      node {
-        ...Itinerary_itinerary
-        emissionsPerPerson {
-          co2
-        }
-        legs {
-          transitLeg
-          mode
-          route {
-            mode
-            type
-          }
-        }
-      }
-    }
-  `,
-});
-
-export {
-  containerComponent as default,
-  ItineraryList as Component,
-  spinnerPosition,
-};
+export { ItineraryList as default, spinnerPosition };
