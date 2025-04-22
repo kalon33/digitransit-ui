@@ -27,7 +27,7 @@ const spinnerPosition = {
 
 function ItineraryList(
   {
-    planEdges,
+    planEdges: planEdgesRef,
     activeIndex,
     onSelect,
     onSelectImmediately,
@@ -47,7 +47,7 @@ function ItineraryList(
   const { location } = context.match;
   const { hash } = context.match.params;
 
-  const planEdgesData = useFragment(
+  const planEdges = useFragment(
     graphql`
       fragment ItineraryList_planEdges on PlanEdge @relay(plural: true) {
         node {
@@ -66,15 +66,15 @@ function ItineraryList(
         }
       }
     `,
-    planEdges,
+    planEdgesRef,
   );
 
-  const co2s = planEdgesData
+  const co2s = planEdges
     .filter(e => e.node.emissionsPerPerson?.co2 >= 0)
     .map(e => e.node.emissionsPerPerson.co2);
   const lowestCo2value = Math.round(Math.min(...co2s));
 
-  const summaries = planEdgesData.map((edge, i) => (
+  const summaries = planEdges.map((edge, i) => (
     <Itinerary
       refTime={searchTime}
       key={i} // eslint-disable-line react/no-array-index-key
@@ -84,7 +84,7 @@ function ItineraryList(
       onSelect={onSelect}
       onSelectImmediately={onSelectImmediately}
       intermediatePlaces={getIntermediatePlaces(location.query)}
-      hideSelectionIndicator={i !== activeIndex || planEdgesData.length === 1}
+      hideSelectionIndicator={i !== activeIndex || planEdges.length === 1}
       lowestCo2value={lowestCo2value}
     />
   ));
@@ -102,7 +102,7 @@ function ItineraryList(
   }
   if (hash === streetHash.bikeAndVehicle) {
     // bikeParkItineraryCount tells how many itineraries in array start use bike parking
-    if (bikeParkItineraryCount > 0 || !planEdgesData.length) {
+    if (bikeParkItineraryCount > 0 || !planEdges.length) {
       summaries.splice(
         0,
         0,
@@ -112,16 +112,14 @@ function ItineraryList(
         />,
       );
     }
-    if (planEdgesData.length > bikeParkItineraryCount) {
+    if (planEdges.length > bikeParkItineraryCount) {
       // the rest use bike + public
       const mode =
         getExtendedMode(
-          planEdgesData[bikeParkItineraryCount].node.legs.find(
-            l => l.transitLeg,
-          ),
+          planEdges[bikeParkItineraryCount].node.legs.find(l => l.transitLeg),
           config,
         ) || 'rail';
-      const legs = planEdgesData
+      const legs = planEdges
         .slice(bikeParkItineraryCount)
         .flatMap(edge => edge.node.legs);
       const showBikeBoardingInfo = legs.some(leg =>
@@ -142,16 +140,14 @@ function ItineraryList(
   }
   if (hash === streetHash.carAndVehicle) {
     // carDirectItineraryCount tells how many itineraries in array use the direct mode (should be 1 or 0).
-    if (planEdgesData.length > carDirectItineraryCount) {
+    if (planEdges.length > carDirectItineraryCount) {
       // the rest use car + public
       const mode =
         getExtendedMode(
-          planEdgesData[carDirectItineraryCount].node.legs.find(
-            l => l.transitLeg,
-          ),
+          planEdges[carDirectItineraryCount].node.legs.find(l => l.transitLeg),
           config,
         ) || 'ferry';
-      const legs = planEdgesData
+      const legs = planEdges
         .slice(carDirectItineraryCount)
         .flatMap(edge => edge.node.legs);
       const showCarBoardingInfo = legs.some(leg =>
@@ -249,7 +245,7 @@ function ItineraryList(
           <Loading />
         </div>
       )}
-      {!planEdgesData.length && (
+      {!planEdges.length && (
         <ItinerariesNotFound searchTime={searchTime} {...rest} />
       )}
     </div>
