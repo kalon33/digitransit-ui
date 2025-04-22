@@ -14,7 +14,7 @@ const IS_DEV =
 
 const virtualMonitorBaseUrl = IS_DEV
   ? 'https://dev-tremonitori.digitransit.fi'
-  : 'https://tremonitori.digitransit.fi.fi';
+  : 'https://tremonitori.digitransit.fi';
 
 export default configMerger(walttiConfig, {
   CONFIG,
