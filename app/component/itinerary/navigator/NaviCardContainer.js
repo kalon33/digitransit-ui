@@ -9,7 +9,6 @@ import { getTopics, updateClient } from '../ItineraryPageUtils';
 import NaviCard from './NaviCard';
 import NaviStack from './NaviStack';
 import {
-  DESTINATION_RADIUS,
   getAdditionalMessages,
   getItineraryAlerts,
   getTransitLegState,
@@ -18,7 +17,6 @@ import {
 } from './NaviUtils';
 import usePrevious from './hooks/usePrevious';
 
-const COUNT_AT_LEG_END = 2; // update cycles within DESTINATION_RADIUS from leg.to
 const HIDE_TOPCARD_DURATION = 2000; // milliseconds
 
 function addMessages(incomingMessages, newMessages) {
@@ -27,13 +25,7 @@ function addMessages(incomingMessages, newMessages) {
   });
 }
 
-const getLegType = (
-  leg,
-  firstLeg,
-  time,
-  countAtLegEnd,
-  interlineWithPreviousLeg,
-) => {
+const getLegType = (leg, firstLeg, time, interlineWithPreviousLeg) => {
   let legType;
   if (time < legTime(firstLeg.start)) {
     if (!firstLeg.forceStart) {
@@ -42,15 +34,7 @@ const getLegType = (
       legType = LEGTYPE.WAIT;
     }
   } else if (leg) {
-    if (!leg.transitLeg) {
-      if (countAtLegEnd >= COUNT_AT_LEG_END) {
-        legType = LEGTYPE.WAIT;
-      } else {
-        legType = LEGTYPE.MOVE;
-      }
-    } else {
-      legType = LEGTYPE.TRANSIT;
-    }
+    legType = leg.transitLeg ? LEGTYPE.TRANSIT : LEGTYPE.MOVE;
   } else {
     legType = interlineWithPreviousLeg ? LEGTYPE.WAIT_IN_VEHICLE : LEGTYPE.WAIT;
   }
@@ -85,8 +69,6 @@ function NaviCardContainer(
     isAnyLegPropertyIdentical(prev, current, ['legId', 'mode']),
   );
   const focusRef = useRef(false);
-  // Destination counter. How long user has been at the destination. * 10 seconds
-  const legEndRef = useRef(0);
 
   const { intl, config, match, router } = context;
 
@@ -97,9 +79,11 @@ function NaviCardContainer(
   };
 
   // track only relevant vehicles for the journey.
+  // addd 20 s buffer so that vehicle location is available
+  // for leg validation long enough
   const getNaviTopics = () =>
     getTopics(
-      legs.filter(leg => legTime(leg.end) >= time),
+      legs.filter(leg => legTime(leg.end) >= time - 20000),
       config,
     );
 
@@ -142,30 +126,6 @@ function NaviCardContainer(
       ),
     );
 
-    if (
-      match.location.query?.debug !== undefined &&
-      position &&
-      !messages.get('debug')?.closed
-    ) {
-      const info1 = `lat: ${position.lat} lon: ${position.lon}`;
-      const info2 = `status: ${position.status}`;
-      const info3 = `locations: ${position.locationCount} watchId: ${position.watchId}`;
-
-      addMessages(incomingMessages, [
-        {
-          severity: 'INFO',
-          content: (
-            <div className="navi-info-content">
-              <span>{info1}</span>
-              <span>{info2}</span>
-              <span>{info3}</span>
-            </div>
-          ),
-          id: 'debug',
-        },
-      ]);
-    }
-
     if (nextLeg?.transitLeg) {
       // Messages for NaviStack.
       addMessages(incomingMessages, [
@@ -190,7 +150,6 @@ function NaviCardContainer(
       if (currentLeg) {
         focusToLeg?.(currentLeg);
       }
-      legEndRef.current = 0;
     }
 
     // Update messages if there are changes
@@ -222,16 +181,6 @@ function NaviCardContainer(
       focusRef.current = true;
     }
 
-    // User position and distance from currentleg endpoint.
-    if (
-      position &&
-      currentLeg &&
-      nextLeg && // itinerary end has its own logic
-      tailLength <= DESTINATION_RADIUS
-    ) {
-      legEndRef.current += 1;
-    }
-
     return () => clearTimeout(timeoutId);
   }, [time, firstLeg]);
 
@@ -241,7 +190,6 @@ function NaviCardContainer(
     l,
     firstLeg,
     time,
-    legEndRef.current,
     nextLeg?.interlineWithPreviousLeg,
   );
 
