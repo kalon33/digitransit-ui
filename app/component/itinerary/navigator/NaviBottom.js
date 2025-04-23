@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { configShape } from '../../../util/shapes';
 import { epochToTime } from '../../../util/timeUtils';
+import RelativeDuration from '../RelativeDuration';
 
 export default function NaviBottom(
   { setNavigation, arrival, time },
@@ -21,7 +22,8 @@ export default function NaviBottom(
   const handleTicketButtonClick = useCallback(e => e.stopPropagation(), []);
 
   const isTicketSaleActive = !!config?.ticketLink;
-  const remainingDuration = Math.ceil((arrival - time) / 60000); // ms to minutes
+  const remainingDuration =
+    arrival >= time ? <RelativeDuration duration={arrival - time} /> : null;
 
   const sheetClasses = cx('navi-bottom-sheet', {
     'ticket-link': isTicketSaleActive,
@@ -33,12 +35,12 @@ export default function NaviBottom(
     </button>
   );
 
-  const durationDiv = remainingDuration >= 0 && (
+  const durationDiv = remainingDuration && (
     <div className="navi-time" aria-live="polite" role="status">
       <FormattedMessage id="travel-time-label">
         {msg => <span className="sr-only">{msg}</span>}
       </FormattedMessage>
-      <FormattedMessage id="travel-time" values={{ min: remainingDuration }} />
+      {remainingDuration}
       <FormattedMessage id="arriving-at">
         {msg => <span className="sr-only">{msg}</span>}
       </FormattedMessage>
