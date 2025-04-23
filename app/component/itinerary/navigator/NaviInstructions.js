@@ -11,21 +11,19 @@ import {
   getToLocalizedMode,
   withRealTime,
 } from './NaviUtils';
-import { durationToString } from '../../../util/timeUtils';
 import { getRouteMode } from '../../../util/modeUtils';
 import NaviBoardingInfo from './NaviBoardingInfo';
+import RelativeDuration from '../RelativeDuration';
 
-function getBoardingParams(leg, time, config, intl) {
+function getBoardingParams(leg, time, config) {
   if (!leg?.transitLeg) {
     return {};
   }
   const { headsign, route, start } = leg;
   const hs = headsign || leg.trip?.tripHeadsign;
 
-  const remainingDuration = `${Math.max(
-    Math.ceil((legTime(start) - time) / 60000),
-    0,
-  )} ${intl.formatMessage({ id: 'minute-short' })}`; // ms to minutes, >= 0
+  const durationMs = Math.max(Math.ceil(legTime(start) - time), 0);
+  const remainingDuration = <RelativeDuration duration={durationMs} />;
   const rt = leg.realtimeState === 'UPDATED';
   const values = {
     duration: withRealTime(rt, remainingDuration),
@@ -43,7 +41,6 @@ export default function NaviInstructions(
     nextLeg,
     time,
     config,
-    intl,
   );
   if (legType === LEGTYPE.MOVE) {
     return (
@@ -95,7 +92,9 @@ export default function NaviInstructions(
   }
 
   if (legType === LEGTYPE.WAIT_IN_VEHICLE) {
-    const totalWait = legTime(nextLeg.start) - time;
+    const totalWait = (
+      <RelativeDuration duration={legTime(nextLeg.start) - time} />
+    );
     return (
       <>
         <div className="notification-header">
@@ -110,7 +109,7 @@ export default function NaviInstructions(
             values={{
               duration: withRealTime(
                 nextLeg.realtimeState === 'UPDATED',
-                durationToString(totalWait),
+                totalWait,
               ),
             }}
           />
@@ -131,11 +130,8 @@ export default function NaviInstructions(
           : 'navileg-at-stop';
     const stopOrStation = intl.formatMessage({ id: destId });
 
-    const remainingDuration = `${Math.max(
-      Math.ceil((t - time) / 60000),
-      0,
-    )} ${intl.formatMessage({ id: 'minute-short' })}`; // ms to minutes, >= 0
-
+    const durationMs = Math.max(Math.ceil(t - time), 0);
+    const remainingDuration = <RelativeDuration duration={durationMs} />;
     const values2 = {
       stopOrStation,
       stop: leg.to.stop.name,
