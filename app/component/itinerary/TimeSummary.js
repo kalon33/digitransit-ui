@@ -1,12 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
-
 import { FormattedMessage } from 'react-intl';
 import Icon from '../Icon';
 import { durationToString, timeStr } from '../../util/timeUtils';
 
-export default function Duration(props) {
+export default function TimeSummary(props) {
   const duration = durationToString(props.duration * 1000);
   const startTime = timeStr(props.startTime);
   const endTime = timeStr(props.endTime);
@@ -46,11 +45,7 @@ export default function Duration(props) {
   );
 }
 
-Duration.description = () =>
-  "Displays itinerary's duration in minutes, and a time icon next to it." +
-  'Takes duration in seconds as props';
-
-Duration.propTypes = {
+TimeSummary.propTypes = {
   duration: PropTypes.number.isRequired,
   className: PropTypes.string,
   startTime: PropTypes.string.isRequired,
@@ -59,7 +54,7 @@ Duration.propTypes = {
   multiRow: PropTypes.bool,
 };
 
-Duration.defaultProps = {
+TimeSummary.defaultProps = {
   className: '',
   futureText: '',
   multiRow: false,
