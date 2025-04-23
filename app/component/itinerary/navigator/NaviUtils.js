@@ -10,10 +10,11 @@ import { legTime, legTimeAcc } from '../../../util/legUtils';
 import { getRouteMode } from '../../../util/modeUtils';
 import { locationToUri } from '../../../util/otpStrings';
 import { getItineraryPagePath } from '../../../util/path';
-import { durationToString, epochToIso, timeStr } from '../../../util/timeUtils';
+import { epochToIso, timeStr } from '../../../util/timeUtils';
 import Icon from '../../Icon';
 import { getModeIconColor } from '../../../util/colorUtils';
 import RouteNumberContainer from '../../RouteNumberContainer';
+import RelativeDuration from '../RelativeDuration';
 
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
 const EARLIEST_NEXT_STOP = 60 * 1000;
@@ -622,7 +623,7 @@ export const getItineraryAlerts = (
                       prob.toLeg.route,
                       config,
                     ),
-                    time: durationToString(prob.duration),
+                    time: <RelativeDuration duration={prob.duration} />,
                     change: Math.floor(
                       (prob.duration - prob.originalDuration) / 60000,
                     ),
@@ -663,7 +664,7 @@ export const getItineraryAlerts = (
                         tr.toLeg.route,
                         config,
                       ),
-                      time: durationToString(tr.duration),
+                      time: <RelativeDuration duration={tr.duration} />,
                     }}
                   />
                 </div>
