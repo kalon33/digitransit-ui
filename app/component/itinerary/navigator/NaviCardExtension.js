@@ -1,7 +1,7 @@
 import React from 'react';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import Icon from '../../Icon';
 import StopCode from '../../StopCode';
 import PlatformNumber from '../../PlatformNumber';
@@ -18,11 +18,9 @@ import { getRouteMode } from '../../../util/modeUtils';
 import RouteNumberContainer from '../../RouteNumberContainer';
 import NaviBoardingInfo from './NaviBoardingInfo';
 import { getModeIconColor } from '../../../util/colorUtils';
+import RelativeDuration from '../RelativeDuration';
 
-const NaviCardExtension = (
-  { legType, leg, nextLeg, time },
-  { config, intl },
-) => {
+const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
   const { stop, name, rentalVehicle, vehicleParking, vehicleRentalStation } =
     leg ? leg.to : nextLeg.from;
   const { code, platformCode, zoneId, vehicleMode } = stop || {};
@@ -138,10 +136,9 @@ const NaviCardExtension = (
   if (legType === LEGTYPE.MOVE && nextLeg?.transitLeg) {
     const { headsign, route, start } = nextLeg;
     const hs = headsign || nextLeg.trip?.tripHeadsign;
-    const remainingDuration = `${Math.max(
-      Math.ceil((legTime(start) - time) / 60000),
-      0,
-    )} ${intl.formatMessage({ id: 'minute-short' })}`; // ms to minutes, >= 0
+    const remainingDuration = (
+      <RelativeDuration duration={legTime(start) - time} />
+    );
     const rt = nextLeg.realtimeState === 'UPDATED';
     const values = {
       duration: withRealTime(rt, remainingDuration),
@@ -185,7 +182,6 @@ NaviCardExtension.defaultProps = {
 
 NaviCardExtension.contextTypes = {
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
 };
 
 export default NaviCardExtension;
