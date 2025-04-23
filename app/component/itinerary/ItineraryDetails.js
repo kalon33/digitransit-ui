@@ -312,7 +312,7 @@ class ItineraryDetails extends React.Component {
                 config={config}
               />
             ),
-            shouldShowFareInfo(config, itinerary) &&
+            shouldShowFareInfo(config, itinerary.legs) &&
               (shouldShowFarePurchaseInfo(config, breakpoint, fares) ? (
                 <MobileTicketPurchaseInformation
                   key="mobileticketpurchaseinformation"
