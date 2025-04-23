@@ -46,7 +46,7 @@ const NaviBoardingInfo = ({
         <div className="wait-duration">
           <FormattedMessage
             id="navileg-departing-at"
-            defaultMessage="{duration} min päästä klo {legTime}"
+            defaultMessage="{duration} päästä klo {legTime}"
             values={translationValues}
           />
         </div>
