@@ -3,8 +3,9 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 function RelativeDuration({ duration }) {
-  const hours = Math.floor(duration / 3600000);
-  const mins = Math.floor(duration / 60000 - hours * 60);
+  const dur = Math.max(duration, 0);
+  const hours = Math.floor(dur / 3600000);
+  const mins = Math.floor(dur / 60000 - hours * 60);
   if (hours >= 1) {
     return (
       <FormattedMessage

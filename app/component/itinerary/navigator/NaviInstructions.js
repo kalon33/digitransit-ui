@@ -22,8 +22,9 @@ function getBoardingParams(leg, time, config) {
   const { headsign, route, start } = leg;
   const hs = headsign || leg.trip?.tripHeadsign;
 
-  const durationMs = Math.max(Math.ceil(legTime(start) - time), 0);
-  const remainingDuration = <RelativeDuration duration={durationMs} />;
+  const remainingDuration = (
+    <RelativeDuration duration={legTime(start) - time} />
+  );
   const rt = leg.realtimeState === 'UPDATED';
   const values = {
     duration: withRealTime(rt, remainingDuration),
@@ -130,8 +131,7 @@ export default function NaviInstructions(
           : 'navileg-at-stop';
     const stopOrStation = intl.formatMessage({ id: destId });
 
-    const durationMs = Math.max(Math.ceil(t - time), 0);
-    const remainingDuration = <RelativeDuration duration={durationMs} />;
+    const remainingDuration = <RelativeDuration duration={t - time} />;
     const values2 = {
       stopOrStation,
       stop: leg.to.stop.name,
