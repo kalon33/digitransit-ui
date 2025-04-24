@@ -16,7 +16,7 @@ import { legShape, configShape } from '../../../util/shapes';
 import { getDestinationProperties, LEGTYPE, withRealTime } from './NaviUtils';
 import { getRouteMode } from '../../../util/modeUtils';
 import RouteNumberContainer from '../../RouteNumberContainer';
-import NaviBoardingInfo from './NaviBoardingInfo';
+import BoardingInfo from './BoardingInfo';
 import { getModeIconColor } from '../../../util/colorUtils';
 import Duration from '../Duration';
 
@@ -147,7 +147,7 @@ const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
       <div className={cx('extension', 'no-gap')}>
         {stopInformation()}
         <div className="extension-divider" />
-        <NaviBoardingInfo
+        <BoardingInfo
           route={route}
           mode={routeMode}
           headsign={hs}

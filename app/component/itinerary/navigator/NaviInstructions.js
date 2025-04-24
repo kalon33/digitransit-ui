@@ -12,7 +12,7 @@ import {
   withRealTime,
 } from './NaviUtils';
 import { getRouteMode } from '../../../util/modeUtils';
-import NaviBoardingInfo from './NaviBoardingInfo';
+import BoardingInfo from './BoardingInfo';
 import Duration from '../Duration';
 
 function getBoardingParams(leg, time, config) {
@@ -57,7 +57,7 @@ export default function NaviInstructions(
           )}
         </div>
         {nextLeg?.transitLeg && (
-          <NaviBoardingInfo
+          <BoardingInfo
             route={route}
             mode={routeMode}
             headsign={hs}
@@ -80,7 +80,7 @@ export default function NaviInstructions(
             defaultMessage="Get on the {mode}"
           />
         </div>
-        <NaviBoardingInfo
+        <BoardingInfo
           route={route}
           mode={routeMode}
           headsign={hs}
