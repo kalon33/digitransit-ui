@@ -18,7 +18,6 @@ import {
   formatFare,
   getFaresFromLegs,
   shouldShowFareInfo,
-  shouldShowFarePurchaseInfo,
 } from '../../../util/fareUtils';
 
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
@@ -288,10 +287,10 @@ export const getAdditionalMessages = (
   messages,
   legs,
 ) => {
+  // Todo: multiple fares?
+  const fare = getFaresFromLegs([nextLeg], config)?.find(f => !f.isUnknown);
   const isTicketSaleActive =
-    !config.hideNaviTickets &&
-    shouldShowFareInfo(config, legs) &&
-    shouldShowFarePurchaseInfo(config, 'small', getFaresFromLegs(legs, config));
+    !config.hideNaviTickets && shouldShowFareInfo(config, legs) && fare;
 
   const msgs = [];
   const closed = messages.get('ticket')?.closed;
@@ -301,24 +300,20 @@ export const getAdditionalMessages = (
     legTime(leg.end) - time < DISPLAY_MESSAGE_THRESHOLD &&
     isTicketSaleActive
   ) {
-    // Todo: multiple fares?
-    const fares = getFaresFromLegs([nextLeg], config);
-    if (fares?.length && !fares[0].isUnknown) {
-      msgs.push({
-        severity: 'INFO',
-        content: (
-          <div className="navi-info-content">
-            <span className="notification-header">
-              <FormattedMessage id="navigation-remember-ticket" />
-            </span>
-            <span>
-              {fares[0].ticketName} {formatFare(fares[0])}
-            </span>
-          </div>
-        ),
-        id: 'ticket',
-      });
-    }
+    msgs.push({
+      severity: 'INFO',
+      content: (
+        <div className="navi-info-content">
+          <span className="notification-header">
+            <FormattedMessage id="navigation-remember-ticket" />
+          </span>
+          <span>
+            {fare.ticketName} {formatFare(fare)}
+          </span>
+        </div>
+      ),
+      id: 'ticket',
+    });
   }
   return msgs;
 };

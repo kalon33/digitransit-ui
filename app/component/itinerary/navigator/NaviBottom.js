@@ -6,11 +6,7 @@ import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { configShape, legShape } from '../../../util/shapes';
 import { epochToTime } from '../../../util/timeUtils';
 import Duration from '../Duration';
-import {
-  getFaresFromLegs,
-  shouldShowFareInfo,
-  shouldShowFarePurchaseInfo,
-} from '../../../util/fareUtils';
+import { getFaresFromLegs, shouldShowFareInfo } from '../../../util/fareUtils';
 
 export default function NaviBottom(
   { setNavigation, arrival, time, legs },
@@ -25,11 +21,11 @@ export default function NaviBottom(
     setNavigation(false);
   }, [setNavigation]);
   const handleTicketButtonClick = useCallback(e => e.stopPropagation(), []);
-  const fares = getFaresFromLegs(legs, config);
+
   const isTicketSaleActive =
     !config.hideNaviTickets &&
     shouldShowFareInfo(config, legs) &&
-    shouldShowFarePurchaseInfo(config, 'small', fares);
+    getFaresFromLegs(legs, config).find(f => !f.isUnknown);
 
   const remainingDuration =
     arrival >= time ? <Duration duration={arrival - time} /> : null;
@@ -72,15 +68,13 @@ export default function NaviBottom(
       {FirstElement}
       {SecondElement}
       {isTicketSaleActive && (
-        <button type="button" className="navi-ticket-button">
+        /* TODO HSL hack, make link below configurable */ <button
+          type="button"
+          className="navi-ticket-button"
+        >
           <a
             onClick={handleTicketButtonClick}
-            href={config.ticketPurchaseLink(
-              fares[0],
-              config.ticketLinkOperatorCode,
-              config.appName,
-              config.availableTickets,
-            )}
+            href={config.ticketLink}
             target="_blank"
             rel="noopener noreferrer"
           >
