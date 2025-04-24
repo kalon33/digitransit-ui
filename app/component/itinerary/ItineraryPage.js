@@ -1332,7 +1332,7 @@ export default function ItineraryPage(props, context) {
           Date.now() + 24 * 3600 * 1000;
 
       const navigateHook =
-        !desktop && config.experimental?.navigation && presentSearch
+        !desktop && config.navigation && presentSearch
           ? () =>
               storeItineraryAndStartNavigationWithAnalytics(
                 combinedEdges[selectedIndex]?.node,
