@@ -25,7 +25,7 @@ export default function NaviBottom(
   const isTicketSaleActive =
     !config.hideNaviTickets &&
     shouldShowFareInfo(config, legs) &&
-    getFaresFromLegs(legs, config).find(f => !f.isUnknown);
+    getFaresFromLegs(legs, config)?.find(f => !f.isUnknown);
 
   const remainingDuration =
     arrival >= time ? <Duration duration={arrival - time} /> : null;
