@@ -4,7 +4,6 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { ExtendedRouteTypes } from '../../../constants';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
-import { formatFare, getFaresFromLegs } from '../../../util/fareUtils';
 import { GeodeticToEnu } from '../../../util/geo-utils';
 import { legTime, legTimeAcc } from '../../../util/legUtils';
 import { getRouteMode } from '../../../util/modeUtils';
@@ -15,6 +14,12 @@ import Icon from '../../Icon';
 import { getModeIconColor } from '../../../util/colorUtils';
 import RouteNumberContainer from '../../RouteNumberContainer';
 import Duration from '../Duration';
+import {
+  formatFare,
+  getFaresFromLegs,
+  shouldShowFareInfo,
+  shouldShowFarePurchaseInfo,
+} from '../../../util/fareUtils';
 
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
 const EARLIEST_NEXT_STOP = 60 * 1000;
@@ -281,14 +286,20 @@ export const getAdditionalMessages = (
   time,
   config,
   messages,
+  legs,
 ) => {
+  const isTicketSaleActive =
+    !config.hideNaviTickets &&
+    shouldShowFareInfo(config, legs) &&
+    shouldShowFarePurchaseInfo(config, 'small', getFaresFromLegs(legs, config));
+
   const msgs = [];
   const closed = messages.get('ticket')?.closed;
   if (
     !closed &&
     leg === firstLeg &&
     legTime(leg.end) - time < DISPLAY_MESSAGE_THRESHOLD &&
-    !config.hideNaviTickets
+    isTicketSaleActive
   ) {
     // Todo: multiple fares?
     const fares = getFaresFromLegs([nextLeg], config);
