@@ -14,7 +14,7 @@ import { epochToIso, timeStr } from '../../../util/timeUtils';
 import Icon from '../../Icon';
 import { getModeIconColor } from '../../../util/colorUtils';
 import RouteNumberContainer from '../../RouteNumberContainer';
-import RelativeDuration from '../RelativeDuration';
+import Duration from '../Duration';
 
 const DISPLAY_MESSAGE_THRESHOLD = 120 * 1000; // 2 minutes
 const EARLIEST_NEXT_STOP = 60 * 1000;
@@ -623,7 +623,7 @@ export const getItineraryAlerts = (
                       prob.toLeg.route,
                       config,
                     ),
-                    time: <RelativeDuration duration={prob.duration} />,
+                    time: <Duration duration={prob.duration} />,
                     change: Math.floor(
                       (prob.duration - prob.originalDuration) / 60000,
                     ),
@@ -664,7 +664,7 @@ export const getItineraryAlerts = (
                         tr.toLeg.route,
                         config,
                       ),
-                      time: <RelativeDuration duration={tr.duration} />,
+                      time: <Duration duration={tr.duration} />,
                     }}
                   />
                 </div>

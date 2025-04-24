@@ -18,7 +18,7 @@ import { getRouteMode } from '../../../util/modeUtils';
 import RouteNumberContainer from '../../RouteNumberContainer';
 import NaviBoardingInfo from './NaviBoardingInfo';
 import { getModeIconColor } from '../../../util/colorUtils';
-import RelativeDuration from '../RelativeDuration';
+import Duration from '../Duration';
 
 const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
   const { stop, name, rentalVehicle, vehicleParking, vehicleRentalStation } =
@@ -136,9 +136,7 @@ const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
   if (legType === LEGTYPE.MOVE && nextLeg?.transitLeg) {
     const { headsign, route, start } = nextLeg;
     const hs = headsign || nextLeg.trip?.tripHeadsign;
-    const remainingDuration = (
-      <RelativeDuration duration={legTime(start) - time} />
-    );
+    const remainingDuration = <Duration duration={legTime(start) - time} />;
     const rt = nextLeg.realtimeState === 'UPDATED';
     const values = {
       duration: withRealTime(rt, remainingDuration),

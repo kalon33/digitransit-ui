@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { configShape, legShape } from '../../../util/shapes';
 import { epochToTime } from '../../../util/timeUtils';
-import RelativeDuration from '../RelativeDuration';
+import Duration from '../Duration';
 import {
   getFaresFromLegs,
   shouldShowFareInfo,
@@ -31,7 +31,7 @@ export default function NaviBottom(
     shouldShowFarePurchaseInfo(config, 'small', fares);
 
   const remainingDuration =
-    arrival >= time ? <RelativeDuration duration={arrival - time} /> : null;
+    arrival >= time ? <Duration duration={arrival - time} /> : null;
 
   const sheetClasses = cx('navi-bottom-sheet', {
     'ticket-link': isTicketSaleActive,

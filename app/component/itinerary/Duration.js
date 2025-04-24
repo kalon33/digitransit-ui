@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
-function RelativeDuration({ duration }) {
+function Duration({ duration }) {
   const dur = Math.max(duration, 0);
   const hours = Math.floor(dur / 3600000);
   const mins = Math.floor(dur / 60000 - hours * 60);
@@ -22,6 +22,6 @@ function RelativeDuration({ duration }) {
   );
 }
 
-RelativeDuration.propTypes = { duration: PropTypes.number.isRequired };
+Duration.propTypes = { duration: PropTypes.number.isRequired };
 
-export default RelativeDuration;
+export default Duration;
