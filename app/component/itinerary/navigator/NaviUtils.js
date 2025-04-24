@@ -287,7 +287,8 @@ export const getAdditionalMessages = (
   if (
     !closed &&
     leg === firstLeg &&
-    legTime(leg.end) - time < DISPLAY_MESSAGE_THRESHOLD
+    legTime(leg.end) - time < DISPLAY_MESSAGE_THRESHOLD &&
+    !config.hideNaviTickets
   ) {
     // Todo: multiple fares?
     const fares = getFaresFromLegs([nextLeg], config);

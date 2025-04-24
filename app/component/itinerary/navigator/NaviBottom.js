@@ -27,6 +27,7 @@ export default function NaviBottom(
   const handleTicketButtonClick = useCallback(e => e.stopPropagation(), []);
   const fares = getFaresFromLegs(legs, config);
   const isTicketSaleActive =
+    !config.hideNaviTickets &&
     shouldShowFareInfo(config, legs) &&
     shouldShowFarePurchaseInfo(config, 'small', fares);
 
