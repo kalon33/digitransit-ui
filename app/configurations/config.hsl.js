@@ -117,6 +117,9 @@ export default {
     walkSpeed: [0.69, 0.97, 1.28, 1.67, 2.22],
   },
 
+  suggestWalkMaxDistance: 12000,
+  suggestBikeMaxDistance: 100000,
+
   omitNonPickups: true,
 
   parkAndRide: {
@@ -771,9 +774,5 @@ export default {
   thumbsUpGraphic: 'hsl/thumbs-up.svg',
   trafficLightGraphic: 'hsl/traffic-light.svg',
   naviGeolocationGraphic: 'hsl/geolocation.svg',
-
-  // features that should not be deployed to production
-  experimental: {
-    navigation: IS_DEV,
-  },
+  navigation: true,
 };

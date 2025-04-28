@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
-import { configShape } from '../../../util/shapes';
+import { configShape, legShape } from '../../../util/shapes';
 import { epochToTime } from '../../../util/timeUtils';
+import Duration from '../Duration';
+import { getFaresFromLegs, shouldShowFareInfo } from '../../../util/fareUtils';
 
 export default function NaviBottom(
-  { setNavigation, arrival, time },
+  { setNavigation, arrival, time, legs },
   { config },
 ) {
   const handleClose = useCallback(() => {
@@ -20,8 +22,13 @@ export default function NaviBottom(
   }, [setNavigation]);
   const handleTicketButtonClick = useCallback(e => e.stopPropagation(), []);
 
-  const isTicketSaleActive = !!config?.ticketLink;
-  const remainingDuration = Math.ceil((arrival - time) / 60000); // ms to minutes
+  const isTicketSaleActive =
+    !config.hideNaviTickets &&
+    shouldShowFareInfo(config, legs) &&
+    getFaresFromLegs(legs, config)?.find(f => !f.isUnknown);
+
+  const remainingDuration =
+    arrival >= time ? <Duration duration={arrival - time} /> : null;
 
   const sheetClasses = cx('navi-bottom-sheet', {
     'ticket-link': isTicketSaleActive,
@@ -33,12 +40,12 @@ export default function NaviBottom(
     </button>
   );
 
-  const durationDiv = remainingDuration >= 0 && (
+  const durationDiv = remainingDuration && (
     <div className="navi-time" aria-live="polite" role="status">
       <FormattedMessage id="travel-time-label">
         {msg => <span className="sr-only">{msg}</span>}
       </FormattedMessage>
-      <FormattedMessage id="travel-time" values={{ min: remainingDuration }} />
+      {remainingDuration}
       <FormattedMessage id="arriving-at">
         {msg => <span className="sr-only">{msg}</span>}
       </FormattedMessage>
@@ -61,7 +68,10 @@ export default function NaviBottom(
       {FirstElement}
       {SecondElement}
       {isTicketSaleActive && (
-        <button type="button" className="navi-ticket-button">
+        /* TODO HSL hack, make link below configurable */ <button
+          type="button"
+          className="navi-ticket-button"
+        >
           <a
             onClick={handleTicketButtonClick}
             href={config.ticketLink}
@@ -80,6 +90,7 @@ NaviBottom.propTypes = {
   setNavigation: PropTypes.func.isRequired,
   arrival: PropTypes.number.isRequired,
   time: PropTypes.number.isRequired,
+  legs: PropTypes.arrayOf(legShape).isRequired,
 };
 
 NaviBottom.contextTypes = {
