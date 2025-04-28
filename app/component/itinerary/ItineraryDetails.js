@@ -267,8 +267,7 @@ class ItineraryDetails extends React.Component {
     itinerary.legs.forEach(leg => {
       const { route } = leg;
       if (
-        route &&
-        route.desc?.length > 0 &&
+        route?.desc?.length > 0 &&
         getRouteMode(route, config)?.includes('replacement')
       ) {
         disclaimers.push(
