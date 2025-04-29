@@ -2,6 +2,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import get from 'lodash/get';
 import { getRouteMode } from './modeUtils';
 import { BIKEAVL_UNKNOWN } from './vehicleRentalUtils';
+import { ExtendedRouteTypes } from '../constants';
 
 /**
  * Gets a (nested) property value from an object
@@ -166,9 +167,14 @@ export function getLegMode(legOrMode) {
  */
 export function isCallAgencyLeg(leg) {
   return (
-    leg.route?.type === 715 ||
+    leg.route?.type === ExtendedRouteTypes.CallAgency ||
+    // TODO determine if the following part is necessary.
+    // At least the data for Tampere supports the ExtendedRouteTypes.CallAgency (715) route type.
+    // Recognizing call agency legs from stop time information should be removed.
+    // --------------------------------------------------------
     filterLegStops(leg, stoptime => stoptime.pickupType === 'CALL_AGENCY')
       .length > 0
+    // --------------------------------------------------------
   );
 }
 
