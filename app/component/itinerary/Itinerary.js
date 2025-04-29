@@ -19,7 +19,6 @@ import {
   splitLegsAtViaPoints,
   compressLegs,
   getLegBadgeProps,
-  isCallAgencyLeg,
   getInterliningLegs,
   isFirstInterliningLeg,
   getTotalDistance,
@@ -94,7 +93,6 @@ export function RouteLeg(
   },
   { config },
 ) {
-  const isCallAgency = isCallAgencyLeg(leg);
   let routeNumber;
   const mode = getRouteMode(leg.route, config);
 
@@ -105,7 +103,7 @@ export function RouteLeg(
     return undefined;
   };
 
-  if (isCallAgency) {
+  if (mode === 'call') {
     const message = intl.formatMessage({
       id: 'pay-attention',
       defaultMessage: 'Pay Attention',

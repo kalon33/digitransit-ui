@@ -72,21 +72,6 @@ export function legTimeAcc(lt) {
   return parts[0];
 }
 
-function filterLegStops(leg, filter) {
-  if (leg.from.stop && leg.to.stop && leg.trip) {
-    const stops = [leg.from.stop.gtfsId, leg.to.stop.gtfsId];
-    if (leg.trip.stoptimesForDate) {
-      return leg.trip.stoptimesForDate
-        .filter(stoptime => stops.indexOf(stoptime.stop.gtfsId) !== -1)
-        .filter(filter);
-    }
-    return leg.trip.stoptimes
-      .filter(stoptime => stops.indexOf(stoptime.stop.gtfsId) !== -1)
-      .filter(filter);
-  }
-  return false;
-}
-
 function sameBicycleNetwork(leg1, leg2) {
   if (leg1.from.vehicleRentalStation && leg2.from.vehicleRentalStation) {
     return (
@@ -155,27 +140,8 @@ export function getLegMode(legOrMode) {
   }
 }
 
-/**
- * Check if legs start stop pickuptype or end stop pickupType is CALL_AGENCY
- *
- * leg must have:
- * from.stop.gtfsId
- * to.stop.gtfsId
- * trip.stoptimes (with props:)
- *   stop.gtfsId
- *   pickupType
- */
 export function isCallAgencyLeg(leg) {
-  return (
-    leg.route?.type === ExtendedRouteTypes.CallAgency ||
-    // TODO determine if the following part is necessary.
-    // At least the data for Tampere supports the ExtendedRouteTypes.CallAgency (715) route type.
-    // Recognizing call agency legs from stop time information should be removed.
-    // --------------------------------------------------------
-    filterLegStops(leg, stoptime => stoptime.pickupType === 'CALL_AGENCY')
-      .length > 0
-    // --------------------------------------------------------
-  );
+  return leg.route?.type === ExtendedRouteTypes.CallAgency;
 }
 
 /**

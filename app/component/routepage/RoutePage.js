@@ -122,7 +122,7 @@ class RoutePage extends React.Component {
             </div>
             <div className="route-info">
               <h1
-                className={cx('route-short-name', mode.toLowerCase())}
+                className={cx('route-short-name', mode)}
                 style={{ color: route.color ? `#${route.color}` : null }}
               >
                 <span className="sr-only" style={{ whiteSpace: 'pre' }}>

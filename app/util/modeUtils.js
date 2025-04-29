@@ -122,6 +122,8 @@ export function getRouteMode(route, config) {
       return 'bus-local';
     case ExtendedRouteTypes.SpeedTram:
       return 'speedtram';
+    case ExtendedRouteTypes.CallAgency:
+      return 'call';
     default:
       return isExternalFeed(getFeedWithoutId(route?.gtfsId), config)
         ? `${route.mode?.toLowerCase()}-external`
