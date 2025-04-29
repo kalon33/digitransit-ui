@@ -775,4 +775,6 @@ export default {
   trafficLightGraphic: 'hsl/traffic-light.svg',
   naviGeolocationGraphic: 'hsl/geolocation.svg',
   navigation: true,
+
+  showRouteDisclaimer: true,
 };
