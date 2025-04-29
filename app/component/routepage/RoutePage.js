@@ -82,7 +82,7 @@ class RoutePage extends React.Component {
       }
       return null;
     }
-    const mode = getRouteMode(route);
+    const mode = getRouteMode(route, config);
     const label = route.shortName ? route.shortName : route.longName || '';
     const selectedPattern =
       patternId && route.patterns.find(p => p.code === patternId);
