@@ -42,6 +42,53 @@ import StartNavi from './StartNavi';
 import TicketInformation from './TicketInformation';
 import VehicleRentalDurationInfo from './VehicleRentalDurationInfo';
 
+function getFutureText(startTime, intl) {
+  const refTime = Date.now();
+  if (isToday(startTime, refTime)) {
+    return '';
+  }
+  if (isTomorrow(startTime, refTime)) {
+    return intl.formatMessage({
+      id: 'tomorrow',
+    });
+  }
+  return getFormattedTimeDate(startTime, 'dd D.M.');
+}
+
+function getExtraProps(itinerary, intl) {
+  const compressedItinerary = {
+    ...itinerary,
+    legs: compressLegs(itinerary.legs),
+  };
+  const walkingDistance = getTotalWalkingDistance(compressedItinerary);
+  const walkingDuration = getTotalWalkingDuration(compressedItinerary);
+  const bikingDistance = getTotalBikingDistance(compressedItinerary);
+  const bikingDuration = getTotalBikingDuration(compressedItinerary);
+  const drivingDuration = getTotalDrivingDuration(compressedItinerary);
+  const drivingDistance = getTotalDrivingDistance(compressedItinerary);
+  const futureText = getFutureText(itinerary.start, intl);
+  const isMultiRow =
+    walkingDistance > 0 &&
+    (bikingDistance > 0 || drivingDistance > 0) &&
+    futureText !== '';
+  return {
+    walking: {
+      duration: walkingDuration,
+      distance: walkingDistance,
+    },
+    biking: {
+      duration: bikingDuration,
+      distance: bikingDistance,
+    },
+    driving: {
+      duration: drivingDuration,
+      distance: drivingDistance,
+    },
+    futureText,
+    isMultiRow,
+  };
+}
+
 function ItineraryDetails(
   {
     itinerary: itineraryRef,
@@ -355,58 +402,11 @@ function ItineraryDetails(
     match.params.hash !== streetHash.walk &&
     match.params.hash !== streetHash.bike;
 
-  function getFutureText(startTime) {
-    const refTime = Date.now();
-    if (isToday(startTime, refTime)) {
-      return '';
-    }
-    if (isTomorrow(startTime, refTime)) {
-      return intl.formatMessage({
-        id: 'tomorrow',
-      });
-    }
-    return getFormattedTimeDate(startTime, 'dd D.M.');
-  }
-
-  function getExtraProps() {
-    const compressedItinerary = {
-      ...itinerary,
-      legs: compressLegs(itinerary.legs),
-    };
-    const walkingDistance = getTotalWalkingDistance(compressedItinerary);
-    const walkingDuration = getTotalWalkingDuration(compressedItinerary);
-    const bikingDistance = getTotalBikingDistance(compressedItinerary);
-    const bikingDuration = getTotalBikingDuration(compressedItinerary);
-    const drivingDuration = getTotalDrivingDuration(compressedItinerary);
-    const drivingDistance = getTotalDrivingDistance(compressedItinerary);
-    const futureText = getFutureText(itinerary.start);
-    const isMultiRow =
-      walkingDistance > 0 &&
-      (bikingDistance > 0 || drivingDistance > 0) &&
-      futureText !== '';
-    return {
-      walking: {
-        duration: walkingDuration,
-        distance: walkingDistance,
-      },
-      biking: {
-        duration: bikingDuration,
-        distance: bikingDistance,
-      },
-      driving: {
-        duration: drivingDuration,
-        distance: drivingDistance,
-      },
-      futureText,
-      isMultiRow,
-    };
-  }
-
   if (!itinerary?.legs[0]) {
     return null;
   }
   const fares = getFaresFromLegs(itinerary.legs, config);
-  const extraProps = getExtraProps();
+  const extraProps = getExtraProps(itinerary, intl);
   const { biking, walking, driving, futureText, isMultiRow } = extraProps;
   // This does not take into account if the user is using a car at the time of using transit,
   // instead this just calculates if the car is used for the whole trip.
