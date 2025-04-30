@@ -2423,7 +2423,7 @@ div.itinerary-container-content {
 
       a {
         font-weight: $font-weight-medium;
-        color: $link-color;
+        color: $link-button-color;
         max-width: 100%;
       }
 
@@ -2432,7 +2432,7 @@ div.itinerary-container-content {
       }
 
       .external-link-icon {
-        color: $link-color;
+        color: $link-button-color;
       }
     }
   }
