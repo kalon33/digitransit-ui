@@ -11376,7 +11376,6 @@ __metadata:
     eslint-plugin-prettier: 5.1.2
     eslint-plugin-react: 7.33.2
     eslint-plugin-react-hooks: 4.6.2
-    esm: 3.2.25
     express: 4.21.2
     express-http-proxy: 1.6.3
     express-session: 1.18.1
@@ -11395,7 +11394,6 @@ __metadata:
     graphql: 16.8.1
     helmet: 4.1.0
     hoist-non-react-statics: 2.5.5
-    htm-to-json: 0.1.4
     husky: 4.3.8
     i18next: 19.8.4
     intl: 1.2.5
@@ -11420,7 +11418,6 @@ __metadata:
     moment-timezone: 0.5.48
     morgan: 1.10.0
     mqtt: 4.3.8
-    name-all-modules-plugin: 1.0.1
     node-fetch: 2.6.7
     node-sass: ^9.0.0
     nodemon: 1.18.10
@@ -11447,7 +11444,6 @@ __metadata:
     react-helmet: 6.1.0
     react-intl: 2.8.0
     react-leaflet: 2.7.0
-    react-motion: 0.5.2
     react-relay: 16.2.0
     react-relay-network-modern: 6.2.2
     react-relay-network-modern-ssr: 1.4.0
@@ -11475,7 +11471,6 @@ __metadata:
     stylelint-config-standard-scss: 11.1.0
     suncalc: 1.8.0
     supercluster: ^8.0.1
-    swipe-js-iso: 2.1.5
     terser-webpack-plugin: 4.1.0
     universal-cookie: 4.0.4
     url-loader: 3.0.0
@@ -12743,13 +12738,6 @@ __metadata:
   bin:
     eslint: bin/eslint.js
   checksum: 883436d1e809b4a25d9eb03d42f584b84c408dbac28b0019f6ea07b5177940bf3cca86208f749a6a1e0039b63e085ee47aca1236c30721e91f0deef5cc5a5136
-  languageName: node
-  linkType: hard
-
-"esm@npm:3.2.25":
-  version: 3.2.25
-  resolution: "esm@npm:3.2.25"
-  checksum: 978aabe2de83541c105605a6d60a26ed8e627ef6bb0a7605fe15a95bbdea6b8348bd045255cb22219c054dd09a81a94823df00843d9e97f42419c92015ce3a64
   languageName: node
   linkType: hard
 
@@ -15287,13 +15275,6 @@ __metadata:
   version: 1.0.0
   resolution: "hsla-regex@npm:1.0.0"
   checksum: 9aa6eb9ff6c102d2395435aa5d1d91eae20043c4b1497c543d8db501c05f3edacd9a07fb34a987059d7902dba415af4cb4e610f751859ae8e7525df4ffcd085f
-  languageName: node
-  linkType: hard
-
-"htm-to-json@npm:0.1.4":
-  version: 0.1.4
-  resolution: "htm-to-json@npm:0.1.4"
-  checksum: 983f14b0967a417ffc38b4c9d97cd695af5674ffce94861bc40d8ffc0afc88c083c91fd8e8892835c508c25f7a6723432b00b67ace31e97f7545e75994382f0c
   languageName: node
   linkType: hard
 
@@ -20047,13 +20028,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"name-all-modules-plugin@npm:1.0.1":
-  version: 1.0.1
-  resolution: "name-all-modules-plugin@npm:1.0.1"
-  checksum: ba0d5b66a2c9975350e05c43ba428e0535b10d9ee24cb76353995a8ec481c7a7dc3e9ced3d39771f614a07bb96fded855d521a3d09c3645602ecd20ede1f0039
-  languageName: node
-  linkType: hard
-
 "nan@npm:^2.12.1":
   version: 2.18.0
   resolution: "nan@npm:2.18.0"
@@ -21822,13 +21796,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"performance-now@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "performance-now@npm:0.2.0"
-  checksum: 2020aecc3980c280bf0a0382d476cf4e725a10433e853f853c57bc3ed084ab8aa880fac87e92d1b44d30138b8da2d2b77aad321ef3d7ce50b34500a4f4f84d0f
-  languageName: node
-  linkType: hard
-
 "performance-now@npm:^2.1.0":
   version: 2.1.0
   resolution: "performance-now@npm:2.1.0"
@@ -23392,7 +23359,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"raf@npm:^3.1.0, raf@npm:^3.4.1":
+"raf@npm:^3.4.1":
   version: 3.4.1
   resolution: "raf@npm:3.4.1"
   dependencies:
@@ -23679,19 +23646,6 @@ __metadata:
     react: ^0.14.0 || ^15.0.0 || ^16 || ^17 || ^18
     react-dom: ^0.14.0 || ^15.0.0 || ^16 || ^17 || ^18
   checksum: 978936e9320fad839c039b9ee4de55d40888156cb40e093615d6fbc2ff07139d5db06f14782cb7767f780bd5fb57956778669426c535ebc0068a7a03882c7e75
-  languageName: node
-  linkType: hard
-
-"react-motion@npm:0.5.2":
-  version: 0.5.2
-  resolution: "react-motion@npm:0.5.2"
-  dependencies:
-    performance-now: ^0.2.0
-    prop-types: ^15.5.8
-    raf: ^3.1.0
-  peerDependencies:
-    react: ^0.14.9 || ^15.3.0 || ^16.0.0
-  checksum: b1b2ab15d0e7492be827576fa7238c11679b52495a640b1234400771fdeac9ded8909532135b4a84be28e21e63dc97d54758d08ba280f90409b54104730b29c0
   languageName: node
   linkType: hard
 
@@ -27151,7 +27105,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swipe-js-iso@npm:2.1.5, swipe-js-iso@npm:^2.1.5":
+"swipe-js-iso@npm:^2.1.5":
   version: 2.1.5
   resolution: "swipe-js-iso@npm:2.1.5"
   checksum: cd205812891ea8b7307018e9d540bdabc35b13d04598fabdaa1b56068310cf8447a8203167214afde70ed47e6bae99a851ff3580b6e75de9539911920ded55ad
