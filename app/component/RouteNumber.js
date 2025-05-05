@@ -80,6 +80,7 @@ function RouteNumber(props, context) {
             color={color}
             className={mode}
             img={icon || `icon-icon_${mode}`}
+            omitViewBox
           />
           {withBicycle && (
             <Icon
@@ -112,6 +113,7 @@ function RouteNumber(props, context) {
           img={icon || `icon-icon_${mode}`}
           subIcon=""
           mode={mode}
+          omitViewBox
         />
         {withBicycle && (
           <Icon

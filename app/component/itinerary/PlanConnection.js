@@ -38,6 +38,7 @@ const planConnection = graphql`
             speed: $bikeSpeed
             rental: { allowedNetworks: $allowedRentalNetworks }
           }
+          scooter: { rental: { allowedNetworks: $allowedRentalNetworks } }
           walk: {
             speed: $walkSpeed
             reluctance: $walkReluctance
@@ -116,6 +117,17 @@ const planConnection = graphql`
             }
             legGeometry {
               points
+            }
+            steps {
+              feature {
+                __typename
+                ... on Entrance {
+                  publicCode
+                  wheelchairAccessible
+                }
+              }
+              lat
+              lon
             }
             route {
               shortName

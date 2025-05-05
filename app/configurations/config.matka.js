@@ -99,6 +99,7 @@ export default {
     'KoivistonAuto',
     'PahkakankaanLiikenne',
     'IngvesSvanback',
+    'CAR_FERRIES',
   ],
 
   additionalFeedIds: {
@@ -405,6 +406,7 @@ export default {
     TRAM: { showNotification: true },
     FERRY: { showNotification: true },
     BUS: { showNotification: true },
+    SUBWAY: { showNotification: false },
   },
 
   carBoardingModes: {
@@ -444,8 +446,5 @@ export default {
       value: 1800,
     },
   ],
-  // features that should not be deployed to production
-  experimental: {
-    navigation: IS_DEV,
-  },
+  navigation: true,
 };

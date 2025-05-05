@@ -18,6 +18,7 @@ import {
   getLatestNavigatorItinerary,
   setDialogState,
   setLatestNavigatorItinerary,
+  getGeolocationState,
 } from '../../store/localStorage';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
 import { getWeatherData } from '../../util/apiUtils';
@@ -64,9 +65,9 @@ import {
   isEqualItineraries,
   isStoredItineraryRelevant,
   mergeBikeTransitPlans,
-  parseCarTransitPlan,
   mergeScooterTransitPlan,
   mergeExternalTransitPlan,
+  parseCarTransitPlan,
   quitIteration,
   reportError,
   scooterEdges,
@@ -74,11 +75,14 @@ import {
   settingsLimitRouting,
   stopClient,
   updateClient,
+  getSortedEdges,
 } from './ItineraryPageUtils';
 import ItineraryTabs from './ItineraryTabs';
+import NaviGeolocationInfoModal from './navigator/navigatorgeolocation/NaviGeolocationInfoModal';
 import planConnection from './PlanConnection';
 import NaviContainer from './navigator/NaviContainer';
 import NavigatorIntroModal from './navigator/navigatorintro/NavigatorIntroModal';
+import { startLocationWatch } from '../../action/PositionActions';
 
 const MAX_QUERY_COUNT = 4; // number of attempts to collect enough itineraries
 
@@ -130,6 +134,7 @@ export default function ItineraryPage(props, context) {
   const mobileRef = useRef();
   const ariaRef = useRef('summary-page.title');
   const mapLayerRef = useRef();
+
   const [state, setState] = useState({
     ...emptyState,
     loading: LOADSTATE.UNSET,
@@ -142,6 +147,9 @@ export default function ItineraryPage(props, context) {
   const [isNavigatorIntroDismissed, setNavigatorIntroDismissed] = useState(
     getDialogState('navi-intro'),
   );
+  const [locationPermissionsLoadState, setLocationPermissionsLoadState] =
+    useState(LOADSTATE.UNSET);
+  const [isGeolocationInfoOpen, setGeolocationInfoOpen] = useState(false);
 
   const altStates = {
     [PLANTYPE.WALK]: useState(unset),
@@ -169,7 +177,7 @@ export default function ItineraryPage(props, context) {
     getLatestNavigatorItinerary(),
   );
 
-  const { config, router } = context;
+  const { config, router, executeAction } = context;
   const { match, breakpoint } = props;
   const { params, location } = match;
   const { hash, secondHash } = params;
@@ -355,11 +363,10 @@ export default function ItineraryPage(props, context) {
     altState[1]({ loading: LOADSTATE.LOADING });
     const planParams = getPlanParams(config, match, planType);
     try {
-      let reps;
-      if (planType === PLANTYPE.CARTRANSIT) {
-        reps = 1;
-      }
-      const plan = await iterateQuery(planParams, reps);
+      const plan = await iterateQuery(
+        planParams,
+        planParams.maxQueryIterations,
+      );
       altState[1]({ plan, loading: LOADSTATE.DONE });
     } catch (error) {
       altState[1]({ plan: {}, loading: LOADSTATE.DONE });
@@ -374,7 +381,10 @@ export default function ItineraryPage(props, context) {
     setRelaxState({ loading: LOADSTATE.LOADING });
     const planParams = getPlanParams(config, match, PLANTYPE.TRANSIT, true);
     try {
-      const plan = await iterateQuery(planParams);
+      const plan = await iterateQuery(
+        planParams,
+        planParams.maxQueryIterations,
+      );
       setRelaxState({ plan, loading: LOADSTATE.DONE });
     } catch (error) {
       setRelaxState(emptyPlan);
@@ -390,7 +400,10 @@ export default function ItineraryPage(props, context) {
     setState({ ...emptyState, loading: LOADSTATE.LOADING });
     const planParams = getPlanParams(config, match, PLANTYPE.TRANSIT);
     try {
-      const plan = await iterateQuery(planParams);
+      const plan = await iterateQuery(
+        planParams,
+        planParams.maxQueryIterations,
+      );
       setState({ ...emptyState, plan, loading: LOADSTATE.DONE });
       ariaRef.current = 'itinerary-page.itineraries-loaded';
     } catch (error) {
@@ -414,7 +427,10 @@ export default function ItineraryPage(props, context) {
     );
 
     try {
-      const plan = await iterateQuery(planParams);
+      const plan = await iterateQuery(
+        planParams,
+        planParams.maxQueryIterations,
+      );
       setScooterState({ plan, loading: LOADSTATE.DONE });
     } catch (error) {
       reportError(error);
@@ -446,7 +462,10 @@ export default function ItineraryPage(props, context) {
       allowedRentalNetworks: allScooterNetworks,
     };
     try {
-      const plan = await iterateQuery(tunedParams);
+      const plan = await iterateQuery(
+        tunedParams,
+        tunedParams.maxQueryIterations,
+      );
       const scooterPlan = { edges: scooterEdges(plan.edges) };
       setRelaxScooterState({ plan: scooterPlan, loading: LOADSTATE.DONE });
     } catch (error) {
@@ -516,7 +535,7 @@ export default function ItineraryPage(props, context) {
       setState({ ...state, loadingMore: undefined });
       return;
     }
-    const { edges } = plan;
+    const edges = getSortedEdges(plan.edges, arriveBy);
     if (edges.length === 0) {
       const newState = arriveBy
         ? { topNote: 'no-more-route-msg' }
@@ -604,7 +623,7 @@ export default function ItineraryPage(props, context) {
       setState({ ...state, loadingMore: undefined });
       return;
     }
-    const { edges } = plan;
+    const edges = getSortedEdges(plan.edges, arriveBy);
     if (edges.length === 0) {
       const newState = arriveBy
         ? { bottomNote: 'no-more-route-msg' }
@@ -691,7 +710,10 @@ export default function ItineraryPage(props, context) {
 
   const setNavigation = isEnabled => {
     if (mobileRef.current) {
-      mobileRef.current.setBottomSheet(isEnabled ? 'bottom' : 'middle');
+      setTimeout(
+        () => mobileRef.current.setBottomSheet(isEnabled ? 'bottom' : 'middle'),
+        10,
+      );
     }
     if (!isEnabled) {
       setMapState(noFocus);
@@ -701,8 +723,40 @@ export default function ItineraryPage(props, context) {
     setNaviMode(isEnabled);
   };
 
+  /**
+   * Watch the location permission state and trigger the navigator view
+   * once the permission check has finished or timed out.
+   */
+  useEffect(() => {
+    let interval;
+    if (locationPermissionsLoadState === LOADSTATE.LOADING) {
+      const startTime = Date.now();
+      interval = setInterval(() => {
+        const geolocationState = getGeolocationState();
+        if (geolocationState !== 'prompt' || Date.now() - startTime > 30000) {
+          clearInterval(interval);
+          setLocationPermissionsLoadState(LOADSTATE.DONE);
+        }
+      }, 1000);
+    }
+
+    return () => clearInterval(interval);
+  }, [locationPermissionsLoadState]);
+
+  /**
+   * Show the navigator view when permissions are resolved and the navigator intro is dismissed,
+   */
+  useEffect(() => {
+    if (
+      locationPermissionsLoadState === LOADSTATE.DONE &&
+      isNavigatorIntroDismissed &&
+      getLatestNavigatorItinerary()
+    ) {
+      setNavigation(true);
+    }
+  }, [locationPermissionsLoadState, isNavigatorIntroDismissed]);
+
   const storeItineraryAndStartNavigation = itinerary => {
-    setNavigation(true);
     const itineraryWithParams = {
       itinerary,
       params: {
@@ -714,8 +768,40 @@ export default function ItineraryPage(props, context) {
         secondHash,
       },
     };
+
     setLatestNavigatorItinerary(itineraryWithParams);
     setStoredItinerary(itineraryWithParams);
+
+    if (
+      locationPermissionsLoadState === LOADSTATE.DONE ||
+      !isNavigatorIntroDismissed
+    ) {
+      // location permission check has already finished or intro view must be shown
+      setNavigation(true);
+    } else if (isNavigatorIntroDismissed) {
+      // trigger location permission check before navigator.
+      executeAction(startLocationWatch);
+      setLocationPermissionsLoadState(LOADSTATE.LOADING);
+    }
+  };
+
+  const storeItineraryAndStartNavigationWithAnalytics = itinerary => {
+    addAnalyticsEvent({
+      category: 'Itinerary',
+      event: 'navigator',
+      action: 'cta_click',
+    });
+    storeItineraryAndStartNavigation(itinerary);
+  };
+
+  const updateStoredItinerary = legs => {
+    setStoredItinerary({
+      ...storedItinerary,
+      itinerary: {
+        ...storedItinerary.itinerary,
+        legs,
+      },
+    });
   };
 
   // save url-defined location to old searches
@@ -733,7 +819,7 @@ export default function ItineraryPage(props, context) {
     const layer =
       /\d/.test(names[0]) && names[0].indexOf(' ') >= 0 ? 'address' : 'venue';
 
-    context.executeAction(saveSearch, {
+    executeAction(saveSearch, {
       item: {
         geometry: { coordinates: [ll.lon, ll.lat] },
         properties: {
@@ -776,15 +862,15 @@ export default function ItineraryPage(props, context) {
     const itinerarySearch = {
       origin: {
         address: originArray[0],
-        ...parseLatLon(originArray[1]),
+        coordinates: { ...parseLatLon(originArray[1]) },
       },
       destination: {
         address: destinationArray[0],
-        ...parseLatLon(destinationArray[1]),
+        coordinates: { ...parseLatLon(destinationArray[1]) },
       },
-      query,
+      ...query,
     };
-    context.executeAction(saveFutureRoute, itinerarySearch);
+    executeAction(saveFutureRoute, itinerarySearch);
   }
 
   function showVehicles() {
@@ -945,6 +1031,7 @@ export default function ItineraryPage(props, context) {
         scooterState.plan,
         state.plan,
         config.vehicleRental.allowDirectScooterJourneys,
+        match.location.query.arriveBy === 'true',
       );
       if (taxiState.loading !== LOADSTATE.LOADING) {
         setCombinedState({ plan, loading: LOADSTATE.DONE });
@@ -959,9 +1046,12 @@ export default function ItineraryPage(props, context) {
       state.loading === LOADSTATE.DONE &&
       taxiState.loading === LOADSTATE.DONE
     ) {
-      const plan = mergeExternalTransitPlan(taxiState.plan, state.plan, [
-        'TAXI',
-      ]);
+      const plan = mergeExternalTransitPlan(
+        taxiState.plan,
+        state.plan,
+        match.location.query.arriveBy === 'true',
+        ['TAXI'],
+      );
       if (scooterState.loading !== LOADSTATE.LOADING) {
         setCombinedState({ plan, loading: LOADSTATE.DONE });
         resetItineraryPageSelection();
@@ -1148,6 +1238,7 @@ export default function ItineraryPage(props, context) {
         itinerary={explicitItinerary}
         showBackButton={!naviMode}
         isLocationPopupEnabled={!naviMode}
+        realtimeTransfers={!!explicitItinerary}
       />
     );
   }
@@ -1160,6 +1251,12 @@ export default function ItineraryPage(props, context) {
   const toggleNavigatorIntro = () => {
     setDialogState('navi-intro');
     setNavigatorIntroDismissed(true);
+    executeAction(startLocationWatch);
+    setLocationPermissionsLoadState(LOADSTATE.LOADING);
+  };
+
+  const toggleGeolocationInfo = () => {
+    setGeolocationInfoOpen(!isGeolocationInfoOpen);
   };
 
   const cancelNavigatorUsage = () => {
@@ -1251,33 +1348,51 @@ export default function ItineraryPage(props, context) {
         storedItinerary.itinerary || combinedEdges[selectedIndex]?.node;
 
       content = (
-        <>
-          {!isNavigatorIntroDismissed && (
-            <NavigatorIntroModal
-              isOpen
-              onPrimaryClick={toggleNavigatorIntro}
-              onClose={cancelNavigatorUsage}
+        <div>
+          {!isNavigatorIntroDismissed ||
+          locationPermissionsLoadState === LOADSTATE.LOADING ? (
+            <>
+              <NavigatorIntroModal
+                isOpen
+                onPrimaryClick={toggleNavigatorIntro}
+                onClose={cancelNavigatorUsage}
+                onOpenGeolocationInfo={toggleGeolocationInfo}
+              />
+              {isGeolocationInfoOpen && (
+                <NaviGeolocationInfoModal
+                  isOpen
+                  onClose={toggleGeolocationInfo}
+                />
+              )}
+            </>
+          ) : (
+            <NaviContainer
+              legs={itineraryForNavigator.legs}
+              focusToLeg={focusToLeg}
+              relayEnvironment={props.relayEnvironment}
+              setNavigation={setNavigation}
+              mapRef={mwtRef.current}
+              mapLayerRef={mapLayerRef}
+              isNavigatorIntroDismissed={isNavigatorIntroDismissed}
+              updateLegs={updateStoredItinerary}
+              forceStartAt={storedItinerary.params?.forceStartAt}
+              settings={settings}
             />
           )}
-          <NaviContainer
-            legs={itineraryForNavigator.legs}
-            focusToLeg={focusToLeg}
-            relayEnvironment={props.relayEnvironment}
-            setNavigation={setNavigation}
-            mapRef={mwtRef.current}
-            mapLayerRef={mapLayerRef}
-            isNavigatorIntroDismissed={isNavigatorIntroDismissed}
-          />
-        </>
+        </div>
       );
     } else {
       let carEmissions = carPlan?.edges?.[0]?.node.emissionsPerPerson?.co2;
-      const pastSearch =
-        Date.parse(combinedEdges[selectedIndex]?.node.end) < Date.now();
+      // show navi if search is not in past and not more than 24 hours in future
+      const presentSearch =
+        Date.parse(combinedEdges[selectedIndex]?.node.end) > Date.now() &&
+        Date.parse(combinedEdges[selectedIndex]?.node.start) <
+          Date.now() + 24 * 3600 * 1000;
+
       const navigateHook =
-        !desktop && config.experimental?.navigation && !pastSearch
+        !desktop && config.navigation && presentSearch
           ? () =>
-              storeItineraryAndStartNavigation(
+              storeItineraryAndStartNavigationWithAnalytics(
                 combinedEdges[selectedIndex]?.node,
               )
           : undefined;
@@ -1426,6 +1541,7 @@ export default function ItineraryPage(props, context) {
       mapRef={mwtRef.current}
       ref={mobileRef}
       match={match}
+      enableBottomScroll={!naviMode}
     />
   );
 }

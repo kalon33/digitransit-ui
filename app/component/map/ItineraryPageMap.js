@@ -18,7 +18,7 @@ import VehicleMarkerContainer from './VehicleMarkerContainer';
 
 const POINT_FOCUS_ZOOM = 17; // default
 
-function ItineraryPageMap(
+const ItineraryPageMap = (
   {
     planEdges,
     active,
@@ -33,10 +33,11 @@ function ItineraryPageMap(
     itinerary,
     showBackButton,
     isLocationPopupEnabled,
+    realtimeTransfers,
     ...rest
   },
   { match, router, executeAction, config },
-) {
+) => {
   const { hash } = match.params;
   const leafletObjs = [];
 
@@ -53,9 +54,9 @@ function ItineraryPageMap(
         hash={active}
         streetMode={hash}
         legs={itinerary.legs}
-        showTransferLabels={showActiveOnly}
         showIntermediateStops
         showDurationBubble={showDurationBubble}
+        realtimeTransfers={realtimeTransfers}
       />,
     );
   } else {
@@ -80,9 +81,9 @@ function ItineraryPageMap(
           hash={active}
           streetMode={hash}
           legs={planEdges[active].node.legs}
-          showTransferLabels={showActiveOnly}
           showIntermediateStops
           showDurationBubble={showDurationBubble}
+          realtimeTransfers={realtimeTransfers}
         />,
       );
     }
@@ -134,7 +135,7 @@ function ItineraryPageMap(
       )}
     </MapWithTracking>
   );
-}
+};
 
 ItineraryPageMap.propTypes = {
   planEdges: PropTypes.arrayOf(planEdgeShape).isRequired,
@@ -156,6 +157,7 @@ ItineraryPageMap.propTypes = {
   itinerary: itineraryShape,
   showBackButton: PropTypes.bool,
   isLocationPopupEnabled: PropTypes.bool,
+  realtimeTransfers: PropTypes.bool,
 };
 
 ItineraryPageMap.defaultProps = {
@@ -166,6 +168,7 @@ ItineraryPageMap.defaultProps = {
   itinerary: undefined,
   showBackButton: true,
   isLocationPopupEnabled: false,
+  realtimeTransfers: false,
 };
 
 ItineraryPageMap.contextTypes = {

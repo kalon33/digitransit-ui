@@ -104,7 +104,7 @@ export function setCustomizedSettings(data) {
   const oldSettings = getCustomizedSettings();
 
   const newSettings = {
-    accessibilityOption: getNumberValueOrDefault(
+    accessibilityOption: getValueOrDefault(
       data.accessibilityOption,
       oldSettings.accessibilityOption,
     ),
@@ -205,13 +205,13 @@ export function getFavouriteRoutesStorage() {
   return getItemAsJson('favouriteRoutes');
 }
 
+const filterOld = ['SelectFromMap', 'SelectFromOwnLocations', 'back'];
+
 export function getOldSearchesStorage() {
   const storage = getItemAsJson('saved-searches', '{"items": []}');
   return {
     ...storage,
-    items: storage.items.filter(
-      search => search.item.address !== 'SelectFromMap',
-    ),
+    items: storage.items.filter(s => !filterOld.includes(s.item.address)),
   };
 }
 
@@ -301,4 +301,12 @@ export const getLatestNavigatorItinerary = () => {
 
 export const clearLatestNavigatorItinerary = () => {
   setItem('latestNavigatorItinerary', {});
+};
+
+export const updateLatestNavigatorItineraryParams = valueObj => {
+  const itinerary = getItemAsJson('latestNavigatorItinerary', '{}');
+  setItem('latestNavigatorItinerary', {
+    itinerary: itinerary.itinerary,
+    params: { ...itinerary.params, ...valueObj },
+  });
 };

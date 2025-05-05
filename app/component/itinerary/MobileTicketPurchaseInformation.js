@@ -10,13 +10,10 @@ export default function MobileTicketPurchaseInformation(
   { fares, zones },
   { config, intl },
 ) {
-  if (fares.length === 0) {
-    return null;
-  }
   const fare = fares[0]; // Show buy option only if there is single ticket available
   const alternativeFares = getAlternativeFares(
     zones,
-    !fare.isUnknown,
+    fares.filter(f => !f.isUnknown),
     config.availableTickets,
   );
   const price =

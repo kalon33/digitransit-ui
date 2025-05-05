@@ -20,9 +20,6 @@ const SUGGESTION_URL = process.env.CONTENT_DOMAIN
   ? `${process.env.CONTENT_DOMAIN}/api/v1/search/suggestions`
   : 'https://content.hsl.fi/api/v1/search/suggestions'; // old url
 
-const localStorageEmitter =
-  process.env.USE_EMITTER && rootLink + '/local-storage-emitter';
-
 const IS_DEV =
   process.env.RUN_ENV === 'development' ||
   process.env.NODE_ENV !== 'production';
@@ -93,8 +90,9 @@ export default {
 
   useRoutingFeedbackPrompt: true,
 
-  feedIds: ['HSL', 'HSLlautta', 'Sipoo'],
-  externalFeedIds: ['HSLlautta'],
+  feedIds: ['HSL', 'HSLlautta', 'Sipoo', 'HSLflex1', 'HSLflex2', '02Taksi'],
+  externalFeedIds: ['HSLlautta', '02Taksi'],
+  allowDirectTaxiJourneys: true,
 
   showHSLTracking: false,
   allowLogin: true,
@@ -106,6 +104,22 @@ export default {
     radius: 500,
     bucketSize: 100,
   },
+
+  defaultSettings: {
+    walkSpeed: 1.28,
+  },
+
+  /**
+   * These are used for dropdown selection of values to override the default
+   * settings. This means that values ought to be relative to the current default.
+   * If not, the selection may not make any sense.
+   */
+  defaultOptions: {
+    walkSpeed: [0.69, 0.97, 1.28, 1.67, 2.22],
+  },
+
+  suggestWalkMaxDistance: 12000,
+  suggestBikeMaxDistance: 100000,
 
   omitNonPickups: true,
 
@@ -444,8 +458,6 @@ export default {
     sv: 'att-resa/Trafiken-just-nu',
   },
 
-  localStorageEmitter,
-
   vehicleRental: {
     minZoomStopsNearYou: 10,
     showFullInfo: true,
@@ -550,6 +562,7 @@ export default {
   bikeBoardingModes: {
     RAIL: { showNotification: false },
     FERRY: { showNotification: false },
+    SUBWAY: { showNotification: false },
   },
 
   // Notice! Turning on this setting forces the search for car routes (for the CO2 comparison only).
@@ -764,9 +777,6 @@ export default {
   navigationLogo: 'hsl/navigator-logo.svg',
   thumbsUpGraphic: 'hsl/thumbs-up.svg',
   trafficLightGraphic: 'hsl/traffic-light.svg',
-
-  // features that should not be deployed to production
-  experimental: {
-    navigation: IS_DEV,
-  },
+  naviGeolocationGraphic: 'hsl/geolocation.svg',
+  navigation: true,
 };

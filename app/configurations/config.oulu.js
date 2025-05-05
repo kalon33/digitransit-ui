@@ -164,4 +164,12 @@ export default configMerger(walttiConfig, {
       url: `${virtualMonitorBaseUrl}/createview`,
     },
   },
+
+  showTicketInformation: true,
+  useTicketIcons: true,
+  ticketLink: 'https://www.osl.fi/liput-ja-hinnat/osl-sovellus/',
+  showTicketPrice: true,
+  showTicketLinkOnlyWhenTesting: true,
+  ticketLinkOperatorCode: 50229,
+  appName: 'oslapp',
 });

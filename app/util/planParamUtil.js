@@ -1,6 +1,10 @@
 import moment from 'moment';
 import isEqual from 'lodash/isEqual';
-import { getTransitModes, isTransportModeAvailable } from './modeUtils';
+import {
+  getTransitModes,
+  isTransportModeAvailable,
+  networkIsActive,
+} from './modeUtils';
 import { otpToLocation, getIntermediatePlaces } from './otpStrings';
 import { getAllNetworksOfType, getDefaultNetworks } from './vehicleRentalUtils';
 import { getCustomizedSettings } from '../store/localStorage';
@@ -61,6 +65,33 @@ export function getDefaultSettings(config) {
       : [],
     scooterNetworks: [],
   };
+}
+
+/**
+ * Whether user has customized any settings that are visible and make a difference.
+ * @param {*} config the configuration for the software installation
+ */
+export function hasCustomizedSettings(config) {
+  const defaultSettings = getDefaultSettings(config);
+  const customizedSettings = getCustomizedSettings();
+  if (Object.keys(customizedSettings).length === 0) {
+    return false;
+  }
+
+  return Object.keys(customizedSettings).some(key => {
+    if (key === 'allowedBikeRentalNetworks') {
+      return customizedSettings.allowedBikeRentalNetworks.some(network =>
+        networkIsActive(config.vehicleRental.networks[network]),
+      );
+    }
+    if (
+      Array.isArray(customizedSettings[key]) &&
+      Array.isArray(defaultSettings[key])
+    ) {
+      return customizedSettings[key].length !== defaultSettings[key].length;
+    }
+    return customizedSettings[key] !== defaultSettings[key];
+  });
 }
 
 /**
@@ -328,6 +359,8 @@ export function getPlanParams(
   let numItineraries = directOnly ? 1 : 5;
   let carReluctance = null;
   let noIterationsForShortTrips = false;
+  // A null value uses the default amount of maximum iterations.
+  let maxQueryIterations = null;
 
   switch (planType) {
     case PLANTYPE.BIKEPARK:
@@ -356,6 +389,8 @@ export function getPlanParams(
       settings.bikeSpeed = null;
       settings.walkReluctance = null;
       settings.bikeReluctance = null;
+      // As of writing this comment, iterating (paging) does not support filtering of bad car transit itineraries.
+      maxQueryIterations = 1;
       break;
     case PLANTYPE.PARKANDRIDE:
       access = ['CAR_PARKING'];
@@ -441,5 +476,6 @@ export function getPlanParams(
     noIterationsForShortTrips,
     via,
     carReluctance,
+    maxQueryIterations,
   };
 }

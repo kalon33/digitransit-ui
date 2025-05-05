@@ -2,20 +2,24 @@ import connectToStores from 'fluxible-addons-react/connectToStores';
 import { routerShape } from 'found';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
-import { legTime } from '../../../util/legUtils';
-import { legShape, relayShape } from '../../../util/shapes';
 import {
   startLocationWatch,
   stopLocationWatch,
 } from '../../../action/PositionActions';
+import { legTime, legTimeStr } from '../../../util/legUtils';
+import { legShape, relayShape } from '../../../util/shapes';
+import { useRealtimeLegs } from './hooks/useRealtimeLegs';
 import NaviBottom from './NaviBottom';
 import NaviCardContainer from './NaviCardContainer';
-import { useRealtimeLegs } from './hooks/useRealtimeLegs';
 import NavigatorOutroModal from './navigatoroutro/NavigatorOutroModal';
+import NaviStarter from './NaviStarter';
 import { DESTINATION_RADIUS, summaryString } from './NaviUtils';
+import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 
-const ADDITIONAL_ARRIVAL_TIME = 60000; // 60 seconds in ms
+const ADDITIONAL_ARRIVAL_TIME = 30000; // 30 s
 const LEGLOG = true;
+const TOPBAR_PADDING = 8; // pixels
+const START_BUFFER = 120000; // 2 min in ms
 
 function NaviContainer(
   {
@@ -26,6 +30,9 @@ function NaviContainer(
     isNavigatorIntroDismissed,
     mapRef,
     mapLayerRef,
+    updateLegs,
+    forceStartAt,
+    settings,
   },
   { executeAction, getStore, router },
 ) {
@@ -39,6 +46,10 @@ function NaviContainer(
   } else {
     hasPosition.current = true;
   }
+  const { vehicles } = getStore('RealTimeInformationStore');
+
+  // TODO disable after testing
+  const simulateTransferProblem = LEGLOG && settings.bikeSpeed > 8;
 
   const {
     realTimeLegs,
@@ -50,10 +61,19 @@ function NaviContainer(
     currentLeg,
     nextLeg,
     startItinerary,
-  } = useRealtimeLegs(relayEnvironment, legs, position);
+    loading,
+  } = useRealtimeLegs(
+    relayEnvironment,
+    legs,
+    position,
+    vehicles,
+    updateLegs,
+    forceStartAt,
+    simulateTransferProblem,
+  );
 
   useEffect(() => {
-    mapRef?.enableMapTracking(); // try always, shows annoying notifier
+    setTimeout(() => mapRef?.enableMapTracking(), 10); // try always, shows annoying notifier
   }, [mapRef, hasPosition.current]);
 
   useEffect(() => {
@@ -64,7 +84,6 @@ function NaviContainer(
       ) {
         posFrozen.current += 1;
         if (posFrozen.current === 3) {
-          // window.alert('Restarting geolocation watch');
           executeAction(stopLocationWatch);
           setTimeout(() => executeAction(startLocationWatch), 10);
         }
@@ -75,7 +94,13 @@ function NaviContainer(
     prevPos.current = position;
   }, [time]);
 
-  if (!realTimeLegs?.length) {
+  useEffect(() => {
+    if (firstLeg && time > legTime(firstLeg.start) - START_BUFFER) {
+      startItinerary(Date.now());
+    }
+  }, [firstLeg]);
+
+  if (loading || !realTimeLegs?.length) {
     return null;
   }
 
@@ -84,7 +109,10 @@ function NaviContainer(
     (currentLeg === lastLeg || time > arrivalTime) &&
     position &&
     tailLength <= DESTINATION_RADIUS;
-  const isPastExpectedArrival = time > arrivalTime + ADDITIONAL_ARRIVAL_TIME;
+  const arrivalMargin = position
+    ? 10 * ADDITIONAL_ARRIVAL_TIME
+    : ADDITIONAL_ARRIVAL_TIME;
+  const isPastExpectedArrival = time > arrivalTime + arrivalMargin;
   const isJourneyCompleted = isDestinationReached || isPastExpectedArrival;
 
   if (LEGLOG) {
@@ -92,34 +120,59 @@ function NaviContainer(
     console.log(...summaryString(realTimeLegs, time, previousLeg, currentLeg, nextLeg));
   }
 
+  const containerTopPosition =
+    mapLayerRef.current.getBoundingClientRect().top + TOPBAR_PADDING;
+
+  const isPastStart = time > legTime(firstLeg.start) || !!firstLeg.forceStart;
+
+  const handleNavigatorEndClick = () => {
+    addAnalyticsEvent({
+      category: 'Itinerary',
+      event: 'navigator',
+      action: 'navigation_end_manual',
+    });
+    router.push('/');
+  };
+
   return (
     <>
-      <NaviCardContainer
-        legs={realTimeLegs}
-        focusToLeg={position ? null : focusToLeg}
-        time={time}
-        position={position}
-        mapLayerRef={mapLayerRef}
-        tailLength={tailLength}
-        currentLeg={time > arrivalTime ? previousLeg : currentLeg}
-        nextLeg={nextLeg}
-        firstLeg={firstLeg}
-        lastLeg={lastLeg}
-        isJourneyCompleted={isJourneyCompleted}
-        previousLeg={previousLeg}
+      <NaviStarter
+        containerTopPosition={containerTopPosition}
+        time={legTimeStr(firstLeg.start)}
         startItinerary={startItinerary}
+        isPastStart={isPastStart}
       />
+      {isPastStart && (
+        <NaviCardContainer
+          legs={realTimeLegs}
+          focusToLeg={position ? null : focusToLeg}
+          time={time}
+          position={position}
+          tailLength={tailLength}
+          currentLeg={time > arrivalTime ? previousLeg : currentLeg}
+          nextLeg={nextLeg}
+          firstLeg={firstLeg}
+          lastLeg={lastLeg}
+          isJourneyCompleted={isJourneyCompleted}
+          previousLeg={previousLeg}
+          containerTopPosition={containerTopPosition}
+          settings={settings}
+        />
+      )}
       {isJourneyCompleted && isNavigatorIntroDismissed && (
         <NavigatorOutroModal
           destination={lastLeg.to.name}
-          onClose={() => router.push('/')}
+          onClose={handleNavigatorEndClick}
         />
       )}
-      <NaviBottom
-        setNavigation={setNavigation}
-        arrival={arrivalTime}
-        time={time}
-      />
+      {!isJourneyCompleted && (
+        <NaviBottom
+          setNavigation={setNavigation}
+          arrival={arrivalTime}
+          time={time}
+          legs={legs}
+        />
+      )}
     </>
   );
 }
@@ -134,6 +187,10 @@ NaviContainer.propTypes = {
   mapRef: PropTypes.object,
   mapLayerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
     .isRequired,
+  updateLegs: PropTypes.func.isRequired,
+  forceStartAt: PropTypes.number,
+  // eslint-disable-next-line
+  settings: PropTypes.object.isRequired,
 };
 
 NaviContainer.contextTypes = {
@@ -145,6 +202,7 @@ NaviContainer.contextTypes = {
 NaviContainer.defaultProps = {
   mapRef: undefined,
   isNavigatorIntroDismissed: false,
+  forceStartAt: undefined,
 };
 
 const connectedComponent = connectToStores(
