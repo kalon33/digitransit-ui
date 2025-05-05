@@ -1042,6 +1042,7 @@ export default function ItineraryPage(props, context) {
   // merge the main plan and the flex plan into one
   useEffect(() => {
     if (
+      config.allowFlexJourneys &&
       state.loading === LOADSTATE.DONE &&
       flexState.loading === LOADSTATE.DONE
     ) {
@@ -1050,8 +1051,9 @@ export default function ItineraryPage(props, context) {
         state.plan,
         match.location.query.arriveBy === 'true',
         config.allowedFlexRouteTypes,
+        getSettings(config).includeTaxiSuggestions,
       );
-      if (scooterState.loading !== LOADSTATE.LOADING) {
+      if (flexState.loading !== LOADSTATE.LOADING) {
         setCombinedState({ plan, loading: LOADSTATE.DONE });
         resetItineraryPageSelection();
       }

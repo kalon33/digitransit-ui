@@ -428,12 +428,20 @@ export function filterItineraries(edges, modes) {
 /**
  * Filters itineraries that are not the right route type
  */
-export function filterItinerariesByRouteType(edges, types) {
+export function filterItinerariesByRouteType(
+  edges,
+  types,
+  includeTaxiSuggestions,
+) {
   if (!edges) {
     return [];
   }
   return edges.filter(edge =>
-    edge.node.legs.some(leg => types.includes(leg.route?.type)),
+    edge.node.legs.some(
+      leg =>
+        types.includes(leg.route?.type) &&
+        (includeTaxiSuggestions || leg.route?.type !== 'TAXI'),
+    ),
   );
 }
 
@@ -570,10 +578,12 @@ export function mergeExternalTransitPlan(
   transitPlan,
   arriveBy,
   allowedFlexRouteTypes,
+  includeTaxiSuggestions,
 ) {
   const externalTransitEdges = filterItinerariesByRouteType(
     externalPlan.edges,
     allowedFlexRouteTypes,
+    includeTaxiSuggestions,
   );
   return sortAndMergePlans(
     externalTransitEdges,
