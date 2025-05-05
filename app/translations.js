@@ -1113,6 +1113,7 @@ const translations = {
       'Detecting your location is taking longer than expected.',
     'geolocation-timeout-text':
       "Have you accepted your browser's request to access your location?",
+    'get-off-the-ride': 'TO_DO_Nouse pois kyydistä',
     'give-destination': 'Enter your destination',
     'give-name-to-location': 'Give the location a descriptive name',
     'give-origin': 'Enter your origin.',
@@ -5156,7 +5157,6 @@ const translations = {
     back: 'Tillbaka',
     'book-a-lift':
       'Tilaa kyyti sovelluksella ja jää odottamaan sen saapumista:',
-    'book-a-taxi': 'Ota taksi käyttöön sovelluksella',
     'buy-in-app': 'Köp i appen',
     'search-autosuggest-label': 'Plats, linje och hållplatssökning.',
     'search-autosuggest-label-instructions':
