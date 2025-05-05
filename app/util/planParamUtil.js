@@ -21,7 +21,7 @@ export const PLANTYPE = {
   BIKETRANSIT: 'BIKETRANSIT',
   PARKANDRIDE: 'PARKANDRIDE',
   SCOOTERTRANSIT: 'SCOOTERTRANSIT',
-  TAXITRANSIT: 'TAXITRANSIT',
+  FLEXTRANSIT: 'FLEXTRANSIT',
 };
 
 const directModes = [PLANTYPE.WALK, PLANTYPE.BIKE, PLANTYPE.CAR];
@@ -261,8 +261,8 @@ export function planQueryNeeded(
         settings.includeParkAndRideSuggestions
       );
 
-    case PLANTYPE.TAXITRANSIT:
-      return transitModes.length > 0 && settings.includeTaxiSuggestions;
+    case PLANTYPE.FLEXTRANSIT:
+      return transitModes.length > 0 && config.allowFlexJourneys;
 
     case PLANTYPE.TRANSIT:
     default:
@@ -404,10 +404,10 @@ export function getPlanParams(
       egress = access;
       direct = access;
       break;
-    case PLANTYPE.TAXITRANSIT:
+    case PLANTYPE.FLEXTRANSIT:
       access = ['WALK', 'FLEX'];
       egress = access;
-      direct = config.allowDirectTaxiJourneys ? ['FLEX', 'WALK'] : direct;
+      direct = access;
       transitOnly = false;
       break;
     default: // direct modes

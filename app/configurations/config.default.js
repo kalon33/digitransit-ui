@@ -857,4 +857,5 @@ export default {
   sendAnalyticsCustomEventGoals: false,
   allowDirectTaxiJourneys: false,
   shortenLongTextThreshold: 10, // for route number in itinerary summary
+  allowFlexJourneys: false,
 };

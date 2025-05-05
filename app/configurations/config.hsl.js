@@ -90,8 +90,8 @@ export default {
 
   useRoutingFeedbackPrompt: true,
 
-  feedIds: ['HSL', 'HSLlautta', 'Sipoo', 'HSLflex1', 'HSLflex2', '02Taksi'],
-  externalFeedIds: ['HSLlautta', '02Taksi'],
+  feedIds: ['HSL', 'HSLlautta', 'Sipoo'],
+  externalFeedIds: ['HSLlautta'],
   allowDirectTaxiJourneys: true,
 
   showHSLTracking: false,
@@ -779,4 +779,7 @@ export default {
   trafficLightGraphic: 'hsl/traffic-light.svg',
   naviGeolocationGraphic: 'hsl/geolocation.svg',
   navigation: true,
+
+  allowFlexJourneys: true,
+  allowedFlexRouteTypes: [1501, 715],
 };

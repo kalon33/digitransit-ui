@@ -426,6 +426,18 @@ export function filterItineraries(edges, modes) {
 }
 
 /**
+ * Filters itineraries that are not the right route type
+ */
+export function filterItinerariesByRouteType(edges, types) {
+  if (!edges) {
+    return [];
+  }
+  return edges.filter(edge =>
+    edge.node.legs.some(leg => types.includes(leg.route?.type)),
+  );
+}
+
+/**
  * Pick combination of itineraries for bike and transit
  */
 export function mergeBikeTransitPlans(bikeParkPlan, bikeTransitPlan) {
@@ -512,7 +524,12 @@ export function getSortedEdges(edges, arriveBy) {
 /**
  * Combine an external edge with the main transit edges.
  */
-function sortAndMergePlans(externalTransitEdges, transitPlan, arriveBy) {
+function sortAndMergePlans(
+  externalTransitEdges,
+  transitPlan,
+  arriveBy,
+  maxAdditionalEdges = 1,
+) {
   const transitPlanEdges = transitPlan.edges || [];
   const maxTransitEdges =
     externalTransitEdges.length > 0 ? 4 : transitPlanEdges.length;
@@ -529,7 +546,7 @@ function sortAndMergePlans(externalTransitEdges, transitPlan, arriveBy) {
   return {
     edges: getSortedEdges(
       [
-        ...externalTransitEdges.slice(0, 1),
+        ...externalTransitEdges.slice(0, maxAdditionalEdges),
         ...transitPlanEdges.slice(0, maxTransitEdges),
       ],
       arriveBy,
@@ -552,10 +569,18 @@ export function mergeExternalTransitPlan(
   externalPlan,
   transitPlan,
   arriveBy,
-  modes,
+  allowedFlexRouteTypes,
 ) {
-  const externalTransitEdges = filterItineraries(externalPlan.edges, modes);
-  return sortAndMergePlans(externalTransitEdges, transitPlan, arriveBy);
+  const externalTransitEdges = filterItinerariesByRouteType(
+    externalPlan.edges,
+    allowedFlexRouteTypes,
+  );
+  return sortAndMergePlans(
+    externalTransitEdges,
+    transitPlan,
+    arriveBy,
+    externalTransitEdges.length,
+  );
 }
 
 /**
