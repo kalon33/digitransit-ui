@@ -674,7 +674,6 @@ const withRelay = createFragmentContainer(
             }
             stoptimesForDate {
               headsign
-              pickupType
               realtimeState
               stop {
                 gtfsId

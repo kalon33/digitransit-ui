@@ -1124,7 +1124,6 @@ const containerComponent = createFragmentContainer(ItineraryWithBreakpoint, {
             stop {
               gtfsId
             }
-            pickupType
           }
           occupancy {
             occupancyStatus
