@@ -3,7 +3,7 @@ import { graphql } from 'react-relay';
 export const ItineraryListPlanEdges = graphql`
   fragment ItineraryListPlanEdges on PlanEdge @relay(plural: true) {
     node {
-      ...ItineraryItinerary
+      ...ItineraryFragment
       emissionsPerPerson {
         co2
       }

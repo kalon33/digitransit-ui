@@ -41,7 +41,7 @@ import MobileTicketPurchaseInformation from './MobileTicketPurchaseInformation';
 import StartNavi from './StartNavi';
 import TicketInformation from './TicketInformation';
 import VehicleRentalDurationInfo from './VehicleRentalDurationInfo';
-import { ItineraryDetailsItinerary } from './queries/ItineraryDetailsItinerary';
+import { ItineraryDetailsFragment } from './queries/ItineraryDetailsFragment';
 
 function getFutureText(startTime, intl) {
   const refTime = Date.now();
@@ -109,7 +109,7 @@ function ItineraryDetails(
   { config, match, intl },
 ) {
   // TODO: Move fragment to a dedicated file
-  const itinerary = useFragment(ItineraryDetailsItinerary, itineraryRef);
+  const itinerary = useFragment(ItineraryDetailsFragment, itineraryRef);
 
   const shouldShowDisclaimer =
     config.showDisclaimer &&

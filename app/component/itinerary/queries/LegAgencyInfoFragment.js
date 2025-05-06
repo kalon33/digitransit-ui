@@ -1,7 +1,7 @@
 import { graphql } from 'react-relay';
 
-export const LegAgencyInfoLeg = graphql`
-  fragment LegAgencyInfoLeg on Leg {
+export const LegAgencyInfoFragment = graphql`
+  fragment LegAgencyInfoFragment on Leg {
     agency {
       name
       url

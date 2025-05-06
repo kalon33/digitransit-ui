@@ -40,7 +40,7 @@ import {
 import { getRouteMode } from '../../util/modeUtils';
 import { getCapacityForLeg } from '../../util/occupancyUtil';
 import getCo2Value from '../../util/emissions';
-import { ItineraryItinerary } from './queries/ItineraryItinerary';
+import { ItineraryFragment } from './queries/ItineraryFragment';
 
 const NAME_LENGTH_THRESHOLD = 65; // for truncating long short names
 
@@ -283,7 +283,7 @@ const Itinerary = (
   },
   { intl, intl: { formatMessage }, config },
 ) => {
-  const itinerary = useFragment(ItineraryItinerary, itineraryRef);
+  const itinerary = useFragment(ItineraryFragment, itineraryRef);
   const isTransitLeg = leg => leg.transitLeg;
   const isTransitOrRentalLeg = leg => leg.transitLeg || leg.rentedBike;
   const isLegOnFoot = leg => leg.mode === 'WALK' || leg.mode === 'BICYCLE_WALK';

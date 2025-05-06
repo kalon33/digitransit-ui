@@ -63,7 +63,7 @@ export const planConnection = graphql`
       edges {
         ...ItineraryListContainerPlanEdges
         node {
-          ...ItineraryDetailsItinerary
+          ...ItineraryDetailsFragment
           duration
           walkDistance
           emissionsPerPerson {

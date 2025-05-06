@@ -1,7 +1,7 @@
 import { graphql } from 'react-relay';
 
-export const ItineraryDetailsItinerary = graphql`
-  fragment ItineraryDetailsItinerary on Itinerary {
+export const ItineraryDetailsFragment = graphql`
+  fragment ItineraryDetailsFragment on Itinerary {
     duration
     start
     end
@@ -85,7 +85,7 @@ export const ItineraryDetailsItinerary = graphql`
         }
         realTime
       }
-      ...LegAgencyInfoLeg
+      ...LegAgencyInfoFragment
       from {
         lat
         lon

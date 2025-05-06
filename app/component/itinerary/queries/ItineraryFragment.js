@@ -1,7 +1,7 @@
 import { graphql } from 'react-relay';
 
-export const ItineraryItinerary = graphql`
-  fragment ItineraryItinerary on Itinerary {
+export const ItineraryFragment = graphql`
+  fragment ItineraryFragment on Itinerary {
     start
     end
     emissionsPerPerson {
