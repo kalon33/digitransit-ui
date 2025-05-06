@@ -717,7 +717,7 @@ export default {
     joensuu: 'joensuu',
     oulu: '(oulu|osl)',
     hameenlinna: 'hameenlinna',
-    matka: '(matka|fintraffic|^dev.digitransit)',
+    matka: '(matka|^dev.digitransit)',
     vaasa: 'vaasa',
     walttiOpas: 'waltti',
     rovaniemi: 'rovaniemi',
