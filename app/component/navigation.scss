@@ -880,12 +880,6 @@ section.content {
       }
     }
 
-    #close-message-bar {
-      .icon {
-        fill: white !important;
-      }
-    }
-
     &.banner-disruption {
       background: $banner-disruption-color;
 
@@ -997,7 +991,6 @@ section.content {
   height: 24px;
   width: 24px;
   margin: 18px;
-  color: white;
 }
 
 .message-bar .icon.close {
