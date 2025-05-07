@@ -112,9 +112,7 @@ class Stops {
       }
       const stopOutOfService = !!feature.properties.closedByServiceAlert;
       const noServiceOnServiceDay =
-        feature.properties.servicesRunningOnServiceDate === undefined
-          ? false
-          : !feature.properties.servicesRunningOnServiceDate;
+        !feature.properties.servicesRunningOnServiceDate;
 
       if (isHilighted && zoom <= minZoom) {
         // Fetch stop details only when stop is highlighted and realtime layer is not used (zoom level)
