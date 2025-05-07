@@ -272,7 +272,6 @@ export const ItineraryDetailsFragment = graphql`
         }
         stoptimesForDate {
           headsign
-          pickupType
           realtimeState
           stop {
             gtfsId

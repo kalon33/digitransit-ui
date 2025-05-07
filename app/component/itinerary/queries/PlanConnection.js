@@ -155,7 +155,6 @@ export const planConnection = graphql`
                 stop {
                   gtfsId
                 }
-                pickupType
               }
             }
             from {

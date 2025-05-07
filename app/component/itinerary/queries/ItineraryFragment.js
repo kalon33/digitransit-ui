@@ -65,7 +65,6 @@ export const ItineraryFragment = graphql`
           stop {
             gtfsId
           }
-          pickupType
         }
         occupancy {
           occupancyStatus
