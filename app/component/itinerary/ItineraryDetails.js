@@ -422,6 +422,7 @@ function ItineraryDetails(
     legContainsBikePark(leg),
   );
   const legsWithScooter = compressedLegs.some(leg => leg.mode === 'SCOOTER');
+  const legsWithAirplane = compressedLegs.some(leg => leg.mode === 'AIRPLANE');
   const onlyWalking = compressedLegs.every(leg => leg.mode === 'WALK');
   const onlyBiking = compressedLegs.every(leg => leg.mode === 'BICYCLE');
   const showStartNavi =
@@ -429,6 +430,7 @@ function ItineraryDetails(
     !onlyWalking &&
     !onlyBiking &&
     !legsWithScooter &&
+    !legsWithAirplane &&
     legsWithRentalBike.length === 0 &&
     driving.distance === 0;
   const containsBiking = biking.duration > 0 && biking.distance > 0;
