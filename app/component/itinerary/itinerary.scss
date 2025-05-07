@@ -2696,8 +2696,8 @@ div.itinerary-container-content {
       padding-right: 1em;
       padding-left: 0.5em;
       width: 100%;
-      background-color: rgba(254, 209, 0, 0.1);
-      border: 1px solid #fed100;
+      background-color: $disclaimer-background-color;
+      border: 1px solid $disclaimer-border-color;
       border-radius: 3px;
     }
 
