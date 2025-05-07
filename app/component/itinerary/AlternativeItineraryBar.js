@@ -10,12 +10,12 @@ import { streetHash } from '../../util/path';
 export default function AlternativeItineraryBar(
   {
     selectStreetMode,
-    setStreetModeAndSelect,
     weatherData,
     walkPlan,
     bikePlan,
     bikePublicPlan,
     carPlan,
+    carPublicPlan,
     parkRidePlan,
     loading,
   },
@@ -34,7 +34,7 @@ export default function AlternativeItineraryBar(
               icon="icon-icon_walk"
               name={streetHash.walk}
               plan={walkPlan}
-              onClick={setStreetModeAndSelect}
+              onClick={selectStreetMode}
             />
           )}
           {bikePlan?.edges?.length > 0 && (
@@ -42,7 +42,7 @@ export default function AlternativeItineraryBar(
               icon="icon-icon_cyclist"
               name={streetHash.bike}
               plan={bikePlan}
-              onClick={setStreetModeAndSelect}
+              onClick={selectStreetMode}
             />
           )}
           {bikePublicPlan?.edges?.length > 0 && (
@@ -67,7 +67,15 @@ export default function AlternativeItineraryBar(
               icon="icon-icon_car-withoutBox"
               name={streetHash.car}
               plan={carPlan}
-              onClick={setStreetModeAndSelect}
+              onClick={selectStreetMode}
+            />
+          )}
+          {carPublicPlan?.edges?.length > 0 && (
+            <StreetModeSelectorButton
+              icon="icon-icon_car-withoutBox"
+              name={streetHash.carAndVehicle}
+              plan={carPublicPlan}
+              onClick={selectStreetMode}
             />
           )}
           {config.emphasizeOneWayJourney && (
@@ -86,12 +94,12 @@ export default function AlternativeItineraryBar(
 
 AlternativeItineraryBar.propTypes = {
   selectStreetMode: PropTypes.func.isRequired,
-  setStreetModeAndSelect: PropTypes.func.isRequired,
   walkPlan: planShape,
   bikePlan: planShape,
   bikePublicPlan: planShape,
   parkRidePlan: planShape,
   carPlan: planShape,
+  carPublicPlan: planShape,
   weatherData: PropTypes.shape({
     temperature: PropTypes.number,
     windSpeed: PropTypes.number,
@@ -107,6 +115,7 @@ AlternativeItineraryBar.defaultProps = {
   bikePublicPlan: undefined,
   parkRidePlan: undefined,
   carPlan: undefined,
+  carPublicPlan: undefined,
   loading: undefined,
 };
 

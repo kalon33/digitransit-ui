@@ -6,19 +6,49 @@ import { configShape } from '../util/shapes';
 import IconWithBigCaution from './IconWithBigCaution';
 import IconWithIcon from './IconWithIcon';
 import Icon from './Icon';
+import { TransportMode } from '../constants';
 
 const LONG_ROUTE_NUMBER_LENGTH = 6;
 
 function RouteNumber(props, context) {
   const mode = props.mode.toLowerCase();
-  const { alertSeverityLevel, color, withBicycle, text } = props;
-  const textIsText = typeof text === 'string'; // can be also react node
+  const { alertSeverityLevel, color, withBicycle, withCar } = props;
+  const isScooter = mode === TransportMode.Scooter.toLowerCase();
+
+  // Perform text-related processing
+  let filteredText = props.text;
+  if (
+    props.shortenLongText &&
+    context.config.disabledLegTextModes?.includes(mode) &&
+    props.className.includes('line')
+  ) {
+    filteredText = '';
+  }
+  const textFieldIsText = typeof filteredText === 'string'; // can be also react node
+  if (
+    props.shortenLongText &&
+    context.config.shortenLongTextThreshold &&
+    filteredText &&
+    textFieldIsText &&
+    filteredText.length > context.config.shortenLongTextThreshold
+  ) {
+    filteredText = `${filteredText.substring(
+      0,
+      context.config.shortenLongTextThreshold - 3,
+    )}...`;
+  }
   const longText =
-    text && textIsText && text.length >= LONG_ROUTE_NUMBER_LENGTH;
+    filteredText &&
+    textFieldIsText &&
+    filteredText.length >= LONG_ROUTE_NUMBER_LENGTH;
   // Checks if route only has letters without identifying numbers and
   // length doesn't fit in the tab view
   const hasNoShortName =
-    text && textIsText && /^([^0-9]*)$/.test(text) && text.length > 3;
+    filteredText &&
+    textFieldIsText &&
+    /^([^0-9]*)$/.test(filteredText) &&
+    filteredText.length > 3;
+
   const getColor = () => color || (props.isTransitLeg ? 'currentColor' : null);
 
   const getIcon = (
@@ -48,11 +78,18 @@ function RouteNumber(props, context) {
             color={color}
             className={mode}
             img={icon || `icon-icon_${mode}`}
+            omitViewBox
           />
           {withBicycle && (
             <Icon
               img="icon-icon_bicycle_walk"
               className="itinerary-icon_with-bicycle"
+            />
+          )}
+          {withCar && (
+            <Icon
+              img="icon-icon_car-withoutBox"
+              className="itinerary-icon_with-car"
             />
           )}
         </React.Fragment>
@@ -74,11 +111,18 @@ function RouteNumber(props, context) {
           img={icon || `icon-icon_${mode}`}
           subIcon=""
           mode={mode}
+          omitViewBox
         />
         {withBicycle && (
           <Icon
             img="icon-icon_bicycle_walk"
             className="itinerary-icon_with-bicycle"
+          />
+        )}
+        {withCar && (
+          <Icon
+            img="icon-icon_car-withoutBox"
+            className="itinerary-icon_with-car"
           />
         )}
       </React.Fragment>
@@ -99,7 +143,8 @@ function RouteNumber(props, context) {
         })}
         role="img"
       >
-        {!props.isTransitLeg && !props.renderModeIcons && (
+        {((!props.isTransitLeg && !props.renderModeIcons) ||
+          props.appendClass === 'scooter') && (
           <div className={cx('empty', props.appendClass)} />
         )}
         {props.isTransitLeg === true ? (
@@ -125,7 +170,7 @@ function RouteNumber(props, context) {
             )}
           </div>
         )}
-        {text && (
+        {filteredText && (
           <div
             className={cx(
               'vehicle-number-container-v'.concat(props.card ? '-map' : ''),
@@ -143,20 +188,23 @@ function RouteNumber(props, context) {
               )}
               style={{ color: !props.withBar && getColor() }}
             >
-              {props.text}
+              {filteredText}
             </span>
-            {textIsText && (
-              <span className="sr-only">{text?.toLowerCase()}</span>
+            {textFieldIsText && (
+              <span className="sr-only">{filteredText?.toLowerCase()}</span>
             )}
           </div>
         )}
-        {!context.config?.hideWalkLegDurationSummary &&
+        {!context.config.hideWalkLegDurationSummary &&
           props.isTransitLeg === false &&
           props.duration > 0 && (
             <div className={`leg-duration-container ${mode} `}>
               <span className="leg-duration">{props.duration}</span>
             </div>
           )}
+        {isScooter && !props.vertical && (
+          <Icon img="icon-icon_smartphone" className="phone-icon" />
+        )}
       </span>
       {props.occupancyStatus && (
         <span className="occupancy-icon-container">
@@ -200,9 +248,11 @@ RouteNumber.propTypes = {
   duration: PropTypes.number,
   isTransitLeg: PropTypes.bool,
   withBicycle: PropTypes.bool,
+  withCar: PropTypes.bool,
   card: PropTypes.bool,
   appendClass: PropTypes.string,
   occupancyStatus: PropTypes.string,
+  shortenLongText: PropTypes.bool,
 };
 
 RouteNumber.defaultProps = {
@@ -222,15 +272,16 @@ RouteNumber.defaultProps = {
   isTransitLeg: false,
   renderModeIcons: false,
   withBicycle: false,
+  withCar: false,
   color: undefined,
   duration: undefined,
   occupancyStatus: undefined,
+  shortenLongText: false,
 };
 
 RouteNumber.contextTypes = {
   intl: intlShape.isRequired,
-  config: configShape,
+  config: configShape.isRequired,
 };
 
-RouteNumber.displayName = 'RouteNumber';
 export default RouteNumber;

@@ -2,17 +2,18 @@ import isString from 'lodash/isString';
 import without from 'lodash/without';
 import { getCustomizedSettings } from '../store/localStorage';
 import { addAnalyticsEvent } from './analyticsUtils';
-import { citybikeRoutingIsActive } from './modeUtils';
+import { networkIsActive } from './modeUtils';
 import { getIdWithoutFeed } from './feedScopedIdUtils';
+import { isAndroid, isIOS } from './browser';
 
 export const BIKEAVL_UNKNOWN = 'No availability';
 export const BIKEAVL_BIKES = 'Bikes on station';
 export const BIKEAVL_WITHMAX = 'Bikes and capacity';
 
 /**
- * CityBikeNetworkType depicts different types of citybike networks.
+ * RentalNetworkType depicts different types of citybike networks.
  */
-export const CityBikeNetworkType = {
+export const RentalNetworkType = {
   /** The network uses bikes. */
   CityBike: 'citybike',
   /** The network uses scooters. */
@@ -22,20 +23,20 @@ export const CityBikeNetworkType = {
 export const defaultNetworkConfig = {
   icon: 'citybike',
   name: {},
-  type: CityBikeNetworkType.CityBike,
+  type: RentalNetworkType.CityBike,
 };
 
-export const getVehicleRentalStationNetworkName = (
+export const getRentalNetworkName = (
   networkConfig = defaultNetworkConfig,
   language = 'en',
 ) => (networkConfig.name && networkConfig.name[language]) || undefined;
 
-export const getVehicleRentalStationNetworkIcon = (
+export const getRentalNetworkIcon = (
   networkConfig = defaultNetworkConfig,
   disabled = false,
 ) => `icon-icon_${networkConfig.icon || 'citybike'}${disabled ? '_off' : ''}`;
 
-export const getVehicleRentalStationNetworkId = networks => {
+export const getRentalNetworkId = networks => {
   if (isString(networks) && networks.length > 0) {
     return networks;
   }
@@ -45,27 +46,37 @@ export const getVehicleRentalStationNetworkId = networks => {
   return networks[0];
 };
 
-export const getVehicleRentalStationNetworkConfig = (networkId, config) => {
+export const getRentalNetworkConfig = (networkId, config) => {
   if (!networkId || !networkId.toLowerCase) {
     return defaultNetworkConfig;
   }
   const id = networkId.toLowerCase();
   if (
-    config &&
-    config.cityBike &&
-    config.cityBike.networks &&
-    config.cityBike.networks[id] &&
-    Object.keys(config.cityBike.networks[id]).length > 0
+    config.vehicleRental?.networks?.[id] &&
+    Object.keys(config.vehicleRental.networks[id]).length > 0
   ) {
-    return config.cityBike.networks[id];
+    return config.vehicleRental.networks[id];
   }
   return defaultNetworkConfig;
 };
 
 export const getDefaultNetworks = config => {
   const mappedNetworks = [];
-  Object.entries(config.cityBike.networks).forEach(n => {
-    if (citybikeRoutingIsActive(n[1], config)) {
+  Object.entries(config.vehicleRental.networks).forEach(n => {
+    if (
+      networkIsActive(n[1]) &&
+      n[1]?.type !== RentalNetworkType.Scooter // scooter networks are never on by default
+    ) {
+      mappedNetworks.push(n[0]);
+    }
+  });
+  return mappedNetworks;
+};
+
+export const getAllNetworksOfType = (config, type) => {
+  const mappedNetworks = [];
+  Object.entries(config.vehicleRental.networks).forEach(n => {
+    if (n[1].type.toLowerCase() === type.toLowerCase()) {
       mappedNetworks.push(n[0]);
     }
   });
@@ -74,11 +85,11 @@ export const getDefaultNetworks = config => {
 
 export const mapDefaultNetworkProperties = config => {
   const mappedNetworks = [];
-  Object.keys(config.cityBike.networks).forEach(key => {
-    if (citybikeRoutingIsActive(config.cityBike.networks[key], config)) {
+  Object.keys(config.vehicleRental.networks).forEach(key => {
+    if (networkIsActive(config.vehicleRental.networks[key])) {
       mappedNetworks.push({
         networkName: key,
-        ...config.cityBike.networks[key],
+        ...config.vehicleRental.networks[key],
       });
     }
   });
@@ -87,7 +98,8 @@ export const mapDefaultNetworkProperties = config => {
 
 export const getVehicleCapacity = (config, network = undefined) => {
   return (
-    config.cityBike?.networks[network]?.capacity || config.cityBike.capacity
+    config.vehicleRental?.networks[network]?.capacity ||
+    config.vehicleRental.capacity
   );
 };
 /**
@@ -97,9 +109,14 @@ export const getVehicleCapacity = (config, network = undefined) => {
  * @param {*} config The configuration for the software installation
  */
 
-export const getVehicleRentalStationNetworks = () => {
+export const getCitybikeNetworks = () => {
   const { allowedBikeRentalNetworks } = getCustomizedSettings();
   return allowedBikeRentalNetworks || [];
+};
+
+export const getScooterNetworks = () => {
+  const { scooterNetworks } = getCustomizedSettings();
+  return scooterNetworks || [];
 };
 
 const addAnalytics = (action, name) => {
@@ -111,52 +128,49 @@ const addAnalytics = (action, name) => {
 };
 
 /** *
- * Updates the list of allowed citybike networks either by removing or adding.
+ * Updates the list of allowed networks either by removing or adding.
  * Note: legacy settings had network names always in uppercase letters.
  *
- * @param currentSettings the current settings
- * @param newValue the network to be added/removed
- * @param config The configuration for the software installation
- * @param isUsingCitybike if citybike is enabled
+ * @param networks the previously selected networks
+ * @param networkName the network to be added/removed
+ * @param type the type of the network
  * @returns the updated citybike networks
  */
 
-export const updateVehicleNetworks = (currentSettings, newValue) => {
-  let chosenNetworks;
+export const updateVehicleNetworks = (networks, networkName, type) => {
+  let updatedNetworks;
+  let toggleAction;
 
-  if (currentSettings) {
-    chosenNetworks = currentSettings.find(
-      o => o.toLowerCase() === newValue.toLowerCase(),
-    )
-      ? without(currentSettings, newValue, newValue.toUpperCase())
-      : currentSettings.concat([newValue]);
+  if (networks.find(o => o.toLowerCase() === networkName.toLowerCase())) {
+    updatedNetworks = without(networks, networkName, networkName.toUpperCase());
+    toggleAction = 'Disable';
   } else {
-    chosenNetworks = [newValue];
+    updatedNetworks = networks.concat([networkName]);
+    toggleAction = 'Enable';
   }
 
-  if (Array.isArray(currentSettings) && Array.isArray(chosenNetworks)) {
-    const action = `Settings${
-      currentSettings.length > chosenNetworks.length ? 'Disable' : 'Enable'
-    }CityBikeNetwork`;
-    addAnalytics(action, newValue);
-  }
-  return chosenNetworks;
+  const action = `Settings${toggleAction}${
+    type === 'citybike' ? 'CityBikeNetwork' : 'ScooterNetwork'
+  }`;
+  addAnalytics(action, networkName);
+
+  return updatedNetworks;
 };
 
 export const getVehicleMinZoomOnStopsNearYou = (config, override) => {
-  if (override && config.cityBike.minZoomStopsNearYou) {
-    return config.cityBike.minZoomStopsNearYou;
+  if (override && config.vehicleRental.minZoomStopsNearYou) {
+    return config.vehicleRental.minZoomStopsNearYou;
   }
-  return config.cityBike.cityBikeMinZoom;
+  return config.vehicleRental.cityBikeMinZoom;
 };
 
 /** *
- * Checks if stationId is a number. We don't want to display random hashes or names.
+ * Checks if rentalId (station or vehicle) is a number. We don't want to display random hashes or names.
  *
- * @param vehicleRentalStation bike rental station from OTP
+ * @param rentalId id of a rental station or rental vehicle from OTP
  */
-export const hasStationCode = vehicleRentalStation => {
-  const id = vehicleRentalStation.stationId.split(':')[1];
+export const hasVehicleRentalCode = rentalId => {
+  const id = rentalId?.split(':')[1];
   return (
     id &&
     // eslint-disable-next-line no-restricted-globals
@@ -167,11 +181,17 @@ export const hasStationCode = vehicleRentalStation => {
 };
 
 export const mapVehicleRentalFromStore = vehicleRentalStation => {
-  const network = vehicleRentalStation.networks[0];
+  const originalId = vehicleRentalStation.stationId;
+  const network =
+    vehicleRentalStation.networks?.[0] || originalId.split(':')[0];
+  const stationId = originalId.startsWith(network)
+    ? originalId
+    : `${network}:${originalId}`;
+
   const newStation = {
     ...vehicleRentalStation,
     network,
-    stationId: `${network}:${vehicleRentalStation.stationId}`,
+    stationId,
   };
   delete newStation.networks;
   return newStation;
@@ -186,4 +206,41 @@ export const mapVehicleRentalToStore = vehicleRentalStation => {
   };
   delete newStation.network;
   return newStation;
+};
+
+export const getRentalVehicleLink = (rentalVehicle, networkConfig) => {
+  if (!networkConfig || !rentalVehicle) {
+    return null;
+  }
+
+  const { ios, android, web } = rentalVehicle.rentalUris || {};
+  const networkName = getRentalNetworkName(networkConfig).toLowerCase();
+
+  if (isIOS && ios?.startsWith(`${networkName}://`)) {
+    return ios;
+  }
+
+  if (isAndroid && android?.startsWith(`${networkName}://`)) {
+    return android;
+  }
+
+  if (web?.includes(networkName)) {
+    return web;
+  }
+
+  if (rentalVehicle.rentalNetwork?.url?.includes(networkName)) {
+    return rentalVehicle.rentalNetwork.url;
+  }
+
+  return null;
+};
+
+export const useDeepLink = (deepLink, fallBackAddress) => {
+  window.location.href = deepLink;
+  setTimeout(() => {
+    if (!document.hidden && document.hasFocus()) {
+      // If the document is still visible and has focus, the deep link must have failed
+      window.location.href = fallBackAddress;
+    }
+  }, 500);
 };

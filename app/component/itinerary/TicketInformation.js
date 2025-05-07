@@ -6,7 +6,7 @@ import { v4 as uuid } from 'uuid';
 import { configShape, fareShape, legShape } from '../../util/shapes';
 import { renderZoneTicket } from './ZoneTicket';
 import Icon from '../Icon';
-import { getAlternativeFares } from '../../util/fareUtils';
+import { getAlternativeFares, formatFare } from '../../util/fareUtils';
 
 export default function TicketInformation(
   { fares, zones, legs },
@@ -59,16 +59,14 @@ export default function TicketInformation(
             </div>
           ) : (
             (config.ticketLink && (
-              <a href={config.ticketLink}>
+              <a href={config.ticketLink} target="_blank" rel="noreferrer">
                 <div className="ticket-identifier">
                   {config.useTicketIcons
                     ? renderZoneTicket(fare.ticketName, alternativeFares)
                     : fare.ticketName}
                 </div>
                 {config.showTicketPrice && (
-                  <div className="ticket-description">
-                    {`${fare.price.toFixed(2)} €`}
-                  </div>
+                  <div className="ticket-description">{formatFare(fare)}</div>
                 )}
                 <Icon img="icon-icon_arrow-collapse--right" />
               </a>

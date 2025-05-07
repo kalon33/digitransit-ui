@@ -1,4 +1,4 @@
-import configMerger from '../util/configMerger';
+/* eslint-disable prefer-template */
 
 const matkaConfig = require('./config.matka').default;
 
@@ -6,16 +6,14 @@ const CONFIG = 'kela';
 const APP_TITLE = 'Reittiopas';
 const APP_DESCRIPTION = 'Digitransit-reittiopas';
 const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
-const OTP_URL =
-  process.env.OTP_URL || `${API_URL}/routing/v2-kela/routers/kela/`;
-const MAP_URL =
-  process.env.MAP_URL || 'https://digitransit-dev-cdn-origin.azureedge.net';
+const OTP_URL = process.env.OTP_URL || `${API_URL}/routing/v2-kela/kela/`;
+const MAP_URL = process.env.MAP_URL || 'https://dev-cdn.digitransit.fi';
 const POI_MAP_PREFIX = `${MAP_URL}/map/v3-kela/kela`;
 
-export default configMerger(matkaConfig, {
+export default {
   CONFIG,
   title: APP_TITLE,
-
+  OTPTimeout: process.env.OTP_TIMEOUT || 30000,
   URL: {
     OTP: OTP_URL,
 
@@ -31,21 +29,11 @@ export default configMerger(matkaConfig, {
   },
 
   favicon: './app/configurations/images/default/default-favicon.png',
-  feedIds: ['kela', 'matkahuolto', 'lansilinjat'],
   textLogo: true,
-  logo: null, // override default logo from matka config
-  appBarLink: false, // override default config - would show Traficom otherwise
-
+  logo: null,
   meta: {
     description: APP_DESCRIPTION,
   },
-
-  socialMedia: {
-    title: APP_TITLE,
-    description: APP_DESCRIPTION,
-    locale: 'fi_FI',
-  },
-
   menu: {
     copyright: null,
     content: [
@@ -63,8 +51,6 @@ export default configMerger(matkaConfig, {
       },
     ],
   },
-
-  useAssembledGeoJsonZones: 'isOnByDefault',
 
   transportModes: {
     citybike: {
@@ -85,7 +71,7 @@ export default configMerger(matkaConfig, {
     },
   },
   suggestCarMinDistance: 0,
-  hideWeatherLabel: true,
+  showWeatherInformation: false,
   showDistanceBeforeDuration: true,
   hideItinerarySettings: true,
   showTransitLegDistance: true,
@@ -106,22 +92,31 @@ export default configMerger(matkaConfig, {
     showEmbeddedSearch: false,
     countrySelection: [],
   },
-  showNearYouButtons: false,
+
+  availableLanguages: ['fi', 'sv', 'en'],
+  defaultLanguage: 'fi',
+
+  socialMedia: {
+    title: APP_TITLE,
+    description: APP_DESCRIPTION,
+    locale: 'fi_FI',
+  },
+
+  colors: matkaConfig.colors,
+
+  redirectReittiopasParams: true,
+  map: { minZoom: 5 },
   hideFavourites: true,
   hideStopRouteSearch: true,
-
   hideMapLayersByDefault: true,
   hideCarSuggestionDuration: true,
-
   hideWalkLegDurationSummary: true,
   emphasizeDistance: true,
   emphasizeOneWayJourney: true,
 
   terminalStopsMinZoom: 14,
-  useRealtimeTravellerCapacities: false,
 
-  showVehiclesOnStopPage: false,
-  showVehiclesOnItineraryPage: false,
+  useRealtimeTravellerCapacities: false,
 
   aboutThisService: {
     fi: [
@@ -154,5 +149,14 @@ export default configMerger(matkaConfig, {
       },
     ],
   },
+  staticMessagesUrl: process.env.STATIC_MESSAGE_URL,
+
+  showNearYouButtons: false,
+  showVehiclesOnStopPage: false,
+  showVehiclesOnItineraryPage: false,
+  includeCarSuggestions: true,
+  // Notice! Turning on this setting forces the search for car routes (for the CO2 comparison only).
   showCO2InItinerarySummary: false,
-});
+  useAssembledGeoJsonZones: 'isOnByDefault',
+  locationSearchTargetsFromOTP: [], // remove stop/station location search
+};

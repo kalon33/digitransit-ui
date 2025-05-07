@@ -6,16 +6,14 @@ const CONFIG = process.env.CONFIG || 'default';
 const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
 const GEOCODING_BASE_URL =
   process.env.GEOCODING_BASE_URL || `${API_URL}/geocoding/v1`;
-const MAP_URL =
-  process.env.MAP_URL || 'https://digitransit-dev-cdn-origin.azureedge.net';
-const MAP_VERSION = process.env.MAP_VERSION || 'v2';
+const MAP_URL = process.env.MAP_URL || 'https://dev-cdn.digitransit.fi';
+const MAP_VERSION = process.env.MAP_VERSION || 'v3';
 const POI_MAP_PREFIX = `${MAP_URL}/map/v3/finland`;
-const OTP_URL = process.env.OTP_URL || `${API_URL}/routing/v2/routers/finland/`;
-const STOP_TIMETABLES_URL =
-  process.env.STOP_TIMETABLES_URL || 'https://dev.kartat.hsl.fi';
+const OTP_URL = process.env.OTP_URL || `${API_URL}/routing/v2/finland/`;
+const HSL_TIMETABLES_URL =
+  process.env.HSL_TIMETABLES_URL || 'https://dev.kartat.hsl.fi';
 const APP_PATH = process.env.APP_CONTEXT || '';
 const {
-  SENTRY_DSN,
   // AXE,
   NODE_ENV,
   API_SUBSCRIPTION_QUERY_PARAMETER_NAME,
@@ -34,7 +32,6 @@ const realtime = require('./realtimeUtils').default;
 const REALTIME_PATCH = safeJsonParse(process.env.REALTIME_PATCH) || {};
 
 export default {
-  SENTRY_DSN,
   PORT,
   // AXE,
   CONFIG,
@@ -63,6 +60,9 @@ export default {
     },
     REALTIME_RENTAL_STATION_MAP: {
       default: `${POI_MAP_PREFIX}/fi/realtimeRentalStations/`,
+    },
+    REALTIME_RENTAL_VEHICLE_MAP: {
+      default: `${POI_MAP_PREFIX}/fi/realtimeRentalVehicles/`,
     },
     PARK_AND_RIDE_MAP: {
       default: `${POI_MAP_PREFIX}/en/vehicleParking/`,
@@ -96,11 +96,11 @@ export default {
         : ''
     }`,
     ROUTE_TIMETABLES: {
-      HSL: `${API_URL}/timetables/v1/hsl/routes/`,
-      tampere: 'https://www.nysse.fi/aikataulut-ja-reitit/linjat/',
+      HSL: `${HSL_TIMETABLES_URL}/julkaisin-render/?component=LineTimetable`,
+      tampere: 'https://www.nysse.fi/matkan-suunnittelu/linjat/',
     },
     STOP_TIMETABLES: {
-      HSL: `${STOP_TIMETABLES_URL}/julkaisin-render/?component=Timetable`,
+      HSL: `${HSL_TIMETABLES_URL}/julkaisin-render/?component=Timetable`,
     },
     WEATHER_DATA:
       'https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::forecast::harmonie::surface::point::simple&timestep=5&parameters=temperature,WindSpeedMS,WeatherSymbol3',
@@ -171,18 +171,18 @@ export default {
   maxNearbyStopAmount: 5,
   maxNearbyStopRefetches: 5,
   maxNearbyStopDistance: {
-    favorite: 100000,
-    bus: 100000,
-    tram: 100000,
-    subway: 100000,
-    rail: 100000,
-    ferry: 100000,
-    citybike: 100000,
-    airplane: 200000,
+    favorite: 20000,
+    bus: 50000,
+    tram: 20000,
+    subway: 20000,
+    rail: 50000,
+    ferry: 50000,
+    citybike: 20000,
+    airplane: 100000,
   },
 
   defaultSettings: {
-    accessibilityOption: 0,
+    accessibilityOption: false,
     optimize: 'GREENWAYS',
     bikeSpeed: 5.55,
     ticketTypes: 'none',
@@ -220,12 +220,23 @@ export default {
   // if you enable car suggestions but the linear distance between all points is less than this, then a car route will
   // not be computed
   suggestCarMinDistance: 2000,
-  availableLanguages: ['fi', 'sv', 'en', 'fr', 'nb', 'de', 'da', 'es', 'ro'],
+  availableLanguages: [
+    'fi',
+    'sv',
+    'en',
+    'fr',
+    'nb',
+    'de',
+    'da',
+    'es',
+    'ro',
+    'pl',
+  ],
   defaultLanguage: 'en',
   // This timezone data will expire in 2037
   timezoneData:
     'Europe/Helsinki|EET EEST|-20 -30|0101010101010101010101010101010101010|22k10 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00|12e5',
-
+  timeZone: 'Europe/Helsinki',
   allowLogin: false,
   allowFavouritesFromLocalstorage: true,
   useExtendedRouteTypes: false,
@@ -243,8 +254,6 @@ export default {
   },
 
   itinerary: {
-    // How long vehicle should be late in order to mark it delayed. Measured in seconds.
-    delayThreshold: 180,
     // Wait time to show "wait leg"? e.g. 180 means over 3 minutes are shown as wait time.
     // Measured in seconds.
     waitThreshold: 180,
@@ -297,7 +306,7 @@ export default {
     showStopMarkerPopupOnMobile: true,
     showScaleBar: true,
     attribution:
-      '<a tabIndex="-1" href="http://osm.org/copyright">© OpenStreetMap</a>',
+      '<a tabIndex="-1" href="http://osm.org/copyright" target="_blank">© OpenStreetMap</a>',
 
     useModeIconsInNonTileLayer: false,
     // areBounds is for keeping map and user inside given area
@@ -321,7 +330,7 @@ export default {
     locationAware: true,
   },
 
-  cityBike: {
+  vehicleRental: {
     // Config for map features. NOTE: availability for routing is controlled by
     // transportModes.citybike.availableForSelection
     showFullInfo: false,
@@ -336,6 +345,11 @@ export default {
       sv: 'Köp ett abonnemang för en dag, en vecka eller för en hel säsong',
       en: 'Buy a daily, weekly or season pass',
     },
+    maxNearbyRentalVehicleAmount: 5,
+    maxDistanceToRentalVehiclesInMeters: 100,
+    maxMinutesToRentalJourneyStart: 60,
+    maxMinutesToRentalJourneyEnd: 720,
+    allowDirectScooterJourneys: false,
   },
 
   // Lowest level for stops and terminals are rendered
@@ -354,11 +368,11 @@ export default {
     default: 18,
   },
 
-  appBarLink: { name: 'Digitransit', href: 'https://www.digitransit.fi/' },
   appBarStyle: 'default',
 
   colors: {
     primary: '#000F94',
+    backgroundInfo: '#ebf6fd',
     iconColors: {
       'mode-airplane': '#0046ad',
       'mode-bus': '#0088ce',
@@ -367,6 +381,7 @@ export default {
       'mode-rail': '#af8dbc',
       'mode-ferry': '#247C7B',
       'mode-citybike': '#f2b62d',
+      'mode-scooter': '#C5CAD2',
     },
   },
   iconModeSet: 'digitransit',
@@ -407,30 +422,7 @@ export default {
   },
 
   hideExternalOperator: () => false,
-  // Ticket information feature toggle
-  showTicketInformation: false,
-  ticketInformation: {
-    // This is the name of the primary agency operating in the area.
-    // It is used when a ticket price cannot be shown to the user, indicating
-    // that the primary agency is not responsible for ticketing.
-    /*
-    primaryAgencyName: ...,
-    */
-  },
-
   useTicketIcons: false,
-
-  modeToOTP: {
-    bus: 'BUS',
-    tram: 'TRAM',
-    rail: 'RAIL',
-    subway: 'SUBWAY',
-    citybike: 'BICYCLE_RENT',
-    airplane: 'AIRPLANE',
-    ferry: 'FERRY',
-    funicular: 'FUNICULAR',
-    walk: 'WALK',
-  },
 
   // Control what transport modes that should be possible to select in the UI
   // and whether the transport mode is used in trip planning by default.
@@ -471,6 +463,11 @@ export default {
     },
 
     citybike: {
+      availableForSelection: false,
+      defaultValue: false, // always false
+    },
+
+    scooter: {
       availableForSelection: false,
       defaultValue: false, // always false
     },
@@ -566,10 +563,6 @@ export default {
 
   defaultMapZoom: 12,
 
-  availableRouteTimetables: {},
-
-  routeTimetableUrlResolver: {},
-
   showTenWeeksOnRouteSchedule: true,
 
   useRealtimeTravellerCapacities: false,
@@ -591,7 +584,7 @@ export default {
       {
         header: 'Tietolähteet',
         paragraphs: [
-          'Tiedot perustuvat joukkoliikenneviranomaisten, liikennöitsijöiden, VR:n ja Finavian toimittamiin tietoihin. Tietolähteinä hyödynnetään Fintrafficin liikkumisen tietopalveluita, erityisesti liikkumispalveluiden avointa yhteyspistettä <a href="https://www.finap.fi/#/">Finap-palvelua</a>. Kartat, tiedot kaduista, rakennuksista, pysäkkien sijainnista ynnä muusta tarjoaa © OpenStreetMap contributors. Osoitetiedot tuodaan Digi- ja väestötietoviraston rakennusten osoitetietokannasta.',
+          'Tiedot perustuvat joukkoliikenneviranomaisten, liikennöitsijöiden, VR:n ja Finavian toimittamiin tietoihin. Tietolähteinä hyödynnetään Fintrafficin liikkumisen tietopalveluita, erityisesti liikkumispalveluiden avointa yhteyspistettä <a href="https://www.finap.fi/#/" target="_blank">Finap-palvelua</a>. Kartat, tiedot kaduista, rakennuksista, pysäkkien sijainnista ynnä muusta tarjoaa © OpenStreetMap contributors. Osoitetiedot tuodaan Digi- ja väestötietoviraston rakennusten osoitetietokannasta.',
         ],
       },
     ],
@@ -612,7 +605,7 @@ export default {
       {
         header: 'Datakällor',
         paragraphs: [
-          'Tjänsteinformationen baseras på information om kollektivtrafiken som tillhandahålls av kollektivtrafikmyndigheter, trafik operatörer, VR och Finavia. Fintraffics mobilitetsinformationstjänster används som datakällor, särskilt <a href="https://www.finap.fi/#/">National Access Point</a> för mobilitetstjänster FINAP Kartor, information om gator, byggnader, hållplatser och mer tillhandahålls av © OpenStreetMap-bidragsgivare. Adressuppgifter importeras från adressdatabasen till Myndigheten för Digitalisering och Befolkninsdata (DVV).',
+          'Tjänsteinformationen baseras på information om kollektivtrafiken som tillhandahålls av kollektivtrafikmyndigheter, trafik operatörer, VR och Finavia. Fintraffics mobilitetsinformationstjänster används som datakällor, särskilt <a href="https://www.finap.fi/#/" target="_blank">National Access Point</a> för mobilitetstjänster FINAP Kartor, information om gator, byggnader, hållplatser och mer tillhandahålls av © OpenStreetMap-bidragsgivare. Adressuppgifter importeras från adressdatabasen till Myndigheten för Digitalisering och Befolkninsdata (DVV).',
         ],
       },
     ],
@@ -633,7 +626,7 @@ export default {
       {
         header: 'Data sources',
         paragraphs: [
-          "The service information is based on public transport route information provided by public transport authorities, operators, VR and Finavia. Fintraffic's mobility information services are used as data sources, especially National Access Point for mobility services <a href='https://www.finap.fi/#/'>FINAP</a>. Maps, information about streets, buildings, bus stop locations and more is provided by © OpenStreetMap contributors. Address information is imported from the address database of the buildings of the Digital and Population Data Services Agency (DVV).",
+          "The service information is based on public transport route information provided by public transport authorities, operators, VR and Finavia. Fintraffic's mobility information services are used as data sources, especially National Access Point for mobility services <a href='https://www.finap.fi/#/' target='_blank'>FINAP</a>. Maps, information about streets, buildings, bus stop locations and more is provided by © OpenStreetMap contributors. Address information is imported from the address database of the buildings of the Digital and Population Data Services Agency (DVV).",
         ],
       },
     ],
@@ -723,7 +716,6 @@ export default {
   /* key: name of theme, value: regex matching part of host name */
   themeMap: {
     hsl: '(reittiopas|next-dev.digitransit)',
-    apphsl: '(test.digitransit)',
     turku: '(turku|foli)',
     lappeenranta: 'lappeenranta',
     joensuu: 'joensuu',
@@ -788,7 +780,7 @@ export default {
     itinerary: false,
   },
 
-  viaPointsEnabled: false,
+  viaPointsEnabled: true,
 
   // Toggling this off shows the alert bodytext instead of the header
   showAlertHeader: true,
@@ -838,5 +830,28 @@ export default {
         ],
       },
     },
+    {
+      showForCarWithPublic: true,
+
+      id: 'externalCostWithCar',
+
+      content: {
+        fi: [
+          'Kulkuneuvossa mahdollisuus kuljettaa autoa. ',
+          'Tarkasta auton kuljettamisen mahdollinen maksullisuus operaattorilta.',
+        ],
+        en: [
+          'You can take your car on board. ',
+          'Check with the transport operator if an additional fee will be charged for the transportation of cars.',
+        ],
+        sv: [
+          'Du kan ta med bilen ombord. ',
+          'Kontrollera med trafikoperatören om det är avgiftsbelagt att transportera bilar.',
+        ],
+      },
+    },
   ],
+  navigation: false,
+  sendAnalyticsCustomEventGoals: false,
+  shortenLongTextThreshold: 10, // for route number in itinerary summary
 };

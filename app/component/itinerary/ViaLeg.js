@@ -4,7 +4,7 @@ import { FormattedMessage, intlShape } from 'react-intl';
 import { legShape, legTimeShape, configShape } from '../../util/shapes';
 import { displayDistance } from '../../util/geo-utils';
 import { durationToString } from '../../util/timeUtils';
-import { legTime, legTimeStr } from '../../util/legUtils';
+import { legTime, legTimeStr, legDestination } from '../../util/legUtils';
 import ItineraryCircleLineWithIcon from './ItineraryCircleLineWithIcon';
 import ItineraryMapAction from './ItineraryMapAction';
 import { splitStringToAddressAndPlace } from '../../util/otpStrings';
@@ -70,12 +70,7 @@ function ViaLeg(props, { config, intl }) {
                 }
                 values={{
                   time: startTime,
-                  to: intl.formatMessage({
-                    id: `modes.to-${
-                      props.leg.to.stop?.vehicleMode.toLowerCase() || 'place'
-                    }`,
-                    defaultMessage: 'modes.to-stop',
-                  }),
+                  to: legDestination(intl, props.leg),
                   distance,
                   origin: props.leg.from ? props.leg.from.name : '',
                   destination: props.leg.to ? props.leg.to.name : '',
@@ -134,11 +129,9 @@ function ViaLeg(props, { config, intl }) {
             focusAction={props.focusAction}
           />
         </div>
-        <div className="itinerary-leg-action">
-          <div className="itinerary-leg-action-content">
-            {getDescription(props.leg.mode, distance, duration)}
-            <ItineraryMapAction target="" focusAction={props.focusToLeg} />
-          </div>
+        <div className="itinerary-leg-action itinerary-leg-action-content">
+          {getDescription(props.leg.mode, distance, duration)}
+          <ItineraryMapAction target="" focusAction={props.focusToLeg} />
         </div>
       </div>
     </div>

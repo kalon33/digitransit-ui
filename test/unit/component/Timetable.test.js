@@ -3,8 +3,8 @@ import { describe, it } from 'mocha';
 import React from 'react';
 import { mockContext } from '../helpers/mock-context';
 
-import Timetable from '../../../app/component/Timetable';
-import TimetableRow from '../../../app/component/TimetableRow';
+import Timetable from '../../../app/component/stop/Timetable';
+import TimetableRow from '../../../app/component/stop/TimetableRow';
 import SecondaryButton from '../../../app/component/SecondaryButton';
 import { shallowWithIntl } from '../helpers/mock-intl-enzyme';
 import * as timetables from '../../../app/configurations/timetableConfigUtils';
@@ -12,11 +12,8 @@ import * as timetables from '../../../app/configurations/timetableConfigUtils';
 const stopIdNumber = '1140199';
 
 const props = {
-  propsForDateSelect: {
-    startDate: '20190110',
-    selectedDate: '20190110',
-    onDateChange: () => {},
-  },
+  startDate: '20190110',
+  onDateChange: () => {},
   stop: {
     gtfsId: `HSL:${stopIdNumber}`,
     locationType: 'STOP',

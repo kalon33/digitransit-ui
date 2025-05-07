@@ -13,9 +13,10 @@ import VehicleRentalStation from './VehicleRentalStation';
 import ParkOrStationHeader from './ParkOrStationHeader';
 import Icon from './Icon';
 import withBreakpoint from '../util/withBreakpoint';
-import { getVehicleRentalStationNetworkConfig } from '../util/vehicleRentalUtils';
+import { getRentalNetworkConfig } from '../util/vehicleRentalUtils';
 import { isBrowser } from '../util/browser';
 import { PREFIX_BIKESTATIONS } from '../util/path';
+import { TransportMode } from '../constants';
 
 const VehicleRentalStationContent = (
   { vehicleRentalStation, breakpoint, language, router, error },
@@ -45,8 +46,8 @@ const VehicleRentalStationContent = (
   const vehiclesAvailable = availableVehicles.total;
   const isFull = vehiclesAvailable >= capacity;
 
-  const networkConfig = getVehicleRentalStationNetworkConfig(
-    vehicleRentalStation.network,
+  const networkConfig = getRentalNetworkConfig(
+    vehicleRentalStation.rentalNetwork.networkId,
     config,
   );
   const cityBikeNetworkUrl = networkConfig?.url?.[language];
@@ -54,10 +55,10 @@ const VehicleRentalStationContent = (
   if (networkConfig.returnInstructions) {
     returnInstructionsUrl = networkConfig.returnInstructions[language];
   }
-  const { cityBike } = config;
-  const cityBikeBuyUrl = cityBike.buyUrl?.[language];
+  const { vehicleRental } = config;
+  const cityBikeBuyUrl = vehicleRental.buyUrl?.[language];
   const buyInstructions = cityBikeBuyUrl
-    ? cityBike.buyInstructions?.[language]
+    ? vehicleRental.buyInstructions?.[language]
     : undefined;
 
   return (
@@ -67,7 +68,7 @@ const VehicleRentalStationContent = (
         breakpoint={breakpoint}
       />
       <VehicleRentalStation vehicleRentalStation={vehicleRentalStation} />
-      {cityBike.showFullInfo && isFull && (
+      {vehicleRental.showFullInfo && isFull && (
         <div className="citybike-full-station-guide">
           <FormattedMessage id="citybike-return-full" />
           <a
@@ -76,38 +77,48 @@ const VehicleRentalStationContent = (
             }}
             className="external-link-citybike"
             href={returnInstructionsUrl}
+            target="_blank"
+            rel="noreferrer"
           >
             {' '}
             <FormattedMessage id="citybike-return-full-link" />
           </a>
         </div>
       )}
-      {(cityBikeBuyUrl || cityBikeNetworkUrl) && (
-        <div className="citybike-use-disclaimer">
-          <h2 className="disclaimer-header">
-            <FormattedMessage id="citybike-start-using" />
-          </h2>
-          <div className="disclaimer-content">
-            {buyInstructions || (
-              <a className="external-link-citybike" href={cityBikeNetworkUrl}>
-                <FormattedMessage id="citybike-start-using-info" />
+      {networkConfig.type === TransportMode.Citybike.toLowerCase() &&
+        (cityBikeBuyUrl || cityBikeNetworkUrl) && (
+          <div className="citybike-use-disclaimer">
+            <h2 className="disclaimer-header">
+              <FormattedMessage id="citybike-start-using" />
+            </h2>
+            <div className="disclaimer-content">
+              {buyInstructions || (
+                <a
+                  className="external-link-citybike"
+                  href={cityBikeNetworkUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <FormattedMessage id="citybike-start-using-info" />
+                </a>
+              )}
+            </div>
+            {isClient && cityBikeBuyUrl && (
+              <a
+                onClick={e => {
+                  e.stopPropagation();
+                }}
+                className="external-link"
+                href={cityBikeBuyUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <FormattedMessage id="citybike-purchase-link" />
+                <Icon img="icon-icon_external-link-box" />
               </a>
             )}
           </div>
-          {isClient && cityBikeBuyUrl && (
-            <a
-              onClick={e => {
-                e.stopPropagation();
-              }}
-              className="external-link"
-              href={cityBikeBuyUrl}
-            >
-              <FormattedMessage id="citybike-purchase-link" />
-              <Icon img="icon-icon_external-link-box" />
-            </a>
-          )}
-        </div>
-      )}
+        )}
     </div>
   );
 };
@@ -153,7 +164,9 @@ const containerComponent = createFragmentContainer(connectedComponent, {
         total
       }
       capacity
-      network
+      rentalNetwork {
+        networkId
+      }
       stationId
       operative
     }

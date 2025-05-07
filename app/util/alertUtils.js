@@ -260,6 +260,16 @@ export const getActiveAlertSeverityLevel = (alerts, referenceUnixTime) => {
   );
 };
 
+export const isAlertActive = (referenceUnixTime, alert) => {
+  if (!alert) {
+    return false;
+  }
+  return (
+    isAlertValid(alert, referenceUnixTime) &&
+    alert.alertSeverityLevel !== AlertSeverityLevelType.Info
+  );
+};
+
 /**
  * Checks if any of the given cancelations or alerts are active at the given time.
  *
@@ -267,7 +277,7 @@ export const getActiveAlertSeverityLevel = (alerts, referenceUnixTime) => {
  * @param {*} cancelations the cancelations to check.
  * @param {*} alerts the alerts to check.
  */
-export const isAlertActive = (
+export const checkActiveDisruptions = (
   referenceUnixTime,
   cancelations = [],
   alerts = [],
@@ -280,17 +290,7 @@ export const isAlertActive = (
     return true;
   }
 
-  if (alerts.length === 0) {
-    return false;
-  }
-
-  const filteredAlerts = alerts.filter(alert =>
-    isAlertValid(alert, referenceUnixTime),
-  );
-  const alertSeverityLevel = getMaximumAlertSeverityLevel(filteredAlerts);
-  return alertSeverityLevel
-    ? alertSeverityLevel !== AlertSeverityLevelType.Info
-    : filteredAlerts.length > 0;
+  return !!alerts.find(alert => isAlertActive(referenceUnixTime, alert));
 };
 
 /**
@@ -416,7 +416,7 @@ export const hasMeaningfulData = alerts => {
 };
 
 export const mapAlertSource = (config, lang, feedName) => {
-  if (config?.sourceForAlertsAndDisruptions?.[feedName]) {
+  if (config.sourceForAlertsAndDisruptions?.[feedName]) {
     return config.sourceForAlertsAndDisruptions[feedName][lang].concat(': ');
   }
   return '';
@@ -519,7 +519,7 @@ export const getActiveLegAlerts = (leg, legStartTime) => {
         ),
       };
     }),
-  ].filter(alert => isAlertActive(legStartTime, [{}], alert));
+  ].filter(alert => isAlertActive(legStartTime, alert));
 
   return serviceAlerts;
 };

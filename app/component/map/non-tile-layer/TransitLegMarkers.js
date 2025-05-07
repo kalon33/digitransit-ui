@@ -9,6 +9,7 @@ import { legTime } from '../../../util/legUtils';
 import { getMiddleOf } from '../../../util/geo-utils';
 import LegMarker from './LegMarker';
 import SpeechBubble from '../SpeechBubble';
+import { durationToString } from '../../../util/timeUtils';
 
 const offsetNormal = { x: 22.5, y: 0 };
 const offsetArrow = { x: 55, y: 15 };
@@ -124,6 +125,11 @@ class TransitLegMarkers extends React.Component {
         off: PropTypes.func.isRequired,
       }).isRequired,
     }).isRequired,
+    realtimeTransfers: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    realtimeTransfers: false,
   };
 
   static contextTypes = {
@@ -195,17 +201,16 @@ class TransitLegMarkers extends React.Component {
     return truePixelPosition;
   }
 
-  getSpeechBubbleText(leg, nextLeg) {
-    let duration = '';
-    const transferStart = legTime(leg.end);
-    const transferEnd = legTime(nextLeg.start);
-    if (transferStart && transferEnd) {
-      duration = Math.floor((transferEnd - transferStart) / 1000 / 60);
-    }
-    return `${this.context.intl.formatMessage({
-      id: 'transfer',
-      defaultMessage: 'Transfer',
-    })}: ${duration} min`;
+  getSpeechBubbleText(leg, nextLeg, realtime) {
+    const duration = durationToString(
+      legTime(nextLeg.start) - legTime(leg.end),
+    );
+    const style = realtime ? 'color:#3b7f00' : '';
+
+    return `<span>
+        ${this.context.intl.formatMessage({ id: 'transfer' })}:
+        <span style="${style}">${duration}</span>
+      </span>`;
   }
 
   componentDidMount() {
@@ -310,6 +315,7 @@ class TransitLegMarkers extends React.Component {
       const text = this.getSpeechBubbleText(
         leg,
         this.props.transitLegs[index + 1],
+        this.props.realtimeTransfers,
       );
       objs.push(
         <SpeechBubble

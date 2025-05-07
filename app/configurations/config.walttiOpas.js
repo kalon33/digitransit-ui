@@ -7,32 +7,8 @@ const APP_DESCRIPTION = 'Uusi Reittiopas - Waltti-opas';
 
 const walttiConfig = require('./config.waltti').default;
 
-const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
-const OTP_URL = process.env.OTP_URL || `${API_URL}/routing/v2/routers/waltti-alt/`
-const MAP_URL =
-  process.env.MAP_URL || 'https://digitransit-dev-cdn-origin.azureedge.net';
-const POI_MAP_PREFIX = `${MAP_URL}/map/v3/waltti-alt`;
-
 export default configMerger(walttiConfig, {
   CONFIG,
-
-  URL: {
-    OTP: OTP_URL,
-    STOP_MAP: {
-      default: `${POI_MAP_PREFIX}/fi/stops,stations/`,
-      sv: `${POI_MAP_PREFIX}/sv/stops,stations/`,
-    },
-    REALTIME_STOP_MAP: {
-      default: `${POI_MAP_PREFIX}/fi/realtimeStops,stations/`,
-      sv: `${POI_MAP_PREFIX}/sv/realtimeStops,stations/`,
-    },
-    RENTAL_STATION_MAP: {
-      default: `${POI_MAP_PREFIX}/fi/rentalStations/`,
-    },
-    REALTIME_RENTAL_STATION_MAP: {
-      default: `${POI_MAP_PREFIX}/fi/realtimeRentalStations/`,
-    }
-  },
 
   appBarLink: { name: 'Waltti', href: 'https://waltti.fi/' },
 
@@ -152,67 +128,46 @@ export default configMerger(walttiConfig, {
     [28.7, 63.9],
     [28.1, 63.8],
     // Salo:
-    [23.1, 60.6],
-    [23.7, 60.2],
-    [22.8, 59.9],
-    [22.7, 60.4],
-    [23.1, 60.6],
+    [22.84642, 60.51062],
+    [23.11638, 60.57683],
+    [23.20982, 60.58773],
+    [23.30092, 60.58191],
+    [23.39604, 60.54652],
+    [23.49232, 60.59485],
+    [23.51872, 60.59876],
+    [23.49816, 60.53506],
+    [23.66099, 60.47649],
+    [23.71290, 60.49915],
+    [23.73738, 60.49040],
+    [23.71043, 60.45022],
+    [23.79146, 60.45072],
+    [23.78940, 60.38666],
+    [23.72554, 60.30751],
+    [23.63147, 60.25338],
+    [23.65001, 60.20087],
+    [23.36093, 60.14931],
+    [23.14807, 60.10005],
+    [22.98465, 60.06032],
+    [22.95306, 59.99961],
+    [22.85213, 59.99755],
+    [22.84320, 60.02878],
+    [22.79994, 60.02535],
+    [22.78964, 60.05724],
+    [22.83427, 60.06032],
+    [22.88852, 60.14042],
+    [22.85487, 60.17800],
+    [22.90088, 60.24316],
+    [22.85350, 60.26224],
+    [22.87637, 60.30244],
+    [22.84144, 60.33840],
+    [22.81850, 60.37199],
+    [22.84642, 60.51062]
   ],
+
+  map: {
+    minZoom: 6,
+  },
 
   showDisclaimer: true,
 
-  staticMessages: [
-    {
-      id: 'raasepori_msg_20.12.2023',
-      priority: -1,
-      persistence: 'repeat',
-      content: {
-        fi: [
-          {
-            type: 'heading',
-            content: 'HUOM! Raaseporin oma reittiopas siirtyy sivulle bosse.digitransit.fi',
-          },
-          {
-            type: 'text',
-            content: 'Vinkki: tallenna osoite aloitusnäytöllesi niin saat aikataulut vaivattomasti näkyville.',
-          },
-          {
-            type: 'a',
-            content: 'bosse.digitransit.fi',
-	    href: 'https://bosse.digitransit.fi',
-          },
-        ],
-        sv: [
-          {
-            type: 'heading',
-            content: 'OBS! Raseborgs egen reseplanerare flyttas till bosse.digitransit.fi',
-          },
-          {
-            type: 'text',
-            content: 'Tips: spara sidan till startskärmen för en smidig tillgång till tidtabellerna.',
-          },
-          {
-            type: 'a',
-            content: 'bosse.digitransit.fi',
-	    href: 'https://bosse.digitransit.fi/?locale=sv',
-          },
-        ],
-        en: [
-          {
-            type: 'heading',
-            content: 'NOTE! The travel guide for Raseborg is available at bosse.digitransit.fi',
-          },
-          {
-            type: 'text',
-            content: 'Tip: save the page to your start screen for easy access to the timetables.',
-          },
-          {
-            type: 'a',
-            content: 'bosse.digitransit.fi',
-	    href: 'https://bosse.digitransit.fi/?locale=en',
-          },
-        ],
-      },
-    },
-  ],
 });

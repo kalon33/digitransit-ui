@@ -4,6 +4,13 @@ import configMerger from '../util/configMerger';
 const CONFIG = 'jyvaskyla';
 const APP_TITLE = 'Reittiopas Jyväskylä';
 const APP_DESCRIPTION = 'Jyväskylän uusi reittiopas';
+const IS_DEV =
+  process.env.RUN_ENV === 'development' ||
+  process.env.NODE_ENV !== 'production';
+
+const virtualMonitorBaseUrl = IS_DEV
+  ? 'https://dev-jyvaskylamonitori.digitransit.fi'
+  : 'https://pysakit.jyvaskyla.fi';
 
 const walttiConfig = require('./config.waltti').default;
 
@@ -68,7 +75,7 @@ export default configMerger(walttiConfig, {
   mainMenu: {
     stopMonitor: {
       show: true,
-      url: 'https://pysakit.jyvaskyla.fi/createview',
+      url: `${virtualMonitorBaseUrl}/createview`,
     },
   },
 
@@ -139,7 +146,7 @@ export default configMerger(walttiConfig, {
           sv: 'Zoner',
           en: 'Zones',
         },
-        url: '/assets/geojson/jkl_zone_lines_20240403.geojson',
+        url: '/assets/geojson/jkl_zone_lines_20240531.geojson',
       },
       {
         name: {
@@ -165,50 +172,11 @@ export default configMerger(walttiConfig, {
   ticketLink: 'https://linkki.jyvaskyla.fi/liput-ja-hinnat',
   showTicketPrice: true,
 
-  ticketPurchaseLink: function purchaseTicketLink(fare) {
-    const fareId = fare.fareProducts[0].product.id;
-    const ticket = fareId?.substring
-      ? fareId.substring(fareId.indexOf(':') + 1)
-      : '';
-    let zones = '';
-    // Waltti wants zone ids, so map A to 01, B to 02 etc
-    for (let i = 0; i < ticket.length; i++) {
-      zones += `0${ticket.charCodeAt(i) - 64}`; // eslint-disable
-    }
-    return `https://kauppa.waltti.fi/walttiappfeat/busTicket/?operator=50209&ticketType=single&customerGroup=adult&zones=${zones}`;
-  },
-
-  fareMapping: function mapFareId(fareId) {
-    const id = fareId?.substring?.(fareId.indexOf(':') + 1);
-    switch (id) {
-      case 'A':
-        return 'Käteismaksu autossa, Vyöhyke A';
-      case 'AB':
-        return 'Käteismaksu autossa, Vyöhykkeet AB';
-      case 'ABC':
-        return 'Käteismaksu autossa, Vyöhykkeet ABC';
-      case 'ABCD':
-        return 'Käteismaksu autossa, Vyöhykkeet ABCD';
-      case 'B':
-        return 'Käteismaksu autossa, Vyöhyke B';
-      case 'BC':
-        return 'Käteismaksu autossa, Vyöhykkeet BC';
-      case 'BCD':
-        return 'Käteismaksu autossa, Vyöhykkeet BCD';
-      case 'C':
-        return 'Käteismaksu autossa, Vyöhyke C';
-      case 'CD':
-        return 'Käteismaksu autossa, Vyöhykkeet CD';
-      case 'D':
-        return 'Käteismaksu autossa, Vyöhyke D';
-      default:
-        return '';
-    }
-  },
+  ticketLinkOperatorCode: 50209,
 
   stopCard: {
     header: {
-      virtualMonitorBaseUrl: 'https://pysakit.jyvaskyla.fi/',
+      virtualMonitorBaseUrl,
     },
   },
   zones: {
@@ -217,4 +185,10 @@ export default configMerger(walttiConfig, {
   },
   // Notice! Turning on this setting forces the search for car routes (for the CO2 comparison only).
   showCO2InItinerarySummary: true,
+  sendAnalyticsCustomEventGoals: true,
+
+  defaultSettings: {
+    ...walttiConfig.defaultSettings,
+    minTransferTime: 180,
+  },
 });

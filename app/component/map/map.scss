@@ -56,27 +56,38 @@ div.map {
   }
 
   .drawer-container {
+    display: flex;
+    flex-direction: column;
     overflow-y: scroll;
+    scrollbar-width: none;
     height: 100%;
     position: absolute;
     width: 100%;
 
     .drawer-padding {
-      height: 90%;
+      flex-grow: 1;
+      flex-shrink: 0;
+      flex-basis: 90%;
       width: 0;
     }
 
     .drawer-content {
-      min-height: 50vh;
+      flex-grow: 0;
+      flex-shrink: 0;
+      flex-basis: 50vh;
       background: white;
       position: relative;
       z-index: index($zindex, mobile-drawer);
 
+      &.fit-content {
+        flex-basis: fit-content;
+      }
+
       .drag-line {
-        width: 30px;
+        width: 48px;
         height: 4px;
         border-radius: 2px;
-        background-color: #ccc;
+        background-color: #ddd;
         display: block;
         z-index: index($zindex, mobile-drawer-drag-line);
         margin: auto;
@@ -244,6 +255,15 @@ div.leaflet-marker-icon.via {
   }
 }
 
+div.leaflet-marker-icon.map-subway-entrance-info-icon-metro {
+  > span {
+    svg.icon {
+      width: auto;
+      height: auto;
+    }
+  }
+}
+
 div.leaflet-marker-icon.via {
   color: $black;
 }
@@ -304,13 +324,14 @@ div.leaflet-marker-icon.vehicle-icon {
     position: absolute;
     bottom: 20px;
     left: 15px;
-    background: #fff;
+    background: $primary-color;
     border-radius: 50px;
     font-weight: 325;
     display: flex;
     font-size: 12px;
-    color: #333;
+    color: white;
     padding: 5px 10px;
+    letter-spacing: -0.3px;
   }
 }
 
@@ -782,13 +803,6 @@ div.origin-popup {
   height: auto;
 }
 
-.leaflet-marker-icon.call {
-  width: auto;
-  height: auto;
-  margin-right: 0.75em;
-  font-size: 1.5em;
-}
-
 /* BEWARE! This is an ugly hack.
  * It so happens that firefox will not allow SVG clicks to bubble to DOM if pointer-events: none is not set.
  * If we set pointer-events: none for all browsers, then we lose "pointer cursor" for all browsers.
@@ -837,6 +851,10 @@ div.origin-popup {
   min-width: 50px;
   height: 18px;
 
+  &.only-icon {
+    min-width: 0;
+  }
+
   .wide {
     min-width: 64px;
   }
@@ -869,6 +887,10 @@ div.origin-popup {
       color: $white;
     }
 
+    .map-route-number.ferry-external {
+      color: $black;
+    }
+
     &::before {
       content: '';
       width: 0;
@@ -885,11 +907,19 @@ div.origin-popup {
   }
 }
 
+.map .arrow-bottomLeft.only-icon div::before {
+  border-right: 10px solid transparent;
+}
+
 .map .arrow-bottomRight {
   display: flex;
   align-items: center;
   min-width: 50px;
   height: 18px;
+
+  &.only-icon {
+    min-width: 0;
+  }
 
   .wide {
     min-width: 64px;
@@ -923,6 +953,10 @@ div.origin-popup {
       color: $white;
     }
 
+    .map-route-number.ferry-external {
+      color: $black;
+    }
+
     &::before {
       content: '';
       width: 0;
@@ -938,11 +972,19 @@ div.origin-popup {
   }
 }
 
+.map .arrow-bottomRight.only-icon div::before {
+  border-right: 9px solid transparent;
+}
+
 .map .arrow-topRight {
   display: flex;
   align-items: center;
   min-width: 50px;
   height: 18px;
+
+  &.only-icon {
+    min-width: 0;
+  }
 
   .wide {
     min-width: 64px;
@@ -976,6 +1018,10 @@ div.origin-popup {
       color: $white;
     }
 
+    .map-route-number.ferry-external {
+      color: $black;
+    }
+
     &::before {
       content: '';
       width: 0;
@@ -992,11 +1038,20 @@ div.origin-popup {
   }
 }
 
+.map .arrow-topRight.only-icon div::before {
+  border-left: 15px solid transparent;
+  right: 11px;
+}
+
 .map .arrow-topLeft {
   display: flex;
   align-items: center;
   min-width: 50px;
   height: 18px;
+
+  &.only-icon {
+    min-width: 0;
+  }
 
   .wide {
     min-width: 64px;
@@ -1030,6 +1085,10 @@ div.origin-popup {
       color: $white;
     }
 
+    .map-route-number.ferry-external {
+      color: $black;
+    }
+
     &::before {
       content: '';
       width: 0;
@@ -1051,6 +1110,11 @@ div.origin-popup {
   align-items: center;
   min-width: 50px;
   height: 18px;
+
+  &.only-icon {
+    min-width: 0;
+    align-items: normal;
+  }
 
   .wide {
     min-width: 64px;
@@ -1217,11 +1281,11 @@ div.origin-popup {
       padding-right: 3px;
       color: $white;
     }
-  }
-}
 
-.map .leg-halo.call {
-  stroke: gray;
+    .map-route-number.ferry-external {
+      color: $black;
+    }
+  }
 }
 
 .map .leg-halo {
@@ -1259,6 +1323,24 @@ div.origin-popup {
 
 .map .thin {
   stroke-opacity: 0.5;
+}
+
+.map-line.ferry-external.leg {
+  color: $external-feed-map-color;
+}
+
+.map-line.scooter.leg {
+  color: $scooter-map-color;
+}
+
+.map-line.walk-inside.leg {
+  color: #fff;
+  stroke: round;
+  stroke-dasharray: 0.1 11;
+}
+
+.leg-halo.walk-inside.map-line {
+  stroke: $walk-inside-color;
 }
 
 /* Fix to default leaflet behavior */

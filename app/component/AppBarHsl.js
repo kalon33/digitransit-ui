@@ -9,9 +9,6 @@ import { clearOldSearches, clearFutureRoutes } from '../util/storeUtils';
 import { getJson } from '../util/xhrPromise';
 
 const SiteHeader = lazy(() => import('@hsl-fi/site-header'));
-const SharedLocalStorageObserver = lazy(
-  () => import('@hsl-fi/shared-local-storage'),
-);
 
 const clearStorages = context => {
   clearOldSearches(context);
@@ -34,9 +31,9 @@ const AppBarHsl = ({ lang, user, favourites }, context) => {
 
   useEffect(() => {
     if (config.URL.BANNERS && config.NODE_ENV !== 'test') {
-      getJson(`${config.URL.BANNERS}&language=${lang}`).then(data =>
-        setBanners(data),
-      );
+      getJson(`${config.URL.BANNERS}&language=${lang}`)
+        .then(data => setBanners(data))
+        .catch(() => setBanners([]));
     }
   }, [lang]);
 
@@ -124,7 +121,7 @@ const AppBarHsl = ({ lang, user, favourites }, context) => {
             id="CookieConsent"
             src="https://policy.app.cookieinformation.com/uc.js"
             data-gcm-version="2.0"
-            data-culture="FI"
+            data-culture={lang.toUpperCase()}
             type="text/javascript"
           />
         </Helmet>
@@ -141,12 +138,6 @@ const AppBarHsl = ({ lang, user, favourites }, context) => {
             banners={banners}
             suggestionsApiUrl={config.URL.HSL_FI_SUGGESTIONS}
             notificationApiUrls={notificationApiUrls}
-          />
-        )}
-        {config.localStorageEmitter && (
-          <SharedLocalStorageObserver
-            keys={['saved-searches', 'favouriteStore']}
-            url={config.localStorageEmitter}
           />
         )}
       </Suspense>

@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import connectToStores from 'fluxible-addons-react/connectToStores';
-import moment from 'moment';
 import { configShape } from '../../util/shapes';
 import { ExtendedRouteTypes } from '../../constants';
 import VehicleIcon from '../VehicleIcon';
@@ -69,14 +68,18 @@ function shouldShowVehicle(message, direction, tripStart, pattern, headsign) {
 }
 
 function VehicleMarkerContainer(props, { config }) {
-  const visibleVehicles = Object.entries(props.vehicles).filter(([, message]) =>
-    shouldShowVehicle(
-      message,
-      props.direction,
-      props.tripStart,
-      props.pattern,
-      props.headsign,
-    ),
+  const visibleVehicles = Object.entries(props.vehicles).filter(
+    ([, message]) => {
+      const feed = message.route?.split(':')[0];
+      const { ignoreHeadsign } = config.realTime[feed];
+      return shouldShowVehicle(
+        message,
+        props.direction,
+        props.tripStart,
+        props.pattern,
+        ignoreHeadsign ? undefined : props.headsign,
+      );
+    },
   );
   const visibleVehicleIds = visibleVehicles.map(([id]) => id);
   props.setVisibleVehicles(visibleVehicleIds);
@@ -94,9 +97,11 @@ function VehicleMarkerContainer(props, { config }) {
       mode = message.mode;
     }
     const feed = message.route?.split(':')[0];
-    const vehicleNumber = message.shortName
+    let vehicleNumber = message.shortName
       ? config.realTime[feed].vehicleNumberParser(message.shortName)
       : message.route.split(':')[1];
+    // Fallback to a question mark if the vehicle number is too long to fit in the icon
+    vehicleNumber = vehicleNumber.length > 5 ? '?' : vehicleNumber;
     return (
       <IconMarker
         key={id}
@@ -162,8 +167,7 @@ const connectedComponent = connectToStores(
     // this removes anything that hasn't had an update in 3 minutes
     const vehiclesWithRecentUpdates = Object.entries(vehiclesFiltered).filter(
       ([, message]) => {
-        const threeMinutesAgo = moment().subtract(180, 'seconds');
-        return moment.unix(message.receivedAt).isAfter(threeMinutesAgo);
+        return message.receivedAt > Date.now() / 1000 - 180;
       },
     );
     return {

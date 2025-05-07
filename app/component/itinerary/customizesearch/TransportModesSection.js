@@ -9,19 +9,16 @@ import { saveRoutingSettings } from '../../../action/SearchSettingsActions';
 import Toggle from '../../Toggle';
 import Icon from '../../Icon';
 import {
-  getAvailableTransportModes,
+  getTransitModes,
   getModes,
   toggleTransportMode,
 } from '../../../util/modeUtils';
+import { getModeIconColor } from '../../../util/colorUtils';
 
-const TransportModesSection = (
-  { config },
-  { executeAction },
-  transportModes = getAvailableTransportModes(config),
-  modes = getModes(config),
-) => {
-  const { iconColors } = config.colors;
+const TransportModesSection = ({ config }, { executeAction }) => {
   const alternativeNames = config.useAlternativeNameForModes || [];
+  const transitModes = getTransitModes(config);
+  const selectedModes = getModes(config);
 
   return (
     <fieldset>
@@ -32,58 +29,50 @@ const TransportModesSection = (
         />
       </legend>
       <div className="transport-modes-container">
-        {transportModes
-          .filter(mode => mode !== 'CITYBIKE')
-          .map(mode => (
-            <div
-              className="mode-option-container"
-              key={`mode-option-${mode.toLowerCase()}`}
+        {transitModes.map(mode => (
+          <div
+            className="mode-option-container"
+            key={`mode-option-${mode.toLowerCase()}`}
+          >
+            <label
+              htmlFor={`settings-toggle-${mode}`}
+              className={cx(
+                [`mode-option-block`, 'toggle-label'],
+                mode.toLowerCase(),
+                {
+                  disabled: !selectedModes.includes(mode),
+                },
+              )}
             >
-              <label
-                htmlFor={`settings-toggle-${mode}`}
-                className={cx(
-                  [`mode-option-block`, 'toggle-label'],
-                  mode.toLowerCase(),
-                  {
-                    disabled: !modes.includes(mode),
-                  },
-                )}
-              >
-                <div className="mode-icon">
-                  <Icon
-                    className={`${mode}-icon`}
-                    img={`icon-icon_${mode.toLowerCase()}`}
-                    color={
-                      iconColors[
-                        mode.toLowerCase() === 'subway'
-                          ? 'mode-metro'
-                          : `mode-${mode.toLowerCase()}`
-                      ]
-                    }
-                  />
-                </div>
-                <div className="mode-name">
-                  <FormattedMessage
-                    id={
-                      alternativeNames.includes(mode.toLowerCase())
-                        ? `settings-alternative-name-${mode.toLowerCase()}`
-                        : mode.toLowerCase()
-                    }
-                    defaultMessage={mode.toLowerCase()}
-                  />
-                </div>
-                <Toggle
-                  id={`settings-toggle-${mode}`}
-                  toggled={modes.filter(o2 => o2 === mode).length > 0}
-                  onToggle={() =>
-                    executeAction(saveRoutingSettings, {
-                      modes: toggleTransportMode(mode, config),
-                    })
-                  }
+              <div className="mode-icon">
+                <Icon
+                  className={`${mode}-icon`}
+                  img={`icon-icon_${mode.toLowerCase()}`}
+                  color={getModeIconColor(config, mode)}
                 />
-              </label>
-            </div>
-          ))}
+              </div>
+              <div className="mode-name">
+                <FormattedMessage
+                  id={
+                    alternativeNames.includes(mode.toLowerCase())
+                      ? `settings-alternative-name-${mode.toLowerCase()}`
+                      : mode.toLowerCase()
+                  }
+                  defaultMessage={mode.toLowerCase()}
+                />
+              </div>
+              <Toggle
+                id={`settings-toggle-${mode}`}
+                toggled={selectedModes.includes(mode)}
+                onToggle={() =>
+                  executeAction(saveRoutingSettings, {
+                    modes: toggleTransportMode(mode, config),
+                  })
+                }
+              />
+            </label>
+          </div>
+        ))}
       </div>
     </fieldset>
   );

@@ -89,7 +89,7 @@ class TileContainer {
           return isEnabled;
         }
         if (
-          layerName === 'citybike' &&
+          (layerName === 'citybike' || layerName === 'scooter') &&
           this.coords.z >=
             getVehicleMinZoomOnStopsNearYou(
               config,
@@ -218,7 +218,8 @@ class TileContainer {
         let secondY;
         if (
           (feature.layer === 'stop' && !feature.feature.properties.stops) ||
-          feature.layer === 'citybike'
+          feature.layer === 'citybike' ||
+          feature.layer === 'scooter'
         ) {
           const zoom = this.coords.z;
           // hitbox is same for stop and citybike
@@ -237,7 +238,7 @@ class TileContainer {
             // features array is sorted by y coord so combo stops should be next to each other
             if (
               index > 0 &&
-              features[index - 1].feature.properties.code ===
+              features[index - 1]?.feature.properties.code ===
                 feature.feature.properties.code
             ) {
               isCombo = true;

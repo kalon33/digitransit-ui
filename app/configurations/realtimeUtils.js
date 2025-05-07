@@ -39,15 +39,60 @@ function walttiTopicResolver(
     '/#'
   );
 }
+function elyTopicResolver(
+  route,
+  direction,
+  tripStartTime,
+  headsign,
+  feedId,
+  tripId,
+  geoHash,
+) {
+  return (
+    '/gtfsrt/vp/' +
+    feedId +
+    '/+/+/+/' +
+    route +
+    '/+/+/' +
+    tripId +
+    '/+/' +
+    tripStartTime +
+    '/+/' +
+    geoHash[0] +
+    '/' +
+    geoHash[1] +
+    '/' +
+    geoHash[2] +
+    '/' +
+    geoHash[3] +
+    '/#'
+  );
+}
+const mqttAddress =
+  process.env.RUN_ENV === 'development' || process.env.NODE_ENV !== 'production'
+    ? 'wss://dev-mqtt.digitransit.fi'
+    : 'wss://mqtt.digitransit.fi';
 
 const walttiMqtt = {
   mqttTopicResolver: walttiTopicResolver,
-  mqtt: 'wss://mqtt.digitransit.fi',
+  mqtt: mqttAddress,
   gtfsrt: true,
   routeSelector: defaultRouteSelector,
   active: true,
   vehicleNumberParser: defaulVehicleNumberParser,
 };
+
+function elyMqtt(ignoreHeadsign) {
+  return {
+    mqttTopicResolver: elyTopicResolver,
+    mqtt: mqttAddress,
+    gtfsrt: true,
+    routeSelector: defaultRouteSelector,
+    active: true,
+    vehicleNumberParser: defaulVehicleNumberParser,
+    ignoreHeadsign,
+  };
+}
 
 export default {
   HSL: {
@@ -99,42 +144,12 @@ export default {
   Rauma: walttiMqtt,
   Pori: walttiMqtt,
   VARELY: walttiMqtt,
-  Harma: {
-    mqttTopicResolver: function mqttTopicResolver(
-      route,
-      direction,
-      tripStartTime,
-      headsign,
-      feedId,
-      tripId,
-      geoHash,
-    ) {
-      return (
-        '/gtfsrt/vp/' +
-        feedId +
-        '/+/+/+/' +
-        route +
-        '/+/+/' +
-        tripId +
-        '/+/' +
-        tripStartTime +
-        '/+/' +
-        geoHash[0] +
-        '/' +
-        geoHash[1] +
-        '/' +
-        geoHash[2] +
-        '/' +
-        geoHash[3] +
-        '/#'
-      );
-    },
-    mqtt: 'wss://mqtt.digitransit.fi',
-    gtfsrt: true,
-    routeSelector: defaultRouteSelector,
-    active: true,
-    vehicleNumberParser: defaulVehicleNumberParser,
-  },
+  PohjolanMatka: elyMqtt(true),
+  Harma: elyMqtt(false),
+  Korsisaari: elyMqtt(true),
+  KoivistonAuto: elyMqtt(true),
+  PahkakankaanLiikenne: elyMqtt(true),
+  IngvesSvanback: elyMqtt(true),
   FOLI: {
     mqttTopicResolver: function mqttTopicResolver(
       route,
@@ -167,7 +182,7 @@ export default {
         '/#'
       );
     },
-    mqtt: 'wss://mqtt.digitransit.fi',
+    mqtt: mqttAddress,
     gtfsrt: true,
     routeSelector: defaultRouteSelector,
     active: true,
@@ -201,7 +216,7 @@ export default {
         '/#'
       );
     },
-    mqtt: 'wss://mqtt.digitransit.fi',
+    mqtt: mqttAddress,
     gtfsrt: true,
     routeSelector: defaultRouteSelector,
     active: true,

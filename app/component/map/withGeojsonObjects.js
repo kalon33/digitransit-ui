@@ -21,6 +21,8 @@ function withGeojsonObjects(Component) {
     const [geoJson, updateGeoJson] = useState(null);
 
     useEffect(() => {
+      let isMounted = true;
+
       async function fetch() {
         if (!isBrowser) {
           return;
@@ -45,12 +47,19 @@ function withGeojsonObjects(Component) {
           );
           const newGeoJson = {};
           json.forEach(({ url, data, isOffByDefault }) => {
-            newGeoJson[url] = { ...data, isOffByDefault };
+            if (data) {
+              newGeoJson[url] = { ...data, isOffByDefault };
+            }
           });
-          updateGeoJson(newGeoJson);
+          if (isMounted) {
+            updateGeoJson(newGeoJson);
+          }
         }
       }
       fetch();
+      return () => {
+        isMounted = false;
+      };
     }, []);
     // adding geoJson to leafletObj moved to map
     return <Component leafletObjs={leafletObjs} {...props} geoJson={geoJson} />;

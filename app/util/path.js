@@ -17,8 +17,8 @@ export const PREFIX_ITINERARY_SUMMARY = 'reitti';
 export const PREFIX_DISRUPTION = 'hairiot';
 export const PREFIX_TIMETABLE = 'aikataulu';
 export const stopUrl = id => id;
-export const LOCAL_STORAGE_EMITTER_PATH = '/local-storage-emitter';
 export const EMBEDDED_SEARCH_PATH = '/haku';
+export const PREFIX_RENTALVEHICLES = 'skuutit';
 
 /**
  * Join argument with slash separator.
@@ -202,5 +202,6 @@ export const streetHash = {
   bike: 'bike',
   bikeAndVehicle: 'bikeAndVehicle',
   car: 'car',
+  carAndVehicle: 'carAndVehicle',
   parkAndRide: 'parkAndRide',
 };

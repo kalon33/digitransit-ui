@@ -5,19 +5,18 @@ const CONFIG = 'varely';
 const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
 const APP_TITLE = 'Seutu+ reittiopas';
 const APP_DESCRIPTION = 'Varsinais-Suomen ELY-keskuksen reittiopas';
-const OTP_URL = process.env.OTP_URL || `${API_URL}/routing/v2/routers/varely/`;
-const MAP_URL =
-  process.env.MAP_URL || 'https://digitransit-dev-cdn-origin.azureedge.net';
+const OTP_URL = process.env.OTP_URL || `${API_URL}/routing/v2/varely/`;
+const MAP_URL = process.env.MAP_URL || 'https://dev-cdn.digitransit.fi';
 const POI_MAP_PREFIX = `${MAP_URL}/map/v3/varely`;
 
 const walttiConfig = require('./config.waltti').default;
 
 const colorPrimary = '#008161';
 
-const minLat = 60;
+const minLat = 59.98;
 const maxLat = 61.8;
 const minLon = 21;
-const maxLon = 23.6;
+const maxLon = 23.9;
 
 export default configMerger(walttiConfig, {
   CONFIG,
@@ -36,13 +35,15 @@ export default configMerger(walttiConfig, {
     },
   },
 
-  feedIds: ['VARELY', 'FOLI', 'Rauma'],
+  feedIds: ['VARELY', 'FOLI', 'Rauma', 'Pori', 'Salo'],
 
   colors: {
     primary: colorPrimary,
     hover: '#00BF6F',
     iconColors: {
       'mode-bus': colorPrimary,
+      'mode-ferry': '#0064f0',
+      'mode-ferry-pier': '#666666',
     },
   },
 
@@ -68,6 +69,12 @@ export default configMerger(walttiConfig, {
       availableForSelection: true,
       color: colorPrimary,
     },
+
+    ferry: {
+      availableForSelection: true,
+      defaultValue: true,
+      color: '#0064f0',
+    },
   },
 
   searchParams: {
@@ -83,6 +90,10 @@ export default configMerger(walttiConfig, {
     [maxLon, maxLat],
     [maxLon, minLat],
   ],
+
+  map: {
+    minZoom: 7,
+  },
 
   menu: {
     copyright: { label: `© Seutu+ ${walttiConfig.YEAR}` },
@@ -119,7 +130,7 @@ export default configMerger(walttiConfig, {
       {
         header: 'Tietoja palvelusta',
         paragraphs: [
-          'Tervetuloa reittioppaaseen! Reittiopas kertoo, miten pääset nopeasti ja helposti perille joukkoliikenteellä Turussa, Aurassa, Maskussa, Mynämäellä, Nousiaisissa, Paimiossa ja Paraisilla. Reittiopas-palvelun tarjoaa Varsinais-Suomen ELY-keskus, ja se perustuu Digitransit –palvelualustaan.',
+          'Tervetuloa reittioppaaseen! Reittiopas kertoo, miten pääset nopeasti ja helposti perille joukkoliikenteellä Turussa, Aurassa, Maskussa, Mynämäellä, Nousiaisissa, Paimiossa, Paraisilla, Raumalla, Porissa ja Salossa. Reittiopas-palvelun tarjoaa Varsinais-Suomen ELY-keskus, ja se perustuu Digitransit –palvelualustaan.',
         ],
       },
     ],
@@ -128,7 +139,7 @@ export default configMerger(walttiConfig, {
       {
         header: 'Om tjänsten',
         paragraphs: [
-          'Den här tjänsten är för reseplanering inom Egentliga Finland (Åbo, Aura, Masku, Mynämäki, Nousis, Pemar and Pargas). Reseplaneraren täcker med vissa begränsningar kollektivtrafik, promenad, cykling samt privatbilism. Tjänsten baserar sig på Digitransit-plattformen.',
+          'Den här tjänsten är för reseplanering inom Egentliga Finland (Åbo, Aura, Masku, Virmo, Nousis, Pemar, Pargas, Raumo, Björneborg och Salo). Reseplaneraren täcker med vissa begränsningar kollektivtrafik, promenad, cykling samt privatbilism. Tjänsten baserar sig på Digitransit-plattformen.',
         ],
       },
     ],
@@ -137,7 +148,7 @@ export default configMerger(walttiConfig, {
       {
         header: 'About this service',
         paragraphs: [
-          'Welcome to the Journey Planner! The Journey Planner shows you how to get to your destination fast and easy by public transport in Turku, Aura, Masku, Mynämäki, Nousiainen, Paimio and Parainen. You can also use the planner to find fast walking and cycling routes, and to an extent, for driving directions. The Journey Planner is provided by Centre for Economic Development, Transport and the Environment of Southwest Finland and it is based on the Digitransit service platform.',
+          'Welcome to the Journey Planner! The Journey Planner shows you how to get to your destination fast and easy by public transport in Turku, Aura, Masku, Mynämäki, Nousiainen, Paimio, Parainen, Rauma, Pori and Salo. You can also use the planner to find fast walking and cycling routes, and to an extent, for driving directions. The Journey Planner is provided by Centre for Economic Development, Transport and the Environment of Southwest Finland and it is based on the Digitransit service platform.',
         ],
       },
     ],
@@ -159,6 +170,16 @@ export default configMerger(walttiConfig, {
       sv: 'Åboregion',
       en: 'Turku region',
     },
+    Salo: {
+      fi: 'Salo',
+      sv: 'Salo',
+      en: 'Salo',
+    },
+    Pori: {
+      fi: 'Pori',
+      sv: 'Björneborg',
+      en: 'Pori',
+    },
   },
 
   staticMessages: [],
@@ -166,4 +187,5 @@ export default configMerger(walttiConfig, {
   showNearYouButtons: true,
   allowLogin: false,
   routeNotifications: [],
+  analyticsScript: '',
 });

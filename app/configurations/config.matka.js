@@ -15,27 +15,31 @@ const YEAR = 1900 + new Date().getYear();
 
 const HSLParkAndRideUtils = require('../util/ParkAndRideUtils').default.HSL;
 
-// route timetable data needs to be up-to-date before this is enabled
-// const HSLRouteTimetable = require('./timetableConfigUtils').default.HSLRoutes;
+const IS_DEV =
+  process.env.RUN_ENV === 'development' ||
+  process.env.NODE_ENV !== 'production';
+
+const virtualMonitorBaseUrl = IS_DEV
+  ? 'https://dev-matkamonitori.digitransit.fi'
+  : 'https://matkamonitori.digitransit.fi';
 
 export default {
   CONFIG,
   OTPTimeout: process.env.OTP_TIMEOUT || 30000,
   URL: {
-    FONT: 'https://digitransit-prod-cdn-origin.azureedge.net/matka-fonts/roboto/roboto+montserrat.css',
+    FONT: 'https://cdn.digitransit.fi/matka-fonts/publicsans/publicsans+robotomono.css',
   },
 
   mainMenu: {
     stopMonitor: {
       show: true,
-      url: 'https://matkamonitori.digitransit.fi/createview',
+      url: `${virtualMonitorBaseUrl}/createview`,
     },
     countrySelection: ['estonia'],
   },
 
   availableLanguages: ['fi', 'sv', 'en'],
   defaultLanguage: 'fi',
-  hideAppBarLink: true,
 
   socialMedia: {
     title: APP_TITLE,
@@ -50,18 +54,21 @@ export default {
 
   favicon: './app/configurations/images/matka/matka-favicon.svg',
 
+  themeSprites: 'assets/svg-sprite.matka.svg',
+
   colors: {
-    primary: '#002c74',
+    primary: '#000',
     iconColors: {
       'mode-airplane': '#0046AD',
       'mode-bus': '#007ac9',
       'mode-tram': '#5E7921',
       'mode-metro': '#CA4000',
-      'mode-rail': '#8E5EA0',
+      'mode-rail': '#000',
       'mode-ferry': '#247C7B',
       'mode-ferry-pier': '#666666',
       'mode-citybike': '#FCBC19',
       'mode-citybike-secondary': '#333333',
+      'mode-scooter': '#C5CAD2',
     },
   },
   feedIds: [
@@ -89,6 +96,12 @@ export default {
     'Raasepori',
     'VARELY',
     'Harma',
+    'PohjolanMatka',
+    'Korsisaari',
+    'KoivistonAuto',
+    'PahkakankaanLiikenne',
+    'IngvesSvanback',
+    'CAR_FERRIES',
   ],
 
   additionalFeedIds: {
@@ -121,22 +134,20 @@ export default {
     description: APP_DESCRIPTION,
     keywords: `reitti,reitit,opas,reittiopas,joukkoliikenne`,
   },
-
-  routeTimetables: {
-    // route timetable data needs to be up-to-date before this is enabled
-    //  HSL: HSLRouteTimetable,
-  },
-
   menu: {
     copyright: { label: `© Matka.fi ${YEAR}` },
     content: [
       {
-        name: 'traficom',
-        href: 'https://www.traficom.fi/fi/liikenne/liikennejarjestelma/joukkoliikenteen-informaatiopalvelut',
+        name: 'Fintraffic',
+        href: 'https://www.fintraffic.fi',
       },
       {
-        name: 'about-service-feedback',
-        href: 'http://www.matka.fi',
+        name: 'menu-feedback',
+        href: 'https://www.fintraffic.fi/fi/feedback',
+      },
+      {
+        name: 'about-this-service',
+        href: 'https://www.fintraffic.fi/fi/digitaalisetpalvelut/fintrafficin-datapalvelut/liikkumisen-tietopalvelut/joukkoliikenteen-tietopalvelut/digitransit',
       },
       {
         name: 'accessibility-statement',
@@ -145,10 +156,6 @@ export default {
           sv: 'https://www.digitransit.fi/accessibility',
           en: 'https://www.digitransit.fi/en/accessibility',
         },
-      },
-      {
-        name: 'about-these-pages',
-        href: 'https://traficom.fi/fi/tietoa-matkafi-sivustosta',
       },
     ],
   },
@@ -161,21 +168,34 @@ export default {
       corner2: [55.99, 17.75],
     },
   },
+
   suggestBikeMaxDistance: 2000000,
 
-  cityBike: {
+  vehicleRental: {
     useAllSeasons: true,
     networks: {
-      smoove: HSLConfig.cityBike.networks.smoove,
-      vantaa: HSLConfig.cityBike.networks.vantaa,
-      seatcode_tampere: TampereConfig.cityBike.networks.seatcode_tampere,
-      turku: TurkuConfig.cityBike.networks.donkey_turku,
-      freebike_kuopio: KuopioConfig.cityBike.networks.freebike_kuopio,
-      freebike_lahti: LahtiConfig.cityBike.networks.freebike_lahti,
-      donkey_lappeenranta:
-        LappeenrantaConfig.cityBike.networks.donkey_lappeenranta,
-      donkey_kotka: KotkaConfig.cityBike.networks.donkey_kotka,
-      donkey_kouvola: KouvolaConfig.cityBike.networks.donkey_kouvola,
+      ...HSLConfig.vehicleRental.networks,
+      ...TampereConfig.vehicleRental.networks,
+      ...TurkuConfig.vehicleRental.networks,
+      ...KuopioConfig.vehicleRental.networks,
+      ...LahtiConfig.vehicleRental.networks,
+      ...LappeenrantaConfig.vehicleRental.networks,
+      ...KotkaConfig.vehicleRental.networks,
+      ...KouvolaConfig.vehicleRental.networks,
+    },
+    scooterInfoLink: {
+      fi: {
+        text: 'Potkulaudat',
+        url: 'https://www.fintraffic.fi/fi/uutiset/sahkopotkulaudat-nyt-mukana-opasmatkafi-reittioppaassa',
+      },
+      en: {
+        text: 'Scooters',
+        url: 'https://www.fintraffic.fi/en/news/electric-scooters-now-included-opasmatkafi-journey-planner',
+      },
+      sv: {
+        text: 'Elsparkcyklar',
+        url: 'https://www.fintraffic.fi/sv/nyheter/elsparkcyklarna-finns-nu-med-i-reseplaneraren-opasmatkafi',
+      },
     },
   },
 
@@ -194,6 +214,10 @@ export default {
   transportModes: {
     citybike: {
       availableForSelection: true,
+    },
+    scooter: {
+      availableForSelection: true,
+      defaultValue: false,
     },
   },
 
@@ -254,7 +278,8 @@ export default {
   parkingAreaSources: ['liipi'],
 
   parkAndRide: {
-    showParkAndRide: false,
+    showParkAndRide: true,
+    showParkAndRideForBikes: true,
     parkAndRideMinZoom: 13,
     pageContent: {
       default: HSLParkAndRideUtils,
@@ -370,7 +395,7 @@ export default {
   },
   stopCard: {
     header: {
-      virtualMonitorBaseUrl: 'https://matkamonitori.digitransit.fi/',
+      virtualMonitorBaseUrl,
     },
   },
   // Notice! Turning on this setting forces the search for car routes (for the CO2 comparison only).
@@ -382,7 +407,45 @@ export default {
     TRAM: { showNotification: true },
     FERRY: { showNotification: true },
     BUS: { showNotification: true },
+    SUBWAY: { showNotification: false },
   },
+
+  carBoardingModes: {
+    FERRY: { showNotification: true },
+  },
+
+  disabledLegTextModes: ['ferry'],
+
   // Include both bike and park and bike and public, if bike is enabled
   includePublicWithBikePlan: true,
+
+  startSearchFromUserLocation: true,
+
+  minTransferTimeSelection: [
+    {
+      title: '1.5 min',
+      value: 90,
+    },
+    {
+      title: '3 min',
+      value: 180,
+    },
+    {
+      title: '5 min',
+      value: 300,
+    },
+    {
+      title: '7 min',
+      value: 420,
+    },
+    {
+      title: '10 min',
+      value: 600,
+    },
+    {
+      title: '30 min',
+      value: 1800,
+    },
+  ],
+  navigation: true,
 };

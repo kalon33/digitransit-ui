@@ -81,7 +81,7 @@ const errorCardProps = [
     id: 'no-transit-connection',
     props: {
       titleId: 'no-route-msg',
-      bodyId: 'router-transit-connection',
+      bodyId: 'no-route-msg-with-changes',
       ...info,
     },
   },
@@ -181,8 +181,9 @@ const errorCardProps = [
   {
     id: 'no-route-msg-with-changes',
     props: {
+      titleId: 'no-route-msg',
       bodyId: 'no-route-msg-with-changes',
-      ...caution,
+      ...info,
     },
   },
   {
@@ -191,6 +192,13 @@ const errorCardProps = [
       titleId: 'router-unable',
       bodyId: 'router-system-error',
       ...caution,
+    },
+  },
+  {
+    id: 'no-route-alternative-suggestion',
+    props: {
+      bodyId: 'e-scooter-alternative',
+      ...info,
     },
   },
   {

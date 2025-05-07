@@ -10,8 +10,7 @@ export default function WeatherDetailsPopup(
 ) {
   // Icons for night time is represented adding a 100 to an id. For example:
   // iconId 1 (clear sky) for a day is 101 for a night. Subtract this so we don't need duplicate translations.
-  const weatherIdForDescription =
-    weatherData.iconId > 100 ? weatherData.iconId - 100 : weatherData.iconId;
+  const weatherIdForDescription = weatherData.iconId % 100;
   return (
     <Modal
       appElement="#app"
@@ -51,7 +50,7 @@ WeatherDetailsPopup.propTypes = {
   weatherData: PropTypes.shape({
     temperature: PropTypes.number,
     iconId: PropTypes.number,
-    time: PropTypes.number,
+    time: PropTypes.string,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
 };

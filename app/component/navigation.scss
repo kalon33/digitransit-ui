@@ -93,7 +93,7 @@ $content-background-color: $background-color;
 
   .logo {
     height: $nav-logo-height;
-    min-height: 40px;
+    min-height: $nav-logo-min-height;
     min-width: 13em;
     background-size: contain;
     background-repeat: no-repeat;
@@ -113,6 +113,7 @@ $content-background-color: $background-color;
 
   .logo {
     min-height: 30px;
+    max-height: 40px;
   }
 }
 
@@ -760,6 +761,11 @@ section.content {
   justify-content: center;
 }
 
+.mobile-footer .cookie-settings-button-mobile {
+  color: $primary-color;
+  letter-spacing: -0.3px;
+}
+
 .mobile-footer-bar {
   background-color: #020202;
   height: 5px;
@@ -880,7 +886,7 @@ section.content {
     }
 
     &.banner-disruption {
-      background: $disruption-color;
+      background: $banner-disruption-color;
 
       .swipe-tab-ball {
         &.selected {

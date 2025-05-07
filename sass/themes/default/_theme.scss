@@ -24,11 +24,10 @@ $livi-funicular-pink: #f0f;
 /* Application palette */
 $background-color: #fff;
 $background-color-darker: #e0e5e8;
-$background-color-lighter: #f4f4f5;
+$background-color-lighter: #f2f5f7;
 $primary-color: $livi-blue;
 $primary-font-color: $white;
 $secondary-color: #008bde;
-$secondary-font-color: $white;
 $favourite-color: $livi-gold;
 $hilight-color: $livi-blue;
 $action-color: $secondary-color;
@@ -36,11 +35,14 @@ $cancelation-red: #dc0451;
 $cancelation-black: #666;
 $cancelation-background: #fbe0ea;
 $disruption-color: $cancelation-red;
-$realtime-color: #46850e;
-$visited-link-color: #8c4799;
+$banner-disruption-color: $disruption-color;
+$realtime-color: #3b7f00;
 $current-location-color: $primary-color;
 $desktop-title-color: $primary-color;
 $desktop-title-arrow-icon-color: $secondary-color;
+$infobox-color-generic-blue: #ebf6fd;
+$info-icon-blue: #0074be;
+$success-color: #f1f8eb;
 
 /* Component palette */
 $title-color: $white;
@@ -59,6 +61,9 @@ $caution-icon-color: $white;
 $caution-icon-font-color: none;
 $top-bar-color: $primary-color;
 $nav-content-color: false;
+$disclaimer-background-color: rgba(254, 209, 0, 0.1);
+$disclaimer-border-color: #fed100;
+$navigation-background-color: $background-color-lighter;
 
 /* Vehicle palette */
 $airplane-color: $livi-airplane-blue;
@@ -72,10 +77,17 @@ $ferry-color: $livi-ferry-blue;
 $funicular-color: $livi-funicular-pink;
 $citybike-color: #f2b62d;
 $citybike-off-color: #919191;
-$walk-color: #666;
+$walk-color: #000;
 $wait-color: #979797;
 $bicycle-color: #666;
 $car-color: #333;
+$scooter-color: #c5cad2;
+$scooter-map-color: #666;
+$call-agency-color: #666;
+$external-feed-color: #c5cad2;
+$external-feed-map-color: #666;
+$walk-inside-color: #666;
+$replacement-bus-color: #dc0451;
 
 /* Fonts */
 $font-family: 'Roboto', arial, georgia, serif;
@@ -84,6 +96,7 @@ $button-font-family: $font-family;
 $font-weight-book: 400;
 $font-weight-medium: 700;
 $font-weight-map-container: $font-weight-book;
+$font-weight-disclaimer: $font-weight-medium;
 $letter-spacing: 0;
 $letter-spacing-front-page: -0.67px;
 $font-family-narrow: 'Roboto Condensed', 'Arial Condensed', arial, georgia,
@@ -103,6 +116,10 @@ $font-size-large: 1.25rem;
 $font-size-xlarge: 1.5rem;
 $disruption-message-font-weight: 200;
 $itinerary-co2-font-weight: 325;
+$itinerary-co2-badge-font-weight: 500;
+$id-font-family: $font-family;
+$id-font-size: $font-size-normal;
+$id-font-weight: normal;
 
 /* Paddings */
 $padding-xxsmall: 0.125em;
@@ -116,7 +133,14 @@ $padding-xlarge: 2em;
 $border-radius-small: 2px;
 $border-radius: 3px;
 $border-radius-bigger: 8px;
+$border-radius-disclaimer: $border-radius;
 $spinner-image: url('../default/default-spinner.png');
 
 /* Navbar dimensions */
 $nav-logo-height: 100%;
+$nav-logo-min-height: 40px;
+
+/* Navigator */
+$navigation-icon-size: 40px;
+$slide-up-down-animation: 0.8s cubic-bezier(0.47, 0, 0.23, 1.38) forwards;
+$slide-up-down-fade: 0.8s ease-out forwards;

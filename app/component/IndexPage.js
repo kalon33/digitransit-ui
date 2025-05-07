@@ -9,10 +9,14 @@ import DTAutoSuggest from '@digitransit-component/digitransit-component-autosugg
 import DTAutosuggestPanel from '@digitransit-component/digitransit-component-autosuggest-panel';
 import { getModesWithAlerts } from '@digitransit-search-util/digitransit-search-util-query-utils';
 import { createUrl } from '@digitransit-store/digitransit-store-future-route';
+import inside from 'point-in-polygon';
 import { configShape, locationShape } from '../util/shapes';
 import storeOrigin from '../action/originActions';
 import storeDestination from '../action/destinationActions';
-import withSearchContext from './WithSearchContext';
+import {
+  withSearchContext,
+  getLocationSearchTargets,
+} from './WithSearchContext';
 import {
   getPathWithEndpointObjects,
   getStopRoutePath,
@@ -36,6 +40,10 @@ import {
   getNearYouModes,
   useCitybikes,
 } from '../util/modeUtils';
+import {
+  checkPositioningPermission,
+  startLocationWatch,
+} from '../action/PositionActions';
 
 const StopRouteSearch = withSearchContext(DTAutoSuggest);
 const LocationSearch = withSearchContext(DTAutosuggestPanel);
@@ -105,6 +113,16 @@ class IndexPage extends React.Component {
       this.context.executeAction(storeDestination, destination);
     }
 
+    if (this.context.config.startSearchFromUserLocation && !origin.lat) {
+      checkPositioningPermission().then(permission => {
+        if (
+          permission.state === 'granted' &&
+          this.props.locationState.status === 'no-location'
+        ) {
+          this.context.executeAction(startLocationWatch);
+        }
+      });
+    }
     scrollTop();
   }
 
@@ -128,6 +146,18 @@ class IndexPage extends React.Component {
     const { router, match, config } = this.context;
     const { location } = match;
 
+    const currentLocation =
+      config.startSearchFromUserLocation &&
+      !this.props.origin.address &&
+      this.props.locationState?.hasLocation &&
+      this.props.locationState;
+    if (currentLocation && !currentLocation.isReverseGeocodingInProgress) {
+      const originPoint = [currentLocation.lon, currentLocation.lat];
+      if (inside(originPoint, config.areaPolygon)) {
+        this.context.executeAction(storeOrigin, currentLocation);
+      }
+    }
+
     if (definesItinerarySearch(origin, destination)) {
       const newLocation = {
         ...location,
@@ -138,7 +168,7 @@ class IndexPage extends React.Component {
         ),
       };
       if (newLocation.query.time === undefined) {
-        newLocation.query.time = Math.floor(Date.now() / 1000);
+        newLocation.query.time = Math.floor(Date.now() / 1000).toString();
       }
       delete newLocation.query.setTime;
       router.push(newLocation);
@@ -159,13 +189,24 @@ class IndexPage extends React.Component {
   }
 
   onSelectStopRoute = item => {
+    addAnalyticsEvent({
+      event: 'route_search',
+      search_action: 'route_or_stop',
+    });
     this.context.router.push(getStopRoutePath(item));
   };
 
   onSelectLocation = (item, id) => {
     const { router, executeAction } = this.context;
+    addAnalyticsEvent({
+      event: 'itinerary_search',
+      search_action: item.type,
+    });
+
     if (item.type === 'FutureRoute') {
-      router.push(createUrl(item));
+      router.push(
+        createUrl(item, { itinerarySummaryPrefix: PREFIX_ITINERARY_SUMMARY }),
+      );
     } else if (id === 'origin') {
       executeAction(storeOrigin, item);
     } else {
@@ -175,9 +216,8 @@ class IndexPage extends React.Component {
 
   clickFavourite = favourite => {
     addAnalyticsEvent({
-      category: 'Favourite',
-      action: 'ClickFavourite',
-      name: null,
+      event: 'favorite_press',
+      favorite_type: 'place',
     });
     this.context.executeAction(storeDestination, favourite);
   };
@@ -192,6 +232,11 @@ class IndexPage extends React.Component {
     if (kbdEvent && !isKeyboardSelectionEvent(kbdEvent)) {
       return;
     }
+    addAnalyticsEvent({
+      event: 'sendMatomoEvent',
+      category: 'nearbyStops',
+      stop_type: url.split('/')[2].toLowerCase(),
+    });
     this.context.router.push(url);
   };
 
@@ -259,26 +304,19 @@ class IndexPage extends React.Component {
     const origin = this.pendingOrigin || this.props.origin;
     const destination = this.pendingDestination || this.props.destination;
     const sources = ['Favourite', 'History', 'Datasource'];
-    const stopAndRouteSearchTargets = ['Stops', 'Routes'];
-    const locationSearchTargets = [
-      'Locations',
-      'CurrentPosition',
-      'FutureRoutes',
-      'Stops',
-    ];
+    const stopAndRouteSearchTargets = ['Stations', 'Stops', 'Routes'];
+    const targets = getLocationSearchTargets(config, breakpoint !== 'large');
 
-    if (useCitybikes(config.cityBike?.networks, config)) {
-      stopAndRouteSearchTargets.push('VehicleRentalStations');
-      locationSearchTargets.push('VehicleRentalStations');
+    targets.push('FutureRoutes');
+
+    if (!config.targetsFromOTP) {
+      if (useCitybikes(config.vehicleRental?.networks, config)) {
+        stopAndRouteSearchTargets.push('VehicleRentalStations');
+      }
+      if (config.includeParkAndRideSuggestions) {
+        stopAndRouteSearchTargets.push('ParkingAreas');
+      }
     }
-    if (config.includeParkAndRideSuggestions) {
-      stopAndRouteSearchTargets.push('ParkingAreas');
-      locationSearchTargets.push('ParkingAreas');
-    }
-    const locationSearchTargetsMobile = [
-      ...locationSearchTargets,
-      'MapPosition',
-    ];
 
     const showSpinner =
       (origin.type === 'CurrentLocation' && !origin.address) ||
@@ -290,6 +328,7 @@ class IndexPage extends React.Component {
       destination,
       lang,
       sources,
+      targets,
       color,
       hoverColor,
       accessiblePrimaryColor,
@@ -376,10 +415,7 @@ class IndexPage extends React.Component {
                       defaultMessage="The search is triggered automatically when origin and destination are set. Changing any search parameters triggers a new search"
                     />
                   </span>
-                  <LocationSearch
-                    targets={locationSearchTargets}
-                    {...locationSearchProps}
-                  />
+                  <LocationSearch {...locationSearchProps} />
                   <div className="datetimepicker-container">
                     <DatetimepickerContainer realtime color={color} />
                   </div>
@@ -433,7 +469,6 @@ class IndexPage extends React.Component {
                   <LocationSearch
                     disableAutoFocus
                     isMobile
-                    targets={locationSearchTargetsMobile}
                     {...locationSearchProps}
                   />
                   <div className="datetimepicker-container">
@@ -512,10 +547,7 @@ const IndexPageWithStores = connectToStores(
     newProps.origin = origin;
     newProps.destination = destination;
     newProps.lang = context.getStore('PreferencesStore').getLanguage();
-    newProps.currentTime = context
-      .getStore('TimeStore')
-      .getCurrentTime()
-      .unix();
+    newProps.currentTime = context.getStore('TimeStore').getCurrentTime();
     newProps.query = query; // defines itinerary search time & arriveBy
 
     return newProps;

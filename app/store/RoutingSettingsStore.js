@@ -10,7 +10,6 @@ class RoutingSettingsStore extends Store {
   // eslint-disable-next-line class-methods-use-this
   getRoutingSettings() {
     let settings = getSearchSettingsStorage();
-
     if (!settings) {
       settings = {};
       setSearchSettingsStorage(settings);
@@ -22,7 +21,7 @@ class RoutingSettingsStore extends Store {
     const oldSettings = this.getRoutingSettings();
     const newSettings = { ...oldSettings, ...changedSettings };
     setSearchSettingsStorage(newSettings);
-    this.emitChange(changedSettings);
+    this.emitChange();
   }
 
   static handlers = {

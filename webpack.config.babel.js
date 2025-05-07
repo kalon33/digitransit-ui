@@ -56,7 +56,6 @@ const productionPlugins = [
         '*.png',
         'css/*.css',
         'assets/*.svg',
-        'emitter/*.js',
         'assets/geojson/*.geojson',
         ':externals:',
       ],
@@ -331,7 +330,7 @@ module.exports = {
   },
   devServer: {
     compress: true,
-    host: '0.0.0.0',
+    host: '::1',
     hot: false,
     port: process.env.HOT_LOAD_PORT || 9000,
     devMiddleware: {

@@ -3,8 +3,8 @@ import { configShape, vehicleRentalStationShape } from '../util/shapes';
 import VehicleRentalAvailability from './VehicleRentalAvailability';
 import Icon from './Icon';
 import {
-  getVehicleRentalStationNetworkIcon,
-  getVehicleRentalStationNetworkConfig,
+  getRentalNetworkIcon,
+  getRentalNetworkConfig,
   getVehicleCapacity,
   BIKEAVL_UNKNOWN,
   BIKEAVL_WITHMAX,
@@ -13,7 +13,7 @@ import {
 const VehicleRentalStation = ({ vehicleRentalStation }, { config }) => {
   const vehicleCapacity = getVehicleCapacity(
     config,
-    vehicleRentalStation.network,
+    vehicleRentalStation.rentalNetwork.networkId,
   );
   if (vehicleCapacity === BIKEAVL_UNKNOWN) {
     return null;
@@ -31,11 +31,11 @@ const VehicleRentalStation = ({ vehicleRentalStation }, { config }) => {
     fewerAvailableCount = Math.floor(totalSpaces / 6);
   }
   const disabled = !vehicleRentalStation.operative;
-
-  const vehicleIcon = getVehicleRentalStationNetworkIcon(
-    getVehicleRentalStationNetworkConfig(vehicleRentalStation.network, config),
-    disabled,
+  const networkConfig = getRentalNetworkConfig(
+    vehicleRentalStation.rentalNetwork.networkId,
+    config,
   );
+  const vehicleIcon = getRentalNetworkIcon(networkConfig, disabled);
   return (
     <div className="citybike-content-container">
       <Icon img={vehicleIcon} />
@@ -46,6 +46,7 @@ const VehicleRentalStation = ({ vehicleRentalStation }, { config }) => {
         fewAvailableCount={fewAvailableCount}
         fewerAvailableCount={fewerAvailableCount}
         useSpacesAvailable={vehicleCapacity === BIKEAVL_WITHMAX}
+        type={networkConfig.type}
       />
     </div>
   );

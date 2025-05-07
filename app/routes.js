@@ -15,6 +15,7 @@ import {
   PREFIX_BIKESTATIONS,
   PREFIX_BIKEPARK,
   PREFIX_CARPARK,
+  PREFIX_RENTALVEHICLES,
   createReturnPath,
   TAB_NEARBY,
   TAB_FAVOURITES,
@@ -133,6 +134,8 @@ export default config => {
             /* webpackChunkName: "vehiclepark" */ './component/VehicleParkMapContainer'
           ).then(getDefault)
         }
+        // TODO remove prepareVariables after hsl.fi has updated its vehicle parking addresses
+        prepareVariables={prepareWeekDays}
         query={graphql`
           query routes_VehicleParkMap_Query($id: String!) {
             vehicleParking(id: $id) {
@@ -140,12 +143,7 @@ export default config => {
             }
           }
         `}
-        render={({ Component, props }) => {
-          if (Component) {
-            return <Component {...props} />;
-          }
-          return undefined;
-        }}
+        render={getComponentOrNullRenderer}
       />
     ),
   };
@@ -226,7 +224,7 @@ export default config => {
             <Route
               getComponent={() =>
                 import(
-                  /* webpackChunkName: "nearyou" */ './component/StopsNearYouPage'
+                  /* webpackChunkName: "nearyou" */ './component/nearyou/NearYouPage'
                 ).then(getDefault)
               }
               render={({ Component, props, error }) => {
@@ -246,9 +244,56 @@ export default config => {
               path="(.*)?"
               getComponent={() =>
                 import(
-                  /* webpackChunkName: "itinerary" */ './component/StopsNearYouPageMeta'
+                  /* webpackChunkName: "itinerary" */ './component/nearyou/NearYouPageMeta'
                 ).then(getDefault)
               }
+            />
+          ),
+        }}
+      </Route>
+      <Route path={`/${PREFIX_RENTALVEHICLES}/:id/:networks?`}>
+        {{
+          content: (
+            <Route
+              getComponent={() =>
+                import('./component/RentalVehicleContent').then(getDefault)
+              }
+              query={graphql`
+                query routes_RentalVehicle_Query($id: String!) {
+                  rentalVehicle(id: $id) {
+                    ...RentalVehicleContent_rentalVehicle
+                  }
+                }
+              `}
+              render={({ Component, props, error, retry }) => {
+                if (Component && (props || error)) {
+                  return <Component {...props} error={error} />;
+                }
+                return getComponentOrLoadingRenderer({
+                  Component,
+                  props,
+                  error,
+                  retry,
+                });
+              }}
+            />
+          ),
+          map: (
+            <Route
+              path="(.*)?"
+              getComponent={() =>
+                import('./component/RentalVehiclePageMapContainer').then(
+                  getDefault,
+                )
+              }
+              query={graphql`
+                query routes_RentalVehicleMap_Query($id: String!) {
+                  rentalVehicle(id: $id) {
+                    ...RentalVehiclePageMapContainer_rentalVehicle
+                  }
+                }
+              `}
+              render={getComponentOrNullRenderer}
             />
           ),
         }}
@@ -297,12 +342,7 @@ export default config => {
                       /* webpackChunkName: "loading" */ './component/Loading'
                     ).then(getDefault)
               }
-              render={({ Component, props }) => {
-                if (Component) {
-                  return <Component {...props} />;
-                }
-                return undefined;
-              }}
+              render={getComponentOrNullRenderer}
             >
               {{
                 content: [
@@ -345,7 +385,7 @@ export default config => {
         path={config.URL.EMBEDDED_SEARCH_GENERATION}
         getComponent={() =>
           import(
-            /* webpackChunkName: "embedded-search-generator" */ './component/EmbeddedSearchGenerator'
+            /* webpackChunkName: "embedded-search-generator" */ './component/embedded/EmbeddedSearchGenerator'
           ).then(getDefault)
         }
       />
@@ -353,7 +393,7 @@ export default config => {
         path={EMBEDDED_SEARCH_PATH}
         getComponent={() =>
           import(
-            /* webpackChunkName: "embedded-search" */ './component/EmbeddedSearchContainer'
+            /* webpackChunkName: "embedded-search" */ './component/embedded/EmbeddedSearchContainer'
           ).then(getDefault)
         }
         topBarOptions={{ hidden: true }}

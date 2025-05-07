@@ -1,14 +1,14 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import React from 'react';
-
+import { mockContext } from '../helpers/mock-context';
 import { shallowWithIntl } from '../helpers/mock-intl-enzyme';
 import {
   AlertSeverityLevelType,
   AlertEntityType,
 } from '../../../app/constants';
 import AlertList from '../../../app/component/AlertList';
-import StopAlerts from '../../../app/component/StopAlerts';
+import StopAlerts from '../../../app/component/stop/StopAlerts';
 
 describe('<StopAlerts />', () => {
   it("should indicate that there are no alerts if the stop's routes have no alerts and the stop has no canceled stoptimes", () => {
@@ -41,7 +41,9 @@ describe('<StopAlerts />', () => {
         ],
       },
     };
-    const wrapper = shallowWithIntl(<StopAlerts {...props} />);
+    const wrapper = shallowWithIntl(<StopAlerts {...props} />, {
+      context: { ...mockContext },
+    });
     expect(wrapper.find(AlertList).props()).to.deep.equal({
       cancelations: [],
       serviceAlerts: [],
@@ -73,7 +75,9 @@ describe('<StopAlerts />', () => {
         ],
       },
     };
-    const wrapper = shallowWithIntl(<StopAlerts {...props} />);
+    const wrapper = shallowWithIntl(<StopAlerts {...props} />, {
+      context: { ...mockContext },
+    });
     expect(wrapper.find(AlertList).prop('serviceAlerts')).to.have.lengthOf(1);
   });
 
@@ -107,7 +111,9 @@ describe('<StopAlerts />', () => {
         ],
       },
     };
-    const wrapper = shallowWithIntl(<StopAlerts {...props} />);
+    const wrapper = shallowWithIntl(<StopAlerts {...props} />, {
+      context: { ...mockContext },
+    });
     expect(wrapper.find(AlertList).prop('cancelations')).to.have.lengthOf(1);
   });
 
@@ -132,7 +138,9 @@ describe('<StopAlerts />', () => {
         stoptimes: [],
       },
     };
-    const wrapper = shallowWithIntl(<StopAlerts {...props} />);
+    const wrapper = shallowWithIntl(<StopAlerts {...props} />, {
+      context: { ...mockContext },
+    });
     expect(wrapper.find(AlertList).prop('serviceAlerts')).to.have.lengthOf(1);
   });
 });

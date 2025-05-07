@@ -76,7 +76,9 @@ export default class Line extends React.Component {
     let filteredPoints;
     if (this.props.geometry) {
       filteredPoints = this.props.geometry.filter(
-        point => point.lat !== null && point.lon !== null,
+        point =>
+          (typeof point.lat === 'number' && typeof point.lon === 'number') ||
+          (typeof point[0] === 'number' && typeof point[1] === 'number'),
       );
     }
 
@@ -96,6 +98,13 @@ export default class Line extends React.Component {
 
     if (this.props.mode === 'walk') {
       legWeight *= 0.8;
+    }
+    if (this.props.mode === 'walk-inside') {
+      legWeight *= 0.8;
+    }
+    if (this.props.mode === 'ferry-external') {
+      haloWeight *= 0.6;
+      legWeight *= 0.6;
     }
     if (this.props.passive) {
       haloWeight *= 0.5;

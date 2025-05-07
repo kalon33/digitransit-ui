@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import PropTypes from 'prop-types';
 import { PlannerMessageType } from '../constants';
 
@@ -94,9 +93,28 @@ export const parkShape = PropTypes.shape({
 export const vehicleRentalStationShape = PropTypes.shape({
   availableVehicles: PropTypes.shape({ total: PropTypes.number }),
   availableSpaces: PropTypes.shape({ total: PropTypes.number }),
-  network: PropTypes.string,
+  rentalNetwork: PropTypes.shape({
+    networkId: PropTypes.string,
+  }),
   capacity: PropTypes.number,
   operative: PropTypes.bool,
+});
+
+export const rentalVehicleShape = PropTypes.shape({
+  id: PropTypes.string,
+  vehicleId: PropTypes.string,
+  name: PropTypes.string,
+  lat: PropTypes.number,
+  lon: PropTypes.number,
+  rentalUris: PropTypes.shape({
+    android: PropTypes.string,
+    ios: PropTypes.string,
+    web: PropTypes.string,
+  }),
+  rentalNetwork: PropTypes.shape({
+    url: PropTypes.string,
+    networkId: PropTypes.string,
+  }),
 });
 
 export const routeShape = PropTypes.shape({
@@ -188,6 +206,11 @@ export const legTimeShape = PropTypes.shape({
   estimated: PropTypes.shape({ time: PropTypes.string }),
 });
 
+export const entranceShape = PropTypes.shape({
+  publicCode: PropTypes.string,
+  wheelchairAccessible: PropTypes.string,
+});
+
 export const legShape = PropTypes.shape({
   start: legTimeShape,
   end: legTimeShape,
@@ -200,15 +223,24 @@ export const legShape = PropTypes.shape({
   trip: tripShape,
   agency: agencyShape,
   fare: fareShape,
+  steps: PropTypes.arrayOf(
+    PropTypes.shape({
+      entrance: entranceShape,
+      lat: PropTypes.number,
+      lon: PropTypes.number,
+    }),
+  ),
   from: PropTypes.shape({
     name: PropTypes.string,
     stop: stopShape,
     vehicleRentalStation: vehicleRentalStationShape,
+    rentalVehicle: rentalVehicleShape,
   }),
   to: PropTypes.shape({
     name: PropTypes.string,
     stop: stopShape,
     vehicleRentalStation: vehicleRentalStationShape,
+
     bikePark: parkShape,
     carPark: parkShape,
   }),
@@ -217,7 +249,6 @@ export const legShape = PropTypes.shape({
   intermediatePlaces: PropTypes.arrayOf(
     PropTypes.shape({
       arrival: legTimeShape,
-      stop: stopShape.isRequired,
     }),
   ),
   interlineWithPreviousLeg: PropTypes.bool,
@@ -381,3 +412,10 @@ export const vehicleShape = PropTypes.shape({
   heading: PropTypes.number,
   headsign: PropTypes.string,
 });
+
+export const minTransferTimeShape = PropTypes.arrayOf(
+  PropTypes.shape({
+    title: PropTypes.string,
+    value: PropTypes.number,
+  }),
+);

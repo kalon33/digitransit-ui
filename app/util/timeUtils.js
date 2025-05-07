@@ -25,18 +25,20 @@ export function isTomorrow(startTime, refTime) {
 
 // renders trip duration to string
 // input: time duration - milliseconds
-export function durationToString(inDuration) {
-  const duration = moment.duration(inDuration);
-  if (duration.asHours() >= 1) {
-    return `${
-      duration.hours() + duration.days() * 24
-    } h ${duration.minutes()} min`;
+export function durationToString(durationMs) {
+  const dur = Math.max(durationMs, 0);
+  const hours = Math.floor(dur / 3600000);
+  const mins = Math.floor(dur / 60000 - hours * 60);
+  if (hours >= 1) {
+    if (mins > 0) {
+      return `${hours} h ${mins} min`;
+    }
+    return `${hours} h`;
   }
-  if (duration.minutes() < 1) {
-    return `< 1 min`;
+  if (mins < 1) {
+    return '< 1 min';
   }
-
-  return `${duration.minutes()} min`;
+  return `${mins} min`;
 }
 
 /**
@@ -125,7 +127,46 @@ export function getFormattedTimeDate(startTime, pattern) {
 /**
  * Epoch ms to 'hh:mm'
  */
-export function timeStr(ms) {
-  const parts = new Date(ms).toTimeString().split(':');
+export function epochToTime(ms, config) {
+  const time = new Date(ms).toLocaleTimeString('en-GB', {
+    timeZone: config.timeZone,
+  });
+  const parts = time.split(':');
   return `${parts[0]}:${parts[1]}`;
+}
+
+/**
+ * Unix time (from epoch milliseconds if given)
+ */
+export function unixTime(ms) {
+  const t = ms || Date.now();
+  return Math.floor(t / 1000);
+}
+
+/**
+ * Unix to 'YYYYMMDD'
+ */
+export function unixToYYYYMMDD(s, config) {
+  const date = new Date(s * 1000).toLocaleDateString('en-GB', {
+    timeZone: config.timeZone,
+  });
+  const parts = date.split('/');
+  return `${parts[2]}${parts[1]}${parts[0]}`;
+}
+
+/**
+ * ISO-8601/RFC3339 datetime str to 'hh:mm'
+ */
+export function timeStr(dateTime) {
+  // e.g. "2024-06-13T14:30+03:00"
+  const parts = dateTime.split('T');
+  const time = parts[1].split(':');
+  return `${time[0]}:${time[1]}`;
+}
+
+/**
+ * Epoch ms to ISO-8601/RFC3339 datetime str
+ */
+export function epochToIso(ms) {
+  return moment(ms).format();
 }

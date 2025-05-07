@@ -7,95 +7,114 @@ import { isInBoundingBox } from './geo-utils';
 import { addAnalyticsEvent } from './analyticsUtils';
 import { ExtendedRouteTypes, TransportMode } from '../constants';
 import { isDevelopmentEnvironment } from './envUtils';
+import { getFeedWithoutId, isExternalFeed } from './feedScopedIdUtils';
+
+function seasonMs(ddmmyyyy) {
+  const parts = ddmmyyyy.split('.');
+  const year = parts.length > 2 ? parts[2] : new Date().getFullYear();
+  return new Date(year, parts[1] - 1, parts[0]).valueOf();
+}
+
+const dayMs = 24 * 60 * 60 * 1000;
 
 export function isCitybikeSeasonActive(season) {
   if (!season) {
     return false;
   }
-  const now = Date.now();
-
-  if (now <= season.end.getTime() && now >= season.start.getTime()) {
+  if (season.alwaysOn) {
     return true;
   }
-  return false;
+  const now = Date.now();
+  return now <= seasonMs(season.end) + dayMs && now >= seasonMs(season.start);
 }
 
 export function isCitybikePreSeasonActive(season) {
-  if (!season || !season.preSeasonStart) {
+  if (!season.start || !season.preSeasonStart) {
     return false;
   }
   const now = Date.now();
-
-  if (now <= season.start.getTime() && now >= season.preSeasonStart.getTime()) {
-    return true;
-  }
-  return false;
+  return (
+    now <= seasonMs(season.start) + dayMs &&
+    now >= seasonMs(season.preSeasonStart)
+  );
 }
 
-export function showCitybikeNetwork(network, config) {
+export function showCitybikeNetwork(networkConfig, config) {
   return (
-    network?.enabled &&
-    (isCitybikeSeasonActive(network?.season) ||
-      isCitybikePreSeasonActive(network?.season) ||
+    networkConfig?.enabled &&
+    networkConfig.type === 'citybike' &&
+    (isCitybikeSeasonActive(networkConfig?.season) ||
+      isCitybikePreSeasonActive(networkConfig?.season) ||
       isDevelopmentEnvironment(config))
   );
 }
 
-export function citybikeRoutingIsActive(network, config) {
-  return (
-    network?.enabled &&
-    (isCitybikeSeasonActive(network?.season) ||
-      isDevelopmentEnvironment(config))
-  );
-}
-
-export function networkIsActive(config, networkName) {
-  const networks = config?.cityBike?.networks;
-  return citybikeRoutingIsActive(networks[networkName], config);
+export function networkIsActive(network) {
+  return network?.enabled && isCitybikeSeasonActive(network?.season);
 }
 
 export function useCitybikes(networks, config) {
   if (!networks) {
     return false;
   }
-  return Object.values(networks).some(network =>
-    citybikeRoutingIsActive(network, config),
+  return Object.values(networks).some(
+    network =>
+      network.type === TransportMode.Citybike.toLowerCase() &&
+      networkIsActive(network, config),
   );
 }
 
-export function showCityBikes(networks, config) {
+export function useScooters(networks) {
   if (!networks) {
     return false;
   }
-  return Object.values(networks).some(network =>
-    showCitybikeNetwork(network, config),
+  return Object.values(networks).some(
+    network =>
+      network.type === TransportMode.Scooter.toLowerCase() && network.enabled,
+  );
+}
+
+export function showRentalVehiclesOfType(networks, config, type) {
+  if (!networks) {
+    return false;
+  }
+  return Object.values(networks).some(
+    network =>
+      network.type === type.toLowerCase() &&
+      network.enabled &&
+      (network.showRentalVehicles || showCitybikeNetwork(network, config)),
   );
 }
 
 export function getNearYouModes(config) {
-  if (!config.cityBike?.networks) {
+  if (!config.vehicleRental?.networks) {
     return config.nearYouModes;
   }
-  if (!useCitybikes(config.cityBike.networks, config)) {
+  if (!useCitybikes(config.vehicleRental.networks, config)) {
     return config.nearYouModes.filter(mode => mode !== 'citybike');
   }
   return config.nearYouModes;
 }
 
 export function getTransportModes(config) {
-  if (
-    config.cityBike?.networks &&
-    !useCitybikes(config.cityBike.networks, config)
-  ) {
-    return {
-      ...config.transportModes,
-      ...{ citybike: { availableForSelection: false } },
-    };
+  let citybikeConfig = {};
+  let scooterConfig = {};
+  if (config.vehicleRental?.networks) {
+    if (!useCitybikes(config.vehicleRental.networks, config)) {
+      citybikeConfig = { citybike: { availableForSelection: false } };
+    }
+    if (!useScooters(config.vehicleRental.networks)) {
+      scooterConfig = { scooter: { availableForSelection: false } };
+    }
   }
-  return config.transportModes || {};
+  return {
+    ...config.transportModes,
+    ...citybikeConfig,
+    ...scooterConfig,
+  };
 }
 
-export function getRouteMode(route) {
+export function getRouteMode(route, config) {
   switch (route.type) {
     case ExtendedRouteTypes.BusExpress:
       return 'bus-express';
@@ -103,8 +122,12 @@ export function getRouteMode(route) {
       return 'bus-local';
     case ExtendedRouteTypes.SpeedTram:
       return 'speedtram';
+    case ExtendedRouteTypes.CallAgency:
+      return 'call';
     default:
-      return route.mode?.toLowerCase();
+      return isExternalFeed(getFeedWithoutId(route?.gtfsId), config)
+        ? `${route.mode?.toLowerCase()}-external`
+        : route.mode?.toLowerCase();
   }
 }
 
@@ -123,10 +146,13 @@ export function getAvailableTransportModeConfigs(config) {
     : [];
 }
 
-export function getDefaultModes(config) {
+export function getTransitModes(config) {
   return getAvailableTransportModeConfigs(config)
-    .filter(tm => tm.defaultValue)
-    .map(tm => tm.name);
+    .filter(
+      tm => tm.defaultValue && tm.name !== 'scooter' && tm.name !== 'citybike',
+    )
+    .map(tm => tm.name)
+    .sort();
 }
 
 /**
@@ -137,22 +163,6 @@ export function getDefaultModes(config) {
  */
 export function getAvailableTransportModes(config) {
   return getAvailableTransportModeConfigs(config).map(tm => tm.name);
-}
-
-/**
- * Retrieves the related OTP mode from the given configuration, if available.
- * This will return undefined if the given mode cannot be mapped.
- *
- * @param {*} config The configuration for the software installation
- * @param {String} mode The mode to map
- * @returns The mapped mode, or undefined
- */
-export function getOTPMode(config, mode) {
-  if (!isString(mode)) {
-    return undefined;
-  }
-  const otpMode = config.modeToOTP[mode.toLowerCase()];
-  return otpMode ? otpMode.toUpperCase() : undefined;
 }
 
 /**
@@ -220,7 +230,6 @@ export function filterModes(config, modes, from, to, intermediatePlaces) {
           ...intermediatePlaces,
         ]),
       )
-      .map(mode => getOTPMode(config, mode))
       .filter(mode => !!mode)
       .sort(),
   );
@@ -228,7 +237,7 @@ export function filterModes(config, modes, from, to, intermediatePlaces) {
 
 /**
  * Giving user an option to change mode settings when there are no
- * alternative options does not makse sense. This function checks
+ * alternative options does not make sense. This function checks
  * if there are at least two available transport modes
  *
  * @param {*} config
@@ -239,38 +248,21 @@ export function showModeSettings(config) {
 }
 
 /**
- * Retrieves all transport modes and returns the currently available
+ * Retrieves all transit modes and returns the currently available
  * If user has no ability to change mode settings, always use default modes.
  *
  * @param {*} config The configuration for the software
  * @returns {String[]} returns user set modes or default modes
  */
 export function getModes(config) {
-  const { modes, allowedBikeRentalNetworks } = getCustomizedSettings();
-  const activeAndAllowedBikeRentalNetworks = allowedBikeRentalNetworks
-    ? allowedBikeRentalNetworks.filter(x => networkIsActive(config, x))
-    : [];
-  if (showModeSettings(config) && Array.isArray(modes) && modes.length > 0) {
+  const { modes } = getCustomizedSettings();
+  if (showModeSettings(config) && Array.isArray(modes)) {
     const transportModes = modes.filter(mode =>
       isTransportModeAvailable(config, mode),
     );
-    if (
-      activeAndAllowedBikeRentalNetworks &&
-      activeAndAllowedBikeRentalNetworks.length > 0 &&
-      transportModes.indexOf(TransportMode.Citybike) === -1
-    ) {
-      transportModes.push(TransportMode.Citybike);
-    }
     return transportModes;
   }
-  const defaultModes = getDefaultModes(config);
-  if (
-    Array.isArray(activeAndAllowedBikeRentalNetworks) &&
-    activeAndAllowedBikeRentalNetworks.length > 0
-  ) {
-    defaultModes.push(TransportMode.Citybike);
-  }
-  return defaultModes;
+  return getTransitModes(config);
 }
 
 /**
@@ -294,21 +286,4 @@ export function toggleTransportMode(transportMode, config) {
   });
   const modes = xor(getModes(config), [transportMode.toUpperCase()]);
   return modes;
-}
-
-/**
- * Transforms array of mode strings into modern format OTP mode objects
- *
- * @param {String[]} modes modes to filter from
- * @returns {Object[]} array of objects of format
- * {mode: <uppercase mode name>}, qualifier: <optional qualifier>}
- */
-export function modesAsOTPModes(modes) {
-  return modes
-    .map(mode => mode.split('_'))
-    .map(modeAndQualifier =>
-      modeAndQualifier.length > 1
-        ? { mode: modeAndQualifier[0], qualifier: modeAndQualifier[1] }
-        : { mode: modeAndQualifier[0] },
-    );
 }

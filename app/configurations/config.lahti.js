@@ -5,7 +5,6 @@ import { BIKEAVL_BIKES } from '../util/vehicleRentalUtils';
 const CONFIG = 'lahti';
 const APP_TITLE = 'LSL reittiopas';
 const APP_DESCRIPTION = 'Lahden seudun liikenteen reittiopas';
-
 const walttiConfig = require('./config.waltti').default;
 
 const minLat = 60.692506;
@@ -149,14 +148,13 @@ export default configMerger(walttiConfig, {
     },
   },
 
-  cityBike: {
+  vehicleRental: {
     networks: {
       freebike_lahti: {
         enabled: true,
         season: {
-          // 24.4. - 17.11.
-          start: new Date(new Date().getFullYear(), 3, 24),
-          end: new Date(new Date().getFullYear(), 10, 18),
+          start: '24.4',
+          end: '17.11',
         },
         capacity: BIKEAVL_BIKES,
         icon: 'citybike',
@@ -174,4 +172,10 @@ export default configMerger(walttiConfig, {
       },
     },
   },
+
+  showTicketInformation: true,
+  useTicketIcons: true,
+  ticketLink: 'https://www.lsl.fi/liput-ja-hinnat/',
+  showTicketPrice: false,
+  ticketLinkOperatorCode: 50223,
 });

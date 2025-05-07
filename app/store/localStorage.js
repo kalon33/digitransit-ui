@@ -83,7 +83,14 @@ export function removeItem(k) {
 }
 
 export function getCustomizedSettings() {
-  return getItemAsJson('customizedSettings', '{}');
+  const settings = getItemAsJson('customizedSettings', '{}');
+  // remove outdated settings
+  if (settings.modes) {
+    settings.modes = settings.modes.filter(
+      mode => mode !== 'CITYBIKE' && mode !== 'SCOOTER',
+    );
+  }
+  return settings;
 }
 
 const getNumberValueOrDefault = (value, defaultValue) =>
@@ -97,7 +104,7 @@ export function setCustomizedSettings(data) {
   const oldSettings = getCustomizedSettings();
 
   const newSettings = {
-    accessibilityOption: getNumberValueOrDefault(
+    accessibilityOption: getValueOrDefault(
       data.accessibilityOption,
       oldSettings.accessibilityOption,
     ),
@@ -121,6 +128,10 @@ export function setCustomizedSettings(data) {
       data.allowedBikeRentalNetworks,
       oldSettings.allowedBikeRentalNetworks,
     ),
+    scooterNetworks: getValueOrDefault(
+      data.scooterNetworks,
+      oldSettings.scooterNetworks,
+    ),
     includeBikeSuggestions: getValueOrDefault(
       data.includeBikeSuggestions,
       oldSettings.includeBikeSuggestions,
@@ -138,7 +149,12 @@ export function setCustomizedSettings(data) {
       oldSettings.showBikeAndParkItineraries,
     ),
   };
-
+  if (newSettings.modes) {
+    // cleanup
+    newSettings.modes = newSettings.modes.filter(
+      mode => mode !== 'CITYBIKE' && mode !== 'SCOOTER',
+    );
+  }
   setItem('customizedSettings', newSettings);
 }
 
@@ -185,8 +201,14 @@ export function getFavouriteRoutesStorage() {
   return getItemAsJson('favouriteRoutes');
 }
 
+const filterOld = ['SelectFromMap', 'SelectFromOwnLocations', 'back'];
+
 export function getOldSearchesStorage() {
-  return getItemAsJson('saved-searches', '{"items": []}');
+  const storage = getItemAsJson('saved-searches', '{"items": []}');
+  return {
+    ...storage,
+    items: storage.items.filter(s => !filterOld.includes(s.item.address)),
+  };
 }
 
 export function setOldSearchesStorage(data) {
@@ -264,3 +286,23 @@ export function setSavedGeolocationPermission(key, value) {
     [key]: value,
   });
 }
+
+export const setLatestNavigatorItinerary = value => {
+  setItem('latestNavigatorItinerary', value);
+};
+
+export const getLatestNavigatorItinerary = () => {
+  return getItemAsJson('latestNavigatorItinerary', '{}');
+};
+
+export const clearLatestNavigatorItinerary = () => {
+  setItem('latestNavigatorItinerary', {});
+};
+
+export const updateLatestNavigatorItineraryParams = valueObj => {
+  const itinerary = getItemAsJson('latestNavigatorItinerary', '{}');
+  setItem('latestNavigatorItinerary', {
+    itinerary: itinerary.itinerary,
+    params: { ...itinerary.params, ...valueObj },
+  });
+};

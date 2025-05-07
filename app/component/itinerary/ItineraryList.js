@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { createFragmentContainer, graphql } from 'react-relay';
+import { useFragment } from 'react-relay';
 import { FormattedMessage } from 'react-intl';
 import cx from 'classnames';
 import { matchShape } from 'found';
@@ -8,13 +8,18 @@ import { configShape, planEdgeShape } from '../../util/shapes';
 import Icon from '../Icon';
 import Itinerary from './Itinerary';
 import { isBrowser } from '../../util/browser';
-import { getExtendedMode, showBikeBoardingNote } from '../../util/legUtils';
+import {
+  getExtendedMode,
+  showBikeBoardingNote,
+  showCarBoardingNote,
+} from '../../util/legUtils';
 import ItineraryListHeader from './ItineraryListHeader';
 import ItinerariesNotFound from './ItinerariesNotFound';
 import Loading from '../Loading';
 import FeedbackPrompt from './FeedbackPrompt';
 import { streetHash } from '../../util/path';
 import { getIntermediatePlaces } from '../../util/otpStrings';
+import { ItineraryListPlanEdges } from './queries/ItineraryListPlanEdges';
 
 const spinnerPosition = {
   top: 'top',
@@ -23,13 +28,15 @@ const spinnerPosition = {
 
 function ItineraryList(
   {
-    planEdges,
+    planEdges: planEdgesRef,
     activeIndex,
     onSelect,
     onSelectImmediately,
     searchTime,
     bikeParkItineraryCount,
+    carDirectItineraryCount,
     showRelaxedPlanNotifier,
+    showRentalVehicleNotifier,
     separatorPosition,
     loadingMore,
     routingFeedbackPosition,
@@ -40,6 +47,8 @@ function ItineraryList(
   const { config } = context;
   const { location } = context.match;
   const { hash } = context.match.params;
+
+  const planEdges = useFragment(ItineraryListPlanEdges, planEdgesRef);
 
   const co2s = planEdges
     .filter(e => e.node.emissionsPerPerson?.co2 >= 0)
@@ -110,6 +119,34 @@ function ItineraryList(
       );
     }
   }
+  if (hash === streetHash.carAndVehicle) {
+    // carDirectItineraryCount tells how many itineraries in array use the direct mode (should be 1 or 0).
+    if (planEdges.length > carDirectItineraryCount) {
+      // the rest use car + public
+      const mode =
+        getExtendedMode(
+          planEdges[carDirectItineraryCount].node.legs.find(l => l.transitLeg),
+          config,
+        ) || 'ferry';
+      const legs = planEdges
+        .slice(carDirectItineraryCount)
+        .flatMap(edge => edge.node.legs);
+      const showCarBoardingInfo = legs.some(leg =>
+        showCarBoardingNote(leg, config),
+      );
+
+      summaries.splice(
+        carDirectItineraryCount,
+        0,
+        <ItineraryListHeader
+          translationId={`itinerary-summary.carAndPublic-${mode}-title`}
+          defaultMessage="Take your car with you onboard"
+          key="itinerary-summary.carandpublic-title"
+          showCarBoardingInfo={showCarBoardingInfo}
+        />,
+      );
+    }
+  }
   if (separatorPosition) {
     summaries.splice(
       separatorPosition,
@@ -142,6 +179,30 @@ function ItineraryList(
               id="no-route-showing-alternative-options"
               defaultMessage="No routes with current settings found. Here are some alternative options:"
             />
+          </div>
+        </div>
+      )}
+      {showRentalVehicleNotifier && (
+        <div
+          className={cx(
+            'flex-horizontal',
+            'alternative-vehicle-info',
+            'summary-notification',
+          )}
+        >
+          <Icon className="info-icon" img="icon-icon_info" />
+          <div>
+            <div className="alternative-vehicle-info-header">
+              <FormattedMessage id="no-route-msg" />
+            </div>
+            <div className="alternative-vehicle-info-content">
+              <FormattedMessage
+                id="e-scooter-alternative"
+                values={{
+                  paymentInfo: <FormattedMessage id="payment-info-e-scooter" />,
+                }}
+              />
+            </div>
           </div>
         </div>
       )}
@@ -179,7 +240,9 @@ ItineraryList.propTypes = {
   onSelect: PropTypes.func.isRequired,
   onSelectImmediately: PropTypes.func.isRequired,
   bikeParkItineraryCount: PropTypes.number,
+  carDirectItineraryCount: PropTypes.number,
   showRelaxedPlanNotifier: PropTypes.bool,
+  showRentalVehicleNotifier: PropTypes.bool,
   separatorPosition: PropTypes.number,
   loadingMore: PropTypes.string,
   routingFeedbackPosition: PropTypes.number,
@@ -187,8 +250,10 @@ ItineraryList.propTypes = {
 
 ItineraryList.defaultProps = {
   bikeParkItineraryCount: 0,
+  carDirectItineraryCount: 0,
   planEdges: [],
   showRelaxedPlanNotifier: false,
+  showRentalVehicleNotifier: false,
   separatorPosition: undefined,
   loadingMore: undefined,
   routingFeedbackPosition: undefined,
@@ -199,29 +264,4 @@ ItineraryList.contextTypes = {
   match: matchShape.isRequired,
 };
 
-const containerComponent = createFragmentContainer(ItineraryList, {
-  planEdges: graphql`
-    fragment ItineraryList_planEdges on PlanEdge @relay(plural: true) {
-      node {
-        ...Itinerary_itinerary
-        emissionsPerPerson {
-          co2
-        }
-        legs {
-          transitLeg
-          mode
-          route {
-            mode
-            type
-          }
-        }
-      }
-    }
-  `,
-});
-
-export {
-  containerComponent as default,
-  ItineraryList as Component,
-  spinnerPosition,
-};
+export { ItineraryList as default, spinnerPosition };

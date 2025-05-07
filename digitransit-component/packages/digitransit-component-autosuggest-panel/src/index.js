@@ -261,6 +261,7 @@ class DTAutosuggestPanel extends React.Component {
     isEmbedded: PropTypes.bool,
     showSwapControl: PropTypes.bool,
     showViapointControl: PropTypes.bool,
+    showSlackControl: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -297,6 +298,7 @@ class DTAutosuggestPanel extends React.Component {
     isEmbedded: false,
     showSwapControl: false,
     showViapointControl: false,
+    showSlackControl: false,
   };
 
   constructor(props) {
@@ -519,6 +521,7 @@ class DTAutosuggestPanel extends React.Component {
           list={viaPoints}
           handle={`.${styles['viapoint-before']}`}
           animation={200}
+          disabled={viaPoints.length <= 1}
           setList={items => {
             const newViaPoints = items.filter(vp => !isViaPointEmpty(vp));
             if (newViaPoints.length > 0) {
@@ -535,9 +538,15 @@ class DTAutosuggestPanel extends React.Component {
                 <div className={styles.row}>
                   <div
                     className={styles['viapoint-before']}
-                    style={{ cursor: 'move' }}
+                    style={viaPoints.length > 1 ? { cursor: 'move' } : {}}
                   >
-                    <Icon img="ellipsis" rotate={90} color={this.props.color} />
+                    {viaPoints.length > 1 && (
+                      <Icon
+                        img="ellipsis"
+                        rotate={90}
+                        color={this.props.color}
+                      />
+                    )}
                   </div>
                   <div
                     className={cx(
@@ -566,7 +575,7 @@ class DTAutosuggestPanel extends React.Component {
                       }
                       lang={this.props.lang}
                       sources={this.props.sources}
-                      targets={this.props.targets}
+                      targets={['Stops', 'Stations']}
                       filterResults={this.props.filterResults}
                       getAutoSuggestIcons={this.props.getAutoSuggestIcons}
                       isMobile={this.props.isMobile}
@@ -578,24 +587,26 @@ class DTAutosuggestPanel extends React.Component {
                       showScroll={this.props.showScroll}
                     />
                   </div>
-                  <ItinerarySearchControl
-                    className={styles['add-via-point-slack']}
-                    enabled={this.props.showViapointControl}
-                    onClick={() => this.handleToggleViaPointSlackClick(i)}
-                    onKeyPress={e =>
-                      isKeyboardSelectionEvent(e) &&
-                      this.handleToggleViaPointSlackClick(i)
-                    }
-                    aria-label={i18next.t(
-                      isViaPointSlackTimeInputActive(i)
-                        ? 'add-via-duration-button-label-open'
-                        : 'add-via-duration-button-label-close',
-                      { index: i + 1 },
-                    )}
-                    wide
-                  >
-                    <Icon img="time" color={this.props.color} />
-                  </ItinerarySearchControl>
+                  {this.props.showSlackControl && (
+                    <ItinerarySearchControl
+                      className={styles['add-via-point-slack']}
+                      enabled={this.props.showViapointControl}
+                      onClick={() => this.handleToggleViaPointSlackClick(i)}
+                      onKeyPress={e =>
+                        isKeyboardSelectionEvent(e) &&
+                        this.handleToggleViaPointSlackClick(i)
+                      }
+                      aria-label={i18next.t(
+                        isViaPointSlackTimeInputActive(i)
+                          ? 'add-via-duration-button-label-open'
+                          : 'add-via-duration-button-label-close',
+                        { index: i + 1 },
+                      )}
+                      wide
+                    >
+                      <Icon img="time" color={this.props.color} />
+                    </ItinerarySearchControl>
+                  )}
                 </div>
                 {!isViaPointSlackTimeInputActive(i) &&
                   viaPoints[i] &&
@@ -643,7 +654,7 @@ class DTAutosuggestPanel extends React.Component {
                   index: i + 1,
                 })}
               >
-                <Icon img="close" color={this.props.color} />
+                <Icon img="trash" color={this.props.color} />
               </ItinerarySearchControl>
             </div>
           ))}
@@ -686,7 +697,7 @@ class DTAutosuggestPanel extends React.Component {
               className={cx(styles['add-via-point'], styles.more, {
                 collapsed: viaPoints.length > 4,
               })}
-              enabled={showViapointControl}
+              enabled={showViapointControl && viaPoints.length === 0}
               onClick={() => this.handleAddViaPointClick()}
               onKeyPress={e =>
                 isKeyboardSelectionEvent(e) && this.handleAddViaPointClick()

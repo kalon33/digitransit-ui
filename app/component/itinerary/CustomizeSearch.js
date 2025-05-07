@@ -8,13 +8,29 @@ import FareZoneSelector from './customizesearch/FareZoneSelector';
 import StreetModeSelectorPanel from './customizesearch/StreetModeSelectorPanel';
 import TransportModesSection from './customizesearch/TransportModesSection';
 import WalkingOptionsSection from './customizesearch/WalkingOptionsSection';
+import MinTransferTimeSection from './customizesearch/MinTransferTimeSection';
 import AccessibilityOptionSection from './customizesearch/AccessibilityOptionSection';
 import TransferOptionsSection from './customizesearch/TransferOptionsSection';
-import VehicleRentalStationNetworkSelector from './customizesearch/VehicleRentalStationNetworkSelector';
-import { showModeSettings, useCitybikes } from '../../util/modeUtils';
+import RentalNetworkSelector from './customizesearch/RentalNetworkSelector';
+import ScooterNetworkSelector from './customizesearch/ScooterNetworkSelector';
+import RestoreDefaultSettingSection from './customizesearch/RestoreDefaultSettingSection';
+import { getReadMessageIds, setReadMessageIds } from '../../store/localStorage';
+import { isKeyboardSelectionEvent } from '../../util/browser';
+import {
+  showModeSettings,
+  useCitybikes,
+  useScooters,
+} from '../../util/modeUtils';
 import ScrollableWrapper from '../ScrollableWrapper';
-import { getDefaultSettings } from '../../util/planParamUtil';
-import { getVehicleRentalStationNetworks } from '../../util/vehicleRentalUtils';
+import {
+  getDefaultSettings,
+  hasCustomizedSettings,
+} from '../../util/planParamUtil';
+import {
+  getCitybikeNetworks,
+  getScooterNetworks,
+  RentalNetworkType,
+} from '../../util/vehicleRentalUtils';
 
 class CustomizeSearch extends React.Component {
   static contextTypes = {
@@ -33,6 +49,19 @@ class CustomizeSearch extends React.Component {
   };
 
   defaultSettings = getDefaultSettings(this.context.config);
+
+  state = {
+    showEScooterDisclaimer: !getReadMessageIds().includes(
+      'e_scooter_settings_disclaimer',
+    ),
+  };
+
+  handleEScooterDisclaimerClose = () => {
+    const readMessageIds = getReadMessageIds() || [];
+    readMessageIds.push('e_scooter_settings_disclaimer');
+    setReadMessageIds(readMessageIds);
+    this.setState({ showEScooterDisclaimer: false }); // ????
+  };
 
   render() {
     const { config, intl } = this.context;
@@ -58,6 +87,7 @@ class CustomizeSearch extends React.Component {
     ) : (
       <Icon className="close-icon" img="icon-icon_close" />
     );
+    const userHasCustomizedSettings = hasCustomizedSettings(config);
     return (
       <form className="customize-search">
         <button
@@ -83,10 +113,15 @@ class CustomizeSearch extends React.Component {
         </button>
         <div className="settings-option-container">
           <h2>
-            {intl.formatMessage({
-              id: 'settings',
-              defaultMessage: 'Settings',
-            })}
+            {intl.formatMessage(
+              {
+                id: 'settings',
+                defaultMessage: 'Settings',
+              },
+              {
+                changedSettingsIndicator: userHasCustomizedSettings ? '' : '', // Indicator coming later
+              },
+            )}
           </h2>
         </div>
         <ScrollableWrapper>
@@ -104,6 +139,13 @@ class CustomizeSearch extends React.Component {
                 <TransportModesSection config={config} />
               </div>
             )}
+            {config.minTransferTimeSelection && (
+              <MinTransferTimeSection
+                minTransferTimeOptions={config.minTransferTimeSelection}
+                currentSettings={currentSettings}
+                defaultSettings={this.defaultSettings}
+              />
+            )}
             <div className="settings-option-container">
               <TransferOptionsSection
                 defaultSettings={this.defaultSettings}
@@ -112,7 +154,7 @@ class CustomizeSearch extends React.Component {
               />
             </div>
           </div>
-          {useCitybikes(config?.cityBike?.networks, config) && (
+          {useCitybikes(config.vehicleRental?.networks, config) && (
             <div className="settings-section">
               <div className="settings-option-container">
                 <fieldset>
@@ -126,8 +168,9 @@ class CustomizeSearch extends React.Component {
                     />
                   </legend>
                   <div className="transport-modes-container">
-                    <VehicleRentalStationNetworkSelector
-                      currentOptions={getVehicleRentalStationNetworks(config)}
+                    <RentalNetworkSelector
+                      currentOptions={getCitybikeNetworks(config) || []}
+                      type={RentalNetworkType.CityBike}
                     />
                   </div>
                 </fieldset>
@@ -155,6 +198,88 @@ class CustomizeSearch extends React.Component {
               />
             </div>
           )}
+          {useScooters(config.vehicleRental?.networks) && (
+            <div className="settings-section">
+              <div className="settings-option-container">
+                <fieldset>
+                  <legend className="settings-header transport-mode-subheader">
+                    <FormattedMessage
+                      id="e-scooters"
+                      defaultMessage={intl.formatMessage({
+                        id: 'e-scooters',
+                        defaultMessage: 'Scooters',
+                      })}
+                    />
+                  </legend>
+                  <div className="transport-modes-container">
+                    {this.state.showEScooterDisclaimer && (
+                      <div className="e-scooter-disclaimer">
+                        <div className="disclaimer-header">
+                          <FormattedMessage id="settings-e-scooter-routes" />
+                          <div
+                            className="disclaimer-close"
+                            aria-label={intl.formatMessage({
+                              id: 'e-scooter-disclaimer-close',
+                              defaultMessage: 'close',
+                            })}
+                            tabIndex="0"
+                            onKeyDown={e => {
+                              if (
+                                isKeyboardSelectionEvent(e) &&
+                                (e.keyCode === 13 || e.keyCode === 32)
+                              ) {
+                                this.handleEScooterDisclaimerClose();
+                              }
+                            }}
+                            onClick={this.handleEScooterDisclaimerClose}
+                            role="button"
+                          >
+                            <Icon color="#333" img="icon-icon_close" />
+                          </div>
+                        </div>
+                        <div className="disclaimer-content">
+                          <FormattedMessage
+                            id="settings-e-scooter"
+                            values={{
+                              paymentInfo: (
+                                <FormattedMessage id="payment-info-e-scooter" />
+                              ),
+                            }}
+                          />
+                        </div>
+                        {config.vehicleRental.scooterInfoLink && (
+                          <a
+                            onClick={e => {
+                              e.stopPropagation();
+                            }}
+                            className="external-link"
+                            href={
+                              config.vehicleRental.scooterInfoLink[intl.locale]
+                                .url
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            <FormattedMessage id="read-more" />
+                            <Icon img="icon-icon_external-link-box" />
+                          </a>
+                        )}
+                      </div>
+                    )}
+                    <ScooterNetworkSelector
+                      currentOptions={getScooterNetworks(config) || []}
+                      type={RentalNetworkType.Scooter}
+                    />
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+          )}
+          <div className="settings-section background">
+            <div className="settings-option-container">
+              <RestoreDefaultSettingSection config={config} />
+            </div>
+          </div>
         </ScrollableWrapper>
       </form>
     );

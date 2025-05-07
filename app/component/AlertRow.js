@@ -6,7 +6,6 @@ import React from 'react';
 import { intlShape } from 'react-intl';
 import Link from 'found/Link';
 import { configShape } from '../util/shapes';
-
 import ExternalLink from './ExternalLink';
 import Icon from './Icon';
 import RouteNumber from './RouteNumber';
@@ -98,6 +97,7 @@ export default function AlertRow(
     startTime,
     url,
     index,
+    onClickLink,
   },
   { intl, config },
 ) {
@@ -127,6 +127,7 @@ export default function AlertRow(
           <Link
             onClick={e => {
               e.stopPropagation();
+              onClickLink?.();
             }}
             key={`${gtfsIdList[i]}-${index}`}
             to={`/${PREFIX_ROUTES}/${gtfsIdList[i]}/${PREFIX_STOPS}`}
@@ -147,6 +148,7 @@ export default function AlertRow(
           <Link
             onClick={e => {
               e.stopPropagation();
+              onClickLink?.();
             }}
             key={`${gtfsIdList[i]}-${index}`}
             to={`/${PREFIX_STOPS}/${gtfsIdList[i]}`}
@@ -251,8 +253,9 @@ AlertRow.propTypes = {
   url: PropTypes.string,
   showLinks: PropTypes.bool,
   header: PropTypes.string,
-  feed: PropTypes.string.isRequired,
+  feed: PropTypes.string,
   index: PropTypes.number.isRequired,
+  onClickLink: PropTypes.func,
 };
 
 AlertRow.contextTypes = {
@@ -266,8 +269,10 @@ AlertRow.defaultProps = {
   endTime: undefined,
   severityLevel: undefined,
   startTime: undefined,
+  feed: undefined,
   header: undefined,
   entities: undefined,
   url: undefined,
   showLinks: false,
+  onClickLink: undefined,
 };

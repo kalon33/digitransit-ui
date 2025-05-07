@@ -1,21 +1,21 @@
-import isEqual from 'lodash/isEqual';
-import isEmpty from 'lodash/isEmpty';
-import pick from 'lodash/pick';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
+import isEqual from 'lodash/isEqual';
+import pick from 'lodash/pick';
 import polyline from 'polyline-encoded';
 import SunCalc from 'suncalc';
-import { boundWithMinimumArea } from '../../util/geo-utils';
-import { addAnalyticsEvent } from '../../util/analyticsUtils';
-import { getStartTimeWithColon } from '../../util/timeUtils';
-import { getSettings, getDefaultSettings } from '../../util/planParamUtil';
-import { PlannerMessageType } from '../../constants';
 import {
+  changeRealTimeClientTopics,
   startRealTimeClient,
   stopRealTimeClient,
-  changeRealTimeClientTopics,
 } from '../../action/realTimeClientAction';
+import { PlannerMessageType } from '../../constants';
+import { addAnalyticsEvent } from '../../util/analyticsUtils';
+import { boundWithMinimumArea } from '../../util/geo-utils';
+import { compressLegs, getTotalBikingDistance } from '../../util/legUtils';
 import { getMapLayerOptions } from '../../util/mapLayerUtils';
-import { getTotalBikingDistance, compressLegs } from '../../util/legUtils';
+import { getDefaultSettings, getSettings } from '../../util/planParamUtil';
+import { getStartTimeWithColon } from '../../util/timeUtils';
 
 /**
  * Returns the index of selected itinerary. Attempts to look for
@@ -30,13 +30,25 @@ import { getTotalBikingDistance, compressLegs } from '../../util/legUtils';
 export function getSelectedItineraryIndex(
   { pathname, state } = {},
   edges = [],
-  defaultValue = 0,
 ) {
+  // path defines the selection in detail view
+  const lastURLSegment = pathname?.split('/').pop();
+  if (lastURLSegment !== '') {
+    const index = Number(pathname?.split('/').pop());
+    if (!Number.isNaN(index)) {
+      if (index >= edges.length) {
+        return 0;
+      }
+      return index;
+    }
+  }
+
+  // in summary view, look the location state
   if (state?.selectedItineraryIndex !== undefined) {
     if (state.selectedItineraryIndex < edges.length) {
       return state.selectedItineraryIndex;
     }
-    return defaultValue;
+    return 0;
   }
 
   /*
@@ -44,13 +56,6 @@ export function getSelectedItineraryIndex(
    * page by an external link, we check if an itinerary selection is
    * supplied in URL and make that the selection.
    */
-  const lastURLSegment = Number(pathname?.split('/').pop());
-  if (!Number.isNaN(lastURLSegment)) {
-    if (lastURLSegment >= edges.length) {
-      return defaultValue;
-    }
-    return lastURLSegment;
-  }
 
   return 0;
 }
@@ -82,14 +87,13 @@ export function addFeedbackly(context) {
   }
 }
 
-export function getTopics(config, edges, match) {
+export function getTopics(legs, config) {
   const itineraryTopics = [];
 
-  if (edges.length) {
+  if (legs) {
     const { realTime, feedIds } = config;
-    const selected = edges[getSelectedItineraryIndex(match.location, edges)];
 
-    selected.node.legs.forEach(leg => {
+    legs.forEach(leg => {
       if (leg.transitLeg && leg.trip) {
         const feedId = leg.trip.gtfsId.split(':')[0];
         let topic;
@@ -233,7 +237,7 @@ export function setCurrentTimeToURL(config, match) {
       ...match.location,
       query: {
         ...match.location.query,
-        time: Math.floor(Date.now() / 1000),
+        time: Math.floor(Date.now() / 1000).toString(),
       },
     };
     match.router.replace(newLocation);
@@ -320,7 +324,7 @@ export function getRentalStationsToHideOnMap(
   const objectsToHide = { vehicleRentalStations: [] };
   if (hasVehicleRentalStation) {
     objectsToHide.vehicleRentalStations = selectedItinerary?.legs
-      ?.filter(leg => leg.from?.vehicleRentalStation)
+      ?.filter(leg => leg.from.vehicleRentalStation)
       .map(station => station.from?.vehicleRentalStation.stationId);
   }
   return objectsToHide;
@@ -353,6 +357,48 @@ export function transitEdges(edges) {
   return edges.filter(
     edge => !edge.node.legs.every(leg => STREET_LEG_MODES.includes(leg.mode)),
   );
+}
+
+/**
+ * Filters away itineraries that
+ * 1. don't use scooters
+ * 2. only use scooters (unless allowed by allowDirectScooterJourneys)
+ * 3. use scooters that are not vehicles
+ */
+export function scooterEdges(edges, allowDirectScooterJourneys) {
+  if (!edges) {
+    return [];
+  }
+
+  const filteredEdges = [];
+
+  edges.forEach(edge => {
+    let hasScooterLeg = false;
+    let hasNonScooterLeg = false;
+    let allScooterLegsHaveRentalVehicle = true;
+
+    edge.node.legs.forEach(leg => {
+      if (leg.mode === 'SCOOTER' && leg.from.rentalVehicle) {
+        hasScooterLeg = true;
+      } else if (leg.mode !== 'SCOOTER' && leg.mode !== 'WALK') {
+        hasNonScooterLeg = true;
+      }
+
+      if (leg.mode === 'SCOOTER' && !leg.from.rentalVehicle) {
+        allScooterLegsHaveRentalVehicle = false;
+      }
+    });
+
+    if (
+      hasScooterLeg &&
+      allScooterLegsHaveRentalVehicle &&
+      (hasNonScooterLeg || allowDirectScooterJourneys)
+    ) {
+      filteredEdges.push(edge);
+    }
+  });
+
+  return filteredEdges;
 }
 
 /**
@@ -421,6 +467,93 @@ export function mergeBikeTransitPlans(bikeParkPlan, bikeTransitPlan) {
   };
 }
 
+/**
+ * Parse the car transit plan which possibly includes a direct route.
+ */
+export function parseCarTransitPlan(carTransitPlan) {
+  let carEdges = carTransitPlan?.edges || [];
+  let carDirectItineraryCount = 0;
+  let carPublicItineraryCount = carEdges.length;
+  const maxCarPublicCount = 5;
+
+  if (carEdges.length > 0) {
+    // If the first route is a direct route.
+    if (carEdges?.[0]?.node.legs.every(leg => !leg.transitLeg)) {
+      carDirectItineraryCount = 1;
+      carPublicItineraryCount -= 1;
+    } else if (carEdges.length > maxCarPublicCount) {
+      carPublicItineraryCount = maxCarPublicCount;
+      carEdges = carEdges.slice(0, maxCarPublicCount);
+    }
+  }
+
+  return {
+    searchDateTime: carTransitPlan.searchDateTime,
+    edges: carEdges,
+    carDirectItineraryCount,
+    carPublicItineraryCount,
+  };
+}
+
+export function getSortedEdges(edges, arriveBy) {
+  const sortedEdges = [...edges];
+  sortedEdges.sort((a, b) => {
+    if (a.node.end === b.node.end) {
+      return 0;
+    }
+    if (arriveBy) {
+      return b.node.end > a.node.end ? 1 : -1;
+    }
+    return a.node.end > b.node.end ? 1 : -1;
+  });
+  return sortedEdges;
+}
+
+/**
+ * Combine a scooter edge with the main transit edges.
+ */
+export function mergeScooterTransitPlan(
+  scooterPlan,
+  transitPlan,
+  allowDirectScooterJourneys,
+  arriveBy,
+) {
+  const transitPlanEdges = transitPlan.edges || [];
+  const scooterTransitEdges = scooterEdges(
+    scooterPlan.edges,
+    allowDirectScooterJourneys,
+  );
+  const maxTransitEdges =
+    scooterTransitEdges.length > 0 ? 4 : transitPlanEdges.length;
+
+  // special case: if transitplan only has one walk itinerary, don't show scooter plan if it arrives later.
+  if (
+    transitPlanEdges.length === 1 &&
+    transitPlanEdges[0].node.legs.every(leg => leg.mode === 'WALK') &&
+    transitPlanEdges[0].node.end < scooterTransitEdges[0]?.node.end
+  ) {
+    return transitPlan;
+  }
+
+  return {
+    edges: getSortedEdges(
+      [
+        ...scooterTransitEdges.slice(0, 1),
+        ...transitPlanEdges.slice(0, maxTransitEdges),
+      ],
+      arriveBy,
+    ).map(edge => {
+      return {
+        ...edge,
+        node: {
+          ...edge.node,
+          legs: compressLegs(edge.node.legs),
+        },
+      };
+    }),
+  };
+}
+
 const ITERATION_CANCEL_TIME = 20000; // ms, stop looking for more if something was found
 
 export function quitIteration(plan, newPlan, planParams, startTime) {
@@ -444,3 +577,29 @@ export function quitIteration(plan, newPlan, planParams, startTime) {
   }
   return false;
 }
+
+/**
+ * Enables Navigator assisted journey on itinerary selection if all of the following resolve as true:
+ * - a stored itinerary exists
+ * - the stored itinerary ends in future
+ * - the params stored along itinerary are identical to current URL parameters
+ *
+ * @param {{itinerary: itineraryShape, params: {from: string, to: string, time: number, arriveBy: boolean, index: string}}} itinerary matchContext with URL params
+ * @param {matchShape} match matchContext with URL params
+ * @returns true if Navigator can be initialized with stored itinerary
+ */
+export const isStoredItineraryRelevant = ({ itinerary, params }, match) => {
+  if (!itinerary || !params) {
+    return false;
+  }
+
+  return (
+    Date.parse(itinerary.end) > Date.now() &&
+    params.from === match.params.from &&
+    params.to === match.params.to &&
+    params.time === match.location?.query?.time &&
+    params.arriveBy === match.location?.query?.arriveBy &&
+    params.hash === match.params.hash &&
+    params.secondHash === match.params.secondHash
+  );
+};

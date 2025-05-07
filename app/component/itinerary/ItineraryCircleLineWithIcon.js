@@ -15,6 +15,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
     color: PropTypes.string,
     appendClass: PropTypes.string,
     icon: PropTypes.string,
+    style: PropTypes.shape({}),
   };
 
   static defaultProps = {
@@ -24,6 +25,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
     carPark: false,
     appendClass: undefined,
     icon: undefined,
+    style: {},
   };
 
   state = {
@@ -47,7 +49,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
       return (
         <div className="itinerary-icon-container">
           <Icon
-            img="icon-icon_mapMarker-via"
+            img="icon-icon_mapMarker"
             className="itinerary-icon via via-it"
           />
         </div>
@@ -57,7 +59,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
       return (
         <div className="itinerary-icon-container start">
           <Icon
-            img="icon-icon_mapMarker-from"
+            img="icon-icon_mapMarker"
             className="itinerary-icon from from-it"
           />
         </div>
@@ -103,7 +105,8 @@ class ItineraryCircleLineWithIcon extends React.Component {
 
   render() {
     const topMarker = this.getMarker(true);
-    const legBeforeLineStyle = { color: this.props.color };
+    const bottomMarker = this.getMarker(false);
+    const legBeforeLineStyle = { color: this.props.color, ...this.props.style };
     if (
       isBrowser &&
       (this.props.modeClassName === 'walk' ||
@@ -145,6 +148,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
             this.props.appendClass,
           )}
         />
+        {this.props.modeClassName === 'scooter' && bottomMarker}
       </div>
     );
   }

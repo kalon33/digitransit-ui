@@ -5,13 +5,12 @@ import { BIKEAVL_WITHMAX } from '../util/vehicleRentalUtils';
 const CONFIG = 'kotka';
 const APP_TITLE = 'Kotkan seudun reittiopas';
 const APP_DESCRIPTION = 'Kotkan seudun reittiopas';
-
 const walttiConfig = require('./config.waltti').default;
 
-const minLat = 60.423693;
-const maxLat = 60.688566;
-const minLon = 26.422982;
-const maxLon = 27.739367;
+const minLat = 60.243;
+const maxLat = 60.688;
+const minLon = 26.422;
+const maxLon = 27.738;
 
 export default configMerger(walttiConfig, {
   CONFIG,
@@ -42,16 +41,19 @@ export default configMerger(walttiConfig, {
     citybike: {
       availableForSelection: true,
     },
+    ferry: {
+      availableForSelection: true,
+      defaultValue: true,
+    },
   },
 
-  cityBike: {
+  vehicleRental: {
     networks: {
       donkey_kotka: {
         enabled: true,
         season: {
-          // 28.4. - 31.10.
-          start: new Date(new Date().getFullYear(), 3, 28),
-          end: new Date(new Date().getFullYear(), 10, 1),
+          start: '28.4',
+          end: '31.10',
         },
         capacity: BIKEAVL_WITHMAX,
         icon: 'citybike',
@@ -94,7 +96,7 @@ export default configMerger(walttiConfig, {
   // Navbar logo
   logo: 'kotka/kotka.png',
 
-  feedIds: ['Kotka'],
+  feedIds: ['Kotka', 'KotkaLautat'],
   feedIdFiltering: true,
 
   searchParams: {
@@ -166,8 +168,6 @@ export default configMerger(walttiConfig, {
   zoneIdMapping: {
     1: 'A',
     2: 'B',
-    3: 'C',
-    4: 'D',
   },
   vehicles: true,
   showVehiclesOnStopPage: true,
@@ -175,5 +175,18 @@ export default configMerger(walttiConfig, {
   zones: {
     stops: true,
     itinerary: true,
+  },
+
+  geoJson: {
+    layers: [
+      {
+        name: {
+          fi: 'Vyöhykkeet',
+          sv: 'Zoner',
+          en: 'Zones',
+        },
+        url: '/assets/geojson/kotka_zone_lines_20250114.geojson',
+      },
+    ],
   },
 });

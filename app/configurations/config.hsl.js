@@ -3,22 +3,30 @@ import { BIKEAVL_WITHMAX } from '../util/vehicleRentalUtils';
 
 const CONFIG = 'hsl';
 const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
-const OTP_URL = process.env.OTP_URL || `${API_URL}/routing/v2/routers/hsl/`;
-const MAP_URL =
-  process.env.MAP_URL || 'https://digitransit-dev-cdn-origin.azureedge.net';
+const OTP_URL = process.env.OTP_URL || `${API_URL}/routing/v2/hsl/`;
+const MAP_URL = process.env.MAP_URL || 'https://dev-cdn.digitransit.fi';
 const POI_MAP_PREFIX = `${MAP_URL}/map/v3/hsl`;
 const APP_DESCRIPTION = 'Helsingin seudun liikenteen Reittiopas.';
-
 const HSLTimetables = require('./timetableConfigUtils').default.HSL;
 const HSLParkAndRideUtils = require('../util/ParkAndRideUtils').default.HSL;
 
 const rootLink = process.env.ROOTLINK || 'https://test.hslfi.hsldev.com';
-const BANNER_URL =
-  process.env.BANNER_URL ||
-  'https://test-api.hslfi.hsldev.com/api/v1/banners?site=JourneyPlanner';
-// 'https://content.hsl.fi/api/v1/banners?site=JourneyPlanner';
-const localStorageEmitter =
-  process.env.USE_EMITTER && rootLink + '/local-storage-emitter';
+
+const BANNER_URL = process.env.CONTENT_DOMAIN
+  ? `${process.env.CONTENT_DOMAIN}/api/v1/banners?site=JourneyPlanner`
+  : process.env.BANNER_URL ||
+    'https://cms-test.hslfi.hsldev.com/api/v1/banners?site=JourneyPlanner';
+const SUGGESTION_URL = process.env.CONTENT_DOMAIN
+  ? `${process.env.CONTENT_DOMAIN}/api/v1/search/suggestions`
+  : 'https://content.hsl.fi/api/v1/search/suggestions'; // old url
+
+const IS_DEV =
+  process.env.RUN_ENV === 'development' ||
+  process.env.NODE_ENV !== 'production';
+
+const virtualMonitorBaseUrl = IS_DEV
+  ? 'https://dev-hslmonitori.digitransit.fi'
+  : 'https://omatnaytot.hsl.fi';
 
 export default {
   CONFIG,
@@ -39,6 +47,9 @@ export default {
     REALTIME_RENTAL_STATION_MAP: {
       default: `${POI_MAP_PREFIX}/fi/realtimeRentalStations/`,
     },
+    REALTIME_RENTAL_VEHICLE_MAP: {
+      default: `${POI_MAP_PREFIX}/fi/realtimeRentalVehicles/`,
+    },
     PARK_AND_RIDE_MAP: {
       default: `${POI_MAP_PREFIX}/en/vehicleParking/`,
       sv: `${POI_MAP_PREFIX}/sv/vehicleParking/`,
@@ -53,7 +64,7 @@ export default {
     FONTCOUNTER: 'https://cloud.typography.com/6364294/7432412/css/fonts.css',
     ROOTLINK: rootLink,
     BANNERS: BANNER_URL,
-    HSL_FI_SUGGESTIONS: 'https://content.hsl.fi/api/v1/search/suggestions',
+    HSL_FI_SUGGESTIONS: SUGGESTION_URL,
     EMBEDDED_SEARCH_GENERATION: '/reittiopas-elementti',
     EMISSIONS_INFO: {
       fi: 'https://www.hsl.fi/hsl/sahkobussit/ymparisto-lukuina',
@@ -84,6 +95,7 @@ export default {
   useRoutingFeedbackPrompt: true,
 
   feedIds: ['HSL', 'HSLlautta', 'Sipoo'],
+  externalFeedIds: ['HSLlautta'],
 
   showHSLTracking: false,
   allowLogin: true,
@@ -95,6 +107,22 @@ export default {
     radius: 500,
     bucketSize: 100,
   },
+
+  defaultSettings: {
+    walkSpeed: 1.28,
+  },
+
+  /**
+   * These are used for dropdown selection of values to override the default
+   * settings. This means that values ought to be relative to the current default.
+   * If not, the selection may not make any sense.
+   */
+  defaultOptions: {
+    walkSpeed: [0.69, 0.97, 1.28, 1.67, 2.22],
+  },
+
+  suggestWalkMaxDistance: 12000,
+  suggestBikeMaxDistance: 100000,
 
   omitNonPickups: true,
 
@@ -117,7 +145,7 @@ export default {
   mergeStopsByCode: true,
   useExtendedRouteTypes: true,
   colors: {
-    primary: '#007ac9',
+    primary: '#0074bf',
     accessiblePrimary: '#0074be',
     hover: '#0062a1',
     iconColors: {
@@ -193,6 +221,11 @@ export default {
   transportModes: {
     citybike: {
       availableForSelection: true,
+    },
+    scooter: {
+      availableForSelection: true,
+      defaultValue: false,
+      showIfSelectedForRouting: true,
     },
     airplane: {
       availableForSelection: false,
@@ -293,19 +326,20 @@ export default {
 
   hideExternalOperator: agency => agency.name === 'Helsingin seudun liikenne',
   showTicketInformation: true,
-  ticketInformation: {
-    primaryAgencyName: 'HSL',
+  primaryAgencyName: {
+    fi: 'HSL',
+    sv: 'HRT',
+    en: 'HSL',
   },
 
-  maxNearbyStopAmount: 5,
   maxNearbyStopDistance: {
-    favorite: 100000,
-    bus: 30000,
-    tram: 100000,
-    subway: 100000,
-    rail: 50000,
-    ferry: 100000,
-    citybike: 100000,
+    favorite: 20000,
+    bus: 20000,
+    tram: 20000,
+    subway: 20000,
+    rail: 20000,
+    ferry: 20000,
+    citybike: 20000,
   },
 
   prioritizedStopsNearYou: {
@@ -393,8 +427,6 @@ export default {
     showLayerSelector: false,
     showStopMarkerPopupOnMobile: false,
     showScaleBar: true,
-    attribution:
-      '<a tabindex="-1" href="http://osm.org/copyright">© OpenStreetMap</a>',
     // areBounds is for keeping map and user inside given area
     // HSL region + Lahti
     areaBounds: {
@@ -408,6 +440,8 @@ export default {
   ticketPurchaseLink: function purchaseTicketLink(fare) {
     return `https://open.app.hsl.fi/zoneTicketWizard/TICKET_TYPE_SINGLE_TICKET/${fare.ticketName}/adult/-`;
   },
+  ticketLink: 'https://open.app.hsl.fi/tickets',
+  ticketLinkOperatorCode: 'hsl',
   // mapping fareId from OTP fare identifiers to human readable form
   // in the new HSL zone model, just strip off the prefix 'HSL:'
   fareMapping: function mapHslFareId(fareId) {
@@ -415,6 +449,7 @@ export default {
       ? fareId.substring(fareId.indexOf(':') + 1)
       : '';
   },
+  ticketButtonTextId: 'open-app',
 
   trafficNowLink: {
     fi: 'matkustaminen/liikenne',
@@ -422,20 +457,16 @@ export default {
     sv: 'att-resa/Trafiken-just-nu',
   },
 
-  localStorageEmitter,
-
-  cityBike: {
+  vehicleRental: {
     minZoomStopsNearYou: 10,
     showFullInfo: true,
     networks: {
       smoove: {
         enabled: true,
         season: {
-          // 18.3.
-          preSeasonStart: new Date(new Date().getFullYear(), 2, 18),
-          // 1.4. - 31.10.
-          start: new Date(new Date().getFullYear(), 3, 1),
-          end: new Date(new Date().getFullYear(), 10, 1),
+          preSeasonStart: '18.3',
+          start: '1.4',
+          end: '31.10',
         },
         capacity: BIKEAVL_WITHMAX,
         icon: 'citybike',
@@ -457,15 +488,14 @@ export default {
           en: 'https://www.hsl.fi/en/citybikes/helsinki/instructions#ride',
         },
         timeBeforeSurcharge: 60 * 60,
+        showRentalStations: true,
       },
       vantaa: {
         enabled: true,
         season: {
-          // 18.3.
-          preSeasonStart: new Date(new Date().getFullYear(), 2, 18),
-          // 1.4. - 31.10.
-          start: new Date(new Date().getFullYear(), 3, 1),
-          end: new Date(new Date().getFullYear(), 10, 1),
+          preSeasonStart: '18.3',
+          start: '1.4',
+          end: '31.10',
         },
         capacity: BIKEAVL_WITHMAX,
         icon: 'citybike-secondary',
@@ -486,6 +516,22 @@ export default {
           en: 'https://www.hsl.fi/en/citybikes/vantaa/instructions#ride',
         },
         timeBeforeSurcharge: 120 * 60,
+        showRentalStations: true,
+      },
+      bolt_helsinki: {
+        enabled: true,
+        season: {
+          alwaysOn: true,
+        },
+        icon: 'scooter',
+        name: {
+          fi: 'Bolt',
+          sv: 'Bolt',
+          en: 'Bolt',
+        },
+        type: 'scooter',
+        showRentalVehicles: true,
+        showRentalStations: false,
       },
     },
     buyUrl: {
@@ -493,6 +539,21 @@ export default {
       sv: 'https://www.hsl.fi/sv/stadscyklar?utm_campaign=kaupunkipyorat-omat&utm_source=reittiopas&utm_medium=referral#block-28474',
       en: 'https://www.hsl.fi/en/citybikes?utm_campaign=kaupunkipyorat-omat&utm_source=reittiopas&utm_medium=referral#block-28474',
     },
+    scooterInfoLink: {
+      fi: {
+        text: 'Potkulaudat',
+        url: 'https://www.hsl.fi/reittiopas_potkulaudat',
+      },
+      en: {
+        text: 'Scooters',
+        url: 'https://www.hsl.fi/en/journey_planner_scooters',
+      },
+      sv: {
+        text: 'Elsparkcyklar',
+        url: 'https://www.hsl.fi/sv/reseplaneraren_sparkcyklar',
+      },
+    },
+    maxMinutesToRentalJourneyEnd: 240,
   },
 
   showVehiclesOnItineraryPage: true,
@@ -500,6 +561,7 @@ export default {
   bikeBoardingModes: {
     RAIL: { showNotification: false },
     FERRY: { showNotification: false },
+    SUBWAY: { showNotification: false },
   },
 
   // Notice! Turning on this setting forces the search for car routes (for the CO2 comparison only).
@@ -539,12 +601,11 @@ export default {
   },
 
   showSimilarRoutesOnRouteDropDown: true,
-
   useRealtimeTravellerCapacities: true,
 
   stopCard: {
     header: {
-      virtualMonitorBaseUrl: 'https://omatnaytot.hsl.fi/',
+      virtualMonitorBaseUrl,
     },
   },
 
@@ -709,4 +770,12 @@ export default {
       },
     },
   },
+
+  startSearchFromUserLocation: true,
+
+  navigationLogo: 'hsl/navigator-logo.svg',
+  thumbsUpGraphic: 'hsl/thumbs-up.svg',
+  trafficLightGraphic: 'hsl/traffic-light.svg',
+  naviGeolocationGraphic: 'hsl/geolocation.svg',
+  navigation: true,
 };

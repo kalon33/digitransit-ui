@@ -26,6 +26,7 @@ import {
   PREFIX_TERMINALS,
   PREFIX_CARPARK,
   PREFIX_BIKEPARK,
+  PREFIX_RENTALVEHICLES,
 } from '../../../util/path';
 import SelectVehicleContainer from './SelectVehicleContainer';
 
@@ -33,6 +34,7 @@ const initialState = {
   selectableTargets: undefined,
   coords: undefined,
   showSpinner: true,
+  zoom: undefined,
 };
 
 // TODO eslint doesn't know that TileLayerContainer is a react component,
@@ -43,6 +45,7 @@ class TileLayerContainer extends GridLayer {
     tileSize: PropTypes.number.isRequired,
     zoomOffset: PropTypes.number.isRequired,
     locationPopup: PropTypes.string, // all, none, reversegeocoding, origindestination
+    allowViaPoint: PropTypes.bool, // temporary, until OTP2 handles arbitrary via points
     onSelectLocation: PropTypes.func,
     mergeStops: PropTypes.bool,
     mapLayers: mapLayerShape.isRequired,
@@ -68,6 +71,7 @@ class TileLayerContainer extends GridLayer {
   static defaultProps = {
     onSelectLocation: undefined,
     locationPopup: undefined,
+    allowViaPoint: false,
     objectsToHide: { vehicleRentalStations: [] },
     hilightedStops: undefined,
     stopsToShow: undefined,
@@ -208,6 +212,29 @@ class TileLayerContainer extends GridLayer {
         );
         return;
       }
+      if (
+        (selectableTargets.length === 1 &&
+          selectableTargets[0].layer === 'scooter') ||
+        (selectableTargets.length > 1 &&
+          selectableTargets.every(target => target.layer === 'scooter'))
+        // scooters are not shown in the selection popup as there can be too many.
+        // Instead, the user is directed to the scooter cluster view or the first one in a group of singles.
+      ) {
+        const cluster = selectableTargets.find(
+          target => target.feature.properties.cluster,
+        );
+        const networks = cluster ? cluster.feature.properties.networks : '';
+        const id = cluster
+          ? cluster.feature.properties.scooterId
+          : selectableTargets[0].feature.properties.id;
+        // adding networks directs to scooter cluster view
+        this.context.router.push(
+          `/${PREFIX_RENTALVEHICLES}/${encodeURIComponent(id)}/${[
+            ...networks,
+          ]}`,
+        );
+        return;
+      }
       // ... Or to stop page
       if (
         selectableTargets.length === 1 &&
@@ -272,6 +299,7 @@ class TileLayerContainer extends GridLayer {
             isFeatureLayerEnabled(target.feature, target.layer, mapLayers),
         ),
         coords,
+        zoom: tile.coords.z,
       });
     };
 
@@ -327,6 +355,10 @@ class TileLayerContainer extends GridLayer {
     let contents;
     const breakpoint = getClientBreakpoint();
     let showPopup = true;
+    const locationPopup =
+      this.props.allowViaPoint || this.props.locationPopup !== 'all'
+        ? this.props.locationPopup
+        : 'origindestination';
 
     if (typeof this.state.selectableTargets !== 'undefined') {
       if (this.state.selectableTargets.length === 1) {
@@ -397,6 +429,7 @@ class TileLayerContainer extends GridLayer {
               selectRow={this.selectRow}
               options={this.state.selectableTargets}
               colors={this.context.config.colors}
+              zoom={this.state.zoom}
             />
           </Popup>
         );
@@ -407,7 +440,7 @@ class TileLayerContainer extends GridLayer {
         ) {
           showPopup = false;
         }
-        popup = this.props.locationPopup !== 'none' && (
+        popup = locationPopup !== 'none' && (
           <Popup
             key={this.state.coords.toString()}
             {...this.PopupOptions}
@@ -415,22 +448,19 @@ class TileLayerContainer extends GridLayer {
             maxWidth="auto"
             position={this.state.coords}
             className={`${this.PopupOptions.className} ${
-              this.props.locationPopup === 'all'
-                ? 'single-popup'
-                : 'narrow-popup'
+              locationPopup === 'all' ? 'single-popup' : 'narrow-popup'
             }`}
           >
             <LocationPopup
               lat={this.state.coords.lat}
               lon={this.state.coords.lng}
               onSelectLocation={this.props.onSelectLocation}
-              locationPopup={this.props.locationPopup}
+              locationPopup={locationPopup}
             />
           </Popup>
         );
       }
     }
-
     return showPopup ? popup : null;
   }
 }

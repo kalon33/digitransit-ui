@@ -9,8 +9,10 @@ import FavouriteModal from '@digitransit-component/digitransit-component-favouri
 import FavouriteEditModal from '@digitransit-component/digitransit-component-favourite-editing-modal';
 import DialogModal from '@digitransit-component/digitransit-component-dialog-modal';
 import { configShape } from '../util/shapes';
-import withSearchContext from './WithSearchContext';
-
+import {
+  withSearchContext,
+  getLocationSearchTargets,
+} from './WithSearchContext';
 import {
   saveFavourite,
   updateFavourites,
@@ -19,7 +21,6 @@ import {
 import FavouriteStore from '../store/FavouriteStore';
 import { addAnalyticsEvent } from '../util/analyticsUtils';
 import { LightenDarkenColor } from '../util/colorUtils';
-import { useCitybikes } from '../util/modeUtils';
 
 const AutoSuggestWithSearchContext = withSearchContext(AutoSuggest);
 
@@ -119,9 +120,8 @@ class FavouritesContainer extends React.Component {
 
   addHome = () => {
     addAnalyticsEvent({
-      category: 'Favourite',
-      action: 'AddHome',
-      name: null,
+      event: 'add_favorite_press',
+      favorite_type: 'place',
     });
     this.setState({
       addModalOpen: true,
@@ -137,9 +137,8 @@ class FavouritesContainer extends React.Component {
 
   addWork = () => {
     addAnalyticsEvent({
-      category: 'Favourite',
-      action: 'AddWork',
-      name: null,
+      event: 'add_favorite_press',
+      favorite_type: 'place',
     });
     this.setState({
       addModalOpen: true,
@@ -259,9 +258,8 @@ class FavouritesContainer extends React.Component {
 
   addPlace = () => {
     addAnalyticsEvent({
-      category: 'Favourite',
-      action: 'AddPlace',
-      name: null,
+      event: 'add_favorite_press',
+      favorite_type: 'place',
     });
 
     this.setState({
@@ -328,19 +326,11 @@ class FavouritesContainer extends React.Component {
     const isLoading =
       this.props.favouriteStatus === FavouriteStore.STATUS_FETCHING_OR_UPDATING;
     const { requireLoggedIn, isLoggedIn } = this.props;
-    const targets = ['Locations', 'CurrentPosition', 'MapPosition'];
-    const { fontWeights } = this.context.config;
+    const { config } = this.context;
+    const { fontWeights } = config;
     const favouritePlaces = this.props.favourites.filter(
       item => item.type === 'place',
     );
-    if (
-      useCitybikes(this.context.config.cityBike?.networks, this.context.config)
-    ) {
-      targets.push('VehicleRentalStations');
-    }
-    if (this.context.config.includeParkAndRideSuggestions) {
-      targets.push('ParkingAreas');
-    }
     return (
       <React.Fragment>
         <FavouriteBar
@@ -385,7 +375,7 @@ class FavouritesContainer extends React.Component {
             <AutoSuggestWithSearchContext
               appElement="#app"
               sources={['History', 'Datasource']}
-              targets={targets}
+              targets={getLocationSearchTargets(config, true)}
               id="favourite"
               icon="search"
               placeholder="search-address-or-place"
@@ -393,14 +383,14 @@ class FavouritesContainer extends React.Component {
                 (this.state.favourite && this.state.favourite.address) || ''
               }
               selectHandler={this.setLocationProperties}
-              getAutoSuggestIcons={this.context.config.getAutoSuggestIcons}
+              getAutoSuggestIcons={config.getAutoSuggestIcons}
               lang={this.props.lang}
               isMobile={this.props.isMobile}
               color={this.props.color}
               hoverColor={this.props.hoverColor}
               fontWeights={fontWeights}
               required
-              modeSet={this.context.config.iconModeSet}
+              modeSet={config.iconModeSet}
               favouriteContext
             />
           }

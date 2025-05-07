@@ -32,6 +32,8 @@ export const TransportMode = Object.freeze({
   Tram: 'TRAM',
   /** Taking the funicular */
   Funicular: 'FUNICULAR',
+  /** Riding a scooter */
+  Scooter: 'SCOOTER',
 });
 
 /**
@@ -95,6 +97,7 @@ export const AlertEntityType = Object.freeze({
 export const ExtendedRouteTypes = Object.freeze({
   BusExpress: 702,
   BusLocal: 704,
+  CallAgency: 715,
   SpeedTram: 900,
 });
 

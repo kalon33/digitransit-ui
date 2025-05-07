@@ -18,19 +18,11 @@ const proxy = require('express-http-proxy');
 
 global.self = { fetch: global.fetch };
 
-let Raven;
 const devhost = '';
 
-if (process.env.NODE_ENV === 'production' && process.env.SENTRY_SECRET_DSN) {
-  Raven = require('raven');
-  Raven.config(process.env.SENTRY_SECRET_DSN, {
-    captureUnhandledRejections: true,
-  }).install();
-} else {
-  process.on('unhandledRejection', (reason, p) => {
-    console.log('Unhandled Rejection at:', p, 'reason:', reason);
-  });
-}
+process.on('unhandledRejection', (reason, p) => {
+  console.log('Unhandled Rejection at:', p, 'reason:', reason);
+});
 
 /* ********* Server ********* */
 const express = require('express');
@@ -121,13 +113,6 @@ function setUpStaticFolders() {
       },
     }),
   );
-
-  if (config.localStorageEmitter) {
-    app.use(
-      '/local-storage-emitter',
-      express.static(path.join(staticFolder, 'emitter')),
-    );
-  }
 }
 
 function setUpMiddleware() {
@@ -145,17 +130,7 @@ function onError(err, req, res) {
   res.end(err.message + err.stack);
 }
 
-function setUpRaven() {
-  if (process.env.NODE_ENV === 'production' && process.env.SENTRY_SECRET_DSN) {
-    app.use(Raven.requestHandler());
-  }
-}
-
 function setUpErrorHandling() {
-  if (process.env.NODE_ENV === 'production' && process.env.SENTRY_SECRET_DSN) {
-    app.use(Raven.errorHandler());
-  }
-
   app.use(onError);
 }
 
@@ -168,61 +143,6 @@ function setUpRoutes() {
 
   // Make sure req has the correct hostname extracted from the proxy info
   app.enable('trust proxy');
-}
-
-function setUpAvailableRouteTimetables() {
-  return new Promise(resolve => {
-    // Stores available route pdf names to config.availableRouteTimetables.HSL
-    // All routes don't have available pdf and some have their timetable inside other route
-    // so there is a mapping between route's gtfsId (without HSL: part) and similar gtfsId of
-    // route that contains timetables
-    if (config.timetables.HSL) {
-      // try to fetch available route timetables every four seconds with 4 retries
-      retryFetch(
-        `${config.URL.ROUTE_TIMETABLES.HSL}routes.json`,
-        4,
-        4000,
-        {},
-        config,
-      )
-        .then(res => res.json())
-        .then(
-          result => {
-            config.timetables.HSL.setAvailableRouteTimetables(result);
-            console.log('availableRouteTimetables.HSL loaded');
-            resolve();
-          },
-          err => {
-            console.log(err);
-            // If after 5 tries no timetable data is found, start server anyway
-            resolve();
-            console.log('availableRouteTimetables.HSL loader failed');
-            // Continue attempts to fetch available routes in the background for one day once every minute
-            retryFetch(
-              `${config.URL.ROUTE_TIMETABLES.HSL}routes.json`,
-              1440,
-              60000,
-              {},
-              config,
-            )
-              .then(res => res.json())
-              .then(
-                result => {
-                  config.timetables.HSL.setAvailableRouteTimetables(result);
-                  console.log(
-                    'availableRouteTimetables.HSL loaded after retry',
-                  );
-                },
-                error => {
-                  console.log(error);
-                },
-              );
-          },
-        );
-    } else {
-      resolve();
-    }
-  });
 }
 
 function processTicketTypeResult(result) {
@@ -261,12 +181,7 @@ function setUpAvailableTickets() {
       ? `?${config.API_SUBSCRIPTION_QUERY_PARAMETER_NAME}=${config.API_SUBSCRIPTION_TOKEN}`
       : '';
     // try to fetch available ticketTypes every four seconds with 4 retries
-    retryFetch(
-      `${config.URL.OTP}index/graphql${queryParameters}`,
-      4,
-      4000,
-      options,
-    )
+    retryFetch(`${config.URL.OTP}gtfs/v1${queryParameters}`, 4, 4000, options)
       .then(res => res.json())
       .then(
         result => {
@@ -286,7 +201,7 @@ function setUpAvailableTickets() {
             console.log('failed to load availableTickets at launch, retrying');
             // Continue attempts to fetch available ticketTypes in the background for one day once every minute
             retryFetch(
-              `${config.URL.OTP}index/graphql${queryParameters}`,
+              `${config.URL.OTP}gtfs/v1${queryParameters}`,
               1440,
               60000,
               options,
@@ -384,23 +299,16 @@ async function fetchCitybikeSeasons() {
   return resources;
 }
 
-const parseDate = (year, month, day) =>
-  // eslint-disable-next-line radix
-  new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-
 function buildCitybikeConfig(seasonDef, configName) {
   const inSeason = seasonDef.inSeason.split('-');
-  const [startDay, startMonth, startYear] = inSeason[0].split('.');
-  const [endDay, endMonth, endYear] = inSeason[1].split('.');
-  const [preDay, preMonth, preYear] = seasonDef.preSeason.split('.');
   return {
     configName: seasonDef.configName,
     networkName: seasonDef.networkName,
     enabled: seasonDef.enabled,
     season: {
-      preSeasonStart: parseDate(preYear, preMonth, preDay),
-      start: parseDate(startYear, startMonth, startDay),
-      end: parseDate(endYear, endMonth, endDay),
+      preSeasonStart: seasonDef.preSeason,
+      start: inSeason[0],
+      end: inSeason[1],
     },
   };
 }
@@ -431,8 +339,8 @@ function fetchCitybikeConfigurations() {
           // eslint-disable-next-line import/no-dynamic-require
           const conf = require(`${configsDir}/${file}`);
           const configName = conf.default.CONFIG;
-          const { cityBike } = conf.default;
-          if (cityBike && Object.keys(cityBike).length > 0) {
+          const { vehicleRental } = conf.default;
+          if (vehicleRental && Object.keys(vehicleRental).length > 0) {
             promises.push(
               new Promise(resolve => {
                 resolve(
@@ -454,6 +362,7 @@ function fetchCitybikeConfigurations() {
           console.log(
             `fetched: ${seasonDefinitions.length} citybike season configuration`,
           );
+          console.log(seasonDefinitions);
           configTools.setAvailableCitybikeConfigurations(seasonDefinitions);
           mainResolve();
         });
@@ -469,13 +378,11 @@ function fetchCitybikeConfigurations() {
 if (process.env.OIDC_CLIENT_ID) {
   setUpOpenId();
 }
-setUpRaven();
 setUpStaticFolders();
 setUpMiddleware();
 setUpRoutes();
 setUpErrorHandling();
 Promise.all([
-  setUpAvailableRouteTimetables(),
   setUpAvailableTickets(),
   collectGeoJsonZones(),
   fetchCitybikeConfigurations(),

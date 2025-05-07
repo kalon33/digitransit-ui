@@ -5,24 +5,23 @@ import connectToStores from 'fluxible-addons-react/connectToStores';
 import { configShape } from '../../util/shapes';
 import Icon from '../Icon';
 import {
-  getVehicleRentalStationNetworkConfig,
-  getVehicleRentalStationNetworkIcon,
-  getVehicleRentalStationNetworkId,
+  getRentalNetworkConfig,
+  getRentalNetworkIcon,
+  getRentalNetworkId,
 } from '../../util/vehicleRentalUtils';
 
 function VehicleRentalDurationInfo(props) {
   const { networks, lang, config } = props;
   if (networks.length === 1) {
-    const vehicleRentalStationNetwork =
-      getVehicleRentalStationNetworkId(networks);
-    const vehicleIcon = getVehicleRentalStationNetworkIcon(
-      getVehicleRentalStationNetworkConfig(vehicleRentalStationNetwork, config),
+    const vehicleRentalStationNetwork = getRentalNetworkId(networks);
+    const vehicleIcon = getRentalNetworkIcon(
+      getRentalNetworkConfig(vehicleRentalStationNetwork, config),
     );
     const vehicleRentalStationNetworkDurationInfoLink =
-      config.cityBike.networks[vehicleRentalStationNetwork]
+      config.vehicleRental.networks[vehicleRentalStationNetwork]
         .durationInstructions[lang];
     const duration =
-      config.cityBike.networks[vehicleRentalStationNetwork]
+      config.vehicleRental.networks[vehicleRentalStationNetwork]
         .timeBeforeSurcharge / 60;
 
     return (
@@ -45,7 +44,11 @@ function VehicleRentalDurationInfo(props) {
               defaultMessage=""
             />
             &nbsp;
-            <a href={vehicleRentalStationNetworkDurationInfoLink}>
+            <a
+              href={vehicleRentalStationNetworkDurationInfoLink}
+              target="_blank"
+              rel="noreferrer"
+            >
               <FormattedMessage id="read-more" defaultMessage="Read more" /> ›
             </a>
           </p>
@@ -53,13 +56,13 @@ function VehicleRentalDurationInfo(props) {
       </div>
     );
   }
-  const citybikeicon = getVehicleRentalStationNetworkIcon(
-    getVehicleRentalStationNetworkConfig(networks[0], config),
+  const citybikeicon = getRentalNetworkIcon(
+    getRentalNetworkConfig(networks[0], config),
   );
   const durationInfoLinks = {};
   for (let i = 0; i < networks.length; i++) {
     durationInfoLinks[networks[i]] =
-      config.cityBike.networks[networks[i]].durationInstructions[lang];
+      config.vehicleRental.networks[networks[i]].durationInstructions[lang];
   }
 
   return (
@@ -80,11 +83,13 @@ function VehicleRentalDurationInfo(props) {
               <>
                 <a
                   href={
-                    config.cityBike.networks[value].durationInstructions[lang]
+                    config.vehicleRental.networks[value].durationInstructions[
+                      lang
+                    ]
                   }
                   key={value}
                 >
-                  {config.cityBike.networks[value].name[lang]}
+                  {config.vehicleRental.networks[value].name[lang]}
                   {' - '}
                   <FormattedMessage id="read-more" defaultMessage="Read more" />
                   ›

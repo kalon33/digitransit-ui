@@ -5,7 +5,6 @@ import { BIKEAVL_WITHMAX } from '../util/vehicleRentalUtils';
 const CONFIG = 'lappeenranta';
 const APP_TITLE = 'reittiopas.lappeenranta.fi';
 const APP_DESCRIPTION = '';
-
 const walttiConfig = require('./config.waltti').default;
 
 export default configMerger(walttiConfig, {
@@ -32,14 +31,13 @@ export default configMerger(walttiConfig, {
 
   favicon: './app/configurations/images/lappeenranta/lappeenranta-favicon.jpg',
 
-  cityBike: {
+  vehicleRental: {
     networks: {
       donkey_lappeenranta: {
         enabled: true,
         season: {
-          // 1.4. - 30.11. TODO uncertain end date depends on weather
-          start: new Date(new Date().getFullYear(), 3, 1),
-          end: new Date(new Date().getFullYear(), 11, 1),
+          start: '1.4',
+          end: '30.11',
         },
         capacity: BIKEAVL_WITHMAX,
         icon: 'citybike',
@@ -109,7 +107,7 @@ export default configMerger(walttiConfig, {
       {
         header: 'Tietoja palvelusta',
         paragraphs: [
-          'Tämän palvelun tarjoaa Lappeenrannan kaupungin joukkoliikenne joukkoliikenteen reittisuunnittelua varten Lappeenrannan paikallisliikenteen alueella. Palvelu perustuu Digitransit-palvelualustaan.',
+          'Tämän palvelun tarjoaa Lappeenrannan seudun joukkoliikenne joukkoliikenteen reittisuunnittelua varten Lappeenrannan paikallisliikenteen alueella. Palvelu perustuu Digitransit-palvelualustaan.',
         ],
       },
     ],
@@ -118,7 +116,7 @@ export default configMerger(walttiConfig, {
       {
         header: 'Om tjänsten',
         paragraphs: [
-          'Den här tjänsten erbjuds av Lappeenrannan kaupungin joukkoliikenne för lokal reseplanering inom Lappeenranta region. Reseplaneraren täcker med vissa begränsningar kollektivtrafik, promenad, cykling samt privatbilism. Tjänsten baserar sig på Digitransit-plattformen.',
+          'Den här tjänsten erbjuds av Lappeenrannan seudun joukkoliikenne för lokal reseplanering inom Lappeenranta region. Reseplaneraren täcker med vissa begränsningar kollektivtrafik, promenad, cykling samt privatbilism. Tjänsten baserar sig på Digitransit-plattformen.',
         ],
       },
     ],
@@ -127,7 +125,7 @@ export default configMerger(walttiConfig, {
       {
         header: 'About this service',
         paragraphs: [
-          'This service is provided by Lappeenrannan kaupungin joukkoliikenne for local route planning in Lappenranta region. The service covers public transport, walking, cycling, and some private car use. Service is built on Digitransit platform.',
+          'This service is provided by Lappeenrannan seudun joukkoliikenne for local route planning in Lappenranta region. The service covers public transport, walking, cycling, and some private car use. Service is built on Digitransit platform.',
         ],
       },
     ],

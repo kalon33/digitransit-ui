@@ -5,9 +5,16 @@ import { BIKEAVL_WITHMAX } from '../util/vehicleRentalUtils';
 const CONFIG = 'tampere';
 const APP_TITLE = 'Nyssen reittiopas';
 const APP_DESCRIPTION = 'Nyssen reittiopas';
-
 const walttiConfig = require('./config.waltti').default;
 const tampereTimetables = require('./timetableConfigUtils').default.tampere;
+
+const IS_DEV =
+  process.env.RUN_ENV === 'development' ||
+  process.env.NODE_ENV !== 'production';
+
+const virtualMonitorBaseUrl = IS_DEV
+  ? 'https://dev-tremonitori.digitransit.fi'
+  : 'https://tremonitori.digitransit.fi';
 
 export default configMerger(walttiConfig, {
   CONFIG,
@@ -48,12 +55,20 @@ export default configMerger(walttiConfig, {
         url: '/assets/geojson/tre_zone_lines_20240108.geojson',
         isOffByDefault: true,
       },
+      {
+        name: {
+          fi: 'Myyntipisteet',
+          sv: 'Servicekontorer',
+          en: 'Service points',
+        },
+        url: '/assets/temporary/tampere-servicepoints-20250305.geojson',
+      },
     ],
   },
 
   stopCard: {
     header: {
-      virtualMonitorBaseUrl: 'https://tremonitori.digitransit.fi/',
+      virtualMonitorBaseUrl,
     },
   },
   zones: {
@@ -63,9 +78,8 @@ export default configMerger(walttiConfig, {
 
   useTicketIcons: true,
   showTicketInformation: true,
-  ticketInformation: {
-    primaryAgencyName: 'Tampereen seudun joukkoliikenne',
-  },
+  primaryAgencyName: 'Tampereen seudun joukkoliikenne',
+
   ticketLink: 'https://www.nysse.fi/liput-ja-hinnat.html',
 
   callAgencyInfo: {
@@ -164,7 +178,7 @@ export default configMerger(walttiConfig, {
   mainMenu: {
     stopMonitor: {
       show: true,
-      url: 'https://tremonitori.digitransit.fi/createview',
+      url: `${virtualMonitorBaseUrl}/createview`,
     },
   },
 
@@ -233,15 +247,14 @@ export default configMerger(walttiConfig, {
     tampere: tampereTimetables,
   },
 
-  cityBike: {
+  vehicleRental: {
     networks: {
       inurba_tampere: {
         capacity: BIKEAVL_WITHMAX,
         enabled: true,
         season: {
-          // 15.4. - 31.10.
-          start: new Date(new Date().getFullYear(), 3, 15),
-          end: new Date(new Date().getFullYear(), 10, 1),
+          start: '15.4',
+          end: '31.10',
         },
         icon: 'citybike',
         name: {
@@ -265,9 +278,9 @@ export default configMerger(walttiConfig, {
       en: 'https://www.nysse.fi/en/city-bikes.html',
     },
     buyInstructions: {
-      fi: 'Osta käyttöoikeutta päiväksi, kuukaudeksi tai koko kaudeksi.',
-      sv: 'Köp ett abonnemang för en dag, en månad eller en hel säsong.',
-      en: 'Buy licenses for a day, a month or an entire season.',
+      fi: 'Osta yksittäinen matka kertamaksulla tai pidempi käyttöoikeus päiväksi, kuukaudeksi tai koko kaudeksi.',
+      sv: 'Köp en enkelresa eller abonnemang för en dag, en månad eller för en hel säsong.',
+      en: 'Buy a single trip or a daily, monthly or seasonal pass.',
     },
   },
 
@@ -292,4 +305,9 @@ export default configMerger(walttiConfig, {
   },
 
   showTenWeeksOnRouteSchedule: true,
+
+  parkAndRide: {
+    showParkAndRide: true,
+    showParkAndRideForBikes: true,
+  },
 });

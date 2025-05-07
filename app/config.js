@@ -110,6 +110,7 @@ export function getNamedConfiguration(configName) {
     const config = baseConfig
       ? configMerger(baseConfig, additionalConfig)
       : configMerger(defaultConfig, additionalConfig);
+    config.vehicleRental.seasonSet = false; // this is unique per config and should not be inherited
 
     if (config.useSearchPolygon && config.areaPolygon) {
       // pass poly as 'lon lat, lon lat, lon lat ...' sequence
@@ -163,15 +164,15 @@ export function getNamedConfiguration(configName) {
     }
   }
   if (
-    conf.cityBike &&
+    Object.keys(conf.vehicleRental?.networks || {}).length &&
     citybikeSeasonDefinitions?.length &&
-    !conf.cityBike.seasonSet
+    !conf.vehicleRental.seasonSet
   ) {
-    conf.cityBike.seasonSet = true;
+    conf.vehicleRental.seasonSet = true;
 
-    if (conf.cityBike.useAllSeasons) {
+    if (conf.vehicleRental.useAllSeasons) {
       citybikeSeasonDefinitions.forEach(seasonDef => {
-        const confCitybike = conf.cityBike.networks[seasonDef.networkName];
+        const confCitybike = conf.vehicleRental.networks[seasonDef.networkName];
         if (confCitybike) {
           confCitybike.enabled = seasonDef.enabled;
           confCitybike.season = seasonDef.season;
@@ -182,7 +183,7 @@ export function getNamedConfiguration(configName) {
         seasonDef => configName === seasonDef.configName,
       );
       seasonDefinitions.forEach(seasonDef => {
-        const confCitybike = conf.cityBike.networks[seasonDef.networkName];
+        const confCitybike = conf.vehicleRental.networks[seasonDef.networkName];
         confCitybike.enabled = seasonDef.enabled;
         confCitybike.season = seasonDef.season;
       });

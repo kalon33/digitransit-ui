@@ -3,11 +3,12 @@ import cx from 'classnames';
 import React from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
 import { legShape, parkShape, configShape } from '../../util/shapes';
-import { legTimeStr } from '../../util/legUtils';
+import { legTimeStr, legDestination } from '../../util/legUtils';
 import { displayDistance } from '../../util/geo-utils';
 import { durationToString } from '../../util/timeUtils';
 import ItineraryCircleLineWithIcon from './ItineraryCircleLineWithIcon';
 import ItineraryMapAction from './ItineraryMapAction';
+import Icon from '../Icon';
 
 const BikeParkLeg = (
   { leg, index, focusAction, bikePark },
@@ -19,21 +20,16 @@ const BikeParkLeg = (
     intl.formatNumber,
   );
   const duration = durationToString(leg.duration * 1000);
-  const timeStr = legTimeStr(leg.start);
+  const time = legTimeStr(leg.start);
   return (
     <div key={index} className="row itinerary-row">
       <span className="sr-only">
         <FormattedMessage
           id="itinerary-details.walk-leg"
           values={{
-            time: timeStr,
+            time,
             distance,
-            to: intl.formatMessage({
-              id: `modes.to-${
-                leg.to.stop?.vehicleMode?.toLowerCase() || 'place'
-              }`,
-              defaultMessage: 'modes.to-stop',
-            }),
+            to: legDestination(intl, leg),
             origin: leg.from ? leg.from.name : '',
             destination: leg.to ? leg.to.name : '',
             duration,
@@ -41,7 +37,7 @@ const BikeParkLeg = (
         />
       </span>
       <div className="small-2 columns itinerary-time-column" aria-hidden="true">
-        <div className="itinerary-time-column-time">{timeStr}</div>
+        <div className="itinerary-time-column-time">{time}</div>
       </div>
       <ItineraryCircleLineWithIcon
         bikePark
@@ -60,6 +56,12 @@ const BikeParkLeg = (
                 > */}
             <div className="address">
               <FormattedMessage id="bike-park" />
+              {leg.isViaPoint && (
+                <Icon
+                  img="icon-icon_mapMarker"
+                  className="itinerary-mapmarker-icon"
+                />
+              )}
               {/* TODO */}
               {/* {bikePark && (
                   <Icon
@@ -77,18 +79,22 @@ const BikeParkLeg = (
             focusAction={focusAction}
           />
         </div>
-        <div className={cx('itinerary-leg-action', 'bike')}>
-          <div className="itinerary-leg-action-content">
-            <FormattedMessage
-              id="walk-distance-duration"
-              values={{ distance, duration }}
-              defaultMessage="Walk {distance} ({duration})"
-            />
-            <ItineraryMapAction
-              target={leg.from.name || ''}
-              focusAction={focusAction}
-            />
-          </div>
+        <div
+          className={cx(
+            'itinerary-leg-action',
+            'bike',
+            'itinerary-leg-action-content',
+          )}
+        >
+          <FormattedMessage
+            id="walk-distance-duration"
+            values={{ distance, duration }}
+            defaultMessage="Walk {distance} ({duration})"
+          />
+          <ItineraryMapAction
+            target={leg.from.name || ''}
+            focusAction={focusAction}
+          />
         </div>
       </div>
     </div>

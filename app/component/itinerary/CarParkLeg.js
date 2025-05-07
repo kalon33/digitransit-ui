@@ -11,7 +11,7 @@ import { durationToString } from '../../util/timeUtils';
 import ItineraryCircleLineWithIcon from './ItineraryCircleLineWithIcon';
 import { PREFIX_CARPARK } from '../../util/path';
 import ItineraryCircleLine from './ItineraryCircleLine';
-import { legTimeStr } from '../../util/legUtils';
+import { legTimeStr, legDestination } from '../../util/legUtils';
 
 function CarParkLeg(props, { config, intl }) {
   const distance = displayDistance(
@@ -32,12 +32,7 @@ function CarParkLeg(props, { config, intl }) {
             values={{
               time: legTimeStr(props.leg.start),
               distance,
-              to: intl.formatMessage({
-                id: `modes.to-${
-                  props.leg.to.stop?.vehicleMode?.toLowerCase() || 'place'
-                }`,
-                defaultMessage: 'modes.to-stop',
-              }),
+              to: legDestination(intl, props.leg),
               origin: props.leg.from ? props.leg.from.name : '',
               destination: props.leg.to ? props.leg.to.name : '',
               duration,
@@ -77,6 +72,12 @@ function CarParkLeg(props, { config, intl }) {
             >
               <div className="address">
                 <FormattedMessage id="car_park" defaultMessage="Park & Ride" />
+                {props.leg.isViaPoint && (
+                  <Icon
+                    img="icon-icon_mapMarker"
+                    className="itinerary-mapmarker-icon"
+                  />
+                )}
                 {props.carPark && (
                   <Icon
                     img="icon-icon_arrow-collapse--right"
@@ -95,18 +96,22 @@ function CarParkLeg(props, { config, intl }) {
           />
         </div>
         {!props.noWalk && (
-          <div className={cx('itinerary-leg-action', 'car')}>
-            <div className="itinerary-leg-action-content">
-              <FormattedMessage
-                id="walk-distance-duration"
-                values={{ distance, duration }}
-                defaultMessage="Walk {distance} ({duration})"
-              />
-              <ItineraryMapAction
-                target={props.leg.from.name || ''}
-                focusAction={props.focusAction}
-              />
-            </div>
+          <div
+            className={cx(
+              'itinerary-leg-action',
+              'car',
+              'itinerary-leg-action-content',
+            )}
+          >
+            <FormattedMessage
+              id="walk-distance-duration"
+              values={{ distance, duration }}
+              defaultMessage="Walk {distance} ({duration})"
+            />
+            <ItineraryMapAction
+              target={props.leg.from.name || ''}
+              focusAction={props.focusAction}
+            />
           </div>
         )}
       </div>

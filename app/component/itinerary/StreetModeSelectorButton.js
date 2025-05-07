@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { intlShape } from 'react-intl';
+import cx from 'classnames';
 import { configShape, planShape } from '../../util/shapes';
 import Icon from '../Icon';
 import { displayDistance } from '../../util/geo-utils';
@@ -12,6 +13,7 @@ import {
   getExtendedMode,
 } from '../../util/legUtils';
 import { streetHash } from '../../util/path';
+import { getModeIconColor } from '../../util/colorUtils';
 
 export default function StreetModeSelectorButton(
   { icon, name, plan, onClick },
@@ -38,6 +40,13 @@ export default function StreetModeSelectorButton(
         intl.formatNumber,
       );
       break;
+    case streetHash.carAndVehicle:
+      distance = displayDistance(
+        getTotalDrivingDistance(itinerary),
+        config,
+        intl.formatNumber,
+      );
+      break;
     case streetHash.parkAndRide:
       distance = displayDistance(
         getTotalDrivingDistance(itinerary),
@@ -57,7 +66,11 @@ export default function StreetModeSelectorButton(
   let secondaryIcon;
   let secondaryColor;
 
-  if (name === streetHash.parkAndRide || name === streetHash.bikeAndVehicle) {
+  if (
+    name === streetHash.parkAndRide ||
+    name === streetHash.bikeAndVehicle ||
+    name === streetHash.carAndVehicle
+  ) {
     const transitEdge = plan.edges.find(e =>
       e.node.legs.find(l => l.transitLeg),
     );
@@ -69,8 +82,7 @@ export default function StreetModeSelectorButton(
         )) ||
       'rail';
     secondaryIcon = `icon-icon_${mode}`;
-    secondaryColor =
-      mode === 'subway' ? config.colors?.iconColors?.['mode-metro'] : '';
+    secondaryColor = getModeIconColor(config, mode);
   }
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events
@@ -91,15 +103,17 @@ export default function StreetModeSelectorButton(
     >
       <div className="street-mode-selector-button-content">
         <div
-          className={`street-mode-selector-button-icon ${
-            secondaryIcon ? 'primary-icon' : ''
-          } ${name === streetHash.parkAndRide ? 'car-park-primary' : ''} ${
-            name === streetHash.bikeAndVehicle ? 'bike-and-vehicle-primary' : ''
-          }`}
+          className={cx('street-mode-selector-button-icon', {
+            'primary-icon': secondaryIcon,
+            'car-park-primary': name === streetHash.parkAndRide,
+            'car-and-vehicle-primary': name === streetHash.carAndVehicle,
+            'bike-and-vehicle-primary': name === streetHash.bikeAndVehicle,
+          })}
         >
           <Icon img={icon} />
         </div>
         {name === streetHash.bikeAndVehicle ||
+        name === streetHash.carAndVehicle ||
         name === streetHash.parkAndRide ? (
           <div
             className={`street-mode-selector-button-icon secondary-icon ${

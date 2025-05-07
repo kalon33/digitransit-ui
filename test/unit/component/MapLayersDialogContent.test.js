@@ -197,8 +197,8 @@ describe('<MapLayersDialogContent />', () => {
 
   it('should update the citybike layer', () => {
     const today = new Date();
-    const yesterday = new Date(today);
-    const tomorrow = new Date(today);
+    const yesterday = new Date();
+    const tomorrow = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     tomorrow.setDate(tomorrow.getDate() + 1);
     let mapLayers = {
@@ -218,14 +218,21 @@ describe('<MapLayersDialogContent />', () => {
     const context = {
       config: {
         CONFIG: 'default',
-        cityBike: {
+        vehicleRental: {
           networks: {
             foo: {
+              type: 'citybike',
               enabled: true,
               season: {
-                start: today,
-                end: tomorrow,
-                preSeasonStart: yesterday,
+                start: `${today.getDate()}.${
+                  today.getMonth() + 1
+                }.${today.getFullYear()}`,
+                end: `${tomorrow.getDate()}.${
+                  tomorrow.getMonth() + 1
+                }.${tomorrow.getFullYear()}`,
+                preSeasonStart: `${yesterday.getDate()}.${
+                  yesterday.getMonth() + 1
+                }.${yesterday.getFullYear()}`,
               },
             },
           },

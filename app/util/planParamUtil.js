@@ -1,23 +1,26 @@
 import moment from 'moment';
 import isEqual from 'lodash/isEqual';
 import {
-  getDefaultModes,
-  modesAsOTPModes,
+  getTransitModes,
   isTransportModeAvailable,
+  networkIsActive,
 } from './modeUtils';
 import { otpToLocation, getIntermediatePlaces } from './otpStrings';
-import { getDefaultNetworks } from './vehicleRentalUtils';
+import { getAllNetworksOfType, getDefaultNetworks } from './vehicleRentalUtils';
 import { getCustomizedSettings } from '../store/localStorage';
 import { estimateItineraryDistance } from './geo-utils';
+import { TransportMode } from '../constants';
 
 export const PLANTYPE = {
   WALK: 'WALK',
   BIKE: 'BICYCLE',
   CAR: 'CAR',
+  CARTRANSIT: 'CARTRANSIT',
   TRANSIT: 'TRANSIT',
   BIKEPARK: 'BIKEPARK',
   BIKETRANSIT: 'BIKETRANSIT',
   PARKANDRIDE: 'PARKANDRIDE',
+  SCOOTERTRANSIT: 'SCOOTERTRANSIT',
 };
 
 const directModes = [PLANTYPE.WALK, PLANTYPE.BIKE, PLANTYPE.CAR];
@@ -52,13 +55,42 @@ export function getDefaultSettings(config) {
   if (!config) {
     return {};
   }
+
   return {
     ...config.defaultSettings,
-    modes: getDefaultModes(config).sort(),
-    allowedBikeRentalNetworks: config.transportModes.citybike.defaultValue
+    modes: getTransitModes(config),
+    allowedBikeRentalNetworks: config.transportModes?.citybike?.defaultValue
       ? getDefaultNetworks(config)
       : [],
+    scooterNetworks: [],
   };
+}
+
+/**
+ * Whether user has customized any settings that are visible and make a difference.
+ * @param {*} config the configuration for the software installation
+ */
+export function hasCustomizedSettings(config) {
+  const defaultSettings = getDefaultSettings(config);
+  const customizedSettings = getCustomizedSettings();
+  if (Object.keys(customizedSettings).length === 0) {
+    return false;
+  }
+
+  return Object.keys(customizedSettings).some(key => {
+    if (key === 'allowedBikeRentalNetworks') {
+      return customizedSettings.allowedBikeRentalNetworks.some(network =>
+        networkIsActive(config.vehicleRental.networks[network]),
+      );
+    }
+    if (
+      Array.isArray(customizedSettings[key]) &&
+      Array.isArray(defaultSettings[key])
+    ) {
+      return customizedSettings[key].length !== defaultSettings[key].length;
+    }
+    return customizedSettings[key] !== defaultSettings[key];
+  });
 }
 
 /**
@@ -70,6 +102,12 @@ export function getSettings(config) {
   const defaultSettings = getDefaultSettings(config);
   const userSettings = getCustomizedSettings();
   const allNetworks = getDefaultNetworks(config);
+  const allScooterNetworks = getAllNetworksOfType(
+    config,
+    TransportMode.Scooter,
+  );
+
+  // const allScooterNetworks = getAllScooterNetworks(config);
   const settings = {
     ...defaultSettings,
     ...userSettings,
@@ -87,6 +125,12 @@ export function getSettings(config) {
             allNetworks.includes(network),
           )
         : defaultSettings.allowedBikeRentalNetworks,
+    scooterNetworks:
+      userSettings.scooterNetworks?.length > 0
+        ? userSettings.scooterNetworks.filter(network =>
+            allScooterNetworks.includes(network),
+          )
+        : defaultSettings.scooterNetworks,
   };
   const { defaultOptions } = config;
   return {
@@ -96,16 +140,20 @@ export function getSettings(config) {
   };
 }
 
-function getTransitModes(modes, planType, config) {
-  let transitModes = modes.filter(m => m !== 'CITYBIKE');
+function filterTransitModes(modes, planType, config) {
   if (planType === PLANTYPE.BIKETRANSIT) {
     if (config.bikeBoardingModes) {
-      transitModes = transitModes.filter(m => config.bikeBoardingModes[m]);
-    } else {
-      return [];
+      return modes.filter(m => config.bikeBoardingModes[m]);
     }
+    return [];
   }
-  return transitModes;
+  if (planType === PLANTYPE.CARTRANSIT) {
+    if (config.carBoardingModes) {
+      return modes.filter(m => config.carBoardingModes[m]);
+    }
+    return [];
+  }
+  return modes;
 }
 
 export function planQueryNeeded(
@@ -113,7 +161,7 @@ export function planQueryNeeded(
   {
     params: { from, to },
     location: {
-      query: { intermediatePlaces },
+      query: { intermediatePlaces, arriveBy, time },
     },
   },
   planType,
@@ -135,7 +183,7 @@ export function planQueryNeeded(
 
   const defaultSettings = getDefaultSettings(config);
   const settings = getSettings(config);
-  const transitModes = getTransitModes(
+  const transitModes = filterTransitModes(
     relaxSettings ? defaultSettings.modes : settings.modes,
     planType,
     config,
@@ -186,6 +234,26 @@ export function planQueryNeeded(
         settings.includeBikeSuggestions
       );
 
+    case PLANTYPE.CARTRANSIT:
+      return transitModes.length > 0 && settings.includeCarSuggestions;
+
+    case PLANTYPE.SCOOTERTRANSIT:
+      /* special logic: relaxed scooter query is made only if no networks allowed */
+      /* special logic: scooter queries are not made if the search is n minutes or more into the future or if arrival time is too late */
+      return (
+        config.transportModes.scooter.availableForSelection &&
+        transitModes.length > 0 &&
+        !wheelchair &&
+        (relaxSettings
+          ? settings.scooterNetworks.length === 0
+          : settings.scooterNetworks.length > 0) &&
+        ((!arriveBy &&
+          (time - Date.now() / 1000) / 60 <
+            config.vehicleRental.maxMinutesToRentalJourneyStart) ||
+          (arriveBy &&
+            (time - Date.now() / 1000) / 60 <
+              config.vehicleRental.maxMinutesToRentalJourneyEnd))
+      );
     case PLANTYPE.PARKANDRIDE:
       return (
         transitModes.length > 0 &&
@@ -229,16 +297,22 @@ export function getPlanParams(
   },
   planType,
   relaxSettings,
+  // forceScooters = false,
 ) {
   const fromPlace = getLocation(from);
   const toPlace = getLocation(to);
-
+  const useLatestArrival = arriveBy === 'true';
   // estimate distance for search iteration heuristics
   const fromLocation = otpToLocation(from);
   const toLocation = otpToLocation(to);
   const intermediateLocations = getIntermediatePlaces({
     intermediatePlaces,
   });
+  const via = intermediateLocations.map(loc => ({
+    passThrough: {
+      stopLocationIds: [loc.gtfsId],
+    },
+  }));
   const distance = estimateItineraryDistance(
     fromLocation,
     toLocation,
@@ -248,15 +322,20 @@ export function getPlanParams(
 
   const defaultSettings = getDefaultSettings(config);
   const settings = getSettings(config);
+
   if (settings.allowedBikeRentalNetworks.length === 0) {
     settings.allowedBikeRentalNetworks = null;
   }
-  const transitModes = getTransitModes(
+
+  const transitModes = filterTransitModes(
     relaxSettings ? defaultSettings.modes : settings.modes,
     planType,
     config,
   );
-  let otpModes = modesAsOTPModes(transitModes);
+
+  let otpModes = transitModes.map(mode => {
+    return { mode };
+  });
   if (config.customWeights) {
     otpModes.forEach(m => {
       if (config.customWeights[m.mode]) {
@@ -267,14 +346,20 @@ export function getPlanParams(
   }
   const directOnly = directModes.includes(planType) || otpModes.length === 0;
   let transitOnly = !!relaxSettings;
-  const cityBike = settings.allowedBikeRentalNetworks?.length > 0;
+  const wheelchair = !!settings.accessibilityOption;
+  const cityBike =
+    !wheelchair && settings.allowedBikeRentalNetworks?.length > 0;
   // set defaults
   let access = cityBike ? ['WALK', 'BICYCLE_RENTAL'] : ['WALK'];
   let egress = access;
   let transfer = ['WALK'];
   let direct = null;
+  let numItineraries = directOnly ? 1 : 5;
+  let carReluctance = null;
 
   let noIterationsForShortTrips = false;
+  // A null value uses the default amount of maximum iterations.
+  let maxQueryIterations = null;
 
   switch (planType) {
     case PLANTYPE.BIKEPARK:
@@ -289,6 +374,23 @@ export function getPlanParams(
       transitOnly = true;
       noIterationsForShortTrips = shortTrip;
       break;
+    case PLANTYPE.CARTRANSIT:
+      // For cars the direct mode is included to allow OTP to filter out unwanted routes.
+      direct = ['CAR'];
+      access = ['CAR'];
+      egress = ['CAR'];
+      transfer = ['CAR'];
+      transitOnly = false;
+      numItineraries = 6;
+      carReluctance = 1.75;
+      // This is done to enable more cache hits. New cache entries are generated for different speeds otherwise.
+      settings.walkSpeed = null;
+      settings.bikeSpeed = null;
+      settings.walkReluctance = null;
+      settings.bikeReluctance = null;
+      // As of writing this comment, iterating (paging) does not support filtering of bad car transit itineraries.
+      maxQueryIterations = 1;
+      break;
     case PLANTYPE.PARKANDRIDE:
       access = ['CAR_PARKING'];
       transitOnly = true;
@@ -296,18 +398,29 @@ export function getPlanParams(
     case PLANTYPE.TRANSIT:
       direct = access;
       break;
+    case PLANTYPE.SCOOTERTRANSIT:
+      access = ['WALK', 'SCOOTER_RENTAL'];
+      egress = access;
+      direct = access;
+      break;
     default: // direct modes
       direct = [planType];
       break;
   }
+  // reset unused arrays
   if (directOnly) {
-    // reset unused arrays
     access = null;
     egress = null;
     transfer = null;
     otpModes = [];
+  }
+  if (!access?.includes('BICYCLE_RENTAL')) {
     settings.allowedBikeRentalNetworks = null;
   }
+  if (!access?.includes('SCOOTER_RENTAL')) {
+    settings.scooterNetworks = null;
+  }
+
   const modes = {
     directOnly,
     transitOnly,
@@ -320,7 +433,6 @@ export function getPlanParams(
     },
   };
 
-  const wheelchair = !!settings.accessibilityOption;
   const walkReluctance = relaxSettings
     ? defaultSettings.walkReluctance
     : settings.walkReluctance;
@@ -332,17 +444,22 @@ export function getPlanParams(
     : settings.transferPenalty;
 
   const timeStr = (time ? moment(time * 1000) : moment()).format();
-  const datetime = arriveBy
+  const datetime = useLatestArrival
     ? { latestArrival: timeStr }
     : { earliestDeparture: timeStr };
 
   return {
     ...settings,
+    allowedRentalNetworks:
+      planType === PLANTYPE.SCOOTERTRANSIT
+        ? settings.scooterNetworks
+        : settings.allowedBikeRentalNetworks,
     fromPlace,
     toPlace,
     datetime,
     minTransferTime: `PT${settings.minTransferTime}S`,
-    numItineraries: directOnly ? 1 : 5,
+    first: numItineraries, // used in actual query
+    numItineraries, // backup original value for convenient paging
     wheelchair,
     walkReluctance,
     walkBoardCost,
@@ -350,5 +467,8 @@ export function getPlanParams(
     modes,
     planType,
     noIterationsForShortTrips,
+    via,
+    carReluctance,
+    maxQueryIterations,
   };
 }
