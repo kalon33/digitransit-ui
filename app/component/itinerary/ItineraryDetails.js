@@ -108,7 +108,6 @@ function ItineraryDetails(
   },
   { config, match, intl },
 ) {
-  // TODO: Move fragment to a dedicated file
   const itinerary = useFragment(ItineraryDetailsFragment, itineraryRef);
 
   const shouldShowDisclaimer =
