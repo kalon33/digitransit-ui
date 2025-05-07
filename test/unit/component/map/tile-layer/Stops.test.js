@@ -47,18 +47,15 @@ describe('Stops', () => {
     });
 
     it('should make a get to realtime stops uri when zoomed in', () => {
-      const mock = fetchMock.get(
-        `${config.URL.REALTIME_STOP_MAP.default}13/1/2.pbf`,
-        {
-          status: 404,
-        },
-      );
+      fetchMock.get(`${config.URL.REALTIME_STOP_MAP.default}13/1/2.pbf`, {
+        status: 404,
+      });
       new Stops(
         { ...tile, props: { zoomOffset: 10 } },
         config,
         [],
       ).getPromise();
-      expect(mock.called()).to.equal(true);
+      expect(fetchMock.callHistory.called('end:/13/1/2.pbf')).to.equal(true);
     });
   });
 });
