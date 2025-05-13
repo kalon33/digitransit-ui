@@ -30,18 +30,15 @@ function getAllPossibleLanguages() {
     );
 }
 
-function getEntries(theme, sprites = null) {
+function getEntries(theme, sprites = null, themeSprites = null) {
   let themeCss = `./sass/themes/${theme}/main.scss`;
   if (!fs.existsSync(themeCss)) {
     themeCss = './sass/themes/default/main.scss';
   }
   return {
     [`${theme}_theme`]: themeCss,
-    ...(sprites !== null
-      ? {
-          [sprites]: `./static/${sprites}`,
-        }
-      : {}),
+    ...(sprites && { [sprites]: `./static/${sprites}` }),
+    ...(themeSprites && { [themeSprites]: `./static/${themeSprites}` }),
   };
 }
 
