@@ -53,13 +53,13 @@ function getAllThemeEntries() {
 
     return {
       ...getEntries('default'),
-      ...getEntries(process.env.CONFIG, config.sprites),
+      ...getEntries(process.env.CONFIG, config.sprites, config.themeSprites),
     };
   }
   return getAllConfigs().reduce(
     (prev, config) => ({
       ...prev,
-      ...getEntries(config.CONFIG, config.sprites),
+      ...getEntries(config.CONFIG, config.sprites, config.themeSprites),
     }),
     {},
   );
