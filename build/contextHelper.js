@@ -50,13 +50,13 @@ function getAllThemeEntries() {
 
     return {
       ...getEntries('default'),
-      ...getEntries(process.env.CONFIG, config.sprites, config.themeSprites),
+      ...getEntries(process.env.CONFIG, config.sprites),
     };
   }
   return getAllConfigs().reduce(
     (prev, config) => ({
       ...prev,
-      ...getEntries(config.CONFIG, config.sprites, config.themeSprites),
+      ...getEntries(config.CONFIG, config.sprites),
     }),
     {},
   );
