@@ -30,15 +30,18 @@ function getAllPossibleLanguages() {
     );
 }
 
-function getEntries(theme, sprites = null, themeSprites = null) {
+function getEntries(theme, sprites = null) {
   let themeCss = `./sass/themes/${theme}/main.scss`;
   if (!fs.existsSync(themeCss)) {
     themeCss = './sass/themes/default/main.scss';
   }
   return {
     [`${theme}_theme`]: themeCss,
-    ...(sprites && { [sprites]: `./static/${sprites}` }),
-    ...(themeSprites && { [themeSprites]: `./static/${themeSprites}` }),
+    ...(sprites !== null
+      ? {
+          [sprites]: `./static/${sprites}`,
+        }
+      : {}),
   };
 }
 
@@ -50,13 +53,13 @@ function getAllThemeEntries() {
 
     return {
       ...getEntries('default'),
-      ...getEntries(process.env.CONFIG, config.sprites, config.themeSprites),
+      ...getEntries(process.env.CONFIG, config.sprites),
     };
   }
   return getAllConfigs().reduce(
     (prev, config) => ({
       ...prev,
-      ...getEntries(config.CONFIG, config.sprites, config.themeSprites),
+      ...getEntries(config.CONFIG, config.sprites),
     }),
     {},
   );
