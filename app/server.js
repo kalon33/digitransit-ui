@@ -317,7 +317,7 @@ export default async function serve(req, res, next) {
       relayData = [];
     }
 
-    const spriteNames = [config.themeSprites, config.sprites].filter(Boolean);
+    const spriteNames = [config.sprites, config.themeSprites].filter(Boolean);
 
     const ASSET_URL = process.env.ASSET_URL || config.APP_PATH;
 
@@ -404,7 +404,7 @@ export default async function serve(req, res, next) {
       });
       res.write('</script>\n');
     } else {
-      spriteNames.forEach(spriteName => {
+      spriteNames.reverse().forEach(spriteName => {
         res.write(
           fs.readFileSync(`${appRoot}_static/${spriteName}`).toString(),
         );
