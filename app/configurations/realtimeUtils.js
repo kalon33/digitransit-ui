@@ -226,4 +226,5 @@ export default {
         : vehicleNumber;
     },
   },
+  MATKA: elyMqtt(true),
 };
