@@ -4,7 +4,7 @@ import { matchShape, routerShape } from 'found';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
-import { useFragment, graphql } from 'react-relay';
+import { useFragment } from 'react-relay';
 import {
   getFaresFromLegs,
   shouldShowFareInfo,
@@ -41,6 +41,7 @@ import MobileTicketPurchaseInformation from './MobileTicketPurchaseInformation';
 import StartNavi from './StartNavi';
 import TicketInformation from './TicketInformation';
 import VehicleRentalDurationInfo from './VehicleRentalDurationInfo';
+import { ItineraryDetailsFragment } from './queries/ItineraryDetailsFragment';
 
 function getFutureText(startTime, intl) {
   const refTime = Date.now();
@@ -107,301 +108,7 @@ function ItineraryDetails(
   },
   { config, match, intl },
 ) {
-  // TODO: Move fragment to a dedicated file
-  const itinerary = useFragment(
-    graphql`
-      fragment ItineraryDetails_itinerary on Itinerary {
-        duration
-        start
-        end
-        emissionsPerPerson {
-          co2
-        }
-        legs {
-          fareProducts {
-            id
-            product {
-              id
-              ... on DefaultFareProduct {
-                price {
-                  amount
-                }
-              }
-            }
-          }
-          mode
-          legGeometry {
-            points
-          }
-          pickupBookingInfo {
-            contactInfo {
-              bookingUrl
-              infoUrl
-            }
-          }
-          steps {
-            feature {
-              __typename
-              ... on Entrance {
-                publicCode
-                wheelchairAccessible
-              }
-            }
-            lat
-            lon
-          }
-          nextLegs(
-            numberOfLegs: 2
-            originModesWithParentStation: [RAIL]
-            destinationModesWithParentStation: [RAIL]
-          ) {
-            mode
-            distance
-            route {
-              alerts {
-                alertSeverityLevel
-              }
-              shortName
-              mode
-              type
-              gtfsId
-              color
-            }
-            from {
-              stop {
-                platformCode
-                alerts {
-                  alertSeverityLevel
-                }
-              }
-            }
-            to {
-              stop {
-                alerts {
-                  alertSeverityLevel
-                }
-              }
-            }
-            start {
-              scheduledTime
-              estimated {
-                time
-              }
-            }
-            trip {
-              tripHeadsign
-              pattern {
-                code
-              }
-              occupancy {
-                occupancyStatus
-              }
-              gtfsId
-            }
-            realTime
-          }
-          ...LegAgencyInfo_leg
-          from {
-            lat
-            lon
-            name
-            vehicleParking {
-              name
-              vehicleParkingId
-            }
-            vehicleRentalStation {
-              rentalNetwork {
-                networkId
-              }
-              availableVehicles {
-                total
-              }
-              lat
-              lon
-              stationId
-            }
-            rentalVehicle {
-              vehicleId
-              name
-              lat
-              lon
-              rentalUris {
-                android
-                ios
-                web
-              }
-              rentalNetwork {
-                networkId
-                url
-              }
-            }
-            stop {
-              gtfsId
-              code
-              platformCode
-              vehicleMode
-              zoneId
-              alerts {
-                alertSeverityLevel
-                effectiveEndDate
-                effectiveStartDate
-                alertHeaderText
-                alertDescriptionText
-                entities {
-                  __typename
-                  ... on Stop {
-                    gtfsId
-                  }
-                }
-              }
-              parentStation {
-                gtfsId
-              }
-            }
-          }
-          to {
-            lat
-            lon
-            name
-            vehicleRentalStation {
-              lat
-              lon
-              stationId
-              rentalNetwork {
-                networkId
-              }
-              availableVehicles {
-                total
-              }
-            }
-            rentalVehicle {
-              vehicleId
-              lat
-              lon
-              rentalNetwork {
-                networkId
-              }
-            }
-            stop {
-              gtfsId
-              code
-              platformCode
-              zoneId
-              name
-              vehicleMode
-              alerts {
-                alertSeverityLevel
-                effectiveEndDate
-                effectiveStartDate
-                alertHeaderText
-                alertDescriptionText
-                entities {
-                  __typename
-                  ... on Stop {
-                    gtfsId
-                  }
-                }
-              }
-              parentStation {
-                gtfsId
-              }
-            }
-            vehicleParking {
-              vehicleParkingId
-              name
-            }
-          }
-          intermediatePlaces {
-            arrival {
-              scheduledTime
-              estimated {
-                time
-              }
-            }
-            stop {
-              gtfsId
-              lat
-              lon
-              name
-              code
-              platformCode
-              zoneId
-              parentStation {
-                gtfsId
-              }
-            }
-          }
-          realTime
-          realtimeState
-          transitLeg
-          rentedBike
-          start {
-            scheduledTime
-            estimated {
-              time
-            }
-          }
-          end {
-            scheduledTime
-            estimated {
-              time
-            }
-          }
-          interlineWithPreviousLeg
-          distance
-          duration
-          intermediatePlace
-          route {
-            shortName
-            color
-            gtfsId
-            type
-            longName
-            desc
-            agency {
-              gtfsId
-              fareUrl
-              name
-              phone
-            }
-            alerts {
-              alertSeverityLevel
-              effectiveEndDate
-              effectiveStartDate
-              alertHeaderText
-              alertDescriptionText
-              id
-              entities {
-                __typename
-                ... on Route {
-                  gtfsId
-                }
-              }
-            }
-          }
-          trip {
-            gtfsId
-            tripHeadsign
-            pattern {
-              code
-            }
-            stoptimesForDate {
-              headsign
-              pickupType
-              realtimeState
-              stop {
-                gtfsId
-              }
-            }
-            occupancy {
-              occupancyStatus
-            }
-          }
-        }
-      }
-    `,
-    itineraryRef,
-  );
+  const itinerary = useFragment(ItineraryDetailsFragment, itineraryRef);
 
   const shouldShowDisclaimer =
     config.showDisclaimer &&
@@ -428,6 +135,7 @@ function ItineraryDetails(
     legContainsBikePark(leg),
   );
   const legsWithScooter = compressedLegs.some(leg => leg.mode === 'SCOOTER');
+  const legsWithAirplane = compressedLegs.some(leg => leg.mode === 'AIRPLANE');
   const onlyWalking = compressedLegs.every(leg => leg.mode === 'WALK');
   const onlyBiking = compressedLegs.every(leg => leg.mode === 'BICYCLE');
   const showStartNavi =
@@ -435,6 +143,7 @@ function ItineraryDetails(
     !onlyWalking &&
     !onlyBiking &&
     !legsWithScooter &&
+    !legsWithAirplane &&
     legsWithRentalBike.length === 0 &&
     driving.distance === 0;
   const containsBiking = biking.duration > 0 && biking.distance > 0;

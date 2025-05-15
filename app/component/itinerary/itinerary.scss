@@ -162,12 +162,80 @@ $itinerary-tab-switch-height: 48px;
 
         .icon {
           color: $primary-color;
+          width: 1em;
+          height: 1em;
         }
       }
 
       .description-container {
         flex: 1;
         margin-left: $padding-medium;
+      }
+    }
+  }
+
+  .route-disclaimer-container {
+    background-color: $disclaimer-background-color;
+    font-weight: $font-weight-disclaimer;
+    border: 1px solid $disclaimer-border-color;
+    border-radius: $border-radius-disclaimer;
+    display: flex;
+    font-size: $font-size-xsmall;
+    padding: var(--space-s) $padding-medium;
+    white-space: normal;
+    margin-bottom: 5px;
+    margin-top: 9px;
+
+    .icon-container {
+      flex: 0;
+      font-size: 20px;
+
+      .icon {
+        &.info {
+          color: $primary-color;
+          width: 1em;
+          height: 1em;
+        }
+      }
+    }
+
+    .disclaimer {
+      display: flex;
+      flex-direction: column;
+      margin-left: 0.7em;
+
+      .disclaimer-header {
+        display: flex;
+        font-size: $font-size-normal;
+        font-weight: $font-weight-medium;
+        line-height: 22px;
+        margin: 0 0 4px;
+        color: #333;
+      }
+
+      .disclaimer-content {
+        display: flex;
+        font-size: $font-size-normal;
+        margin-bottom: 8px;
+        color: #666;
+        line-height: 18px;
+        letter-spacing: -0.03em;
+      }
+
+      .external-link {
+        color: $link-color;
+        text-decoration: none;
+        font-weight: $font-weight-medium;
+
+        .icon-container {
+          padding-left: var(--space-xxs);
+
+          .icon {
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+          }
+        }
       }
     }
   }
@@ -1790,6 +1858,7 @@ $itinerary-tab-switch-height: 48px;
         margin: 0 3px 0 3px;
         background-color: $background-color-lighter;
         font-weight: $font-weight-medium;
+        font-family: $id-font-family;
       }
 
       .stop-code-container {
@@ -1797,6 +1866,7 @@ $itinerary-tab-switch-height: 48px;
 
         .itinerary-stop-code {
           margin-left: 0;
+          font-family: $id-font-family;
         }
       }
 
@@ -1981,6 +2051,7 @@ $itinerary-tab-switch-height: 48px;
           background-color: currentcolor;
           height: 1.5em;
           border-radius: $border-radius;
+          padding-right: 3px;
         }
 
         .occupancy-icon-container {
@@ -2418,7 +2489,7 @@ div.itinerary-container-content {
 
       a {
         font-weight: $font-weight-medium;
-        color: $link-color;
+        color: $link-button-color;
         max-width: 100%;
       }
 
@@ -2427,7 +2498,7 @@ div.itinerary-container-content {
       }
 
       .external-link-icon {
-        color: $link-color;
+        color: $link-button-color;
       }
     }
   }
@@ -3207,7 +3278,7 @@ $font-print-decrease: 0.7;
   }
 
   &.info {
-    background: #e5f1f9;
+    background: $info-background-color;
   }
 }
 
@@ -3216,7 +3287,7 @@ $font-print-decrease: 0.7;
 }
 
 .routing-feedback-container {
-  background-color: #f4f4f4;
+  background-color: $selector-background-color;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -3241,6 +3312,7 @@ $font-print-decrease: 0.7;
 .alternative-vehicle-info {
   background-color: $infobox-color-generic-blue;
   margin-top: 30px;
+  border: 1px solid $infobox-border-color;
 
   .info-icon {
     margin-right: 1em;

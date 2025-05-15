@@ -99,6 +99,7 @@ export const AlertEntityType = Object.freeze({
 export const ExtendedRouteTypes = Object.freeze({
   BusExpress: 702,
   BusLocal: 704,
+  CallAgency: 715,
   SpeedTram: 900,
 });
 
