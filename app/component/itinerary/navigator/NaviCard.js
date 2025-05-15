@@ -21,7 +21,7 @@ const iconMap = {
   TRAM: 'icon-icon_tram',
   FERRY: 'icon-icon_ferry',
   'FERRY-EXTERNAL': 'icon-icon_ferry-external',
-  'CALL-AGENCY': 'icon-icon_call',
+  CALL: 'icon-icon_call',
   'BUS-EXPRESS': 'icon-icon_bus-express',
   'BUS-LOCAL': 'icon-icon_bus-local',
   SPEEDTRAM: 'icon-icon_speedtram',
