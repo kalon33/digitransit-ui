@@ -16,7 +16,6 @@ import {
   errorMiddleware,
   cacheMiddleware,
 } from 'react-relay-network-modern';
-import RelayClientSSR from 'react-relay-network-modern-ssr/lib/client';
 import OfflinePlugin from 'offline-plugin/runtime';
 import { Helmet } from 'react-helmet';
 import { Environment, RecordSource, Store } from 'relay-runtime';
@@ -33,7 +32,6 @@ import ErrorBoundary from './component/ErrorBoundary';
 import oldParamParser from './util/oldParamParser';
 import { ClientProvider as ClientBreakpointProvider } from './util/withBreakpoint';
 import meta from './meta';
-import { isIOSApp } from './util/browser';
 import {
   initAnalyticsClientSide,
   addAnalyticsEvent,
@@ -49,9 +47,9 @@ import {
 
 window.debug = debug; // Allow _debug.enable('*') in browser console
 
-// TODO: this is an ugly hack, but required due to cyclical processing in app
-const { config } = window.state.context.plugins['extra-context-plugin'];
+const { config } = window;
 const app = appCreator(config);
+const context = app.createContext({ config });
 
 const getParams = query => {
   if (!query) {
@@ -86,8 +84,6 @@ async function init() {
     await Promise.all(modules);
   }
 
-  const context = await app.rehydrate(window.state);
-
   // Get additional feedIds and searchParams from localstorage
   if (config.mainMenu.countrySelection) {
     const selectedCountries = context.getStore('CountryStore').getCountries();
@@ -117,11 +113,6 @@ async function init() {
     }
   }
 
-  // eslint-disable-next-line no-underscore-dangle
-  const relaySSRMiddleware = new RelayClientSSR(window.__RELAY_PAYLOADS__);
-
-  relaySSRMiddleware.debug = false;
-
   // Query parameter is used instead of header because browsers send
   // OPTIONS queries where you can't define headers
   const queryParameters = config.hasAPISubscriptionQueryParameter
@@ -134,7 +125,6 @@ async function init() {
     .getLanguage();
 
   const network = new RelayNetworkLayer([
-    relaySSRMiddleware.getMiddleware(),
     cacheMiddleware({
       size: 200,
       ttl: 60 * 60 * 1000,
@@ -158,8 +148,6 @@ async function init() {
     network,
     store: new Store(new RecordSource()),
   });
-
-  environment.relaySSRMiddleware = relaySSRMiddleware;
 
   setRelayEnvironment(environment);
 
@@ -237,17 +225,8 @@ async function init() {
     headers: PropTypes.objectOf(PropTypes.string),
   });
 
-  const root = document.getElementById('app');
-  const { initialBreakpoint } = root.dataset;
-
-  // KLUDGE: SSR and CSR mismatch breaks the UI in iOS PWA mode
-  // see: https://github.com/facebook/react/issues/11336
-  if (isIOSApp) {
-    root.innerHTML = '';
-  }
-
   const content = (
-    <ClientBreakpointProvider serverGuessedBreakpoint={initialBreakpoint}>
+    <ClientBreakpointProvider>
       <ContextProvider
         translations={translations}
         context={context.getComponentContext()}
@@ -271,8 +250,8 @@ async function init() {
     </ClientBreakpointProvider>
   );
 
-  ReactDOM.hydrate(content, root, () => {
-    // Run only in production mode and when built in a docker container
+  const rootNode = document.getElementById('app');
+  ReactDOM.render(content, rootNode, () => {
     if (process.env.NODE_ENV === 'production' && BUILD_TIME !== 'unset') {
       OfflinePlugin.install({
         onUpdateReady: () => OfflinePlugin.applyUpdate(),

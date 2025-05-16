@@ -192,7 +192,6 @@
     "react-leaflet": "2.7.0",
     "react-relay": "16.2.0",
     "react-relay-network-modern": "6.2.2",
-    "react-relay-network-modern-ssr": "1.4.0",
     "react-select": "4.3.1",
     "react-sortablejs": "2.0.11",
     "react-swipe": "6.0.4",

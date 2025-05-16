@@ -5,7 +5,6 @@ export const getIsBrowser = () =>
   typeof window !== 'undefined' && window !== null;
 
 export const isBrowser = getIsBrowser();
-export const isIOSApp = isBrowser && navigator.standalone;
 export const isIOS =
   isBrowser && !!navigator.platform.match(/iPhone|iPod|iPad/);
 export const isWindowsPhone =

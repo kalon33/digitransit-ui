@@ -11146,7 +11146,6 @@ __metadata:
     react-leaflet: 2.7.0
     react-relay: 16.2.0
     react-relay-network-modern: 6.2.2
-    react-relay-network-modern-ssr: 1.4.0
     react-select: 4.3.1
     react-sortablejs: 2.0.11
     react-swipe: 6.0.4
@@ -23273,17 +23272,6 @@ __metadata:
     react-native:
       optional: true
   checksum: 369a2bdcf87915659af9e5c55abfd9f52a84e43e0d12dcc108ed17dbe6933558b7b7fc12caa9c10c1a10a8be7df89454b6c96989d8573fedec1a772c94a1f145
-  languageName: node
-  linkType: hard
-
-"react-relay-network-modern-ssr@npm:1.4.0":
-  version: 1.4.0
-  resolution: "react-relay-network-modern-ssr@npm:1.4.0"
-  peerDependencies:
-    graphql: ">=0.11.0"
-    react-relay: ">=1.4.0"
-    react-relay-network-modern: ">=2.1.0"
-  checksum: 20dfa98ce06d3872576b95cae6b6da8d4c815d0a8859103e76adc0795be12dd21d228ba9a12d599744e18248111c84128ae731e98c0cd7a909447f2d7fbad42f
   languageName: node
   linkType: hard
 
