@@ -54,7 +54,6 @@ import ItineraryListContainer from './ItineraryListContainer';
 import ItineraryPageControls from './ItineraryPageControls';
 import {
   addBikeStationMapForRentalVehicleItineraries,
-  addFeedbackly,
   checkDayNight,
   filterItinerariesByFeedId,
   filterWalk,
@@ -868,7 +867,6 @@ export default function ItineraryPage(props, context) {
   useEffect(() => {
     setCurrentTimeToURL(config, match);
     updateLocalStorage(true);
-    addFeedbackly(context);
 
     if (isStoredItineraryRelevant(storedItinerary, match)) {
       setNavigation(true);
@@ -1502,7 +1500,6 @@ export default function ItineraryPage(props, context) {
 ItineraryPage.contextTypes = {
   config: configShape,
   executeAction: PropTypes.func.isRequired,
-  headers: PropTypes.objectOf(PropTypes.string),
   getStore: PropTypes.func,
   router: routerShape.isRequired,
   match: matchShape.isRequired,
