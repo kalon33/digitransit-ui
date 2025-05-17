@@ -171,13 +171,13 @@ const baseMqtt = {
 
 const walttiMqtt = {
   ...baseMqtt,
-  gtfsRt: true,
+  gtfsrt: true,
   mqttTopicResolver: walttiTopicResolver,
 };
 
 function elyMqtt(ignoreHeadsign) {
   return {
-    ...baseMqtt,
+    ...walttiMqtt,
     mqttTopicResolver: elyTopicResolver,
     ignoreHeadsign,
   };

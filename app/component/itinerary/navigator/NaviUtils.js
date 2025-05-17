@@ -10,6 +10,10 @@ import { getRouteMode } from '../../../util/modeUtils';
 import { locationToUri } from '../../../util/otpStrings';
 import { getItineraryPagePath } from '../../../util/path';
 import { epochToIso, timeStr } from '../../../util/timeUtils';
+import {
+  getFeedWithoutId,
+  isExternalFeed,
+} from '../../../util/feedScopedIdUtils';
 import Icon from '../../Icon';
 import { getModeIconColor } from '../../../util/colorUtils';
 import RouteNumberContainer from '../../RouteNumberContainer';
@@ -709,6 +713,10 @@ export const getDestinationProperties = (
     if (routes.some(p => p.type === ExtendedRouteTypes.SpeedTram)) {
       mode = 'speedtram';
     }
+  } else if (routes && vehicleMode === 'FERRY') {
+    if (routes.some(p => isExternalFeed(getFeedWithoutId(p.gtfsId), config))) {
+      mode = 'ferry-external';
+    }
   }
   // todo: scooter and citybike icons etc.
   if (rentalVehicle) {
@@ -743,6 +751,12 @@ export const getDestinationProperties = (
         iconProps = {
           iconId: 'icon-icon_ferry',
           className: 'ferry-stop',
+        };
+        break;
+      case 'ferry-external':
+        iconProps = {
+          iconId: 'icon-icon_ferry-external',
+          className: 'ferry-external-stop',
         };
         break;
       case 'bus-express':

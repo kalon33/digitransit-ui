@@ -212,6 +212,7 @@ export const planConnection = graphql`
                 }
                 routes {
                   type
+                  gtfsId
                 }
               }
               vehicleParking {
