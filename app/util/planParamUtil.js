@@ -24,7 +24,12 @@ export const PLANTYPE = {
   FLEXTRANSIT: 'FLEXTRANSIT',
 };
 
-const directModes = [PLANTYPE.WALK, PLANTYPE.BIKE, PLANTYPE.CAR];
+const directModes = [
+  PLANTYPE.WALK,
+  PLANTYPE.BIKE,
+  PLANTYPE.CAR,
+  PLANTYPE.FLEXTRANSIT,
+];
 const SHORT_TRIP_METERS = 2000;
 
 /**
@@ -262,7 +267,10 @@ export function planQueryNeeded(
       );
 
     case PLANTYPE.FLEXTRANSIT:
-      return transitModes.length > 0 && config.allowFlexJourneys;
+      return (
+        (transitModes.length > 0 || config.allowDirectFlexJourneys) &&
+        config.allowFlexJourneys
+      );
 
     case PLANTYPE.TRANSIT:
     default:
@@ -405,9 +413,9 @@ export function getPlanParams(
       direct = access;
       break;
     case PLANTYPE.FLEXTRANSIT:
-      access = ['WALK', 'FLEX'];
+      access = ['WALK'];
       egress = access;
-      direct = access;
+      direct = ['WALK', 'FLEX'];
       transitOnly = false;
       break;
     default: // direct modes

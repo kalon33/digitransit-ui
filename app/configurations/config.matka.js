@@ -67,6 +67,7 @@ export default {
       'mode-citybike': '#FCBC19',
       'mode-citybike-secondary': '#333333',
       'mode-scooter': '#C5CAD2',
+      'mode-taxi': '#647693',
     },
   },
   feedIds: [
@@ -101,6 +102,7 @@ export default {
     'IngvesSvanback',
     'CAR_FERRIES',
   ],
+  externalFeedIds: ['02Taksi'],
 
   additionalFeedIds: {
     estonia: ['Vikingline', 'Viro'],
@@ -446,4 +448,7 @@ export default {
     },
   ],
   navigation: true,
+
+  allowFlexJourneys: true,
+  allowDirectFlexJourneys: true,
 };

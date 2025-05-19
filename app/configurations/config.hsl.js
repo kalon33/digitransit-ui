@@ -91,8 +91,8 @@ export default {
   useRoutingFeedbackPrompt: true,
 
   feedIds: ['HSL', 'HSLlautta', 'Sipoo'],
-  externalFeedIds: ['HSLlautta'],
-  allowDirectTaxiJourneys: true,
+  externalFeedIds: ['HSLlautta', '02Taksi'],
+  allowDirectFlexJourneys: true,
 
   showHSLTracking: false,
   allowLogin: true,
@@ -782,5 +782,4 @@ export default {
   navigation: true,
 
   allowFlexJourneys: true,
-  allowedFlexRouteTypes: [1501, 715],
 };

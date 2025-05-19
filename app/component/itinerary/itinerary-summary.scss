@@ -487,10 +487,8 @@
 
           &.taxi-external {
             .icon {
-              width: inherit;
-              transform: scale(1.25);
-              margin-top: 3px;
-              margin-left: 3px;
+              width: 24px;
+              fill: white;
             }
           }
         }

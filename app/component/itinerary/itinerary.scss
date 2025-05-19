@@ -644,9 +644,7 @@ $itinerary-tab-switch-height: 48px;
   &.taxi {
     .icon-container {
       .icon {
-        width: inherit;
-        transform: scale(1.25);
-        color: transparent;
+        width: 24px;
       }
     }
   }
@@ -1215,7 +1213,7 @@ $itinerary-tab-switch-height: 48px;
 
         .icon-container {
           .icon {
-            width: inherit;
+            fill: black;
             color: transparent;
             font-size: 28px;
           }
@@ -2016,6 +2014,7 @@ $itinerary-tab-switch-height: 48px;
           color: $external-feed-color;
           border-radius: 3px;
           font-size: 24px;
+          fill: white;
         }
       }
     }
