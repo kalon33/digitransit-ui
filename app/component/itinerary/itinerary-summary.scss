@@ -493,13 +493,6 @@
           }
         }
 
-        .ferry-external .itinerary-icon_with-bicycle {
-          color: black;
-          height: 20px;
-          width: 20px;
-          padding-bottom: 4px;
-        }
-
         .itinerary-icon_with-bicycle {
           color: white;
           height: 20px;
@@ -534,14 +527,6 @@
             font-size: 15px;
             padding: 1px 0 0 0;
           }
-
-          .vehicle-number.ferry-external {
-            color: $black;
-          }
-
-          .vehicle-number.taxi-external {
-            color: $black;
-          }
         }
 
         .leg-duration-container {
@@ -563,6 +548,12 @@
             }
           }
 
+          &.scooter {
+            .leg-duration {
+              color: $white;
+            }
+          }
+
           &.car {
             .leg-duration {
               color: $white;
@@ -571,7 +562,7 @@
 
           &.taxi-external {
             .leg-duration {
-              color: $black;
+              color: $white;
             }
           }
         }
