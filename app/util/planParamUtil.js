@@ -24,12 +24,7 @@ export const PLANTYPE = {
   FLEXTRANSIT: 'FLEXTRANSIT',
 };
 
-const directModes = [
-  PLANTYPE.WALK,
-  PLANTYPE.BIKE,
-  PLANTYPE.CAR,
-  PLANTYPE.FLEXTRANSIT,
-];
+const directModes = [PLANTYPE.WALK, PLANTYPE.BIKE, PLANTYPE.CAR];
 const SHORT_TRIP_METERS = 2000;
 
 /**
@@ -354,7 +349,11 @@ export function getPlanParams(
       }
     });
   }
-  const directOnly = directModes.includes(planType) || otpModes.length === 0;
+  const directFlexOnly = !window.localStorage
+    .getItem('favouriteStore')
+    ?.includes('Flextestaus2025');
+  const directOnly =
+    directFlexOnly || directModes.includes(planType) || otpModes.length === 0;
   let transitOnly = !!relaxSettings;
   const wheelchair = !!settings.accessibilityOption;
   const cityBike =
@@ -413,7 +412,7 @@ export function getPlanParams(
       direct = access;
       break;
     case PLANTYPE.FLEXTRANSIT:
-      access = ['WALK'];
+      access = directFlexOnly ? null : ['WALK', 'FLEX'];
       egress = access;
       direct = ['WALK', 'FLEX'];
       transitOnly = false;
