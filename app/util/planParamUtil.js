@@ -353,7 +353,9 @@ export function getPlanParams(
     .getItem('favouriteStore')
     ?.includes('Flextestaus2025');
   const directOnly =
-    directFlexOnly || directModes.includes(planType) || otpModes.length === 0;
+    (planType === PLANTYPE.FLEXTRANSIT && directFlexOnly) ||
+    directModes.includes(planType) ||
+    otpModes.length === 0;
   let transitOnly = !!relaxSettings;
   const wheelchair = !!settings.accessibilityOption;
   const cityBike =
