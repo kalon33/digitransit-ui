@@ -219,6 +219,10 @@ export default {
       availableForSelection: true,
       defaultValue: false,
     },
+    taxi: {
+      availableForSelection: true,
+      defaultValue: false,
+    },
   },
 
   useRealtimeTravellerCapacities: true,
