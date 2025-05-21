@@ -1993,14 +1993,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-autosuggest-panel@workspace:digitransit-component/packages/digitransit-component-autosuggest-panel"
   peerDependencies:
-    "@digitransit-component/digitransit-component-autosuggest": ^3.0.5
-    "@digitransit-component/digitransit-component-icon": ^1.0.1
+    "@digitransit-component/digitransit-component-autosuggest": ^3.0.6
+    "@digitransit-component/digitransit-component-icon": ^1.0.2
     "@hsl-fi/sass": ^0.2.0
-    classnames: 2.2.6
+    classnames: 2.5.1
     i18next: ^19.3.3
     lodash: 4.17.21
     lodash-es: 4.17.21
-    prop-types: ^15.7.2
+    prop-types: ^15.8.1
     react: ^16.13.0
     react-autosuggest: ^10.0.0
     react-autowhatever: 10.2.1
@@ -2013,20 +2013,20 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-autosuggest@workspace:digitransit-component/packages/digitransit-component-autosuggest"
   dependencies:
-    "@digitransit-search-util/digitransit-search-util-execute-search-immidiate": ^3.0.3
+    "@digitransit-search-util/digitransit-search-util-execute-search-immidiate": ^3.0.4
     "@digitransit-search-util/digitransit-search-util-get-label": ^1.0.1
     "@digitransit-search-util/digitransit-search-util-uniq-by-label": ^2.1.0
     "@hsl-fi/hooks": ^1.2.4
   peerDependencies:
-    "@digitransit-component/digitransit-component-dialog-modal": ^0.3.6
-    "@digitransit-component/digitransit-component-icon": ^1.0.1
-    "@digitransit-component/digitransit-component-suggestion-item": ^2.0.7
+    "@digitransit-component/digitransit-component-dialog-modal": ^0.3.7
+    "@digitransit-component/digitransit-component-icon": ^1.0.2
+    "@digitransit-component/digitransit-component-suggestion-item": ^2.0.8
     "@hsl-fi/sass": ^0.2.0
-    classnames: 2.2.6
+    classnames: 2.5.1
     i18next: ^19.3.3
     lodash: 4.17.21
     lodash-es: 4.17.21
-    prop-types: ^15.7.2
+    prop-types: ^15.8.1
     react: ^16.13.0
     react-autosuggest: ^10.0.0
     react-modal: ~3.11.2
@@ -2038,11 +2038,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-control-panel@workspace:digitransit-component/packages/digitransit-component-control-panel"
   peerDependencies:
-    "@digitransit-component/digitransit-component-icon": ^1.0.1
+    "@digitransit-component/digitransit-component-icon": ^1.0.2
     "@hsl-fi/sass": ^0.2.0
-    classnames: 2.2.6
+    classnames: 2.5.1
     i18next: ^19.3.3
-    prop-types: ^15.7.2
+    prop-types: ^15.8.1
     react: ^16.13.0
     react-cookie: ^4.0.3
   languageName: unknown
@@ -2052,14 +2052,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-datetimepicker@workspace:digitransit-component/packages/digitransit-component-datetimepicker"
   peerDependencies:
-    "@digitransit-component/digitransit-component-icon": ^1.0.1
-    classnames: 2.2.6
+    "@digitransit-component/digitransit-component-icon": ^1.0.2
+    classnames: 2.5.1
     i18next: ^19.3.3
     lodash: 4.17.21
     lodash-es: 4.17.21
     moment: 2.30.1
     moment-timezone: 0.5.45
-    prop-types: ^15.7.2
+    prop-types: ^15.8.1
     react: ^16.13.0
     react-autosuggest: ^10.0.0
     react-modal: ~3.11.2
@@ -2074,16 +2074,16 @@ __metadata:
     "@hsl-fi/modal": ^0.3.2
   peerDependencies:
     "@hsl-fi/sass": ^0.2.0
-    classnames: 2.2.6
+    classnames: 2.5.1
     i18next: ^19.3.3
-    prop-types: ^15.7.2
+    prop-types: ^15.8.1
     react: ^16.13.0
   languageName: unknown
   linkType: soft
 
-"@digitransit-component/digitransit-component-favourite-bar@2.0.7, @digitransit-component/digitransit-component-favourite-bar@workspace:digitransit-component/packages/digitransit-component-favourite-bar":
-  version: 0.0.0-use.local
-  resolution: "@digitransit-component/digitransit-component-favourite-bar@workspace:digitransit-component/packages/digitransit-component-favourite-bar"
+"@digitransit-component/digitransit-component-favourite-bar@npm:2.0.7":
+  version: 2.0.7
+  resolution: "@digitransit-component/digitransit-component-favourite-bar@npm:2.0.7"
   dependencies:
     "@digitransit-search-util/digitransit-search-util-uniq-by-label": ^2.1.0
   peerDependencies:
@@ -2097,6 +2097,26 @@ __metadata:
     lodash-es: 4.17.21
     prop-types: ^15.7.2
     react: ^16.13.0
+  checksum: 5a88a61ba39c4613fa78f155e98fd2d6fba963a07dee2ad9b85d0bbca95d19f4302ad014849811b6e19af1b3c435daade51a8b7004c4efc903dc3fa7c956caa2
+  languageName: node
+  linkType: hard
+
+"@digitransit-component/digitransit-component-favourite-bar@workspace:digitransit-component/packages/digitransit-component-favourite-bar":
+  version: 0.0.0-use.local
+  resolution: "@digitransit-component/digitransit-component-favourite-bar@workspace:digitransit-component/packages/digitransit-component-favourite-bar"
+  dependencies:
+    "@digitransit-search-util/digitransit-search-util-uniq-by-label": ^2.1.0
+  peerDependencies:
+    "@digitransit-component/digitransit-component-icon": ^1.0.2
+    "@digitransit-component/digitransit-component-suggestion-item": ^2.0.7
+    "@hsl-fi/sass": ^0.2.0
+    "@hsl-fi/shimmer": 0.1.2
+    classnames: 2.5.1
+    i18next: ^19.3.3
+    lodash: 4.17.21
+    lodash-es: 4.17.21
+    prop-types: ^15.8.1
+    react: ^16.13.0
   languageName: unknown
   linkType: soft
 
@@ -2106,13 +2126,13 @@ __metadata:
   dependencies:
     "@digitransit-search-util/digitransit-search-util-uniq-by-label": ^2.1.0
   peerDependencies:
-    "@digitransit-component/digitransit-component-dialog-modal": ^0.3.6
-    "@digitransit-component/digitransit-component-icon": ^1.0.1
+    "@digitransit-component/digitransit-component-dialog-modal": ^0.3.7
+    "@digitransit-component/digitransit-component-icon": ^1.0.2
     "@hsl-fi/container-spinner": 0.3.2
     "@hsl-fi/modal": ^0.3.2
     "@hsl-fi/sass": ^0.2.0
     i18next: ^19.3.3
-    prop-types: ^15.7.2
+    prop-types: ^15.8.1
     react: ^16.13.0
     react-sortablejs: 2.0.11
   languageName: unknown
@@ -2122,14 +2142,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-favourite-modal@workspace:digitransit-component/packages/digitransit-component-favourite-modal"
   peerDependencies:
-    "@digitransit-component/digitransit-component-icon": ^1.0.1
+    "@digitransit-component/digitransit-component-icon": ^1.0.2
     "@hsl-fi/modal": ^0.3.2
     "@hsl-fi/sass": ^0.2.0
-    classnames: 2.2.6
+    classnames: 2.5.1
     i18next: ^19.3.3
     lodash: 4.17.21
     lodash-es: 4.17.21
-    prop-types: ^15.7.2
+    prop-types: ^15.8.1
     react: ^16.13.0
   languageName: unknown
   linkType: soft
@@ -2139,7 +2159,7 @@ __metadata:
   resolution: "@digitransit-component/digitransit-component-icon@workspace:digitransit-component/packages/digitransit-component-icon"
   peerDependencies:
     i18next: ^19.3.3
-    prop-types: ^15.7.2
+    prop-types: ^15.8.1
     react: ^16.13.0
   languageName: unknown
   linkType: soft
@@ -2150,11 +2170,11 @@ __metadata:
   dependencies:
     recompose: 0.30.0
   peerDependencies:
-    "@digitransit-component/digitransit-component-icon": ^1.0.1
+    "@digitransit-component/digitransit-component-icon": ^1.0.2
     "@hsl-fi/sass": " ^0.2.0"
-    classnames: 2.2.6
+    classnames: 2.5.1
     i18next: ^19.3.3
-    prop-types: ^15.7.2
+    prop-types: ^15.8.1
     react: ^16.13.0
   languageName: unknown
   linkType: soft
@@ -2163,22 +2183,35 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-traffic-now-link@workspace:digitransit-component/packages/digitransit-component-traffic-now-link"
   peerDependencies:
-    "@digitransit-component/digitransit-component-icon": ^1.0.1
+    "@digitransit-component/digitransit-component-icon": ^1.0.2
     "@hsl-fi/sass": ^0.2.0
     i18next: ^19.3.3
-    prop-types: ^15.7.2
+    prop-types: ^15.8.1
     react: ^16.13.0
   languageName: unknown
   linkType: soft
 
-"@digitransit-component/digitransit-component-with-breakpoint@^0.0.5, @digitransit-component/digitransit-component-with-breakpoint@workspace:digitransit-component/packages/digitransit-component-with-breakpoint":
+"@digitransit-component/digitransit-component-with-breakpoint@npm:^0.0.5":
+  version: 0.0.5
+  resolution: "@digitransit-component/digitransit-component-with-breakpoint@npm:0.0.5"
+  peerDependencies:
+    hoist-non-react-statics: 2.5.4
+    i18next: ^19.3.3
+    lodash: 4.17.21
+    prop-types: ^15.7.2
+    react: ^16.13.0
+  checksum: 4b8a172ce02b0bcecce650871877e9f1cd506c7f45e1c4ac2a6ffde0cf91e6fa98c9603bb987d87687ce87e10d3c6f42fcc6fdee95d8a3ca7150637266027768
+  languageName: node
+  linkType: hard
+
+"@digitransit-component/digitransit-component-with-breakpoint@workspace:digitransit-component/packages/digitransit-component-with-breakpoint":
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-with-breakpoint@workspace:digitransit-component/packages/digitransit-component-with-breakpoint"
   peerDependencies:
     hoist-non-react-statics: 2.5.4
     i18next: ^19.3.3
     lodash: 4.17.21
-    prop-types: ^15.7.2
+    prop-types: ^15.8.1
     react: ^16.13.0
   languageName: unknown
   linkType: soft
@@ -2224,13 +2257,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@digitransit-search-util/digitransit-search-util-execute-search-immidiate@^3.0.3, @digitransit-search-util/digitransit-search-util-execute-search-immidiate@workspace:digitransit-search-util/packages/digitransit-search-util-execute-search-immidiate":
+"@digitransit-search-util/digitransit-search-util-execute-search-immidiate@^3.0.4, @digitransit-search-util/digitransit-search-util-execute-search-immidiate@workspace:digitransit-search-util/packages/digitransit-search-util-execute-search-immidiate":
   version: 0.0.0-use.local
   resolution: "@digitransit-search-util/digitransit-search-util-execute-search-immidiate@workspace:digitransit-search-util/packages/digitransit-search-util-execute-search-immidiate"
   dependencies:
     "@digitransit-search-util/digitransit-search-util-filter-matching-to-input": 0.0.3
-    "@digitransit-search-util/digitransit-search-util-get-geocoding-results": 0.0.7
-    "@digitransit-search-util/digitransit-search-util-get-json": 0.0.6
+    "@digitransit-search-util/digitransit-search-util-get-geocoding-results": 0.0.8
+    "@digitransit-search-util/digitransit-search-util-get-json": 0.0.7
     "@digitransit-search-util/digitransit-search-util-helpers": 2.0.1
     lodash: 4.17.21
   languageName: unknown
@@ -2244,20 +2277,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@digitransit-search-util/digitransit-search-util-get-geocoding-results@0.0.7, @digitransit-search-util/digitransit-search-util-get-geocoding-results@workspace:digitransit-search-util/packages/digitransit-search-util-get-geocoding-results":
+"@digitransit-search-util/digitransit-search-util-get-geocoding-results@0.0.8, @digitransit-search-util/digitransit-search-util-get-geocoding-results@workspace:digitransit-search-util/packages/digitransit-search-util-get-geocoding-results":
   version: 0.0.0-use.local
   resolution: "@digitransit-search-util/digitransit-search-util-get-geocoding-results@workspace:digitransit-search-util/packages/digitransit-search-util-get-geocoding-results"
   dependencies:
-    "@digitransit-search-util/digitransit-search-util-get-json": 0.0.6
+    "@digitransit-search-util/digitransit-search-util-get-json": 0.0.7
   languageName: unknown
   linkType: soft
 
-"@digitransit-search-util/digitransit-search-util-get-json@0.0.6, @digitransit-search-util/digitransit-search-util-get-json@workspace:digitransit-search-util/packages/digitransit-search-util-get-json":
+"@digitransit-search-util/digitransit-search-util-get-json@0.0.7, @digitransit-search-util/digitransit-search-util-get-json@workspace:digitransit-search-util/packages/digitransit-search-util-get-json":
   version: 0.0.0-use.local
   resolution: "@digitransit-search-util/digitransit-search-util-get-json@workspace:digitransit-search-util/packages/digitransit-search-util-get-json"
   dependencies:
     "@digitransit-search-util/digitransit-search-util-serialize": 0.0.2
-    axios: 1.8.4
+    axios: 1.9.0
   languageName: unknown
   linkType: soft
 
@@ -7467,18 +7500,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.8.4":
-  version: 1.8.4
-  resolution: "axios@npm:1.8.4"
-  dependencies:
-    follow-redirects: ^1.15.6
-    form-data: ^4.0.0
-    proxy-from-env: ^1.1.0
-  checksum: e901dc1730bdcd769839b3d93ae6d6457a53d79b19a0eb623ebfea333441259ab51e63ca118baa47a5156567401466ac739f31087b4ee5e6770ab2e227484538
-  languageName: node
-  linkType: hard
-
-"axios@npm:^1.6.1":
+"axios@npm:1.9.0, axios@npm:^1.6.1":
   version: 1.9.0
   resolution: "axios@npm:1.9.0"
   dependencies:
@@ -11045,7 +11067,7 @@ __metadata:
     async: ^3.2.6
     autoprefixer: 9.8.6
     axe-core: ^4.10.3
-    axios: 1.8.4
+    axios: 1.9.0
     babel-loader: 8.2.5
     babel-plugin-dynamic-import-node: 2.3.3
     babel-plugin-inline-react-svg: 2.0.2
@@ -11134,7 +11156,7 @@ __metadata:
     postcss-flexbugs-fixes: 5.0.2
     postcss-loader: ^4
     prettier: 3.1.1
-    prop-types: 15.7.2
+    prop-types: 15.8.1
     react: ^16.13.0
     react-autosuggest: ^10.0.0
     react-autowhatever: 10.2.1
@@ -22648,18 +22670,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:15.7.2":
-  version: 15.7.2
-  resolution: "prop-types@npm:15.7.2"
-  dependencies:
-    loose-envify: ^1.4.0
-    object-assign: ^4.1.1
-    react-is: ^16.8.1
-  checksum: 5eef82fdda64252c7e75aa5c8cc28a24bbdece0f540adb60ce67c205cf978a5bd56b83e4f269f91c6e4dcfd80b36f2a2dec24d362e278913db2086ca9c6f9430
-  languageName: node
-  linkType: hard
-
-"prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:15.8.1, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -23196,7 +23207,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^16.13.1, react-is@npm:^16.7.0, react-is@npm:^16.8.1, react-is@npm:^16.8.6":
+"react-is@npm:^16.13.1, react-is@npm:^16.7.0, react-is@npm:^16.8.6":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: f7a19ac3496de32ca9ae12aa030f00f14a3d45374f1ceca0af707c831b2a6098ef0d6bdae51bd437b0a306d7f01d4677fcc8de7c0d331eb47ad0f46130e53c5f
