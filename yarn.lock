@@ -2044,7 +2044,6 @@ __metadata:
     i18next: ^19.3.3
     prop-types: ^15.8.1
     react: ^16.13.0
-    react-cookie: ^4.0.3
   languageName: unknown
   linkType: soft
 
@@ -2244,7 +2243,6 @@ __metadata:
     react: ^16.13.0
     react-autosuggest: ^10.0.0
     react-autowhatever: 10.2.1
-    react-cookie: ^4.0.3
     react-modal: ~3.11.2
     react-sortablejs: 2.0.11
     recompose: 0.30.0
