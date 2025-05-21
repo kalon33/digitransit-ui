@@ -575,12 +575,7 @@ export function mergeExternalTransitPlan(
     externalPlan.edges,
     allowedFlexRouteTypes,
   );
-  return sortAndMergePlans(
-    externalTransitEdges,
-    transitPlan,
-    arriveBy,
-    externalTransitEdges.length,
-  );
+  return sortAndMergePlans(externalTransitEdges, transitPlan, arriveBy);
 }
 
 /**

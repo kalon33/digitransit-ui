@@ -452,7 +452,4 @@ export default {
     },
   ],
   navigation: true,
-
-  allowFlexJourneys: true,
-  allowDirectFlexJourneys: true,
 };

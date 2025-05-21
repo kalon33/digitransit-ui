@@ -92,7 +92,6 @@ export default {
 
   feedIds: ['HSL', 'HSLlautta', 'Sipoo'],
   externalFeedIds: ['HSLlautta', '02Taksi'],
-  allowDirectFlexJourneys: true,
 
   showHSLTracking: false,
   allowLogin: true,
@@ -780,6 +779,4 @@ export default {
   trafficLightGraphic: 'hsl/traffic-light.svg',
   naviGeolocationGraphic: 'hsl/geolocation.svg',
   navigation: true,
-
-  allowFlexJourneys: true,
 };

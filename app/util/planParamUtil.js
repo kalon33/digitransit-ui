@@ -349,13 +349,12 @@ export function getPlanParams(
       }
     });
   }
+
+  // direct by default for now, non-direct only for testing purposes
   const directFlexOnly = !window.localStorage
     .getItem('favouriteStore')
     ?.includes('Flextestaus2025');
-  const directOnly =
-    (planType === PLANTYPE.FLEXTRANSIT && directFlexOnly) ||
-    directModes.includes(planType) ||
-    otpModes.length === 0;
+  const directOnly = directModes.includes(planType) || otpModes.length === 0;
   let transitOnly = !!relaxSettings;
   const wheelchair = !!settings.accessibilityOption;
   const cityBike =
@@ -416,7 +415,7 @@ export function getPlanParams(
     case PLANTYPE.FLEXTRANSIT:
       access = directFlexOnly ? null : ['WALK', 'FLEX'];
       egress = access;
-      direct = ['WALK', 'FLEX'];
+      direct = directFlexOnly ? ['WALK', 'FLEX'] : null;
       transitOnly = false;
       break;
     default: // direct modes
