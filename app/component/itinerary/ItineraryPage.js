@@ -254,7 +254,8 @@ export default function ItineraryPage(props, context) {
           !settingsState.settingsChanged
         ) {
           // Note: plan and scooter plan are merged, but relaxed ones are not
-          // Is this intended behavior ?
+          // because a relaxed scooter search is performed separately
+          // and shown only if basic relaxed search finds no journeys.
           if (relaxState.plan?.edges?.length > 0) {
             return relaxState.plan;
           }
@@ -1022,41 +1023,39 @@ export default function ItineraryPage(props, context) {
 
   // merge the main plan and the scooter plan into one
   useEffect(() => {
+    const settings = getSettings(config);
+    let plan = null;
+
     if (
       state.loading === LOADSTATE.DONE &&
       scooterState.loading === LOADSTATE.DONE
     ) {
-      const plan = mergeScooterTransitPlan(
+      plan = mergeScooterTransitPlan(
         scooterState.plan,
         state.plan,
         config.vehicleRental.allowDirectScooterJourneys,
         match.location.query.arriveBy === 'true',
       );
-      if (flexState.loading !== LOADSTATE.LOADING) {
-        setCombinedState({ plan, loading: LOADSTATE.DONE });
-        resetItineraryPageSelection();
-      }
     }
-  }, [scooterState.plan, state.plan]);
 
-  // merge the main plan and the flex plan into one
-  useEffect(() => {
     if (
+      config.experimental?.allowFlexJourneys &&
+      settings.includeTaxiSuggestions &&
       state.loading === LOADSTATE.DONE &&
       flexState.loading === LOADSTATE.DONE
     ) {
-      const plan = mergeExternalTransitPlan(
+      plan = mergeExternalTransitPlan(
         flexState.plan,
-        state.plan,
+        plan,
         match.location.query.arriveBy === 'true',
         config.allowedFlexRouteTypes,
       );
-      if (scooterState.loading !== LOADSTATE.LOADING) {
-        setCombinedState({ plan, loading: LOADSTATE.DONE });
-        resetItineraryPageSelection();
-      }
     }
-  }, [flexState.plan, state.plan]);
+    if (plan) {
+      setCombinedState({ plan, loading: LOADSTATE.DONE });
+      resetItineraryPageSelection();
+    }
+  }, [scooterState.plan, state.plan, flexState.plan]);
 
   const setMWTRef = ref => {
     mwtRef.current = ref;

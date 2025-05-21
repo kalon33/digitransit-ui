@@ -263,8 +263,9 @@ export function planQueryNeeded(
 
     case PLANTYPE.FLEXTRANSIT:
       return (
-        (transitModes.length > 0 || config.allowDirectFlexJourneys) &&
-        config.experimental?.allowFlexJourneys
+        config.experimental?.allowFlexJourneys &&
+        settings.includeTaxiSuggestions &&
+        (transitModes.length > 0 || config.allowDirectFlexJourneys)
       );
 
     case PLANTYPE.TRANSIT:
