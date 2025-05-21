@@ -60,18 +60,8 @@ class ItineraryCircleLine extends React.Component {
         </svg>
       </div>
     );
+    const showCircle = this.props.appendClass !== 'taxi';
     if (this.isFirstChild() && top) {
-      const startIcon = (
-        <div className="itinerary-icon-container start">
-          <Icon
-            img="icon-icon_mapMarker"
-            className="itinerary-icon from from-it"
-          />
-        </div>
-      );
-      if (this.props.appendClass === 'taxi') {
-        return startIcon;
-      }
       return (
         <>
           <div className="itinerary-icon-container start">
@@ -80,7 +70,7 @@ class ItineraryCircleLine extends React.Component {
               className="itinerary-icon from from-it"
             />
           </div>
-          {circleMarker}
+          {showCircle && circleMarker}
         </>
       );
     }
@@ -101,7 +91,7 @@ class ItineraryCircleLine extends React.Component {
         </div>
       );
     }
-    if (this.props.appendClass === 'taxi') {
+    if (!showCircle) {
       return null;
     }
     return (
