@@ -19,9 +19,10 @@ function RouteNumber(props, context) {
   // Perform text-related processing
   let filteredText = props.text;
   if (
-    props.shortenLongText &&
-    context.config.disabledLegTextModes?.includes(mode) &&
-    props.className.includes('line')
+    (props.shortenLongText &&
+      context.config.disabledLegTextModes?.includes(mode) &&
+      props.className.includes('line')) ||
+    isTaxi
   ) {
     filteredText = '';
   }
@@ -172,7 +173,7 @@ function RouteNumber(props, context) {
             )}
           </div>
         )}
-        {filteredText && !isTaxi && (
+        {filteredText && (
           <div
             className={cx(
               'vehicle-number-container-v'.concat(props.card ? '-map' : ''),
