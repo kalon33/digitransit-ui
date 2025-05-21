@@ -220,7 +220,7 @@ export default {
       defaultValue: false,
     },
     taxi: {
-      availableForSelection: true,
+      availableForSelection: true, // experimental feature
       defaultValue: false,
     },
   },
@@ -452,4 +452,10 @@ export default {
     },
   ],
   navigation: true,
+
+  // features that should not be deployed to production
+  experimental: {
+    allowFlexJourneys: IS_DEV,
+    allowDirectFlexJourneys: IS_DEV,
+  },
 };

@@ -276,8 +276,8 @@ class CustomizeSearch extends React.Component {
               </div>
             </div>
           )}
-          {config.transportModes.taxi.availableForSelection &&
-            config.allowFlexJourneys && (
+          {config.experimental?.allowFlexJourneys &&
+            config.transportModes.taxi.availableForSelection && (
               <div className="settings-section">
                 <div className="settings-option-container">
                   <TaxiOptionsSection

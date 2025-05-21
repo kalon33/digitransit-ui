@@ -264,7 +264,7 @@ export function planQueryNeeded(
     case PLANTYPE.FLEXTRANSIT:
       return (
         (transitModes.length > 0 || config.allowDirectFlexJourneys) &&
-        config.allowFlexJourneys
+        config.experimental?.allowFlexJourneys
       );
 
     case PLANTYPE.TRANSIT:

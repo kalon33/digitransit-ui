@@ -471,7 +471,7 @@ export default {
     },
 
     taxi: {
-      availableForSelection: true,
+      availableForSelection: false,
       defaultValue: false, // always false
     },
   },
@@ -857,7 +857,7 @@ export default {
   navigation: false,
   sendAnalyticsCustomEventGoals: false,
   shortenLongTextThreshold: 10, // for route number in itinerary summary
-  allowFlexJourneys: true,
-  allowDirectFlexJourneys: true,
+  allowFlexJourneys: false,
+  allowDirectFlexJourneys: false,
   allowedFlexRouteTypes: [1501, 715],
 };
