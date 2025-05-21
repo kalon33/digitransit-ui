@@ -293,7 +293,7 @@
     "rollup-plugin-peer-deps-external": "2.2.4",
     "rollup-plugin-postcss": "4.0.2",
     "rollup-plugin-terser": "7.0.2",
-    "sass-loader": "^10.4.1",
+    "sass-loader": "^10.5.2",
     "selenium-webdriver": "4.0.0-alpha.1",
     "sinon": "19.0.5",
     "stats-webpack-plugin": "0.7.0",
