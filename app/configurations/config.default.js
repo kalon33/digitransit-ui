@@ -859,5 +859,5 @@ export default {
   shortenLongTextThreshold: 10, // for route number in itinerary summary
   allowFlexJourneys: false,
   allowDirectFlexJourneys: false,
-  allowedFlexRouteTypes: [1501, 715],
+  allowedFlexRouteTypes: [1501],
 };
