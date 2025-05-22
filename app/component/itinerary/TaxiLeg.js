@@ -118,7 +118,7 @@ export default function TaxiLeg(props, { config, intl }) {
           modeClassName={modeClassName}
           taxi
           style={style}
-          firstLeg={false}
+          isNotFirstLeg
         />
         <div
           className={`small-9 columns itinerary-instruction-column ${firstLegClassName} ${props.leg.mode.toLowerCase()}`}

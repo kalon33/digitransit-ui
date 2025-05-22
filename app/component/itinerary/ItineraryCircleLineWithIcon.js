@@ -16,7 +16,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
     appendClass: PropTypes.string,
     icon: PropTypes.string,
     style: PropTypes.shape({}),
-    firstLeg: PropTypes.bool,
+    isNotFirstLeg: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -27,7 +27,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
     appendClass: undefined,
     icon: undefined,
     style: {},
-    firstLeg: undefined,
+    isNotFirstLeg: undefined,
   };
 
   state = {
@@ -36,8 +36,8 @@ class ItineraryCircleLineWithIcon extends React.Component {
 
   isFirstChild = () => {
     return (
-      (this.props.firstLeg || this.props.index === 0) &&
-      this.props.firstLeg !== false &&
+      !this.props.isNotFirstLeg &&
+      this.props.index === 0 &&
       this.props.isVia === false
     );
   };
@@ -125,9 +125,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
       <div
         className={cx('leg-before', this.props.modeClassName, {
           via: this.props.isVia,
-          'first-leg':
-            (this.props.index === 0 || this.props.index) &&
-            this.props.firstLeg !== false,
+          'first-leg': this.props.index === 0 && !this.props.isNotFirstLeg,
         })}
         aria-hidden="true"
       >
