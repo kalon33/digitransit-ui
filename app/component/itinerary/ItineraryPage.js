@@ -1024,7 +1024,7 @@ export default function ItineraryPage(props, context) {
   // merge the main plan and the scooter plan into one
   useEffect(() => {
     const settings = getSettings(config);
-    let plan = null;
+    let { plan } = state;
 
     if (
       state.loading === LOADSTATE.DONE &&
@@ -1032,7 +1032,7 @@ export default function ItineraryPage(props, context) {
     ) {
       plan = mergeScooterTransitPlan(
         scooterState.plan,
-        state.plan,
+        plan,
         config.vehicleRental.allowDirectScooterJourneys,
         match.location.query.arriveBy === 'true',
       );
@@ -1051,7 +1051,11 @@ export default function ItineraryPage(props, context) {
         config.allowedFlexRouteTypes,
       );
     }
-    if (plan) {
+    if (
+      plan &&
+      scooterState.loading === LOADSTATE.DONE &&
+      flexState.loading === LOADSTATE.DONE
+    ) {
       setCombinedState({ plan, loading: LOADSTATE.DONE });
       resetItineraryPageSelection();
     }
