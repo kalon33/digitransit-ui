@@ -1021,10 +1021,9 @@ export default function ItineraryPage(props, context) {
     }
   }, [altStates[PLANTYPE.CARTRANSIT][0].plan]);
 
-  // merge the main plan and the scooter plan into one
+  // merge the main plan, the scooter plan and the flex plan into one
   useEffect(() => {
-    const settings = getSettings(config);
-    let { plan } = state;
+    let plan = null;
 
     if (
       state.loading === LOADSTATE.DONE &&
@@ -1032,17 +1031,16 @@ export default function ItineraryPage(props, context) {
     ) {
       plan = mergeScooterTransitPlan(
         scooterState.plan,
-        plan,
+        state.plan,
         config.vehicleRental.allowDirectScooterJourneys,
         match.location.query.arriveBy === 'true',
       );
     }
 
     if (
-      config.experimental?.allowFlexJourneys &&
-      settings.includeTaxiSuggestions &&
       state.loading === LOADSTATE.DONE &&
-      flexState.loading === LOADSTATE.DONE
+      flexState.loading === LOADSTATE.DONE &&
+      flexState.plan?.edges
     ) {
       plan = mergeExternalTransitPlan(
         flexState.plan,
