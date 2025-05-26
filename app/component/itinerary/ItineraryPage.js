@@ -1023,37 +1023,27 @@ export default function ItineraryPage(props, context) {
 
   // merge the main plan, the scooter plan and the flex plan into one
   useEffect(() => {
-    let plan = null;
-
     if (
       state.loading === LOADSTATE.DONE &&
-      scooterState.loading === LOADSTATE.DONE
+      scooterState.loading === LOADSTATE.DONE &&
+      flexState.loading === LOADSTATE.DONE
     ) {
-      plan = mergeScooterTransitPlan(
+      let plan = mergeScooterTransitPlan(
         scooterState.plan,
         state.plan,
         config.vehicleRental.allowDirectScooterJourneys,
         match.location.query.arriveBy === 'true',
       );
-    }
 
-    if (
-      state.loading === LOADSTATE.DONE &&
-      flexState.loading === LOADSTATE.DONE &&
-      flexState.plan?.edges
-    ) {
-      plan = mergeExternalTransitPlan(
-        flexState.plan,
-        plan,
-        match.location.query.arriveBy === 'true',
-        config.allowedFlexRouteTypes,
-      );
-    }
-    if (
-      plan &&
-      scooterState.loading === LOADSTATE.DONE &&
-      flexState.loading === LOADSTATE.DONE
-    ) {
+      if (flexState.plan?.edges) {
+        plan = mergeExternalTransitPlan(
+          flexState.plan,
+          plan,
+          match.location.query.arriveBy === 'true',
+          config.allowedFlexRouteTypes,
+        );
+      }
+
       setCombinedState({ plan, loading: LOADSTATE.DONE });
       resetItineraryPageSelection();
     }
