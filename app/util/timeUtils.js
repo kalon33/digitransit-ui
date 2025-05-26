@@ -88,12 +88,12 @@ export function getFormattedTimeDate(startTime, pattern) {
  * @returns {string} date or '' if same day as reference
  */
 export const dateOrEmpty = (time, refTime) => {
-  const TIME = DateTime.fromMillis(time);
-  const REF_TIME = DateTime.fromMillis(refTime);
-  if (TIME.hasSame(REF_TIME, 'day')) {
+  const date = DateTime.fromMillis(time);
+  const refDate = DateTime.fromMillis(refTime);
+  if (date.hasSame(refDate, 'day')) {
     return '';
   }
-  return TIME.toFormat(DATE_PATTERN);
+  return date.toFormat(DATE_PATTERN);
 };
 
 /**
@@ -133,30 +133,37 @@ export const validateServiceTimeRange = (
   serviceTimeRange,
   now,
 ) => {
-  const NOW = now ? DateTime.fromSeconds(now) : DateTime.now();
-  const RANGE_FUTURE = !itineraryFutureDays ? 30 : itineraryFutureDays;
-  const START = NOW.minus({
-    days: RANGE_PAST,
-  }).toSeconds();
-  const END = NOW.plus({
-    days: RANGE_FUTURE,
-  }).toSeconds();
-  const NOWUX = NOW.toSeconds();
+  const nowDate = now ? DateTime.fromSeconds(now) : DateTime.now();
+  const rangeFuture = !itineraryFutureDays ? 30 : itineraryFutureDays;
+  const startSeconds = nowDate
+    .minus({
+      days: RANGE_PAST,
+    })
+    .toSeconds();
+  const endSeconds = nowDate
+    .plus({
+      days: rangeFuture,
+    })
+    .toSeconds();
+  const nowSeconds = nowDate.toSeconds();
 
   if (!serviceTimeRange) {
     // empty param returns a default range
     return {
-      start: START,
-      end: END,
+      start: startSeconds,
+      end: endSeconds,
     };
   }
 
   // always include today!
-  let start = Math.min(Math.max(serviceTimeRange.start, START), NOWUX);
+  let start = Math.min(
+    Math.max(serviceTimeRange.start, startSeconds),
+    nowSeconds,
+  );
   // make sure whole day is included, for comparing timestamps
   start = DateTime.fromSeconds(start).startOf('day').toSeconds();
 
-  let end = Math.max(Math.min(serviceTimeRange.end, END), NOWUX);
+  let end = Math.max(Math.min(serviceTimeRange.end, endSeconds), nowSeconds);
   end = DateTime.fromSeconds(end).endOf('day').toSeconds();
   return { start, end };
 };
