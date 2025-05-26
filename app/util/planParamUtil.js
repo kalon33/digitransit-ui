@@ -265,7 +265,8 @@ export function planQueryNeeded(
       return (
         config.experimental?.allowFlexJourneys &&
         settings.includeTaxiSuggestions &&
-        (transitModes.length > 0 || config.allowDirectFlexJourneys)
+        (transitModes.length > 0 ||
+          config.experimental?.allowDirectFlexJourneys)
       );
 
     case PLANTYPE.TRANSIT:
@@ -351,10 +352,10 @@ export function getPlanParams(
     });
   }
 
-  // direct by default for now, non-direct only for testing purposes
-  const directFlexOnly = !window.localStorage
-    .getItem('favouriteStore')
-    ?.includes('Flextestaus2025');
+  // non-direct for testing purposes on planners that only allow direct
+  const directFlexOnly =
+    config.experimental?.allowDirectFlexJourneys &&
+    !window.localStorage.getItem('favouriteStore')?.includes('Flextestaus2025');
   const directOnly = directModes.includes(planType) || otpModes.length === 0;
   let transitOnly = !!relaxSettings;
   const wheelchair = !!settings.accessibilityOption;
