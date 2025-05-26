@@ -319,5 +319,8 @@ export default {
     allowFlexJourneys:
       process.env.RUN_ENV === 'development' ||
       process.env.NODE_ENV !== 'production',
+    allowDirectFlexJourneys:
+      process.env.RUN_ENV === 'development' ||
+      process.env.NODE_ENV !== 'production',
   },
 };
