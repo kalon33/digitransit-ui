@@ -11,8 +11,6 @@ import get from 'lodash/get';
 import isString from 'lodash/isString';
 import isEmpty from 'lodash/isEmpty';
 import { configShape } from '../../util/shapes';
-// Webpack handles this by bundling it with the other css files
-import 'leaflet/dist/leaflet.css';
 import VehicleMarkerContainer from './VehicleMarkerContainer';
 import {
   startRealTimeClient,
