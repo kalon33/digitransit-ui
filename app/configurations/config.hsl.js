@@ -91,7 +91,7 @@ export default {
   useRoutingFeedbackPrompt: true,
 
   feedIds: ['HSL', 'HSLlautta', 'Sipoo'],
-  externalFeedIds: ['HSLlautta'],
+  externalFeedIds: ['HSLlautta', '02Taksi'],
 
   allowLogin: true,
   allowFavouritesFromLocalstorage: !process.env.OIDC_CLIENT_ID,
@@ -225,6 +225,10 @@ export default {
     },
     airplane: {
       availableForSelection: false,
+      defaultValue: false,
+    },
+    taxi: {
+      availableForSelection: true, // experimental feature
       defaultValue: false,
     },
   },
@@ -774,4 +778,10 @@ export default {
   trafficLightGraphic: 'hsl/traffic-light.svg',
   naviGeolocationGraphic: 'hsl/geolocation.svg',
   navigation: true,
+
+  // features that should not be deployed to production
+  experimental: {
+    allowFlexJourneys: IS_DEV,
+    allowDirectFlexJourneys: false,
+  },
 };
