@@ -1,10 +1,4 @@
-/**
- * Runs a check to see if the code is currently running in a browser.
- */
-export const getIsBrowser = () =>
-  typeof window !== 'undefined' && window !== null;
-
-export const isBrowser = getIsBrowser();
+export const isBrowser = typeof window !== 'undefined' && window !== null;
 export const isIOS =
   isBrowser && !!navigator.platform.match(/iPhone|iPod|iPad/);
 export const isWindowsPhone =

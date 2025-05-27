@@ -4,7 +4,6 @@ import { graphql, QueryRenderer, ReactRelayContext } from 'react-relay';
 import { intlShape } from 'react-intl';
 import Loading from './Loading';
 import DisruptionListContainer from './DisruptionListContainer';
-import { isBrowser } from '../util/browser';
 
 const Modal = lazy(() => import('@hsl-fi/modal'));
 
@@ -12,9 +11,6 @@ export default function DisruptionInfo(props, context) {
   const { setOpen } = props;
   const { intl } = context;
   const { environment } = useContext(ReactRelayContext);
-  if (!isBrowser) {
-    return null;
-  }
 
   return (
     <Suspense fallback="">

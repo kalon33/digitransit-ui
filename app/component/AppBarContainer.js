@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect, Suspense, lazy } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { matchShape, routerShape } from 'found';
 import { FormattedMessage } from 'react-intl';
 import getContext from 'recompose/getContext';
@@ -23,16 +23,6 @@ const AppBarContainer = ({
   breakpoint,
   ...args
 }) => {
-  const [isClient, setClient] = useState(false);
-
-  useEffect(() => {
-    // To prevent SSR from rendering something https://reactjs.org/docs/react-dom.html#hydrate
-    setClient(true);
-  });
-
-  if (!isClient) {
-    return null;
-  }
   return (
     <>
       <a

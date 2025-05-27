@@ -3,12 +3,11 @@ import React from 'react';
 import { createRefetchContainer, graphql } from 'react-relay';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import { FormattedMessage } from 'react-intl';
-import { routerShape, RedirectException } from 'found';
+import { routerShape } from 'found';
 import DepartureListContainer from '../DepartureListContainer';
 import Loading from '../Loading';
 import Icon from '../Icon';
 import ScrollableWrapper from '../ScrollableWrapper';
-import { isBrowser } from '../../util/browser';
 import { PREFIX_TERMINALS } from '../../util/path';
 import { stationShape, errorShape, relayShape } from '../../util/shapes';
 
@@ -44,7 +43,7 @@ class TerminalPageContent extends React.Component {
 
   render() {
     // Render something in client side to clear SSR
-    if (isBrowser && this.props.error && !this.props.station) {
+    if (this.props.error && !this.props.station) {
       return <Loading />;
     }
 
@@ -52,11 +51,7 @@ class TerminalPageContent extends React.Component {
       /* In this case there is little we can do
        * There is no point continuing rendering as it can only
        * confuse user. Therefore redirect to Terminals page */
-      if (isBrowser) {
-        this.props.router.replace(`/${PREFIX_TERMINALS}`);
-      } else {
-        throw new RedirectException(`/${PREFIX_TERMINALS}`);
-      }
+      this.props.router.replace(`/${PREFIX_TERMINALS}`);
       return null;
     }
 

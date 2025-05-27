@@ -5,7 +5,6 @@ import { configShape } from '../../util/shapes';
 import { ExtendedRouteTypes } from '../../constants';
 import VehicleIcon from '../VehicleIcon';
 import IconMarker from './IconMarker';
-import { isBrowser } from '../../util/browser';
 
 const MODES_WITH_ICONS = [
   'bus',
@@ -24,9 +23,6 @@ function getVehicleIcon(
   color,
   useLargeIcon = true,
 ) {
-  if (!isBrowser) {
-    return null;
-  }
   const modeOrDefault = MODES_WITH_ICONS.indexOf(mode) !== -1 ? mode : 'bus';
 
   return {

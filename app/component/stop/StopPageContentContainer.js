@@ -3,7 +3,7 @@ import React from 'react';
 import { createRefetchContainer, graphql } from 'react-relay';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import { FormattedMessage, intlShape } from 'react-intl';
-import { matchShape, routerShape, RedirectException } from 'found';
+import { matchShape, routerShape } from 'found';
 import {
   configShape,
   errorShape,
@@ -14,7 +14,6 @@ import DepartureListContainer from '../DepartureListContainer';
 import Loading from '../Loading';
 import Icon from '../Icon';
 import ScrollableWrapper from '../ScrollableWrapper';
-import { isBrowser } from '../../util/browser';
 import { PREFIX_STOPS } from '../../util/path';
 
 class StopPageContent extends React.Component {
@@ -54,8 +53,7 @@ class StopPageContent extends React.Component {
   }
 
   render() {
-    // Render something in client side to clear SSR
-    if (isBrowser && this.props.error && !this.props.stop) {
+    if (this.props.error && !this.props.stop) {
       return <Loading />;
     }
 
@@ -63,11 +61,7 @@ class StopPageContent extends React.Component {
       /* In this case there is little we can do
        * There is no point continuing rendering as it can only
        * confuse user. Therefore redirect to Stops page */
-      if (isBrowser) {
-        this.props.router.replace(`/${PREFIX_STOPS}`);
-      } else {
-        throw new RedirectException(`/${PREFIX_STOPS}`);
-      }
+      this.props.router.replace(`/${PREFIX_STOPS}`);
       return null;
     }
 

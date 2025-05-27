@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
-import { matchShape, routerShape, RedirectException } from 'found';
+import { matchShape, routerShape } from 'found';
 import { intlShape } from 'react-intl';
 import moment from 'moment-timezone';
 import connectToStores from 'fluxible-addons-react/connectToStores';
@@ -8,30 +8,19 @@ import { parkShape, configShape, errorShape } from '../util/shapes';
 import ParkOrStationHeader from './ParkOrStationHeader';
 import Icon from './Icon';
 import { PREFIX_BIKEPARK, PREFIX_CARPARK } from '../util/path';
-import { isBrowser } from '../util/browser';
 
 function ParkAndRideContent(
   { vehicleParking, error, currentLanguage },
   { config, intl, router, match },
 ) {
-  const [isClient, setClient] = useState(false);
-  useEffect(() => {
-    // To prevent SSR from rendering something https://reactjs.org/docs/react-dom.html#hydrate
-    setClient(true);
-  });
-
-  // throw error in client side relay query fails
-  if (isClient && error) {
+  // throw error when relay query fails
+  if (error) {
     throw error.message;
   }
   const bikePark = match.location.pathname.includes(PREFIX_BIKEPARK);
   if (!vehicleParking) {
     const path = bikePark ? PREFIX_BIKEPARK : PREFIX_CARPARK;
-    if (isBrowser) {
-      router.replace(`/${path}`);
-    } else {
-      throw new RedirectException(`/${path}`);
-    }
+    router.replace(`/${path}`);
     return null;
   }
   const prePostFix = bikePark ? 'bike-park' : 'car-park';
