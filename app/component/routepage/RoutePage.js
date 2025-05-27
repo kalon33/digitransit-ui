@@ -14,7 +14,6 @@ import RouteControlPanel from './RouteControlPanel';
 import { PREFIX_DISRUPTION, PREFIX_ROUTES } from '../../util/path';
 import withBreakpoint from '../../util/withBreakpoint';
 import BackButton from '../BackButton';
-import LazilyLoad, { importLazy } from '../LazilyLoad';
 import { getRouteMode } from '../../util/modeUtils';
 import AlertBanner from '../AlertBanner';
 import {
@@ -23,11 +22,7 @@ import {
   isAlertValid,
 } from '../../util/alertUtils';
 import { AlertEntityType } from '../../constants';
-
-const modules = {
-  FavouriteRouteContainer: () =>
-    importLazy(import('./FavouriteRouteContainer')),
-};
+import FavouriteRouteContainer from './FavouriteRouteContainer';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class RoutePage extends React.Component {
@@ -136,14 +131,10 @@ class RoutePage extends React.Component {
               )}
             </div>
             {!tripId && (
-              <LazilyLoad modules={modules}>
-                {({ FavouriteRouteContainer }) => (
-                  <FavouriteRouteContainer
-                    className="route-page-header"
-                    gtfsId={route.gtfsId}
-                  />
-                )}
-              </LazilyLoad>
+              <FavouriteRouteContainer
+                className="route-page-header"
+                gtfsId={route.gtfsId}
+              />
             )}
           </div>
           {tripId && hasMeaningfulData(filteredAlerts) && (
