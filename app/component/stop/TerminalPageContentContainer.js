@@ -5,7 +5,6 @@ import connectToStores from 'fluxible-addons-react/connectToStores';
 import { FormattedMessage } from 'react-intl';
 import { routerShape } from 'found';
 import DepartureListContainer from '../DepartureListContainer';
-import Loading from '../Loading';
 import Icon from '../Icon';
 import ScrollableWrapper from '../ScrollableWrapper';
 import { PREFIX_TERMINALS } from '../../util/path';
@@ -42,11 +41,6 @@ class TerminalPageContent extends React.Component {
   }
 
   render() {
-    // Render something in client side to clear SSR
-    if (this.props.error && !this.props.station) {
-      return <Loading />;
-    }
-
     if (!this.props.station && !this.props.error) {
       /* In this case there is little we can do
        * There is no point continuing rendering as it can only

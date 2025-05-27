@@ -11,7 +11,6 @@ import {
   stopShape,
 } from '../../util/shapes';
 import DepartureListContainer from '../DepartureListContainer';
-import Loading from '../Loading';
 import Icon from '../Icon';
 import ScrollableWrapper from '../ScrollableWrapper';
 import { PREFIX_STOPS } from '../../util/path';
@@ -53,10 +52,6 @@ class StopPageContent extends React.Component {
   }
 
   render() {
-    if (this.props.error && !this.props.stop) {
-      return <Loading />;
-    }
-
     if (!this.props.stop && !this.props.error) {
       /* In this case there is little we can do
        * There is no point continuing rendering as it can only

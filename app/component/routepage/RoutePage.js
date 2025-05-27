@@ -7,7 +7,6 @@ import cx from 'classnames';
 import { matchShape, routerShape } from 'found';
 import { routeShape, configShape, errorShape } from '../../util/shapes';
 import Icon from '../Icon';
-import Loading from '../Loading';
 import RouteAgencyInfo from './RouteAgencyInfo';
 import RouteNumber from '../RouteNumber';
 import RouteControlPanel from './RouteControlPanel';
@@ -59,11 +58,6 @@ class RoutePage extends React.Component {
     const { config } = this.context;
     const tripId = this.props.match.params?.tripId;
     const patternId = this.props.match.params?.patternId;
-
-    // Render something in client side to clear SSR
-    if (error && !route) {
-      return <Loading />;
-    }
 
     if (route == null && !error) {
       /* In this case there is little we can do
