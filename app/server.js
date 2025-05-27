@@ -1,6 +1,3 @@
-// Routing and state handling
-import { Helmet } from 'react-helmet';
-
 // Libraries
 import serialize from 'serialize-javascript';
 import polyfillLibrary from 'polyfill-library';
@@ -181,15 +178,6 @@ export default async function serve(req, res, next) {
     );
 
     res.write(`<script>\n${polyfills}\n</script>\n`);
-
-    // TODO maybe remove
-    const head = Helmet.rewind();
-
-    if (head) {
-      res.write(head.title.toString());
-      res.write(head.meta.toString());
-      res.write(head.link.toString());
-    }
 
     res.write(`<script>\nwindow.config=${serialize(config)};\n</script>\n`);
 
