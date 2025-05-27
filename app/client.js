@@ -2,10 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import BrowserProtocol from 'farce/BrowserProtocol';
-import createInitialFarceRouter from 'found/createInitialFarceRouter';
-import createFarceStore from 'found/createFarceStore';
+import createFarceRouter from 'found/createFarceRouter';
 import makeRouteConfig from 'found/makeRouteConfig';
-import getStoreRenderArgs from 'found/getStoreRenderArgs';
 import { Resolver } from 'found-relay';
 import provideContext from 'fluxible-addons-react/provideContext';
 import debug from 'debug';
@@ -157,18 +155,7 @@ async function init() {
 
   const historyProtocol = new BrowserProtocol();
 
-  const store = createFarceStore({
-    historyProtocol,
-    historyMiddlewares,
-    routeConfig,
-  });
-
-  await getStoreRenderArgs({
-    store,
-    resolver,
-  });
-
-  const Router = await createInitialFarceRouter({
+  const Router = await createFarceRouter({
     historyProtocol,
     historyMiddlewares,
     routeConfig,
