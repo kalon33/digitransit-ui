@@ -10,6 +10,7 @@ import {
   shouldShowFareInfo,
   shouldShowFarePurchaseInfo,
 } from '../../util/fareUtils';
+import localizedUrl from '../../util/urlUtils';
 import {
   compressLegs,
   getTotalBikingDistance,
@@ -278,6 +279,7 @@ function ItineraryDetails(
                 fares={fares}
                 zones={getZones(itinerary.legs)}
                 legs={itinerary.legs}
+                ticketLink={localizedUrl(config.ticketLink, currentLanguage)}
               />
             )),
 
