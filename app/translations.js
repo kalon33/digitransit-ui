@@ -15,7 +15,6 @@ const translations = {
     'airport-collect-luggage': 'Hent eventuel bagage',
     'airport-security-check-go-to-gate':
       'Passer sikkerhedskontrollen og fortsæt til gate',
-    'approx-meters': '{approxDistance} meter',
     'arriving-at': 'Ankomst',
     'arriving-soon': 'Nu',
     'avoid-transfers': 'Undgå skift',
@@ -280,7 +279,6 @@ const translations = {
       'Gehen Sie durch die Sicherheitskontrolle zum Abfluggate',
     'all-routes': 'Alle Linien',
     'all-routes-disabled': 'Keine Linien',
-    'approx-meters': '{approxDistance} Meter',
     'aria-itinerary-summary':
       'Gesamtdauer {duration}. Route fährt ab {inFuture} {departureTime} mit Ankunft {arrivalTime}.',
     'aria-itinerary-summary-bike-distance':
@@ -318,7 +316,6 @@ const translations = {
       '{itineraryAmount, plural, =1 {1 weitere} other {{itineraryAmount} weitere}} ausgefallene Verbindungen',
     'canceled-itineraries-amount-hide':
       'Ausgefallene Verbindungen ausblenden ({itineraryAmount})',
-    'canceled-legs': 'Ausgefallene Abfahrten auf der Route',
     car: 'Auto',
     'car-distance-duration': 'Auto {duration} ({distance})',
     'car-park': 'Park & Ride',
@@ -379,7 +376,6 @@ const translations = {
     'favourite-target': 'Favoriten',
     ferry: 'Fähre',
     'ferry-with-route-number': 'Fähre {routeNumber} {headSign}',
-    'fetch-new-route': 'Neue Verbindung anfragen',
     'from-station': 'Bahnhof',
     'from-stop': 'Halt',
     frontpage: 'Startseite',
@@ -896,7 +892,6 @@ const translations = {
       'Proceed to your gate through security check',
     'all-routes': 'All routes',
     'all-routes-disabled': 'No routes',
-    'approx-meters': '{approxDistance} m',
     'arriving-at': 'Arriving',
     'arriving-soon': 'Now',
     'at-time': 'at',
@@ -949,7 +944,6 @@ const translations = {
       'Additional {itineraryAmount, plural, =1 {1 canceled itinerary} other {{itineraryAmount} canceled itineraries}}',
     'canceled-itineraries-amount-hide':
       'Hide canceled itineraries ({itineraryAmount})',
-    'canceled-legs': 'Canceled departures on the route',
     'capacity-modal.crushed-standing-room-only-body':
       'Only a little standing room available',
     'capacity-modal.crushed-standing-room-only-heading': 'Very crowded',
@@ -1085,7 +1079,6 @@ const translations = {
     'ferry-external': 'Ferry',
     'ferry-external-with-route-number': 'Ferry {routeNumber} {headSign}',
     'ferry-with-route-number': 'Ferry {routeNumber} {headSign}',
-    'fetch-new-route': 'Fetch a new route',
     'few-seats-available': 'Few seats available',
     finnish: 'Finnish',
     'free-of-charge': 'Free',
@@ -1870,7 +1863,6 @@ const translations = {
       'Proceda a su puerta a través del control de seguridad',
     'all-routes': 'Todas las rutas',
     'all-routes-disabled': 'Ninguna ruta',
-    'approx-meters': '{approxDistance} m',
     'arriving-at': 'Llegada',
     'arriving-soon': 'Ahora',
     'avoid-transfers': 'Evitar transbordos',
@@ -2226,7 +2218,6 @@ const translations = {
       'Kävele turvatarkastuksen läpi lähtöportille',
     'all-routes': 'Kaikki linjat',
     'all-routes-disabled': 'Ei linjoja',
-    'approx-meters': '{approxDistance} m',
     'arriving-at': 'Perillä',
     'arriving-soon': 'Nyt',
     'at-time': 'klo',
@@ -2277,7 +2268,6 @@ const translations = {
       'Lisäksi {itineraryAmount, plural, =1 {1 peruttu reittiehdotus} other {{itineraryAmount} peruttua reittiehdotusta}}',
     'canceled-itineraries-amount-hide':
       'Piilota perutut reittiehdotukset ({itineraryAmount})',
-    'canceled-legs': 'Reitillä peruttuja vuoroja',
     'capacity-modal.crushed-standing-room-only-body':
       'Vain vähän seisomapaikkoja',
     'capacity-modal.crushed-standing-room-only-heading': 'Kova tungos',
@@ -2415,7 +2405,6 @@ const translations = {
     'ferry-external': 'Lautta',
     'ferry-external-with-route-number': 'Lautta {routeNumber} {headSign}',
     'ferry-with-route-number': 'Lautta {routeNumber} {headSign}',
-    'fetch-new-route': 'Hae uusi reitti',
     'few-seats-available': 'Joitakin istumapaikkoja vapaana',
     finnish: 'Suomi',
     'free-of-charge': 'Maksuton',
@@ -3194,7 +3183,6 @@ const translations = {
       "Franchir les contrôles de sécurité et se rendre à la porte d'embarquement",
     'all-routes': 'Toutes lignes',
     'all-routes-disabled': 'Aucune ligne',
-    'approx-meters': '{approxDistance} m',
     'arriving-at': 'Arrivée',
     'arriving-soon': 'Imm.',
     'avoid-transfers': 'Éviter les correspondances',
@@ -3521,7 +3509,6 @@ const translations = {
     'airport-collect-luggage': 'Hent eventuell bagasje',
     'airport-security-check-go-to-gate':
       'Passer sikkerhetskontrollen og fortsett til gate',
-    'approx-meters': '{approxDistance} meter',
     'arriving-at': 'Ankomst',
     'arriving-soon': 'Nå',
     'avoid-transfers': 'Unngå bytter',
@@ -3833,7 +3820,6 @@ const translations = {
       'Proceed to your gate through security check',
     'all-routes': 'Wszystkie trasy',
     'all-routes-disabled': 'Brak tras',
-    'approx-meters': '{approxDistance} m',
     'arriving-at': 'Arriving',
     'arriving-soon': 'Teraz',
     'at-time': 'o',
@@ -3882,7 +3868,6 @@ const translations = {
       'Additional {itineraryAmount, plural, =1 {1 canceled itinerary} other {{itineraryAmount} canceled itineraries}}',
     'canceled-itineraries-amount-hide':
       'Hide canceled itineraries ({itineraryAmount})',
-    'canceled-legs': 'Anulowane odjazdy z trasy',
     'capacity-modal.crushed-standing-room-only-body':
       'Pozostało niewiele miejsc stojących',
     'capacity-modal.crushed-standing-room-only-heading': 'Bardzo zatłoczony',
@@ -4007,7 +3992,6 @@ const translations = {
     'favourite-target': 'Favorite location',
     ferry: 'Prom',
     'ferry-with-route-number': 'Prom {routeNumber} {headSign}',
-    'fetch-new-route': 'Pobierz nową trasę',
     'few-seats-available': 'Dostępne jest niewiele miejsc',
     finnish: 'Fiński',
     'free-of-charge': 'Za darmo',
@@ -4686,7 +4670,6 @@ const translations = {
       'Mergeți spre poartă, trecând prin controlul de securitate',
     'all-routes': 'Toate',
     'all-routes-disabled': 'Niciuna',
-    'approx-meters': '{approxDistance} m',
     'arriving-at': 'Ajunge',
     'arriving-soon': 'Acum',
     'at-time': 'la',
@@ -4715,7 +4698,6 @@ const translations = {
       'Și {itineraryAmount, plural, =1 {un itinerar} alte {{itineraryAmount} itinerarii anulate}}',
     'canceled-itineraries-amount-hide':
       'Ascunde itinerarii anulate ({itineraryAmount})',
-    'canceled-legs': 'Plecări anulate',
     car: 'Mașină',
     'car-distance-duration': 'Condu {duration} ({distance})',
     'car-park': 'park & ride',
@@ -4769,7 +4751,6 @@ const translations = {
     'favourite-target': 'Locație favorită',
     ferry: 'Feribot',
     'ferry-with-route-number': 'Feribotul {routeNumber} {headSign}',
-    'fetch-new-route': 'Încărcați o nouă rută',
     frontpage: 'Prima pagină',
     'generic-error': 'A apărut o eroare',
     'geolocate-yourself': 'Detectați locația',
@@ -5199,7 +5180,6 @@ const translations = {
       'Gå igenom säkerhetskontrollen till gate',
     'all-routes': 'Alla linjer',
     'all-routes-disabled': 'Inga linjer',
-    'approx-meters': '{approxDistance} m',
     'arriving-at': 'Anländer',
     'arriving-soon': 'Nu',
     'at-time': 'kl.',
@@ -5249,7 +5229,6 @@ const translations = {
       'Ytterligare {itineraryAmount, plural, =1 {1 avställt avgång} other {{itineraryAmount} avställda avgångar}}',
     'canceled-itineraries-amount-hide':
       'Dölja inställda reseförslag ({itineraryAmount})',
-    'canceled-legs': 'Inställda avgångar på linjen',
     'capacity-modal.crushed-standing-room-only-body': 'Endast några ståplatser',
     'capacity-modal.crushed-standing-room-only-heading': 'Nästan fullt',
     'capacity-modal.few-seats-available-body': 'Några sittplatser',
@@ -5385,7 +5364,6 @@ const translations = {
     'ferry-external': 'Färja',
     'ferry-external-with-route-number': 'Färja {routeNumber} {headSign}',
     'ferry-with-route-number': 'Färja {routeNumber} {headSign}',
-    'fetch-new-route': 'Sök en ny rutt',
     'few-seats-available': 'Några sittplatser',
     finnish: 'Finska',
     'free-of-charge': 'Kostnadsfri',
