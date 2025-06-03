@@ -279,6 +279,7 @@ export default {
   // Park and ride and car suggestions separated into two switches
   separatedParkAndRideSwitch: true,
   showBikeAndParkItineraries: true,
+  includePublicWithBikePlan: false,
 
   parkingAreaSources: ['liipi'],
 
@@ -420,9 +421,6 @@ export default {
   },
 
   disabledLegTextModes: ['ferry'],
-
-  // Include both bike and park and bike and public, if bike is enabled
-  includePublicWithBikePlan: true,
 
   startSearchFromUserLocation: true,
 
