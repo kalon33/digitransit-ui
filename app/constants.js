@@ -64,6 +64,7 @@ export const RealtimeStateType = Object.freeze({
  * This is the date format string to use for querying dates from OTP.
  */
 export const DATE_FORMAT = 'YYYYMMDD';
+export const DATE_FORMAT_LUXON = 'yyyyLLdd';
 
 /**
  * AlertSeverityLevelType is an experimental part of the gtfs-rt specification.

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { matchShape, routerShape, RedirectException } from 'found';
 import { intlShape } from 'react-intl';
-import moment from 'moment-timezone';
+import { DateTime } from 'luxon';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import { parkShape, configShape, errorShape } from '../util/shapes';
 import ParkOrStationHeader from './ParkOrStationHeader';
@@ -91,8 +91,12 @@ function ParkAndRideContent(
         if (to - from - 60 * 60 * 24 === 0) {
           return [`24${intl.formatMessage({ id: 'hour-short' })}`];
         }
-        const formattedFrom = moment.utc(from * 1000).format('HH:mm');
-        const formattedTo = moment.utc(to * 1000).format('HH:mm');
+        const formattedFrom = DateTime.fromMillis(from * 1000)
+          .toUTC()
+          .toFormat('HH:mm');
+        const formattedTo = DateTime.fromMillis(to * 1000)
+          .toUTC()
+          .toFormat('HH:mm');
         return [`${formattedFrom} - ${formattedTo}`];
       }
       let i = 0;
@@ -112,9 +116,15 @@ function ParkAndRideContent(
           }
           j += 1;
         }
-        const from = moment.utc(timeSpans.from * 1000).format('HH:mm');
-        const to = moment.utc(timeSpans.to * 1000).format('HH:mm');
-        const day = date.toLocaleString(currentLanguage, { weekday: 'short' });
+        const from = DateTime.fromMillis(timeSpans.from * 1000)
+          .toUTC()
+          .toFormat('HH:mm');
+        const to = DateTime.fromMillis(timeSpans.to * 1000)
+          .toUTC()
+          .toFormat('HH:mm');
+        const day = DateTime.fromFormat(date, 'yyyyLLdd')
+          .setLocale(currentLanguage)
+          .toFormat('ccc');
         if (i === j - 1) {
           hoursAsText.push(
             `${day.charAt(0).toUpperCase() + day.slice(1)} ${from}-${to}`,
