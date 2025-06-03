@@ -460,6 +460,7 @@ export default {
     allowDirectFlexJourneys: IS_DEV,
   },
 
+  devAnalytics: true,
   analyticsScript: function createAnalyticsScript() {
     return `<script>
     var _paq = window._paq = window._paq || [];
