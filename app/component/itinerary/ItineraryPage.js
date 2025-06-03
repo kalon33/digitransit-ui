@@ -209,7 +209,10 @@ export default function ItineraryPage(props, context) {
     });
     const newLocationState = {
       ...location,
-      state: { selectedItineraryIndex: 0 },
+      state: {
+        ...location.state,
+        selectedItineraryIndex: 0,
+      },
     };
     const basePath = getItineraryPagePath(params.from, params.to);
     let pagePath = basePath;
@@ -1093,7 +1096,10 @@ export default function ItineraryPage(props, context) {
 
     const newLocationState = {
       ...location,
-      state: { selectedItineraryIndex: index },
+      state: {
+        ...location.state,
+        selectedItineraryIndex: index,
+      },
     };
     const pagePath = `${getItineraryPagePath(
       params.from,
