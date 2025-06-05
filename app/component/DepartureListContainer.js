@@ -266,7 +266,9 @@ class DepartureListContainer extends Component {
         DateTime.fromSeconds(serviceDayCutoff).toFormat('ddLLyyyy');
 
       if (date !== dayCutoffDate && departure.time > dayCutoff) {
-        dayCutoff = DateTime.fromSeconds(departure.time).startOf('day').unix();
+        dayCutoff = DateTime.fromSeconds(departure.time)
+          .startOf('day')
+          .toUnixInteger();
         // eslint-disable-next-line no-param-reassign
         departure.addDayDivider = true;
       }
@@ -281,7 +283,7 @@ class DepartureListContainer extends Component {
         serviceDayCutoff = DateTime.fromSeconds(departure.serviceDay)
           .startOf('day')
           .plus({ days: daysAdd })
-          .toSeconds();
+          .toUnixInteger();
       }
       return departure;
     });
@@ -293,7 +295,7 @@ class DepartureListContainer extends Component {
       );
       const nextDay = DateTime.fromSeconds(currentTime)
         .plus({ days: 1 })
-        .toSeconds();
+        .toUnixInteger();
       if (departure.time < nextDay) {
         firstDayDepartureCount += 1;
       }
