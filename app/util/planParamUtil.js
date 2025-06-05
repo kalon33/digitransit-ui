@@ -222,9 +222,7 @@ export function planQueryNeeded(
         transitModes.length > 0 &&
         !wheelchair &&
         config.showBikeAndParkItineraries &&
-        (config.includePublicWithBikePlan
-          ? settings.includeBikeSuggestions
-          : settings.showBikeAndParkItineraries)
+        settings.showBikeAndParkItineraries
       );
 
     case PLANTYPE.BIKETRANSIT:
