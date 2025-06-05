@@ -219,18 +219,25 @@ function ItineraryDetails(
     }
   }
 
-  if (config.showRouteDisclaimer) {
-    itinerary.legs.forEach(leg => {
-      const { route } = leg;
-      if (
+  if (config.replacementBusNotification) {
+    itinerary.legs.forEach(({ route, trip }) => {
+      const isReplacementRoute =
         route?.desc?.length &&
-        getRouteMode(route, config)?.includes('replacement')
-      ) {
+        getRouteMode(route, config)?.includes('replacement');
+      const isReplacementTrip =
+        trip?.submode?.includes('replacement') || trip?.submode?.includes(714);
+
+      if (isReplacementRoute || isReplacementTrip) {
+        const notification =
+          isReplacementRoute && config.showRouteDescNotification
+            ? { content: route.desc, link: route.url }
+            : config.replacementBusNotification;
+
         disclaimers.push(
           <RouteDisclaimer
-            key={disclaimers.length}
-            text={route.desc}
-            href={route.url}
+            key="replacementBusNotification"
+            text={notification.content?.[currentLanguage]?.join(' ')}
+            href={notification.link?.[currentLanguage]}
             linkText={intl.formatMessage({ id: 'extra-info' })}
           />,
         );
