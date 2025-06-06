@@ -87,7 +87,7 @@ const getMarker = (feature, latlng, icons = {}) => {
 };
 
 const addPopup = (feature, layer) => {
-  if (feature.properties.popupContent) {
+  if (feature.properties?.popupContent) {
     layer.bindPopup(feature.properties.popupContent, {
       className: 'geoJsonPopup',
     });
@@ -144,7 +144,7 @@ class GeoJSON extends React.Component {
 
     const { geometry } = feature;
     if (isPointTypeGeometry(geometry) || isMultiPointTypeGeometry(geometry)) {
-      if (feature.properties && feature.properties.textOnly) {
+      if (feature.properties?.textOnly) {
         return feature.style
           ? { ...textMarkerStyle, ...feature.style }
           : textMarkerStyle;
