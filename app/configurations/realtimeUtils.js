@@ -162,8 +162,13 @@ function hslTopicResolver(
   );
 }
 
+const mqttAddress =
+  process.env.RUN_ENV === 'development' || process.env.NODE_ENV !== 'production'
+    ? 'wss://dev-mqtt.digitransit.fi'
+    : 'wss://mqtt.digitransit.fi';
+
 const baseMqtt = {
-  mqtt: process.env.MQTT || 'wss://dev-mqtt.digitransit.fi',
+  mqtt: mqttAddress,
   routeSelector: defaultRouteSelector,
   active: true,
   vehicleNumberParser: defaulVehicleNumberParser,
@@ -186,7 +191,7 @@ function elyMqtt(ignoreHeadsign) {
 export default {
   HSL: {
     ...baseMqtt,
-    mqtt: process.env.MQTT || 'wss://mqtt.hsl.fi',
+    mqtt: 'wss://mqtt.hsl.fi',
     mqttTopicResolver: hslTopicResolver,
     gtfsrt: false,
     useFuzzyTripMatching: true,
