@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import moment from 'moment';
+import { DateTime } from 'luxon';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
@@ -12,7 +12,7 @@ import { configShape } from '../../util/shapes';
 import CallAgencyWarning from './CallAgencyWarning';
 import RoutePatternSelect from './RoutePatternSelect';
 import RouteNotification from './RouteNotification';
-import { DATE_FORMAT, ExtendedRouteTypes } from '../../constants';
+import { DATE_FORMAT_LUXON, ExtendedRouteTypes } from '../../constants';
 import {
   startRealTimeClient,
   stopRealTimeClient,
@@ -165,11 +165,10 @@ class RouteControlPanel extends React.Component {
         false,
         this.context.config.itinerary.serviceTimeRange,
       );
-      const isSameWeek =
-        moment(enrichedPattern[0].minAndMaxDate[0])
-          .startOf('isoWeek')
-          .format(DATE_FORMAT) ===
-        moment().startOf('isoWeek').format(DATE_FORMAT);
+      const isSameWeek = DateTime.fromFormat(
+        enrichedPattern[0].minAndMaxDate[0],
+        DATE_FORMAT_LUXON,
+      ).hasSame(DateTime.now(), 'week');
       if (
         location.search.indexOf('serviceDay') === -1 ||
         (location.query.serviceDay &&
