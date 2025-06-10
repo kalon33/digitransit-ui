@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
 import { useFragment } from 'react-relay';
+import { getRouteMode } from '../../util/modeUtils';
 import {
   getFaresFromLegs,
   shouldShowFareInfo,
@@ -32,6 +33,7 @@ import BackButton from '../BackButton';
 import Emissions from './Emissions';
 import EmissionsInfo from './EmissionsInfo';
 import FareDisclaimer from './FareDisclaimer';
+import RouteDisclaimer from './RouteDisclaimer';
 import ItinerarySummary from './ItinerarySummary';
 import Legs from './Legs';
 import MobileTicketPurchaseInformation from './MobileTicketPurchaseInformation';
@@ -215,6 +217,25 @@ function ItineraryDetails(
         />,
       );
     }
+  }
+
+  if (config.showRouteDisclaimer) {
+    itinerary.legs.forEach(leg => {
+      const { route } = leg;
+      if (
+        route?.desc?.length &&
+        getRouteMode(route, config)?.includes('replacement')
+      ) {
+        disclaimers.push(
+          <RouteDisclaimer
+            key={disclaimers.length}
+            text={route.desc}
+            href={route.url}
+            linkText={intl.formatMessage({ id: 'extra-info' })}
+          />,
+        );
+      }
+    });
   }
 
   return (

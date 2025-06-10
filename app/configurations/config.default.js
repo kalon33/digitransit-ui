@@ -384,6 +384,7 @@ export default {
       'mode-citybike': '#f2b62d',
       'mode-scooter': '#C5CAD2',
       'mode-taxi': '#647693',
+      'mode-replacement-bus': '#DC0451',
     },
   },
   iconModeSet: 'digitransit',
@@ -864,4 +865,5 @@ export default {
   allowFlexJourneys: false,
   allowDirectFlexJourneys: false,
   allowedFlexRouteTypes: [1501],
+  showRouteDisclaimer: true,
 };
