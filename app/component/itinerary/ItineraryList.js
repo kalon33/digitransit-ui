@@ -36,7 +36,7 @@ function ItineraryList(
     bikeParkItineraryCount,
     carDirectItineraryCount,
     showRelaxedPlanNotifier,
-    showRentalVehicleNotifier,
+    rentalVehicleNotifierId,
     separatorPosition,
     loadingMore,
     routingFeedbackPosition,
@@ -182,7 +182,7 @@ function ItineraryList(
           </div>
         </div>
       )}
-      {showRentalVehicleNotifier && (
+      {rentalVehicleNotifierId?.length && (
         <div
           className={cx(
             'flex-horizontal',
@@ -197,9 +197,13 @@ function ItineraryList(
             </div>
             <div className="alternative-vehicle-info-content">
               <FormattedMessage
-                id="e-scooter-alternative"
+                id={`${rentalVehicleNotifierId}-alternative`}
                 values={{
-                  paymentInfo: <FormattedMessage id="payment-info-e-scooter" />,
+                  paymentInfo: (
+                    <FormattedMessage
+                      id={`payment-info-${rentalVehicleNotifierId}`}
+                    />
+                  ),
                 }}
               />
             </div>
@@ -242,7 +246,7 @@ ItineraryList.propTypes = {
   bikeParkItineraryCount: PropTypes.number,
   carDirectItineraryCount: PropTypes.number,
   showRelaxedPlanNotifier: PropTypes.bool,
-  showRentalVehicleNotifier: PropTypes.bool,
+  rentalVehicleNotifierId: PropTypes.string,
   separatorPosition: PropTypes.number,
   loadingMore: PropTypes.string,
   routingFeedbackPosition: PropTypes.number,
@@ -253,7 +257,7 @@ ItineraryList.defaultProps = {
   carDirectItineraryCount: 0,
   planEdges: [],
   showRelaxedPlanNotifier: false,
-  showRentalVehicleNotifier: false,
+  rentalVehicleNotifierId: undefined,
   separatorPosition: undefined,
   loadingMore: undefined,
   routingFeedbackPosition: undefined,

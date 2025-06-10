@@ -258,13 +258,13 @@ export function planQueryNeeded(
         distance > config.suggestCarMinDistance &&
         settings.includeParkAndRideSuggestions
       );
-
+    /* special logic: relaxed flex query is made only if taxis are not allowed */
     case PLANTYPE.FLEXTRANSIT:
       return (
         config.experimental?.allowFlexJourneys &&
-        settings.includeTaxiSuggestions &&
         (transitModes.length > 0 ||
-          config.experimental?.allowDirectFlexJourneys)
+          config.experimental?.allowDirectFlexJourneys) &&
+        settings.includeTaxiSuggestions === !relaxSettings
       );
 
     case PLANTYPE.TRANSIT:
