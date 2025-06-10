@@ -1461,10 +1461,10 @@ const translations = {
     'pay-attention': 'N.B.',
     'payment-info-e-scooter':
       'Please note that you need to use the app of the operator in question in order to use and pay for the scooters.',
-    'payment-info-e-scooter-taxi':
+    'payment-info-e-scooter-or-taxi':
       'Please note that you need to use the app of the operator in question in order to use and pay for the taxis or scooters.',
-    'payment-info-taxi-lifts':
-      'Huomaathan, että taksien ja kyytipalveluiden käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
+    'payment-info-taxi':
+      'Please note that you need to use the app of the operator in question in order to use and pay for the taxis.',
     payment_at_gate: 'Payment at the gate ',
     'pick-icon': 'Select icon',
     'pick-mode': 'Transport modes',
@@ -1721,6 +1721,8 @@ const translations = {
     'swipe-summary-page': 'Itinerary swipe result tabs',
     'swipe-summary-page-header': 'Itinerary swipe result tabs.',
     taxi: 'Taxi',
+    'taxi-alternative':
+      'How about using a taxi for part of your journey? {paymentInfo}',
     'taxi-distance-duration': 'Travel for {duration} ({distance})',
     'taxi-distance-no-duration': 'Travel for {distance}',
     'taxi-external': 'Taxi',
@@ -2780,9 +2782,9 @@ const translations = {
     'pay-attention': 'Huom!',
     'payment-info-e-scooter':
       'Huomaathan, että potkulautojen käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
-    'payment-info-e-scooter-taxi':
+    'payment-info-e-scooter-or-taxi':
       'Huomaathan, että potkulautojen ja taksin käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
-    'payment-info-taxi-lifts':
+    'payment-info-taxi':
       'Huomaathan, että taksien ja kyytipalveluiden käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
     payment_at_gate: 'Maksu portilla',
     'pick-icon': 'Valitse kuvake',
@@ -3039,6 +3041,8 @@ const translations = {
     'swipe-summary-page': 'Reittiehdotusvälilehtien',
     'swipe-summary-page-header': 'Reittiehdotusvälilehdet.',
     taxi: 'Taxi',
+    'taxi-alternative':
+      'Entä jos kulkisit osan matkasta taksilla? {paymentInfo}',
     'taxi-distance-duration': 'Matkusta {duration} ({distance})',
     'taxi-distance-no-duration': 'Matkusta {distance}',
     'taxi-external': 'Taksi',
@@ -5747,10 +5751,10 @@ const translations = {
     'pay-attention': 'Obs!',
     'payment-info-e-scooter':
       'Vänligen observera att användning och betalning av elsparkcyklar görs via operatörernas egna appar.',
-    'payment-info-e-scooter-taxi':
+    'payment-info-e-scooter-or-taxi':
       'Vänligen observera att användning och betalning av elsparkcyklar och taxi görs via operatörernas egna appar.',
-    'payment-info-taxi-lifts':
-      'Huomaathan, että taksien ja kyytipalveluiden käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
+    'payment-info-taxi':
+      'Vänligen observera att användning och betalning av taxi görs via operatörernas egna appar.',
     payment_at_gate: 'Betalning vid porten',
     'pick-icon': 'Välj en ikon',
     'pick-mode': 'Trafikslag',
@@ -6011,6 +6015,8 @@ const translations = {
     'swipe-summary-page': 'Navigeringsknapp för att kunna bläddra ruttförslag.',
     'swipe-summary-page-header': 'Ruttförslag.',
     taxi: 'Taxi',
+    'taxi-alternative':
+      'Och om du skulle åka taxi en del av din resa? {paymentInfo}',
     'taxi-distance-duration': 'Matkusta {duration} ({distance})',
     'taxi-distance-no-duration': 'Matkusta {distance}',
     'taxi-external': 'Taxi',
