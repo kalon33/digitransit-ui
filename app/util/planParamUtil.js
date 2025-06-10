@@ -264,7 +264,7 @@ export function planQueryNeeded(
         config.experimental?.allowFlexJourneys &&
         (transitModes.length > 0 ||
           config.experimental?.allowDirectFlexJourneys) &&
-        settings.includeTaxiSuggestions === !relaxSettings
+        settings.includeTaxiSuggestions !== relaxSettings
       );
 
     case PLANTYPE.TRANSIT:
