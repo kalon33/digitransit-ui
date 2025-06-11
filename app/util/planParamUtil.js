@@ -165,7 +165,7 @@ export function planQueryNeeded(
     },
   },
   planType,
-  relaxSettings,
+  relaxSettings = false,
 ) {
   if (!from || !to || from === '-' || to === '-') {
     return false;
@@ -302,7 +302,7 @@ export function getPlanParams(
     },
   },
   planType,
-  relaxSettings,
+  relaxSettings = false,
 ) {
   const fromPlace = getLocation(from);
   const toPlace = getLocation(to);
