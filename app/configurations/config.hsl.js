@@ -808,7 +808,7 @@ export default {
   trafficLightGraphic: 'hsl/traffic-light.svg',
   naviGeolocationGraphic: 'hsl/geolocation.svg',
   navigation: true,
-
+  crazyEgg: true,
   // features that should not be deployed to production
   experimental: {
     allowFlexJourneys: IS_DEV,
