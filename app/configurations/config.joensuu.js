@@ -127,4 +127,15 @@ export default configMerger(walttiConfig, {
     stops: true,
     itinerary: true,
   },
+
+  showTicketLinkOnlyWhenTesting: true,
+  showTicketInformation: true,
+  useTicketIcons: true,
+  ticketLink: {
+    fi: 'https://jojo.joensuu.fi/liput-ja-hinnat',
+    sv: 'https://jojo.joensuu.fi/web/jojo-english/tickets',
+    en: 'https://jojo.joensuu.fi/web/jojo-english/tickets',
+  },
+  showTicketPrice: false,
+  ticketLinkOperatorCode: 50207,
 });
