@@ -91,6 +91,10 @@ $itinerary-tab-switch-height: 48px;
   &.taxi-external {
     @include getCircleSvg($external-feed-color, $fill);
   }
+
+  &.replacement-bus {
+    @include getCircleSvg($replacement-bus-color, $fill);
+  }
 }
 
 .itinerary-list-container {
@@ -196,6 +200,8 @@ $itinerary-tab-switch-height: 48px;
           width: 1em;
           height: 1em;
         }
+
+        color: $primary-color;
       }
     }
 
@@ -966,6 +972,10 @@ $itinerary-tab-switch-height: 48px;
 
     &.taxi-external {
       @include setModeCircles($external-feed-color);
+    }
+
+    &.replacement-bus {
+      @include setModeCircles($replacement-bus-color);
     }
   }
 }
@@ -2155,6 +2165,14 @@ $itinerary-tab-switch-height: 48px;
       border-radius: 5px;
       border: solid 1px #ddd;
       margin-bottom: 10px;
+
+      &.no-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 15px 8px 12px;
+        text-decoration: none;
+      }
 
       .disruption-icon {
         width: 18px;

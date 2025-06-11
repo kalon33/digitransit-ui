@@ -157,6 +157,7 @@ export default {
       'mode-citybike': '#f2b62d',
       'mode-citybike-secondary': '#333333',
       'mode-speedtram': '#007E79',
+      'mode-replacement-bus': '#DC0451',
     },
   },
   getAutoSuggestIcons: {
@@ -745,6 +746,34 @@ export default {
     },
   ],
 
+  replacementBusNotification: {
+    header: {
+      fi: 'Korvaava bussi',
+      en: 'Replacement bus',
+      sv: 'Ersättande buss',
+    },
+    content: {
+      fi: [
+        'Voit nousta kyytiin myös bussin keskiovista.',
+        'Pysäkit on merkitty punaisilla tunnuksilla.',
+        'Linja käyttää valikoituja pysäkkejä, eli bussi ei pysähdy kaikilla pysäkeillä.',
+      ],
+      en: [
+        'You can also board the bus through the middle doors.',
+        'The stops are marked with red signs.',
+        'The bus stops only at designated stops and does not serve all stops.',
+      ],
+      sv: [
+        'Du kan också stiga på bussen genom mittdörren.',
+        'Hållplatserna är markerade med röda punkter.',
+        'Linjen stannar endast vid vissa hållplatser, dvs. bussen stannar inte vid alla hållplatser.',
+      ],
+    },
+    link: {
+      fi: 'https://hsl.fi/korvaavabussi',
+    },
+  },
+
   embeddedSearch: {
     title: {
       fi: 'Reittiopas-elementti',
@@ -785,4 +814,15 @@ export default {
     allowFlexJourneys: IS_DEV,
     allowDirectFlexJourneys: false,
   },
+
+  replacementBusRoutes: [
+    'HSL:1099V',
+    'HSL:6211U',
+    'HSL:6211E',
+    'HSL:6249Y',
+    'HSL:2213X',
+    'HSL:4699X',
+    'HSL:9969X',
+    'HSL:2015X',
+  ],
 };
