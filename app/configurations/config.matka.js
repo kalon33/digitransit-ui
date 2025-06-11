@@ -453,10 +453,9 @@ export default {
   ],
   navigation: true,
 
-  // features that should not be deployed to production
   experimental: {
-    allowFlexJourneys: IS_DEV,
-    allowDirectFlexJourneys: IS_DEV,
+    allowFlexJourneys: true,
+    allowDirectFlexJourneys: true,
   },
 
   devAnalytics: true,
