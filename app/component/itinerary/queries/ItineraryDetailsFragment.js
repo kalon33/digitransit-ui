@@ -249,6 +249,7 @@ export const ItineraryDetailsFragment = graphql`
         type
         longName
         desc
+        url
         agency {
           gtfsId
           fareUrl

@@ -84,6 +84,7 @@ function renderPatternSelectSuggestion(item, currentPattern) {
   }
   if (item.shortName && item.longName && item.mode) {
     const routePath = `/${PREFIX_ROUTES}/${item.gtfsId}`;
+    const lowerCaseItemMode = item.mode.toLowerCase();
     return (
       <Link
         to={routePath}
@@ -93,8 +94,8 @@ function renderPatternSelectSuggestion(item, currentPattern) {
       >
         <div className="similar-route">
           <Icon
-            className={item.mode.toLowerCase()}
-            img={`icon-icon_${item.mode.toLowerCase()}`}
+            className={lowerCaseItemMode}
+            img={`icon-icon_${lowerCaseItemMode}`}
             color={item.color ? `#${item.color}` : null}
           />
           <div className="similar-route-text">

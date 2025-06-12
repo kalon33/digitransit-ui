@@ -71,38 +71,40 @@ export default {
       'mode-taxi': '#647693',
     },
   },
-  feedIds: [
-    'MATKA',
-    'HSL',
-    'LINKKI',
-    'tampere',
-    'OULU',
-    'digitraffic',
-    'Rauma',
-    'Hameenlinna',
-    'Kotka',
-    'Kouvola',
-    'Lappeenranta',
-    'Mikkeli',
-    'Vaasa',
-    'Joensuu',
-    'FOLI',
-    'Lahti',
-    'Kuopio',
-    'Rovaniemi',
-    'Kajaani',
-    'Salo',
-    'Pori',
-    'Raasepori',
-    'VARELY',
-    'Harma',
-    'PohjolanMatka',
-    'Korsisaari',
-    'KoivistonAuto',
-    'PahkakankaanLiikenne',
-    'IngvesSvanback',
-    'CAR_FERRIES',
-  ],
+  feedIds: IS_DEV
+    ? ['MATKA']
+    : [
+        'MATKA',
+        'HSL',
+        'LINKKI',
+        'tampere',
+        'OULU',
+        'digitraffic',
+        'Rauma',
+        'Hameenlinna',
+        'Kotka',
+        'Kouvola',
+        'Lappeenranta',
+        'Mikkeli',
+        'Vaasa',
+        'Joensuu',
+        'FOLI',
+        'Lahti',
+        'Kuopio',
+        'Rovaniemi',
+        'Kajaani',
+        'Salo',
+        'Pori',
+        'Raasepori',
+        'VARELY',
+        'Harma',
+        'PohjolanMatka',
+        'Korsisaari',
+        'KoivistonAuto',
+        'PahkakankaanLiikenne',
+        'IngvesSvanback',
+        'CAR_FERRIES',
+      ],
   externalFeedIds: ['02Taksi'],
 
   additionalFeedIds: {
@@ -421,9 +423,6 @@ export default {
 
   disabledLegTextModes: ['ferry'],
 
-  // Include both bike and park and bike and public, if bike is enabled
-  includePublicWithBikePlan: true,
-
   startSearchFromUserLocation: true,
 
   minTransferTimeSelection: [
@@ -454,9 +453,19 @@ export default {
   ],
   navigation: true,
 
-  // features that should not be deployed to production
   experimental: {
-    allowFlexJourneys: IS_DEV,
-    allowDirectFlexJourneys: IS_DEV,
+    allowFlexJourneys: true,
+    allowDirectFlexJourneys: true,
+  },
+
+  devAnalytics: true,
+  analyticsScript: function createAnalyticsScript() {
+    return `<script>
+    var _mtm = window._mtm = window._mtm || [];
+    _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
+    (function() {
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src='https://cdn.matomo.cloud/fintraffic.matomo.cloud/container_p27GPdXl.js'; s.parentNode.insertBefore(g,s);
+    })();\n<\/script>\n`; // eslint-disable-line no-useless-escape
   },
 };

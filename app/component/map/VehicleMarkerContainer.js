@@ -14,6 +14,7 @@ const MODES_WITH_ICONS = [
   'subway',
   'ferry',
   'speedtram',
+  'replacement-bus',
 ];
 
 function getVehicleIcon(
@@ -89,6 +90,11 @@ function VehicleMarkerContainer(props, { config }) {
       mode = 'bus-express';
     } else if (type === ExtendedRouteTypes.SpeedTram) {
       mode = 'speedtram';
+    } else if (
+      type === ExtendedRouteTypes.ReplacementBus ||
+      config.replacementBusRoutes?.includes(message.route)
+    ) {
+      mode = 'replacement-bus';
     } else {
       mode = message.mode;
     }

@@ -581,6 +581,32 @@ export function mergeScooterTransitPlan(
   return sortAndMergePlans(scooterTransitEdges, transitPlan, arriveBy);
 }
 
+/**
+ * Combine two sets of external plans.
+ */
+export function sortAndMergeExternalPlans(
+  plan,
+  planToMerge,
+  arriveBy,
+  maxTotalEdges = 5,
+) {
+  const edges = plan.edges || [];
+  const edgesToMerge = planToMerge.edges || [];
+  return {
+    edges: getSortedEdges([...edges, ...edgesToMerge], arriveBy)
+      .slice(0, maxTotalEdges)
+      .map(edge => {
+        return {
+          ...edge,
+          node: {
+            ...edge.node,
+            legs: compressLegs(edge.node.legs),
+          },
+        };
+      }),
+  };
+}
+
 const ITERATION_CANCEL_TIME = 20000; // ms, stop looking for more if something was found
 
 export function quitIteration(plan, newPlan, planParams, startTime) {

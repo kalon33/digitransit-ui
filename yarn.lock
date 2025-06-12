@@ -1996,7 +1996,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@digitransit-component/digitransit-component-autosuggest-panel@^4.0.6, @digitransit-component/digitransit-component-autosuggest-panel@workspace:digitransit-component/packages/digitransit-component-autosuggest-panel":
+"@digitransit-component/digitransit-component-autosuggest-panel@^4.0.7, @digitransit-component/digitransit-component-autosuggest-panel@workspace:digitransit-component/packages/digitransit-component-autosuggest-panel":
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-autosuggest-panel@workspace:digitransit-component/packages/digitransit-component-autosuggest-panel"
   peerDependencies:
@@ -2016,7 +2016,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@digitransit-component/digitransit-component-autosuggest@^3.0.5, @digitransit-component/digitransit-component-autosuggest@workspace:digitransit-component/packages/digitransit-component-autosuggest":
+"@digitransit-component/digitransit-component-autosuggest@^3.0.6, @digitransit-component/digitransit-component-autosuggest@workspace:digitransit-component/packages/digitransit-component-autosuggest":
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-autosuggest@workspace:digitransit-component/packages/digitransit-component-autosuggest"
   dependencies:
@@ -2041,7 +2041,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@digitransit-component/digitransit-component-control-panel@^2.0.0, @digitransit-component/digitransit-component-control-panel@workspace:digitransit-component/packages/digitransit-component-control-panel":
+"@digitransit-component/digitransit-component-control-panel@^2.0.1, @digitransit-component/digitransit-component-control-panel@workspace:digitransit-component/packages/digitransit-component-control-panel":
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-control-panel@workspace:digitransit-component/packages/digitransit-component-control-panel"
   peerDependencies:
@@ -2087,27 +2087,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@digitransit-component/digitransit-component-favourite-bar@npm:2.0.7":
-  version: 2.0.7
-  resolution: "@digitransit-component/digitransit-component-favourite-bar@npm:2.0.7"
-  dependencies:
-    "@digitransit-search-util/digitransit-search-util-uniq-by-label": ^2.1.0
-  peerDependencies:
-    "@digitransit-component/digitransit-component-icon": ^1.0.1
-    "@digitransit-component/digitransit-component-suggestion-item": ^2.0.6
-    "@hsl-fi/sass": ^0.2.0
-    "@hsl-fi/shimmer": 0.1.2
-    classnames: 2.2.6
-    i18next: ^19.3.3
-    lodash: 4.17.21
-    lodash-es: 4.17.21
-    prop-types: ^15.7.2
-    react: ^16.13.0
-  checksum: 5a88a61ba39c4613fa78f155e98fd2d6fba963a07dee2ad9b85d0bbca95d19f4302ad014849811b6e19af1b3c435daade51a8b7004c4efc903dc3fa7c956caa2
-  languageName: node
-  linkType: hard
-
-"@digitransit-component/digitransit-component-favourite-bar@workspace:digitransit-component/packages/digitransit-component-favourite-bar":
+"@digitransit-component/digitransit-component-favourite-bar@2.0.8, @digitransit-component/digitransit-component-favourite-bar@workspace:digitransit-component/packages/digitransit-component-favourite-bar":
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-favourite-bar@workspace:digitransit-component/packages/digitransit-component-favourite-bar"
   dependencies:
@@ -2126,7 +2106,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@digitransit-component/digitransit-component-favourite-editing-modal@^2.0.3, @digitransit-component/digitransit-component-favourite-editing-modal@workspace:digitransit-component/packages/digitransit-component-favourite-editing-modal":
+"@digitransit-component/digitransit-component-favourite-editing-modal@^2.0.4, @digitransit-component/digitransit-component-favourite-editing-modal@workspace:digitransit-component/packages/digitransit-component-favourite-editing-modal":
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-favourite-editing-modal@workspace:digitransit-component/packages/digitransit-component-favourite-editing-modal"
   dependencies:
@@ -2144,7 +2124,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@digitransit-component/digitransit-component-favourite-modal@^1.0.6, @digitransit-component/digitransit-component-favourite-modal@workspace:digitransit-component/packages/digitransit-component-favourite-modal":
+"@digitransit-component/digitransit-component-favourite-modal@^1.0.7, @digitransit-component/digitransit-component-favourite-modal@workspace:digitransit-component/packages/digitransit-component-favourite-modal":
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-favourite-modal@workspace:digitransit-component/packages/digitransit-component-favourite-modal"
   peerDependencies:
@@ -2160,7 +2140,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@digitransit-component/digitransit-component-icon@^1.0.1, @digitransit-component/digitransit-component-icon@workspace:digitransit-component/packages/digitransit-component-icon":
+"@digitransit-component/digitransit-component-icon@^1.0.2, @digitransit-component/digitransit-component-icon@workspace:digitransit-component/packages/digitransit-component-icon":
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-icon@workspace:digitransit-component/packages/digitransit-component-icon"
   peerDependencies:
@@ -2170,7 +2150,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@digitransit-component/digitransit-component-suggestion-item@^2.0.7, @digitransit-component/digitransit-component-suggestion-item@workspace:digitransit-component/packages/digitransit-component-suggestion-item":
+"@digitransit-component/digitransit-component-suggestion-item@^2.0.8, @digitransit-component/digitransit-component-suggestion-item@workspace:digitransit-component/packages/digitransit-component-suggestion-item":
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-suggestion-item@workspace:digitransit-component/packages/digitransit-component-suggestion-item"
   dependencies:
@@ -2226,14 +2206,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component@workspace:digitransit-component/packages/digitransit-component"
   dependencies:
-    "@digitransit-component/digitransit-component-autosuggest": ^3.0.5
-    "@digitransit-component/digitransit-component-autosuggest-panel": ^4.0.6
-    "@digitransit-component/digitransit-component-control-panel": ^2.0.0
-    "@digitransit-component/digitransit-component-favourite-bar": 2.0.7
-    "@digitransit-component/digitransit-component-favourite-editing-modal": ^2.0.3
-    "@digitransit-component/digitransit-component-favourite-modal": ^1.0.6
-    "@digitransit-component/digitransit-component-icon": ^1.0.1
-    "@digitransit-component/digitransit-component-suggestion-item": ^2.0.7
+    "@digitransit-component/digitransit-component-autosuggest": ^3.0.6
+    "@digitransit-component/digitransit-component-autosuggest-panel": ^4.0.7
+    "@digitransit-component/digitransit-component-control-panel": ^2.0.1
+    "@digitransit-component/digitransit-component-favourite-bar": 2.0.8
+    "@digitransit-component/digitransit-component-favourite-editing-modal": ^2.0.4
+    "@digitransit-component/digitransit-component-favourite-modal": ^1.0.7
+    "@digitransit-component/digitransit-component-icon": ^1.0.2
+    "@digitransit-component/digitransit-component-suggestion-item": ^2.0.8
     "@digitransit-component/digitransit-component-with-breakpoint": ^0.0.5
   peerDependencies:
     "@digitransit-component/digitransit-component-dialog-modal": ^0.3.6
@@ -5725,10 +5705,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/cookie@npm:^0.3.3":
-  version: 0.3.3
-  resolution: "@types/cookie@npm:0.3.3"
-  checksum: 450c930d792a4fd5a93645b4123f02596368f904dbb1fe6fbb5043bce8f6ecf877a08511c6ba11c8e28168f62bc278e68d214f002fab927c9056c0bc69f21370
+"@types/cookie@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@types/cookie@npm:0.6.0"
+  checksum: 5edce7995775b0b196b142883e4d4f71fd93c294eaec973670f1fa2540b70ea7390408ed513ddefef5fcb12a578100c76596e8f2a714b0c2ae9f70ee773f4510
   languageName: node
   linkType: hard
 
@@ -5828,7 +5808,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hoist-non-react-statics@npm:^3.0.1, @types/hoist-non-react-statics@npm:^3.3.0":
+"@types/hoist-non-react-statics@npm:^3.3.0":
   version: 3.3.6
   resolution: "@types/hoist-non-react-statics@npm:3.3.6"
   dependencies:
@@ -9879,17 +9859,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cookie@npm:0.7.2":
+"cookie@npm:0.7.2, cookie@npm:^0.7.2":
   version: 0.7.2
   resolution: "cookie@npm:0.7.2"
   checksum: 9bf8555e33530affd571ea37b615ccad9b9a34febbf2c950c86787088eb00a8973690833b0f8ebd6b69b753c62669ea60cec89178c1fb007bf0749abed74f93e
-  languageName: node
-  linkType: hard
-
-"cookie@npm:^0.4.0":
-  version: 0.4.2
-  resolution: "cookie@npm:0.4.2"
-  checksum: a00833c998bedf8e787b4c342defe5fa419abd96b32f4464f718b91022586b8f1bafbddd499288e75c037642493c83083da426c6a9080d309e3bd90fd11baa9b
   languageName: node
   linkType: hard
 
@@ -11167,7 +11140,6 @@ __metadata:
     react-autosuggest: ^10.0.0
     react-autowhatever: 10.2.1
     react-click-outside: 3.0.1
-    react-cookie: 4.0.3
     react-dom: 16.13.0
     react-helmet: 6.1.0
     react-intl: 2.8.0
@@ -11199,7 +11171,7 @@ __metadata:
     suncalc: 1.8.0
     supercluster: ^7.1.5
     terser-webpack-plugin: 4.1.0
-    universal-cookie: 4.0.4
+    universal-cookie: 7.2.2
     url-loader: 3.0.0
     uuid: 8.3.2
     webpack: ^4.46.0
@@ -14890,7 +14862,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hoist-non-react-statics@npm:^3.0.0, hoist-non-react-statics@npm:^3.0.1, hoist-non-react-statics@npm:^3.3.0, hoist-non-react-statics@npm:^3.3.1, hoist-non-react-statics@npm:^3.3.2":
+"hoist-non-react-statics@npm:^3.0.1, hoist-non-react-statics@npm:^3.3.0, hoist-non-react-statics@npm:^3.3.1, hoist-non-react-statics@npm:^3.3.2":
   version: 3.3.2
   resolution: "hoist-non-react-statics@npm:3.3.2"
   dependencies:
@@ -23133,19 +23105,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-cookie@npm:4.0.3":
-  version: 4.0.3
-  resolution: "react-cookie@npm:4.0.3"
-  dependencies:
-    "@types/hoist-non-react-statics": ^3.0.1
-    hoist-non-react-statics: ^3.0.0
-    universal-cookie: ^4.0.0
-  peerDependencies:
-    react: ">= 16.3.0"
-  checksum: 10c331af74ae44528cb219237f5a8979011ed7a868a9bdced40c4860ab557d2a6afc325d81c653288c438d28f8681198c43ef1523354d897e94fd8e0d675fd6d
-  languageName: node
-  linkType: hard
-
 "react-dom@npm:16.13.0":
   version: 16.13.0
   resolution: "react-dom@npm:16.13.0"
@@ -27836,13 +27795,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"universal-cookie@npm:4.0.4, universal-cookie@npm:^4.0.0":
-  version: 4.0.4
-  resolution: "universal-cookie@npm:4.0.4"
+"universal-cookie@npm:7.2.2":
+  version: 7.2.2
+  resolution: "universal-cookie@npm:7.2.2"
   dependencies:
-    "@types/cookie": ^0.3.3
-    cookie: ^0.4.0
-  checksum: bb2bafa7eb7e213e5448924329572dd1a913be00e23906189be2a0dc889b0eea1750f9c33462fc1c911d89092dbd82f6e220c2d61c4057bb3f69e7665d9d8ddf
+    "@types/cookie": ^0.6.0
+    cookie: ^0.7.2
+  checksum: 0d9b7c085a44e2d55be356c1eb8e542cbb9471754da9acffd795fab6924150d685ac1e3a2a7c7fc18790689f441b808dffde36a0f8d1e7c7f5b9f6aa721f72de
   languageName: node
   linkType: hard
 

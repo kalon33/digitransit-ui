@@ -165,7 +165,7 @@ export function planQueryNeeded(
     },
   },
   planType,
-  relaxSettings,
+  relaxSettings = false,
 ) {
   if (!from || !to || from === '-' || to === '-') {
     return false;
@@ -222,9 +222,7 @@ export function planQueryNeeded(
         transitModes.length > 0 &&
         !wheelchair &&
         config.showBikeAndParkItineraries &&
-        (config.includePublicWithBikePlan
-          ? settings.includeBikeSuggestions
-          : settings.showBikeAndParkItineraries)
+        settings.showBikeAndParkItineraries
       );
 
     case PLANTYPE.BIKETRANSIT:
@@ -260,13 +258,13 @@ export function planQueryNeeded(
         distance > config.suggestCarMinDistance &&
         settings.includeParkAndRideSuggestions
       );
-
+    /* special logic: relaxed flex query is made only if taxis are not allowed */
     case PLANTYPE.FLEXTRANSIT:
       return (
         config.experimental?.allowFlexJourneys &&
-        settings.includeTaxiSuggestions &&
         (transitModes.length > 0 ||
-          config.experimental?.allowDirectFlexJourneys)
+          config.experimental?.allowDirectFlexJourneys) &&
+        settings.includeTaxiSuggestions !== relaxSettings
       );
 
     case PLANTYPE.TRANSIT:
@@ -304,7 +302,7 @@ export function getPlanParams(
     },
   },
   planType,
-  relaxSettings,
+  relaxSettings = false,
 ) {
   const fromPlace = getLocation(from);
   const toPlace = getLocation(to);

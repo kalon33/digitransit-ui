@@ -66,17 +66,14 @@ const StreetModeSelectorPanel = (
             </label>
           </div>
         </div>
-        {!config.includePublicWithBikePlan ||
-        currentSettings.includeBikeSuggestions ? (
-          <BikingOptionsSection
-            bikeSpeed={currentSettings.bikeSpeed}
-            defaultSettings={defaultSettings}
-            bikeSpeedOptions={config.defaultOptions.bikeSpeed}
-            overrideStyle={overrideStyle}
-          />
-        ) : null}
-        {config.showBikeAndParkItineraries &&
-        !config.includePublicWithBikePlan ? (
+        <BikingOptionsSection
+          bikeSpeed={currentSettings.bikeSpeed}
+          defaultSettings={defaultSettings}
+          bikeSpeedOptions={config.defaultOptions.bikeSpeed}
+          overrideStyle={overrideStyle}
+        />
+
+        {config.showBikeAndParkItineraries ? (
           <div className="settings-mode-option-container">
             {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
             <label
