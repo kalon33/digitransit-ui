@@ -138,4 +138,5 @@ export default configMerger(walttiConfig, {
   },
   showTicketPrice: false,
   ticketLinkOperatorCode: 50207,
+  externalFareRouteIds: ['401'],
 });
