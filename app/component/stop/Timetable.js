@@ -6,7 +6,7 @@ import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
 import padStart from 'lodash/padStart';
 import { FormattedMessage, intlShape } from 'react-intl';
-import { matchShape, routerShape, RedirectException } from 'found';
+import { matchShape, routerShape } from 'found';
 import { useFragment } from 'react-relay';
 import { connectToStores } from 'fluxible-addons-react';
 import cx from 'classnames';
@@ -21,7 +21,6 @@ import { addAnalyticsEvent } from '../../util/analyticsUtils';
 import DateSelect from './DateSelect';
 import ScrollableWrapper from '../ScrollableWrapper';
 import { replaceQueryParams } from '../../util/queryUtils';
-import { isBrowser } from '../../util/browser';
 import { PREFIX_STOPS } from '../../util/path';
 import { TimetableFragment } from './queries/TimetableFragment';
 
@@ -135,11 +134,7 @@ function Timetable(
   const stop = useFragment(TimetableFragment, stopRef);
   if (!stop) {
     const path = `/${PREFIX_STOPS}`;
-    if (isBrowser) {
-      router.replace(path);
-    } else {
-      throw new RedirectException(path);
-    }
+    router.replace(path);
   }
   const [showRoutes, setShowRoutes] = useState([]);
   const [showFilterModal, setShowFilterModal] = useState(false);
