@@ -1,11 +1,9 @@
-import React, { lazy, Suspense } from 'react';
+import React from 'react';
 import { ReactRelayContext } from 'react-relay';
 import { connectToStores } from 'fluxible-addons-react';
-import Loading from '../Loading';
 import withBreakpoint from '../../util/withBreakpoint';
 import { getMapLayerOptions } from '../../util/mapLayerUtils';
-
-const ItineraryPage = lazy(() => import('./ItineraryPage'));
+import ItineraryPage from './ItineraryPage';
 
 const ItineraryPageWithBreakpoint = withBreakpoint(props => (
   <ReactRelayContext.Consumer>
@@ -30,9 +28,5 @@ const ItineraryPageWithStores = connectToStores(
 );
 
 export default function ItineraryPageContainer(props) {
-  return (
-    <Suspense fallback={<Loading />}>
-      <ItineraryPageWithStores {...props} />
-    </Suspense>
-  );
+  return <ItineraryPageWithStores {...props} />;
 }
