@@ -93,7 +93,6 @@ export default {
   feedIds: ['HSL', 'HSLlautta', 'Sipoo'],
   externalFeedIds: ['HSLlautta', '02Taksi'],
 
-  showHSLTracking: false,
   allowLogin: true,
   allowFavouritesFromLocalstorage: !process.env.OIDC_CLIENT_ID,
   loginAnalyticsEventName: 'user-hsl-id',

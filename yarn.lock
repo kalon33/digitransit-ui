@@ -5705,10 +5705,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/cookie@npm:^0.3.3":
-  version: 0.3.3
-  resolution: "@types/cookie@npm:0.3.3"
-  checksum: 450c930d792a4fd5a93645b4123f02596368f904dbb1fe6fbb5043bce8f6ecf877a08511c6ba11c8e28168f62bc278e68d214f002fab927c9056c0bc69f21370
+"@types/cookie@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@types/cookie@npm:0.6.0"
+  checksum: 5edce7995775b0b196b142883e4d4f71fd93c294eaec973670f1fa2540b70ea7390408ed513ddefef5fcb12a578100c76596e8f2a714b0c2ae9f70ee773f4510
   languageName: node
   linkType: hard
 
@@ -5808,7 +5808,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hoist-non-react-statics@npm:^3.0.1, @types/hoist-non-react-statics@npm:^3.3.0":
+"@types/hoist-non-react-statics@npm:^3.3.0":
   version: 3.3.6
   resolution: "@types/hoist-non-react-statics@npm:3.3.6"
   dependencies:
@@ -9859,17 +9859,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cookie@npm:0.7.2":
+"cookie@npm:0.7.2, cookie@npm:^0.7.2":
   version: 0.7.2
   resolution: "cookie@npm:0.7.2"
   checksum: 9bf8555e33530affd571ea37b615ccad9b9a34febbf2c950c86787088eb00a8973690833b0f8ebd6b69b753c62669ea60cec89178c1fb007bf0749abed74f93e
-  languageName: node
-  linkType: hard
-
-"cookie@npm:^0.4.0":
-  version: 0.4.2
-  resolution: "cookie@npm:0.4.2"
-  checksum: a00833c998bedf8e787b4c342defe5fa419abd96b32f4464f718b91022586b8f1bafbddd499288e75c037642493c83083da426c6a9080d309e3bd90fd11baa9b
   languageName: node
   linkType: hard
 
@@ -11147,14 +11140,12 @@ __metadata:
     react-autosuggest: ^10.0.0
     react-autowhatever: 10.2.1
     react-click-outside: 3.0.1
-    react-cookie: 4.0.3
     react-dom: 16.13.0
     react-helmet: 6.1.0
     react-intl: 2.8.0
     react-leaflet: 2.7.0
     react-relay: 16.2.0
     react-relay-network-modern: 6.2.2
-    react-relay-network-modern-ssr: 1.4.0
     react-select: 4.3.1
     react-sortablejs: 2.0.11
     react-swipe: 6.0.4
@@ -11178,9 +11169,9 @@ __metadata:
     stylelint: 15.11.0
     stylelint-config-standard-scss: 11.1.0
     suncalc: 1.8.0
-    supercluster: ^8.0.1
+    supercluster: ^7.1.5
     terser-webpack-plugin: 4.1.0
-    universal-cookie: 4.0.4
+    universal-cookie: 7.2.2
     url-loader: 3.0.0
     uuid: 8.3.2
     webpack: ^4.46.0
@@ -14871,7 +14862,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hoist-non-react-statics@npm:^3.0.0, hoist-non-react-statics@npm:^3.0.1, hoist-non-react-statics@npm:^3.3.0, hoist-non-react-statics@npm:^3.3.1, hoist-non-react-statics@npm:^3.3.2":
+"hoist-non-react-statics@npm:^3.0.1, hoist-non-react-statics@npm:^3.3.0, hoist-non-react-statics@npm:^3.3.1, hoist-non-react-statics@npm:^3.3.2":
   version: 3.3.2
   resolution: "hoist-non-react-statics@npm:3.3.2"
   dependencies:
@@ -17545,10 +17536,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kdbush@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "kdbush@npm:4.0.2"
-  checksum: 6782ef2cdaec9322376b9955a16b0163beda0cefa2f87da76e8970ade2572d8b63bec915347aaeac609484b0c6e84d7b591f229ef353b68b460238095bacde2d
+"kdbush@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "kdbush@npm:3.0.0"
+  checksum: bc5fa433958e42664a8a92457e4f0d1db55b3b8e36956aac0102964adb2eab043bdbff156570dc8d867144ceff588fb7a1c6e099ba9be068cd1767a73e1ace92
   languageName: node
   linkType: hard
 
@@ -23114,19 +23105,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-cookie@npm:4.0.3":
-  version: 4.0.3
-  resolution: "react-cookie@npm:4.0.3"
-  dependencies:
-    "@types/hoist-non-react-statics": ^3.0.1
-    hoist-non-react-statics: ^3.0.0
-    universal-cookie: ^4.0.0
-  peerDependencies:
-    react: ">= 16.3.0"
-  checksum: 10c331af74ae44528cb219237f5a8979011ed7a868a9bdced40c4860ab557d2a6afc325d81c653288c438d28f8681198c43ef1523354d897e94fd8e0d675fd6d
-  languageName: node
-  linkType: hard
-
 "react-dom@npm:16.13.0":
   version: 16.13.0
   resolution: "react-dom@npm:16.13.0"
@@ -23277,17 +23255,6 @@ __metadata:
     react-native:
       optional: true
   checksum: 369a2bdcf87915659af9e5c55abfd9f52a84e43e0d12dcc108ed17dbe6933558b7b7fc12caa9c10c1a10a8be7df89454b6c96989d8573fedec1a772c94a1f145
-  languageName: node
-  linkType: hard
-
-"react-relay-network-modern-ssr@npm:1.4.0":
-  version: 1.4.0
-  resolution: "react-relay-network-modern-ssr@npm:1.4.0"
-  peerDependencies:
-    graphql: ">=0.11.0"
-    react-relay: ">=1.4.0"
-    react-relay-network-modern: ">=2.1.0"
-  checksum: 20dfa98ce06d3872576b95cae6b6da8d4c815d0a8859103e76adc0795be12dd21d228ba9a12d599744e18248111c84128ae731e98c0cd7a909447f2d7fbad42f
   languageName: node
   linkType: hard
 
@@ -26603,12 +26570,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supercluster@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "supercluster@npm:8.0.1"
+"supercluster@npm:^7.1.5":
+  version: 7.1.5
+  resolution: "supercluster@npm:7.1.5"
   dependencies:
-    kdbush: ^4.0.2
-  checksum: 39d141f768a511efa53260252f9dab9a2ce0228b334e55482c8d3019e151932f05e1a9a0252d681737651b13c741c665542a6ddb40ec27de96159ea7ad41f7f4
+    kdbush: ^3.0.0
+  checksum: 69863238870093b96617135884721b6343746e14f396b2d67d6b55c52c362ec0516c5e386aa21815e75a9cef2054e831ac34023d0d8b600091d28cea0794f027
   languageName: node
   linkType: hard
 
@@ -27828,13 +27795,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"universal-cookie@npm:4.0.4, universal-cookie@npm:^4.0.0":
-  version: 4.0.4
-  resolution: "universal-cookie@npm:4.0.4"
+"universal-cookie@npm:7.2.2":
+  version: 7.2.2
+  resolution: "universal-cookie@npm:7.2.2"
   dependencies:
-    "@types/cookie": ^0.3.3
-    cookie: ^0.4.0
-  checksum: bb2bafa7eb7e213e5448924329572dd1a913be00e23906189be2a0dc889b0eea1750f9c33462fc1c911d89092dbd82f6e220c2d61c4057bb3f69e7665d9d8ddf
+    "@types/cookie": ^0.6.0
+    cookie: ^0.7.2
+  checksum: 0d9b7c085a44e2d55be356c1eb8e542cbb9471754da9acffd795fab6924150d685ac1e3a2a7c7fc18790689f441b808dffde36a0f8d1e7c7f5b9f6aa721f72de
   languageName: node
   linkType: hard
 

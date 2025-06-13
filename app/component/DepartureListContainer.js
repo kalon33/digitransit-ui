@@ -7,7 +7,6 @@ import { intlShape, FormattedMessage } from 'react-intl';
 import { stopTimeShape, configShape } from '../util/shapes';
 import Icon from './Icon';
 import DepartureRow from './DepartureRow';
-import { isBrowser } from '../util/browser';
 import {
   stopRealTimeClient,
   startRealTimeClient,
@@ -200,7 +199,7 @@ class DepartureListContainer extends Component {
   };
 
   onScroll = () => {
-    if (this.props.infiniteScroll && isBrowser) {
+    if (this.props.infiniteScroll) {
       return this.scrollHandler;
     }
     return null;

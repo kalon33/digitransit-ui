@@ -1,13 +1,10 @@
-/* eslint-disable no-console */
-import { connectToStores } from 'fluxible-addons-react';
-import React, { lazy, Suspense, useEffect, useState } from 'react';
+import React from 'react';
 import { ReactRelayContext } from 'react-relay';
-import { getMapLayerOptions } from '../../util/mapLayerUtils';
+import { connectToStores } from 'fluxible-addons-react';
 import withBreakpoint from '../../util/withBreakpoint';
-import Loading from '../Loading';
+import { getMapLayerOptions } from '../../util/mapLayerUtils';
+import ItineraryPage from './ItineraryPage';
 import { ItineraryContextProvider } from './context/ItineraryContext';
-
-const ItineraryPage = lazy(() => import('./ItineraryPage'));
 
 const ItineraryPageWithBreakpoint = withBreakpoint(({ getStore, ...props }) => (
   <ReactRelayContext.Consumer>
@@ -39,21 +36,6 @@ const ItineraryPageWithStores = connectToStores(
   }),
 );
 
-const ItineraryPageContainer = props => {
-  const [isClient, setClient] = useState(false);
-
-  useEffect(() => {
-    // To prevent SSR from rendering something https://reactjs.org/docs/react-dom.html#hydrate
-    setClient(true);
-  });
-  if (!isClient) {
-    return <Loading />;
-  }
-  return (
-    <Suspense fallback={<Loading />}>
-      <ItineraryPageWithStores {...props} />
-    </Suspense>
-  );
-};
-
-export default ItineraryPageContainer;
+export default function ItineraryPageContainer(props) {
+  return <ItineraryPageWithStores {...props} />;
+}

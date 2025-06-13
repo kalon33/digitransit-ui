@@ -1,4 +1,3 @@
-import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 import pick from 'lodash/pick';
@@ -73,18 +72,6 @@ export function reportError(error) {
     message: error.message || error,
     stack: error.stack || null,
   });
-}
-
-export function addFeedbackly(context) {
-  const host = context.headers['x-forwarded-host'] || context.headers.host;
-  if (
-    get(context, 'config.showHSLTracking', false) &&
-    host?.indexOf('127.0.0.1') === -1 &&
-    host?.indexOf('localhost') === -1
-  ) {
-    // eslint-disable-next-line no-unused-expressions
-    import('../../util/feedbackly');
-  }
 }
 
 export function getTopics(legs, config) {
