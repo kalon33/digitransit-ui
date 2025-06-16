@@ -116,7 +116,6 @@ class ItineraryCircleLineWithIcon extends React.Component {
       this.props.modeClassName === 'walk' ||
       this.props.modeClassName === 'bicycle_walk'
     ) {
-      // eslint-disable-next-line global-require
       legBeforeLineStyle.backgroundImage = this.state.imageUrl;
     }
     return (
