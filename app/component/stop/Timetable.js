@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 import uniqBy from 'lodash/uniqBy';
 import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
@@ -15,7 +15,7 @@ import Icon from '../Icon';
 import FilterTimeTableModal from './FilterTimeTableModal';
 import TimeTableOptionsPanel from './TimeTableOptionsPanel';
 import TimetableRow from './TimetableRow';
-import { RealtimeStateType } from '../../constants';
+import { DATE_FORMAT, RealtimeStateType } from '../../constants';
 import SecondaryButton from '../SecondaryButton';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
 import DateSelect from './DateSelect';
@@ -80,7 +80,7 @@ const getDuplicatedRoutes = stop => {
 };
 
 const dateForPrinting = date => {
-  const selectedDate = moment(date);
+  const selectedDate = DateTime.fromFormat(date, DATE_FORMAT);
   return (
     <div className="printable-date-container">
       <div className="printable-date-icon">
@@ -91,7 +91,7 @@ const dateForPrinting = date => {
           <FormattedMessage id="date" defaultMessage="Date" />
         </div>
         <div className="printable-date-content">
-          {moment(selectedDate).format('dd DD.MM.YYYY')}
+          {selectedDate.toFormat('ccc dd.LL.yyyy')}
         </div>
       </div>
     </div>
@@ -107,7 +107,9 @@ const formTimeRow = (timetableMap, hour, showRoutes) => {
     .map(
       time =>
         showRoutes.filter(o => o === time.name || o === time.id).length > 0 &&
-        moment.unix(time.serviceDay + time.scheduledDeparture).format('HH'),
+        DateTime.fromSeconds(
+          time.serviceDay + time.scheduledDeparture,
+        ).toFormat('HH'),
     )
     .filter(o => o === padStart(hour % 24, 2, '0'));
 
@@ -260,9 +262,9 @@ function Timetable(
       config.stopCard.header.virtualMonitorBaseUrl
     }/${locationType.toLowerCase()}/${stop.gtfsId}`;
   const timeTableRows = createTimeTableRows(timetableMap, showRoutes);
-  const timeDifferenceDays = moment
-    .duration(moment(date).diff(moment()))
-    .asDays();
+  const timeDifferenceDays = DateTime.fromFormat(date, DATE_FORMAT).diffNow(
+    'days',
+  ).days;
   return (
     <>
       <ScrollableWrapper>
@@ -291,7 +293,7 @@ function Timetable(
                   name: null,
                 });
               }}
-              dateFormat="YYYYMMDD"
+              dateFormat={DATE_FORMAT}
             />
             <TimeTableOptionsPanel
               showRoutes={showRoutes}
