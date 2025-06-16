@@ -133,7 +133,7 @@ export default function BicycleLeg(
       <ItineraryCircleLineWithIcon
         index={index}
         modeClassName={mode.toLowerCase()}
-        icon="icon-icon_scooter_rider_dark"
+        icon="icon-icon_scooter_rider"
         appendClass={!scooterSettingsOn ? 'settings' : 'scooter'}
         style={style}
       />
@@ -390,10 +390,10 @@ export default function BicycleLeg(
               onKeyPress={e =>
                 isKeyboardSelectionEvent(e) && openSettings(true, true)
               }
-              className="itinerary-transit-leg-route-bike"
+              className="itinerary-transit-leg-route-with-link"
             >
-              <div className="citybike-itinerary">
-                <div className="citybike-itinerary-text-container">
+              <div className="itinerary-with-link">
+                <div className="itinerary-with-link-text-container">
                   <span className={cx('settings')}>
                     <FormattedMessage
                       id="open-settings"

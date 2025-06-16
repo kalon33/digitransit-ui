@@ -5,7 +5,6 @@ import { configShape } from '../../util/shapes';
 import { ExtendedRouteTypes } from '../../constants';
 import VehicleIcon from '../VehicleIcon';
 import IconMarker from './IconMarker';
-import { isBrowser } from '../../util/browser';
 
 const MODES_WITH_ICONS = [
   'bus',
@@ -15,6 +14,7 @@ const MODES_WITH_ICONS = [
   'subway',
   'ferry',
   'speedtram',
+  'replacement-bus',
 ];
 
 function getVehicleIcon(
@@ -24,9 +24,6 @@ function getVehicleIcon(
   color,
   useLargeIcon = true,
 ) {
-  if (!isBrowser) {
-    return null;
-  }
   const modeOrDefault = MODES_WITH_ICONS.indexOf(mode) !== -1 ? mode : 'bus';
 
   return {
@@ -93,6 +90,11 @@ function VehicleMarkerContainer(props, { config }) {
       mode = 'bus-express';
     } else if (type === ExtendedRouteTypes.SpeedTram) {
       mode = 'speedtram';
+    } else if (
+      type === ExtendedRouteTypes.ReplacementBus ||
+      config.replacementBusRoutes?.includes(message.route)
+    ) {
+      mode = 'replacement-bus';
     } else {
       mode = message.mode;
     }

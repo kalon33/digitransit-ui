@@ -52,7 +52,7 @@ export default configMerger(walttiConfig, {
           sv: 'Zoner',
           en: 'Zones',
         },
-        url: '/assets/geojson/tre_zone_lines_20240108.geojson',
+        url: '/assets/geojson/tre_zone_lines_20250606.geojson',
         isOffByDefault: true,
       },
       {
@@ -80,7 +80,9 @@ export default configMerger(walttiConfig, {
   showTicketInformation: true,
   primaryAgencyName: 'Tampereen seudun joukkoliikenne',
 
-  ticketLink: 'https://www.nysse.fi/liput-ja-hinnat.html',
+  ticketLink: {
+    fi: 'https://www.nysse.fi/liput-ja-hinnat.html',
+  },
 
   callAgencyInfo: {
     fi: {

@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Icon from '../Icon';
-import { isBrowser } from '../../util/browser';
 import ScheduleDropdown from './ScheduleDropdown';
 import { stopShape } from '../../util/shapes';
 
@@ -29,12 +28,10 @@ function ScheduleHeader({
   )[0].label;
 
   const headerLineStyle = {};
-  if (isBrowser) {
-    // eslint-disable-next-line global-require
-    headerLineStyle.backgroundImage = `url(${require(
-      `../../configurations/images/default/dotted-line-bg2.png`,
-    )})`;
-  }
+  // eslint-disable-next-line global-require
+  headerLineStyle.backgroundImage = `url(${require(
+    `../../configurations/images/default/dotted-line-bg2.png`,
+  )})`;
 
   const stopHeadersForPrinting = (
     <div className="printable-stop-header">

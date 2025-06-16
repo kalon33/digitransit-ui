@@ -9,8 +9,9 @@ import KuopioConfig from './config.kuopio';
 import LahtiConfig from './config.lahti';
 
 const CONFIG = 'matka';
-const APP_DESCRIPTION = 'Matka.fi–palvelu.';
-const APP_TITLE = 'Matka.fi';
+const APP_DESCRIPTION =
+  'Fintraffic Matka on reittiopaspalvelu, joka auttaa suunnittelemaan matkoja koko Suomessa yhdistämällä eri liikennemuodot helposti ovelta ovelle.';
+const APP_TITLE = 'Fintraffic Matka – Joukkoliikenteen reittiopas ja matkahaku';
 const YEAR = 1900 + new Date().getYear();
 
 const HSLParkAndRideUtils = require('../util/ParkAndRideUtils').default.HSL;
@@ -67,40 +68,44 @@ export default {
       'mode-citybike': '#FCBC19',
       'mode-citybike-secondary': '#333333',
       'mode-scooter': '#C5CAD2',
+      'mode-taxi': '#647693',
     },
   },
-  feedIds: [
-    'MATKA',
-    'HSL',
-    'LINKKI',
-    'tampere',
-    'OULU',
-    'digitraffic',
-    'Rauma',
-    'Hameenlinna',
-    'Kotka',
-    'Kouvola',
-    'Lappeenranta',
-    'Mikkeli',
-    'Vaasa',
-    'Joensuu',
-    'FOLI',
-    'Lahti',
-    'Kuopio',
-    'Rovaniemi',
-    'Kajaani',
-    'Salo',
-    'Pori',
-    'Raasepori',
-    'VARELY',
-    'Harma',
-    'PohjolanMatka',
-    'Korsisaari',
-    'KoivistonAuto',
-    'PahkakankaanLiikenne',
-    'IngvesSvanback',
-    'CAR_FERRIES',
-  ],
+  feedIds: IS_DEV
+    ? ['MATKA']
+    : [
+        'MATKA',
+        'HSL',
+        'LINKKI',
+        'tampere',
+        'OULU',
+        'digitraffic',
+        'Rauma',
+        'Hameenlinna',
+        'Kotka',
+        'Kouvola',
+        'Lappeenranta',
+        'Mikkeli',
+        'Vaasa',
+        'Joensuu',
+        'FOLI',
+        'Lahti',
+        'Kuopio',
+        'Rovaniemi',
+        'Kajaani',
+        'Salo',
+        'Pori',
+        'Raasepori',
+        'VARELY',
+        'Harma',
+        'PohjolanMatka',
+        'Korsisaari',
+        'KoivistonAuto',
+        'PahkakankaanLiikenne',
+        'IngvesSvanback',
+        'CAR_FERRIES',
+      ],
+  externalFeedIds: ['02Taksi'],
 
   additionalFeedIds: {
     estonia: ['Vikingline', 'Viro'],
@@ -130,7 +135,7 @@ export default {
 
   meta: {
     description: APP_DESCRIPTION,
-    keywords: `reitti,reitit,opas,reittiopas,joukkoliikenne`,
+    keywords: `reitti,reitit,opas,reittiopas,joukkoliikenne,joukkoliikenne, matkasuunnittelu, matkareitti, aikataulut, bussi, juna, metro, raitiovaunu, lautta, matka, suomen joukkoliikenne, reitti kartalla, matkareitti ovelta ovelle, opas.matka.fi, fintraffic matka, digitransit, reittiopas suomi, liikenneopas, julkinen liikenne, reittihaku, liityntäpysäköinti, pyöräily, autoilu, lennot, matkakumppani, matkaketju, reitti yhdellä haulla`,
   },
   menu: {
     copyright: { label: `© Matka.fi ${YEAR}` },
@@ -145,7 +150,7 @@ export default {
       },
       {
         name: 'about-this-service',
-        href: 'https://www.fintraffic.fi/fi/digitaalisetpalvelut/fintrafficin-datapalvelut/liikkumisen-tietopalvelut/joukkoliikenteen-tietopalvelut/digitransit',
+        href: 'https://www.fintraffic.fi/fi/digitaalisetpalvelut/matkatietoa',
       },
       {
         name: 'accessibility-statement',
@@ -215,6 +220,10 @@ export default {
     },
     scooter: {
       availableForSelection: true,
+      defaultValue: false,
+    },
+    taxi: {
+      availableForSelection: true, // experimental feature
       defaultValue: false,
     },
   },
@@ -414,9 +423,6 @@ export default {
 
   disabledLegTextModes: ['ferry'],
 
-  // Include both bike and park and bike and public, if bike is enabled
-  includePublicWithBikePlan: true,
-
   startSearchFromUserLocation: true,
 
   minTransferTimeSelection: [
@@ -446,4 +452,20 @@ export default {
     },
   ],
   navigation: true,
+
+  experimental: {
+    allowFlexJourneys: true,
+    allowDirectFlexJourneys: true,
+  },
+
+  devAnalytics: true,
+  analyticsScript: function createAnalyticsScript() {
+    return `<script>
+    var _mtm = window._mtm = window._mtm || [];
+    _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
+    (function() {
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src='https://cdn.matomo.cloud/fintraffic.matomo.cloud/container_p27GPdXl.js'; s.parentNode.insertBefore(g,s);
+    })();\n<\/script>\n`; // eslint-disable-line no-useless-escape
+  },
 };

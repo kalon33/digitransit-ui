@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { createFragmentContainer, graphql } from 'react-relay';
 import { connectToStores } from 'fluxible-addons-react';
-import { matchShape, routerShape, RedirectException } from 'found';
+import { matchShape, routerShape } from 'found';
 import { DateTime } from 'luxon';
 import { intlShape } from 'react-intl';
 import sortBy from 'lodash/sortBy';
@@ -25,7 +25,6 @@ import { getFormattedTimeDate } from '../../util/timeUtils';
 import ScheduleDropdown from './ScheduleDropdown';
 import RouteControlPanel from './RouteControlPanel';
 import { PREFIX_ROUTES, PREFIX_TIMETABLE } from '../../util/path';
-import { isBrowser } from '../../util/browser';
 import ScrollableWrapper from '../ScrollableWrapper';
 import getTestData from './ScheduleDebugData';
 
@@ -676,11 +675,7 @@ class ScheduleContainer extends PureComponent {
         serviceDay: serviceDay.toFormat(DATE_FORMAT_LUXON),
       },
     };
-    if (isBrowser) {
-      this.props.match.router.replace(newPath);
-    } else {
-      throw new RedirectException(newPath);
-    }
+    this.props.match.router.replace(newPath);
   };
 
   render() {
@@ -732,17 +727,11 @@ class ScheduleContainer extends PureComponent {
 
     if (!this.props.pattern) {
       if (this.props.match.params.routeId) {
-        if (isBrowser) {
-          // Redirect back to routes default pattern
-          // eslint-disable-next-line react/prop-types
-          this.props.router.replace(
-            `/${PREFIX_ROUTES}/${this.props.match.params.routeId}/${PREFIX_TIMETABLE}`,
-          );
-        } else {
-          throw new RedirectException(
-            `/${PREFIX_ROUTES}/${this.props.match.params.routeId}/${PREFIX_TIMETABLE}`,
-          );
-        }
+        // Redirect back to routes default pattern
+        // eslint-disable-next-line react/prop-types
+        this.props.router.replace(
+          `/${PREFIX_ROUTES}/${this.props.match.params.routeId}/${PREFIX_TIMETABLE}`,
+        );
       }
       return false;
     }
@@ -898,11 +887,7 @@ class ScheduleContainer extends PureComponent {
     const tabs = this.renderDayTabs(data);
 
     if (showTrips && typeof showTrips === 'string') {
-      if (isBrowser) {
-        this.props.match.router.replace(showTrips);
-      } else {
-        throw new RedirectException(showTrips);
-      }
+      this.props.match.router.replace(showTrips);
       return false;
     }
 

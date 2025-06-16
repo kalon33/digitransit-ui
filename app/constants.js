@@ -34,6 +34,8 @@ export const TransportMode = Object.freeze({
   Funicular: 'FUNICULAR',
   /** Riding a scooter */
   Scooter: 'SCOOTER',
+  /** Taking the taxi */
+  Taxi: 'TAXI-EXTERNAL',
 });
 
 /**
@@ -100,6 +102,7 @@ export const ExtendedRouteTypes = Object.freeze({
   BusLocal: 704,
   CallAgency: 715,
   SpeedTram: 900,
+  ReplacementBus: 714,
 });
 
 export const ParkTypes = {

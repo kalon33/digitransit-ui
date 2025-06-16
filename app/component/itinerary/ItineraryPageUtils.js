@@ -1,4 +1,3 @@
-import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 import pick from 'lodash/pick';
@@ -73,18 +72,6 @@ export function reportError(error) {
     message: error.message || error,
     stack: error.stack || null,
   });
-}
-
-export function addFeedbackly(context) {
-  const host = context.headers['x-forwarded-host'] || context.headers.host;
-  if (
-    get(context, 'config.showHSLTracking', false) &&
-    host?.indexOf('127.0.0.1') === -1 &&
-    host?.indexOf('localhost') === -1
-  ) {
-    // eslint-disable-next-line no-unused-expressions
-    import('../../util/feedbackly');
-  }
 }
 
 export function getTopics(legs, config) {
@@ -426,6 +413,18 @@ export function filterItineraries(edges, modes) {
 }
 
 /**
+ * Filters itineraries that are not the right route type
+ */
+export function filterItinerariesByRouteType(edges, types) {
+  if (!edges) {
+    return [];
+  }
+  return edges.filter(edge =>
+    edge.node.legs.some(leg => types.includes(leg.route?.type)),
+  );
+}
+
+/**
  * Pick combination of itineraries for bike and transit
  */
 export function mergeBikeTransitPlans(bikeParkPlan, bikeTransitPlan) {
@@ -510,27 +509,23 @@ export function getSortedEdges(edges, arriveBy) {
 }
 
 /**
- * Combine a scooter edge with the main transit edges.
+ * Combine an external edge with the main transit edges.
  */
-export function mergeScooterTransitPlan(
-  scooterPlan,
+function sortAndMergePlans(
+  externalTransitEdges,
   transitPlan,
-  allowDirectScooterJourneys,
   arriveBy,
+  maxAdditionalEdges = 1,
 ) {
   const transitPlanEdges = transitPlan.edges || [];
-  const scooterTransitEdges = scooterEdges(
-    scooterPlan.edges,
-    allowDirectScooterJourneys,
-  );
   const maxTransitEdges =
-    scooterTransitEdges.length > 0 ? 4 : transitPlanEdges.length;
+    externalTransitEdges.length > 0 ? 4 : transitPlanEdges.length;
 
-  // special case: if transitplan only has one walk itinerary, don't show scooter plan if it arrives later.
+  // special case: if transitplan only has one walk itinerary, don't show external plan if it arrives later.
   if (
     transitPlanEdges.length === 1 &&
     transitPlanEdges[0].node.legs.every(leg => leg.mode === 'WALK') &&
-    transitPlanEdges[0].node.end < scooterTransitEdges[0]?.node.end
+    transitPlanEdges[0].node.end < externalTransitEdges[0]?.node.end
   ) {
     return transitPlan;
   }
@@ -538,7 +533,7 @@ export function mergeScooterTransitPlan(
   return {
     edges: getSortedEdges(
       [
-        ...scooterTransitEdges.slice(0, 1),
+        ...externalTransitEdges.slice(0, maxAdditionalEdges),
         ...transitPlanEdges.slice(0, maxTransitEdges),
       ],
       arriveBy,
@@ -551,6 +546,64 @@ export function mergeScooterTransitPlan(
         },
       };
     }),
+  };
+}
+
+/**
+ * Combine an external edge with the main transit edges.
+ */
+export function mergeExternalTransitPlan(
+  externalPlan,
+  transitPlan,
+  arriveBy,
+  allowedFlexRouteTypes,
+) {
+  const externalTransitEdges = filterItinerariesByRouteType(
+    externalPlan.edges,
+    allowedFlexRouteTypes,
+  );
+  return sortAndMergePlans(externalTransitEdges, transitPlan, arriveBy);
+}
+
+/**
+ * Combine a scooter edge with the main transit edges.
+ */
+export function mergeScooterTransitPlan(
+  scooterPlan,
+  transitPlan,
+  allowDirectScooterJourneys,
+  arriveBy,
+) {
+  const scooterTransitEdges = scooterEdges(
+    scooterPlan.edges,
+    allowDirectScooterJourneys,
+  );
+  return sortAndMergePlans(scooterTransitEdges, transitPlan, arriveBy);
+}
+
+/**
+ * Combine two sets of external plans.
+ */
+export function sortAndMergeExternalPlans(
+  plan,
+  planToMerge,
+  arriveBy,
+  maxTotalEdges = 5,
+) {
+  const edges = plan.edges || [];
+  const edgesToMerge = planToMerge.edges || [];
+  return {
+    edges: getSortedEdges([...edges, ...edgesToMerge], arriveBy)
+      .slice(0, maxTotalEdges)
+      .map(edge => {
+        return {
+          ...edge,
+          node: {
+            ...edge.node,
+            legs: compressLegs(edge.node.legs),
+          },
+        };
+      }),
   };
 }
 

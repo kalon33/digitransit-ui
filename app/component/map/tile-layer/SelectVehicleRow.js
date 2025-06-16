@@ -20,6 +20,7 @@ function SelectVehicleRow(props) {
     <Link className="stop-popup-choose-row" to={patternPath}>
       <span className="choose-row-left-column" aria-hidden="true">
         <Icon
+          className={mode}
           img={iconId}
           color={
             props.trip.route.color

@@ -5,11 +5,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
 import { useFragment } from 'react-relay';
+import { getRouteMode } from '../../util/modeUtils';
 import {
   getFaresFromLegs,
   shouldShowFareInfo,
   shouldShowFarePurchaseInfo,
 } from '../../util/fareUtils';
+import localizedUrl from '../../util/urlUtils';
 import {
   compressLegs,
   getTotalBikingDistance,
@@ -31,6 +33,7 @@ import BackButton from '../BackButton';
 import Emissions from './Emissions';
 import EmissionsInfo from './EmissionsInfo';
 import FareDisclaimer from './FareDisclaimer';
+import RouteDisclaimer from './RouteDisclaimer';
 import ItinerarySummary from './ItinerarySummary';
 import Legs from './Legs';
 import MobileTicketPurchaseInformation from './MobileTicketPurchaseInformation';
@@ -216,6 +219,42 @@ function ItineraryDetails(
     }
   }
 
+  if (config.replacementBusNotification) {
+    itinerary.legs.forEach(({ route, trip }) => {
+      const isReplacementRoute =
+        route &&
+        (getRouteMode(route, config)?.includes('replacement') ||
+          config.replacementBusRoutes?.includes(route.gtfsId));
+      const isReplacementTrip =
+        trip?.submode?.includes('replacement') || trip?.submode?.includes(714);
+
+      if (isReplacementRoute || isReplacementTrip) {
+        const notification =
+          isReplacementRoute &&
+          config.showRouteDescNotification &&
+          route.desc?.length
+            ? { content: route.desc, link: route.url }
+            : config.replacementBusNotification;
+        const notificationText =
+          notification.content?.[currentLanguage]?.join(' ');
+        const key = `replacementBusNotification-${
+          route.gtfsId || trip?.gtfsId
+        }`;
+        if (!disclaimers.some(d => d.props?.text === notificationText)) {
+          disclaimers.push(
+            <RouteDisclaimer
+              key={key}
+              text={notificationText}
+              href={notification.link?.[currentLanguage]}
+              linkText={intl.formatMessage({ id: 'extra-info' })}
+              header={intl.formatMessage({ id: 'replacement-bus' })}
+            />,
+          );
+        }
+      }
+    });
+  }
+
   return (
     <div className="itinerary-tab">
       <h2 className="sr-only" key="srlabel">
@@ -278,6 +317,7 @@ function ItineraryDetails(
                 fares={fares}
                 zones={getZones(itinerary.legs)}
                 legs={itinerary.legs}
+                ticketLink={localizedUrl(config.ticketLink, currentLanguage)}
               />
             )),
 

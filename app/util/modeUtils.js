@@ -114,7 +114,13 @@ export function getTransportModes(config) {
   };
 }
 
+/**
+ * @returns mode always in lower case
+ */
 export function getRouteMode(route, config) {
+  if (config?.replacementBusRoutes?.includes(route.gtfsId)) {
+    return 'replacement-bus';
+  }
   switch (route.type) {
     case ExtendedRouteTypes.BusExpress:
       return 'bus-express';
@@ -124,6 +130,8 @@ export function getRouteMode(route, config) {
       return 'speedtram';
     case ExtendedRouteTypes.CallAgency:
       return 'call';
+    case ExtendedRouteTypes.ReplacementBus:
+      return 'replacement-bus';
     default:
       return isExternalFeed(getFeedWithoutId(route?.gtfsId), config)
         ? `${route.mode?.toLowerCase()}-external`
