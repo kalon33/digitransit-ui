@@ -12,7 +12,7 @@ import { configShape } from '../../util/shapes';
 import CallAgencyWarning from './CallAgencyWarning';
 import RoutePatternSelect from './RoutePatternSelect';
 import RouteNotification from './RouteNotification';
-import { DATE_FORMAT_LUXON, ExtendedRouteTypes } from '../../constants';
+import { DATE_FORMAT, ExtendedRouteTypes } from '../../constants';
 import {
   startRealTimeClient,
   stopRealTimeClient,
@@ -167,7 +167,7 @@ class RouteControlPanel extends React.Component {
       );
       const isSameWeek = DateTime.fromFormat(
         enrichedPattern[0].minAndMaxDate[0],
-        DATE_FORMAT_LUXON,
+        DATE_FORMAT,
       ).hasSame(DateTime.now(), 'week');
       if (
         location.search.indexOf('serviceDay') === -1 ||

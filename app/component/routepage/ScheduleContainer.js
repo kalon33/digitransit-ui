@@ -17,7 +17,7 @@ import ScheduleHeader from './ScheduleHeader';
 import ScheduleTripRow from './ScheduleTripRow';
 import SecondaryButton from '../SecondaryButton';
 import Loading from '../Loading';
-import { DATE_FORMAT_LUXON, RealtimeStateType } from '../../constants';
+import { DATE_FORMAT, RealtimeStateType } from '../../constants';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
 import withBreakpoint from '../../util/withBreakpoint';
 import hashCode from '../../util/hashUtil';
@@ -28,7 +28,7 @@ import { PREFIX_ROUTES, PREFIX_TIMETABLE } from '../../util/path';
 import ScrollableWrapper from '../ScrollableWrapper';
 import getTestData from './ScheduleDebugData';
 
-const DATE_FORMAT2 = 'd.L.yyyy';
+const DATE_FORMAT_SCHEDULE = 'd.L.yyyy';
 
 const isTripCanceled = trip =>
   trip.stoptimes &&
@@ -182,12 +182,12 @@ const populateData = (wantedDayIn, departures, isMerged, dataExistsDay) => {
     // check also first week
     if (isEmptyWeek(departures[x - 1])) {
       emptyWeek.push(
-        startOfCurrentWeek.plus({ weeks: x - 1 }).toFormat(DATE_FORMAT_LUXON),
+        startOfCurrentWeek.plus({ weeks: x - 1 }).toFormat(DATE_FORMAT),
       );
     }
     if (isEmptyWeek(departures[x])) {
       emptyWeek.push(
-        startOfCurrentWeek.plus({ weeks: x }).toFormat(DATE_FORMAT_LUXON),
+        startOfCurrentWeek.plus({ weeks: x }).toFormat(DATE_FORMAT),
       );
     }
     weekStarts.push(startOfCurrentWeek.plus({ weeks: x }));
@@ -248,7 +248,7 @@ const populateData = (wantedDayIn, departures, isMerged, dataExistsDay) => {
   });
 
   let range = [
-    wantedDay.toFormat(DATE_FORMAT2),
+    wantedDay.toFormat(DATE_FORMAT_SCHEDULE),
     wantedDay,
     wantedDay.weekday,
     '',
@@ -267,10 +267,10 @@ const populateData = (wantedDayIn, departures, isMerged, dataExistsDay) => {
         : w;
     const timeRange =
       days.length === 1 && days[idx][0].length === 1 && wantedDayIn && !isMerged
-        ? wantedDay.toFormat(DATE_FORMAT2)
-        : `${timeRangeStart.toFormat(DATE_FORMAT2)} - ${weekEnds[idx].toFormat(
-            DATE_FORMAT2,
-          )}`;
+        ? wantedDay.toFormat(DATE_FORMAT_SCHEDULE)
+        : `${timeRangeStart.toFormat(DATE_FORMAT_SCHEDULE)} - ${weekEnds[
+            idx
+          ].toFormat(DATE_FORMAT_SCHEDULE)}`;
     if (!(wantedDay >= w && wantedDay <= weekEnds[idx])) {
       return {
         label: `${timeRange}`,
@@ -278,10 +278,8 @@ const populateData = (wantedDayIn, departures, isMerged, dataExistsDay) => {
           idx === 0 &&
           days[idx].indexOf(currentDayNo.toString()) !== -1 &&
           currentDayNo > Number(firstServiceDay)
-            ? w.plus({ days: currentDayNo - 1 }).toFormat(DATE_FORMAT_LUXON)
-            : w
-                .plus({ days: firstServiceDay[0] - 1 })
-                .toFormat(DATE_FORMAT_LUXON),
+            ? w.plus({ days: currentDayNo - 1 }).toFormat(DATE_FORMAT)
+            : w.plus({ days: firstServiceDay[0] - 1 }).toFormat(DATE_FORMAT),
       };
     }
     range = [
@@ -297,7 +295,7 @@ const populateData = (wantedDayIn, departures, isMerged, dataExistsDay) => {
   if (!pastDate) {
     pastDate = startOfCurrentWeek
       .plus({ days: dataExistsDay - 1 })
-      .toFormat(DATE_FORMAT_LUXON);
+      .toFormat(DATE_FORMAT);
   }
 
   return [
@@ -371,7 +369,7 @@ class ScheduleContainer extends PureComponent {
   componentDidMount() {
     const { match } = this.props;
     const date = match.location.query.serviceDay
-      ? DateTime.fromFormat(match.location.query.serviceDay, DATE_FORMAT_LUXON)
+      ? DateTime.fromFormat(match.location.query.serviceDay, DATE_FORMAT)
       : DateTime.now();
     // Don't allow past dates (before current week) because we might have no data from them
     if (date && date.startOf('week') < DateTime.now().startOf('week')) {
@@ -414,7 +412,7 @@ class ScheduleContainer extends PureComponent {
   getTrips = (patternIn, from, to, newServiceDay, wantedDay) => {
     let currentPattern = patternIn;
     let queryParams = newServiceDay
-      ? `?serviceDay=${newServiceDay.toFormat(DATE_FORMAT_LUXON)}`
+      ? `?serviceDay=${newServiceDay.toFormat(DATE_FORMAT)}`
       : '';
 
     if (this.testing && this.testNum && currentPattern) {
@@ -424,8 +422,8 @@ class ScheduleContainer extends PureComponent {
       };
       if (
         wantedDay.isValid &&
-        DateTime.fromFormat(this.testNoDataDay, DATE_FORMAT_LUXON).isValid &&
-        wantedDay.toFormat(DATE_FORMAT_LUXON) === this.testNoDataDay
+        DateTime.fromFormat(this.testNoDataDay, DATE_FORMAT).isValid &&
+        wantedDay.toFormat(DATE_FORMAT) === this.testNoDataDay
       ) {
         currentPattern = {
           ...currentPattern,
@@ -460,14 +458,14 @@ class ScheduleContainer extends PureComponent {
               id: 'no-trips-found',
               defaultMessage: `No journeys found for the selected date ${DateTime.fromFormat(
                 this.context.match.location.query.serviceDay,
-                DATE_FORMAT_LUXON,
-              ).toFormat(DATE_FORMAT2)}`,
+                DATE_FORMAT,
+              ).toFormat(DATE_FORMAT_SCHEDULE)}`,
             },
             {
               selectedDate: DateTime.fromFormat(
                 this.context.match.location.query.serviceDay,
-                DATE_FORMAT_LUXON,
-              ).toFormat(DATE_FORMAT2),
+                DATE_FORMAT,
+              ).toFormat(DATE_FORMAT_SCHEDULE),
             },
           )}
         </div>
@@ -589,11 +587,7 @@ class ScheduleContainer extends PureComponent {
         }
 
         let tabDate = data[2][4];
-        if (
-          data[4] &&
-          data[5] &&
-          tabDate.toFormat(DATE_FORMAT_LUXON) !== data[5]
-        ) {
+        if (data[4] && data[5] && tabDate.toFormat(DATE_FORMAT) !== data[5]) {
           if (data[5] > tabDate.plus({ days: Number(tab[0]) - 1 })) {
             tabDate = tabDate.plus({ days: Number(tab[0]) + 6 });
           } else {
@@ -612,7 +606,7 @@ class ScheduleContainer extends PureComponent {
               'is-active': selected,
             })}
             onClick={() => {
-              this.changeDate(tabDate.toFormat(DATE_FORMAT_LUXON));
+              this.changeDate(tabDate.toFormat(DATE_FORMAT));
             }}
             ref={this.tabRefs[tab]}
             tabIndex={selected ? 0 : -1}
@@ -672,7 +666,7 @@ class ScheduleContainer extends PureComponent {
       ...location,
       query: {
         ...location.query,
-        serviceDay: serviceDay.toFormat(DATE_FORMAT_LUXON),
+        serviceDay: serviceDay.toFormat(DATE_FORMAT),
       },
     };
     this.props.match.router.replace(newPath);
@@ -797,7 +791,7 @@ class ScheduleContainer extends PureComponent {
 
     const wantedDay =
       query && query.serviceDay
-        ? DateTime.fromFormat(query.serviceDay, DATE_FORMAT_LUXON)
+        ? DateTime.fromFormat(query.serviceDay, DATE_FORMAT)
         : undefined;
 
     const firstDataDate = DateTime.now()
@@ -849,10 +843,7 @@ class ScheduleContainer extends PureComponent {
         data[2][1] &&
         data[2][1] < data[0][0]
       ) {
-        newServiceDay = DateTime.fromFormat(
-          data[3][0].value,
-          DATE_FORMAT_LUXON,
-        );
+        newServiceDay = DateTime.fromFormat(data[3][0].value, DATE_FORMAT);
       }
       if (newServiceDay > firstDataDate) {
         newServiceDay = firstDataDate;
@@ -873,7 +864,7 @@ class ScheduleContainer extends PureComponent {
       routeTimetableHandler.routeTimetableUrlResolver(
         this.context.config.URL.ROUTE_TIMETABLES[routeIdSplitted[0]],
         this.props.route,
-        timetableDay.toFormat(DATE_FORMAT_LUXON),
+        timetableDay.toFormat(DATE_FORMAT),
         this.props.lang,
       );
 

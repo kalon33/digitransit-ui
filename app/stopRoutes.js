@@ -18,7 +18,7 @@ import {
   getComponentOrLoadingRenderer,
 } from './util/routerUtils';
 import { prepareDatesForStops } from './util/dateParamUtils';
-import { DATE_FORMAT_LUXON } from './constants';
+import { DATE_FORMAT } from './constants';
 
 const queries = {
   stop: {
@@ -232,7 +232,7 @@ export default function getStopRoutes(isTerminal = false) {
                   const date = location?.query?.date;
                   return {
                     ...params,
-                    date: date || DateTime.now().toFormat(DATE_FORMAT_LUXON),
+                    date: date || DateTime.now().toFormat(DATE_FORMAT),
                   };
                 }}
                 render={getComponentOrLoadingRenderer}

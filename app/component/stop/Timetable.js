@@ -15,7 +15,7 @@ import Icon from '../Icon';
 import FilterTimeTableModal from './FilterTimeTableModal';
 import TimeTableOptionsPanel from './TimeTableOptionsPanel';
 import TimetableRow from './TimetableRow';
-import { DATE_FORMAT_LUXON, RealtimeStateType } from '../../constants';
+import { DATE_FORMAT, RealtimeStateType } from '../../constants';
 import SecondaryButton from '../SecondaryButton';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
 import DateSelect from './DateSelect';
@@ -80,7 +80,7 @@ const getDuplicatedRoutes = stop => {
 };
 
 const dateForPrinting = date => {
-  const selectedDate = DateTime.fromFormat(date, DATE_FORMAT_LUXON);
+  const selectedDate = DateTime.fromFormat(date, DATE_FORMAT);
   return (
     <div className="printable-date-container">
       <div className="printable-date-icon">
@@ -262,10 +262,9 @@ function Timetable(
       config.stopCard.header.virtualMonitorBaseUrl
     }/${locationType.toLowerCase()}/${stop.gtfsId}`;
   const timeTableRows = createTimeTableRows(timetableMap, showRoutes);
-  const timeDifferenceDays = DateTime.fromFormat(
-    date,
-    DATE_FORMAT_LUXON,
-  ).diffNow('days').days;
+  const timeDifferenceDays = DateTime.fromFormat(date, DATE_FORMAT).diffNow(
+    'days',
+  ).days;
   return (
     <>
       <ScrollableWrapper>
@@ -294,7 +293,7 @@ function Timetable(
                   name: null,
                 });
               }}
-              dateFormat={DATE_FORMAT_LUXON}
+              dateFormat={DATE_FORMAT}
             />
             <TimeTableOptionsPanel
               showRoutes={showRoutes}
