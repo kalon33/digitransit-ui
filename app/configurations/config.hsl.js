@@ -1,17 +1,17 @@
 /* eslint-disable prefer-template */
 import { BIKEAVL_WITHMAX } from '../util/vehicleRentalUtils';
+import prUtils from '../util/ParkAndRideUtils';
+import ttConfig from './timetableConfigUtils';
 
+const HSLTimetables = ttConfig.HSL;
+const HSLParkAndRideUtils = prUtils.HSL;
 const CONFIG = 'hsl';
 const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
 const OTP_URL = process.env.OTP_URL || `${API_URL}/routing/v2/hsl/`;
 const MAP_URL = process.env.MAP_URL || 'https://dev-cdn.digitransit.fi';
 const POI_MAP_PREFIX = `${MAP_URL}/map/v3/hsl`;
 const APP_DESCRIPTION = 'Helsingin seudun liikenteen Reittiopas.';
-const HSLTimetables = require('./timetableConfigUtils').default.HSL;
-const HSLParkAndRideUtils = require('../util/ParkAndRideUtils').default.HSL;
-
 const rootLink = process.env.ROOTLINK || 'https://test.hslfi.hsldev.com';
-
 const BANNER_URL = process.env.CONTENT_DOMAIN
   ? `${process.env.CONTENT_DOMAIN}/api/v1/banners?site=JourneyPlanner`
   : process.env.BANNER_URL ||
