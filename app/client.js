@@ -19,9 +19,9 @@ import { Helmet } from 'react-helmet';
 import { Environment, RecordSource, Store } from 'relay-runtime';
 import { ReactRelayContext } from 'react-relay';
 import { setRelayEnvironment } from '@digitransit-search-util/digitransit-search-util-query-utils';
+import { Settings } from 'luxon';
 import { configShape } from './util/shapes';
 import { historyMiddlewares, render } from './routes';
-import configureMoment from './util/configure-moment';
 import StoreListeningIntlProvider from './util/StoreListeningIntlProvider';
 import appCreator from './app';
 import translations from './translations';
@@ -168,7 +168,11 @@ async function init() {
     .getStore('MessageStore')
     .addConfigMessages(config);
 
-  configureMoment(language, config);
+  // configure luxon timezone and locale
+  Settings.defaultLocale = language;
+  if (config.timeZone) {
+    Settings.defaultZone = config.timeZone;
+  }
 
   const path = window.location.pathname;
 
