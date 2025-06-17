@@ -15,7 +15,6 @@ const useRealtimeLegs = (
   relayEnvironment,
   position,
   vehicles,
-  forceStartAt,
   simulateTransferProblem,
 ) => {
   const { itinerary, params, dispatch } = useItineraryContext();
@@ -23,12 +22,12 @@ const useRealtimeLegs = (
 
   const queryAndMapRealtimeLegs = useQueryRealtimeLegs(relayEnvironment);
 
-  const processLegs = useProcessLegs({
+  const processLegs = useProcessLegs(
     simulateTransferProblem,
     position,
     vehicles,
-    origin,
-  });
+    params.origin,
+  );
 
   const fetchAndSetRealtimeLegs = async () => {
     const now = Date.now();
@@ -73,8 +72,8 @@ const useRealtimeLegs = (
   };
 
   useEffect(() => {
-    if (forceStartAt) {
-      startItinerary(forceStartAt);
+    if (params.forceStartAt) {
+      startItinerary(params.forceStartAt);
     }
     setLoading(false);
 

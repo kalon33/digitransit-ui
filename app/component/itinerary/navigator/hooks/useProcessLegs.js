@@ -13,18 +13,17 @@ const GEOLOCATED_LEGS = false;
  * Custom hook to process and update real-time legs.
  * @param {Object} params - Parameters for processing legs.
  * @param {boolean} params.simulateTransferProblem - Whether to simulate transfer problems.
- * @param {boolean} params.geolocatedLegs - Whether geolocation adjustments are enabled.
  * @param {Object} params.position - Current position of the user.
  * @param {Object} params.vehicles - Vehicle data for geolocation adjustments.
  * @param {Object} params.origin - Origin point for geolocation adjustments.
  * @returns {Function} A function to process and update legs.
  */
-const useProcessLegs = ({
+const useProcessLegs = (
   simulateTransferProblem,
   position,
   vehicles,
   origin,
-}) => {
+) => {
   const simCounter = useRef(0);
 
   const processLegs = (prevLegs, rtLegMap, now) => {
