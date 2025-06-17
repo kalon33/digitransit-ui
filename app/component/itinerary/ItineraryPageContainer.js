@@ -6,14 +6,11 @@ import { getMapLayerOptions } from '../../util/mapLayerUtils';
 import ItineraryPage from './ItineraryPage';
 import { ItineraryContextProvider } from './context/ItineraryContext';
 
-const ItineraryPageWithBreakpoint = withBreakpoint(({ getStore, ...props }) => (
+const ItineraryPageWithBreakpoint = withBreakpoint(props => (
   <ReactRelayContext.Consumer>
     {({ environment }) => {
       return (
-        <ItineraryContextProvider
-          getStore={getStore}
-          relayEnvironment={environment}
-        >
+        <ItineraryContextProvider relayEnvironment={environment}>
           <ItineraryPage {...props} relayEnvironment={environment} />
         </ItineraryContextProvider>
       );
