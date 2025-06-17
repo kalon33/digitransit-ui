@@ -1,5 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep';
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { legTime } from '../../../../util/legUtils';
 import {
   fakeDelay,
@@ -26,51 +26,54 @@ const useProcessLegs = (
 ) => {
   const simCounter = useRef(0);
 
-  const processLegs = (prevLegs, rtLegMap, now) => {
-    const newRtLegs = prevLegs.map(leg => {
-      const l = cloneDeep(leg);
-      const rtLeg =
-        l.legId && rtLegMap?.[l.legId] ? { ...rtLegMap[l.legId] } : null;
-      if (rtLeg) {
-        if (l.freezeStart) {
-          delete rtLeg.start;
+  const processLegs = useCallback(
+    (prevLegs, rtLegMap, now) => {
+      const newRtLegs = prevLegs.map(leg => {
+        const l = cloneDeep(leg);
+        const rtLeg =
+          l.legId && rtLegMap?.[l.legId] ? { ...rtLegMap[l.legId] } : null;
+        if (rtLeg) {
+          if (l.freezeStart) {
+            delete rtLeg.start;
+          }
+          return {
+            ...l,
+            ...rtLeg,
+            to: {
+              ...l.to,
+              vehicleRentalStation: rtLeg.to.vehicleRentalStation,
+            },
+          };
         }
-        return {
-          ...l,
-          ...rtLeg,
-          to: {
-            ...l.to,
-            vehicleRentalStation: rtLeg.to.vehicleRentalStation,
-          },
-        };
+        return l;
+      });
+
+      // Simulate transfer problems if enabled
+      if (simulateTransferProblem) {
+        fakeDelay(newRtLegs, simCounter.current);
+        simCounter.current += 1;
       }
-      return l;
-    });
 
-    // Simulate transfer problems if enabled
-    if (simulateTransferProblem) {
-      fakeDelay(newRtLegs, simCounter.current);
-      simCounter.current += 1;
-    }
+      // Match leg ends to ensure continuity
+      matchLegEnds(newRtLegs, now);
 
-    // Match leg ends to ensure continuity
-    matchLegEnds(newRtLegs, now);
+      // Apply geolocation shifts if enabled
+      if (GEOLOCATED_LEGS) {
+        shiftLegsByGeolocation(newRtLegs, now, vehicles, position, origin);
+        matchLegEnds(newRtLegs, now); // Re-match after geolocation shifts
+      }
 
-    // Apply geolocation shifts if enabled
-    if (GEOLOCATED_LEGS) {
-      shiftLegsByGeolocation(newRtLegs, now, vehicles, position, origin);
-      matchLegEnds(newRtLegs, now); // Re-match after geolocation shifts
-    }
+      // Freeze legs that have started or ended in the past
+      newRtLegs.forEach(l => {
+        /* eslint-disable no-param-reassign */
+        l.freezeStart = l.freezeStart || legTime(l.start) <= now;
+        l.freezeEnd = l.freezeEnd || legTime(l.end) <= now;
+      });
 
-    // Freeze legs that have started or ended in the past
-    newRtLegs.forEach(l => {
-      /* eslint-disable no-param-reassign */
-      l.freezeStart = l.freezeStart || legTime(l.start) <= now;
-      l.freezeEnd = l.freezeEnd || legTime(l.end) <= now;
-    });
-
-    return newRtLegs;
-  };
+      return newRtLegs;
+    },
+    [vehicles],
+  );
 
   return processLegs;
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { legTime } from '../../../../util/legUtils';
 import { useItineraryContext } from '../../context/ItineraryContext';
 import { REDUCER_ACTION_TYPES } from '../../context/useItineraryReducer';
@@ -29,7 +29,7 @@ const useRealtimeLegs = (
     params.origin,
   );
 
-  const fetchAndSetRealtimeLegs = async () => {
+  const fetchAndSetRealtimeLegs = useCallback(async () => {
     const now = Date.now();
     const rtLegMap = await queryAndMapRealtimeLegs(itinerary.legs, now).catch(
       err =>
@@ -44,7 +44,7 @@ const useRealtimeLegs = (
         params: { updatedAt: now },
       },
     });
-  };
+  }, [processLegs]);
 
   const startItinerary = startTimeInMS => {
     if (startTimeInMS < legTime(itinerary.legs[0].start)) {
@@ -79,7 +79,7 @@ const useRealtimeLegs = (
 
     const id = setInterval(() => fetchAndSetRealtimeLegs(), 10000);
     return () => clearInterval(id);
-  }, []);
+  }, [fetchAndSetRealtimeLegs]);
 
   const { firstLeg, lastLeg, currentLeg, nextLeg, previousLeg } =
     getLegsOfInterest(itinerary.legs, params.updatedAt);
