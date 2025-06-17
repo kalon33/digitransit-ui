@@ -104,7 +104,7 @@ function NaviContainer(
     }
   }, [firstLeg]);
 
-  if (loading) {
+  if (loading || !starterReady) {
     return null;
   }
 
