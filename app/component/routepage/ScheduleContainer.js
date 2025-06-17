@@ -5,7 +5,7 @@ import React, { PureComponent } from 'react';
 import { createFragmentContainer, graphql } from 'react-relay';
 import { connectToStores } from 'fluxible-addons-react';
 import { matchShape, routerShape } from 'found';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 import { intlShape } from 'react-intl';
 import sortBy from 'lodash/sortBy';
 import cx from 'classnames';
@@ -28,7 +28,7 @@ import { PREFIX_ROUTES, PREFIX_TIMETABLE } from '../../util/path';
 import ScrollableWrapper from '../ScrollableWrapper';
 import getTestData from './ScheduleDebugData';
 
-const DATE_FORMAT2 = 'D.M.YYYY';
+const DATE_FORMAT_SCHEDULE = 'd.L.yyyy';
 
 const isTripCanceled = trip =>
   trip.stoptimes &&
@@ -110,10 +110,16 @@ const isEmptyWeek = departures => {
   );
 };
 
+/**
+ * Returns the date of first departure
+ * @param {*} departures
+ * @param {DateTime} dateIn
+ * @returns {DateTime}
+ */
 const getFirstDepartureDate = (departures, dateIn) => {
   if (departures.length > 0) {
-    const date = dateIn || moment();
-    const dayNo = moment(date).isoWeekday();
+    const date = dateIn || DateTime.now();
+    const dayNo = date.weekday;
     const idx = departures.findIndex(
       departure => departure[0].indexOf(dayNo) !== -1,
     );
@@ -121,44 +127,40 @@ const getFirstDepartureDate = (departures, dateIn) => {
       // get departure day on current week
       if (departures[idx - 1][1] !== 0 && departures[idx - 1][2] !== '') {
         const newDayNo = Number(departures[idx - 1][0].substring(0, 1));
-        return moment(date)
-          .subtract(dayNo - newDayNo, 'd')
-          .format(DATE_FORMAT);
+        return date.minus({ days: dayNo - newDayNo });
       }
     } else if (
       idx === 0 &&
       departures[idx][1] !== 0 &&
       departures[idx][2] !== ''
     ) {
-      if (
-        !isEqual(
-          moment(date).startOf('isoWeek').format(DATE_FORMAT),
-          moment().startOf('isoWeek').format(DATE_FORMAT),
-        )
-      ) {
-        return moment(date).format(DATE_FORMAT);
+      if (!date.hasSame(DateTime.now(), 'week')) {
+        return date;
       }
-      return moment().format(DATE_FORMAT);
+      return DateTime.now();
     }
   }
   return undefined;
 };
-
+/**
+ *
+ * @param {DateTime} wantedDayIn
+ * @param {*} departures
+ * @param {boolean} isMerged
+ * @param {number} dataExistsDay
+ * @returns
+ */
 const populateData = (wantedDayIn, departures, isMerged, dataExistsDay) => {
   const departureCount = departures.length;
 
-  const wantedDay = wantedDayIn || moment();
-  const startOfWeek = moment().startOf('isoWeek');
-  const today = moment();
+  const wantedDay = wantedDayIn || DateTime.now();
+  const startOfCurrentWeek = DateTime.now().startOf('week');
+  const today = DateTime.now();
 
   const currentAndNextWeekAreSame =
     departureCount >= 2 && isEqual(departures[0], departures[1]);
 
-  const weekStarts = [
-    currentAndNextWeekAreSame
-      ? startOfWeek.format(DATE_FORMAT)
-      : today.format(DATE_FORMAT),
-  ];
+  const weekStarts = [currentAndNextWeekAreSame ? startOfCurrentWeek : today];
 
   let pastDate;
   if (
@@ -168,14 +170,11 @@ const populateData = (wantedDayIn, departures, isMerged, dataExistsDay) => {
     departures[0].length > 0
   ) {
     const minDayNo = Math.min(...departures[0][0][0].split('').map(Number));
-    pastDate = startOfWeek
-      .clone()
-      .add(minDayNo - 1)
-      .format(DATE_FORMAT);
+    pastDate = startOfCurrentWeek.plus({ days: minDayNo - 1 });
     weekStarts[0] = pastDate;
   }
 
-  const weekEnds = [startOfWeek.clone().endOf('isoWeek').format(DATE_FORMAT)];
+  const weekEnds = [startOfCurrentWeek.endOf('week')];
   const days = [[]];
   const indexToRemove = [];
   const emptyWeek = [];
@@ -183,19 +182,16 @@ const populateData = (wantedDayIn, departures, isMerged, dataExistsDay) => {
     // check also first week
     if (isEmptyWeek(departures[x - 1])) {
       emptyWeek.push(
-        startOfWeek
-          .clone()
-          .add(x - 1, 'w')
-          .format(DATE_FORMAT),
+        startOfCurrentWeek.plus({ weeks: x - 1 }).toFormat(DATE_FORMAT),
       );
     }
     if (isEmptyWeek(departures[x])) {
-      emptyWeek.push(startOfWeek.clone().add(x, 'w').format(DATE_FORMAT));
+      emptyWeek.push(
+        startOfCurrentWeek.plus({ weeks: x }).toFormat(DATE_FORMAT),
+      );
     }
-    weekStarts.push(startOfWeek.clone().add(x, 'w').format(DATE_FORMAT));
-    weekEnds.push(
-      startOfWeek.clone().endOf('isoWeek').add(x, 'w').format(DATE_FORMAT),
-    );
+    weekStarts.push(startOfCurrentWeek.plus({ weeks: x }));
+    weekEnds.push(startOfCurrentWeek.endOf('week').plus({ weeks: x }));
     days.push([]);
   }
 
@@ -252,67 +248,54 @@ const populateData = (wantedDayIn, departures, isMerged, dataExistsDay) => {
   });
 
   let range = [
-    wantedDay.format(DATE_FORMAT2),
-    wantedDay.format(DATE_FORMAT),
-    wantedDay.format('E'),
+    wantedDay.toFormat(DATE_FORMAT_SCHEDULE),
+    wantedDay,
+    wantedDay.weekday,
     '',
-    wantedDay.clone().startOf('isoWeek').format(DATE_FORMAT),
+    wantedDay.startOf('week'),
   ];
   const options = weekStarts.map((w, idx) => {
-    const currentDayNo = moment().format('E');
+    const currentDayNo = DateTime.now().weekday;
     const firstServiceDay = days[idx][0];
-    const isSameWeek =
-      startOfWeek.format(DATE_FORMAT) ===
-      moment(w).startOf('isoWeek').format(DATE_FORMAT);
+    const isSameWeek = startOfCurrentWeek.hasSame(w, 'week');
+
     const timeRangeStart =
-      moment(w).format('E') <= firstServiceDay[0] &&
+      w.weekday <= firstServiceDay[0] &&
       departureCount === 1 &&
       (isSameWeek || idx === 0)
-        ? moment(w)
-            .clone()
-            .add(firstServiceDay[0] - 1, 'd')
-        : moment(w);
+        ? w.plus({ days: firstServiceDay[0] - 1 })
+        : w;
     const timeRange =
       days.length === 1 && days[idx][0].length === 1 && wantedDayIn && !isMerged
-        ? wantedDay.format(DATE_FORMAT2)
-        : `${timeRangeStart.format(DATE_FORMAT2)} - ${moment(
-            weekEnds[idx],
-          ).format(DATE_FORMAT2)}`;
-    if (
-      !(wantedDay.isSameOrAfter(w) && wantedDay.isSameOrBefore(weekEnds[idx]))
-    ) {
+        ? wantedDay.toFormat(DATE_FORMAT_SCHEDULE)
+        : `${timeRangeStart.toFormat(DATE_FORMAT_SCHEDULE)} - ${weekEnds[
+            idx
+          ].toFormat(DATE_FORMAT_SCHEDULE)}`;
+    if (!(wantedDay >= w && wantedDay <= weekEnds[idx])) {
       return {
         label: `${timeRange}`,
         value:
           idx === 0 &&
-          days[idx].indexOf(currentDayNo) !== -1 &&
-          Number(currentDayNo) > Number(firstServiceDay)
-            ? moment(w)
-                .clone()
-                .add(currentDayNo - 1, 'd')
-                .format(DATE_FORMAT)
-            : moment(w)
-                .clone()
-                .add(firstServiceDay[0] - 1, 'd')
-                .format(DATE_FORMAT),
+          days[idx].indexOf(currentDayNo.toString()) !== -1 &&
+          currentDayNo > Number(firstServiceDay)
+            ? w.plus({ days: currentDayNo - 1 }).toFormat(DATE_FORMAT)
+            : w.plus({ days: firstServiceDay[0] - 1 }).toFormat(DATE_FORMAT),
       };
     }
-
     range = [
       timeRange,
-      wantedDay.format(DATE_FORMAT),
-      wantedDay.format('E'),
+      wantedDay,
+      wantedDay.weekday,
       days[idx],
-      moment(weekStarts[idx]).format(DATE_FORMAT),
+      weekStarts[idx],
     ];
     return undefined;
   });
 
   if (!pastDate) {
-    pastDate = startOfWeek
-      .clone()
-      .add(dataExistsDay - 1, 'd')
-      .format(DATE_FORMAT);
+    pastDate = startOfCurrentWeek
+      .plus({ days: dataExistsDay - 1 })
+      .toFormat(DATE_FORMAT);
   }
 
   return [
@@ -385,14 +368,11 @@ class ScheduleContainer extends PureComponent {
 
   componentDidMount() {
     const { match } = this.props;
-    const date = moment(match.location.query.serviceDay, DATE_FORMAT, true);
+    const date = match.location.query.serviceDay
+      ? DateTime.fromFormat(match.location.query.serviceDay, DATE_FORMAT)
+      : DateTime.now();
     // Don't allow past dates (before current week) because we might have no data from them
-    if (
-      date &&
-      moment(date.clone().startOf('isoWeek').format(DATE_FORMAT)).isBefore(
-        moment(moment().startOf('isoWeek').format(DATE_FORMAT)),
-      )
-    ) {
+    if (date && date.startOf('week') < DateTime.now().startOf('week')) {
       match.router.replace(decodeURIComponent(match.location.pathname));
     }
   }
@@ -420,9 +400,20 @@ class ScheduleContainer extends PureComponent {
     });
   };
 
+  /**
+   *
+   * @param {*} patternIn
+   * @param {*} from
+   * @param {*} to
+   * @param {DateTime} newServiceDay
+   * @param {DateTime} wantedDay
+   * @returns
+   */
   getTrips = (patternIn, from, to, newServiceDay, wantedDay) => {
     let currentPattern = patternIn;
-    let queryParams = newServiceDay ? `?serviceDay=${newServiceDay}` : '';
+    let queryParams = newServiceDay
+      ? `?serviceDay=${newServiceDay.toFormat(DATE_FORMAT)}`
+      : '';
 
     if (this.testing && this.testNum && currentPattern) {
       currentPattern = {
@@ -430,9 +421,9 @@ class ScheduleContainer extends PureComponent {
         trips: currentPattern.trips?.filter((s, i) => i < 2),
       };
       if (
-        moment(wantedDay, 'YYYYMMDD', true).isValid() &&
-        moment(this.testNoDataDay, 'YYYYMMDD', true).isValid() &&
-        wantedDay.format(DATE_FORMAT) === this.testNoDataDay
+        wantedDay.isValid &&
+        DateTime.fromFormat(this.testNoDataDay, DATE_FORMAT).isValid &&
+        wantedDay.toFormat(DATE_FORMAT) === this.testNoDataDay
       ) {
         currentPattern = {
           ...currentPattern,
@@ -465,14 +456,16 @@ class ScheduleContainer extends PureComponent {
           {this.context.intl.formatMessage(
             {
               id: 'no-trips-found',
-              defaultMessage: `No journeys found for the selected date ${moment(
+              defaultMessage: `No journeys found for the selected date ${DateTime.fromFormat(
                 this.context.match.location.query.serviceDay,
-              ).format(DATE_FORMAT2)}`,
+                DATE_FORMAT,
+              ).toFormat(DATE_FORMAT_SCHEDULE)}`,
             },
             {
-              selectedDate: moment(
+              selectedDate: DateTime.fromFormat(
                 this.context.match.location.query.serviceDay,
-              ).format(DATE_FORMAT2),
+                DATE_FORMAT,
+              ).toFormat(DATE_FORMAT_SCHEDULE),
             },
           )}
         </div>
@@ -502,6 +495,10 @@ class ScheduleContainer extends PureComponent {
     });
   };
 
+  /**
+   *
+   * @param {string} newServiceDay new date in 'YYYYMMDD'
+   */
   changeDate = newServiceDay => {
     const { location } = this.context.match;
     addAnalyticsEvent({
@@ -570,10 +567,8 @@ class ScheduleContainer extends PureComponent {
         .sort();
 
       const count = dayTabs.length;
-      const weekStartDate = moment(data[2][1]).startOf('isoWeek');
-      const isSameWeek =
-        weekStartDate.format(DATE_FORMAT) ===
-        moment().startOf('isoWeek').format(DATE_FORMAT);
+      const weekStartDate = data[2][1].startOf('week');
+      const isSameWeek = weekStartDate.hasSame(DateTime.now(), 'week');
       const firstDay = dayTabs[0][0];
       let { focusedTab } = this.state;
       const tabs = dayTabs.map((tab, id) => {
@@ -591,29 +586,15 @@ class ScheduleContainer extends PureComponent {
           focusedTab = tab;
         }
 
-        let tabDate = moment(data[2][4]);
-        if (
-          data[4] &&
-          data[5] &&
-          !isEqual(
-            tabDate.clone().format(DATE_FORMAT),
-            moment(data[5]).format(DATE_FORMAT),
-          )
-        ) {
-          if (
-            moment(data[5]).isAfter(
-              tabDate
-                .clone()
-                .add(Number(tab[0]) - 1, 'd')
-                .format(DATE_FORMAT),
-            )
-          ) {
-            tabDate = tabDate.clone().add(Number(tab[0]) + 6, 'd');
+        let tabDate = data[2][4];
+        if (data[4] && data[5] && tabDate.toFormat(DATE_FORMAT) !== data[5]) {
+          if (data[5] > tabDate.plus({ days: Number(tab[0]) - 1 })) {
+            tabDate = tabDate.plus({ days: Number(tab[0]) + 6 });
           } else {
-            tabDate = tabDate.clone().add(Number(tab[0]) - 1, 'd');
+            tabDate = tabDate.plus({ days: Number(tab[0]) - 1 });
           }
         } else {
-          tabDate = tabDate.clone().add(Number(tab[0]) - 1, 'd');
+          tabDate = tabDate.plus({ days: Number(tab[0]) - 1 });
         }
 
         return (
@@ -625,7 +606,7 @@ class ScheduleContainer extends PureComponent {
               'is-active': selected,
             })}
             onClick={() => {
-              this.changeDate(tabDate.format(DATE_FORMAT));
+              this.changeDate(tabDate.toFormat(DATE_FORMAT));
             }}
             ref={this.tabRefs[tab]}
             tabIndex={selected ? 0 : -1}
@@ -685,7 +666,7 @@ class ScheduleContainer extends PureComponent {
       ...location,
       query: {
         ...location.query,
-        serviceDay,
+        serviceDay: serviceDay.toFormat(DATE_FORMAT),
       },
     };
     this.props.match.router.replace(newPath);
@@ -809,44 +790,32 @@ class ScheduleContainer extends PureComponent {
     }
 
     const wantedDay =
-      query &&
-      query.serviceDay &&
-      moment(query.serviceDay, 'YYYYMMDD', true).isValid()
-        ? moment(query.serviceDay)
+      query && query.serviceDay
+        ? DateTime.fromFormat(query.serviceDay, DATE_FORMAT)
         : undefined;
 
-    const firstDataDate = moment()
-      .startOf('isoWeek')
-      .add(this.dataExistsDay - 1, 'd')
-      .format(DATE_FORMAT);
+    const firstDataDate = DateTime.now()
+      .startOf('week')
+      .plus({ days: this.dataExistsDay - 1 });
 
     // check if first week is empty and redirect if is
-    const nextMonday = moment()
-      .startOf('isoWeek')
-      .add(1, 'w')
-      .format(DATE_FORMAT);
+    const nextMonday = DateTime.now().startOf('week').plus({ weeks: 1 });
 
     const firstDepartureDate = getFirstDepartureDate(
       firstDepartures[0],
       wantedDay,
     );
-    const isBeforeNextWeek = wantedDay
-      ? moment(wantedDay).isBefore(moment(nextMonday))
-      : false;
-    const isSameOrAfterNextWeek = wantedDay
-      ? moment(wantedDay).isSameOrAfter(moment(nextMonday))
-      : false;
+    const isBeforeNextWeek = wantedDay ? wantedDay < nextMonday : false;
+    const isSameOrAfterNextWeek = wantedDay ? wantedDay >= nextMonday : false;
 
     // Checking is wanted day is before first available day when data is found
-    const isBeforeFirstDataDate = wantedDay
-      ? moment(wantedDay).isBefore(moment(firstDataDate))
-      : false;
+    const isBeforeFirstDataDate = wantedDay ? wantedDay < firstDataDate : false;
 
     if ((!this.testNum || this.testNum !== 0) && isBeforeFirstDataDate) {
       this.redirectWithServiceDay(firstDataDate);
     } else if ((isBeforeNextWeek && firstWeekEmpty) || firstDepartureDate) {
       if (
-        !isEqual(moment().format(DATE_FORMAT), firstDepartureDate) &&
+        !DateTime.now().hasSame(firstDepartureDate, 'day') &&
         !isSameOrAfterNextWeek
       ) {
         this.redirectWithServiceDay(firstDepartureDate || nextMonday);
@@ -859,26 +828,24 @@ class ScheduleContainer extends PureComponent {
       this.hasMergedData,
       this.dataExistsDay,
     );
-
     let newServiceDay;
 
     if (!wantedDay && data && data.length >= 3 && data[2].length >= 4) {
       if (data[2][3] !== '') {
         if (data[2][2] !== data[2][3][0].charAt(0)) {
-          newServiceDay = moment()
-            .startOf('isoWeek')
-            .add(Number(data[2][3][0].charAt(0)) - 1, 'd')
-            .format(DATE_FORMAT);
+          newServiceDay = DateTime.now()
+            .startOf('week')
+            .plus({ days: Number(data[2][3][0].charAt(0)) - 1 });
         }
       } else if (
         data[3] &&
         data[3][0] &&
         data[2][1] &&
-        moment(data[2][1]).isBefore(data[0][0])
+        data[2][1] < data[0][0]
       ) {
-        newServiceDay = data[3][0].value;
+        newServiceDay = DateTime.fromFormat(data[3][0].value, DATE_FORMAT);
       }
-      if (moment(newServiceDay).isAfter(moment(firstDataDate))) {
+      if (newServiceDay > firstDataDate) {
         newServiceDay = firstDataDate;
       }
     }
@@ -889,8 +856,7 @@ class ScheduleContainer extends PureComponent {
         this.context.config.timetables[routeIdSplitted[0]]
       : undefined;
 
-    const timetableDay =
-      (wantedDay && wantedDay.format(DATE_FORMAT)) || newServiceDay;
+    const timetableDay = wantedDay || newServiceDay;
     const routeTimetableUrl =
       routeTimetableHandler &&
       timetableDay &&
@@ -898,7 +864,7 @@ class ScheduleContainer extends PureComponent {
       routeTimetableHandler.routeTimetableUrlResolver(
         this.context.config.URL.ROUTE_TIMETABLES[routeIdSplitted[0]],
         this.props.route,
-        timetableDay,
+        timetableDay.toFormat(DATE_FORMAT),
         this.props.lang,
       );
 
@@ -909,7 +875,6 @@ class ScheduleContainer extends PureComponent {
       newServiceDay,
       wantedDay,
     );
-
     const tabs = this.renderDayTabs(data);
 
     if (showTrips && typeof showTrips === 'string') {

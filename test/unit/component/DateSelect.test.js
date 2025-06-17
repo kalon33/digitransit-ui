@@ -12,7 +12,7 @@ describe('<DateSelect />', () => {
   const defaultProps = {
     startDate: '20190101',
     selectedDate: '20190102',
-    dateFormat: 'YYYYMMDD',
+    dateFormat: 'yyyyLLdd',
     onDateChange: event => event.target.value,
   };
 

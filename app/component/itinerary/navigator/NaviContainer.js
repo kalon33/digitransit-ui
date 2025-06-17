@@ -1,7 +1,7 @@
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import { routerShape } from 'found';
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   startLocationWatch,
   stopLocationWatch,
@@ -37,6 +37,7 @@ function NaviContainer(
   const hasPosition = useRef(false);
   const prevPos = useRef(undefined);
   const posFrozen = useRef(0);
+  const [starterReady, setStarterReady] = useState(false);
 
   let position = getStore('PositionStore').getLocationState();
   if (!position.hasLocation) {
@@ -90,16 +91,15 @@ function NaviContainer(
   }, [params.updatedAt]);
 
   useEffect(() => {
-    if (
-      firstLeg &&
-      !firstLeg.freezeStart &&
-      params.updatedAt > legTime(firstLeg.start) - START_BUFFER
-    ) {
-      startItinerary(Date.now());
+    if (firstLeg && !starterReady) {
+      if (params.updatedAt > legTime(firstLeg.start) - START_BUFFER) {
+        startItinerary(Date.now() - 1);
+      }
+      setStarterReady(true);
     }
   }, [firstLeg]);
 
-  if (loading || !itinerary.legs?.length) {
+  if (loading || !starterReady) {
     return null;
   }
 
@@ -131,7 +131,7 @@ function NaviContainer(
     mapLayerRef.current.getBoundingClientRect().top + TOPBAR_PADDING;
 
   const isPastStart =
-    params.updatedAt > legTime(firstLeg.start) || !!firstLeg.forceStart;
+    params.updatedAt >= legTime(firstLeg.start) || !!firstLeg.forceStart;
 
   const handleNavigatorEndClick = () => {
     addAnalyticsEvent({

@@ -7,14 +7,14 @@ import KotkaConfig from './config.kotka';
 import KouvolaConfig from './config.kouvola';
 import KuopioConfig from './config.kuopio';
 import LahtiConfig from './config.lahti';
+import prUtils from '../util/ParkAndRideUtils';
 
+const HSLParkAndRideUtils = prUtils.HSL;
 const CONFIG = 'matka';
 const APP_DESCRIPTION =
   'Fintraffic Matka on reittiopaspalvelu, joka auttaa suunnittelemaan matkoja koko Suomessa yhdistämällä eri liikennemuodot helposti ovelta ovelle.';
 const APP_TITLE = 'Fintraffic Matka – Joukkoliikenteen reittiopas ja matkahaku';
 const YEAR = 1900 + new Date().getYear();
-
-const HSLParkAndRideUtils = require('../util/ParkAndRideUtils').default.HSL;
 
 const IS_DEV =
   process.env.RUN_ENV === 'development' ||

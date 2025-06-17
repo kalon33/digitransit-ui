@@ -1,11 +1,10 @@
-/* eslint-disable prefer-template */
 import configMerger from '../util/configMerger';
 import { BIKEAVL_BIKES } from '../util/vehicleRentalUtils';
+import walttiConfig from './config.waltti';
 
 const CONFIG = 'lahti';
 const APP_TITLE = 'LSL reittiopas';
 const APP_DESCRIPTION = 'Lahden seudun liikenteen reittiopas';
-const walttiConfig = require('./config.waltti').default;
 
 const minLat = 60.692506;
 const maxLat = 61.790694;
