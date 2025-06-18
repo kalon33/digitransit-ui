@@ -637,7 +637,7 @@ export function quitIteration(plan, newPlan, planParams, startTime) {
  * - the stored itinerary ends in future
  * - the params stored along itinerary are identical to current URL parameters
  *
- * @param {{itinerary: itineraryShape, params: {from: string, to: string, time: number, arriveBy: boolean, index: string}}} itinerary matchContext with URL params
+ * @param {{itinerary: itineraryShape, params: {from: string, to: string, queryTime: number, arriveBy: boolean, index: string}}} itinerary matchContext with URL params
  * @param {matchShape} match matchContext with URL params
  * @returns true if Navigator can be initialized with stored itinerary
  */
@@ -650,7 +650,7 @@ export const isStoredItineraryRelevant = ({ itinerary, params }, match) => {
     Date.parse(itinerary.end) > Date.now() &&
     params.from === match.params.from &&
     params.to === match.params.to &&
-    params.time === match.location?.query?.time &&
+    params.queryTime === match.location?.query?.time &&
     params.arriveBy === match.location?.query?.arriveBy &&
     params.hash === match.params.hash &&
     params.secondHash === match.params.secondHash
