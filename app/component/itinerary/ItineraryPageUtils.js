@@ -83,33 +83,19 @@ export function getTopics(legs, config) {
     legs.forEach(leg => {
       if (leg.transitLeg && leg.trip) {
         const feedId = leg.trip.gtfsId.split(':')[0];
-        let topic;
         if (realTime && feedIds.includes(feedId)) {
-          const routeProps = {
+          itineraryTopics.push({
             route: leg.route.gtfsId.split(':')[1],
             shortName: leg.route.shortName,
             type: leg.route.type,
-          };
-          if (realTime[feedId]?.useFuzzyTripMatching) {
-            topic = {
-              ...routeProps,
-              feedId,
-              mode: leg.mode.toLowerCase(),
-              direction: Number(leg.trip.directionId),
-              tripStartTime: getStartTimeWithColon(
-                leg.trip.stoptimesForDate[0].scheduledDeparture,
-              ),
-            };
-          } else if (realTime[feedId]) {
-            topic = {
-              ...routeProps,
-              feedId,
-              tripId: leg.trip.gtfsId.split(':')[1],
-            };
-          }
-        }
-        if (topic) {
-          itineraryTopics.push(topic);
+            feedId,
+            mode: leg.mode.toLowerCase(),
+            direction: Number(leg.trip.directionId),
+            tripStartTime: getStartTimeWithColon(
+              leg.trip.stoptimesForDate[0].scheduledDeparture,
+            ),
+            tripId: leg.trip.gtfsId.split(':')[1],
+          });
         }
       }
     });
