@@ -76,8 +76,9 @@ function VehicleMarkerContainer(props, { config }) {
   props.setVisibleVehicles(visibleVehicleIds);
 
   return visibleVehicles.map(([id, message]) => {
+    const r = message.route.split(':')[1];
     const type = props.topics?.find(
-      t => t.shortName === message.shortName,
+      t => t.shortName === message.shortName || t.route === r,
     )?.type;
     let mode;
     if (type === ExtendedRouteTypes.BusExpress) {
@@ -95,7 +96,7 @@ function VehicleMarkerContainer(props, { config }) {
     const feed = message.route?.split(':')[0];
     let vehicleNumber = message.shortName
       ? config.realTime[feed].vehicleNumberParser(message.shortName)
-      : message.route.split(':')[1];
+      : r;
     // Fallback to a question mark if the vehicle number is too long to fit in the icon
     vehicleNumber = vehicleNumber.length > 5 ? '?' : vehicleNumber;
     return (
