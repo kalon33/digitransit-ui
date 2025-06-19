@@ -39,7 +39,15 @@ function getVehicleIcon(mode, heading, vehicleNumber, color, useLargeIcon) {
 // if tripStartTime has been specified,
 // use only the updates for vehicles with matching startTime
 
-function shouldShowVehicle(message, direction, tripStart, pattern, headsign) {
+function shouldShowVehicle(
+  message,
+  direction,
+  tripStart,
+  pattern,
+  headsign,
+  trip,
+) {
+  const msgTrip = message.tripId?.split(':')[1];
   return (
     !Number.isNaN(parseFloat(message.lat)) &&
     !Number.isNaN(parseFloat(message.long)) &&
@@ -54,21 +62,27 @@ function shouldShowVehicle(message, direction, tripStart, pattern, headsign) {
       message.direction === direction) &&
     (tripStart === undefined ||
       message.tripStartTime === undefined ||
-      message.tripStartTime === tripStart)
+      message.tripStartTime === tripStart) &&
+    (trip === undefined || msgTrip === undefined || msgTrip === trip)
   );
 }
 
 function VehicleMarkerContainer(props, { config }) {
+  // TODO: move vehicle filtering logic to RealtimeInformationStore
   const visibleVehicles = Object.entries(props.vehicles).filter(
     ([, message]) => {
-      const feed = message.route?.split(':')[0];
+      const routeParts = message.route?.split(':');
+      const feed = routeParts?.[0];
+      const id = routeParts?.[1]; // route id without feed
       const { ignoreHeadsign } = config.realTime[feed];
+      const desc = id ? props.topics?.find(t => t.route === id) : undefined;
       return shouldShowVehicle(
         message,
-        props.direction,
-        props.tripStart,
+        props.direction || desc?.direction,
+        props.tripStart || desc?.tripStart,
         props.pattern,
         ignoreHeadsign ? undefined : props.headsign,
+        desc?.tripId,
       );
     },
   );
