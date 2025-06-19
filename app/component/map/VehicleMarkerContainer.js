@@ -17,13 +17,7 @@ const MODES_WITH_ICONS = [
   'replacement-bus',
 ];
 
-function getVehicleIcon(
-  mode,
-  heading,
-  vehicleNumber,
-  color,
-  useLargeIcon = true,
-) {
+function getVehicleIcon(mode, heading, vehicleNumber, color, useLargeIcon) {
   const modeOrDefault = MODES_WITH_ICONS.indexOf(mode) !== -1 ? mode : 'bus';
 
   return {
@@ -139,11 +133,13 @@ VehicleMarkerContainer.propTypes = {
       long: PropTypes.number.isRequired,
     }).isRequired,
   ).isRequired,
+  useLargeIcon: PropTypes.bool,
 };
 
 VehicleMarkerContainer.defaultProps = {
   tripStart: undefined,
   direction: undefined,
+  useLargeIcon: true,
 };
 
 VehicleMarkerContainer.contextTypes = {
