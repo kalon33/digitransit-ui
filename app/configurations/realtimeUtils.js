@@ -220,7 +220,6 @@ export default {
     mqtt: 'wss://mqtt.hsl.fi',
     mqttTopicResolver: hslTopicResolver,
     gtfsrt: false,
-    useFuzzyTripMatching: true,
   },
   tampere: walttiMqtt,
   LINKKI: walttiMqtt,
