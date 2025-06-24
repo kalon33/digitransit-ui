@@ -11117,8 +11117,6 @@ __metadata:
     mocha: 11.2.2
     mock-local-storage: 1.1.24
     mockdate: 3.0.5
-    moment: 2.30.1
-    moment-timezone: 0.5.48
     morgan: 1.10.0
     mqtt: 4.3.8
     node-fetch: 2.6.7
@@ -19469,22 +19467,6 @@ __metadata:
   bin:
     module-deps: bin/cmd.js
   checksum: fead1d0bb6bda4618abe6e8befb848a145868322fc67ddba6d25a725e1e944602d1d5558ada9ed0e4a6942237a4d0a4c230747ffe740f7856a9663e92aca25db
-  languageName: node
-  linkType: hard
-
-"moment-timezone@npm:0.5.48":
-  version: 0.5.48
-  resolution: "moment-timezone@npm:0.5.48"
-  dependencies:
-    moment: ^2.29.4
-  checksum: 8a350b30205cc06aa9c029643316f4c0d538e76a3f7a92d74a3214d602377db2a1f8b7719debd4eb3e1fa1bac3de1912c1b94182af4e12810513670b578c84ab
-  languageName: node
-  linkType: hard
-
-"moment@npm:2.30.1, moment@npm:^2.29.4":
-  version: 2.30.1
-  resolution: "moment@npm:2.30.1"
-  checksum: 859236bab1e88c3e5802afcf797fc801acdbd0ee509d34ea3df6eea21eb6bcc2abd4ae4e4e64aa7c986aa6cba563c6e62806218e6412a765010712e5fa121ba6
   languageName: node
   linkType: hard
 
