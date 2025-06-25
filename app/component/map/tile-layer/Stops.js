@@ -21,6 +21,7 @@ const stopAlertsQuery = graphql`
   query StopsQuery($stopId: String!, $date: String!) {
     stop: stop(id: $stopId) {
       gtfsId
+      hasFutureServices
       alerts: alerts(types: [STOP]) {
         alertEffect
       }
@@ -110,7 +111,10 @@ class Stops {
       if (hasLocalTramRoute) {
         mode = 'speedtram';
       }
-      const stopOutOfService = !!feature.properties.closedByServiceAlert;
+      const stopOutOfService =
+        !!feature.properties.closedByServiceAlert ||
+        (!feature.properties.servicesRunningInFuture &&
+          !feature.properties.servicesRunningOnServiceDate); // if there are services added for the current day via realtime, this will be false
       const noServiceOnServiceDay =
         !feature.properties.servicesRunningOnServiceDate;
 
@@ -342,9 +346,9 @@ class Stops {
     const date = moment().format(DATE_FORMAT);
     const callback = ({ stop: result }) => {
       if (result) {
-        const stopOutOfService = result.alerts.some(
-          alert => alert.alertEffect === 'NO_SERVICE',
-        );
+        const stopOutOfService =
+          !result.hasFutureServices ||
+          result.alerts.some(alert => alert.alertEffect === 'NO_SERVICE');
         const noServiceOnServiceDay = !result.stoptimes.some(
           stoptimes => stoptimes.stoptimes.length > 0,
         );
