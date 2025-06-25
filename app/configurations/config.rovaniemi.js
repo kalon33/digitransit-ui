@@ -1,11 +1,9 @@
-/* eslint-disable prefer-template */
 import configMerger from '../util/configMerger';
+import walttiConfig from './config.waltti';
 
 const CONFIG = 'rovaniemi';
 const APP_TITLE = 'Rovaniemen reittiopas';
 const APP_DESCRIPTION = 'Rovaniemen uusi reittiopas';
-
-const walttiConfig = require('./config.waltti').default;
 
 const minLat = 66.147037;
 const maxLat = 67.180128;

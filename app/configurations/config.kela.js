@@ -1,6 +1,4 @@
-/* eslint-disable prefer-template */
-
-const matkaConfig = require('./config.matka').default;
+import matkaConfig from './config.matka';
 
 const CONFIG = 'kela';
 const APP_TITLE = 'Reittiopas';

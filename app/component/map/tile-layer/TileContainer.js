@@ -3,7 +3,6 @@ import omit from 'lodash/omit';
 import L from 'leaflet';
 
 import { isEqual } from 'lodash';
-import { isBrowser } from '../../../util/browser';
 import { isLayerEnabled } from '../../../util/mapLayerUtils';
 import { getStopIconStyles } from '../../../util/mapIconUtils';
 
@@ -36,7 +35,7 @@ class TileContainer {
     this.mergeStops = mergeStops;
     this.props = props;
     this.extent = 4096;
-    this.scaleratio = (isBrowser && window.devicePixelRatio) || 1;
+    this.scaleratio = window.devicePixelRatio || 1;
     this.tileSize = (this.props.tileSize || 256) * this.scaleratio;
     this.ratio = this.extent / this.tileSize;
     this.el = this.createElement();

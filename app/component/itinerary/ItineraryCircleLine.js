@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
 import Icon from '../Icon';
-import { isBrowser } from '../../util/browser';
 
 class ItineraryCircleLine extends React.Component {
   static defaultProps = {
@@ -60,18 +59,8 @@ class ItineraryCircleLine extends React.Component {
         </svg>
       </div>
     );
+    const showCircle = this.props.appendClass !== 'taxi';
     if (this.isFirstChild() && top) {
-      const startIcon = (
-        <div className="itinerary-icon-container start">
-          <Icon
-            img="icon-icon_mapMarker"
-            className="itinerary-icon from from-it"
-          />
-        </div>
-      );
-      if (this.props.appendClass === 'taxi') {
-        return startIcon;
-      }
       return (
         <>
           <div className="itinerary-icon-container start">
@@ -80,7 +69,7 @@ class ItineraryCircleLine extends React.Component {
               className="itinerary-icon from from-it"
             />
           </div>
-          {circleMarker}
+          {showCircle && circleMarker}
         </>
       );
     }
@@ -101,7 +90,7 @@ class ItineraryCircleLine extends React.Component {
         </div>
       );
     }
-    if (this.props.appendClass === 'taxi') {
+    if (!showCircle) {
       return null;
     }
     return (
@@ -127,11 +116,9 @@ class ItineraryCircleLine extends React.Component {
     const bottomMarker = this.getMarker(false);
     const legBeforeLineStyle = { color: this.props.color };
     if (
-      isBrowser &&
-      (this.props.modeClassName === 'car-park-walk' ||
-        this.props.modeClassName === 'walk')
+      this.props.modeClassName === 'car-park-walk' ||
+      this.props.modeClassName === 'walk'
     ) {
-      // eslint-disable-next-line global-require
       legBeforeLineStyle.backgroundImage = this.state.imageUrl;
     }
 

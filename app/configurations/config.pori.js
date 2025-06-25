@@ -1,11 +1,9 @@
-/* eslint-disable prefer-template */
 import configMerger from '../util/configMerger';
+import walttiConfig from './config.waltti';
 
 const CONFIG = 'pori';
 const APP_DESCRIPTION = 'Porin joukkoliikenne';
 const APP_TITLE = 'Reittiopas';
-
-const walttiConfig = require('./config.waltti').default;
 
 export default configMerger(walttiConfig, {
   CONFIG,
@@ -137,7 +135,9 @@ export default configMerger(walttiConfig, {
 
   showTicketInformation: true,
   useTicketIcons: true,
-  ticketLink: 'https://pjl.pori.fi/etusivu/liput-ja-hinnat/',
+  ticketLink: {
+    fi: 'https://pjl.pori.fi/etusivu/liput-ja-hinnat/',
+  },
   showTicketPrice: true,
   ticketLinkOperatorCode: 50231,
   externalFareRouteIds: [

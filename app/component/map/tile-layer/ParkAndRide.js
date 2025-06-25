@@ -3,7 +3,6 @@ import pick from 'lodash/pick';
 import Protobuf from 'pbf';
 
 import { drawParkAndRideIcon } from '../../../util/mapIconUtils';
-import { isBrowser } from '../../../util/browser';
 import { fetchWithLanguageAndSubscription } from '../../../util/fetchUtils';
 import { ParkTypes } from '../../../constants';
 import { getLayerBaseUrl } from '../../../util/mapLayerUtils';
@@ -15,7 +14,7 @@ export default class ParkAndRide {
     this.tile = tile;
     this.config = config;
     this.relayEnvironment = relayEnvironment;
-    const scaleratio = (isBrowser && window.devicePixelRatio) || 1;
+    const scaleratio = window.devicePixelRatio || 1;
     this.width = 24 * scaleratio;
     this.height = 24 * scaleratio;
   }

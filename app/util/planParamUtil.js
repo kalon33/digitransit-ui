@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { DateTime } from 'luxon';
 import isEqual from 'lodash/isEqual';
 import {
   getTransitModes,
@@ -165,7 +165,7 @@ export function planQueryNeeded(
     },
   },
   planType,
-  relaxSettings,
+  relaxSettings = false,
 ) {
   if (!from || !to || from === '-' || to === '-') {
     return false;
@@ -222,9 +222,7 @@ export function planQueryNeeded(
         transitModes.length > 0 &&
         !wheelchair &&
         config.showBikeAndParkItineraries &&
-        (config.includePublicWithBikePlan
-          ? settings.includeBikeSuggestions
-          : settings.showBikeAndParkItineraries)
+        settings.showBikeAndParkItineraries
       );
 
     case PLANTYPE.BIKETRANSIT:
@@ -260,9 +258,14 @@ export function planQueryNeeded(
         distance > config.suggestCarMinDistance &&
         settings.includeParkAndRideSuggestions
       );
-
+    /* special logic: relaxed flex query is made only if taxis are not allowed */
     case PLANTYPE.FLEXTRANSIT:
-      return transitModes.length > 0 && config.allowFlexJourneys;
+      return (
+        config.experimental?.allowFlexJourneys &&
+        (transitModes.length > 0 ||
+          config.experimental?.allowDirectFlexJourneys) &&
+        settings.includeTaxiSuggestions !== relaxSettings
+      );
 
     case PLANTYPE.TRANSIT:
     default:
@@ -299,7 +302,7 @@ export function getPlanParams(
     },
   },
   planType,
-  relaxSettings,
+  relaxSettings = false,
 ) {
   const fromPlace = getLocation(from);
   const toPlace = getLocation(to);
@@ -346,6 +349,11 @@ export function getPlanParams(
       }
     });
   }
+
+  // non-direct for testing purposes on planners that only allow direct
+  const directFlexOnly =
+    config.experimental?.allowDirectFlexJourneys &&
+    !window.localStorage.getItem('favouriteStore')?.includes('Flextestaus2025');
   const directOnly = directModes.includes(planType) || otpModes.length === 0;
   let transitOnly = !!relaxSettings;
   const wheelchair = !!settings.accessibilityOption;
@@ -405,9 +413,9 @@ export function getPlanParams(
       direct = access;
       break;
     case PLANTYPE.FLEXTRANSIT:
-      access = ['WALK', 'FLEX'];
+      access = directFlexOnly ? null : ['WALK', 'FLEX'];
       egress = access;
-      direct = access;
+      direct = directFlexOnly ? ['WALK', 'FLEX'] : null;
       transitOnly = false;
       break;
     default: // direct modes
@@ -449,8 +457,9 @@ export function getPlanParams(
   const transferPenalty = relaxSettings
     ? defaultSettings.transferPenalty
     : settings.transferPenalty;
-
-  const timeStr = (time ? moment(time * 1000) : moment()).format();
+  const timeStr = (time ? DateTime.fromSeconds(+time) : DateTime.now()).toISO({
+    suppressMilliseconds: true,
+  });
   const datetime = useLatestArrival
     ? { latestArrival: timeStr }
     : { earliestDeparture: timeStr };

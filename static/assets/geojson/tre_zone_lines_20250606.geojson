@@ -88,22 +88,12 @@
     {
       "type": "Feature",
       "styles": [
-        {
-          "color": "#666",
-          "weight": 2,
-          "opacity": 1
-        },
-        {
-          "color": "#333",
-          "weight": 12,
-          "opacity": 0.2
-        }
+        { "color": "#666", "weight": 2, "opacity": 1 },
+        { "color": "#333", "weight": 12,"opacity": 0.2 }
       ],
-      "properties": {
-        "ZONE": "A"
-      },
       "geometry": {
-        "coordinates": [
+        "type": "MultiLineString",
+        "coordinates": [[
           [
             23.707893765887604,
             61.4885862119649
@@ -233,28 +223,7 @@
             61.4885862119649
           ]
         ],
-        "type": "LineString"
-      }
-    },
-    {
-      "type": "Feature",
-      "styles": [
-        {
-          "color": "#666",
-          "weight": 2,
-          "opacity": 1
-        },
-        {
-          "color": "#333",
-          "weight": 12,
-          "opacity": 0.2
-        }
-      ],
-      "properties": {
-        "ZONE": "B"
-      },
-      "geometry": {
-        "coordinates": [
+        [
           [
             23.593351591780902,
             61.55718101152726
@@ -336,28 +305,7 @@
             61.55718101152726
           ]
         ],
-        "type": "LineString"
-      }
-    },
-    {
-      "type": "Feature",
-      "styles": [
-        {
-          "color": "#666",
-          "weight": 2,
-          "opacity": 1
-        },
-        {
-          "color": "#333",
-          "weight": 12,
-          "opacity": 0.2
-        }
-      ],
-      "properties": {
-        "ZONE": "C"
-      },
-      "geometry": {
-        "coordinates": [
+        [
           [
             23.336854942616043,
             61.63721206998062
@@ -2014,8 +1962,7 @@
             23.336854942616043,
             61.63721206998062
           ]
-        ],
-        "type": "LineString"
+        ]]
       }
     }
   ]

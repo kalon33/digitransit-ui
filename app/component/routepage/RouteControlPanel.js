@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import moment from 'moment';
+import { DateTime } from 'luxon';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
@@ -12,7 +12,7 @@ import { configShape } from '../../util/shapes';
 import CallAgencyWarning from './CallAgencyWarning';
 import RoutePatternSelect from './RoutePatternSelect';
 import RouteNotification from './RouteNotification';
-import { DATE_FORMAT } from '../../constants';
+import { DATE_FORMAT, ExtendedRouteTypes } from '../../constants';
 import {
   startRealTimeClient,
   stopRealTimeClient,
@@ -165,11 +165,10 @@ class RouteControlPanel extends React.Component {
         false,
         this.context.config.itinerary.serviceTimeRange,
       );
-      const isSameWeek =
-        moment(enrichedPattern[0].minAndMaxDate[0])
-          .startOf('isoWeek')
-          .format(DATE_FORMAT) ===
-        moment().startOf('isoWeek').format(DATE_FORMAT);
+      const isSameWeek = DateTime.fromFormat(
+        enrichedPattern[0].minAndMaxDate[0],
+        DATE_FORMAT,
+      ).hasSame(DateTime.now(), 'week');
       if (
         location.search.indexOf('serviceDay') === -1 ||
         (location.query.serviceDay &&
@@ -373,9 +372,9 @@ class RouteControlPanel extends React.Component {
               key={notification.id}
               header={notification.header[language]}
               content={notification.content[language]}
-              link={notification.link[language]}
+              link={notification.link?.[language]}
               id={notification.id}
-              closeButtonLabel={notification.closeButtonLabel[language]}
+              closeButtonLabel={notification.closeButtonLabel?.[language]}
             />,
           );
         }
@@ -438,7 +437,9 @@ class RouteControlPanel extends React.Component {
             <FormattedMessage id="route-guide" defaultMessage="Route guide" />
           </h1>
         </div>
-        {route.type === 715 && <CallAgencyWarning route={route} />}
+        {route.type === ExtendedRouteTypes.CallAgency && (
+          <CallAgencyWarning route={route} />
+        )}
         <div
           className={cx('route-control-panel', {
             'bp-large': breakpoint === 'large',

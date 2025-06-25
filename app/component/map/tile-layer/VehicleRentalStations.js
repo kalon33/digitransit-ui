@@ -3,7 +3,6 @@ import Protobuf from 'pbf';
 import { graphql, fetchQuery } from 'react-relay';
 import pick from 'lodash/pick';
 
-import { isBrowser } from '../../../util/browser';
 import {
   getMapIconScale,
   drawCitybikeIcon,
@@ -38,7 +37,7 @@ class VehicleRentalStations {
     this.tile = tile;
     this.config = config;
     this.relayEnvironment = relayEnvironment;
-    this.scaleratio = (isBrowser && window.devicePixelRatio) || 1;
+    this.scaleratio = window.devicePixelRatio || 1;
     this.citybikeImageSize =
       20 * this.scaleratio * getMapIconScale(this.tile.coords.z);
     this.availabilityImageSize =

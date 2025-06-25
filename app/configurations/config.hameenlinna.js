@@ -1,11 +1,10 @@
 /* eslint-disable prefer-template */
 import configMerger from '../util/configMerger';
+import walttiConfig from './config.waltti';
 
 const CONFIG = 'hameenlinna';
 const APP_TITLE = 'reittiopas.hameenlinna.fi';
 const APP_DESCRIPTION = '';
-
-const walttiConfig = require('./config.waltti').default;
 
 export default configMerger(walttiConfig, {
   CONFIG,

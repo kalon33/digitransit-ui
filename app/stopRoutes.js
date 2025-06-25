@@ -2,7 +2,7 @@ import React from 'react';
 import Route from 'found/Route';
 import { graphql } from 'react-relay';
 
-import moment from 'moment';
+import { DateTime } from 'luxon';
 import Error404 from './component/404';
 import Loading from './component/LoadingPage';
 import {
@@ -232,7 +232,7 @@ export default function getStopRoutes(isTerminal = false) {
                   const date = location?.query?.date;
                   return {
                     ...params,
-                    date: date || moment().format(DATE_FORMAT),
+                    date: date || DateTime.now().toFormat(DATE_FORMAT),
                   };
                 }}
                 render={getComponentOrLoadingRenderer}

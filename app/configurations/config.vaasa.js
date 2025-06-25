@@ -1,11 +1,10 @@
 /* eslint-disable */
 import configMerger from '../util/configMerger';
+import walttiConfig from './config.waltti';
 
 const CONFIG = 'vaasa';
 const APP_TITLE = 'Vaasan reittiopas';
 const APP_DESCRIPTION = '';
-
-const walttiConfig = require('./config.waltti').default;
 
 const minLat = 63.005;
 const maxLat = 63.152;

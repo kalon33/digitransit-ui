@@ -1,11 +1,10 @@
-/* eslint-disable prefer-template */
 import configMerger from '../util/configMerger';
 import { BIKEAVL_WITHMAX } from '../util/vehicleRentalUtils';
+import walttiConfig from './config.waltti';
 
 const CONFIG = 'lappeenranta';
 const APP_TITLE = 'reittiopas.lappeenranta.fi';
 const APP_DESCRIPTION = '';
-const walttiConfig = require('./config.waltti').default;
 
 export default configMerger(walttiConfig, {
   CONFIG,
@@ -13,9 +12,9 @@ export default configMerger(walttiConfig, {
   appBarLink: { name: 'Lappeenranta', href: 'http://www.lappeenranta.fi/' },
 
   colors: {
-    primary: '#ea4097',
+    primary: '#d4007a',
     iconColors: {
-      'mode-bus': '#ea4097',
+      'mode-bus': '#d4007a',
     },
   },
 
@@ -157,7 +156,7 @@ export default configMerger(walttiConfig, {
           sv: 'Zoner',
           en: 'Zones',
         },
-        url: '/assets/geojson/lpr_zone_lines_20220113.geojson',
+        url: '/assets/geojson/lpr_zone_lines_20250515.geojson',
       },
     ],
   },

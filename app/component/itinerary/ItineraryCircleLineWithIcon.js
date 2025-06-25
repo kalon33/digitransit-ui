@@ -3,7 +3,6 @@ import React from 'react';
 import cx from 'classnames';
 import Icon from '../Icon';
 import RouteNumber from '../RouteNumber';
-import { isBrowser } from '../../util/browser';
 
 class ItineraryCircleLineWithIcon extends React.Component {
   static propTypes = {
@@ -16,7 +15,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
     appendClass: PropTypes.string,
     icon: PropTypes.string,
     style: PropTypes.shape({}),
-    firstLeg: PropTypes.bool,
+    isNotFirstLeg: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -27,7 +26,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
     appendClass: undefined,
     icon: undefined,
     style: {},
-    firstLeg: undefined,
+    isNotFirstLeg: undefined,
   };
 
   state = {
@@ -36,8 +35,8 @@ class ItineraryCircleLineWithIcon extends React.Component {
 
   isFirstChild = () => {
     return (
-      (this.props.firstLeg || this.props.index === 0) &&
-      this.props.firstLeg !== false &&
+      !this.props.isNotFirstLeg &&
+      this.props.index === 0 &&
       this.props.isVia === false
     );
   };
@@ -114,20 +113,16 @@ class ItineraryCircleLineWithIcon extends React.Component {
     const bottomMarker = this.getMarker(false);
     const legBeforeLineStyle = { color: this.props.color, ...this.props.style };
     if (
-      isBrowser &&
-      (this.props.modeClassName === 'walk' ||
-        this.props.modeClassName === 'bicycle_walk')
+      this.props.modeClassName === 'walk' ||
+      this.props.modeClassName === 'bicycle_walk'
     ) {
-      // eslint-disable-next-line global-require
       legBeforeLineStyle.backgroundImage = this.state.imageUrl;
     }
     return (
       <div
         className={cx('leg-before', this.props.modeClassName, {
           via: this.props.isVia,
-          'first-leg':
-            (this.props.index === 0 || this.props.index) &&
-            this.props.firstLeg !== false,
+          'first-leg': this.props.index === 0 && !this.props.isNotFirstLeg,
         })}
         aria-hidden="true"
       >

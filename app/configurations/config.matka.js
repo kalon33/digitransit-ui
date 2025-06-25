@@ -7,13 +7,14 @@ import KotkaConfig from './config.kotka';
 import KouvolaConfig from './config.kouvola';
 import KuopioConfig from './config.kuopio';
 import LahtiConfig from './config.lahti';
+import prUtils from '../util/ParkAndRideUtils';
 
+const HSLParkAndRideUtils = prUtils.HSL;
 const CONFIG = 'matka';
-const APP_DESCRIPTION = 'Matka.fi–palvelu.';
-const APP_TITLE = 'Matka.fi';
+const APP_DESCRIPTION =
+  'Fintraffic Matka on reittiopaspalvelu, joka auttaa suunnittelemaan matkoja koko Suomessa yhdistämällä eri liikennemuodot helposti ovelta ovelle.';
+const APP_TITLE = 'Fintraffic Matka – Joukkoliikenteen reittiopas ja matkahaku';
 const YEAR = 1900 + new Date().getYear();
-
-const HSLParkAndRideUtils = require('../util/ParkAndRideUtils').default.HSL;
 
 const IS_DEV =
   process.env.RUN_ENV === 'development' ||
@@ -27,7 +28,7 @@ export default {
   CONFIG,
   OTPTimeout: process.env.OTP_TIMEOUT || 30000,
   URL: {
-    FONT: 'https://cdn.digitransit.fi/matka-fonts/roboto/roboto+montserrat.css',
+    FONT: 'https://cdn.digitransit.fi/matka-fonts/publicsans/publicsans+robotomono.css',
   },
 
   mainMenu: {
@@ -55,52 +56,56 @@ export default {
   favicon: './app/configurations/images/matka/matka-favicon.svg',
 
   colors: {
-    primary: '#002c74',
+    primary: '#000',
     iconColors: {
       'mode-airplane': '#0046AD',
       'mode-bus': '#007ac9',
       'mode-tram': '#5E7921',
       'mode-metro': '#CA4000',
-      'mode-rail': '#8E5EA0',
+      'mode-rail': '#000',
       'mode-ferry': '#247C7B',
       'mode-ferry-pier': '#666666',
       'mode-citybike': '#FCBC19',
       'mode-citybike-secondary': '#333333',
       'mode-scooter': '#C5CAD2',
+      'mode-taxi': '#647693',
     },
   },
-  feedIds: [
-    'MATKA',
-    'HSL',
-    'LINKKI',
-    'tampere',
-    'OULU',
-    'digitraffic',
-    'Rauma',
-    'Hameenlinna',
-    'Kotka',
-    'Kouvola',
-    'Lappeenranta',
-    'Mikkeli',
-    'Vaasa',
-    'Joensuu',
-    'FOLI',
-    'Lahti',
-    'Kuopio',
-    'Rovaniemi',
-    'Kajaani',
-    'Salo',
-    'Pori',
-    'Raasepori',
-    'VARELY',
-    'Harma',
-    'PohjolanMatka',
-    'Korsisaari',
-    'KoivistonAuto',
-    'PahkakankaanLiikenne',
-    'IngvesSvanback',
-    'CAR_FERRIES',
-  ],
+  feedIds: IS_DEV
+    ? ['MATKA']
+    : [
+        'MATKA',
+        'HSL',
+        'LINKKI',
+        'tampere',
+        'OULU',
+        'digitraffic',
+        'Rauma',
+        'Hameenlinna',
+        'Kotka',
+        'Kouvola',
+        'Lappeenranta',
+        'Mikkeli',
+        'Vaasa',
+        'Joensuu',
+        'FOLI',
+        'Lahti',
+        'Kuopio',
+        'Rovaniemi',
+        'Kajaani',
+        'Salo',
+        'Pori',
+        'Raasepori',
+        'VARELY',
+        'Harma',
+        'PohjolanMatka',
+        'Korsisaari',
+        'KoivistonAuto',
+        'PahkakankaanLiikenne',
+        'IngvesSvanback',
+        'CAR_FERRIES',
+      ],
+  externalFeedIds: ['02Taksi'],
 
   additionalFeedIds: {
     estonia: ['Vikingline', 'Viro'],
@@ -130,19 +135,22 @@ export default {
 
   meta: {
     description: APP_DESCRIPTION,
-    keywords: `reitti,reitit,opas,reittiopas,joukkoliikenne`,
+    keywords: `reitti,reitit,opas,reittiopas,joukkoliikenne,joukkoliikenne, matkasuunnittelu, matkareitti, aikataulut, bussi, juna, metro, raitiovaunu, lautta, matka, suomen joukkoliikenne, reitti kartalla, matkareitti ovelta ovelle, opas.matka.fi, fintraffic matka, digitransit, reittiopas suomi, liikenneopas, julkinen liikenne, reittihaku, liityntäpysäköinti, pyöräily, autoilu, lennot, matkakumppani, matkaketju, reitti yhdellä haulla`,
   },
-
   menu: {
     copyright: { label: `© Matka.fi ${YEAR}` },
     content: [
       {
-        name: 'traficom',
-        href: 'https://www.traficom.fi/fi/liikenne/liikennejarjestelma/joukkoliikenteen-informaatiopalvelut',
+        name: 'Fintraffic',
+        href: 'https://www.fintraffic.fi',
       },
       {
-        name: 'about-service-feedback',
-        href: 'http://www.matka.fi',
+        name: 'menu-feedback',
+        href: 'https://www.fintraffic.fi/fi/feedback',
+      },
+      {
+        name: 'about-this-service',
+        href: 'https://www.fintraffic.fi/fi/digitaalisetpalvelut/matkatietoa',
       },
       {
         name: 'accessibility-statement',
@@ -151,10 +159,6 @@ export default {
           sv: 'https://www.digitransit.fi/accessibility',
           en: 'https://www.digitransit.fi/en/accessibility',
         },
-      },
-      {
-        name: 'about-these-pages',
-        href: 'https://traficom.fi/fi/tietoa-matkafi-sivustosta',
       },
     ],
   },
@@ -216,6 +220,10 @@ export default {
     },
     scooter: {
       availableForSelection: true,
+      defaultValue: false,
+    },
+    taxi: {
+      availableForSelection: true, // experimental feature
       defaultValue: false,
     },
   },
@@ -415,9 +423,6 @@ export default {
 
   disabledLegTextModes: ['ferry'],
 
-  // Include both bike and park and bike and public, if bike is enabled
-  includePublicWithBikePlan: true,
-
   startSearchFromUserLocation: true,
 
   minTransferTimeSelection: [
@@ -447,4 +452,20 @@ export default {
     },
   ],
   navigation: true,
+
+  experimental: {
+    allowFlexJourneys: true,
+    allowDirectFlexJourneys: true,
+  },
+
+  devAnalytics: true,
+  analyticsScript: function createAnalyticsScript() {
+    return `<script>
+    var _mtm = window._mtm = window._mtm || [];
+    _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
+    (function() {
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src='https://cdn.matomo.cloud/fintraffic.matomo.cloud/container_p27GPdXl.js'; s.parentNode.insertBefore(g,s);
+    })();\n<\/script>\n`; // eslint-disable-line no-useless-escape
+  },
 };
