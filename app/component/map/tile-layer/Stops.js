@@ -21,7 +21,6 @@ const stopAlertsQuery = graphql`
   query StopsQuery($stopId: String!, $date: String!) {
     stop: stop(id: $stopId) {
       gtfsId
-      hasFutureServices
       alerts: alerts(types: [STOP]) {
         alertEffect
       }
@@ -113,14 +112,20 @@ class Stops {
       }
       const stopOutOfService =
         !!feature.properties.closedByServiceAlert ||
-        (!feature.properties.servicesRunningInFuture &&
-          !feature.properties.servicesRunningOnServiceDate); // if there are services added for the current day via realtime, this will be false
+        (feature.properties.servicesRunningInFuture === false &&
+          feature.properties.servicesRunningOnServiceDate === false); // if there are services added for the current day via realtime, servicesRunningOnServiceDate will be true
       const noServiceOnServiceDay =
-        !feature.properties.servicesRunningOnServiceDate;
+        feature.properties.servicesRunningOnServiceDate === false;
 
       if (isHilighted && zoom <= minZoom) {
         // Fetch stop details only when stop is highlighted and realtime layer is not used (zoom level)
-        this.drawHighlighted(feature, mode, isHilighted);
+        this.drawHighlighted(
+          feature,
+          mode,
+          isHilighted,
+          noServiceOnServiceDay,
+          stopOutOfService,
+        );
       } else {
         drawStopIcon(
           this.tile,
@@ -342,17 +347,16 @@ class Stops {
     });
   }
 
-  drawHighlighted = (feature, mode, isHilighted) => {
+  drawHighlighted = (
+    feature,
+    mode,
+    isHilighted,
+    noServiceOnServiceDay,
+    stopOutOfService,
+  ) => {
     const date = moment().format(DATE_FORMAT);
     const callback = ({ stop: result }) => {
       if (result) {
-        const stopOutOfService =
-          !result.hasFutureServices ||
-          result.alerts.some(alert => alert.alertEffect === 'NO_SERVICE');
-        const noServiceOnServiceDay = !result.stoptimes.some(
-          stoptimes => stoptimes.stoptimes.length > 0,
-        );
-
         drawStopIcon(
           this.tile,
           feature.geom,
