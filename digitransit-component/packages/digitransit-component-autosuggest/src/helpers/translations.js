@@ -172,7 +172,7 @@ const translations = {
     arrival: 'Perillä',
     back: 'Takaisin',
     vehiclerentalstation: 'Pyöräasema',
-    bikepark: 'Liityntäpyöräparkki',
+    bikepark: 'Liityntäpysäkointi',
     bus: 'bussi',
     cancel: 'Peruuta',
     carpark: 'Liityntäpysäkointi',
