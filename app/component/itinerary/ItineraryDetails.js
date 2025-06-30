@@ -5,11 +5,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
 import { useFragment } from 'react-relay';
+import { getRouteMode } from '../../util/modeUtils';
 import {
   getFaresFromLegs,
   shouldShowFareInfo,
   shouldShowFarePurchaseInfo,
 } from '../../util/fareUtils';
+import localizedUrl from '../../util/urlUtils';
 import {
   compressLegs,
   getTotalBikingDistance,
@@ -25,16 +27,13 @@ import {
 } from '../../util/legUtils';
 import { streetHash } from '../../util/path';
 import { configShape, itineraryShape, relayShape } from '../../util/shapes';
-import {
-  getFormattedTimeDate,
-  isToday,
-  isTomorrow,
-} from '../../util/timeUtils';
+import { getFutureText } from '../../util/timeUtils';
 import { BreakpointConsumer } from '../../util/withBreakpoint';
 import BackButton from '../BackButton';
 import Emissions from './Emissions';
 import EmissionsInfo from './EmissionsInfo';
 import FareDisclaimer from './FareDisclaimer';
+import RouteDisclaimer from './RouteDisclaimer';
 import ItinerarySummary from './ItinerarySummary';
 import Legs from './Legs';
 import MobileTicketPurchaseInformation from './MobileTicketPurchaseInformation';
@@ -42,19 +41,6 @@ import StartNavi from './StartNavi';
 import TicketInformation from './TicketInformation';
 import VehicleRentalDurationInfo from './VehicleRentalDurationInfo';
 import { ItineraryDetailsFragment } from './queries/ItineraryDetailsFragment';
-
-function getFutureText(startTime, intl) {
-  const refTime = Date.now();
-  if (isToday(startTime, refTime)) {
-    return '';
-  }
-  if (isTomorrow(startTime, refTime)) {
-    return intl.formatMessage({
-      id: 'tomorrow',
-    });
-  }
-  return getFormattedTimeDate(startTime, 'dd D.M.');
-}
 
 function getExtraProps(itinerary, intl) {
   const compressedItinerary = {
@@ -108,7 +94,6 @@ function ItineraryDetails(
   },
   { config, match, intl },
 ) {
-  // TODO: Move fragment to a dedicated file
   const itinerary = useFragment(ItineraryDetailsFragment, itineraryRef);
 
   const shouldShowDisclaimer =
@@ -136,6 +121,7 @@ function ItineraryDetails(
     legContainsBikePark(leg),
   );
   const legsWithScooter = compressedLegs.some(leg => leg.mode === 'SCOOTER');
+  const legsWithAirplane = compressedLegs.some(leg => leg.mode === 'AIRPLANE');
   const onlyWalking = compressedLegs.every(leg => leg.mode === 'WALK');
   const onlyBiking = compressedLegs.every(leg => leg.mode === 'BICYCLE');
   const showStartNavi =
@@ -143,6 +129,7 @@ function ItineraryDetails(
     !onlyWalking &&
     !onlyBiking &&
     !legsWithScooter &&
+    !legsWithAirplane &&
     legsWithRentalBike.length === 0 &&
     driving.distance === 0;
   const containsBiking = biking.duration > 0 && biking.distance > 0;
@@ -232,6 +219,42 @@ function ItineraryDetails(
     }
   }
 
+  if (config.replacementBusNotification) {
+    itinerary.legs.forEach(({ route, trip }) => {
+      const isReplacementRoute =
+        route &&
+        (getRouteMode(route, config)?.includes('replacement') ||
+          config.replacementBusRoutes?.includes(route.gtfsId));
+      const isReplacementTrip =
+        trip?.submode?.includes('replacement') || trip?.submode?.includes(714);
+
+      if (isReplacementRoute || isReplacementTrip) {
+        const notification =
+          isReplacementRoute &&
+          config.showRouteDescNotification &&
+          route.desc?.length
+            ? { content: route.desc, link: route.url }
+            : config.replacementBusNotification;
+        const notificationText =
+          notification.content?.[currentLanguage]?.join(' ');
+        const key = `replacementBusNotification-${
+          route.gtfsId || trip?.gtfsId
+        }`;
+        if (!disclaimers.some(d => d.props?.text === notificationText)) {
+          disclaimers.push(
+            <RouteDisclaimer
+              key={key}
+              text={notificationText}
+              href={notification.link?.[currentLanguage]}
+              linkText={intl.formatMessage({ id: 'extra-info' })}
+              header={intl.formatMessage({ id: 'replacement-bus' })}
+            />,
+          );
+        }
+      }
+    });
+  }
+
   return (
     <div className="itinerary-tab">
       <h2 className="sr-only" key="srlabel">
@@ -294,6 +317,7 @@ function ItineraryDetails(
                 fares={fares}
                 zones={getZones(itinerary.legs)}
                 legs={itinerary.legs}
+                ticketLink={localizedUrl(config.ticketLink, currentLanguage)}
               />
             )),
 

@@ -1,11 +1,10 @@
-/* eslint-disable prefer-template */
 import configMerger from '../util/configMerger';
 import { BIKEAVL_BIKES } from '../util/vehicleRentalUtils';
+import walttiConfig from './config.waltti';
 
 const CONFIG = 'lahti';
 const APP_TITLE = 'LSL reittiopas';
 const APP_DESCRIPTION = 'Lahden seudun liikenteen reittiopas';
-const walttiConfig = require('./config.waltti').default;
 
 const minLat = 60.692506;
 const maxLat = 61.790694;
@@ -175,7 +174,9 @@ export default configMerger(walttiConfig, {
 
   showTicketInformation: true,
   useTicketIcons: true,
-  ticketLink: 'https://www.lsl.fi/liput-ja-hinnat/',
+  ticketLink: {
+    fi: 'https://www.lsl.fi/liput-ja-hinnat/',
+  },
   showTicketPrice: false,
   ticketLinkOperatorCode: 50223,
 });

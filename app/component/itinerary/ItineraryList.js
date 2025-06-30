@@ -7,7 +7,6 @@ import { matchShape } from 'found';
 import { configShape, planEdgeShape } from '../../util/shapes';
 import Icon from '../Icon';
 import Itinerary from './Itinerary';
-import { isBrowser } from '../../util/browser';
 import {
   getExtendedMode,
   showBikeBoardingNote,
@@ -36,7 +35,7 @@ function ItineraryList(
     bikeParkItineraryCount,
     carDirectItineraryCount,
     showRelaxedPlanNotifier,
-    showRentalVehicleNotifier,
+    rentalVehicleNotifierId,
     separatorPosition,
     loadingMore,
     routingFeedbackPosition,
@@ -182,7 +181,7 @@ function ItineraryList(
           </div>
         </div>
       )}
-      {showRentalVehicleNotifier && (
+      {rentalVehicleNotifierId?.length && (
         <div
           className={cx(
             'flex-horizontal',
@@ -197,9 +196,13 @@ function ItineraryList(
             </div>
             <div className="alternative-vehicle-info-content">
               <FormattedMessage
-                id="e-scooter-alternative"
+                id={`${rentalVehicleNotifierId}-alternative`}
                 values={{
-                  paymentInfo: <FormattedMessage id="payment-info-e-scooter" />,
+                  paymentInfo: (
+                    <FormattedMessage
+                      id={`payment-info-${rentalVehicleNotifierId}`}
+                    />
+                  ),
                 }}
               />
             </div>
@@ -211,16 +214,13 @@ function ItineraryList(
           <Loading />
         </div>
       )}
-      {isBrowser && (
-        <div
-          className={cx('summary-list-items', {
-            'summary-list-items-loading-top':
-              loadingMore === spinnerPosition.top,
-          })}
-        >
-          {summaries}
-        </div>
-      )}
+      <div
+        className={cx('summary-list-items', {
+          'summary-list-items-loading-top': loadingMore === spinnerPosition.top,
+        })}
+      >
+        {summaries}
+      </div>
       {loadingMore === spinnerPosition.bottom && (
         <div className="summary-list-spinner-container">
           <Loading />
@@ -242,7 +242,7 @@ ItineraryList.propTypes = {
   bikeParkItineraryCount: PropTypes.number,
   carDirectItineraryCount: PropTypes.number,
   showRelaxedPlanNotifier: PropTypes.bool,
-  showRentalVehicleNotifier: PropTypes.bool,
+  rentalVehicleNotifierId: PropTypes.string,
   separatorPosition: PropTypes.number,
   loadingMore: PropTypes.string,
   routingFeedbackPosition: PropTypes.number,
@@ -253,7 +253,7 @@ ItineraryList.defaultProps = {
   carDirectItineraryCount: 0,
   planEdges: [],
   showRelaxedPlanNotifier: false,
-  showRentalVehicleNotifier: false,
+  rentalVehicleNotifierId: undefined,
   separatorPosition: undefined,
   loadingMore: undefined,
   routingFeedbackPosition: undefined,

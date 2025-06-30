@@ -1,11 +1,10 @@
-/* eslint-disable prefer-template */
 import configMerger from '../util/configMerger';
 import { BIKEAVL_BIKES } from '../util/vehicleRentalUtils';
+import walttiConfig from './config.waltti';
 
 const CONFIG = 'kuopio';
 const APP_TITLE = 'Reittiopas Kuopio';
 const APP_DESCRIPTION = 'Reittiopas Kuopio';
-const walttiConfig = require('./config.waltti').default;
 
 export default configMerger(walttiConfig, {
   CONFIG,
@@ -40,7 +39,13 @@ export default configMerger(walttiConfig, {
   showTicketInformation: true,
   primaryAgencyName: 'Kuopion seudun joukkoliikenne',
 
-  ticketLink: 'https://vilkku.kuopio.fi/lipputyypit-hinnat/lippujen-hinnat',
+  showTicketLinkOnlyWhenTesting: true,
+  ticketLink: {
+    fi: 'https://vilkku.kuopio.fi/lipputyypit-hinnat/lippujen-hinnat',
+    sv: 'https://vilkku.kuopio.fi/en/ticket-and-fares/ticket-prices',
+    en: 'https://vilkku.kuopio.fi/en/ticket-and-fares/ticket-prices',
+  },
+  ticketLinkOperatorCode: 50221,
 
   searchParams: {
     'boundary.rect.min_lat': 62.454915,

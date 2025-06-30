@@ -161,7 +161,6 @@ export const planConnection = graphql`
               lat
               lon
               name
-              vertexType
               stop {
                 gtfsId
                 name
@@ -173,6 +172,9 @@ export const planConnection = graphql`
                 zoneId
                 parentStation {
                   name
+                }
+                routes {
+                  type
                 }
               }
               vehicleRentalStation {
@@ -198,7 +200,6 @@ export const planConnection = graphql`
               lat
               lon
               name
-              vertexType
               stop {
                 gtfsId
                 name
@@ -211,6 +212,7 @@ export const planConnection = graphql`
                 }
                 routes {
                   type
+                  gtfsId
                 }
               }
               vehicleParking {

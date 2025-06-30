@@ -1,17 +1,17 @@
 /* eslint-disable prefer-template */
 import { BIKEAVL_WITHMAX } from '../util/vehicleRentalUtils';
+import prUtils from '../util/ParkAndRideUtils';
+import ttConfig from './timetableConfigUtils';
 
+const HSLTimetables = ttConfig.HSL;
+const HSLParkAndRideUtils = prUtils.HSL;
 const CONFIG = 'hsl';
 const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
 const OTP_URL = process.env.OTP_URL || `${API_URL}/routing/v2/hsl/`;
 const MAP_URL = process.env.MAP_URL || 'https://dev-cdn.digitransit.fi';
 const POI_MAP_PREFIX = `${MAP_URL}/map/v3/hsl`;
 const APP_DESCRIPTION = 'Helsingin seudun liikenteen Reittiopas.';
-const HSLTimetables = require('./timetableConfigUtils').default.HSL;
-const HSLParkAndRideUtils = require('../util/ParkAndRideUtils').default.HSL;
-
 const rootLink = process.env.ROOTLINK || 'https://test.hslfi.hsldev.com';
-
 const BANNER_URL = process.env.CONTENT_DOMAIN
   ? `${process.env.CONTENT_DOMAIN}/api/v1/banners?site=JourneyPlanner`
   : process.env.BANNER_URL ||
@@ -95,9 +95,8 @@ export default {
   useRoutingFeedbackPrompt: true,
 
   feedIds: ['HSL', 'HSLlautta', 'Sipoo'],
-  externalFeedIds: ['HSLlautta'],
+  externalFeedIds: ['HSLlautta', '02Taksi'],
 
-  showHSLTracking: false,
   allowLogin: true,
   allowFavouritesFromLocalstorage: !process.env.OIDC_CLIENT_ID,
   loginAnalyticsEventName: 'user-hsl-id',
@@ -110,6 +109,7 @@ export default {
 
   defaultSettings: {
     walkSpeed: 1.28,
+    showBikeAndParkItineraries: true,
   },
 
   /**
@@ -160,6 +160,7 @@ export default {
       'mode-citybike': '#f2b62d',
       'mode-citybike-secondary': '#333333',
       'mode-speedtram': '#007E79',
+      'mode-replacement-bus': '#DC0451',
     },
   },
   getAutoSuggestIcons: {
@@ -229,6 +230,10 @@ export default {
     },
     airplane: {
       availableForSelection: false,
+      defaultValue: false,
+    },
+    taxi: {
+      availableForSelection: true, // experimental feature
       defaultValue: false,
     },
   },
@@ -440,7 +445,9 @@ export default {
   ticketPurchaseLink: function purchaseTicketLink(fare) {
     return `https://open.app.hsl.fi/zoneTicketWizard/TICKET_TYPE_SINGLE_TICKET/${fare.ticketName}/adult/-`;
   },
-  ticketLink: 'https://open.app.hsl.fi/tickets',
+  ticketLink: {
+    fi: 'https://open.app.hsl.fi/tickets',
+  },
   ticketLinkOperatorCode: 'hsl',
   // mapping fareId from OTP fare identifiers to human readable form
   // in the new HSL zone model, just strip off the prefix 'HSL:'
@@ -567,12 +574,10 @@ export default {
   // Notice! Turning on this setting forces the search for car routes (for the CO2 comparison only).
   showCO2InItinerarySummary: true,
 
-  includeCarSuggestions: false,
+  includeCarSuggestions: true,
   includeParkAndRideSuggestions: true,
-  // Include both bike and park and bike and public, if bike is enabled
-  includePublicWithBikePlan: true,
   // Park and ride and car suggestions separated into two switches
-  separatedParkAndRideSwitch: false,
+  separatedParkAndRideSwitch: true,
 
   parkingAreaSources: ['liipi'],
 
@@ -744,6 +749,34 @@ export default {
     },
   ],
 
+  replacementBusNotification: {
+    header: {
+      fi: 'Korvaava bussi',
+      en: 'Replacement bus',
+      sv: 'Ersättande buss',
+    },
+    content: {
+      fi: [
+        'Voit nousta kyytiin myös bussin keskiovista.',
+        'Pysäkit on merkitty punaisilla tunnuksilla.',
+        'Linja käyttää valikoituja pysäkkejä, eli bussi ei pysähdy kaikilla pysäkeillä.',
+      ],
+      en: [
+        'You can also board the bus through the middle doors.',
+        'The stops are marked with red signs.',
+        'The bus stops only at designated stops and does not serve all stops.',
+      ],
+      sv: [
+        'Du kan också stiga på bussen genom mittdörren.',
+        'Hållplatserna är markerade med röda punkter.',
+        'Linjen stannar endast vid vissa hållplatser, dvs. bussen stannar inte vid alla hållplatser.',
+      ],
+    },
+    link: {
+      fi: 'https://hsl.fi/korvaavabussi',
+    },
+  },
+
   embeddedSearch: {
     title: {
       fi: 'Reittiopas-elementti',
@@ -778,4 +811,21 @@ export default {
   trafficLightGraphic: 'hsl/traffic-light.svg',
   naviGeolocationGraphic: 'hsl/geolocation.svg',
   navigation: true,
+  crazyEgg: true,
+  // features that should not be deployed to production
+  experimental: {
+    allowFlexJourneys: IS_DEV,
+    allowDirectFlexJourneys: false,
+  },
+
+  replacementBusRoutes: [
+    'HSL:1099V',
+    'HSL:6211U',
+    'HSL:6211E',
+    'HSL:6249Y',
+    'HSL:2213X',
+    'HSL:4699X',
+    'HSL:9969X',
+    'HSL:2015X',
+  ],
 };

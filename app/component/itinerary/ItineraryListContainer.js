@@ -61,7 +61,10 @@ function ItineraryListContainer(
     });
     const newLocation = {
       ...match.location,
-      state: { selectedItineraryIndex: index },
+      state: {
+        ...match.location.state,
+        selectedItineraryIndex: index,
+      },
     };
     const basePath = `${getItineraryPagePath(
       params.from,
@@ -82,7 +85,10 @@ function ItineraryListContainer(
     } else {
       router.replace({
         ...match.location,
-        state: { selectedItineraryIndex: index },
+        state: {
+          ...match.location.state,
+          selectedItineraryIndex: index,
+        },
       });
 
       addAnalyticsEvent({

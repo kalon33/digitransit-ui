@@ -3,7 +3,6 @@ import Protobuf from 'pbf';
 import pick from 'lodash/pick';
 
 import Supercluster from 'supercluster';
-import { isBrowser } from '../../../util/browser';
 import {
   getMapIconScale,
   drawScooterIcon,
@@ -24,7 +23,7 @@ class RentalVehicles {
     this.tile = tile;
     this.config = config;
     this.relayEnvironment = relayEnvironment;
-    this.scaleratio = (isBrowser && window.devicePixelRatio) || 1;
+    this.scaleratio = window.devicePixelRatio || 1;
     this.citybikeImageSize =
       20 * this.scaleratio * getMapIconScale(this.tile.coords.z);
     this.availabilityImageSize =

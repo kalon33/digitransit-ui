@@ -15,7 +15,6 @@ const translations = {
     'airport-collect-luggage': 'Hent eventuel bagage',
     'airport-security-check-go-to-gate':
       'Passer sikkerhedskontrollen og fortsæt til gate',
-    'approx-meters': '{approxDistance} meter',
     'arriving-at': 'Ankomst',
     'arriving-soon': 'Nu',
     'avoid-transfers': 'Undgå skift',
@@ -280,7 +279,6 @@ const translations = {
       'Gehen Sie durch die Sicherheitskontrolle zum Abfluggate',
     'all-routes': 'Alle Linien',
     'all-routes-disabled': 'Keine Linien',
-    'approx-meters': '{approxDistance} Meter',
     'aria-itinerary-summary':
       'Gesamtdauer {duration}. Route fährt ab {inFuture} {departureTime} mit Ankunft {arrivalTime}.',
     'aria-itinerary-summary-bike-distance':
@@ -318,7 +316,6 @@ const translations = {
       '{itineraryAmount, plural, =1 {1 weitere} other {{itineraryAmount} weitere}} ausgefallene Verbindungen',
     'canceled-itineraries-amount-hide':
       'Ausgefallene Verbindungen ausblenden ({itineraryAmount})',
-    'canceled-legs': 'Ausgefallene Abfahrten auf der Route',
     car: 'Auto',
     'car-distance-duration': 'Auto {duration} ({distance})',
     'car-park': 'Park & Ride',
@@ -379,7 +376,6 @@ const translations = {
     'favourite-target': 'Favoriten',
     ferry: 'Fähre',
     'ferry-with-route-number': 'Fähre {routeNumber} {headSign}',
-    'fetch-new-route': 'Neue Verbindung anfragen',
     'from-station': 'Bahnhof',
     'from-stop': 'Halt',
     frontpage: 'Startseite',
@@ -896,7 +892,6 @@ const translations = {
       'Proceed to your gate through security check',
     'all-routes': 'All routes',
     'all-routes-disabled': 'No routes',
-    'approx-meters': '{approxDistance} m',
     'arriving-at': 'Arriving',
     'arriving-soon': 'Now',
     'at-time': 'at',
@@ -931,7 +926,7 @@ const translations = {
     'biketransport-only-bike': "I'm travelling only by bike",
     'biking-amount': 'Amount of biking',
     'biking-speed': 'Biking speed',
-    'book-a-lift': 'TO DO',
+    'book-a-lift': 'Use an app to book a taxi',
     bus: 'Bus',
     'bus-express': 'Trunk bus',
     'bus-express-with-route-number': 'Trunk bus {routeNumber} {headSign}',
@@ -949,7 +944,6 @@ const translations = {
       'Additional {itineraryAmount, plural, =1 {1 canceled itinerary} other {{itineraryAmount} canceled itineraries}}',
     'canceled-itineraries-amount-hide':
       'Hide canceled itineraries ({itineraryAmount})',
-    'canceled-legs': 'Canceled departures on the route',
     'capacity-modal.crushed-standing-room-only-body':
       'Only a little standing room available',
     'capacity-modal.crushed-standing-room-only-heading': 'Very crowded',
@@ -1085,7 +1079,6 @@ const translations = {
     'ferry-external': 'Ferry',
     'ferry-external-with-route-number': 'Ferry {routeNumber} {headSign}',
     'ferry-with-route-number': 'Ferry {routeNumber} {headSign}',
-    'fetch-new-route': 'Fetch a new route',
     'few-seats-available': 'Few seats available',
     finnish: 'Finnish',
     'free-of-charge': 'Free',
@@ -1116,6 +1109,7 @@ const translations = {
       'Detecting your location is taking longer than expected.',
     'geolocation-timeout-text':
       "Have you accepted your browser's request to access your location?",
+    'get-off-the-ride': 'TO_DO_Nouse pois kyydistä',
     'give-destination': 'Enter your destination',
     'give-name-to-location': 'Give the location a descriptive name',
     'give-origin': 'Enter your origin.',
@@ -1299,6 +1293,7 @@ const translations = {
     'modes.to-scooter': 'to scooter',
     'modes.to-stop': 'stop',
     'modes.to-subway': 'subway station',
+    'modes.to-taxi': 'to taxi',
     'modes.to-tram': 'tram stop',
     'more-departures': 'More departures',
     'more-settings': 'More settings',
@@ -1459,10 +1454,10 @@ const translations = {
     'pay-attention': 'N.B.',
     'payment-info-e-scooter':
       'Please note that you need to use the app of the operator in question in order to use and pay for the scooters.',
-    'payment-info-e-scooter-taxi':
+    'payment-info-e-scooter-or-taxi':
       'Please note that you need to use the app of the operator in question in order to use and pay for the taxis or scooters.',
-    'payment-info-taxi-lifts':
-      'Huomaathan, että taksien ja kyytipalveluiden käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
+    'payment-info-taxi':
+      'Please note that you need to use the app of the operator in question in order to use and pay for the taxis.',
     payment_at_gate: 'Payment at the gate ',
     'pick-icon': 'Select icon',
     'pick-mode': 'Transport modes',
@@ -1507,6 +1502,8 @@ const translations = {
     'rent-cycle-at': 'Fetch a city bike:',
     'rent-e-scooter-at': 'Use an app to unlock the electric scooter',
     'rent-scooter-at': 'Rent a kick scooter at {station} station',
+    'replacement-bus': 'Replacement bus',
+    'replacement-bus-with-route-number': 'Replacement bus {routeNumber}',
     'required-ticket': 'Ticket required for the journey',
     'restore-default-settings':
       'Restore default settings {changedSettingsIndicator}',
@@ -1718,6 +1715,14 @@ const translations = {
     'swipe-stops-near-you-header': 'Stops near you swipe result tabs',
     'swipe-summary-page': 'Itinerary swipe result tabs',
     'swipe-summary-page-header': 'Itinerary swipe result tabs.',
+    taxi: 'Taxi',
+    'taxi-alternative':
+      'How about using a taxi for part of your journey? {paymentInfo}',
+    'taxi-distance-duration': 'Travel for {duration} ({distance})',
+    'taxi-distance-no-duration': 'Travel for {distance}',
+    'taxi-external': 'Taxi',
+    'taxi-with-route-number': 'Taxi {routeNumber}',
+    'taxis-and-ride-hailing': 'Taxis and ride-hailing',
     'terminal-page.description': 'Terminal {name}',
     'terminal-page.title': 'Terminal {name}',
     'terminal-page.title-short': 'Terminal',
@@ -1858,7 +1863,6 @@ const translations = {
       'Proceda a su puerta a través del control de seguridad',
     'all-routes': 'Todas las rutas',
     'all-routes-disabled': 'Ninguna ruta',
-    'approx-meters': '{approxDistance} m',
     'arriving-at': 'Llegada',
     'arriving-soon': 'Ahora',
     'avoid-transfers': 'Evitar transbordos',
@@ -2214,7 +2218,6 @@ const translations = {
       'Kävele turvatarkastuksen läpi lähtöportille',
     'all-routes': 'Kaikki linjat',
     'all-routes-disabled': 'Ei linjoja',
-    'approx-meters': '{approxDistance} m',
     'arriving-at': 'Perillä',
     'arriving-soon': 'Nyt',
     'at-time': 'klo',
@@ -2248,8 +2251,7 @@ const translations = {
     'biketransport-only-bike': 'Liikun vain pyörällä',
     'biking-amount': 'Pyöräilyn määrä',
     'biking-speed': 'Pyöräilynopeus',
-    'book-a-lift':
-      'Tilaa kyyti sovelluksella ja jää odottamaan sen saapumista:',
+    'book-a-lift': 'Ota taksi käyttöön sovelluksella',
     bus: 'Bussi',
     'bus-express': 'Runkolinjabussi',
     'bus-express-with-route-number': 'Runkolinjabussi {routeNumber} {headSign}',
@@ -2266,7 +2268,6 @@ const translations = {
       'Lisäksi {itineraryAmount, plural, =1 {1 peruttu reittiehdotus} other {{itineraryAmount} peruttua reittiehdotusta}}',
     'canceled-itineraries-amount-hide':
       'Piilota perutut reittiehdotukset ({itineraryAmount})',
-    'canceled-legs': 'Reitillä peruttuja vuoroja',
     'capacity-modal.crushed-standing-room-only-body':
       'Vain vähän seisomapaikkoja',
     'capacity-modal.crushed-standing-room-only-heading': 'Kova tungos',
@@ -2404,7 +2405,6 @@ const translations = {
     'ferry-external': 'Lautta',
     'ferry-external-with-route-number': 'Lautta {routeNumber} {headSign}',
     'ferry-with-route-number': 'Lautta {routeNumber} {headSign}',
-    'fetch-new-route': 'Hae uusi reitti',
     'few-seats-available': 'Joitakin istumapaikkoja vapaana',
     finnish: 'Suomi',
     'free-of-charge': 'Maksuton',
@@ -2432,6 +2432,7 @@ const translations = {
     'geolocation-prompt-text': 'Hyväksy selaimen paikannuspyyntö.',
     'geolocation-timeout-heading': 'Paikannus kestää odotettua pidempään.',
     'geolocation-timeout-text': 'Oletko hyväksynyt selaimen paikannuspyynnön?',
+    'get-off-the-ride': 'Nouse pois kyydistä',
     'give-destination': 'Määränpää',
     'give-name-to-location': 'Anna paikalle kuvaava nimi',
     'give-origin': 'Lähtöpaikka',
@@ -2611,6 +2612,7 @@ const translations = {
     'modes.to-scooter': 'potkulaudalle',
     'modes.to-stop': 'pysäkille',
     'modes.to-subway': 'metroasemalle',
+    'modes.to-taxi': 'taksiin',
     'modes.to-tram': 'raitiovaunupysäkille',
     'more-departures': 'Lisää lähtöjä',
     'more-settings': 'Lisäasetukset',
@@ -2747,7 +2749,7 @@ const translations = {
       'Kirjautumalla palveluun saat suosikit talteen ja voit hyödyntää niitä muillakin laitteillasi',
     'one-way-journey': 'Yhdensuuntaisen matkan pituus',
     'open-app': 'Avaa sovellus',
-    'open-operator-app': 'Avaa {operator}-sovellus',
+    'open-operator-app': 'Avaa {operator} -sovellus',
     'open-settings': 'Avaa asetukset',
     'option-default': 'Keskimääräinen',
     'option-least': 'Hidas',
@@ -2771,9 +2773,9 @@ const translations = {
     'pay-attention': 'Huom!',
     'payment-info-e-scooter':
       'Huomaathan, että potkulautojen käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
-    'payment-info-e-scooter-taxi':
+    'payment-info-e-scooter-or-taxi':
       'Huomaathan, että potkulautojen ja taksin käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
-    'payment-info-taxi-lifts':
+    'payment-info-taxi':
       'Huomaathan, että taksien ja kyytipalveluiden käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
     payment_at_gate: 'Maksu portilla',
     'pick-icon': 'Valitse kuvake',
@@ -2818,6 +2820,8 @@ const translations = {
     'rent-cycle-at': 'Nouda Kaupunkipyörä: ',
     'rent-e-scooter-at': 'Ota sähköpotkulauta käyttöön sovelluksella',
     'rent-scooter-at': 'Vuokraa potkulauta asemalta {station}',
+    'replacement-bus': 'Korvaava bussi',
+    'replacement-bus-with-route-number': 'Korvaava bussi {routeNumber}',
     'required-ticket': 'Reitillä tarvittava lippu',
     'restore-default-settings':
       'Palauta oletusasetukset {changedSettingsIndicator}',
@@ -3029,6 +3033,14 @@ const translations = {
     'swipe-stops-near-you-header': 'Lähipysäkkinäkymävälilehdet.',
     'swipe-summary-page': 'Reittiehdotusvälilehtien',
     'swipe-summary-page-header': 'Reittiehdotusvälilehdet.',
+    taxi: 'Taxi',
+    'taxi-alternative':
+      'Entä jos kulkisit osan matkasta taksilla? {paymentInfo}',
+    'taxi-distance-duration': 'Matkusta {duration} ({distance})',
+    'taxi-distance-no-duration': 'Matkusta {distance}',
+    'taxi-external': 'Taksi',
+    'taxi-with-route-number': 'Taksi {routeNumber}',
+    'taxis-and-ride-hailing': 'Taksit ja kyytipalvelut',
     'terminal-page.description': 'Terminaali - {name}',
     'terminal-page.title': 'Terminaali - {name}',
     'terminal-page.title-short': 'Terminaali',
@@ -3171,7 +3183,6 @@ const translations = {
       "Franchir les contrôles de sécurité et se rendre à la porte d'embarquement",
     'all-routes': 'Toutes lignes',
     'all-routes-disabled': 'Aucune ligne',
-    'approx-meters': '{approxDistance} m',
     'arriving-at': 'Arrivée',
     'arriving-soon': 'Imm.',
     'avoid-transfers': 'Éviter les correspondances',
@@ -3498,7 +3509,6 @@ const translations = {
     'airport-collect-luggage': 'Hent eventuell bagasje',
     'airport-security-check-go-to-gate':
       'Passer sikkerhetskontrollen og fortsett til gate',
-    'approx-meters': '{approxDistance} meter',
     'arriving-at': 'Ankomst',
     'arriving-soon': 'Nå',
     'avoid-transfers': 'Unngå bytter',
@@ -3810,7 +3820,6 @@ const translations = {
       'Proceed to your gate through security check',
     'all-routes': 'Wszystkie trasy',
     'all-routes-disabled': 'Brak tras',
-    'approx-meters': '{approxDistance} m',
     'arriving-at': 'Arriving',
     'arriving-soon': 'Teraz',
     'at-time': 'o',
@@ -3859,7 +3868,6 @@ const translations = {
       'Additional {itineraryAmount, plural, =1 {1 canceled itinerary} other {{itineraryAmount} canceled itineraries}}',
     'canceled-itineraries-amount-hide':
       'Hide canceled itineraries ({itineraryAmount})',
-    'canceled-legs': 'Anulowane odjazdy z trasy',
     'capacity-modal.crushed-standing-room-only-body':
       'Pozostało niewiele miejsc stojących',
     'capacity-modal.crushed-standing-room-only-heading': 'Bardzo zatłoczony',
@@ -3984,7 +3992,6 @@ const translations = {
     'favourite-target': 'Favorite location',
     ferry: 'Prom',
     'ferry-with-route-number': 'Prom {routeNumber} {headSign}',
-    'fetch-new-route': 'Pobierz nową trasę',
     'few-seats-available': 'Dostępne jest niewiele miejsc',
     finnish: 'Fiński',
     'free-of-charge': 'Za darmo',
@@ -4663,7 +4670,6 @@ const translations = {
       'Mergeți spre poartă, trecând prin controlul de securitate',
     'all-routes': 'Toate',
     'all-routes-disabled': 'Niciuna',
-    'approx-meters': '{approxDistance} m',
     'arriving-at': 'Ajunge',
     'arriving-soon': 'Acum',
     'at-time': 'la',
@@ -4692,7 +4698,6 @@ const translations = {
       'Și {itineraryAmount, plural, =1 {un itinerar} alte {{itineraryAmount} itinerarii anulate}}',
     'canceled-itineraries-amount-hide':
       'Ascunde itinerarii anulate ({itineraryAmount})',
-    'canceled-legs': 'Plecări anulate',
     car: 'Mașină',
     'car-distance-duration': 'Condu {duration} ({distance})',
     'car-park': 'park & ride',
@@ -4746,7 +4751,6 @@ const translations = {
     'favourite-target': 'Locație favorită',
     ferry: 'Feribot',
     'ferry-with-route-number': 'Feribotul {routeNumber} {headSign}',
-    'fetch-new-route': 'Încărcați o nouă rută',
     frontpage: 'Prima pagină',
     'generic-error': 'A apărut o eroare',
     'geolocate-yourself': 'Detectați locația',
@@ -5176,7 +5180,6 @@ const translations = {
       'Gå igenom säkerhetskontrollen till gate',
     'all-routes': 'Alla linjer',
     'all-routes-disabled': 'Inga linjer',
-    'approx-meters': '{approxDistance} m',
     'arriving-at': 'Anländer',
     'arriving-soon': 'Nu',
     'at-time': 'kl.',
@@ -5226,7 +5229,6 @@ const translations = {
       'Ytterligare {itineraryAmount, plural, =1 {1 avställt avgång} other {{itineraryAmount} avställda avgångar}}',
     'canceled-itineraries-amount-hide':
       'Dölja inställda reseförslag ({itineraryAmount})',
-    'canceled-legs': 'Inställda avgångar på linjen',
     'capacity-modal.crushed-standing-room-only-body': 'Endast några ståplatser',
     'capacity-modal.crushed-standing-room-only-heading': 'Nästan fullt',
     'capacity-modal.few-seats-available-body': 'Några sittplatser',
@@ -5362,7 +5364,6 @@ const translations = {
     'ferry-external': 'Färja',
     'ferry-external-with-route-number': 'Färja {routeNumber} {headSign}',
     'ferry-with-route-number': 'Färja {routeNumber} {headSign}',
-    'fetch-new-route': 'Sök en ny rutt',
     'few-seats-available': 'Några sittplatser',
     finnish: 'Finska',
     'free-of-charge': 'Kostnadsfri',
@@ -5391,6 +5392,7 @@ const translations = {
       'Det tar längre tid än väntat att hitta din plats.',
     'geolocation-timeout-text':
       'Har du godkänt att webbläsaren får använda din plats?',
+    'get-off-the-ride': 'Nouse pois kyydistä',
     'give-destination': 'Skriv in din destination',
     'give-name-to-location': 'Ge ett namn som beskriver platsen',
     'give-origin': 'Skriv in din avfärdsplats',
@@ -5573,6 +5575,7 @@ const translations = {
     'modes.to-scooter': 'elsparkcykel',
     'modes.to-stop': 'hållplats',
     'modes.to-subway': 'metrostation',
+    'modes.to-taxi': 'taxi',
     'modes.to-tram': 'spårvagnshållplats',
     'more-departures': 'Fler avgångar',
     'more-settings': 'Fler inställningar',
@@ -5730,10 +5733,10 @@ const translations = {
     'pay-attention': 'Obs!',
     'payment-info-e-scooter':
       'Vänligen observera att användning och betalning av elsparkcyklar görs via operatörernas egna appar.',
-    'payment-info-e-scooter-taxi':
+    'payment-info-e-scooter-or-taxi':
       'Vänligen observera att användning och betalning av elsparkcyklar och taxi görs via operatörernas egna appar.',
-    'payment-info-taxi-lifts':
-      'Huomaathan, että taksien ja kyytipalveluiden käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
+    'payment-info-taxi':
+      'Vänligen observera att användning och betalning av taxi görs via operatörernas egna appar.',
     payment_at_gate: 'Betalning vid porten',
     'pick-icon': 'Välj en ikon',
     'pick-mode': 'Trafikslag',
@@ -5777,6 +5780,8 @@ const translations = {
     'rent-cycle-at': 'Sök en stadscykel:',
     'rent-e-scooter-at': 'Ta en elsparkcykel i bruk med en app.',
     'rent-scooter-at': 'Hyr en sparkcykel från stationen {station}',
+    'replacement-bus': 'Ersättande buss',
+    'replacement-bus-with-route-number': 'Ersättande buss {routeNumber}',
     'required-ticket': 'Biljett som behövs under resan',
     'restore-default-settings':
       'Återställ standardinställningar {changedSettingsIndicator}',
@@ -5993,6 +5998,14 @@ const translations = {
     'swipe-stops-near-you-header': 'Hållplatser nära mig.',
     'swipe-summary-page': 'Navigeringsknapp för att kunna bläddra ruttförslag.',
     'swipe-summary-page-header': 'Ruttförslag.',
+    taxi: 'Taxi',
+    'taxi-alternative':
+      'Och om du skulle åka taxi en del av din resa? {paymentInfo}',
+    'taxi-distance-duration': 'Matkusta {duration} ({distance})',
+    'taxi-distance-no-duration': 'Matkusta {distance}',
+    'taxi-external': 'Taxi',
+    'taxi-with-route-number': 'Taxi {routeNumber}',
+    'taxis-and-ride-hailing': 'Taksit ja kyytipalvelut',
     'terminal-page.description': 'Terminal {name}',
     'terminal-page.title': 'Terminal {name}',
     'terminal-page.title-short': 'Terminal',

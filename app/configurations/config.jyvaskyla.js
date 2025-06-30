@@ -1,5 +1,5 @@
-/* 'eslint-disable prefer-template */
 import configMerger from '../util/configMerger';
+import walttiConfig from './config.waltti';
 
 const CONFIG = 'jyvaskyla';
 const APP_TITLE = 'Reittiopas Jyväskylä';
@@ -11,8 +11,6 @@ const IS_DEV =
 const virtualMonitorBaseUrl = IS_DEV
   ? 'https://dev-jyvaskylamonitori.digitransit.fi'
   : 'https://pysakit.jyvaskyla.fi';
-
-const walttiConfig = require('./config.waltti').default;
 
 const minLat = 61.835318;
 const maxLat = 62.603473;
@@ -169,7 +167,9 @@ export default configMerger(walttiConfig, {
 
   showTicketInformation: true,
   useTicketIcons: true,
-  ticketLink: 'https://linkki.jyvaskyla.fi/liput-ja-hinnat',
+  ticketLink: {
+    fi: 'https://linkki.jyvaskyla.fi/liput-ja-hinnat',
+  },
   showTicketPrice: true,
 
   ticketLinkOperatorCode: 50209,

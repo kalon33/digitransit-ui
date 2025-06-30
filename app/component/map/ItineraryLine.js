@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import polyUtil from 'polyline-encoded';
 import React from 'react';
-import { isBrowser } from '../../util/browser';
 import { getMiddleOf } from '../../util/geo-utils';
 import { getInterliningLegs, getRouteText, LegMode } from '../../util/legUtils';
 import { getRouteMode } from '../../util/modeUtils';
@@ -51,10 +50,6 @@ class ItineraryLine extends React.Component {
   }
 
   render() {
-    if (!isBrowser) {
-      return false;
-    }
-
     const objs = [];
     const transitLegs = [];
 
@@ -244,7 +239,7 @@ class ItineraryLine extends React.Component {
             );
         }
 
-        if (leg.from.vertexType === 'BIKESHARE') {
+        if (rentalId) {
           objs.push(
             <VehicleMarker
               key={`${leg.from.lat}:${leg.from.lon}`}
@@ -261,7 +256,7 @@ class ItineraryLine extends React.Component {
               transit
             />,
           );
-        } else if (leg.transitLeg) {
+        } else if (leg.transitLeg && mode !== 'taxi-external') {
           const name = getRouteText(
             leg.route,
             this.context.config,

@@ -1,11 +1,9 @@
-/* eslint-disable prefer-template */
 import configMerger from '../util/configMerger';
+import walttiConfig from './config.waltti';
 
 const CONFIG = 'joensuu';
 const APP_TITLE = 'Joensuun reittiopas';
 const APP_DESCRIPTION = 'Joensuun uusi reittiopas';
-
-const walttiConfig = require('./config.waltti').default;
 
 export default configMerger(walttiConfig, {
   CONFIG,
@@ -41,13 +39,6 @@ export default configMerger(walttiConfig, {
     description: APP_DESCRIPTION,
   },
 
-  transportModes: {
-    ferry: {
-      availableForSelection: true,
-      defaultValue: true,
-    },
-  },
-
   areaPolygon: [
     [27.1, 61.6],
     [27.1, 63.6],
@@ -81,7 +72,7 @@ export default configMerger(walttiConfig, {
           sv: 'Zoner',
           en: 'Zones',
         },
-        url: '/assets/geojson/joensuu_zone_lines_20230830.geojson',
+        url: '/assets/geojson/joensuu_zone_lines_20250402.geojson',
       },
     ],
   },
@@ -129,12 +120,21 @@ export default configMerger(walttiConfig, {
     2: 'B',
     3: 'C',
     4: 'D',
-    5: 'E',
-    6: 'F',
-    7: 'G',
   },
   zones: {
     stops: true,
     itinerary: true,
   },
+
+  showTicketLinkOnlyWhenTesting: true,
+  showTicketInformation: true,
+  useTicketIcons: true,
+  ticketLink: {
+    fi: 'https://jojo.joensuu.fi/liput-ja-hinnat',
+    sv: 'https://jojo.joensuu.fi/web/jojo-english/tickets',
+    en: 'https://jojo.joensuu.fi/web/jojo-english/tickets',
+  },
+  showTicketPrice: false,
+  ticketLinkOperatorCode: 50207,
+  externalFareRouteIds: ['401'],
 });
