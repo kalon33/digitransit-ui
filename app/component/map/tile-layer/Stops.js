@@ -2,14 +2,14 @@ import { VectorTile } from '@mapbox/vector-tile';
 import Protobuf from 'pbf';
 import pick from 'lodash/pick';
 import { graphql, fetchQuery } from 'react-relay';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 import {
   drawTerminalIcon,
   drawStopIcon,
   drawHybridStopIcon,
   drawHybridStationIcon,
 } from '../../../util/mapIconUtils';
-import { ExtendedRouteTypes, DATE_FORMAT } from '../../../constants';
+import { ExtendedRouteTypes } from '../../../constants';
 import {
   isFeatureLayerEnabled,
   getLayerBaseUrl,
@@ -354,7 +354,7 @@ class Stops {
     noServiceOnServiceDay,
     stopOutOfService,
   ) => {
-    const date = moment().format(DATE_FORMAT);
+    const date = DateTime.now();
     const callback = ({ stop: result }) => {
       if (result) {
         drawStopIcon(
