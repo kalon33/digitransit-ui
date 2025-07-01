@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createFragmentContainer, graphql } from 'react-relay';
 import sortBy from 'lodash/sortBy';
 import { matchShape, routerShape } from 'found';
@@ -57,7 +57,11 @@ const PatternRedirector = ({ router, match, route }, context) => {
   const path = `/${PREFIX_ROUTES}/${match.params.routeId}/${
     match.params.type || PREFIX_STOPS
   }/${pattern ? pattern.code : `${match.params.routeId}:0:01`}`;
-  router.replace(path);
+
+  useEffect(() => {
+    router.replace(path);
+  }, [router, path]);
+
   return null;
 };
 
