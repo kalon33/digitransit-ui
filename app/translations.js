@@ -2240,11 +2240,11 @@ const translations = {
     'bike-not-allowed-bus': 'Pyörää ei voi kuljettaa bussissa',
     'bike-not-allowed-tram': 'Pyörää ei voi kuljettaa raitiovaunussa',
     'bike-only': 'Vain pyöräily',
-    'bike-park': 'Liityntäpyöräparkki',
+    'bike-park': 'Liityntäpysäköinti',
     'bike-park-disclaimer':
       'Voit yhdistää kätevästi joukkoliikenteen ja pyöräilyn, kun jätät pyöräsi liityntäpysäköintiin ja jatkat matkaasi junalla, bussilla, metrolla tai ratikalla. Pyörän pysäköinti on maksutonta eikä siinä ole aikarajaa.',
     'bike-park-disclaimer-header': 'Jätä pyörä parkkiin',
-    'bike-park-disclaimer-link': 'Lue lisää liityntäpyöräpysäköinnistä',
+    'bike-park-disclaimer-link': 'Lue lisää liityntäpysäköinnistä',
     'bike-station-disabled': 'Pyöräasema ei ole käytössä.',
     'bikes-available': 'Pyöriä asemalla {amount}',
     'biketransport-citybike': 'Käytän kaupunkipyörää',
