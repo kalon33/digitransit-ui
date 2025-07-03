@@ -111,7 +111,7 @@ export default async function serve(req, res, next) {
       config,
     )
       .meta.map(me => {
-        const name = me.name || me.property || me['http-equiv'];
+        const name = me.name || me.property;
         const content = me.content || me.value;
         if (name && content) {
           return `<meta ${name}="${content}">`;
