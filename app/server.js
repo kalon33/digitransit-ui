@@ -132,7 +132,7 @@ export default async function serve(req, res, next) {
     metadata.forEach(m => {
       const entries = Object.entries(m);
       res.write(
-        `<meta ${entries[0][0]}="${entries[0][1]}" ${entries[1][0]}="${entries[1][1]}"/>\n`,
+        `<meta ${entries[0][0]}="${entries[0][1]}" ${entries[1][0]}="${entries[1][1]}" data-react-helmet="true" />\n`,
       );
     });
 
