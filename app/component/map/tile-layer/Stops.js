@@ -159,15 +159,16 @@ class Stops {
   }
 
   getPromise(lang) {
-    const zoom = this.tile.coords.z + (this.tile.props.zoomOffset || 0);
+    const zoomWithOffset =
+      this.tile.coords.z + (this.tile.props.zoomOffset || 0);
     const stopsUrl =
-      zoom >= this.config.stopsMinZoom
+      zoomWithOffset >= this.config.stopsMinZoom
         ? this.config.URL.REALTIME_STOP_MAP
         : this.config.URL.STOP_MAP;
     return fetchWithLanguageAndSubscription(
-      `${getLayerBaseUrl(stopsUrl, lang)}${
-        this.tile.coords.z + (this.tile.props.zoomOffset || 0)
-      }/${this.tile.coords.x}/${this.tile.coords.y}.pbf`,
+      `${getLayerBaseUrl(stopsUrl, lang)}${zoomWithOffset}/${
+        this.tile.coords.x
+      }/${this.tile.coords.y}.pbf`,
       this.config,
       lang,
     ).then(res => {
@@ -195,8 +196,10 @@ class Stops {
           ) {
             const featureByCode = {};
             const hybridGtfsIdByCode = {};
-            const drawPlatforms = this.config.terminalStopsMaxZoom - 1 <= zoom;
-            const drawRailPlatforms = this.config.railPlatformsMinZoom <= zoom;
+            const drawPlatforms =
+              this.config.terminalStopsMaxZoom - 1 <= zoomWithOffset;
+            const drawRailPlatforms =
+              this.config.railPlatformsMinZoom <= zoomWithOffset;
             for (let i = 0, ref = stopLayer.length - 1; i <= ref; i++) {
               const feature = stopLayer.feature(i);
               if (
@@ -283,8 +286,7 @@ class Stops {
           }
           if (
             vt.layers.stations != null &&
-            this.config.terminalStopsMaxZoom >
-              this.tile.coords.z + (this.tile.props.zoomOffset || 0)
+            this.config.terminalStopsMaxZoom > zoomWithOffset
           ) {
             for (
               let i = 0, ref = vt.layers.stations.length - 1;

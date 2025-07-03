@@ -2040,7 +2040,6 @@ type Stop implements Node & PlaceInterface {
   gtfsId: String!
   "Global object ID provided by Relay. This value can be used to refetch this object using **node** query."
   id: ID!
-
   "Latitude of the stop (WGS 84)"
   lat: Float
   "Identifies whether this stop represents a stop or station."
