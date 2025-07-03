@@ -65,9 +65,9 @@ class Stops {
   static getName = () => 'stop';
 
   drawStop(feature, isHybrid, zoom, minZoom) {
-    const isHilighted =
-      this.tile.hilightedStops &&
-      this.tile.hilightedStops.includes(feature.properties.gtfsId);
+    const isHighlighted =
+      this.tile.highlightedStops &&
+      this.tile.highlightedStops.includes(feature.properties.gtfsId);
     let hasTrunkRoute = false;
     let hasLocalTramRoute = false;
     const routes = JSON.parse(feature.properties.routes);
@@ -96,7 +96,7 @@ class Stops {
         drawHybridStopIcon(
           this.tile,
           feature.geom,
-          isHilighted,
+          isHighlighted,
           this.config.colors.iconColors,
           hasTrunkRoute,
         );
@@ -117,12 +117,12 @@ class Stops {
       const noServiceOnServiceDay =
         feature.properties.servicesRunningOnServiceDate === false;
 
-      if (isHilighted && zoom <= minZoom) {
+      if (isHighlighted && zoom <= minZoom) {
         // Fetch stop details only when stop is highlighted and realtime layer is not used (zoom level)
         this.drawHighlighted(
           feature,
           mode,
-          isHilighted,
+          isHighlighted,
           noServiceOnServiceDay,
           stopOutOfService,
         );
@@ -134,7 +134,7 @@ class Stops {
           !isNull(feature.properties.platform)
             ? feature.properties.platform
             : false,
-          isHilighted,
+          isHighlighted,
           !!(
             feature.properties.type === 'FERRY' &&
             !isNull(feature.properties.code)
@@ -182,17 +182,17 @@ class Stops {
           this.features = [];
 
           // draw highlighted stops on lower zoom levels
-          const hasHilightedStops = !!(
-            this.tile.hilightedStops &&
-            this.tile.hilightedStops.length &&
-            this.tile.hilightedStops[0]
+          const hasHighlightedStops = !!(
+            this.tile.highlightedStops &&
+            this.tile.highlightedStops.length &&
+            this.tile.highlightedStops[0]
           );
           const stopLayer = vt.layers.stops || vt.layers.realtimeStops;
 
           if (
             stopLayer != null &&
             (this.tile.coords.z >= this.config.stopsMinZoom ||
-              hasHilightedStops)
+              hasHighlightedStops)
           ) {
             const featureByCode = {};
             const hybridGtfsIdByCode = {};
@@ -216,8 +216,8 @@ class Stops {
                   // if under zoom level limit, only draw highlighted stops on near you page
                   this.tile.coords.z < this.config.stopsMinZoom &&
                   !(
-                    hasHilightedStops &&
-                    this.tile.hilightedStops.includes(f.properties.gtfsId)
+                    hasHighlightedStops &&
+                    this.tile.highlightedStops.includes(f.properties.gtfsId)
                   )
                 ) {
                   continue; // eslint-disable-line no-continue
@@ -248,14 +248,14 @@ class Stops {
                       prevFeature.properties.type === 'BUS' ? f : prevFeature;
                     hybridGtfsIdByCode[featWithBus.properties.code] =
                       featWithBus.properties.gtfsId;
-                    // Also change hilighted stopId to the stop with type = BUS in hybrid stop cases
+                    // Also change highlighted stopId to the stop with type = BUS in hybrid stop cases
                     if (
-                      this.tile.hilightedStops &&
-                      this.tile.hilightedStops.includes(
+                      this.tile.highlightedStops &&
+                      this.tile.highlightedStops.includes(
                         featWithoutBus.properties.gtfsId,
                       )
                     ) {
-                      this.tile.hilightedStops = [
+                      this.tile.highlightedStops = [
                         featWithBus.properties.gtfsId,
                       ];
                     }
@@ -307,25 +307,27 @@ class Stops {
                 this.stopsToShowCheck(feature, true)
               ) {
                 [[feature.geom]] = feature.loadGeometry();
-                const isHilighted =
-                  this.tile.hilightedStops &&
-                  this.tile.hilightedStops.includes(feature.properties.gtfsId);
+                const isHighlighted =
+                  this.tile.highlightedStops &&
+                  this.tile.highlightedStops.includes(
+                    feature.properties.gtfsId,
+                  );
                 this.features.unshift(pick(feature, ['geom', 'properties']));
                 if (
                   isHybridStation &&
-                  (isHilighted ||
+                  (isHighlighted ||
                     this.tile.coords.z >= this.config.terminalStopsMinZoom)
                 ) {
                   drawHybridStationIcon(
                     this.tile,
                     feature.geom,
-                    isHilighted,
+                    isHighlighted,
                     this.config.colors.iconColors,
                   );
                 }
                 if (
                   !isHybridStation &&
-                  (isHilighted ||
+                  (isHighlighted ||
                     this.tile.coords.z >= this.config.terminalStopsMinZoom) &&
                   shouldRenderTerminalIcon(
                     feature.properties.type,
@@ -337,7 +339,7 @@ class Stops {
                     this.tile,
                     feature.geom,
                     feature.properties.type,
-                    isHilighted,
+                    isHighlighted,
                   );
                 }
               }
@@ -352,7 +354,7 @@ class Stops {
   drawHighlighted = (
     feature,
     mode,
-    isHilighted,
+    isHighlighted,
     noServiceOnServiceDay,
     stopOutOfService,
   ) => {
@@ -366,7 +368,7 @@ class Stops {
           !isNull(feature.properties.platform)
             ? feature.properties.platform
             : false,
-          isHilighted,
+          isHighlighted,
           !!(
             feature.properties.type === 'FERRY' &&
             !isNull(feature.properties.code)

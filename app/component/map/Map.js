@@ -60,7 +60,7 @@ export default class Map extends React.Component {
     lon: PropTypes.number,
     zoom: PropTypes.number,
     bounds: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
-    hilightedStops: PropTypes.arrayOf(PropTypes.string),
+    highlightedStops: PropTypes.arrayOf(PropTypes.string),
     stopsToShow: PropTypes.arrayOf(PropTypes.string),
     objectsToHide: PropTypes.objectOf(PropTypes.arrayOf(PropTypes.string)),
     lang: PropTypes.string.isRequired,
@@ -97,7 +97,7 @@ export default class Map extends React.Component {
     topButtons: null,
     mergeStops: true,
     mapLayers: { geoJson: {} },
-    hilightedStops: undefined,
+    highlightedStops: undefined,
     stopsToShow: undefined,
     onSelectLocation: undefined,
     geoJson: undefined,
@@ -268,7 +268,7 @@ export default class Map extends React.Component {
     const leafletObjNew = leafletObjs.concat([
       <VectorTileLayerContainer
         key="vectorTileLayerContainer"
-        hilightedStops={this.props.hilightedStops}
+        highlightedStops={this.props.highlightedStops}
         mergeStops={this.props.mergeStops}
         stopsToShow={this.props.stopsToShow}
         objectsToHide={this.props.objectsToHide}

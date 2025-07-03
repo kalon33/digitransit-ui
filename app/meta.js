@@ -9,14 +9,6 @@ export default function getMetadata(lang, host, url, config) {
 
     meta: [
       {
-        'http-equiv': 'x-ua-compatible',
-        content: 'ie=edge',
-      },
-      {
-        'http-equiv': 'Content-Language',
-        content: lang,
-      },
-      {
         name: 'charset',
         content: 'utf-8',
       },
