@@ -146,7 +146,11 @@ export default {
       },
       {
         name: 'menu-feedback',
-        href: 'https://www.fintraffic.fi/fi/feedback',
+        href: {
+          fi: 'https://www.fintraffic.fi/fi/feedback',
+          sv: 'https://www.fintraffic.fi/sv/feedback',
+          en: 'https://www.fintraffic.fi/en/feedback',
+        },
       },
       {
         name: 'about-this-service',
