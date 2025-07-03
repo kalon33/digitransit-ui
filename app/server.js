@@ -130,8 +130,9 @@ export default async function serve(req, res, next) {
     res.write(`<html lang="${locale}">\n`);
     res.write('<head>\n');
     metadata.forEach(m => {
+      const entries = Object.entries(m);
       res.write(
-        `<meta property="${m.name || m.property}" content="${m.content}"/>\n`,
+        `<meta ${entries[0][0]}="${entries[0][1]}" ${entries[1][0]}="${entries[1][1]}"/>\n`,
       );
     });
 
