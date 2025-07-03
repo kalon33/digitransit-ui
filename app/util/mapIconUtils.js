@@ -297,6 +297,19 @@ function drawIconImageBadge(
   );
 }
 
+function drawTopRightCornerIconBadge(
+  image,
+  tile,
+  iconTopLeftCornerX,
+  iconTopLeftCornerY,
+  width,
+  badgeSize,
+) {
+  const badgeX = iconTopLeftCornerX + width / 2; // badge left corner placed at the horizontal center of the icon
+  const badgeY = iconTopLeftCornerY - badgeSize / 3; // badge left corner placed a third above the icon
+  tile.ctx.drawImage(image, badgeX, badgeY);
+}
+
 function getSelectedIconCircleOffset(zoom, ratio) {
   if (zoom > 15) {
     return 94 / ratio;
@@ -372,6 +385,38 @@ function getSmallStopIcon(type, radius, color) {
   });
 }
 
+/**
+ * Draw a badge icon on top of the icon.
+ */
+function drawStopStatusBadge(
+  tile,
+  x,
+  y,
+  iconWidth,
+  stopOutOfService,
+  noServiceOnServiceDay,
+) {
+  const badgeSize = iconWidth * 0.75; // badge size is 75% of the icon size
+  const badgeImageId = stopOutOfService
+    ? `icon-icon_stop-closed-badge`
+    : `icon-icon_stop-temporarily-closed-badge`;
+
+  if (noServiceOnServiceDay || stopOutOfService) {
+    getImageFromSpriteCache(badgeImageId, badgeSize, badgeSize).then(
+      badgeImage => {
+        drawTopRightCornerIconBadge(
+          badgeImage,
+          tile,
+          x,
+          y,
+          iconWidth,
+          badgeSize,
+        );
+      },
+    );
+  }
+}
+
 const getMemoizedStopIcon = memoize(
   getSmallStopIcon,
   (type, radius, color, isHighlighted) =>
@@ -391,6 +436,8 @@ export function drawStopIcon(
   isHighlighted,
   isFerryTerminal,
   modeIconColors,
+  stopOutOfService,
+  noServiceOnServiceDay,
 ) {
   if (type === 'SUBWAY') {
     return;
@@ -439,6 +486,14 @@ export function drawStopIcon(
       color,
     ).then(image => {
       tile.ctx.drawImage(image, x, y);
+      drawStopStatusBadge(
+        tile,
+        x,
+        y,
+        width,
+        stopOutOfService,
+        noServiceOnServiceDay,
+      );
       if (drawNumber && platformNumber) {
         x += radius;
         y += radius;
