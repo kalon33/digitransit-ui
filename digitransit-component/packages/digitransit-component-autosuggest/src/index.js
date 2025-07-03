@@ -13,10 +13,7 @@ import {
 import { getStopName } from '@digitransit-search-util/digitransit-search-util-helpers';
 import getLabel from '@digitransit-search-util/digitransit-search-util-get-label';
 import Icon from '@digitransit-component/digitransit-component-icon';
-import moment from 'moment-timezone';
-import 'moment/locale/fi';
-import 'moment/locale/sv';
-import 'moment/locale/de';
+import { DateTime, Settings } from 'luxon';
 import isEqual from 'lodash/isEqual';
 import isEmpty from 'lodash/isEmpty';
 import translations from './helpers/translations';
@@ -24,7 +21,7 @@ import styles from './helpers/styles.scss';
 import MobileSearch from './helpers/MobileSearch';
 import withScrollLock from './helpers/withScrollLock';
 
-moment.locale('en');
+Settings.defaultLocale = 'en';
 
 i18next.init({
   fallbackLng: 'fi',
@@ -147,18 +144,19 @@ function getSuggestionContent(item) {
 }
 
 function translateFutureRouteSuggestionTime(item) {
-  const time = moment.unix(item.properties.time);
+  const time = DateTime.fromSeconds(Number(item.properties.time));
+  const now = DateTime.now();
   let str = item.properties.arriveBy
     ? i18next.t('arrival')
     : i18next.t('departure');
-  if (time.isSame(moment(), 'day')) {
+  if (time.hasSame(now, 'day')) {
     str = `${str} ${i18next.t('today-at')}`;
-  } else if (time.isSame(moment().add(1, 'day'), 'day')) {
+  } else if (time.hasSame(now.plus({ days: 1 }), 'day')) {
     str = `${str} ${i18next.t('tomorrow-at')}`;
   } else {
-    str = `${str} ${time.format('dd D.M.')}`;
+    str = `${str} ${time.toFormat('ccc d.L.')}`;
   }
-  str = `${str} ${moment(time).format('HH:mm')}`;
+  str = `${str} ${time.toFormat('HH:mm')}`;
   return str;
 }
 
@@ -355,9 +353,8 @@ class DTAutosuggest extends React.Component {
 
   constructor(props) {
     super(props);
-    moment.tz.setDefault(props.timeZone);
-    moment.locale(props.lang);
-
+    Settings.defaultZone = props.timeZone;
+    Settings.defaultLocale = props.lang;
     this.state = {
       value: props.value,
       suggestions: [],
@@ -661,7 +658,8 @@ class DTAutosuggest extends React.Component {
                 suggestion =>
                   suggestion.type !== 'FutureRoute' ||
                   (suggestion.type === 'FutureRoute' &&
-                    suggestion.properties.time > moment().unix()),
+                    suggestion.properties.time >
+                      DateTime.now().toUnixInteger()),
               )
               .map(suggestion => {
                 if (

@@ -110,6 +110,7 @@ export const ItineraryFragment = graphql`
         }
         vehicleParking {
           name
+          vehicleParkingId
         }
       }
     }
