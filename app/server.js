@@ -4,7 +4,7 @@ import polyfillLibrary from 'polyfill-library';
 import fs from 'fs';
 import path from 'path';
 import LRU from 'lru-cache';
-
+import meta from './meta';
 // configuration
 import { getConfiguration } from './config';
 import { getAnalyticsInitCode } from './util/analyticsUtils';
@@ -104,6 +104,22 @@ export default async function serve(req, res, next) {
     // 1. use locale from cookie (user selected) or default
     let locale = req.cookies.lang || config.defaultLanguage;
 
+    const metadata = meta(
+      locale,
+      req.hostname,
+      `https://${req.hostname}${req.originalUrl}`,
+      config,
+    )
+      .meta.map(me => {
+        const name = me.name || me.property || me['http-equiv'];
+        const content = me.content || me.value;
+        if (name && content) {
+          return `<meta ${name}="${content}">`;
+        }
+        return '';
+      })
+      .filter(a => a !== '');
+
     if (config.availableLanguages.indexOf(locale) === -1) {
       locale = config.defaultLanguage;
     }
@@ -122,6 +138,9 @@ export default async function serve(req, res, next) {
     res.write('<!doctype html>\n');
     res.write(`<html lang="${locale}">\n`);
     res.write('<head>\n');
+    metadata.forEach(m => {
+      res.write(`${m}\n`);
+    });
 
     // Write preload hints before doing anything else
     if (process.env.NODE_ENV !== 'development') {
