@@ -13,9 +13,9 @@ const FULL_CIRCLE = Math.PI * 2;
  *
  * @param {string} type one of 'stop', 'citybike', 'hybrid', 'scooter'
  * @param {number} zoom
- * @param {bool} isHilighted
+ * @param {bool} isHighlighted
  */
-export function getStopIconStyles(type, zoom, isHilighted) {
+export function getStopIconStyles(type, zoom, isHighlighted) {
   const styles = {
     stop: {
       13: {
@@ -110,8 +110,8 @@ export function getStopIconStyles(type, zoom, isHilighted) {
   if (!styles[type]) {
     return null;
   }
-  if (zoom < 16 && isHilighted) {
-    // use bigger icon for hilighted stops always
+  if (zoom < 16 && isHighlighted) {
+    // use bigger icon for highlighted stops always
     return styles[type][15];
   }
   if (zoom < 13 && type !== 'citybike') {
@@ -374,8 +374,8 @@ function getSmallStopIcon(type, radius, color) {
 
 const getMemoizedStopIcon = memoize(
   getSmallStopIcon,
-  (type, radius, color, isHilighted) =>
-    `${type}_${radius}_${color}_${isHilighted}`,
+  (type, radius, color, isHighlighted) =>
+    `${type}_${radius}_${color}_${isHighlighted}`,
 );
 
 /**
@@ -388,7 +388,7 @@ export function drawStopIcon(
   geom,
   type,
   platformNumber,
-  isHilighted,
+  isHighlighted,
   isFerryTerminal,
   modeIconColors,
 ) {
@@ -402,7 +402,7 @@ export function drawStopIcon(
       : modeIconColors[mode];
   const zoom = tile.coords.z - 1;
   const drawNumber = zoom >= 16;
-  const styles = getStopIconStyles('stop', zoom, isHilighted);
+  const styles = getStopIconStyles('stop', zoom, isHighlighted);
   if (!styles) {
     return;
   }
@@ -421,7 +421,7 @@ export function drawStopIcon(
       isFerryTerminal ? 'FERRY_TERMINAL' : type,
       radius,
       color,
-      isHilighted,
+      isHighlighted,
     ).then(image => {
       tile.ctx.drawImage(image, x, y);
     });
@@ -458,7 +458,7 @@ export function drawStopIcon(
       }
     });
 
-    if (isHilighted) {
+    if (isHighlighted) {
       if (isFerryTerminal) {
         getImageFromSpriteCache(
           `icon-icon_station_highlight`,
@@ -500,12 +500,12 @@ export function drawStopIcon(
 export function drawHybridStopIcon(
   tile,
   geom,
-  isHilighted,
+  isHighlighted,
   modeIconColors,
   hasTrunkRoute = false,
 ) {
   const zoom = tile.coords.z - 1;
-  const styles = getStopIconStyles('hybrid', zoom, isHilighted);
+  const styles = getStopIconStyles('hybrid', zoom, isHighlighted);
   if (!styles) {
     return;
   }
@@ -550,7 +550,7 @@ export function drawHybridStopIcon(
       height,
     ).then(image => {
       tile.ctx.drawImage(image, x, y);
-      if (isHilighted) {
+      if (isHighlighted) {
         tile.ctx.beginPath();
         // eslint-disable-next-line no-param-reassign
         tile.ctx.lineWidth = 2;
@@ -654,10 +654,10 @@ export function drawCitybikeIcon(
   available,
   iconName,
   showAvailability,
-  isHilighted,
+  isHighlighted,
 ) {
   const zoom = tile.coords.z - 1;
-  const styles = getStopIconStyles('citybike', zoom, isHilighted);
+  const styles = getStopIconStyles('citybike', zoom, isHighlighted);
   const { style } = styles;
   let { width, height } = styles;
   width *= tile.scaleratio;
@@ -688,7 +688,7 @@ export function drawCitybikeIcon(
     }
     getImageFromSpriteCache(icon, width, height).then(image => {
       tile.ctx.drawImage(image, x, y);
-      if (isHilighted) {
+      if (isHighlighted) {
         drawSelectionCircle(tile, x, y, radius, false, false);
       }
     });
@@ -723,7 +723,7 @@ export function drawCitybikeIcon(
         tile.ctx.fillText(available, x, y);
         /* eslint-enable no-param-reassign */
       }
-      if (isHilighted) {
+      if (isHighlighted) {
         drawSelectionCircle(tile, iconX, iconY, radius, true, true);
       }
     });
@@ -734,9 +734,9 @@ export function drawCitybikeIcon(
  * Draw an icon for rental vehicles.
  * Determine icon size based on zoom level.
  */
-export function drawScooterIcon(tile, geom, iconName, isHilighted) {
+export function drawScooterIcon(tile, geom, iconName, isHighlighted) {
   const zoom = tile.coords.z - 1;
-  const styles = getStopIconStyles('scooter', zoom, isHilighted);
+  const styles = getStopIconStyles('scooter', zoom, isHighlighted);
   const { style } = styles;
   let { width, height } = styles;
   width *= tile.scaleratio;
@@ -753,7 +753,7 @@ export function drawScooterIcon(tile, geom, iconName, isHilighted) {
     const icon = `${iconName}-lollipop`;
     getImageFromSpriteCache(icon, width, height).then(image => {
       tile.ctx.drawImage(image, x, y);
-      if (isHilighted) {
+      if (isHighlighted) {
         drawSelectionCircle(tile, x, y, radius, false, false);
       }
     });
@@ -768,14 +768,14 @@ export function drawScooterIcon(tile, geom, iconName, isHilighted) {
 
     getImageFromSpriteCache(icon, width, height).then(image => {
       tile.ctx.drawImage(image, x, y);
-      if (isHilighted) {
+      if (isHighlighted) {
         drawSelectionCircle(tile, iconX, iconY, radius, true, false);
       }
     });
   }
 }
 
-export function drawTerminalIcon(tile, geom, type, isHilighted) {
+export function drawTerminalIcon(tile, geom, type, isHighlighted) {
   const zoom = tile.coords.z - 1;
   const styles = getTerminalIconStyles(zoom);
   if (!styles) {
@@ -795,7 +795,7 @@ export function drawTerminalIcon(tile, geom, type, isHilighted) {
       geom.y / tile.ratio - height / 2,
     );
   });
-  if (isHilighted) {
+  if (isHighlighted) {
     getImageFromSpriteCache(`icon-icon_station_highlight`, width, height).then(
       image => {
         tile.ctx.drawImage(
@@ -813,7 +813,7 @@ export function drawTerminalIcon(tile, geom, type, isHilighted) {
 /**
  * Draw icon for hybrid stations, meaning BUS and TRAM station in the same place.
  */
-export function drawHybridStationIcon(tile, geom, isHilighted) {
+export function drawHybridStationIcon(tile, geom, isHighlighted) {
   const zoom = tile.coords.z - 1;
   const styles = getTerminalIconStyles(zoom);
   if (!styles) {
@@ -832,7 +832,7 @@ export function drawHybridStationIcon(tile, geom, isHilighted) {
       );
     },
   );
-  if (isHilighted) {
+  if (isHighlighted) {
     getImageFromSpriteCache(
       'icon-icon_hybrid_station_highlight',
       width,
@@ -855,14 +855,14 @@ export function drawParkAndRideIcon(
   geom,
   width,
   height,
-  isHilighted = false,
+  isHighlighted = false,
 ) {
   const img =
     type === ParkTypes.Bicycle ? 'icon-icon_bike-park' : 'icon-icon_car-park';
   getImageFromSpriteCache(img, width, height).then(image => {
     drawIconImage(image, tile, geom, width, height);
   });
-  if (isHilighted) {
+  if (isHighlighted) {
     getImageFromSpriteCache(`icon-icon_station_highlight`, width, height).then(
       image => {
         tile.ctx.drawImage(

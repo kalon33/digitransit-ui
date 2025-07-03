@@ -373,7 +373,7 @@ function NearYouMap(
     );
   }
 
-  const hilightedStops = () => {
+  const highlightedStops = () => {
     const stopsAndStations = handleStopsAndStations(sortedStopEdges);
     if (Array.isArray(stopsAndStations) && stopsAndStations.length > 0) {
       return [
@@ -392,7 +392,7 @@ function NearYouMap(
 
   const mapProps = {
     stopsToShow: mode === 'FAVORITE' ? Array.from(favouriteIds) : undefined,
-    hilightedStops: hilightedStops(),
+    highlightedStops: highlightedStops(),
     mergeStops: false,
     bounds,
     leafletObjs,
