@@ -109,16 +109,7 @@ export default async function serve(req, res, next) {
       req.hostname,
       `https://${req.hostname}${req.originalUrl}`,
       config,
-    )
-      .meta.map(me => {
-        const name = me.name || me.property;
-        const content = me.content || me.value;
-        if (name && content) {
-          return `<meta ${name}="${content}">`;
-        }
-        return '';
-      })
-      .filter(a => a !== '');
+    ).meta.filter(a => a !== '');
 
     if (config.availableLanguages.indexOf(locale) === -1) {
       locale = config.defaultLanguage;
@@ -139,7 +130,9 @@ export default async function serve(req, res, next) {
     res.write(`<html lang="${locale}">\n`);
     res.write('<head>\n');
     metadata.forEach(m => {
-      res.write(`${m}\n`);
+      res.write(
+        `<meta property="${m.name || m.property}" content="${m.content}"/>\n`,
+      );
     });
 
     // Write preload hints before doing anything else
