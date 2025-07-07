@@ -550,12 +550,12 @@ export function mergeExternalTransitPlan(
   externalPlan,
   transitPlan,
   arriveBy,
-  allowedFlexRouteTypes,
+  allowedExternalFlexRouteTypes,
   includeTaxiSuggestions,
 ) {
   const externalTransitEdges = filterItinerariesByRouteType(
     externalPlan.edges,
-    allowedFlexRouteTypes,
+    allowedExternalFlexRouteTypes,
     includeTaxiSuggestions,
   );
   return sortAndMergePlans(externalTransitEdges, transitPlan, arriveBy);

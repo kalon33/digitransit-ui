@@ -453,9 +453,12 @@ export default {
   ],
   navigation: true,
 
-  experimental: {
-    allowFlexJourneys: true,
-    allowDirectFlexJourneys: true,
+  flex: {
+    internalFlexEnabled: IS_DEV,
+    allowTaxiJourneys: true,
+    directOnlyTaxiJourneys: true,
+    internalAgencies: ['Kirkkonummi1:612', 'Kirkkonummi2:612'],
+    externalAgencies: ['02Taksi:02_taksi'],
   },
 
   devAnalytics: true,
