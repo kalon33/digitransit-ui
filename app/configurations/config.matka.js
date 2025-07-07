@@ -457,7 +457,7 @@ export default {
     internalFlexEnabled: IS_DEV,
     allowTaxiJourneys: true,
     directOnlyTaxiJourneys: true,
-    internalAgencies: ['Kirkkonummi1:612', 'Kirkkonummi2:612'],
+    internalAgencies: ['KirkkonummiE:612', 'KirkkonummiP:612'],
     externalAgencies: ['02Taksi:02_taksi'],
   },
 
