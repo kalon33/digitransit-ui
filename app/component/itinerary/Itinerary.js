@@ -428,10 +428,7 @@ const Itinerary = (
     // don't want to add it twice in the same place with the same key, so we
     // record whether we added it here at the first place.
     let viaAdded = false;
-    if (
-      leg.intermediatePlace ||
-      getViaPointIndex(leg, intermediatePlaces) > -1
-    ) {
+    if (leg.intermediatePlace || leg.from.name?.indexOf('Via') > -1) {
       onlyIconLegs += 1;
       legs.push(<ViaLeg key={`via_${leg.mode}_${startMs}`} />);
       viaAdded = true;
