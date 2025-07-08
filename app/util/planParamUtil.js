@@ -313,11 +313,29 @@ export function getPlanParams(
   const intermediateLocations = getIntermediatePlaces({
     intermediatePlaces,
   });
-  const via = intermediateLocations.map(loc => ({
-    passThrough: {
-      stopLocationIds: [loc.gtfsId],
-    },
-  }));
+  const via = intermediateLocations
+    .map(loc => {
+      if (loc.gtfsId) {
+        return {
+          passThrough: {
+            stopLocationIds: [loc.gtfsId],
+          },
+        };
+      }
+      if (loc.lat && loc.lon) {
+        return {
+          visit: {
+            coordinate: {
+              latitude: loc.lat,
+              longitude: loc.lon,
+            },
+          },
+        };
+      }
+      return null;
+    })
+    .filter(Boolean);
+
   const distance = estimateItineraryDistance(
     fromLocation,
     toLocation,

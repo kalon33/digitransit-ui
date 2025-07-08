@@ -128,9 +128,9 @@ const ItineraryPageMap = (
   let onSelectLocation;
 
   if (isLocationPopupEnabled) {
-    // max 5 viapoints
     locationPopup =
-      config.viaPointsEnabled && viaPoints.length < 5
+      config.viaPointsEnabled &&
+      (!config.viaPointsMax || viaPoints.length < config.viaPointsMax)
         ? 'all'
         : 'origindestination';
     onSelectLocation = (item, id) =>

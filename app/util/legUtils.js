@@ -238,6 +238,17 @@ function isViaPointMatch(stop, viaPoints) {
   );
 }
 
+function getViaPointAddress(from, viaPoints) {
+  if (!from || !from.lat || !from.lon) {
+    return null;
+  }
+  return viaPoints.find(
+    p =>
+      p.lat.toFixed(5) === from.lat.toFixed(5) &&
+      p.lon.toFixed(5) === from.lon.toFixed(5),
+  );
+}
+
 /**
  * Adds intermediate: true to legs if their start point should have a via point
  * marker, possibly splitting legs in case the via point belongs in the middle.
@@ -309,24 +320,29 @@ export function markViaPoints(originalLegs, viaPlaces) {
   const legs = [];
   const viaPoints = viaPlaces.map(p => p.gtfsId);
   originalLegs.forEach(leg => {
-    const isViaPoint = isViaPointMatch(leg.from.stop, viaPoints);
+    const viaAddress = getViaPointAddress(leg.from, viaPlaces)?.address;
+    const isViaPoint = isViaPointMatch(leg.from.stop, viaPoints) || viaAddress;
     if (leg.intermediatePlaces) {
       const intermediatePlaces = [];
       leg.intermediatePlaces.forEach(place => {
         intermediatePlaces.push({
           ...place,
-          isViaPoint: isViaPointMatch(place.stop, viaPoints),
+          isViaPoint:
+            isViaPointMatch(place.stop, viaPoints) ||
+            getViaPointAddress(place.from, viaPlaces),
         });
       });
       legs.push({
         ...leg,
         intermediatePlaces,
         isViaPoint,
+        viaAddress,
       });
     } else {
       legs.push({
         ...leg,
         isViaPoint,
+        viaAddress,
       });
     }
   });
