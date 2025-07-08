@@ -250,7 +250,9 @@ const getViaPointIndex = (leg, intermediatePlaces) => {
     return -1;
   }
   return intermediatePlaces.findIndex(
-    place => place.lat === leg.from.lat && place.lon === leg.from.lon,
+    place =>
+      place.lat?.toFixed(5) === leg.from.lat?.toFixed(5) &&
+      place.lon?.toFixed(5) === leg.from.lon?.toFixed(5),
   );
 };
 
@@ -426,7 +428,10 @@ const Itinerary = (
     // don't want to add it twice in the same place with the same key, so we
     // record whether we added it here at the first place.
     let viaAdded = false;
-    if (leg.intermediatePlace) {
+    if (
+      leg.intermediatePlace ||
+      getViaPointIndex(leg, intermediatePlaces) > -1
+    ) {
       onlyIconLegs += 1;
       legs.push(<ViaLeg key={`via_${leg.mode}_${startMs}`} />);
       viaAdded = true;
