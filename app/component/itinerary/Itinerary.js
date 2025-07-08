@@ -250,9 +250,7 @@ const getViaPointIndex = (leg, intermediatePlaces) => {
     return -1;
   }
   return intermediatePlaces.findIndex(
-    place =>
-      place.lat?.toFixed(5) === leg.from.lat?.toFixed(5) &&
-      place.lon?.toFixed(5) === leg.from.lon?.toFixed(5),
+    place => place.lat === leg.from.lat && place.lon === leg.from.lon,
   );
 };
 

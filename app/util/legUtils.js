@@ -239,7 +239,7 @@ function isViaPointMatch(stop, viaPoints) {
 }
 
 function getViaPointAddress(from, viaPoints) {
-  if (!from || !from.lat || !from.lon) {
+  if (!from || !from.lat || !from.lon || from.name?.indexOf('Via') < 0) {
     return null;
   }
   return viaPoints.find(
