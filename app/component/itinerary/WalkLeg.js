@@ -125,6 +125,7 @@ function WalkLeg(
         appendClass={appendClass}
         index={index}
         modeClassName={modeClassName}
+        isVia={!!leg.viaAddress}
       />
       <div
         className={`small-9 columns itinerary-instruction-column ${leg.mode.toLowerCase()}`}
@@ -219,7 +220,9 @@ function WalkLeg(
                       />
                     </div>
                   )}
-                  {!returnNotice && !alightNotice && leg[toOrFrom].name}
+                  {!returnNotice &&
+                    !alightNotice &&
+                    (leg.viaAddress || leg[toOrFrom].name)}
                   {leg[toOrFrom].stop && !alightNotice && (
                     <Icon
                       img="icon-icon_arrow-collapse--right"
