@@ -327,16 +327,13 @@ export function markViaPoints(originalLegs, viaPlaces) {
       leg.intermediatePlaces.forEach(place => {
         intermediatePlaces.push({
           ...place,
-          isViaPoint:
-            isViaPointMatch(place.stop, viaPoints) ||
-            getViaPointAddress(place.from, viaPlaces),
+          isViaPoint: isViaPointMatch(place.stop, viaPoints),
         });
       });
       legs.push({
         ...leg,
         intermediatePlaces,
         isViaPoint,
-        viaAddress,
       });
     } else {
       legs.push({
