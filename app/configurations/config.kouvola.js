@@ -77,6 +77,11 @@ export default configMerger(walttiConfig, {
     twitter: {
       site: '@kouvolakaupunki',
     },
+    image: {
+      url: 'assets/social-share-kouvola.png',
+      width: 134,
+      height: 134,
+    },
   },
 
   title: APP_TITLE,

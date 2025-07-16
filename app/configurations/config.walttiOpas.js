@@ -32,6 +32,11 @@ export default configMerger(walttiConfig, {
   socialMedia: {
     title: APP_TITLE,
     description: APP_DESCRIPTION,
+    image: {
+      url: 'assets/waltti-logo-secondary.png',
+      width: 1795,
+      height: 1313,
+    },
   },
 
   title: APP_TITLE,

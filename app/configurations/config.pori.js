@@ -25,6 +25,11 @@ export default configMerger(walttiConfig, {
   socialMedia: {
     title: APP_TITLE,
     description: APP_DESCRIPTION,
+    image: {
+      url: 'assets/social-share-pori.png',
+      width: 400,
+      height: 116,
+    },
   },
 
   title: APP_TITLE,

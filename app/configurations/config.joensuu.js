@@ -37,6 +37,11 @@ export default configMerger(walttiConfig, {
   socialMedia: {
     title: APP_TITLE,
     description: APP_DESCRIPTION,
+    image: {
+      url: 'assets/joensuu-favicon.png',
+      width: 346,
+      height: 80,
+    },
   },
 
   areaPolygon: [
