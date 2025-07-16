@@ -5,7 +5,7 @@ export default function getMetadata(lang, host, url, config) {
   const imageHost = config.URL.ASSET_URL || `https://${host}`;
   let manifest = {};
   try {
-    // eslint-disable-next-line global-require
+    // eslint-disable-next-line global-require, import/no-unresolved
     manifest = require('../manifest.json');
   } catch (e) {
     manifest = {};
