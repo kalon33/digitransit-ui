@@ -642,8 +642,7 @@ class NearYouPage extends React.Component {
           classname={
             this.props.breakpoint === 'large' ? 'swipe-desktop-view' : ''
           }
-          ariaFrom="swipe-stops-near-you"
-          ariaFromHeader="swipe-stops-near-you-header"
+          ariaRole="swipe-stops-near-you-tab"
         />
       );
     }
