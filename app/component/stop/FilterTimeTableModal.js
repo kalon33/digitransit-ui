@@ -85,12 +85,10 @@ class FilterTimeTableModal extends React.Component {
       )
       .filter(o => o)
       .sort(routeCompare)
-      // deduplicate identical headsign + shortName combinations
+      // deduplicate patterns with same code
       .filter(
-        (li, index, self) =>
-          self
-            .map(route => `${route.headsign}:${route.shortName}`)
-            .indexOf(`${li.headsign}:${li.shortName}`) === index,
+        (pattern, index, self) =>
+          self.map(itm => itm.code).indexOf(pattern.code) === index,
       );
 
     routesWithStopTimes.forEach(o => {
