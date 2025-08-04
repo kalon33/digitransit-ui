@@ -814,12 +814,15 @@ class ScheduleContainer extends PureComponent {
     if ((!this.testNum || this.testNum !== 0) && isBeforeFirstDataDate) {
       this.redirectWithServiceDay(firstDataDate);
     } else if ((isBeforeNextWeek && firstWeekEmpty) || firstDepartureDate) {
-      if (
-        firstDepartureDate &&
-        !DateTime.now().hasSame(firstDepartureDate, 'day') &&
-        !isSameOrAfterNextWeek
-      ) {
-        this.redirectWithServiceDay(firstDepartureDate || nextMonday);
+      if (!isSameOrAfterNextWeek) {
+        if (
+          firstDepartureDate &&
+          !DateTime.now().hasSame(firstDepartureDate, 'day')
+        ) {
+          this.redirectWithServiceDay(firstDepartureDate);
+        } else {
+          this.redirectWithServiceDay(nextMonday);
+        }
       }
     }
 
