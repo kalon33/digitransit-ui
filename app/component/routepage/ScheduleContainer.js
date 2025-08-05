@@ -114,7 +114,7 @@ const isEmptyWeek = departures => {
  * Returns the date of first departure
  * @param {*} departures
  * @param {DateTime} dateIn
- * @returns {DateTime}
+ * @returns {DateTime|undefined}
  */
 const getFirstDepartureDate = (departures, dateIn) => {
   if (departures.length > 0) {
@@ -814,11 +814,15 @@ class ScheduleContainer extends PureComponent {
     if ((!this.testNum || this.testNum !== 0) && isBeforeFirstDataDate) {
       this.redirectWithServiceDay(firstDataDate);
     } else if ((isBeforeNextWeek && firstWeekEmpty) || firstDepartureDate) {
-      if (
-        !DateTime.now().hasSame(firstDepartureDate, 'day') &&
-        !isSameOrAfterNextWeek
-      ) {
-        this.redirectWithServiceDay(firstDepartureDate || nextMonday);
+      if (!isSameOrAfterNextWeek) {
+        if (
+          firstDepartureDate &&
+          !DateTime.now().hasSame(firstDepartureDate, 'day')
+        ) {
+          this.redirectWithServiceDay(firstDepartureDate);
+        } else {
+          this.redirectWithServiceDay(nextMonday);
+        }
       }
     }
 
