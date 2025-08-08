@@ -106,6 +106,8 @@ export default configMerger(walttiConfig, {
     },
   },
 
+  nearYouModes: ['bus', 'rail', 'citybike'],
+
   menu: {
     copyright: { label: `© Kuopio ${walttiConfig.YEAR}` },
     content: [
