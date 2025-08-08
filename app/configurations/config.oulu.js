@@ -171,7 +171,6 @@ export default configMerger(walttiConfig, {
     en: 'https://www.osl.fi/en/tickets-and-fares/osl-app/',
   },
   showTicketPrice: true,
-  showTicketLinkOnlyWhenTesting: true,
   ticketLinkOperatorCode: 50229,
   appName: 'oslapp',
 });
