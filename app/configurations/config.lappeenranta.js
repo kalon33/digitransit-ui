@@ -61,6 +61,8 @@ export default configMerger(walttiConfig, {
     },
   },
 
+  nearYouModes: ['bus', 'citybike'],
+
   feedIds: ['Lappeenranta'],
 
   useSearchPolygon: true,

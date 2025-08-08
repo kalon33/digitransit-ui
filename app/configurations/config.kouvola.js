@@ -41,6 +41,8 @@ export default configMerger(walttiConfig, {
     },
   },
 
+  nearYouModes: ['bus', 'citybike'],
+
   vehicleRental: {
     networks: {
       donkey_kouvola: {

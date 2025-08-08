@@ -46,6 +46,8 @@ export default configMerger(walttiConfig, {
     },
   },
 
+  nearYouModes: ['bus', 'ferry', 'citybike'],
+
   vehicleRental: {
     networks: {
       donkey_kotka: {
