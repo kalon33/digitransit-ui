@@ -436,7 +436,7 @@ class DTAutosuggest extends React.Component {
       renderMobileSearch: false,
       value: this.props.value,
     });
-    if (this.props.isMobile) {
+    if (this.props.isMobile && this.state.renderMobileSearch) {
       this.closeMobileSearch();
     }
   };
@@ -504,7 +504,7 @@ class DTAutosuggest extends React.Component {
           ) {
             this.props.focusChange();
           }
-          if (this.props.isMobile) {
+          if (this.props.isMobile && this.state.renderMobileSearch) {
             this.closeMobileSearch();
           }
         },
@@ -561,7 +561,7 @@ class DTAutosuggest extends React.Component {
                 this.props.id,
               );
             }
-            if (this.props.isMobile) {
+            if (this.props.isMobile && this.state.renderMobileSearch) {
               this.closeMobileSearch();
             }
             if (
@@ -821,6 +821,7 @@ class DTAutosuggest extends React.Component {
         this.onSuggestionsClearRequested();
       },
     );
+    this.input.focus();
   };
 
   keyDown = event => {
