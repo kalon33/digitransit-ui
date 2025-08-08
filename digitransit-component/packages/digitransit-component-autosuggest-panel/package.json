@@ -28,7 +28,7 @@
   "author": "Digitransit Authors",
   "license": "(AGPL-3.0 OR EUPL-1.2)",
   "peerDependencies": {
-    "@digitransit-component/digitransit-component-autosuggest": "^4.0.0",
+    "@digitransit-component/digitransit-component-autosuggest": "^4.1.0",
     "@digitransit-component/digitransit-component-icon": "^1.0.2",
     "@hsl-fi/sass": "^0.2.0",
     "classnames": "2.5.1",
