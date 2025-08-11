@@ -324,7 +324,7 @@ class DepartureListContainer extends Component {
         );
       }
 
-      const id = `${departure.pattern.code}:${departure.time}:${departure.trip.gtfsId}`;
+      const id = `${departure.pattern.code}:${departure.time}:${departure.trip.gtfsId}:${departure.stop.gtfsId}`;
       const dropoffMessage = getDropoffMessage(
         departure.hasOnlyDropoff,
         departure.hasNoStop,
@@ -436,6 +436,7 @@ const containerComponent = createFragmentContainer(DepartureListContainer, {
       dropoffType
       headsign
       stop {
+        gtfsId
         id
         code
         platformCode

@@ -742,7 +742,8 @@ const Itinerary = (
               firstDepartureStopType: (
                 <FormattedMessage id={firstDepartureStopType} />
               ),
-              firstDepartureStop: stopNames[0],
+              // In case the first leg is a scooter leg, stopNames[0] is an empty string
+              firstDepartureStop: stopNames[0] || stopNames[1],
               firstDeparturePlatform,
             }}
           />
