@@ -297,7 +297,14 @@ const SuggestionItem = pure(
       <span
         className={`${styles[iconId]} ${item?.properties?.mode?.toLowerCase()}`}
       >
-        <Icon color={modeIconColor || iconColor} img={iconId} />
+        <Icon
+          color={
+            item.properties.color
+              ? `#${item.properties.color}`
+              : modeIconColor || iconColor
+          }
+          img={iconId}
+        />
       </span>
     );
     let ariaParts;
