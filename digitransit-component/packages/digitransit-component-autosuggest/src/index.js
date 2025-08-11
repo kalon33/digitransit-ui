@@ -822,6 +822,8 @@ class DTAutosuggest extends React.Component {
       },
     );
     this.input.focus();
+    // This closes the mobile keyboard
+    this.input.blur();
   };
 
   keyDown = event => {
