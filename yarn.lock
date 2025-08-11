@@ -2153,8 +2153,6 @@ __metadata:
 "@digitransit-component/digitransit-component-suggestion-item@^2.0.8, @digitransit-component/digitransit-component-suggestion-item@workspace:digitransit-component/packages/digitransit-component-suggestion-item":
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-suggestion-item@workspace:digitransit-component/packages/digitransit-component-suggestion-item"
-  dependencies:
-    recompose: 0.30.0
   peerDependencies:
     "@digitransit-component/digitransit-component-icon": ^1.0.2
     "@hsl-fi/sass": " ^0.2.0"

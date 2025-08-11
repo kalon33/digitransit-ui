@@ -299,7 +299,7 @@ const SuggestionItem = pure(
       >
         <Icon
           color={
-            item.properties.color
+            item?.properties?.color
               ? `#${item.properties.color}`
               : modeIconColor || iconColor
           }

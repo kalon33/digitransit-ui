@@ -28,9 +28,6 @@
   ],
   "author": "Digitransit Authors",
   "license": "(AGPL-3.0 OR EUPL-1.2)",
-  "dependencies": {
-    "recompose": "0.30.0"
-  },
   "peerDependencies": {
     "@digitransit-component/digitransit-component-icon": "^1.0.2",
     "@hsl-fi/sass": " ^0.2.0",
