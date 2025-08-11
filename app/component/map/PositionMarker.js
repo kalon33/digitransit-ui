@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { memo } from 'react';
 import connectToStores from 'fluxible-addons-react/connectToStores';
-import pure from 'recompose/pure';
 import Marker from 'react-leaflet/es/Marker';
 import { default as L } from 'leaflet';
 
@@ -37,7 +36,7 @@ PositionMarker.defaultProps = {
 };
 
 export default connectToStores(
-  pure(PositionMarker),
+  memo(PositionMarker),
   ['PositionStore'],
   context => {
     const coordinates = context.getStore('PositionStore').getLocationState();

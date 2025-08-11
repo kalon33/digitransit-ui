@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, memo } from 'react';
 import { createFragmentContainer, graphql } from 'react-relay';
 import cx from 'classnames';
-import pure from 'recompose/pure';
 import { matchShape } from 'found';
 import debounce from 'lodash/debounce';
 import RouteControlPanel from './RouteControlPanel';
@@ -79,7 +78,7 @@ TripStopsContainer.defaultProps = {
   route: undefined,
 };
 
-const pureComponent = pure(withBreakpoint(TripStopsContainer));
+const pureComponent = memo(withBreakpoint(TripStopsContainer));
 const containerComponent = createFragmentContainer(pureComponent, {
   trip: graphql`
     fragment TripStopsContainer_trip on Trip {
