@@ -1,8 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import cx from 'classnames';
-import pure from 'recompose/pure';
 import Icon from '@digitransit-component/digitransit-component-icon';
 import styles from './helpers/styles.scss';
 
@@ -263,7 +262,7 @@ function hasVehicleStationCode(stationId) {
  *    loading={false}
  * />
  */
-const SuggestionItem = pure(
+const SuggestionItem = memo(
   ({
     item,
     content,
@@ -524,11 +523,32 @@ SuggestionItem.propTypes = {
     address: PropTypes.string,
     selectedIconId: PropTypes.string,
     iconColor: PropTypes.string,
+    translatedText: PropTypes.string,
+    properties: PropTypes.shape({
+      layer: PropTypes.string,
+      color: PropTypes.string,
+      localadmin: PropTypes.string,
+      mode: PropTypes.string,
+      id: PropTypes.string,
+      source: PropTypes.string,
+      arrowClicked: PropTypes.bool,
+      destination: PropTypes.shape({
+        name: PropTypes.string,
+        localadmin: PropTypes.string,
+      }),
+      origin: PropTypes.shape({
+        name: PropTypes.string,
+        localadmin: PropTypes.string,
+      }),
+    }),
   }),
   // eslint-disable-next-line
   content: PropTypes.array,
   className: PropTypes.string,
   isMobile: PropTypes.bool,
+  ariaFavouriteString: PropTypes.string,
+  loading: PropTypes.bool,
+  fillInput: PropTypes.func.isRequired,
   color: PropTypes.string,
   accessiblePrimaryColor: PropTypes.string,
   fontWeights: PropTypes.shape({
@@ -540,6 +560,8 @@ SuggestionItem.propTypes = {
 };
 
 SuggestionItem.defaultProps = {
+  item: undefined,
+  loading: false,
   className: undefined,
   isMobile: false,
   color: '#007ac9',
