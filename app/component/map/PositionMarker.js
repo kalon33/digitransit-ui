@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import Marker from 'react-leaflet/es/Marker';
 import { default as L } from 'leaflet';
@@ -35,20 +35,16 @@ PositionMarker.defaultProps = {
   coordinates: null,
 };
 
-export default connectToStores(
-  memo(PositionMarker),
-  ['PositionStore'],
-  context => {
-    const coordinates = context.getStore('PositionStore').getLocationState();
+export default connectToStores(PositionMarker, ['PositionStore'], context => {
+  const coordinates = context.getStore('PositionStore').getLocationState();
 
-    return {
-      coordinates: coordinates.hasLocation
-        ? {
-            lat: coordinates.lat,
-            lon: coordinates.lon,
-            address: coordinates.address,
-          }
-        : null,
-    };
-  },
-);
+  return {
+    coordinates: coordinates.hasLocation
+      ? {
+          lat: coordinates.lat,
+          lon: coordinates.lon,
+          address: coordinates.address,
+        }
+      : null,
+  };
+});

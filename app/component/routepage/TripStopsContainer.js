@@ -11,7 +11,12 @@ import withBreakpoint from '../../util/withBreakpoint';
 import ScrollableWrapper from '../ScrollableWrapper';
 import { routeShape } from '../../util/shapes';
 
-function TripStopsContainer({ breakpoint, match, trip, route }) {
+const TripStopsContainer = memo(function TripStopsContainer({
+  breakpoint,
+  match,
+  trip,
+  route,
+}) {
   const [keepTracking, setTracking] = useState(true);
   const humanScrolling = useRef(true);
 
@@ -58,7 +63,7 @@ function TripStopsContainer({ breakpoint, match, trip, route }) {
       />
     </ScrollableWrapper>
   );
-}
+});
 
 TripStopsContainer.propTypes = {
   trip: PropTypes.shape({
@@ -78,8 +83,8 @@ TripStopsContainer.defaultProps = {
   route: undefined,
 };
 
-const pureComponent = memo(withBreakpoint(TripStopsContainer));
-const containerComponent = createFragmentContainer(pureComponent, {
+const componentWithBreakpoint = withBreakpoint(TripStopsContainer);
+const containerComponent = createFragmentContainer(componentWithBreakpoint, {
   trip: graphql`
     fragment TripStopsContainer_trip on Trip {
       stoptimesForDate {
