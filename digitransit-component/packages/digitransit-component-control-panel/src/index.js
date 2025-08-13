@@ -17,6 +17,18 @@ i18next.init({
   },
 });
 
+const isKeyboardSelectionEvent = event => {
+  const space = [13, ' ', 'Spacebar'];
+  const enter = [32, 'Enter'];
+  const key = (event && (event.key || event.which || event.keyCode)) || '';
+
+  if (!key || !space.concat(enter).includes(key)) {
+    return false;
+  }
+  event.preventDefault();
+  return true;
+};
+
 function SeparatorLine({ usePaddingBottom20 }) {
   const className = usePaddingBottom20
     ? styles['separator-div2']
@@ -216,7 +228,11 @@ function NearStopsAndRoutes({
             key={mode}
             role="link"
             tabIndex="0"
-            onKeyDown={e => onClick(url, e)}
+            onKeyDown={e => {
+              if (isKeyboardSelectionEvent(e)) {
+                onClick(url, e);
+              }
+            }}
             onClick={() => onClick(url)}
           >
             {modeButton}
