@@ -214,8 +214,9 @@ export const sortSearchResults = (lineRegexp, results, term = '') => {
             return confidence;
         }
       },
+      'properties.shortName',
     ],
-    ['desc', 'desc'],
+    ['desc', 'desc', 'asc'],
   );
 
   return uniqWith(orderedResults, isDuplicate);
