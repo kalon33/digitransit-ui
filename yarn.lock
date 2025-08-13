@@ -1996,11 +1996,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@digitransit-component/digitransit-component-autosuggest-panel@^5.2.0, @digitransit-component/digitransit-component-autosuggest-panel@workspace:digitransit-component/packages/digitransit-component-autosuggest-panel":
+"@digitransit-component/digitransit-component-autosuggest-panel@^5.3.0, @digitransit-component/digitransit-component-autosuggest-panel@workspace:digitransit-component/packages/digitransit-component-autosuggest-panel":
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-autosuggest-panel@workspace:digitransit-component/packages/digitransit-component-autosuggest-panel"
   peerDependencies:
-    "@digitransit-component/digitransit-component-autosuggest": ^4.2.0
+    "@digitransit-component/digitransit-component-autosuggest": ^4.3.0
     "@digitransit-component/digitransit-component-icon": ^1.0.2
     "@hsl-fi/sass": ^0.2.0
     classnames: 2.5.1
@@ -2016,7 +2016,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@digitransit-component/digitransit-component-autosuggest@^4.2.0, @digitransit-component/digitransit-component-autosuggest@workspace:digitransit-component/packages/digitransit-component-autosuggest":
+"@digitransit-component/digitransit-component-autosuggest@^4.3.0, @digitransit-component/digitransit-component-autosuggest@workspace:digitransit-component/packages/digitransit-component-autosuggest":
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-autosuggest@workspace:digitransit-component/packages/digitransit-component-autosuggest"
   dependencies:
@@ -2027,7 +2027,7 @@ __metadata:
   peerDependencies:
     "@digitransit-component/digitransit-component-dialog-modal": ^0.3.7
     "@digitransit-component/digitransit-component-icon": ^1.0.2
-    "@digitransit-component/digitransit-component-suggestion-item": ^2.0.8
+    "@digitransit-component/digitransit-component-suggestion-item": ^2.1.0
     "@hsl-fi/sass": ^0.2.0
     classnames: 2.5.1
     i18next: ^22.5.1
@@ -2150,11 +2150,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@digitransit-component/digitransit-component-suggestion-item@^2.0.8, @digitransit-component/digitransit-component-suggestion-item@workspace:digitransit-component/packages/digitransit-component-suggestion-item":
+"@digitransit-component/digitransit-component-suggestion-item@^2.1.0, @digitransit-component/digitransit-component-suggestion-item@workspace:digitransit-component/packages/digitransit-component-suggestion-item":
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-suggestion-item@workspace:digitransit-component/packages/digitransit-component-suggestion-item"
-  dependencies:
-    recompose: 0.30.0
   peerDependencies:
     "@digitransit-component/digitransit-component-icon": ^1.0.2
     "@hsl-fi/sass": " ^0.2.0"
@@ -2206,14 +2204,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component@workspace:digitransit-component/packages/digitransit-component"
   dependencies:
-    "@digitransit-component/digitransit-component-autosuggest": ^4.2.0
-    "@digitransit-component/digitransit-component-autosuggest-panel": ^5.2.0
+    "@digitransit-component/digitransit-component-autosuggest": ^4.3.0
+    "@digitransit-component/digitransit-component-autosuggest-panel": ^5.3.0
     "@digitransit-component/digitransit-component-control-panel": ^2.0.1
     "@digitransit-component/digitransit-component-favourite-bar": 2.0.8
     "@digitransit-component/digitransit-component-favourite-editing-modal": ^2.0.4
     "@digitransit-component/digitransit-component-favourite-modal": ^1.0.7
     "@digitransit-component/digitransit-component-icon": ^1.0.2
-    "@digitransit-component/digitransit-component-suggestion-item": ^2.0.8
+    "@digitransit-component/digitransit-component-suggestion-item": ^2.1.0
     "@digitransit-component/digitransit-component-with-breakpoint": ^0.0.5
   peerDependencies:
     "@digitransit-component/digitransit-component-dialog-modal": ^0.3.6
