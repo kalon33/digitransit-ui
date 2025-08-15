@@ -317,7 +317,6 @@ NearStopsAndRoutes.defaultProps = {
  *
  * @example
  * <CtrlPanel language="fi" position="left">
- *    <CtrlPanel.OriginToDestination showTitle />
  *    <CtrlPanel.SeparatorLine />
  *    <CtrlPanel.NearStopsAndRoutes
  *      modearray={['bus', 'tram', 'subway', 'rail', 'ferry', 'citybike']}
