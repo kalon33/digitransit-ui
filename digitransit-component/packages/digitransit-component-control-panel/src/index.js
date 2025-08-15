@@ -48,35 +48,6 @@ SeparatorLine.defaultProps = {
   usePaddingBottom20: false,
 };
 
-function OriginToDestination({ showTitle, language }) {
-  i18next.changeLanguage(language);
-  return (
-    <div id="OriginToDestination">
-      {showTitle && <span>{i18next.t('title-origin-to-destination')}</span>}
-      {showTitle && <br />}
-      <input
-        className={styles['input']}
-        placeholder={i18next.t('placeholder-origin')}
-      />
-      <br />
-      <input
-        className={styles['input']}
-        placeholder={i18next.t('placeholder-destination')}
-      />
-    </div>
-  );
-}
-
-OriginToDestination.propTypes = {
-  showTitle: PropTypes.bool,
-  language: PropTypes.string,
-};
-
-OriginToDestination.defaultProps = {
-  showTitle: false,
-  language: 'fi',
-};
-
 /**
  * Show button links to near you page for different travel modes
  *
@@ -348,8 +319,6 @@ NearStopsAndRoutes.defaultProps = {
  */
 class CtrlPanel extends React.Component {
   static NearStopsAndRoutes = NearStopsAndRoutes;
-
-  static OriginToDestination = OriginToDestination;
 
   static SeparatorLine = SeparatorLine;
 
