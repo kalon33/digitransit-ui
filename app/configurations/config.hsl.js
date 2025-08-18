@@ -828,4 +828,6 @@ export default {
     'HSL:9969X',
     'HSL:2015X',
   ],
+
+  showStopStatusMarkers: true,
 };

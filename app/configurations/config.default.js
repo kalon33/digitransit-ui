@@ -857,4 +857,5 @@ export default {
   allowDirectFlexJourneys: false,
   allowedFlexRouteTypes: [1501],
   showRouteDescNotification: false,
+  showStopStatusMarkers: false,
 };
