@@ -8,15 +8,6 @@ import Icon from '@digitransit-component/digitransit-component-icon';
 import styles from './helpers/styles.scss';
 import translations from './helpers/translations';
 
-i18next.init({
-  lng: 'fi',
-  fallbackLng: 'fi',
-  defaultNS: 'translation',
-  interpolation: {
-    escapeValue: false, // not needed for react as it escapes by default
-  },
-});
-
 const isKeyboardSelectionEvent = event => {
   const space = [13, ' ', 'Spacebar'];
   const enter = [32, 'Enter'];
@@ -46,35 +37,6 @@ SeparatorLine.propTypes = {
 
 SeparatorLine.defaultProps = {
   usePaddingBottom20: false,
-};
-
-function OriginToDestination({ showTitle, language }) {
-  i18next.changeLanguage(language);
-  return (
-    <div id="OriginToDestination">
-      {showTitle && <span>{i18next.t('title-origin-to-destination')}</span>}
-      {showTitle && <br />}
-      <input
-        className={styles['input']}
-        placeholder={i18next.t('placeholder-origin')}
-      />
-      <br />
-      <input
-        className={styles['input']}
-        placeholder={i18next.t('placeholder-destination')}
-      />
-    </div>
-  );
-}
-
-OriginToDestination.propTypes = {
-  showTitle: PropTypes.bool,
-  language: PropTypes.string,
-};
-
-OriginToDestination.defaultProps = {
-  showTitle: false,
-  language: 'fi',
 };
 
 /**
@@ -141,9 +103,25 @@ function NearStopsAndRoutes({
   fontWeights,
 }) {
   const [modesWithAlerts, setModesWithAlerts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    i18next.changeLanguage(language);
+    i18next
+      .init({
+        lng: 'fi',
+        fallbackLng: 'fi',
+        defaultNS: 'translation',
+        interpolation: {
+          escapeValue: false, // not needed for react as it escapes by default
+        },
+      })
+      .then(() => {
+        Object.keys(translations).forEach(lang => {
+          i18next.addResourceBundle(lang, 'translation', translations[lang]);
+        });
+        setLoading(false);
+      });
+
     if (alertsContext) {
       alertsContext
         .getModesWithAlerts(alertsContext.currentTime, alertsContext.feedIds)
@@ -153,6 +131,9 @@ function NearStopsAndRoutes({
     }
   }, []);
 
+  if (loading) {
+    return null;
+  }
   let urlStart;
   if (omitLanguageUrl) {
     urlStart = urlPrefix;
@@ -336,7 +317,6 @@ NearStopsAndRoutes.defaultProps = {
  *
  * @example
  * <CtrlPanel language="fi" position="left">
- *    <CtrlPanel.OriginToDestination showTitle />
  *    <CtrlPanel.SeparatorLine />
  *    <CtrlPanel.NearStopsAndRoutes
  *      modearray={['bus', 'tram', 'subway', 'rail', 'ferry', 'citybike']}
@@ -348,8 +328,6 @@ NearStopsAndRoutes.defaultProps = {
  */
 class CtrlPanel extends React.Component {
   static NearStopsAndRoutes = NearStopsAndRoutes;
-
-  static OriginToDestination = OriginToDestination;
 
   static SeparatorLine = SeparatorLine;
 
@@ -367,13 +345,6 @@ class CtrlPanel extends React.Component {
       medium: 500,
     },
   };
-
-  constructor(props) {
-    super(props);
-    Object.keys(translations).forEach(lang => {
-      i18next.addResourceBundle(lang, 'translation', translations[lang]);
-    });
-  }
 
   render() {
     const className =
