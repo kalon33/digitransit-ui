@@ -48,8 +48,8 @@ export default {
     locale: 'fi_FI',
     image: {
       url: 'img/social-share-matka.png',
-      width: 505,
-      height: 84,
+      width: 511,
+      height: 511,
     },
   },
 
