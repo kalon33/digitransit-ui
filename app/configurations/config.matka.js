@@ -472,4 +472,6 @@ export default {
     g.async=true; g.src='https://cdn.matomo.cloud/fintraffic.matomo.cloud/container_p27GPdXl.js'; s.parentNode.insertBefore(g,s);
     })();\n<\/script>\n`; // eslint-disable-line no-useless-escape
   },
+
+  showStopStatusMarkers: true,
 };
