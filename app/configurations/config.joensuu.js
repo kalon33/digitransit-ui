@@ -38,7 +38,7 @@ export default configMerger(walttiConfig, {
     title: APP_TITLE,
     description: APP_DESCRIPTION,
     image: {
-      url: 'assets/joensuu-favicon.png',
+      url: 'img/social-share-joensuu.png',
       width: 346,
       height: 80,
     },

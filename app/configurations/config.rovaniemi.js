@@ -25,7 +25,7 @@ export default configMerger(walttiConfig, {
     title: APP_TITLE,
     description: APP_DESCRIPTION,
     image: {
-      url: 'assets/rovaniemi-favicon.png',
+      url: 'img/social-share-rovaniemi.png',
       width: 504,
       height: 426,
     },

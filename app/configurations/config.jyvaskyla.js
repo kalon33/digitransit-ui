@@ -58,7 +58,7 @@ export default configMerger(walttiConfig, {
     title: APP_TITLE,
     description: APP_DESCRIPTION,
     image: {
-      url: 'assets/jyvaskyla-favicon.png',
+      url: 'img/social-share-jyvaskyla.png',
       width: 443,
       height: 443,
     },

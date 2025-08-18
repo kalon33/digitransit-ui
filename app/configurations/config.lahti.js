@@ -29,7 +29,7 @@ export default configMerger(walttiConfig, {
       site: '@LSL_fi',
     },
     image: {
-      url: 'assets/secondary-lahti-logo.png',
+      url: 'img/social-share-lahti.png',
       width: 751,
       height: 301,
     },

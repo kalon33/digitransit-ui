@@ -3,15 +3,6 @@ export default function getMetadata(lang, host, url, config) {
   const path = config.iconPath || 'icons';
   const iconPath = `${root}/${path}`;
   const imageHost = config.URL.ASSET_URL || `https://${host}`;
-  let manifest = {};
-  try {
-    // eslint-disable-next-line global-require, import/no-unresolved
-    manifest = require('../manifest.json');
-  } catch (e) {
-    manifest = {};
-  }
-  const socialImage =
-    manifest?.[config.socialMedia.image.url] || config.socialMedia.image.url;
 
   const baseData = {
     title: config.title,
@@ -60,7 +51,7 @@ export default function getMetadata(lang, host, url, config) {
       },
       {
         property: 'og:image',
-        content: `${imageHost}/${socialImage}`,
+        content: `${imageHost}/${config.socialMedia.image.url}`,
       },
       {
         property: 'og:image:width',
@@ -96,7 +87,7 @@ export default function getMetadata(lang, host, url, config) {
       },
       {
         property: 'twitter:image',
-        content: `${imageHost}/${socialImage}`,
+        content: `${imageHost}/${config.socialMedia.image.url}`,
       },
     ],
     link: [

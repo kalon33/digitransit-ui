@@ -22,7 +22,7 @@ export default configMerger(walttiConfig, {
     title: APP_TITLE,
     description: APP_DESCRIPTION,
     image: {
-      url: 'assets/lappeenranta-favicon.jpg',
+      url: 'img/social-share-lappeenranta.jpg',
       width: 591,
       height: 591,
     },

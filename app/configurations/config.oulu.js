@@ -37,7 +37,7 @@ export default configMerger(walttiConfig, {
       site: '@oulunkaupunki',
     },
     image: {
-      url: 'assets/secondary-oulu-logo.png',
+      url: 'img/social-share-oulu.png',
       width: 1181,
       height: 472,
     },

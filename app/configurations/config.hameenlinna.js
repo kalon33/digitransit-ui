@@ -28,7 +28,7 @@ export default configMerger(walttiConfig, {
       site: '@hmlkaupunki',
     },
     image: {
-      url: 'assets/hameenlinna-logo.png',
+      url: 'img/social-share-hameenlinna.png',
       width: 800,
       height: 352,
     },
