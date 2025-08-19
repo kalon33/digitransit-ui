@@ -37,7 +37,7 @@ const TabBalls = (
 
   const handleKeyDown = (e, index) => {
     if (e.key === 'ArrowRight') {
-      if (reactSwipeEl && reactSwipeEl.current) {
+      if (reactSwipeEl?.current) {
         reactSwipeEl.current.next();
       }
       if (index + 1 < tabsLength && tabRefs.current[index + 1]) {
@@ -45,7 +45,7 @@ const TabBalls = (
         onSwipe(index + 1);
       }
     } else if (e.key === 'ArrowLeft') {
-      if (reactSwipeEl && reactSwipeEl.current) {
+      if (reactSwipeEl?.current) {
         reactSwipeEl.current.prev();
       }
       if (index - 1 >= 0 && tabRefs.current[index - 1]) {
@@ -109,7 +109,7 @@ const TabBalls = (
       className += ' decreasing';
     }
     if (ball.hidden) {
-      className += ' hidden';
+      className += ' sr-only';
     }
     return (
       <button
