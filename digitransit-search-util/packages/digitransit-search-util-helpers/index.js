@@ -255,8 +255,9 @@ export const sortSearchResults = (lineRegexp, results, term = '') => {
         }
       },
       'properties.shortName',
+      'properties.longName',
     ],
-    ['desc', 'desc', 'asc'],
+    ['desc', 'desc', 'asc', 'asc'],
   );
 
   return uniqWith(orderResultsWithLettersFirst(orderedResults), isDuplicate);
