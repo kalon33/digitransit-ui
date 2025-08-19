@@ -5705,13 +5705,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/cookie@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@types/cookie@npm:0.6.0"
-  checksum: 5edce7995775b0b196b142883e4d4f71fd93c294eaec973670f1fa2540b70ea7390408ed513ddefef5fcb12a578100c76596e8f2a714b0c2ae9f70ee773f4510
-  languageName: node
-  linkType: hard
-
 "@types/estree@npm:*":
   version: 1.0.7
   resolution: "@types/estree@npm:1.0.7"
@@ -9859,10 +9852,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cookie@npm:0.7.2, cookie@npm:^0.7.2":
+"cookie@npm:0.7.2":
   version: 0.7.2
   resolution: "cookie@npm:0.7.2"
   checksum: 9bf8555e33530affd571ea37b615ccad9b9a34febbf2c950c86787088eb00a8973690833b0f8ebd6b69b753c62669ea60cec89178c1fb007bf0749abed74f93e
+  languageName: node
+  linkType: hard
+
+"cookie@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "cookie@npm:1.0.2"
+  checksum: 2c5a6214147ffa7135ce41860c781de17e93128689b0d080d3116468274b3593b607bcd462ac210d3a61f081db3d3b09ae106e18d60b1f529580e95cf2db8a55
   languageName: node
   linkType: hard
 
@@ -11169,7 +11169,7 @@ __metadata:
     suncalc: 1.8.0
     supercluster: ^7.1.5
     terser-webpack-plugin: 4.1.0
-    universal-cookie: 7.2.2
+    universal-cookie: 8.0.1
     url-loader: 3.0.0
     uuid: 8.3.2
     webpack: ^4.46.0
@@ -27777,13 +27777,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"universal-cookie@npm:7.2.2":
-  version: 7.2.2
-  resolution: "universal-cookie@npm:7.2.2"
+"universal-cookie@npm:8.0.1":
+  version: 8.0.1
+  resolution: "universal-cookie@npm:8.0.1"
   dependencies:
-    "@types/cookie": ^0.6.0
-    cookie: ^0.7.2
-  checksum: 0d9b7c085a44e2d55be356c1eb8e542cbb9471754da9acffd795fab6924150d685ac1e3a2a7c7fc18790689f441b808dffde36a0f8d1e7c7f5b9f6aa721f72de
+    cookie: ^1.0.2
+  checksum: f553acc9a6b72d983bb6ec02cd382ac80d533fc0d27e9f5f2df485585ab94b4e145ebd8e4dafbb84184f88c622d9cbc29862af3d70337fe2c4732a677a07d010
   languageName: node
   linkType: hard
 
