@@ -74,6 +74,8 @@ export default configMerger(walttiConfig, {
     },
   },
 
+  nearYouModes: ['bus', 'ferry'],
+
   searchParams: {
     'boundary.rect.min_lat': minLat,
     'boundary.rect.max_lat': maxLat,

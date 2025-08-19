@@ -34,7 +34,9 @@ export function addAnalyticsEvent(event) {
 export function getAnalyticsInitCode(config, req) {
   const { hostname, cookies } = req;
   const useAnalytics =
-    !config.useCookiesPrompt || cookies.cookieConsent === 'true';
+    !config.useCookiesPrompt ||
+    cookies.cookieConsent === 'true' ||
+    cookies.cookieConsent === true;
 
   if (!useAnalytics) {
     return '';
@@ -73,7 +75,9 @@ const handleChange = () => {
     'cookie_cat_statistic',
   );
   const cookies = new Cookies();
-  const oldState = cookies.get('cookieConsent') === true;
+  const oldState =
+    cookies.get('cookieConsent') === true ||
+    cookies.get('cookieConsent') === 'true';
   cookies.set('cookieConsent', allow);
   if (oldState && !allow) {
     // no consent any more, reload page

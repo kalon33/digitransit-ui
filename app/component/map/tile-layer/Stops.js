@@ -111,10 +111,12 @@ class Stops {
         mode = 'speedtram';
       }
       const stopOutOfService =
-        !!feature.properties.closedByServiceAlert ||
-        (feature.properties.servicesRunningInFuture === false &&
-          feature.properties.servicesRunningOnServiceDate === false); // if there are services added for the current day via realtime, servicesRunningOnServiceDate will be true
+        this.config.showStopStatusMarkers &&
+        (!!feature.properties.closedByServiceAlert ||
+          (feature.properties.servicesRunningInFuture === false &&
+            feature.properties.servicesRunningOnServiceDate === false)); // if there are services added for the current day via realtime, servicesRunningOnServiceDate will be true
       const noServiceOnServiceDay =
+        this.config.showStopStatusMarkers &&
         feature.properties.servicesRunningOnServiceDate === false;
 
       if (isHighlighted && zoom <= minZoom) {

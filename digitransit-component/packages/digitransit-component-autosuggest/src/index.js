@@ -428,9 +428,6 @@ class DTAutosuggest extends React.Component {
   };
 
   onBlur = () => {
-    if (this.state.renderMobileSearch) {
-      return;
-    }
     if (this.state.editing) {
       this.input.focus();
     }
@@ -439,6 +436,9 @@ class DTAutosuggest extends React.Component {
       renderMobileSearch: false,
       value: this.props.value,
     });
+    if (this.props.isMobile && this.state.renderMobileSearch) {
+      this.closeMobileSearch();
+    }
   };
 
   onSelected = (e, ref) => {
@@ -504,7 +504,7 @@ class DTAutosuggest extends React.Component {
           ) {
             this.props.focusChange();
           }
-          if (this.props.isMobile) {
+          if (this.props.isMobile && this.state.renderMobileSearch) {
             this.closeMobileSearch();
           }
         },
@@ -561,7 +561,7 @@ class DTAutosuggest extends React.Component {
                 this.props.id,
               );
             }
-            if (this.props.isMobile) {
+            if (this.props.isMobile && this.state.renderMobileSearch) {
               this.closeMobileSearch();
             }
             if (
@@ -821,6 +821,9 @@ class DTAutosuggest extends React.Component {
         this.onSuggestionsClearRequested();
       },
     );
+    this.input.focus();
+    // This closes the mobile keyboard
+    this.input.blur();
   };
 
   keyDown = event => {
@@ -828,8 +831,13 @@ class DTAutosuggest extends React.Component {
       return;
     }
     const keyCode = event.key;
+    if (keyCode === 'Shift') {
+      // This enables shift + tab to be used
+      return;
+    }
     if (keyCode === 'Escape') {
-      this.setState({ editing: false });
+      // Using onBlur makes 'Escape' act similarly to using 'Tab'
+      this.onBlur();
     }
     if (this.state.editing) {
       if (keyCode === 'Enter' && this.state.value !== '') {
@@ -861,6 +869,7 @@ class DTAutosuggest extends React.Component {
     }
     if (!this.state.editing) {
       this.setState({ editing: true });
+      this.clearLocationText();
     }
 
     if (keyCode === 'Tab') {
@@ -918,8 +927,6 @@ class DTAutosuggest extends React.Component {
   };
 
   onFocus = () => {
-    this.clearLocationText();
-
     const scrollY = window.pageYOffset;
     return this.setState({ scrollY });
   };

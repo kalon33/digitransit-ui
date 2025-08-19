@@ -144,6 +144,7 @@ export default {
     },
   },
 
+  nearYouModes: ['bus'],
   nearbyModeSet: 'waltti',
 
   maxNearbyStopDistance: {
