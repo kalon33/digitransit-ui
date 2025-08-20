@@ -409,7 +409,7 @@ export default {
     locale: 'en_US',
 
     image: {
-      url: '/img/default-social-share.png',
+      url: 'img/default-social-share.png',
       width: 2400,
       height: 1260,
     },

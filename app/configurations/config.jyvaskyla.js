@@ -57,6 +57,11 @@ export default configMerger(walttiConfig, {
   socialMedia: {
     title: APP_TITLE,
     description: APP_DESCRIPTION,
+    image: {
+      url: 'img/social-share-jyvaskyla.png',
+      width: 443,
+      height: 443,
+    },
   },
 
   title: APP_TITLE,

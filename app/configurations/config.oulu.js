@@ -36,6 +36,11 @@ export default configMerger(walttiConfig, {
     twitter: {
       site: '@oulunkaupunki',
     },
+    image: {
+      url: 'img/social-share-oulu.png',
+      width: 1181,
+      height: 472,
+    },
   },
 
   title: APP_TITLE,

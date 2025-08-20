@@ -28,6 +28,11 @@ export default configMerger(walttiConfig, {
     twitter: {
       site: '@LSL_fi',
     },
+    image: {
+      url: 'img/social-share-lahti.png',
+      width: 751,
+      height: 301,
+    },
   },
 
   title: APP_TITLE,
