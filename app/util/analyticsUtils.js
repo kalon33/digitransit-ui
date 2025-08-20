@@ -34,9 +34,10 @@ export function addAnalyticsEvent(event) {
 export function getAnalyticsInitCode(config, req) {
   const { hostname } = req;
   const cookies = new Cookies(req.headers.cookie, { path: '/' });
+  const cookieConsent = cookies.get('cookieConsent');
 
   // eslint-disable-next-line
-  console.log('cookieconsent:', cookies.cookieConsent);
+  console.log('cookieconsent:', cookieConsent);
 
   let script = config.GTMid
     ? // Google Tag Manager script
@@ -49,8 +50,8 @@ export function getAnalyticsInitCode(config, req) {
 
   const useAnalytics =
     !config.useCookiesPrompt ||
-    cookies.cookieConsent === 'true' ||
-    cookies.cookieConsent === true;
+    cookieConsent === 'true' ||
+    cookieConsent === true;
 
   if (useAnalytics) {
     if (
@@ -78,9 +79,8 @@ const handleChange = () => {
     'cookie_cat_statistic',
   );
   const cookies = new Cookies();
-  const oldState =
-    cookies.get('cookieConsent') === true ||
-    cookies.get('cookieConsent') === 'true';
+  const cookieConsent = cookies.get('cookieConsent');
+  const oldState = cookieConsent === true || cookieConsent === 'true';
   cookies.set('cookieConsent', allow);
   if (oldState && !allow) {
     // no consent any more, reload page
