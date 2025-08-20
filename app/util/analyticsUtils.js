@@ -37,7 +37,7 @@ export function getAnalyticsInitCode(config, req) {
   const cookieConsent = cookies.get('cookieConsent');
 
   // eslint-disable-next-line
-  console.log('cookieconsent:', cookieConsent);
+  console.log('cookieconsent:', cookieConsent, typeof cookieConsent);
 
   let script = config.GTMid
     ? // Google Tag Manager script
@@ -88,7 +88,7 @@ const handleChange = () => {
     SameSite: 'Strict',
   });
 
-  if (oldState && !allow) {
+  if (oldState !== allow) {
     // no consent any more, reload page
     window.location.reload();
   }
