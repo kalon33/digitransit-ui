@@ -33,10 +33,17 @@ export function addAnalyticsEvent(event) {
  */
 export function getAnalyticsInitCode(config, req) {
   const { hostname, cookies } = req;
+
+  // eslint-disable-next-line
+  console.log('cookieconsent:', cookies.cookieConsent);
+
   const useAnalytics =
     !config.useCookiesPrompt ||
     cookies.cookieConsent === 'true' ||
     cookies.cookieConsent === true;
+
+  // eslint-disable-next-line
+  console.log('analytics:', useAnalytics);
 
   if (!useAnalytics) {
     return '';
