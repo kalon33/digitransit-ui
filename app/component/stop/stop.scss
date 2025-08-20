@@ -286,17 +286,17 @@
 
   .route-number-header {
     flex: 0 0 fit-content;
-    margin-right: 0.5em;
+    margin-right: $route-title-margin;
   }
 
   .route-destination-header {
     flex: 1 0 fit-content;
-    margin-right: 0.5em;
+    margin-right: 1em;
   }
 
   .time-header {
     flex: 0 0 fit-content;
-    margin-right: 0.5em;
+    margin-right: 1em;
   }
 
   .track-header {
