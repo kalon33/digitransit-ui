@@ -32,7 +32,8 @@ export function addAnalyticsEvent(event) {
  * @return string
  */
 export function getAnalyticsInitCode(config, req) {
-  const { hostname, cookies } = req;
+  const { hostname } = req;
+  const cookies = new Cookies(req.headers.cookie, { path: '/' });
 
   // eslint-disable-next-line
   console.log('cookieconsent:', cookies.cookieConsent);
