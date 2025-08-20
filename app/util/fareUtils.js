@@ -148,9 +148,10 @@ export const shouldShowFarePurchaseInfo = (config, breakpoint, fares) => {
  */
 export const getTicketString = (legs, zones, config) => {
   const fares = getFaresFromLegs(legs, config);
-  let ticket = fares.some(fare => fare.isUnknown)
-    ? ''
-    : fares.map(fare => fare.ticketName).join(';');
+  let ticket =
+    !fares || fares.some(fare => fare.isUnknown)
+      ? ''
+      : fares.map(fare => fare.ticketName).join(';');
 
   if (ticket) {
     const alternativeTickets = getAlternativeFares(
