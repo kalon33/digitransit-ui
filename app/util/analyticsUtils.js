@@ -81,7 +81,13 @@ const handleChange = () => {
   const cookies = new Cookies();
   const cookieConsent = cookies.get('cookieConsent');
   const oldState = cookieConsent === true || cookieConsent === 'true';
-  cookies.set('cookieConsent', allow);
+  cookies.set('cookieConsent', allow, {
+    maxAge: 100 * 365 * 24 * 60 * 60,
+    path: '/',
+    Secure: true,
+    SameSite: 'Strict',
+  });
+
   if (oldState && !allow) {
     // no consent any more, reload page
     window.location.reload();
