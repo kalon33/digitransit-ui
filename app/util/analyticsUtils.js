@@ -37,29 +37,6 @@ export function getAnalyticsInitCode(config, req) {
   // eslint-disable-next-line
   console.log('cookieconsent:', cookies.cookieConsent);
 
-  const useAnalytics =
-    !config.useCookiesPrompt ||
-    cookies.cookieConsent === 'true' ||
-    cookies.cookieConsent === true;
-
-  // eslint-disable-next-line
-  console.log('analytics:', useAnalytics);
-
-  if (!useAnalytics) {
-    return '';
-  }
-
-  if (
-    config.analyticsScript &&
-    hostname &&
-    (!hostname.match(/dev|test/) || config.devAnalytics)
-  ) {
-    return config.analyticsScript(
-      hostname,
-      config.sendAnalyticsCustomEventGoals,
-    );
-  }
-
   let script = config.GTMid
     ? // Google Tag Manager script
       `<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -68,8 +45,26 @@ export function getAnalyticsInitCode(config, req) {
         'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
         })(window,document,'script','dataLayer','${config.GTMid}');</script>\n`
     : '';
-  if (config.crazyEgg) {
-    script = `${script}<script type="text/javascript" src="//script.crazyegg.com/pages/scripts/0030/3436.js" async="async" ></script>`;
+
+  const useAnalytics =
+    !config.useCookiesPrompt ||
+    cookies.cookieConsent === 'true' ||
+    cookies.cookieConsent === true;
+
+  if (useAnalytics) {
+    if (
+      config.analyticsScript &&
+      hostname &&
+      (!hostname.match(/dev|test/) || config.devAnalytics)
+    ) {
+      return config.analyticsScript(
+        hostname,
+        config.sendAnalyticsCustomEventGoals,
+      );
+    }
+    if (config.crazyEgg) {
+      script = `${script}<script type="text/javascript" src="//script.crazyegg.com/pages/scripts/0030/3436.js" async="async" ></script>`;
+    }
   }
   return script;
 }
