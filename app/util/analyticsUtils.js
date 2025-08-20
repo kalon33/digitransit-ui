@@ -36,9 +36,6 @@ export function getAnalyticsInitCode(config, req) {
   const cookies = new Cookies(req.headers.cookie, { path: '/' });
   const cookieConsent = cookies.get('cookieConsent');
 
-  // eslint-disable-next-line
-  console.log('cookieconsent:', cookieConsent, typeof cookieConsent);
-
   let script = config.GTMid
     ? // Google Tag Manager script
       `<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
