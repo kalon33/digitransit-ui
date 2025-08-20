@@ -99,8 +99,7 @@ class DisruptionBanner extends React.Component {
             classname="disruption-banner"
             hideArrows={this.props.breakpoint !== 'large'}
             navigationOnBottom
-            ariaFrom="swipe-disruption-info"
-            ariaFromHeader="swipe-disruption-info-header"
+            ariaRole="swipe-disruption-info-tab"
           />
         ) : (
           this.renderAlert(activeAlerts[0])
