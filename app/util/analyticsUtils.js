@@ -78,6 +78,8 @@ const handleChange = () => {
   const cookies = new Cookies();
   const cookieConsent = cookies.get('cookieConsent');
   const oldState = cookieConsent === true || cookieConsent === 'true';
+  // eslint-disable-next-line
+  console.log('consent', allow, oldState);
   cookies.set('cookieConsent', allow, {
     maxAge: 100 * 365 * 24 * 60 * 60,
     path: '/',
@@ -86,7 +88,7 @@ const handleChange = () => {
   });
 
   if (oldState !== allow) {
-    // no consent any more, reload page
+    // consent changed, reload page
     window.location.reload();
   }
   return allow;
