@@ -75,11 +75,14 @@ const handleChange = () => {
   const allow = window.CookieInformation.getConsentGivenFor(
     'cookie_cat_statistic',
   );
+  if (allow === undefined) {
+    // happens in incognito
+    return false;
+  }
   const cookies = new Cookies();
   const cookieConsent = cookies.get('cookieConsent');
   const oldState = cookieConsent === true || cookieConsent === 'true';
-  // eslint-disable-next-line
-  console.log('consent', allow, oldState);
+
   cookies.set('cookieConsent', allow, {
     maxAge: 100 * 365 * 24 * 60 * 60,
     path: '/',
