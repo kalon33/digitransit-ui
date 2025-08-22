@@ -139,11 +139,6 @@ function Datetimepicker({
     return () => clearInterval(newId);
   }, [displayTimestamp]);
 
-  const prevIsOpenRef = useRef();
-  useEffect(() => {
-    prevIsOpenRef.current = isOpen;
-  });
-
   /**
    * @param {number} date Date in milliseconds since unix epoch
    * @returns {string} formatted date
@@ -235,17 +230,26 @@ function Datetimepicker({
     }
   }
 
+  const handleClose = () => {
+    changeOpen(false);
+    showScreenreaderCloseAlert();
+    if (onClose) {
+      onClose();
+    }
+  };
+
+  const handleNowClick = () => {
+    handleClose();
+    onNowClick();
+  };
+
   function renderOpen() {
     if (useMobileInputs) {
       return (
         isOpen && (
           <MobilePickerModal
             departureOrArrival={departureOrArrival}
-            onNowClick={() => {
-              changeOpen(false);
-              showScreenreaderCloseAlert();
-              onNowClick();
-            }}
+            onNowClick={handleNowClick}
             lang={lang}
             color={color}
             onSubmit={(newTimestamp, newDepartureOrArrival) => {
@@ -253,13 +257,7 @@ function Datetimepicker({
               changeOpen(false);
               showScreenreaderCloseAlert();
             }}
-            onCancel={() => {
-              changeOpen(false);
-              showScreenreaderCloseAlert();
-              if (onClose) {
-                onClose();
-              }
-            }}
+            onCancel={handleClose}
             onAfterClose={() =>
               requestAnimationFrame(() => {
                 openPickerRef.current?.focus();
@@ -345,14 +343,7 @@ function Datetimepicker({
               id={`${htmlId}-now`}
               type="button"
               className={styles['departure-now-button']}
-              onClick={() => {
-                changeOpen(false);
-                showScreenreaderCloseAlert();
-                if (onClose) {
-                  onClose();
-                }
-                onNowClick();
-              }}
+              onClick={handleNowClick}
               ref={inputRef}
             >
               {i18next.t('departure-now', translationSettings)}
@@ -363,13 +354,7 @@ function Datetimepicker({
                 className={styles['close-button']}
                 aria-controls={`${htmlId}-root`}
                 aria-expanded="true"
-                onClick={() => {
-                  changeOpen(false);
-                  showScreenreaderCloseAlert();
-                  if (onClose) {
-                    onClose();
-                  }
-                }}
+                onClick={handleClose}
               >
                 <span className={styles['close-icon']}>
                   <Icon img="close" color={color} />
@@ -438,6 +423,7 @@ function Datetimepicker({
       </>
     );
   }
+
   const formatToprowSummary = () => {
     if (nowSelected && departureOrArrival === 'departure') {
       return <span>{i18next.t('departure-now', translationSettings)}</span>;
