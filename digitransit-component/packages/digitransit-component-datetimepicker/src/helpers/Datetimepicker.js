@@ -260,6 +260,11 @@ function Datetimepicker({
                 onClose();
               }
             }}
+            onAfterClose={() =>
+              requestAnimationFrame(() => {
+                openPickerRef.current?.focus();
+              })
+            }
             getTimeDisplay={getTimeDisplay}
             timeZone={timeZone}
             timestamp={displayTimestamp}
