@@ -22,7 +22,6 @@ import {
   checkPositioningPermission,
   startLocationWatch,
 } from '../../action/PositionActions';
-import DisruptionBanner from '../DisruptionBanner';
 import StopsNearYouSearch from './StopsNearYouSearch';
 import {
   getGeolocationState,
@@ -455,9 +454,6 @@ class NearYouPage extends React.Component {
                       filterByNetwork: $filterByNetwork
                     )
                 }
-                alerts: alerts(feeds: $feedIds, severityLevel: [SEVERE]) {
-                  ...DisruptionBanner_alerts
-                }
               }
             `}
             variables={this.getQueryVariables(nearByStopMode)}
@@ -482,13 +478,6 @@ class NearYouPage extends React.Component {
                 config.prioritizedStopsNearYou[nearByStopMode.toLowerCase()];
               return (
                 <div className="stops-near-you-page">
-                  {renderDisruptionBanner && (
-                    <DisruptionBanner
-                      alerts={(props && props.alerts) || []}
-                      mode={nearByStopMode}
-                      trafficNowLink={config.trafficNowLink}
-                    />
-                  )}
                   {renderSearch && (
                     <StopsNearYouSearch
                       mode={nearByStopMode}
@@ -623,6 +612,8 @@ class NearYouPage extends React.Component {
                       stopPatterns={props.stopPatterns}
                       position={this.state.searchPosition}
                       withSeparator={!renderSearch}
+                      nearByStopMode={nearByStopMode}
+                      renderDisruptionBanner={renderDisruptionBanner}
                     />
                   )}
                 </div>
