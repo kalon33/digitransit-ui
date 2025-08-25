@@ -123,7 +123,7 @@ export default async function serve(req, res, next) {
 
     const spriteName = config.sprites;
 
-    const ASSET_URL = process.env.ASSET_URL || config.APP_PATH;
+    const ASSET_URL = process.env.ASSET_URL || '';
 
     res.setHeader('content-type', 'text/html; charset=utf-8');
     res.write('<!doctype html>\n');
