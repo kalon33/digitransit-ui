@@ -736,7 +736,6 @@ const translations = {
     'swap-order-button-label': 'Start und Ziel tauschen',
     'swipe-result-tab-left': 'Show the previous tab.',
     'swipe-result-tab-right': 'Show the next tab.',
-    'swipe-result-tabs': 'Switch tabs using arrow keys.',
     'terminal-page.description': 'Terminal - {name}',
     'terminal-page.title': 'Terminal',
     'terminal-page.title-short': 'Terminal - {name}',
@@ -857,8 +856,6 @@ const translations = {
     back: 'Back',
     'buy-in-app': 'Buy in App',
     'search-autosuggest-label': 'Venue, place and stopsearch.',
-    'search-autosuggest-label-instructions':
-      'Navigate list with arrow keys and select with enter key.',
     'search-autosuggest-label-move-to-destination':
       'After selecting the starting location you are automatically moved to the destination field.',
     'search-autosuggest-len':
@@ -1705,7 +1702,6 @@ const translations = {
     'swipe-message-bar-tab': 'Message swipe result tabs',
     'swipe-result-tab-left': 'Show the previous tab.',
     'swipe-result-tab-right': 'Show the next tab.',
-    'swipe-result-tabs': 'Switch tabs using arrow keys.',
     'swipe-sr-new-tab-opened': 'Tab {number} opened.',
     'swipe-stops-near-you-tab': 'Stops near you swipe result tabs.',
     'swipe-summary-page-tab': 'Itinerary swipe result tabs',
@@ -2172,8 +2168,6 @@ const translations = {
     'as-viapoint': 'Välipisteeksi',
     'buy-in-app': 'Osta sovelluksessa',
     'search-autosuggest-label': 'Paikka, linja ja pysäkkihaku.',
-    'search-autosuggest-label-instructions':
-      'Navigoi listassa nuolinäppäimillä ja valitse enterillä.',
     'search-autosuggest-label-move-to-destination':
       'Valittuasi lähtöpaikan siirrytään suoraan määränpää-kenttään.',
     'search-autosuggest-len':
@@ -3017,7 +3011,6 @@ const translations = {
     'swipe-message-bar-tab': 'Viestivälilehti {number}',
     'swipe-result-tab-left': 'Näytä edellinen välilehti.',
     'swipe-result-tab-right': 'Näytä seuraava välilehti.',
-    'swipe-result-tabs': 'Selaa välilehtiä nuolinäppäimillä.',
     'swipe-sr-new-tab-opened': 'Välilehti {number} avattu.',
     'swipe-stops-near-you-tab': 'Lähipysäkkivälilehti {number}',
     'swipe-summary-page-tab': 'Reittiehdotus {number}',
@@ -3777,8 +3770,6 @@ const translations = {
     'as-origin': 'Początek',
     'as-viapoint': 'Punkt pośredni',
     'search-autosuggest-label': 'Miejsce, lokalizacja i przystanek.',
-    'search-autosuggest-label-instructions':
-      'Nawiguj po liście używając strzałek i wybieraj klawiszem Enter.',
     'search-autosuggest-label-move-to-destination':
       'Po wybraniu lokalizacji początkowej, automatycznie przejdziesz do pola miejsca docelowego.',
     'search-autosuggest-len':
@@ -4493,7 +4484,6 @@ const translations = {
     'swipe-message-bar-tab': 'Message swipe result tabs',
     'swipe-result-tab-left': 'Aby wyświetlić poprzednią kartę.',
     'swipe-result-tab-right': 'Aby wyświetlić następną kartę.',
-    'swipe-result-tabs': 'Przełącz karty klawiszami strzałek.',
     'swipe-sr-new-tab-opened': 'Otwarto kartę {number}.',
     'swipe-stops-near-you-tab': 'Stops near you swipe result tabs.',
     'swipe-summary-page-tab': 'Itinerary swipe result tabs',
@@ -5024,7 +5014,6 @@ const translations = {
     'swap-order-button-label': 'Schimbați originea cu destinația',
     'swipe-result-tab-left': 'Show the previous tab.',
     'swipe-result-tab-right': 'Show the next tab.',
-    'swipe-result-tabs': 'Switch tabs using arrow keys.',
     'terminal-page.description': 'Terminalul {name}',
     'terminal-page.title': 'Terminalul {name}',
     'terminal-page.title-short': 'Terminal',
@@ -5133,8 +5122,6 @@ const translations = {
       'Tilaa kyyti sovelluksella ja jää odottamaan sen saapumista:',
     'buy-in-app': 'Köp i appen',
     'search-autosuggest-label': 'Plats, linje och hållplatssökning.',
-    'search-autosuggest-label-instructions':
-      'Navigera listan med piltangenterna och välj med Enter-tangeten.',
     'search-autosuggest-label-move-to-destination':
       'Efter att du valt avgångsplatsen tas du direkt till Destination-fältet.',
     'search-autosuggest-len': 'Hittade {len} förslag',
@@ -5969,7 +5956,6 @@ const translations = {
       'Navigeringsknapp för att kunna bläddra stäng banner',
     'swipe-result-tab-left': 'Gå till föregående blad.',
     'swipe-result-tab-right': 'Gå till följande blad.',
-    'swipe-result-tabs': 'Bläddra mellan blad med pilknapparna.',
     'swipe-sr-new-tab-opened': 'Blad {number} öppnad.',
     'swipe-stops-near-you-tab':
       'Navigeringsknapp för att kunna bläddra hållplatser nära mig.',
