@@ -246,7 +246,6 @@ class NearYouPage extends React.Component {
       filterByModes: modes,
       filterByPlaceTypes: placeTypes,
       omitNonPickups: this.context.config.omitNonPickups,
-      feedIds: this.context.config.feedIds,
       prioritizedStopIds: prioritizedStops,
       filterByNetwork: allowedNetworks,
     };
@@ -437,7 +436,6 @@ class NearYouPage extends React.Component {
                 $maxResults: Int!
                 $maxDistance: Int!
                 $omitNonPickups: Boolean!
-                $feedIds: [String!]
                 $filterByNetwork: [String!]
               ) {
                 stopPatterns: viewer {
