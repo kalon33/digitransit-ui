@@ -117,7 +117,13 @@ const handleBounds = (location, edges) => {
 };
 
 const getLocationMarker = location => {
-  return <LocationMarker position={location} type="from" />;
+  return (
+    <LocationMarker
+      key={`from-${location.lat}:${location.lat}`}
+      position={location}
+      type="from"
+    />
+  );
 };
 
 function NearYouMap(
