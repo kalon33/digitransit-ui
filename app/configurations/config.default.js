@@ -55,6 +55,10 @@ export default {
       default: `${POI_MAP_PREFIX}/fi/stops,stations/`,
       sv: `${POI_MAP_PREFIX}/sv/stops,stations/`,
     },
+    REALTIME_STOP_MAP: {
+      default: `${POI_MAP_PREFIX}/fi/realtimeStops,stations/`,
+      sv: `${POI_MAP_PREFIX}/sv/realtimeStops,stations/`,
+    },
     RENTAL_STATION_MAP: {
       default: `${POI_MAP_PREFIX}/fi/rentalStations/`,
     },
@@ -405,7 +409,7 @@ export default {
     locale: 'en_US',
 
     image: {
-      url: '/img/default-social-share.png',
+      url: 'img/default-social-share.png',
       width: 2400,
       height: 1260,
     },
@@ -850,6 +854,7 @@ export default {
   sendAnalyticsCustomEventGoals: false,
   shortenLongTextThreshold: 10, // for route number in itinerary summary
   showRouteDescNotification: false,
+  showStopStatusMarkers: false,
 
   flex: {
     internalFlexEnabled: false,

@@ -21,6 +21,11 @@ export default configMerger(walttiConfig, {
   socialMedia: {
     title: APP_TITLE,
     description: APP_DESCRIPTION,
+    image: {
+      url: 'img/social-share-lappeenranta.jpg',
+      width: 591,
+      height: 591,
+    },
   },
 
   title: APP_TITLE,
@@ -60,6 +65,8 @@ export default configMerger(walttiConfig, {
       availableForSelection: true,
     },
   },
+
+  nearYouModes: ['bus', 'citybike'],
 
   feedIds: ['Lappeenranta'],
 

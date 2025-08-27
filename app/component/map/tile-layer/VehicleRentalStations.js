@@ -114,11 +114,11 @@ class VehicleRentalStations {
     const iconName = getRentalNetworkIcon(
       getRentalNetworkConfig(network, this.config),
     );
-    const isHilighted = this.tile.hilightedStops?.includes(id);
+    const isHighlighted = this.tile.highlightedStops?.includes(id);
 
     if (zoomedIn) {
-      this.drawLargeIcon(feature, iconName, isHilighted);
-    } else if (isHilighted) {
+      this.drawLargeIcon(feature, iconName, isHighlighted);
+    } else if (isHighlighted) {
       this.canHaveStationUpdates = true;
       this.drawHighlighted(feature, iconName);
     } else {
@@ -129,7 +129,7 @@ class VehicleRentalStations {
   drawLargeIcon = (
     { geom, properties: { network, operative, vehiclesAvailable } },
     iconName,
-    isHilighted,
+    isHighlighted,
   ) => {
     const citybikeCapacity = getVehicleCapacity(this.config, network);
 
@@ -140,7 +140,7 @@ class VehicleRentalStations {
       vehiclesAvailable,
       iconName,
       citybikeCapacity !== BIKEAVL_UNKNOWN,
-      isHilighted,
+      isHighlighted,
     );
   };
 

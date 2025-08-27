@@ -26,6 +26,10 @@ export default configMerger(walttiConfig, {
       default: `${POI_MAP_PREFIX}/fi/stops,stations/`,
       sv: `${POI_MAP_PREFIX}/sv/stops,stations/`,
     },
+    REALTIME_STOP_MAP: {
+      default: `${POI_MAP_PREFIX}/fi/realtimeStops,stations/`,
+      sv: `${POI_MAP_PREFIX}/sv/realtimeStops,stations/`,
+    },
   },
 
   feedIds: ['VARELY', 'FOLI', 'Rauma', 'Pori', 'Salo'],
@@ -45,6 +49,11 @@ export default configMerger(walttiConfig, {
   socialMedia: {
     title: APP_TITLE,
     description: APP_DESCRIPTION,
+    image: {
+      url: 'img/social-share-seutuplus.png',
+      width: 611,
+      height: 225,
+    },
   },
 
   meta: {
@@ -69,6 +78,8 @@ export default configMerger(walttiConfig, {
       color: '#0064f0',
     },
   },
+
+  nearYouModes: ['bus', 'ferry'],
 
   searchParams: {
     'boundary.rect.min_lat': minLat,

@@ -69,6 +69,11 @@ export default configMerger(walttiConfig, {
     twitter: {
       site: '@Turkukaupunki',
     },
+    image: {
+      url: 'img/social-share-foli.png',
+      width: 339,
+      height: 78,
+    },
   },
 
   meta: {

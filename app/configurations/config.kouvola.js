@@ -41,6 +41,8 @@ export default configMerger(walttiConfig, {
     },
   },
 
+  nearYouModes: ['bus', 'citybike'],
+
   vehicleRental: {
     networks: {
       donkey_kouvola: {
@@ -76,6 +78,11 @@ export default configMerger(walttiConfig, {
     description: APP_DESCRIPTION,
     twitter: {
       site: '@kouvolakaupunki',
+    },
+    image: {
+      url: 'img/social-share-kouvola.png',
+      width: 134,
+      height: 134,
     },
   },
 

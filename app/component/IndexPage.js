@@ -38,7 +38,6 @@ import scrollTop from '../util/scroll';
 import { LightenDarkenColor } from '../util/colorUtils';
 import { getRefPoint } from '../util/apiUtils';
 import { filterObject } from '../util/filterUtils';
-import { isKeyboardSelectionEvent } from '../util/browser';
 import {
   getTransportModes,
   getNearYouModes,
@@ -218,10 +217,7 @@ class IndexPage extends React.Component {
     }${this.context.config.trafficNowLink[lang]}`;
   };
 
-  clickStopNearIcon = (url, kbdEvent) => {
-    if (kbdEvent && !isKeyboardSelectionEvent(kbdEvent)) {
-      return;
-    }
+  clickStopNearIcon = url => {
     addAnalyticsEvent({
       event: 'sendMatomoEvent',
       category: 'nearbyStops',

@@ -33,6 +33,11 @@ export default configMerger(walttiConfig, {
   socialMedia: {
     title: APP_TITLE,
     description: APP_DESCRIPTION,
+    image: {
+      url: 'img/social-share-vaasa.png',
+      width: 1280,
+      height: 400,
+    },
 
     twitter: {
       site: '@vaasavasa',
@@ -42,7 +47,7 @@ export default configMerger(walttiConfig, {
   title: APP_TITLE,
 
   logo: 'vaasa/vaasa-favicon.png',
-  secondaryLogo: 'vaasa/secondary-logo.png',
+  secondaryLogo: 'vaasa/vaasa-secondary-logo.png',
 
   feedIds: ['Vaasa'],
 

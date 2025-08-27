@@ -45,6 +45,7 @@ function MobilePickerModal({
   dateSelectItemCount,
   getDateDisplay,
   fontWeights,
+  onAfterClose,
 }) {
   Settings.defaultZone = timeZone;
   const translationSettings = { lng: lang };
@@ -78,6 +79,7 @@ function MobilePickerModal({
       isOpen
       className={styles['mobile-modal-content']}
       overlayClassName={styles['mobile-modal-overlay']}
+      onAfterClose={onAfterClose}
     >
       <div
         style={{
@@ -212,6 +214,7 @@ MobilePickerModal.propTypes = {
   color: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
+  onAfterClose: PropTypes.func.isRequired,
   timestamp: PropTypes.number.isRequired,
   getTimeDisplay: PropTypes.func.isRequired,
   dateSelectItemCount: PropTypes.number.isRequired,

@@ -38,6 +38,7 @@ const mapStopTimes = stoptimesObject =>
           longName: stoptime.pattern.route.longName,
           isCanceled: st.realtimeState === RealtimeStateType.Canceled,
           mode: stoptime.pattern.route.mode,
+          gtfsId: st.stop.gtfsId,
         })),
     )
     .reduce((acc, val) => acc.concat(val), []);
@@ -460,6 +461,9 @@ Timetable.propTypes = {
             realtimeState: PropTypes.string.isRequired,
             scheduledDeparture: PropTypes.number.isRequired,
             serviceDay: PropTypes.number.isRequired,
+            stop: PropTypes.shape({
+              gtfsId: PropTypes.string.isRequired,
+            }).isRequired,
           }),
         ).isRequired,
       }),

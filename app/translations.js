@@ -734,11 +734,8 @@ const translations = {
     'summary-page.row-label': 'Reisevorschlag {number}',
     'summary-page.title': 'Reisevorschläge',
     'swap-order-button-label': 'Start und Ziel tauschen',
-    'swipe-result-tab-left':
-      'Swipe result tabs left arrow. Press Enter or Space to show the previous tab.',
-    'swipe-result-tab-right':
-      'Swipe result tabs right arrow. Press Enter or Space to show the next tab.',
-    'swipe-result-tabs': 'Switch tabs using arrow keys.',
+    'swipe-result-tab-left': 'Show the previous tab.',
+    'swipe-result-tab-right': 'Show the next tab.',
     'terminal-page.description': 'Terminal - {name}',
     'terminal-page.title': 'Terminal',
     'terminal-page.title-short': 'Terminal - {name}',
@@ -859,8 +856,6 @@ const translations = {
     back: 'Back',
     'buy-in-app': 'Buy in App',
     'search-autosuggest-label': 'Venue, place and stopsearch.',
-    'search-autosuggest-label-instructions':
-      'Navigate list with arrow keys and select with enter key.',
     'search-autosuggest-label-move-to-destination':
       'After selecting the starting location you are automatically moved to the destination field.',
     'search-autosuggest-len':
@@ -1703,18 +1698,13 @@ const translations = {
     surveillance_cameras: 'Camera surveillance',
     'swap-order-button-label': 'Reverse origin and destination',
     swedish: 'Swedish',
-    'swipe-disruption-info': 'Disruption info  swipe result tabs',
-    'swipe-disruption-info-header': 'Disruption info swipe result tabs.',
-    'swipe-message-bar': 'Message swipe result tabs',
-    'swipe-message-bar-header': 'Message swipe result tabs.',
-    'swipe-result-tab-left': 'Press Enter or Space to show the previous tab.',
-    'swipe-result-tab-right': 'Press Enter or Space to show the next tab.',
-    'swipe-result-tabs': 'Switch tabs using arrow keys.',
+    'swipe-disruption-info-tab': 'Disruption info  swipe result tabs',
+    'swipe-message-bar-tab': 'Message swipe result tabs',
+    'swipe-result-tab-left': 'Show the previous tab.',
+    'swipe-result-tab-right': 'Show the next tab.',
     'swipe-sr-new-tab-opened': 'Tab {number} opened.',
-    'swipe-stops-near-you': 'Stops near you swipe result tabs.',
-    'swipe-stops-near-you-header': 'Stops near you swipe result tabs',
-    'swipe-summary-page': 'Itinerary swipe result tabs',
-    'swipe-summary-page-header': 'Itinerary swipe result tabs.',
+    'swipe-stops-near-you-tab': 'Stops near you swipe result tabs.',
+    'swipe-summary-page-tab': 'Itinerary swipe result tabs',
     taxi: 'Taxi',
     'taxi-alternative':
       'How about using a taxi for part of your journey? {paymentInfo}',
@@ -2178,8 +2168,6 @@ const translations = {
     'as-viapoint': 'Välipisteeksi',
     'buy-in-app': 'Osta sovelluksessa',
     'search-autosuggest-label': 'Paikka, linja ja pysäkkihaku.',
-    'search-autosuggest-label-instructions':
-      'Navigoi listassa nuolinäppäimillä ja valitse enterillä.',
     'search-autosuggest-label-move-to-destination':
       'Valittuasi lähtöpaikan siirrytään suoraan määränpää-kenttään.',
     'search-autosuggest-len':
@@ -3019,20 +3007,13 @@ const translations = {
     surveillance_cameras: 'Kameravalvonta',
     'swap-order-button-label': 'Käännä reitin suunta vastakkaiseksi',
     swedish: 'Ruotsi',
-    'swipe-disruption-info': 'Poikkeustietovälilehtien',
-    'swipe-disruption-info-header': 'Poikkeustietovälilehdet.',
-    'swipe-message-bar': 'Viestivälilehtien',
-    'swipe-message-bar-header': 'Viestivälilehdet.',
-    'swipe-result-tab-left':
-      'Navigointipainike. Näytä edellinen välilehti painamalla enteriä tai välilyöntiä.',
-    'swipe-result-tab-right':
-      'Navigointipainike. Näytä seuraava välilehti painamalla enteriä tai välilyöntiä.',
-    'swipe-result-tabs': 'Selaa välilehtiä nuolinäppäimillä.',
+    'swipe-disruption-info-tab': 'Poikkeustietovälilehti {number}',
+    'swipe-message-bar-tab': 'Viestivälilehti {number}',
+    'swipe-result-tab-left': 'Näytä edellinen välilehti.',
+    'swipe-result-tab-right': 'Näytä seuraava välilehti.',
     'swipe-sr-new-tab-opened': 'Välilehti {number} avattu.',
-    'swipe-stops-near-you': 'Lähipysäkkinäkymävälilehtien',
-    'swipe-stops-near-you-header': 'Lähipysäkkinäkymävälilehdet.',
-    'swipe-summary-page': 'Reittiehdotusvälilehtien',
-    'swipe-summary-page-header': 'Reittiehdotusvälilehdet.',
+    'swipe-stops-near-you-tab': 'Lähipysäkkivälilehti {number}',
+    'swipe-summary-page-tab': 'Reittiehdotus {number}',
     taxi: 'Taxi',
     'taxi-alternative':
       'Entä jos kulkisit osan matkasta taksilla? {paymentInfo}',
@@ -3789,8 +3770,6 @@ const translations = {
     'as-origin': 'Początek',
     'as-viapoint': 'Punkt pośredni',
     'search-autosuggest-label': 'Miejsce, lokalizacja i przystanek.',
-    'search-autosuggest-label-instructions':
-      'Nawiguj po liście używając strzałek i wybieraj klawiszem Enter.',
     'search-autosuggest-label-move-to-destination':
       'Po wybraniu lokalizacji początkowej, automatycznie przejdziesz do pola miejsca docelowego.',
     'search-autosuggest-len':
@@ -4501,20 +4480,13 @@ const translations = {
     surveillance_cameras: 'Camera surveillance',
     'swap-order-button-label': 'Odwróć punkt początkowy i końcowy',
     swedish: 'Szwedzki',
-    'swipe-disruption-info': 'Disruption info  swipe result tabs',
-    'swipe-disruption-info-header': 'Disruption info swipe result tabs.',
-    'swipe-message-bar': 'Message swipe result tabs',
-    'swipe-message-bar-header': 'Message swipe result tabs.',
-    'swipe-result-tab-left':
-      'Użyj Enter lub Spacji, aby wyświetlić poprzednią kartę.',
-    'swipe-result-tab-right':
-      'Użyj Enter lub Spacji, aby wyświetlić następną kartę.',
-    'swipe-result-tabs': 'Przełącz karty klawiszami strzałek.',
+    'swipe-disruption-info-tab': 'Disruption info  swipe result tabs',
+    'swipe-message-bar-tab': 'Message swipe result tabs',
+    'swipe-result-tab-left': 'Aby wyświetlić poprzednią kartę.',
+    'swipe-result-tab-right': 'Aby wyświetlić następną kartę.',
     'swipe-sr-new-tab-opened': 'Otwarto kartę {number}.',
-    'swipe-stops-near-you': 'Stops near you swipe result tabs.',
-    'swipe-stops-near-you-header': 'Stops near you swipe result tabs',
-    'swipe-summary-page': 'Itinerary swipe result tabs',
-    'swipe-summary-page-header': 'Itinerary swipe result tabs.',
+    'swipe-stops-near-you-tab': 'Stops near you swipe result tabs.',
+    'swipe-summary-page-tab': 'Itinerary swipe result tabs',
     'terminal-page.description': 'Terminal {name}',
     'terminal-page.title': 'Terminal {name}',
     'terminal-page.title-short': 'Terminal',
@@ -5040,11 +5012,8 @@ const translations = {
     'summary-page.row-label': 'Sugestii itinerar {number}',
     'summary-page.title': 'Sugestii itinerar',
     'swap-order-button-label': 'Schimbați originea cu destinația',
-    'swipe-result-tab-left':
-      'Swipe result tabs left arrow. Press Enter or Space to show the previous tab.',
-    'swipe-result-tab-right':
-      'Swipe result tabs right arrow. Press Enter or Space to show the next tab.',
-    'swipe-result-tabs': 'Switch tabs using arrow keys.',
+    'swipe-result-tab-left': 'Show the previous tab.',
+    'swipe-result-tab-right': 'Show the next tab.',
     'terminal-page.description': 'Terminalul {name}',
     'terminal-page.title': 'Terminalul {name}',
     'terminal-page.title-short': 'Terminal',
@@ -5153,8 +5122,6 @@ const translations = {
       'Tilaa kyyti sovelluksella ja jää odottamaan sen saapumista:',
     'buy-in-app': 'Köp i appen',
     'search-autosuggest-label': 'Plats, linje och hållplatssökning.',
-    'search-autosuggest-label-instructions':
-      'Navigera listan med piltangenterna och välj med Enter-tangeten.',
     'search-autosuggest-label-move-to-destination':
       'Efter att du valt avgångsplatsen tas du direkt till Destination-fältet.',
     'search-autosuggest-len': 'Hittade {len} förslag',
@@ -5983,21 +5950,17 @@ const translations = {
     surveillance_cameras: 'Kameraövervakning',
     'swap-order-button-label': 'Sväng ruttens riktning till den motsatta',
     swedish: 'Svenska',
-    'swipe-disruption-info': 'Navigeringsknapp för att kunna bläddra störning',
-    'swipe-disruption-info-header': 'Störning.',
-    'swipe-message-bar': 'Navigeringsknapp för att kunna bläddra stäng banner',
-    'swipe-message-bar-header': 'Stäng banner.',
-    'swipe-result-tab-left':
-      'Gå till föregående blad genom att trycka på enter eller mellanslag.',
-    'swipe-result-tab-right':
-      'Gå till följande blad genom att trycka på enter eller mellanslag.',
-    'swipe-result-tabs': 'Bläddra mellan blad med pilknapparna.',
+    'swipe-disruption-info-tab':
+      'Navigeringsknapp för att kunna bläddra störning',
+    'swipe-message-bar-tab':
+      'Navigeringsknapp för att kunna bläddra stäng banner',
+    'swipe-result-tab-left': 'Gå till föregående blad.',
+    'swipe-result-tab-right': 'Gå till följande blad.',
     'swipe-sr-new-tab-opened': 'Blad {number} öppnad.',
-    'swipe-stops-near-you':
+    'swipe-stops-near-you-tab':
       'Navigeringsknapp för att kunna bläddra hållplatser nära mig.',
-    'swipe-stops-near-you-header': 'Hållplatser nära mig.',
-    'swipe-summary-page': 'Navigeringsknapp för att kunna bläddra ruttförslag.',
-    'swipe-summary-page-header': 'Ruttförslag.',
+    'swipe-summary-page-tab':
+      'Navigeringsknapp för att kunna bläddra ruttförslag.',
     taxi: 'Taxi',
     'taxi-alternative':
       'Och om du skulle åka taxi en del av din resa? {paymentInfo}',

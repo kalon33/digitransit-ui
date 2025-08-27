@@ -37,6 +37,10 @@ export default {
       default: `${POI_MAP_PREFIX}/fi/stops,stations/`,
       sv: `${POI_MAP_PREFIX}/sv/stops,stations/`,
     },
+    REALTIME_STOP_MAP: {
+      default: `${POI_MAP_PREFIX}/fi/realtimeStops,stations/`,
+      sv: `${POI_MAP_PREFIX}/sv/realtimeStops,stations/`,
+    },
     RENTAL_STATION_MAP: {
       default: `${POI_MAP_PREFIX}/fi/rentalStations/`,
     },
@@ -200,7 +204,7 @@ export default {
     description: APP_DESCRIPTION,
 
     image: {
-      url: '/img/hsl-social-share.png',
+      url: 'img/hsl-social-share.png',
       width: 400,
       height: 400,
     },
@@ -819,6 +823,8 @@ export default {
     'HSL:9969X',
     'HSL:2015X',
   ],
+
+  showStopStatusMarkers: true,
 
   flex: {
     internalFlexEnabled: IS_DEV,

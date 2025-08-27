@@ -46,6 +46,11 @@ export default {
     title: APP_TITLE,
     description: APP_DESCRIPTION,
     locale: 'fi_FI',
+    image: {
+      url: 'img/social-share-matka.png',
+      width: 511,
+      height: 511,
+    },
   },
 
   title: APP_TITLE,
@@ -146,7 +151,11 @@ export default {
       },
       {
         name: 'menu-feedback',
-        href: 'https://www.fintraffic.fi/fi/feedback',
+        href: {
+          fi: 'https://www.fintraffic.fi/fi/feedback',
+          sv: 'https://www.fintraffic.fi/sv/feedback',
+          en: 'https://www.fintraffic.fi/en/feedback',
+        },
       },
       {
         name: 'about-this-service',
@@ -471,4 +480,6 @@ export default {
     g.async=true; g.src='https://cdn.matomo.cloud/fintraffic.matomo.cloud/container_p27GPdXl.js'; s.parentNode.insertBefore(g,s);
     })();\n<\/script>\n`; // eslint-disable-line no-useless-escape
   },
+
+  showStopStatusMarkers: true,
 };

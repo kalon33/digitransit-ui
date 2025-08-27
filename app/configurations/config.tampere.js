@@ -33,6 +33,11 @@ export default configMerger(walttiConfig, {
   socialMedia: {
     title: APP_TITLE,
     description: APP_DESCRIPTION,
+    image: {
+      url: 'img/social-share-tampere.png',
+      width: 400,
+      height: 400,
+    },
   },
 
   title: APP_TITLE,
@@ -300,6 +305,8 @@ export default configMerger(walttiConfig, {
       availableForSelection: true,
     },
   },
+
+  nearYouModes: ['bus', 'tram', 'rail', 'citybike'],
 
   bikeBoardingModes: {
     RAIL: { showNotification: true },

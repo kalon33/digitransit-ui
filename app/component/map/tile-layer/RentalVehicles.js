@@ -147,9 +147,9 @@ class RentalVehicles {
     const iconName =
       iconPrefix ||
       getRentalNetworkIcon(getRentalNetworkConfig(network, this.config));
-    const isHilighted = this.tile.hilightedStops?.includes(id);
-    if (zoomedIn || isHilighted) {
-      drawScooterIcon(this.tile, geom, iconName, isHilighted);
+    const isHighlighted = this.tile.highlightedStops?.includes(id);
+    if (zoomedIn || isHighlighted) {
+      drawScooterIcon(this.tile, geom, iconName, isHighlighted);
     } else {
       this.drawSmallScooterMarker(geom);
     }

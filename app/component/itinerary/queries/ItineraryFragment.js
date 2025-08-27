@@ -113,6 +113,17 @@ export const ItineraryFragment = graphql`
           vehicleParkingId
         }
       }
+      fareProducts {
+        id
+        product {
+          id
+          ... on DefaultFareProduct {
+            price {
+              amount
+            }
+          }
+        }
+      }
     }
   }
 `;

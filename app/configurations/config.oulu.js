@@ -36,6 +36,11 @@ export default configMerger(walttiConfig, {
     twitter: {
       site: '@oulunkaupunki',
     },
+    image: {
+      url: 'img/social-share-oulu.png',
+      width: 1181,
+      height: 472,
+    },
   },
 
   title: APP_TITLE,
@@ -171,7 +176,6 @@ export default configMerger(walttiConfig, {
     en: 'https://www.osl.fi/en/tickets-and-fares/osl-app/',
   },
   showTicketPrice: true,
-  showTicketLinkOnlyWhenTesting: true,
   ticketLinkOperatorCode: 50229,
   appName: 'oslapp',
 });
