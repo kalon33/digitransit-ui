@@ -65,7 +65,7 @@ export function useCitybikes(networks, config) {
 }
 
 export function useScooters(config) {
-  if (!config.transportModes.scooter?.availableForSelection) {
+  if (!config.transportModes?.scooter?.availableForSelection) {
     return false;
   }
   const networks = config.vehicleRental?.networks;
