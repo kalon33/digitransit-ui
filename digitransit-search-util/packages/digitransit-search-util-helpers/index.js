@@ -11,46 +11,6 @@ const normalize = str => {
 };
 
 /**
- * This takes the sorted search results as input and moves results that end in letters first
- * among results with the same short name length.
- */
-const orderResultsWithLettersFirst = sortedSearchResults => {
-  let orderedResultsWithLettersFirst = [];
-
-  let i = 0;
-  let currentLength = 0;
-  let letterArray = [];
-  let numberArray = [];
-  while (i < sortedSearchResults.length) {
-    if (
-      currentLength !== sortedSearchResults[i].properties?.shortName?.length
-    ) {
-      orderedResultsWithLettersFirst = orderedResultsWithLettersFirst.concat(
-        letterArray,
-        numberArray,
-      );
-      currentLength = sortedSearchResults[i].properties?.shortName?.length;
-      letterArray = [];
-      numberArray = [];
-    }
-    // Global isNaN and Number.isNaN have different functionality.
-    // eslint-disable-next-line no-restricted-globals
-    if (isNaN(sortedSearchResults[i].properties?.shortName?.slice(-1))) {
-      letterArray.push(sortedSearchResults[i]);
-    } else {
-      numberArray.push(sortedSearchResults[i]);
-    }
-    i += 1;
-  }
-  orderedResultsWithLettersFirst = orderedResultsWithLettersFirst.concat(
-    letterArray,
-    numberArray,
-  );
-
-  return orderedResultsWithLettersFirst;
-};
-
-/**
  * LayerType depicts the type of the point-of-interest.
  */
 const LayerType = {
@@ -108,7 +68,8 @@ export const mapRoute = (item, pathOpts) => {
 
 /**
  * Tries to match the given search term agains the collection of properties
- * for a geocoding result. The best match will be returned (min: 0, max: 1.5).
+ * for a geocoding result (min: 0, max: 1.5). The best match will return a number of 1.5.
+ * Worse matches will return 0 or 0.5.
  *
  * @param {string} normalizedTerm the normalized search term.
  * @param {*} resultProperties the geocoding result's property collection.
@@ -125,13 +86,12 @@ export const match = (normalizedTerm, resultProperties) => {
     .map(value => {
       const normalizedValue = normalize(value);
       if (normalizedValue.indexOf(normalizedTerm) === 0) {
-        // full match at start. Return max result when match is full, not only partial
-        return 0.5 + normalizedTerm.length / normalizedValue.length;
+        // If the term is a full match at the start, return 1.5 which will be larger than the
+        // 0.5 from a miss. The values with a shortName field are sorted afterwards.
+        return 1.5;
       }
-      // because of filtermatchingtoinput, we know that match occurred somewhere
-      // don't run filtermatching again but estimate roughly:
-      // the longer the matching string, the better confidence, max being 0.5
-      return (0.5 * normalizedTerm.length) / (normalizedTerm.length + 1);
+      // If the term isn't a full match at the start return 0.5.
+      return 0.5;
     })
     .reduce(
       (previous, current) => (current > previous ? current : previous),
@@ -254,13 +214,18 @@ export const sortSearchResults = (lineRegexp, results, term = '') => {
             return confidence;
         }
       },
-      'properties.shortName',
+      result =>
+        result.properties?.shortName
+          ? result.properties?.shortName?.split(/(\p{L}+)/u)[0].length
+          : 1,
+      result => result.properties?.shortName?.split(/(\p{L}+)/u)[0] || '0',
+      result => result.properties?.shortName?.split(/(\p{L}+)/u)[1] || 'A',
       'properties.longName',
     ],
-    ['desc', 'desc', 'asc', 'asc'],
+    ['desc', 'desc', 'asc', 'asc', 'asc', 'asc'],
   );
 
-  return uniqWith(orderResultsWithLettersFirst(orderedResults), isDuplicate);
+  return uniqWith(orderedResults, isDuplicate);
 };
 
 /**
