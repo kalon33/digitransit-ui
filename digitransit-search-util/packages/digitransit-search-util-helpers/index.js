@@ -10,6 +10,14 @@ const normalize = str => {
   return str.toLowerCase();
 };
 
+const splitShortNameAtLetters = str => {
+  return str.split(/(\p{L}+)/u);
+};
+
+const testShortNameMatchesLineWithNumbersAndLetters = str => {
+  return /^[0-9]+\p{L}+$/u.test(str);
+};
+
 /**
  * LayerType depicts the type of the point-of-interest.
  */
@@ -81,17 +89,29 @@ export const match = (normalizedTerm, resultProperties) => {
 
   const matchProps = ['name', 'label', 'address', 'shortName'];
   return matchProps
-    .map(name => resultProperties[name])
-    .filter(value => isString(value) && value.length > 0)
-    .map(value => {
-      const normalizedValue = normalize(value);
+    .map(name => {
+      return { name, value: resultProperties[name] };
+    })
+    .filter(element => isString(element.value) && element.value.length > 0)
+    .map(element => {
+      let normalizedValue = normalize(element.value);
       if (normalizedValue.indexOf(normalizedTerm) === 0) {
-        // If the term is a full match at the start, return 1.5 which will be larger than the
-        // 0.5 from a miss. The values with a shortName field are sorted afterwards.
-        return 1.5;
+        if (
+          element.name === 'shortName' &&
+          testShortNameMatchesLineWithNumbersAndLetters(normalizedValue)
+        ) {
+          // If the shortName is of a certain format (e.g. 89A), it is treated here
+          // as if it had the length of the numbers with the letters removed.
+          // So the length of 89A would be treated as 2.
+          [normalizedValue] = splitShortNameAtLetters(normalizedValue);
+        }
+        // full match at start. Return max result when match is full, not only partial
+        return 0.5 + normalizedTerm.length / normalizedValue.length;
       }
-      // If the term isn't a full match at the start return 0.5.
-      return 0.5;
+      // because of filtermatchingtoinput, we know that match occurred somewhere
+      // don't run filtermatching again but estimate roughly:
+      // the longer the matching string, the better confidence, max being 0.5
+      return (0.5 * normalizedTerm.length) / (normalizedTerm.length + 1);
     })
     .reduce(
       (previous, current) => (current > previous ? current : previous),
@@ -214,15 +234,29 @@ export const sortSearchResults = (lineRegexp, results, term = '') => {
             return confidence;
         }
       },
-      result =>
-        result.properties?.shortName
-          ? result.properties?.shortName?.split(/(\p{L}+)/u)[0].length
-          : 1,
-      result => result.properties?.shortName?.split(/(\p{L}+)/u)[0] || '0',
-      result => result.properties?.shortName?.split(/(\p{L}+)/u)[1] || 'A',
+      result => {
+        if (result.properties?.shortName) {
+          return testShortNameMatchesLineWithNumbersAndLetters(
+            result.properties.shortName,
+          )
+            ? splitShortNameAtLetters(result.properties.shortName)[0]
+            : result.properties.shortName;
+        }
+        return undefined;
+      },
+      result => {
+        if (result.properties?.shortName) {
+          return testShortNameMatchesLineWithNumbersAndLetters(
+            result.properties.shortName,
+          )
+            ? splitShortNameAtLetters(result.properties.shortName)[1]
+            : result.properties.shortName;
+        }
+        return undefined;
+      },
       'properties.longName',
     ],
-    ['desc', 'desc', 'asc', 'asc', 'asc', 'asc'],
+    ['desc', 'desc', 'asc', 'asc', 'asc'],
   );
 
   return uniqWith(orderedResults, isDuplicate);
