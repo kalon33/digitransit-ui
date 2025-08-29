@@ -1,6 +1,6 @@
 {
   "name": "@digitransit-component/digitransit-component",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "a JavaScript library for Digitransit",
   "main": "digitransit-component",
   "module": "digitransit-component.mjs",
@@ -41,7 +41,6 @@
     "react-autosuggest": "^10.0.0",
     "react-autowhatever": "10.2.1",
     "react-modal": "~3.11.2",
-    "react-sortablejs": "2.0.11",
-    "recompose": "0.30.0"
+    "react-sortablejs": "2.0.11"
   }
 }

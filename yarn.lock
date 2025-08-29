@@ -2012,7 +2012,6 @@ __metadata:
     react-autosuggest: ^10.0.0
     react-autowhatever: 10.2.1
     react-sortablejs: 2.0.11
-    recompose: 0.30.0
   languageName: unknown
   linkType: soft
 
@@ -2038,7 +2037,6 @@ __metadata:
     react: ^16.13.0
     react-autosuggest: ^10.0.0
     react-modal: ~3.11.2
-    recompose: 0.30.0
   languageName: unknown
   linkType: soft
 
@@ -2231,7 +2229,6 @@ __metadata:
     react-autowhatever: 10.2.1
     react-modal: ~3.11.2
     react-sortablejs: 2.0.11
-    recompose: 0.30.0
   languageName: unknown
   linkType: soft
 
@@ -8697,13 +8694,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"change-emitter@npm:^0.1.2":
-  version: 0.1.6
-  resolution: "change-emitter@npm:0.1.6"
-  checksum: 0ed494ba9901ca56ea6f942668fd294465c334a9a0981dca96da5aea5e387c0023a630d7c658c1b532d203db54c928ddca2564e434b4a8b7f6d39155d09db255
-  languageName: node
-  linkType: hard
-
 "char-regex@npm:^1.0.2":
   version: 1.0.2
   resolution: "char-regex@npm:1.0.2"
@@ -11148,7 +11138,6 @@ __metadata:
     react-sortablejs: 2.0.11
     react-swipe: 6.0.4
     react-truncate-markup: 5.1.2
-    recompose: 0.30.0
     redis: 2.8.0
     relay-compiler: 16.2.0
     relay-runtime: 16.2.0
@@ -13084,7 +13073,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fbjs@npm:^0.8.0, fbjs@npm:^0.8.1, fbjs@npm:^0.8.4":
+"fbjs@npm:^0.8.0, fbjs@npm:^0.8.4":
   version: 0.8.18
   resolution: "fbjs@npm:0.8.18"
   dependencies:
@@ -14853,7 +14842,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hoist-non-react-statics@npm:2.5.5, hoist-non-react-statics@npm:^2.1.1, hoist-non-react-statics@npm:^2.3.1, hoist-non-react-statics@npm:^2.5.5":
+"hoist-non-react-statics@npm:2.5.5, hoist-non-react-statics@npm:^2.1.1, hoist-non-react-statics@npm:^2.5.5":
   version: 2.5.5
   resolution: "hoist-non-react-statics@npm:2.5.5"
   checksum: ee2d05e5c7e1398ad84a15b0327f66bd78f38a8e0015e852f954b36434e32eb7e942d5357505020a3a1147f247b165bf1e69d72393e3accab67cafdafeb86230
@@ -23197,7 +23186,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-lifecycles-compat@npm:^3.0.0, react-lifecycles-compat@npm:^3.0.2":
+"react-lifecycles-compat@npm:^3.0.0":
   version: 3.0.4
   resolution: "react-lifecycles-compat@npm:3.0.4"
   checksum: a904b0fc0a8eeb15a148c9feb7bc17cec7ef96e71188280061fc340043fd6d8ee3ff233381f0e8f95c1cf926210b2c4a31f38182c8f35ac55057e453d6df204f
@@ -23671,22 +23660,6 @@ __metadata:
   dependencies:
     resolve: ^1.9.0
   checksum: 2a04aab4e28c05fcd6ee6768446bc8b859d8f108e71fc7f5bcbc5ef25e53330ce2c11d10f82a24591a2df4c49c4f61feabe1fd11f844c66feedd4cd7bb61146a
-  languageName: node
-  linkType: hard
-
-"recompose@npm:0.30.0":
-  version: 0.30.0
-  resolution: "recompose@npm:0.30.0"
-  dependencies:
-    "@babel/runtime": ^7.0.0
-    change-emitter: ^0.1.2
-    fbjs: ^0.8.1
-    hoist-non-react-statics: ^2.3.1
-    react-lifecycles-compat: ^3.0.2
-    symbol-observable: ^1.0.4
-  peerDependencies:
-    react: ^0.14.0 || ^15.0.0 || ^16.0.0
-  checksum: 18e58252336d0628b22db1e38407d32e836648e6d5c9453ba37c9f8030138b3429ee3952b053a13b60311f8b60893b207a761466bb293083542db0cf317b7a41
   languageName: node
   linkType: hard
 
@@ -26665,13 +26638,6 @@ __metadata:
   version: 2.1.5
   resolution: "swipe-js-iso@npm:2.1.5"
   checksum: cd205812891ea8b7307018e9d540bdabc35b13d04598fabdaa1b56068310cf8447a8203167214afde70ed47e6bae99a851ff3580b6e75de9539911920ded55ad
-  languageName: node
-  linkType: hard
-
-"symbol-observable@npm:^1.0.4":
-  version: 1.2.0
-  resolution: "symbol-observable@npm:1.2.0"
-  checksum: 48ffbc22e3d75f9853b3ff2ae94a44d84f386415110aea5effc24d84c502e03a4a6b7a8f75ebaf7b585780bda34eb5d6da3121f826a6f93398429d30032971b6
   languageName: node
   linkType: hard
 
