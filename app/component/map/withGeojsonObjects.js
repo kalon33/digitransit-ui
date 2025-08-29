@@ -72,7 +72,6 @@ function withGeojsonObjects(Component) {
     getGeoJsonConfig: PropTypes.func.isRequired,
     getGeoJsonData: PropTypes.func.isRequired,
     leafletObjs: PropTypes.arrayOf(PropTypes.node),
-    config: configShape.isRequired,
     locationPopup: PropTypes.string,
     onSelectLocation: PropTypes.func,
   };
