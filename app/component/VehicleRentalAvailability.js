@@ -16,36 +16,45 @@ const VehicleRentalAvailability = ({
   const total = Number.isNaN(totalSpaces) ? 0 : totalSpaces;
   const available = Number.isNaN(vehiclesAvailable) ? 0 : vehiclesAvailable;
   if (disabled) {
-    return {
-      available,
-      total,
-      text: (
-        <p className="sub-header-h4 availability-header">
-          <FormattedMessage id="bike-station-disabled" />
-        </p>
-      ),
-      showStatusBar: useSpacesAvailable,
-    };
+    return (
+      <Availability
+        available={available}
+        total={total}
+        text={
+          <p className="sub-header-h4 availability-header">
+            <FormattedMessage id="bike-station-disabled" />
+          </p>
+        }
+        showStatusBar={useSpacesAvailable}
+      />
+    );
   }
-  const props = {
-    available,
-    total,
-    fewAvailableCount,
-    fewerAvailableCount,
-    text: (
-      <p className="sub-header-h4 availability-header">
-        <FormattedMessage
-          id={type === 'scooter' ? 'scooter-availability' : 'bike-availability'}
-          defaultMessage="Bikes available at the station right now"
-        />
-        {'\u00a0'}
-        <span className="available-bikes">{available}</span>
-        {useSpacesAvailable && <React.Fragment>/{total}</React.Fragment>}
-      </p>
-    ),
-    showStatusBar: useSpacesAvailable,
-  };
-  return <Availability {...props} />;
+  return (
+    <Availability
+      {...{
+        available,
+        total,
+        fewAvailableCount,
+        fewerAvailableCount,
+        text: (
+          <p className="sub-header-h4 availability-header">
+            <FormattedMessage
+              id={
+                type === 'scooter'
+                  ? 'scooter-availability'
+                  : 'bike-availability'
+              }
+              defaultMessage="Bikes available at the station right now"
+            />
+            {'\u00a0'}
+            <span className="available-bikes">{available}</span>
+            {useSpacesAvailable && <React.Fragment>/{total}</React.Fragment>}
+          </p>
+        ),
+        showStatusBar: useSpacesAvailable,
+      }}
+    />
+  );
 };
 
 VehicleRentalAvailability.displayName = 'CityBikeAvailability';
