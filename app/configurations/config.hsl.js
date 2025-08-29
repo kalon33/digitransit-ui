@@ -799,7 +799,7 @@ export default {
   crazyEgg: true,
   // features that should not be deployed to production
   experimental: {
-    allowFlexJourneys: IS_DEV,
+    allowFlexJourneys: false,
     allowDirectFlexJourneys: false,
   },
 
