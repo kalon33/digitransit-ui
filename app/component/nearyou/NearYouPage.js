@@ -22,6 +22,7 @@ import {
   checkPositioningPermission,
   startLocationWatch,
 } from '../../action/PositionActions';
+import DisruptionBanner from '../DisruptionBanner';
 import StopsNearYouSearch from './StopsNearYouSearch';
 import {
   getGeolocationState,
@@ -246,6 +247,7 @@ class NearYouPage extends React.Component {
       filterByModes: modes,
       filterByPlaceTypes: placeTypes,
       omitNonPickups: this.context.config.omitNonPickups,
+      feedIds: this.context.config.feedIds,
       prioritizedStopIds: prioritizedStops,
       filterByNetwork: allowedNetworks,
     };
@@ -436,6 +438,7 @@ class NearYouPage extends React.Component {
                 $maxResults: Int!
                 $maxDistance: Int!
                 $omitNonPickups: Boolean!
+                $feedIds: [String!]
                 $filterByNetwork: [String!]
               ) {
                 stopPatterns: viewer {
@@ -451,6 +454,9 @@ class NearYouPage extends React.Component {
                       omitNonPickups: $omitNonPickups
                       filterByNetwork: $filterByNetwork
                     )
+                }
+                alerts: alerts(feeds: $feedIds, severityLevel: [SEVERE]) {
+                  ...DisruptionBanner_alerts
                 }
               }
             `}
@@ -476,6 +482,13 @@ class NearYouPage extends React.Component {
                 config.prioritizedStopsNearYou[nearByStopMode.toLowerCase()];
               return (
                 <div className="stops-near-you-page">
+                  {renderDisruptionBanner && (
+                    <DisruptionBanner
+                      alerts={(props && props.alerts) || []}
+                      mode={nearByStopMode}
+                      trafficNowLink={config.trafficNowLink}
+                    />
+                  )}
                   {renderSearch && (
                     <StopsNearYouSearch
                       mode={nearByStopMode}
@@ -610,8 +623,6 @@ class NearYouPage extends React.Component {
                       stopPatterns={props.stopPatterns}
                       position={this.state.searchPosition}
                       withSeparator={!renderSearch}
-                      nearByStopMode={nearByStopMode}
-                      renderDisruptionBanner={renderDisruptionBanner}
                     />
                   )}
                 </div>
