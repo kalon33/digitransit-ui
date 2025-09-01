@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { createFragmentContainer, graphql } from 'react-relay';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import isEmpty from 'lodash/isEmpty';
 import { configShape, alertShape } from '../util/shapes';
@@ -109,13 +110,37 @@ class DisruptionBanner extends React.Component {
 }
 const DisruptionBannerWithBreakpoint = withBreakpoint(DisruptionBanner);
 
-const containerComponent = connectToStores(
-  DisruptionBannerWithBreakpoint,
-  ['TimeStore', 'PreferencesStore'],
-  ({ getStore }) => ({
-    currentTime: getStore('TimeStore').getCurrentTime(),
-    language: getStore('PreferencesStore').getLanguage(),
-  }),
+const containerComponent = createFragmentContainer(
+  connectToStores(
+    DisruptionBannerWithBreakpoint,
+    ['TimeStore', 'PreferencesStore'],
+    ({ getStore }) => ({
+      currentTime: getStore('TimeStore').getCurrentTime(),
+      language: getStore('PreferencesStore').getLanguage(),
+    }),
+  ),
+  {
+    alerts: graphql`
+      fragment DisruptionBanner_alerts on Alert @relay(plural: true) {
+        feed
+        id
+        alertSeverityLevel
+        alertHeaderText
+        alertEffect
+        alertCause
+        alertDescriptionText
+        effectiveStartDate
+        effectiveEndDate
+        entities {
+          __typename
+          ... on Route {
+            mode
+            shortName
+          }
+        }
+      }
+    `,
+  },
 );
 
 export { containerComponent as default, DisruptionBanner as Component };
