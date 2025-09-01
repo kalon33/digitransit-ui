@@ -95,8 +95,19 @@ function getPolyfills(userAgent, config) {
   return polyfill;
 }
 
+function isAssetRequest(req) {
+  // Path starts with /js/, /css/ or /assets/
+  return /^\/(js|css|assets)\//.test(req.path);
+}
+
 export default async function serve(req, res, next) {
   try {
+    // There might a better way to throw 404 if the asset is not found before this code
+    // is run.
+    if (isAssetRequest(req)) {
+      res.status(404);
+    }
+
     const config = getConfiguration(req);
     const agent = req.headers['user-agent'];
 
