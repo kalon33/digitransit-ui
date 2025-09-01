@@ -1424,6 +1424,7 @@ const translations = {
     'number-of-spaces': 'Number of spaces:',
     'off-canvas-info':
       'Log in to the service to save your favorites and utilize them on other devices',
+    'on-demand-service': 'On-demand service',
     'one-way-journey': 'The length of a one-way journey',
     'open-app': 'Open the app',
     'open-operator-app': 'Open the {operator} app',
@@ -2735,6 +2736,7 @@ const translations = {
     'number-of-spaces': 'Paikkojen määrä:',
     'off-canvas-info':
       'Kirjautumalla palveluun saat suosikit talteen ja voit hyödyntää niitä muillakin laitteillasi',
+    'on-demand-service': 'Kutsuliikennettä',
     'one-way-journey': 'Yhdensuuntaisen matkan pituus',
     'open-app': 'Avaa sovellus',
     'open-operator-app': 'Avaa {operator} -sovellus',
@@ -5674,6 +5676,7 @@ const translations = {
     'number-of-spaces': 'Antalet platser:',
     'off-canvas-info':
       'Genom att logga in kan du spara dina favoriter och använda dem med dina andra enheter.',
+    'on-demand-service': 'Anropsbusstrafiken',
     'one-way-journey': ' Längden på en enkel resa',
     'open-app': ' Öppna appen',
     'open-operator-app': 'Öppna appen {operator}',

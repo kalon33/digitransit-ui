@@ -834,4 +834,6 @@ export default {
     externalAgencies: ['02Taksi:02_taksi'],
     allowedExternalFlexRouteTypes: [1501],
   },
+
+  showRouteDescNotification: IS_DEV,
 };

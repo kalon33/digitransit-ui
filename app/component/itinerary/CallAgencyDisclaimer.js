@@ -1,0 +1,54 @@
+import React from 'react';
+import { FormattedMessage } from 'react-intl';
+import PropTypes from 'prop-types';
+import Icon from '../Icon';
+
+export default function RouteDisclaimer({
+  textId,
+  text,
+  values,
+  href,
+  linkText,
+  header,
+}) {
+  return (
+    <div className="call-agency-disclaimer-container">
+      <div className="icon-container">
+        <Icon className="info" img="icon-icon_info" />
+      </div>
+      <div className="disclaimer">
+        {header && <h3 className="disclaimer-header">{header}</h3>}
+        {text || <FormattedMessage id={textId} values={values} />}
+        {href && (
+          <button
+            type="button"
+            className="external-link-button"
+            onClick={e => {
+              e.stopPropagation();
+              window.open(href, '_blank', 'noopener,noreferrer');
+            }}
+          >
+            {linkText}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+RouteDisclaimer.propTypes = {
+  textId: PropTypes.string,
+  text: PropTypes.string,
+  values: PropTypes.objectOf(PropTypes.string),
+  href: PropTypes.string,
+  linkText: PropTypes.string,
+  header: PropTypes.string,
+};
+
+RouteDisclaimer.defaultProps = {
+  textId: null,
+  text: null,
+  values: {},
+  href: null,
+  linkText: null,
+  header: null,
+};

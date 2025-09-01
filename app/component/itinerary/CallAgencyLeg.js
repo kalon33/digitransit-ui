@@ -1,40 +1,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
-import { legShape } from '../../util/shapes';
+import { intlShape } from 'react-intl';
+import connectToStores from 'fluxible-addons-react/connectToStores';
+import { legShape, configShape } from '../../util/shapes';
 import TransitLeg from './TransitLeg';
-import Icon from '../Icon';
+import CallAgencyDisclaimer from './CallAgencyDisclaimer';
 
-const CallAgencyLeg = ({ leg, ...props }) => {
+const CallAgencyLeg = (
+  { leg, currentLanguage, ...props },
+  { intl, config },
+) => {
   const modeClassName = 'call';
+  const { route } = leg;
+
+  const notification =
+    config.showRouteDescNotification && route.desc?.length
+      ? { content: route.desc, link: route.url }
+      : {
+          content: 'warning-call-agency',
+          link: '',
+        };
+  const key = `callAgencyNotification-${route.gtfsId}`;
   return (
     <TransitLeg mode={modeClassName} leg={leg} {...props}>
-      <div className="itinerary-transit-leg-route call">
-        <Icon img="icon-icon_call" className="call-icon" />
-        <span className="warning-message">
-          <FormattedMessage
-            id="warning-call-agency"
-            values={{
-              routeName: (
-                <span className="route-name">{leg.route.longName}</span>
-              ),
-            }}
-            defaultMessage="Only on demand: {routeName}, which needs to be booked in advance."
-          />
-          <div className="itinerary-warning-agency-container" />
-          {leg.route.agency.phone && (
-            <div className="call-button">
-              <a href={`tel:${leg.route.agency.phone}`}>
-                <FormattedMessage
-                  id="call-number"
-                  defaultMessage="Call"
-                  values={{ number: leg.route.agency.phone }}
-                />
-              </a>
-            </div>
-          )}
-        </span>
-      </div>
+      <CallAgencyDisclaimer
+        key={key}
+        text={notification.content}
+        href={notification.link}
+        linkText={intl.formatMessage({ id: 'extra-info' })}
+        header={intl.formatMessage({ id: 'on-demand-service' })}
+      />
     </TransitLeg>
   );
 };
@@ -42,6 +37,25 @@ const CallAgencyLeg = ({ leg, ...props }) => {
 CallAgencyLeg.propTypes = {
   leg: legShape.isRequired,
   index: PropTypes.number.isRequired,
+  showRouteDescNotification: PropTypes.bool,
+  currentLanguage: PropTypes.string.isRequired,
 };
 
-export default CallAgencyLeg;
+CallAgencyLeg.defaultProps = {
+  showRouteDescNotification: false,
+};
+
+CallAgencyLeg.contextTypes = {
+  config: configShape.isRequired,
+  intl: intlShape.isRequired,
+};
+
+const connectedComponent = connectToStores(
+  CallAgencyLeg,
+  ['PreferencesStore'],
+  context => ({
+    currentLanguage: context.getStore('PreferencesStore').getLanguage(),
+  }),
+);
+
+export { CallAgencyLeg as Component, connectedComponent as default };
