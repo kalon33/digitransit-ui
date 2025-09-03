@@ -317,7 +317,7 @@ jobs:
           push: false
       - name: run integration tests
         run: |
-          ./test/integration/test.sh
+          ./test/integration/test.sh ${{ steps.docker-tags.outputs.branch-tag }}
       - name: push Docker image
         uses: docker/build-push-action@v4
         with:
