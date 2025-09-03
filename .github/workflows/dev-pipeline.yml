@@ -315,6 +315,8 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max,oci-mediatypes=true,compression=zstd
           push: false
+          # https://docs.docker.com/build/ci/github-actions/test-before-push/
+          load: true
       - name: run integration tests
         run: |
           ./test/integration/test.sh ${{ steps.docker-tags.outputs.branch-tag }}
