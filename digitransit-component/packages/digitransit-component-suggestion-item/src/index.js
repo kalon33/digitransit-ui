@@ -216,9 +216,7 @@ function getIconProperties(
       if (modes.includes('SPEEDTRAM') && modeSet === 'default') {
         iconStr = [layerIcon.get('SPEEDTRAM-STATION-default')];
       } else {
-        const iconProperties = layerIcon.get(
-          mode.concat('-STATION').concat('-').concat(modeSet),
-        );
+        const iconProperties = layerIcon.get(`${mode}-STATION-${modeSet}`);
         if (iconProperties) {
           iconStr = [iconProperties];
         } else {
@@ -226,11 +224,11 @@ function getIconProperties(
         }
       }
     } else if (modes.includes('BUS-EXPRESS') && modeSet === 'default') {
-      iconStr = [layerIcon.get('BUS-EXPRESS'.concat('-').concat(modeSet))];
+      iconStr = [layerIcon.get(`BUS-EXPRESS-${modeSet}`)];
     } else if (modes.includes('SPEEDTRAM')) {
       iconStr = [layerIcon.get('SPEEDTRAM-default')];
     } else {
-      iconStr = [layerIcon.get(mode.concat('-').concat(modeSet))];
+      iconStr = [layerIcon.get(`${mode}-${modeSet}`)];
     }
     let icon;
     if (Array.isArray(iconStr) && iconStr.filter(i => i).length > 0) {
