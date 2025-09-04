@@ -169,6 +169,16 @@ function getIconProperties(
     ['SUBWAY-STATION-default', { icon: 'subway', color: 'mode-metro' }],
     ['SUBWAY-STATION-digitransit', { icon: 'subway', color: 'mode-metro' }],
     [
+      'SPEEDTRAM-STATION-default',
+      { icon: 'mode-speedtram', color: 'mode-speedtram' },
+    ],
+    ['TRAM-STATION-default', { icon: 'mode-tram', color: 'mode-tram' }],
+    ['TRAM-STATION-digitransit', { icon: 'mode-tram', color: 'mode-tram' }],
+    [
+      'SPEEDTRAM-STATION-digitransit',
+      { icon: 'mode-tram', color: 'mode-tram' },
+    ],
+    [
       'FERRY-STATION-default',
       { icon: 'search-ferry-default', color: 'mode-ferry' },
     ],
@@ -203,21 +213,22 @@ function getIconProperties(
     const mode = modes[0];
     let iconStr;
     if (item.properties.layer === 'station' || (mode === 'FERRY' && stopCode)) {
-      const iconProperties = layerIcon.get(
-        mode.concat('-STATION').concat('-').concat(modeSet),
-      );
-      if (iconProperties) {
-        iconStr = [iconProperties]; // layerIcon.get(mode.concat('-STATION').concat('-').concat(modeSet)),
+      if (modes.includes('SPEEDTRAM') && modeSet === 'default') {
+        iconStr = [layerIcon.get('SPEEDTRAM-STATION-default')];
       } else {
-        iconStr = ['busstop', 'mode-bus'];
+        const iconProperties = layerIcon.get(
+          mode.concat('-STATION').concat('-').concat(modeSet),
+        );
+        if (iconProperties) {
+          iconStr = [iconProperties];
+        } else {
+          iconStr = ['busstop', 'mode-bus'];
+        }
       }
     } else if (modes.includes('BUS-EXPRESS') && modeSet === 'default') {
       iconStr = [layerIcon.get('BUS-EXPRESS'.concat('-').concat(modeSet))];
-    } else if (
-      (modes.includes('SPEEDTRAM') && modeSet === 'default') ||
-      (modes.includes('SPEEDTRAM') && modeSet === 'digitransit')
-    ) {
-      iconStr = [layerIcon.get('SPEEDTRAM'.concat('-').concat('default'))];
+    } else if (modes.includes('SPEEDTRAM')) {
+      iconStr = [layerIcon.get('SPEEDTRAM-default')];
     } else {
       iconStr = [layerIcon.get(mode.concat('-').concat(modeSet))];
     }
@@ -288,6 +299,7 @@ const SuggestionItem = memo(
       getAutoSuggestIcons,
       modes,
     );
+
     const modeIconColor = modeIconColors[iconColor] || modeIconColors[iconId];
     // Arrow clicked is for street. Instead of selecting item when a user clicks on arrow,
     // It fills the input field.
