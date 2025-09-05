@@ -178,7 +178,10 @@ function getIconProperties(
     } else if (modes.includes('BUS-EXPRESS') && modeSet === 'default') {
       iconStr = layerIcon[`BUS-EXPRESS-${modeSet}`];
     } else if (modes.includes('SPEEDTRAM')) {
-      iconStr = layerIcon['SPEEDTRAM-default'];
+      iconStr =
+        modeSet === 'default'
+          ? layerIcon['SPEEDTRAM-default']
+          : layerIcon['TRAM-digitransit'];
     } else {
       iconStr = layerIcon[`${mode}-${modeSet}`];
     }
