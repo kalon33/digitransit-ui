@@ -25,7 +25,7 @@ const getRouteMode = props => {
   }
 };
 
-const layerIcon = {
+const iconProps = {
   bikestation: ['citybike'],
   currentPosition: ['locate'],
   favouritePlace: ['star'],
@@ -34,7 +34,6 @@ const layerIcon = {
   favouriteStation: ['star'],
   favouriteVehicleRentalStation: ['star'],
   favourite: ['star'],
-  address: ['place'],
   stop: ['busstop'],
   locality: ['city'],
   station: ['station'],
@@ -116,6 +115,7 @@ function getIconProperties(
 ) {
   let iconId;
   let iconColor = '#888888';
+
   if (item.properties?.layer === 'bikestation' && getIcons) {
     return getIcons.citybikes(item);
   }
@@ -127,7 +127,7 @@ function getIconProperties(
     iconId = 'favouriteVehicleRentalStation';
   } else if (item.type === 'Route') {
     const mode =
-      modeSet === 'default'
+      modeSet === 'defaut'
         ? getRouteMode(item.properties)
         : item.properties?.mode?.toLowerCase() || 'bus';
     return modeSet === 'default'
@@ -159,45 +159,39 @@ function getIconProperties(
       iconId = item.properties.selectedIconId || item.properties.layer;
     }
   }
-  if (item.iconColor) {
-    iconColor = item.iconColor;
-  } else if (isFavourite(item)) {
+  if (iconId === 'currentPosition' || isFavourite(item)) {
     iconColor = color;
+  } else if (item.iconColor) {
+    iconColor = item.iconColor;
   }
-  const defaultIcon = 'place';
   // Use more accurate icons in stop/station search, depending on mode from geocoding
   if (modes?.length) {
     const mode = modes[0];
-    let iconStr;
     if (item.properties.layer === 'station' || (mode === 'FERRY' && stopCode)) {
       if (modes.includes('SPEEDTRAM') && modeSet === 'default') {
-        iconStr = layerIcon['SPEEDTRAM-STATION-default'];
-      } else {
-        iconStr = layerIcon[`${mode}-STATION-${modeSet}`];
+        return iconProps['SPEEDTRAM-STATION-default'];
       }
-    } else if (modes.includes('BUS-EXPRESS') && modeSet === 'default') {
-      iconStr = layerIcon[`BUS-EXPRESS-${modeSet}`];
-    } else if (modes.includes('SPEEDTRAM')) {
-      iconStr =
-        modeSet === 'default'
-          ? layerIcon['SPEEDTRAM-default']
-          : layerIcon['TRAM-digitransit'];
-    } else {
-      iconStr = layerIcon[`${mode}-${modeSet}`];
+      return iconProps[`${mode}-STATION-${modeSet}`];
     }
-    if (iconStr) {
-      if (iconStr.length < 2) {
-        iconStr.push(iconColor);
-      }
-      return iconStr;
+    if (modes.includes('BUS-EXPRESS') && modeSet === 'default') {
+      return iconProps[`BUS-EXPRESS-${modeSet}`];
     }
-    // If no icon's found, return default stop icon.
-    return ['busstop', 'mode-bus'];
+    if (modes.includes('SPEEDTRAM')) {
+      return modeSet === 'default'
+        ? iconProps['SPEEDTRAM-default']
+        : iconProps['TRAM-digitransit'];
+    }
+    const props = iconProps[`${mode}-${modeSet}`];
+    return props || ['busstop', 'mode-bus'];
   }
-  if (layerIcon[iconId] === 'locate') {
-    iconColor = color;
+  let props;
+  if (iconId) {
+    props = iconProps[iconId];
+    if (props?.length === 1) {
+      props.push(iconColor);
+    }
   }
-  return [layerIcon[iconId] || defaultIcon, iconColor];
+  return props || ['place', iconColor];
 }
 
 /** *
