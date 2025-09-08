@@ -50,7 +50,8 @@ class RouteStopListContainer extends React.PureComponent {
       vehicle => vehicle.next_stop,
     );
     const rowClassName = `bp-${this.props.breakpoint}`;
-
+    const loop =
+      stops.length && stops[0].gtfsId === stops[stops.length - 1].gtfsId;
     return stops.map((stop, i) => {
       const idx = i;
       const nextStop = stops[i + 1];
@@ -76,6 +77,7 @@ class RouteStopListContainer extends React.PureComponent {
           displayNextDeparture={this.context.config.displayNextDeparture}
           shortName={this.props.pattern.route?.shortName}
           hideDepartures={this.props.hideDepartures}
+          loop={loop}
         />
       );
     });

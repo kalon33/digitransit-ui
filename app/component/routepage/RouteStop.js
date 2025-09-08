@@ -33,14 +33,35 @@ const RouteStop = (
     shortName,
     prevStop,
     hideDepartures,
+    loop,
   },
   { config, intl },
 ) => {
-  const patternExists =
-    stop.stopTimesForPattern && stop.stopTimesForPattern.length > 0;
+  const patternExists = stop.stopTimesForPattern?.length > 0;
+  let firstDeparture;
+  let nextDeparture;
 
-  const firstDeparture = patternExists && stop.stopTimesForPattern[0];
-  const nextDeparture = patternExists && stop.stopTimesForPattern[1];
+  if (patternExists) {
+    const st1 = stop.stopTimesForPattern[0];
+    const st2 = stop.stopTimesForPattern[1];
+    // special logic for cyclic routes: try to pick
+    // departures at start stop and arrivals at end stop
+    if (first && loop) {
+      if (st1?.pickupType === 'NONE' && st2 && st2.pickupType !== 'NONE') {
+        firstDeparture = st2;
+      }
+    }
+    if (last && loop) {
+      if (st1?.pickupType !== 'NONE' && st2?.pickupType === 'NONE') {
+        firstDeparture = st2;
+      }
+    }
+    if (!firstDeparture) {
+      // no special logic applied, use defaults
+      firstDeparture = st1;
+      nextDeparture = st2;
+    }
+  }
 
   const getDepartureTime = stoptime => {
     let departureText = '';
@@ -322,6 +343,7 @@ RouteStop.propTypes = {
   displayNextDeparture: PropTypes.bool,
   shortName: PropTypes.string,
   hideDepartures: PropTypes.bool,
+  loop: PropTypes.bool,
 };
 
 RouteStop.defaultProps = {
@@ -336,6 +358,7 @@ RouteStop.defaultProps = {
   shortName: undefined,
   vehicle: undefined,
   hideDepartures: false,
+  loop: false,
 };
 
 RouteStop.contextTypes = {
