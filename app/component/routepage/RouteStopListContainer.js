@@ -59,7 +59,7 @@ class RouteStopListContainer extends React.PureComponent {
       return (
         <RouteStop
           color={
-            this.props.pattern.route && this.props.pattern.route.color
+            this.props.pattern.route?.color
               ? `#${this.props.pattern.route.color}`
               : null
           }
@@ -68,15 +68,13 @@ class RouteStopListContainer extends React.PureComponent {
           nextStop={nextStop}
           prevStop={prevStop}
           mode={mode}
-          vehicle={vehicles[stop.gtfsId] ? vehicles[stop.gtfsId][0] : null}
+          vehicle={vehicles[stop.gtfsId]?.[0]}
           currentTime={this.props.currentTime}
           last={i === stops.length - 1}
           first={i === 0}
           className={rowClassName}
           displayNextDeparture={this.context.config.displayNextDeparture}
-          shortName={
-            this.props.pattern.route && this.props.pattern.route.shortName
-          }
+          shortName={this.props.pattern.route?.shortName}
           hideDepartures={this.props.hideDepartures}
         />
       );
