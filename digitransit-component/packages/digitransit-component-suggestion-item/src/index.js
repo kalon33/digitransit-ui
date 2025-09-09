@@ -115,7 +115,6 @@ function getIconProperties(
 ) {
   let iconId;
   let iconColor = '#888888';
-
   if (item.properties?.layer === 'bikestation' && getIcons) {
     return getIcons.citybikes(item);
   }
@@ -127,7 +126,7 @@ function getIconProperties(
     iconId = 'favouriteVehicleRentalStation';
   } else if (item.type === 'Route') {
     const mode =
-      modeSet === 'defaut'
+      modeSet === 'default'
         ? getRouteMode(item.properties)
         : item.properties?.mode?.toLowerCase() || 'bus';
     return modeSet === 'default'
@@ -243,7 +242,6 @@ const SuggestionItem = memo(
       getAutoSuggestIcons,
       modes,
     );
-
     const modeIconColor = modeIconColors[iconColor] || modeIconColors[iconId];
     // Arrow clicked is for street. Instead of selecting item when a user clicks on arrow,
     // It fills the input field.

@@ -64,7 +64,7 @@ class Stops {
 
   static getName = () => 'stop';
 
-  isSpeedTram(feature, routes) {
+  hasSpeedTram(feature, routes) {
     if (
       feature.properties.type === 'TRAM' &&
       this.config.useExtendedRouteTypes
@@ -74,7 +74,7 @@ class Stops {
     return false;
   }
 
-  isTrunkRoute(feature, routes) {
+  hasTrunkRoute(feature, routes) {
     if (
       feature.properties.type === 'BUS' &&
       this.config.useExtendedRouteTypes
@@ -90,8 +90,8 @@ class Stops {
       this.tile.highlightedStops.includes(feature.properties.gtfsId);
 
     const routes = JSON.parse(feature.properties.routes);
-    const hasSpeedTram = this.isSpeedTram(feature, routes);
-    const hasTrunkRoute = this.isTrunkRoute(feature, routes);
+    const hasSpeedTram = this.hasSpeedTram(feature, routes);
+    const hasTrunkRoute = this.hasTrunkRoute(feature, routes);
     const ignoreMinZoomLevel =
       feature.properties.type === 'FERRY' ||
       feature.properties.type === 'RAIL' ||
@@ -342,7 +342,7 @@ class Stops {
                   )
                 ) {
                   const routes = JSON.parse(feature.properties.routes);
-                  const type = this.isSpeedTram(feature, routes)
+                  const type = this.hasSpeedTram(feature, routes)
                     ? 'speedtram'
                     : feature.properties.type;
                   drawTerminalIcon(
