@@ -5,24 +5,19 @@ import cx from 'classnames';
 import Icon from '@digitransit-component/digitransit-component-icon';
 import styles from './helpers/styles.scss';
 
-const BUS_EXPRESS = 702;
-const BUS_LOCAL = 704;
-const SPEEDTRAM = 900;
-const BUS_REPLACEMENT = 714;
+const extendedModes = {
+  702: 'bus-express',
+  704: 'bus-local',
+  714: 'bus-replacement',
+  900: 'speedtram',
+};
 
-const getRouteMode = props => {
-  switch (props.type) {
-    case BUS_LOCAL:
-      return 'bus-local';
-    case BUS_EXPRESS:
-      return 'bus-express';
-    case SPEEDTRAM:
-      return 'speedtram';
-    case BUS_REPLACEMENT:
-      return 'bus-replacement';
-    default:
-      return props?.mode?.toLowerCase() || 'bus';
+const getRouteMode = (props, set) => {
+  let eMode;
+  if (set === 'default') {
+    eMode = extendedModes[props.type];
   }
+  return eMode || props.mode?.toLowerCase() || 'bus';
 };
 
 const iconProps = {
@@ -124,19 +119,11 @@ function getIconProperties(
     iconId = 'favouriteStop';
   } else if (item.type === 'FavouriteVehicleRentalStation') {
     iconId = 'favouriteVehicleRentalStation';
-  } else if (item.type === 'Route') {
-    const mode =
-      modeSet === 'default'
-        ? getRouteMode(item.properties)
-        : item.properties?.mode?.toLowerCase() || 'bus';
-    return modeSet === 'default'
-      ? [`mode-${mode}`, `mode-${mode}`]
-      : [`mode-${modeSet}-${mode}`, `mode-${mode}`];
-  } else if (item.type === 'OldSearch' && item.properties?.mode) {
-    const mode =
-      modeSet === 'default'
-        ? getRouteMode(item.properties)
-        : item.properties?.mode?.toLowerCase() || 'bus';
+  } else if (
+    item.type === 'Route' ||
+    (item.type === 'OldSearch' && item.properties?.mode)
+  ) {
+    const mode = getRouteMode(item.properties, modeSet);
     return modeSet === 'default'
       ? [`mode-${mode}`, `mode-${mode}`]
       : [`mode-${modeSet}-${mode}`, `mode-${mode}`];
