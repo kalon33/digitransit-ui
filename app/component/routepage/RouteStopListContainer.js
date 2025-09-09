@@ -52,6 +52,17 @@ class RouteStopListContainer extends React.PureComponent {
     const rowClassName = `bp-${this.props.breakpoint}`;
     const loop =
       stops.length && stops[0].gtfsId === stops[stops.length - 1].gtfsId;
+    let singleLoop; // runs only once through the stop chain
+    if (loop) {
+      let i;
+      for (i = 1; i < stops.length - 1; i++) {
+        if (stops[i].stopTimesForPattern[1]) {
+          // stop is visited many times
+          break;
+        }
+      }
+      singleLoop = i === stops.length - 1; // no double time values
+    }
     return stops.map((stop, i) => {
       const idx = i;
       const nextStop = stops[i + 1];
@@ -78,6 +89,7 @@ class RouteStopListContainer extends React.PureComponent {
           shortName={this.props.pattern.route?.shortName}
           hideDepartures={this.props.hideDepartures}
           loop={loop}
+          singleLoop={singleLoop}
         />
       );
     });

@@ -34,6 +34,7 @@ const RouteStop = (
     prevStop,
     hideDepartures,
     loop,
+    singleLoop,
   },
   { config, intl },
 ) => {
@@ -47,12 +48,22 @@ const RouteStop = (
     // special logic for cyclic routes: try to pick
     // departures at start stop and arrivals at end stop
     if (first && loop) {
-      if (st1?.pickupType === 'NONE' && st2 && st2.pickupType !== 'NONE') {
+      if (singleLoop) {
+        // do not set nextDeparture, it is arrival back to start
+        firstDeparture = st1;
+      } else if (
+        st1?.pickupType === 'NONE' &&
+        st2 &&
+        st2.pickupType !== 'NONE'
+      ) {
         firstDeparture = st2;
       }
     }
     if (last && loop) {
-      if (st1?.pickupType !== 'NONE' && st2?.pickupType === 'NONE') {
+      if (
+        (singleLoop && st2) ||
+        (st1?.pickupType !== 'NONE' && st2?.pickupType === 'NONE')
+      ) {
         firstDeparture = st2;
       }
     }
@@ -344,6 +355,7 @@ RouteStop.propTypes = {
   shortName: PropTypes.string,
   hideDepartures: PropTypes.bool,
   loop: PropTypes.bool,
+  singleLoop: PropTypes.bool,
 };
 
 RouteStop.defaultProps = {
@@ -359,6 +371,7 @@ RouteStop.defaultProps = {
   vehicle: undefined,
   hideDepartures: false,
   loop: false,
+  singleLoop: false,
 };
 
 RouteStop.contextTypes = {
