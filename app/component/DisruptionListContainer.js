@@ -128,7 +128,10 @@ function DisruptionListContainer(
         >
           <div className="stop-tab-singletab-container">
             <div>
-              <Icon className="stop-page-tab_icon info" img="icon-icon_info" />
+              <Icon
+                className="stop-page-tab_icon disruption-info"
+                img="icon-icon_info"
+              />
             </div>
             <div>
               {`${intl.formatMessage({
