@@ -15,13 +15,13 @@ function SelectStopRow(
   { code, type, desc, gtfsId, name, terminal, colors, routes, platform },
   { config },
 ) {
-  let mode = type;
-  if (routes && type === 'BUS' && config.useExtendedRouteTypes) {
+  let mode = type.toLowerCase();
+  if (routes && type === 'bus' && config.useExtendedRouteTypes) {
     const routesArray = JSON.parse(routes);
     if (routesArray.some(p => p.gtfsType === ExtendedRouteTypes.BusExpress)) {
       mode = 'bus-express';
     }
-  } else if (routes && type === 'TRAM' && config.useExtendedRouteTypes) {
+  } else if (routes && type === 'tram' && config.useExtendedRouteTypes) {
     const routesArray = JSON.parse(routes);
     if (routesArray.some(p => p.gtfsType === ExtendedRouteTypes.SpeedTram)) {
       mode = 'speedtram';
@@ -29,62 +29,35 @@ function SelectStopRow(
   }
   const iconOptions = {};
   switch (mode) {
-    case 'TRAM,BUS':
-      iconOptions.iconId = 'icon-icon_bustram-stop-lollipop';
-      iconOptions.className = 'tram-stop';
-      break;
-    case 'TRAM':
+    case 'tram':
+    case 'rail':
+    case 'bus':
       iconOptions.iconId = terminal
-        ? 'icon-icon_tram'
-        : 'icon-icon_tram-stop-lollipop';
-      iconOptions.className = 'tram-stop';
-      break;
-    case 'RAIL':
-      iconOptions.iconId = terminal
-        ? 'icon-icon_rail'
-        : 'icon-icon_rail-stop-lollipop';
-      iconOptions.className = 'rail-stop';
-      break;
-    case 'BUS':
-      iconOptions.iconId = terminal
-        ? 'icon-icon_bus'
-        : 'icon-icon_bus-stop-lollipop';
-      iconOptions.className = 'bus-stop';
+        ? `icon-icon_${mode}`
+        : `icon-icon_stop_${mode}`;
       break;
     case 'bus-express':
       iconOptions.iconId = terminal
         ? 'icon-icon_bus'
         : 'icon-icon_stop_bus-express';
-      iconOptions.className = 'bus-stop';
       break;
-    case 'SUBWAY':
-      iconOptions.iconId = 'icon-icon_subway';
-      iconOptions.className = 'subway-stop';
+    case 'subway':
+    case 'airplane':
+      iconOptions.iconId = `icon-icon_${mode}`;
       break;
-    case 'FUNICULAR':
-      iconOptions.iconId = 'icon-icon_funicular-stop-lollipop';
-      iconOptions.className = 'funicular-stop';
-      break;
-    case 'speedtram':
-      iconOptions.iconId = 'icon-icon_speedtram-stop-lollipop';
-      iconOptions.className = 'speedtram-stop';
-      break;
-    case 'FERRY':
+    case 'ferry':
       iconOptions.iconId = !isNull(code)
         ? 'icon-icon_ferry'
         : 'icon-icon_stop_ferry';
-      iconOptions.className = 'ferry-stop';
       if (iconOptions.iconId === 'icon-icon_stop_ferry' && colors) {
         iconOptions.color = colors.iconColors['mode-ferry-pier'];
       }
       break;
-    case 'AIRPLANE':
-      iconOptions.iconId = 'icon-icon_airplane';
-      break;
     default:
-      iconOptions.iconId = 'icon-icon_bus';
+      iconOptions.iconId = `icon-icon_stop_${mode}`;
       break;
   }
+  iconOptions.className = `${mode.toLowerCase()}`;
 
   const showDesc = desc && desc !== 'null';
   const showCode = code && code !== 'null';
