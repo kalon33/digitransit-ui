@@ -62,18 +62,22 @@ function RouteNumber(props, context) {
     badgeText,
     badgeTextFill,
   ) => {
+    console.log('getIcon called with:');
     if (isCallAgency) {
+      console.log('Rendering Call Agency Icon', `icon-icon_${mode}`);
       return (
         <IconWithIcon
           color={color}
           className={`${mode} call`}
-          img={icon || `icon-icon_${mode}`}
+          img={icon || `icon-icon_call-agency-bus`}
           subIcon="icon-icon_call"
+          omitViewBox
         />
       );
     }
 
     if (hasDisruption || !!alertSeverityLevel) {
+      console.log('Rendering Disruption Icon');
       return (
         <React.Fragment>
           <IconWithBigCaution
@@ -98,6 +102,7 @@ function RouteNumber(props, context) {
         </React.Fragment>
       );
     }
+    console.log('Rendering Regular Icon');
     return (
       <React.Fragment>
         <IconWithIcon

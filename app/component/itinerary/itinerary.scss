@@ -2109,8 +2109,15 @@ $itinerary-tab-switch-height: 48px;
       border-radius: 5px;
       margin-bottom: 2px;
 
+    
+// padding: var(--space-xs);
+// align-items: center;
+// gap: var(--space-xs);
+// align-self: stretch;
+
       &.long-name {
         display: block;
+border-radius: 4px;
 
         .headsign {
           padding: 0 10px 10px 10px;
@@ -2182,6 +2189,11 @@ $itinerary-tab-switch-height: 48px;
           z-index: 1;
           top: 0;
           position: relative;
+
+          .call {
+            height: 1.5em;
+            width: 1.5em;
+          }
         }
       }
 

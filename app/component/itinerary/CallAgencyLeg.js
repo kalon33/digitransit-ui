@@ -22,7 +22,7 @@ const CallAgencyLeg = (
         };
   const key = `callAgencyNotification-${route.gtfsId}`;
   return (
-    <TransitLeg mode={modeClassName} leg={leg} {...props}>
+    <TransitLeg mode={modeClassName} leg={leg} omitDivider {...props}>
       <CallAgencyDisclaimer
         key={key}
         text={notification.content}
