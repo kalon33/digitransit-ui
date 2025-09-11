@@ -703,6 +703,9 @@ export const getItineraryAlerts = (
  * Get the properties of the destination based on the leg.
  *
  */
+
+const terminalIcons = ['subway', 'ferry', 'ferry-external'];
+
 export const getDestinationProperties = (
   rentalVehicle,
   vehicleParking,
@@ -712,7 +715,7 @@ export const getDestinationProperties = (
 ) => {
   const { routes, vehicleMode } = stop;
   let destination = {};
-  let mode = vehicleMode;
+  let mode = vehicleMode.toLowerCase();
   if (routes && vehicleMode === 'BUS' && config.useExtendedRouteTypes) {
     if (routes.some(p => p.type === ExtendedRouteTypes.BusExpress)) {
       mode = 'bus-express';
@@ -734,52 +737,12 @@ export const getDestinationProperties = (
   } else if (vehicleRentalStation) {
     destination.name = vehicleRentalStation.name;
   } else {
-    let iconProps = {};
-    switch (mode) {
-      case 'SUBWAY':
-        iconProps = {
-          iconId: 'icon-icon_subway',
-          className: 'subway-stop',
-        };
-        break;
-      case 'RAIL':
-        iconProps = {
-          iconId: 'icon-icon_rail-stop-lollipop',
-          className: 'rail-stop',
-        };
-
-        break;
-      case 'FERRY':
-        iconProps = {
-          iconId: 'icon-icon_ferry',
-          className: 'ferry-stop',
-        };
-        break;
-      case 'ferry-external':
-        iconProps = {
-          iconId: 'icon-icon_ferry-external',
-          className: 'ferry-external-stop',
-        };
-        break;
-      case 'bus-express':
-        iconProps = {
-          iconId: 'icon-icon_stop_bus-express',
-          className: 'bus-stop',
-        };
-        break;
-      case 'speedtram':
-        iconProps = {
-          iconId: 'icon-icon_speedtram-stop-lollipop',
-          className: 'speedtram-stop',
-        };
-        break;
-      default:
-        iconProps = {
-          iconId: `icon-icon_${mode.toLowerCase()}-stop-lollipop`,
-        };
-    }
+    const iconId = terminalIcons.includes(mode)
+      ? `icon-icon_${mode}`
+      : `icon-icon_stop_${mode}`;
     destination = {
-      ...iconProps,
+      className: mode,
+      iconId,
       iconColor: getModeIconColor(config, mode),
       name: stop.name,
     };
