@@ -736,12 +736,6 @@ export const getDestinationProperties = (
   } else {
     let iconProps = {};
     switch (mode) {
-      case 'TRAM,BUS':
-        iconProps = {
-          iconId: 'icon-icon_bustram-stop-lollipop',
-          className: 'tram-stop',
-        };
-        break;
       case 'SUBWAY':
         iconProps = {
           iconId: 'icon-icon_subway',
@@ -769,7 +763,7 @@ export const getDestinationProperties = (
         break;
       case 'bus-express':
         iconProps = {
-          iconId: 'icon-icon_bus-stop-express-lollipop',
+          iconId: 'icon-icon_stop_bus-express',
           className: 'bus-stop',
         };
         break;

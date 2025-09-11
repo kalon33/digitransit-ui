@@ -54,7 +54,7 @@ function SelectStopRow(
     case 'bus-express':
       iconOptions.iconId = terminal
         ? 'icon-icon_bus'
-        : 'icon-icon_bus-stop-express-lollipop';
+        : 'icon-icon_stop_bus-express';
       iconOptions.className = 'bus-stop';
       break;
     case 'SUBWAY':
