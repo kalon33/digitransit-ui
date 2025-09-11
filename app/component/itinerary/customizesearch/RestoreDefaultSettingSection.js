@@ -10,6 +10,7 @@ import {
 } from '../../../util/planParamUtil';
 import { configShape } from '../../../util/shapes';
 import { getCustomizedSettings } from '../../../store/localStorage';
+import Icon from '../../Icon';
 
 const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
   const restoreDefaultSettings = () => {
@@ -41,25 +42,32 @@ const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
   }
 
   return (
-    <button
-      type="button"
-      tabIndex="0"
-      onClick={restoreDefaultSettings}
-      onKeyPress={e => isKeyboardSelectionEvent(e) && restoreDefaultSettings()}
-      className="noborder cursor-pointer restore-settings-button-text"
-      aria-label={intl.formatMessage({
-        id: 'restore-default-settings-aria-label',
-        defaultMessage: 'Restore default settings',
-      })}
-    >
+    <div className="restore-settings-section">
+      <Icon img="icon-icon_checkmark" omitViewBox />
       <FormattedMessage
-        id="restore-default-settings"
-        defaultMessage="Restore default settings"
-        values={{
-          changedSettingsIndicator: userHasCustomizedSettings ? '' : '', // Indicator coming later
-        }}
+        id="settings-changed"
+        defaultMessage="Settings changed"
       />
-    </button>
+
+      <button
+        type="button"
+        tabIndex="0"
+        onClick={restoreDefaultSettings}
+        onKeyPress={e =>
+          isKeyboardSelectionEvent(e) && restoreDefaultSettings()
+        }
+        className="noborder cursor-pointer restore-settings-button-text"
+        aria-label={intl.formatMessage({
+          id: 'restore-default-settings-aria-label',
+          defaultMessage: 'Restore default settings',
+        })}
+      >
+        <FormattedMessage
+          id="restore-default-settings"
+          defaultMessage="Restore default settings"
+        />
+      </button>
+    </div>
   );
 };
 

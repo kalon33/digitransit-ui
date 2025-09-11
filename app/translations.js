@@ -1499,8 +1499,7 @@ const translations = {
     'replacement-bus': 'Replacement bus',
     'replacement-bus-with-route-number': 'Replacement bus {routeNumber}',
     'required-ticket': 'Ticket required for the journey',
-    'restore-default-settings':
-      'Restore default settings {changedSettingsIndicator}',
+    'restore-default-settings': 'Restore',
     'restore-default-settings-aria-label': 'Restore default settings.',
     'restore-default-settings-aria-label-done': 'Default settings are in use.',
     'return-cycle-to': 'Return the bike:',
@@ -1613,6 +1612,7 @@ const translations = {
     settings: 'Settings {changedSettingsIndicator}',
     'settings-alternative-name-rail': 'Train',
     'settings-change-itinerary-settings': 'Change settings',
+    'settings-changed': 'Settings changed',
     'settings-dropdown-close-label': 'Close options',
     'settings-dropdown-open-label': 'Open options',
     'settings-e-scooter':
@@ -2810,8 +2810,7 @@ const translations = {
     'replacement-bus': 'Korvaava bussi',
     'replacement-bus-with-route-number': 'Korvaava bussi {routeNumber}',
     'required-ticket': 'Reitillä tarvittava lippu',
-    'restore-default-settings':
-      'Palauta oletusasetukset {changedSettingsIndicator}',
+    'restore-default-settings': 'Palauta',
     'restore-default-settings-aria-label': 'Palauta oletusasetukset.',
     'restore-default-settings-aria-label-done': 'Oletusasetukset käytössä.',
     'return-cycle-to': 'Palauta kaupunkipyörä:',
@@ -2923,6 +2922,7 @@ const translations = {
     settings: 'Asetukset {changedSettingsIndicator}',
     'settings-alternative-name-rail': 'Juna',
     'settings-change-itinerary-settings': 'Muuta asetuksia',
+    'settings-changed': 'Asetuksia muokattu',
     'settings-dropdown-close-label': 'Sulje vaihtoehdot',
     'settings-dropdown-open-label': 'Avaa vaihtoehdot',
     'settings-e-scooter':
@@ -5867,6 +5867,7 @@ const translations = {
     settings: 'Anpassa {changedSettingsIndicator}',
     'settings-alternative-name-rail': 'Tåg',
     'settings-change-itinerary-settings': 'Anpassa sökning',
+    'settings-changed': 'Ändrade inställningar',
     'settings-dropdown-close-label': 'Stäng alternativen',
     'settings-dropdown-open-label': 'Öppna alternativen',
     'settings-e-scooter':

@@ -198,6 +198,34 @@
     padding: 8px;
     margin: 0 auto;
   }
+
+  .restore-settings-section {
+    display: flex;
+    padding: var(--spacing-space-s, 16px) 0 var(--spacing-space-s, 16px) var(--spacing-space-m, 24px);
+    align-items: center;
+    gap: var(--spacing-space-xs, 8px);
+    align-self: stretch;
+
+    border-radius: var(--radius-radius-pill, 999px);
+    background: var(--color-surface-default, #FFF);
+
+    /* Box Shadow/box-shadow-popout */
+    box-shadow: 0 4px 4px 0 var(--color-shadow-weak, rgba(0, 52, 86, 0.25));
+
+    position: fixed;
+    bottom: 0;
+    z-index: 10;
+    width: 100%;
+
+    .icon-container {
+      width: 24px;
+      height: 24px;
+      .icon {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
 }
 
 .settings-section {
