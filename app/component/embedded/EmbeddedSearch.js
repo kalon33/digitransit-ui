@@ -28,46 +28,46 @@ const sources = ['Favourite', 'History', 'Datasource'];
 
 const translations = {
   fi: {
-    'own-position': 'Nykyinen sijaintisi',
-    'find-bike-route': 'Löydä pyöräreitti',
-    'find-walk-route': 'Löydä kävelyreitti',
-    'find-route': 'Löydä reitti',
-    'search-fields-sr-instructions': '',
-    'search-route': 'Hae reitti',
+    translation: {
+      'own-position': 'Nykyinen sijaintisi',
+      'find-bike-route': 'Löydä pyöräreitti',
+      'find-walk-route': 'Löydä kävelyreitti',
+      'find-route': 'Löydä reitti',
+      'search-fields-sr-instructions': '',
+      'search-route': 'Hae reitti',
+    },
   },
   en: {
-    'own-position': 'Your current location',
-    'find-bike-route': 'Find a biking route',
-    'find-walk-route': 'Find a walking route',
-    'find-route': 'Find a route',
-    'search-fields-sr-instructions': '',
-    'search-route': 'Search routes',
+    translation: {
+      'own-position': 'Your current location',
+      'find-bike-route': 'Find a biking route',
+      'find-walk-route': 'Find a walking route',
+      'find-route': 'Find a route',
+      'search-fields-sr-instructions': '',
+      'search-route': 'Search routes',
+    },
   },
   sv: {
-    'own-position': 'Min position',
-    'find-bike-route': 'Sök cykelrutt',
-    'find-walk-route': 'Sök promenadrutt',
-    'find-route': 'Sök rutt',
-    'search-fields-sr-instructions': '',
-    'search-route': 'Söka rutter',
+    translation: {
+      'own-position': 'Min position',
+      'find-bike-route': 'Sök cykelrutt',
+      'find-walk-route': 'Sök promenadrutt',
+      'find-route': 'Sök rutt',
+      'search-fields-sr-instructions': '',
+      'search-route': 'Söka rutter',
+    },
   },
   pl: {
-    'own-position': 'Twoja obecna lokalizacja',
-    'find-bike-route': 'Znajdź trasę rowerową',
-    'find-walk-route': 'Znajdź trasę pieszo',
-    'find-route': 'Znajdź trasę',
-    'search-fields-sr-instructions': '',
-    'search-route': 'Znajdź trasę',
+    translation: {
+      'own-position': 'Twoja obecna lokalizacja',
+      'find-bike-route': 'Znajdź trasę rowerową',
+      'find-walk-route': 'Znajdź trasę pieszo',
+      'find-route': 'Znajdź trasę',
+      'search-fields-sr-instructions': '',
+      'search-route': 'Znajdź trasę',
+    },
   },
 };
-
-i18next.init({
-  fallbackLng: 'fi',
-  defaultNS: 'translation',
-  interpolation: {
-    escapeValue: false, // not needed for react as it escapes by default
-  },
-});
 
 // test case: http://localhost:8080/haku?address2=Opastinsilta%206%20A,%20Helsinki&lat2=60.199118&lon2=24.940652&bikeOnly=1
 
@@ -89,16 +89,37 @@ const EmbeddedSearch = (props, context) => {
       : document.location.href;
 
   const buttonRef = useRef(null);
+  const [ready, setReady] = useState(false);
+  const [logo, setLogo] = useState();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Object.keys(translations).forEach(language => {
-      i18next.addResourceBundle(
-        language,
-        'translation',
-        translations[language],
-      );
-    });
-  });
+    i18next
+      .init({
+        lang: 'fi',
+        fallbackLng: 'fi',
+        defaultNS: 'translation',
+        interpolation: {
+          escapeValue: false, // not needed for react as it escapes by default
+        },
+        resources: translations,
+      })
+      .then(() => {
+        i18next.changeLanguage(lang).then(() => setReady(true));
+      });
+    if (config.secondaryLogo || config.logo) {
+      import(
+        /* webpackChunkName: "embedded-search" */ `../../configurations/images/${
+          config.secondaryLogo || config.logo
+        }`
+      ).then(l => {
+        setLogo(l.default);
+        setLoading(false);
+      });
+    } else {
+      setLoading(false);
+    }
+  }, []);
 
   const defaultOriginExists = query.lat1 && query.lon1;
   const defaultOrigin = {
@@ -116,7 +137,6 @@ const EmbeddedSearch = (props, context) => {
     name: query.address2,
   };
   const useDestinationLocation = query?.destinationLoc;
-  const [logo, setLogo] = useState();
   const [origin, setOrigin] = useState(
     useOriginLocation
       ? {
@@ -139,7 +159,6 @@ const EmbeddedSearch = (props, context) => {
         ? defaultDestination
         : {},
   );
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setOrigin(
@@ -164,6 +183,9 @@ const EmbeddedSearch = (props, context) => {
           ? defaultDestination
           : {},
     );
+    if (lang !== i18next.language) {
+      i18next.changeLanguage(lang);
+    }
   }, [query]);
 
   const color = colors.primary;
@@ -282,26 +304,7 @@ const EmbeddedSearch = (props, context) => {
     }
   };
 
-  useEffect(() => {
-    if (config.secondaryLogo || config.logo) {
-      import(
-        /* webpackChunkName: "embedded-search" */ `../../configurations/images/${
-          config.secondaryLogo || config.logo
-        }`
-      ).then(l => {
-        setLogo(l.default);
-        setLoading(false);
-      });
-    } else {
-      setLoading(false);
-    }
-  }, []);
-
-  if (i18next.language !== lang) {
-    i18next.changeLanguage(lang);
-  }
-
-  if (loading) {
+  if (loading || !ready) {
     return <Loading />;
   }
 
