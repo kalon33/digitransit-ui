@@ -74,7 +74,6 @@ export default function LegInfo(
             color={leg.route ? `#${leg.route.color}` : 'currentColor'}
             text={leg.route && leg.route.shortName}
             realtime={false}
-            isCallAgency={isCallAgency}
             withBar
             fadeLong
           />

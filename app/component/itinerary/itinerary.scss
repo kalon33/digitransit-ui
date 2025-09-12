@@ -2109,15 +2109,9 @@ $itinerary-tab-switch-height: 48px;
       border-radius: 5px;
       margin-bottom: 2px;
 
-    
-// padding: var(--space-xs);
-// align-items: center;
-// gap: var(--space-xs);
-// align-self: stretch;
-
       &.long-name {
         display: block;
-border-radius: 4px;
+        border-radius: 4px;
 
         .headsign {
           padding: 0 10px 10px 10px;
@@ -2191,8 +2185,9 @@ border-radius: 4px;
           position: relative;
 
           .call {
-            height: 1.5em;
-            width: 1.5em;
+            top: 50%;
+            transform: translateY(-50%);
+            margin-left: 1px;
           }
         }
       }

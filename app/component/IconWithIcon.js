@@ -36,7 +36,7 @@ const IconWithIcon = (
     {subIcon && (
       <span
         className={subIconClassName}
-        title={intl.formatMessage({ id: 'disruption' })} // wrong with call agency icon
+        title={intl.formatMessage({ id: 'disruption' })}
       >
         <Icon
           backgroundShape={subIconShape}
