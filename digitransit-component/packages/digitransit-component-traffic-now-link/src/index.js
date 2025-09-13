@@ -10,12 +10,12 @@ import translations from './helpers/translations';
 import styles from './helpers/styles.scss';
 
 i18next.init({
-  lng: 'fi',
   fallbackLng: 'fi',
   defaultNS: 'translation',
   interpolation: {
     escapeValue: false, // not needed for react as it escapes by default
   },
+  resources: translations,
 });
 
 /**
@@ -52,19 +52,6 @@ class TrafficNowLink extends React.Component {
     },
   };
 
-  constructor(props) {
-    super(props);
-    Object.keys(translations).forEach(lang => {
-      i18next.addResourceBundle(lang, 'translation', translations[lang]);
-    });
-  }
-
-  componentDidUpdate() {
-    if (i18next.language !== this.props.lang) {
-      i18next.changeLanguage(this.props.lang);
-    }
-  }
-
   handleKeyDown = (e, lang) => {
     if (e.keyCode === 32 || e.keyCode === 13) {
       this.props.handleClick(e, lang);
@@ -93,7 +80,7 @@ class TrafficNowLink extends React.Component {
               width={1.25}
             />{' '}
             <a className={styles.text} href={this.props.href}>
-              {i18next.t('traffic')}
+              {i18next.t('traffic', { lng: this.props.lang })}
             </a>
           </div>
 
