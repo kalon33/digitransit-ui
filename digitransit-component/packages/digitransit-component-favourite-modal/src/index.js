@@ -12,19 +12,9 @@ import translations from './helpers/translations';
 import DesktopModal from './helpers/DesktopModal';
 import MobileModal from './helpers/MobileModal';
 
-i18next
-  .init({
-    fallbackLng: 'fi',
-    defaultNS: 'translation',
-    interpolation: {
-      escapeValue: false, // not needed for react as it escapes by default
-    },
-  })
-  .then(() => {
-    Object.keys(translations).forEach(lang =>
-      i18next.addResourceBundle(lang, 'translation', translations[lang]),
-    );
-  });
+Object.keys(translations).forEach(lang =>
+  i18next.addResourceBundle(lang, 'translation', translations[lang], true),
+);
 
 const FavouriteIconIdToNameMap = {
   'icon-icon_place': 'place',

@@ -127,6 +127,7 @@ async function init() {
     lang: language,
     fallbackLng: 'fi',
     defaultNS: 'translation',
+    debug: true,
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },

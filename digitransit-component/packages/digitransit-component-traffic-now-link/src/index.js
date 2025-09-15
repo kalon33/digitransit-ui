@@ -1,13 +1,14 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable react/prefer-stateless-function */
-/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
-/* eslint react/forbid-prop-types: 0 */
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Icon from '@digitransit-component/digitransit-component-icon';
 import i18next from 'i18next';
 import translations from './helpers/translations';
 import styles from './helpers/styles.scss';
+
+Object.keys(translations).forEach(l =>
+  i18next.addResourceBundle(l, 'translation', translations[l], true),
+);
 
 /**
  * A banner with blue caution Icon and arrow mark, original purpose is to act as a link to a page about current traffic information.
@@ -21,33 +22,11 @@ import styles from './helpers/styles.scss';
  * <TrafficNowLink lang={lang} handleClick={this.handleClick}/>
  */
 const TrafficNowLink = ({ lang, handleClick, href, fontWeights }) => {
-  const [ready, setReady] = useState(false); // i18next ready for render
-  useEffect(() => {
-    i18next
-      .init({
-        fallbackLng: 'fi',
-        defaultNS: 'translation',
-        interpolation: {
-          escapeValue: false, // not needed for react as it escapes by default
-        },
-      })
-      .then(() => {
-        Object.keys(translations).forEach(l =>
-          i18next.addResourceBundle(l, 'translation', translations[l]),
-        );
-        setReady(true);
-      });
-  }, []);
-
   const handleKeyDown = e => {
     if (e.keyCode === 32 || e.keyCode === 13) {
       handleClick(e, lang);
     }
   };
-
-  if (!ready) {
-    return null;
-  }
 
   return (
     <h2 className={styles.container}>

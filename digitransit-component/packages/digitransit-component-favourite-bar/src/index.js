@@ -12,19 +12,9 @@ import { formatFavouritePlaceLabel } from '@digitransit-search-util/digitransit-
 import styles from './helpers/styles.scss';
 import translations from './helpers/translations';
 
-i18next
-  .init({
-    fallbackLng: 'fi',
-    defaultNS: 'translation',
-    interpolation: {
-      escapeValue: false, // not needed for react as it escapes by default
-    },
-  })
-  .then(() => {
-    Object.keys(translations).forEach(lang =>
-      i18next.addResourceBundle(lang, 'translation', translations[lang]),
-    );
-  });
+Object.keys(translations).forEach(lang =>
+  i18next.addResourceBundle(lang, 'translation', translations[lang], true),
+);
 
 const isKeyboardSelectionEvent = event => {
   const space = [13, ' ', 'Spacebar'];
@@ -374,6 +364,7 @@ class FavouriteBar extends React.Component {
             }
             isLoading={isLoading}
             color={this.props.color}
+            lang={this.props.lang}
           />
           <FavouriteLocation
             text={name2 || this.translate('add-work')}

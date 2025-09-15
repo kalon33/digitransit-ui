@@ -72,7 +72,6 @@ function Datetimepicker({
   const [displayTimestamp, changeDisplayTimestamp] = useState(
     timestamp || DateTime.now().toMillis(),
   );
-  const [i18Ready, setI18Ready] = useState(false);
   // timer for updating displayTimestamp in real time
   const [timerId, setTimer] = useState(null);
   // for input labels
@@ -85,20 +84,9 @@ function Datetimepicker({
   const translationSettings = { lng: lang };
 
   useEffect(() => {
-    i18next
-      .init({
-        fallbackLng: 'fi',
-        defaultNS: 'translation',
-        interpolation: {
-          escapeValue: false, // not needed for react as it escapes by default
-        },
-      })
-      .then(() => {
-        Object.keys(translations).forEach(l =>
-          i18next.addResourceBundle(l, 'translation', translations[l]),
-        );
-        setI18Ready(true);
-      });
+    Object.keys(translations).forEach(l =>
+      i18next.addResourceBundle(l, 'translation', translations[l], true),
+    );
   }, []);
 
   useEffect(() => {
@@ -454,10 +442,6 @@ function Datetimepicker({
     }
     return <span>{`${summary} ${dateDisplay} ${timeDisplay}`}</span>;
   };
-
-  if (!i18Ready) {
-    return null;
-  }
 
   return (
     <fieldset

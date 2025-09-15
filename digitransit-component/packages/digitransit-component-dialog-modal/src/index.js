@@ -1,7 +1,7 @@
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 /* eslint react/forbid-prop-types: 0 */
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import cx from 'classnames';
 import i18next from 'i18next';
 import Modal from '@hsl-fi/modal';
@@ -42,28 +42,12 @@ const DialogModal = ({
   hoverColor,
   fontWeights,
 }) => {
-  const [i18ready, setI18ready] = useState(false);
-
   useEffect(() => {
-    i18next
-      .init({
-        fallbackLng: 'fi',
-        defaultNS: 'translation',
-        interpolation: {
-          escapeValue: false, // not needed for react as it escapes by default
-        },
-      })
-      .then(() => {
-        Object.keys(translations).forEach(l => {
-          i18next.addResourceBundle(l, 'translation', translations[l]);
-        });
-        setI18ready(true);
-      });
+    Object.keys(translations).forEach(l =>
+      i18next.addResourceBundle(l, 'translation', translations[l], true),
+    );
   }, []);
 
-  if (!i18ready) {
-    return null;
-  }
   return (
     <Modal
       appElement={appElement}
@@ -142,7 +126,7 @@ DialogModal.propTypes = {
   secondaryButtonText: PropTypes.string,
   secondaryButtonOnClick: PropTypes.func,
   dialogContent: PropTypes.string,
-  lang: PropTypes.string,
+  lang: PropTypes.string.isRequired,
   modalAriaLabel: PropTypes.string,
   href: PropTypes.string,
   color: PropTypes.string,
@@ -153,7 +137,6 @@ DialogModal.propTypes = {
 };
 
 DialogModal.defaultProps = {
-  lang: 'fi',
   dialogContent: undefined,
   handleClose: () => {},
   secondaryButtonText: undefined,
