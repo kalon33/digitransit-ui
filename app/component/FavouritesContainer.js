@@ -421,7 +421,7 @@ class FavouritesContainer extends React.Component {
 
 const connectedComponent = connectToStores(
   FavouritesContainer,
-  ['FavouriteStore', 'UserStore'],
+  ['FavouriteStore', 'UserStore', 'PreferencesStore'],
   context => ({
     favourites:
       !context.config.allowLogin ||
@@ -438,6 +438,7 @@ const connectedComponent = connectToStores(
     hoverColor:
       context.config.colors.hover ||
       LightenDarkenColor(context.config.colors.primary, -20),
+    lang: context.getStore('PreferencesStore').getLanguage(),
   }),
 );
 
