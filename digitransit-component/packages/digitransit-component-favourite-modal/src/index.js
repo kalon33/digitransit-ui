@@ -12,14 +12,19 @@ import translations from './helpers/translations';
 import DesktopModal from './helpers/DesktopModal';
 import MobileModal from './helpers/MobileModal';
 
-i18next.init({
-  fallbackLng: 'fi',
-  defaultNS: 'translation',
-  interpolation: {
-    escapeValue: false, // not needed for react as it escapes by default
-  },
-  resources: translations,
-});
+i18next
+  .init({
+    fallbackLng: 'fi',
+    defaultNS: 'translation',
+    interpolation: {
+      escapeValue: false, // not needed for react as it escapes by default
+    },
+  })
+  .then(() => {
+    Object.keys(translations).forEach(lang =>
+      i18next.addResourceBundle(lang, 'translation', translations[lang]),
+    );
+  });
 
 const FavouriteIconIdToNameMap = {
   'icon-icon_place': 'place',
@@ -359,6 +364,7 @@ class FavouriteModal extends React.Component {
           favouriteIconIds={FavouriteModal.favouriteIconIds}
           handleClick={this.selectIcon}
           color={color}
+          lang={lang}
         />
       ),
       saveFavourite: this.save,
