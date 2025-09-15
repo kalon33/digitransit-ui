@@ -1,7 +1,7 @@
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 /* eslint react/forbid-prop-types: 0 */
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import cx from 'classnames';
 import i18next from 'i18next';
 import Modal from '@hsl-fi/modal';
@@ -42,10 +42,11 @@ const DialogModal = ({
   hoverColor,
   fontWeights,
 }) => {
+  const [i18ready, setI18ready] = useState(false);
+
   useEffect(() => {
     i18next
       .init({
-        lng: lang,
         fallbackLng: 'fi',
         defaultNS: 'translation',
         interpolation: {
@@ -56,14 +57,18 @@ const DialogModal = ({
         Object.keys(translations).forEach(l => {
           i18next.addResourceBundle(l, 'translation', translations[l]);
         });
+        setI18ready(true);
       });
-  }, [lang]);
+  }, []);
 
+  if (!i18ready) {
+    return null;
+  }
   return (
     <Modal
       appElement={appElement}
       contentLabel={modalAriaLabel}
-      closeButtonLabel={i18next.t('close-modal')}
+      closeButtonLabel={i18next.t('close-modal', { lng: lang })}
       variant="confirmation"
       isOpen={isModalOpen}
       onCrossClick={handleClose}
