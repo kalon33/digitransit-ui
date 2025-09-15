@@ -11,6 +11,10 @@ import { isMobile } from './mobileDetection';
 import dateTimeInputIsSupported from './dateTimeInputIsSupported';
 import MobilePickerModal from './MobilePickerModal';
 
+Object.keys(translations).forEach(l =>
+  i18next.addResourceBundle(l, 'translation', translations[l], true),
+);
+
 Settings.defaultLocale = 'en';
 
 /**
@@ -82,12 +86,6 @@ function Datetimepicker({
   const alertRef = useRef();
 
   const translationSettings = { lng: lang };
-
-  useEffect(() => {
-    Object.keys(translations).forEach(l =>
-      i18next.addResourceBundle(l, 'translation', translations[l], true),
-    );
-  }, []);
 
   useEffect(() => {
     Settings.defaultLocale = lang;
