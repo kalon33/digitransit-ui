@@ -86,21 +86,11 @@ const EmbeddedSearch = (props, context) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    i18next
-      .init({
-        lang: 'fi',
-        fallbackLng: 'fi',
-        defaultNS: 'translation',
-        interpolation: {
-          escapeValue: false, // not needed for react as it escapes by default
-        },
-      })
-      .then(() => {
-        Object.keys(translations).forEach(l =>
-          i18next.addResourceBundle(l, 'translation', translations[l]),
-        );
-        i18next.changeLanguage(lang).then(() => setReady(true));
-      });
+    Object.keys(translations).forEach(l =>
+      i18next.addResourceBundle(l, 'translation', translations[l], true),
+    );
+    i18next.changeLanguage(lang).then(() => setReady(true));
+
     if (config.secondaryLogo || config.logo) {
       import(
         /* webpackChunkName: "embedded-search" */ `../../configurations/images/${

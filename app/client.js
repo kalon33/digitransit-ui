@@ -7,6 +7,7 @@ import makeRouteConfig from 'found/makeRouteConfig';
 import { Resolver } from 'found-relay';
 import provideContext from 'fluxible-addons-react/provideContext';
 import debug from 'debug';
+import i18next from 'i18next';
 import {
   RelayNetworkLayer,
   urlMiddleware,
@@ -121,6 +122,15 @@ async function init() {
     .getComponentContext()
     .getStore('PreferencesStore')
     .getLanguage();
+
+  await i18next.init({
+    lang: language,
+    fallbackLng: 'fi',
+    defaultNS: 'translation',
+    interpolation: {
+      escapeValue: false, // not needed for react as it escapes by default
+    },
+  });
 
   const network = new RelayNetworkLayer([
     cacheMiddleware({
