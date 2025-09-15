@@ -108,7 +108,6 @@ function NearStopsAndRoutes({
   useEffect(() => {
     i18next
       .init({
-        lng: 'fi',
         fallbackLng: 'fi',
         defaultNS: 'translation',
         interpolation: {
