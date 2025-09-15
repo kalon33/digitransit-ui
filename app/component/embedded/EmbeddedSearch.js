@@ -28,44 +28,36 @@ const sources = ['Favourite', 'History', 'Datasource'];
 
 const translations = {
   fi: {
-    translation: {
-      'own-position': 'Nykyinen sijaintisi',
-      'find-bike-route': 'Löydä pyöräreitti',
-      'find-walk-route': 'Löydä kävelyreitti',
-      'find-route': 'Löydä reitti',
-      'search-fields-sr-instructions': '',
-      'search-route': 'Hae reitti',
-    },
+    'own-position': 'Nykyinen sijaintisi',
+    'find-bike-route': 'Löydä pyöräreitti',
+    'find-walk-route': 'Löydä kävelyreitti',
+    'find-route': 'Löydä reitti',
+    'search-fields-sr-instructions': '',
+    'search-route': 'Hae reitti',
   },
   en: {
-    translation: {
-      'own-position': 'Your current location',
-      'find-bike-route': 'Find a biking route',
-      'find-walk-route': 'Find a walking route',
-      'find-route': 'Find a route',
-      'search-fields-sr-instructions': '',
-      'search-route': 'Search routes',
-    },
+    'own-position': 'Your current location',
+    'find-bike-route': 'Find a biking route',
+    'find-walk-route': 'Find a walking route',
+    'find-route': 'Find a route',
+    'search-fields-sr-instructions': '',
+    'search-route': 'Search routes',
   },
   sv: {
-    translation: {
-      'own-position': 'Min position',
-      'find-bike-route': 'Sök cykelrutt',
-      'find-walk-route': 'Sök promenadrutt',
-      'find-route': 'Sök rutt',
-      'search-fields-sr-instructions': '',
-      'search-route': 'Söka rutter',
-    },
+    'own-position': 'Min position',
+    'find-bike-route': 'Sök cykelrutt',
+    'find-walk-route': 'Sök promenadrutt',
+    'find-route': 'Sök rutt',
+    'search-fields-sr-instructions': '',
+    'search-route': 'Söka rutter',
   },
   pl: {
-    translation: {
-      'own-position': 'Twoja obecna lokalizacja',
-      'find-bike-route': 'Znajdź trasę rowerową',
-      'find-walk-route': 'Znajdź trasę pieszo',
-      'find-route': 'Znajdź trasę',
-      'search-fields-sr-instructions': '',
-      'search-route': 'Znajdź trasę',
-    },
+    'own-position': 'Twoja obecna lokalizacja',
+    'find-bike-route': 'Znajdź trasę rowerową',
+    'find-walk-route': 'Znajdź trasę pieszo',
+    'find-route': 'Znajdź trasę',
+    'search-fields-sr-instructions': '',
+    'search-route': 'Znajdź trasę',
   },
 };
 
@@ -102,9 +94,11 @@ const EmbeddedSearch = (props, context) => {
         interpolation: {
           escapeValue: false, // not needed for react as it escapes by default
         },
-        resources: translations,
       })
       .then(() => {
+        Object.keys(translations).forEach(l =>
+          i18next.addResourceBundle(l, 'translation', translations[l]),
+        );
         i18next.changeLanguage(lang).then(() => setReady(true));
       });
     if (config.secondaryLogo || config.logo) {
