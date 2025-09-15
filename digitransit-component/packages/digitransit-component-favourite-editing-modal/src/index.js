@@ -17,14 +17,19 @@ import ModalContent from './helpers/ModalContent';
 import styles from './helpers/styles.scss';
 import translations from './helpers/translations';
 
-i18next.init({
-  fallbackLng: 'fi',
-  defaultNS: 'translation',
-  interpolation: {
-    escapeValue: false, // not needed for react as it escapes by default
-  },
-  resources: translations,
-});
+i18next
+  .init({
+    fallbackLng: 'fi',
+    defaultNS: 'translation',
+    interpolation: {
+      escapeValue: false, // not needed for react as it escapes by default
+    },
+  })
+  .then(() => {
+    Object.keys(translations).forEach(lang =>
+      i18next.addResourceBundle(lang, 'translation', translations[lang]),
+    );
+  });
 
 const isKeyboardSelectionEvent = event => {
   const space = [13, ' ', 'Spacebar'];
@@ -130,7 +135,7 @@ class FavouriteEditingModal extends React.Component {
   }
 
   translate = (id, options) => {
-    i18next.t(id, {
+    return i18next.t(id, {
       lng: this.props.lang,
       ...options,
     });
