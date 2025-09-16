@@ -61,7 +61,7 @@ export default class VehicleMarker extends React.Component {
     const vehicleCapacity = getVehicleCapacity(config, rental?.network);
     const iconName = `${getRentalNetworkIcon(
       getRentalNetworkConfig(rental.network, config),
-    )}-lollipop`;
+    )}-stop`;
 
     return !transit && zoom <= config.stopsSmallMaxZoom
       ? L.divIcon({
