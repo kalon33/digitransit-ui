@@ -16,12 +16,12 @@ function SelectStopRow(
   { config },
 ) {
   let mode = type.toLowerCase();
-  if (routes && type === 'bus' && config.useExtendedRouteTypes) {
+  if (routes && mode === 'bus' && config.useExtendedRouteTypes) {
     const routesArray = JSON.parse(routes);
     if (routesArray.some(p => p.gtfsType === ExtendedRouteTypes.BusExpress)) {
       mode = 'bus-express';
     }
-  } else if (routes && type === 'tram' && config.useExtendedRouteTypes) {
+  } else if (routes && mode === 'tram' && config.useExtendedRouteTypes) {
     const routesArray = JSON.parse(routes);
     if (routesArray.some(p => p.gtfsType === ExtendedRouteTypes.SpeedTram)) {
       mode = 'speedtram';
