@@ -361,34 +361,6 @@ function drawSelectionCircle(
 }
 
 /**
- * Draw a small circle icon used for far away zoom level.
- */
-function getSmallStopIcon(type, radius, color) {
-  // draw on a new offscreen canvas so that result can be cached
-  const canvas = document.createElement('canvas');
-  const width = radius * 2;
-  canvas.width = width;
-  canvas.height = width;
-  const x = width / 2;
-  const y = width / 2;
-  const ctx = canvas.getContext('2d');
-  // outer circle
-  ctx.beginPath();
-  ctx.fillStyle = '#fff';
-  ctx.arc(x, y, radius, 0, FULL_CIRCLE);
-  ctx.fill();
-  // inner circle
-  ctx.beginPath();
-  ctx.fillStyle = color;
-  ctx.arc(x, y, radius - 1, 0, FULL_CIRCLE);
-  ctx.fill();
-
-  return new Promise(r => {
-    r(canvas);
-  });
-}
-
-/**
  * Draw a badge icon on top of the icon.
  */
 function drawStopStatusBadge(
@@ -420,10 +392,37 @@ function drawStopStatusBadge(
   }
 }
 
-const getMemoizedStopIcon = memoize(
-  getSmallStopIcon,
-  (type, radius, color, isHighlighted) =>
-    `${type}_${radius}_${color}_${isHighlighted}`,
+/**
+ * Draw a circle icon
+ */
+function getCircleIcon(radius, color) {
+  // draw on a new offscreen canvas so that result can be cached
+  const canvas = document.createElement('canvas');
+  const width = radius * 2;
+  canvas.width = width;
+  canvas.height = width;
+  const x = width / 2;
+  const y = width / 2;
+  const ctx = canvas.getContext('2d');
+  // outer circle
+  ctx.beginPath();
+  ctx.fillStyle = '#fff';
+  ctx.arc(x, y, radius, 0, FULL_CIRCLE);
+  ctx.fill();
+  // inner circle
+  ctx.beginPath();
+  ctx.fillStyle = color;
+  ctx.arc(x, y, radius - 1, 0, FULL_CIRCLE);
+  ctx.fill();
+
+  return new Promise(r => {
+    r(canvas);
+  });
+}
+
+const getMemoizedCircleIcon = memoize(
+  getCircleIcon,
+  (radius, color) => `${radius}_${color}`,
 );
 
 /**
@@ -467,12 +466,7 @@ export function drawStopIcon(
   if (style === 'small') {
     x = geom.x / tile.ratio - radius;
     y = geom.y / tile.ratio - radius;
-    getMemoizedStopIcon(
-      isFerryTerminal ? 'FERRY_TERMINAL' : type,
-      radius,
-      color,
-      isHighlighted,
-    ).then(image => {
+    getMemoizedCircleIcon(radius, color).then(image => {
       tile.ctx.drawImage(image, x, y);
     });
     return;
@@ -743,7 +737,7 @@ export function drawSmallVehicleRentalMarker(tile, geom, iconColor, mode) {
   const radius = mode !== TransportMode.Citybike ? 4 : 5;
   const x = geom.x / tile.ratio - radius;
   const y = geom.y / tile.ratio - radius;
-  getMemoizedStopIcon(mode, radius, iconColor).then(image => {
+  getMemoizedCircleIcon(radius, iconColor).then(image => {
     tile.ctx.drawImage(image, x, y);
   });
 }
