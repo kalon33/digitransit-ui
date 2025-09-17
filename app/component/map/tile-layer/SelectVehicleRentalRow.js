@@ -18,7 +18,7 @@ function SelectVehicleRentalRow(
 ) {
   const img =
     icon ||
-    `${getRentalNetworkIcon(getRentalNetworkConfig(network, config))}-stop`;
+    `${getRentalNetworkIcon(getRentalNetworkConfig(network, config))}-lollipop`;
 
   const linkAddress = `/${prefix}/${encodeURIComponent(id)}`;
 
