@@ -551,6 +551,7 @@ export function drawStopIcon(
     }
   }
 }
+
 /**
  * Draw icon for hybrid stops, meaning BUS and TRAM stop in the same place.
  * Determine icon size based on zoom level
@@ -689,6 +690,52 @@ export function drawHybridStopIcon(
   }
 }
 
+export function drawScooterIcon(tile, geom, isHighlighted) {
+  const color = '#647693';
+  const zoom = tile.coords.z - 1;
+  const styles = getStopIconStyles('stop', zoom, isHighlighted);
+  if (!styles) {
+    return;
+  }
+  const { style } = styles;
+  let { width, height } = styles;
+  width *= tile.scaleratio;
+  height *= tile.scaleratio;
+
+  const radius = width / 2;
+  let x;
+  let y;
+  if (style === 'large') {
+    x = geom.x / tile.ratio - width / 2;
+    y = geom.y / tile.ratio - height;
+    getImageFromSpriteCache(
+      'icon-icon_scooter-lollipop',
+      width,
+      height,
+      color,
+    ).then(image => {
+      tile.ctx.drawImage(image, x, y);
+    });
+    if (isHighlighted) {
+      const selectedCircleOffset = getSelectedIconCircleOffset(
+        zoom,
+        tile.ratio,
+      );
+      tile.ctx.beginPath();
+      // eslint-disable-next-line no-param-reassign
+      tile.ctx.lineWidth = 2;
+      tile.ctx.arc(
+        x + selectedCircleOffset,
+        y + selectedCircleOffset,
+        radius + 2,
+        0,
+        FULL_CIRCLE,
+      );
+      tile.ctx.stroke();
+    }
+  }
+}
+
 /**
  * Draws small bike rental station icon. Color can vary.
  */
@@ -783,51 +830,6 @@ export function drawCitybikeIcon(
       }
       if (isHighlighted) {
         drawSelectionCircle(tile, iconX, iconY, radius, true, true);
-      }
-    });
-  }
-}
-
-/**
- * Draw an icon for rental vehicles.
- * Determine icon size based on zoom level.
- */
-export function drawScooterIcon(tile, geom, iconName, isHighlighted) {
-  const zoom = tile.coords.z - 1;
-  const styles = getStopIconStyles('scooter', zoom, isHighlighted);
-  const { style } = styles;
-  let { width, height } = styles;
-  width *= tile.scaleratio;
-  height *= tile.scaleratio;
-  if (!styles) {
-    return;
-  }
-  const radius = width / 2;
-  let x;
-  let y;
-  if (style === 'medium') {
-    x = geom.x / tile.ratio - width / 2;
-    y = geom.y / tile.ratio - height;
-    const icon = `${iconName}-lollipop`;
-    getImageFromSpriteCache(icon, width, height).then(image => {
-      tile.ctx.drawImage(image, x, y);
-      if (isHighlighted) {
-        drawSelectionCircle(tile, x, y, radius, false, false);
-      }
-    });
-  }
-  if (style === 'large') {
-    const icon = `${iconName}-lollipop-large`;
-    const smallCircleRadius = 11 * tile.scaleratio;
-    x = geom.x / tile.ratio - width + smallCircleRadius * 2;
-    y = geom.y / tile.ratio - height;
-    const iconX = x;
-    const iconY = y;
-
-    getImageFromSpriteCache(icon, width, height).then(image => {
-      tile.ctx.drawImage(image, x, y);
-      if (isHighlighted) {
-        drawSelectionCircle(tile, iconX, iconY, radius, true, false);
       }
     });
   }
