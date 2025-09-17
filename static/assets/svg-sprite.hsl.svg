@@ -555,7 +555,7 @@
  </g>
  </symbol>
 
- <symbol id="icon-icon_map_hybrid_stop" viewBox="0 0 17 37">
+ <symbol id="icon-icon_hybrid_stop" viewBox="0 0 17 37">
  <g fill="none" transform="translate(-6 1)">
  <rect width="15.2" height="29.6" x="6.8" y="-.4" fill="#d8d8d8" stroke="#fff" stroke-width=".8" rx="7.2"/>
  <path fill="#333" d="M13.6 28.8h1.6v5.6a.8.8 0 1 1-1.6 0z"/>
@@ -568,7 +568,7 @@
  </g>
  </symbol>
 
- <symbol id="icon-icon_map_hybrid_stop_express" viewBox="0 0 17 37">
+ <symbol id="icon-icon_hybrid_stop_express" viewBox="0 0 17 37">
  <g fill="none" transform="translate(-6 1)">
  <rect width="15.2" height="29.6" x="6.8" y="-.4" fill="#d8d8d8" stroke="#fff" stroke-width=".8" rx="7.2"/>
  <path fill="#333" d="M13.6 28.8h1.6v5.6a.8.8 0 1 1-1.6 0z"/>
@@ -581,7 +581,7 @@
  </g>
  </symbol>
 
- <symbol id="icon-icon_map_hybrid_station" viewBox="0 0 62 30">
+ <symbol id="icon-icon_hybrid_station" viewBox="0 0 62 30">
  <mask width="30" height="30" x="0" y="0" mask-type="alpha" maskUnits="userSpaceOnUse">
  <path fill="#fff" d="M0 0h30v30H0z"/>
  </mask>

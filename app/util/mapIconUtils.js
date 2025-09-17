@@ -600,7 +600,7 @@ export function drawHybridStopIcon(
     const x = geom.x / tile.ratio - width / 2;
     const y = geom.y / tile.ratio - height;
     getImageFromSpriteCache(
-      `icon-icon_map_hybrid_stop${hasTrunkRoute ? '_express' : ''}`,
+      `icon-icon_hybrid_stop${hasTrunkRoute ? '_express' : ''}`,
       width,
       height,
     ).then(image => {
@@ -878,7 +878,7 @@ export function drawHybridStationIcon(tile, geom, isHighlighted) {
   width *= tile.scaleratio * 1.5;
   height *= tile.scaleratio * 1.5;
   // only bus/tram hybrid exist
-  getImageFromSpriteCache('icon-icon_map_hybrid_station', width, height).then(
+  getImageFromSpriteCache('icon-icon_hybrid_station', width, height).then(
     image => {
       tile.ctx.drawImage(
         image,

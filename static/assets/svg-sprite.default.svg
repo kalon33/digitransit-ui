@@ -564,7 +564,7 @@
  <path fill="#fff" d="m20.038 9.67-7.08 6.905-3.064-2.988a1.675 1.675 0 0 0-2.383 0c-.681.664-.681 1.66 0 2.324l5.446 5.311 9.532-9.228c.681-.664.681-1.66 0-2.324-.749-.597-1.77-.597-2.45 0"/>
  </symbol>
 
- <symbol id="icon-icon_map_hybrid_stop" viewBox="0 0 17 37">
+ <symbol id="icon-icon_hybrid_stop" viewBox="0 0 17 37">
  <defs>
  <path id="path-1" d="M0 0h10.4v10.4H0z"/>
  <path id="path-3" d="M0 10.4h10.4V0H0z"/>
@@ -611,7 +611,7 @@
  </g>
  </symbol>
 
- <symbol id="icon-icon_map_hybrid_station" viewBox="0 0 62 30">
+ <symbol id="icon-icon_hybrid_station" viewBox="0 0 62 30">
  <mask width="30" height="30" x="0" y="0" mask-type="alpha" maskUnits="userSpaceOnUse">
  <path fill="#fff" d="M0 0h30v30H0z"/>
  </mask>
