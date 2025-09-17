@@ -223,6 +223,9 @@ function getImageFromSpriteSync(icon, width, height, fill) {
     return null;
   }
   const symbol = document.getElementById(icon);
+  if (!symbol) {
+    return null;
+  }
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('width', width);
   svg.setAttribute('height', height);
@@ -479,7 +482,7 @@ export function drawStopIcon(
     y = geom.y / tile.ratio - height;
     getImageFromSpriteCache(
       !isFerryTerminal
-        ? `icon-icon_stop_${type.toLowerCase()}`
+        ? `icon-icon_${type.toLowerCase()}-lollipop`
         : `icon-icon_${type.toLowerCase()}`,
       width,
       height,
@@ -600,7 +603,7 @@ export function drawHybridStopIcon(
     const x = geom.x / tile.ratio - width / 2;
     const y = geom.y / tile.ratio - height;
     getImageFromSpriteCache(
-      `icon-icon_hybrid_stop${hasTrunkRoute ? '_express' : ''}`,
+      `icon-icon_hybrid${hasTrunkRoute ? '-express' : ''}-lollipop`,
       width,
       height,
     ).then(image => {

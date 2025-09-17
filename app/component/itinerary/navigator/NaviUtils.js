@@ -739,7 +739,7 @@ export const getDestinationProperties = (
   } else {
     const iconId = terminalIcons.includes(mode)
       ? `icon-icon_${mode}`
-      : `icon-icon_stop_${mode}`;
+      : `icon-icon_${mode}-lollipop`;
     destination = {
       className: mode,
       iconId,

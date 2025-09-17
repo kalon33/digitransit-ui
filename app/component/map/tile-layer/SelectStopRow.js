@@ -34,12 +34,12 @@ function SelectStopRow(
     case 'bus':
       iconOptions.iconId = terminal
         ? `icon-icon_${mode}`
-        : `icon-icon_stop_${mode}`;
+        : `icon-icon_${mode}-lollipop`;
       break;
     case 'bus-express':
       iconOptions.iconId = terminal
         ? 'icon-icon_bus'
-        : 'icon-icon_stop_bus-express';
+        : 'icon-icon_bus-express-lollipop';
       break;
     case 'subway':
     case 'airplane':
@@ -48,13 +48,13 @@ function SelectStopRow(
     case 'ferry':
       iconOptions.iconId = !isNull(code)
         ? 'icon-icon_ferry'
-        : 'icon-icon_stop_ferry';
-      if (iconOptions.iconId === 'icon-icon_stop_ferry' && colors) {
+        : 'icon-icon_ferry-lollipop';
+      if (iconOptions.iconId === 'icon-icon_ferry-lollipop' && colors) {
         iconOptions.color = colors.iconColors['mode-ferry-pier'];
       }
       break;
     default:
-      iconOptions.iconId = `icon-icon_stop_${mode}`;
+      iconOptions.iconId = `icon-icon_${mode}-lollipop`;
       break;
   }
   iconOptions.className = `${mode.toLowerCase()}`;

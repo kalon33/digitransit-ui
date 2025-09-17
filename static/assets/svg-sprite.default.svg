@@ -564,7 +564,7 @@
  <path fill="#fff" d="m20.038 9.67-7.08 6.905-3.064-2.988a1.675 1.675 0 0 0-2.383 0c-.681.664-.681 1.66 0 2.324l5.446 5.311 9.532-9.228c.681-.664.681-1.66 0-2.324-.749-.597-1.77-.597-2.45 0"/>
  </symbol>
 
- <symbol id="icon-icon_hybrid_stop" viewBox="0 0 17 37">
+ <symbol id="icon-icon_hybrid-lollipop" viewBox="0 0 17 37">
  <defs>
  <path id="path-1" d="M0 0h10.4v10.4H0z"/>
  <path id="path-3" d="M0 10.4h10.4V0H0z"/>
@@ -629,7 +629,7 @@
  <path fill="#fff" d="M54.072 22.968V10.12c0-1.094-.887-3.976-1.98-3.976h-3.426l.998-2.078h1.679V3.001h-8.685v1.065h1.697l.998 2.078h-3.445c-1.093 0-1.98 2.882-1.98 3.976v12.848a1.98 1.98 0 0 0 1.979 1.98L40.427 27h2.166l1.48-2.053h5.855L51.408 27h2.165l-1.48-2.053a1.98 1.98 0 0 0 1.98-1.98m-8.55-18.901h2.974l-.998 2.078h-.978zm-1.667 3.341h6.288v1.065h-6.288zM41.342 21.53a1.083 1.083 0 1 1 2.165 0 1.083 1.083 0 0 1-2.165 0m10.233 1.083a1.083 1.083 0 1 1 0-2.165 1.083 1.083 0 0 1 0 2.165m1.082-4.254c0 .256-.136.479-.334.546-.789.264-2.88.48-5.324.48-2.442 0-4.534-.216-5.323-.48-.198-.067-.334-.29-.334-.546v-8.265c0-.312.202-.566.453-.566h10.41c.25 0 .453.253.453.566v8.265"/>
  </symbol>
 
- <symbol id="icon-icon_stop_tram" viewBox="0 0 16 22">
+ <symbol id="icon-icon_tram-lollipop" viewBox="0 0 16 22">
  <defs>
  <path id="path-1" d="M0 0h10.4v10.4H0z"/>
  </defs>
@@ -656,7 +656,7 @@
  </g>
  </symbol>
 
- <symbol id="icon-icon_stop_ferry" viewBox="0 0 16 22">
+ <symbol id="icon-icon_ferry-lollipop" viewBox="0 0 16 22">
  <defs>
  <path id="path-1" d="M0 0h10.38v10.38H0z"/>
  </defs>
@@ -681,7 +681,7 @@
  </g>
  </symbol>
 
- <symbol id="icon-icon_stop_rail" viewBox="0 0 16 22">
+ <symbol id="icon-icon_rail-lollipop" viewBox="0 0 16 22">
  <defs>
  <path id="path-1" d="M0 0h10.4v10.4H0z"/>
  </defs>
@@ -706,7 +706,7 @@
  </g>
  </symbol>
 
- <symbol id="icon-icon_stop_bus" viewBox="0 0 16 22">
+ <symbol id="icon-icon_bus-lollipop" viewBox="0 0 16 22">
  <defs>
  <path id="path-1" d="M0 0h10.4v10.4H0z"/>
  <path id="path-3" d="M0 10.4h10.4V0H0z"/>
@@ -737,7 +737,7 @@
  </g>
  </symbol>
 
- <symbol id="icon-icon_stop_funicular" viewBox="0 0 16 22">
+ <symbol id="icon-icon_funicular-lollipop" viewBox="0 0 16 22">
  <defs>
  <path id="path-1" d="M0 0h10.4v10.4H0z"/>
  <path id="path-3" d="M0 10.4h10.4V0H0z"/>
@@ -1869,7 +1869,7 @@
  <path fill="#0074bf" d="m17.152 16 4.61-4.61a.815.815 0 0 0-1.153-1.151L16 14.848l-4.61-4.61a.815.815 0 0 0-1.151 1.153L14.848 16l-4.61 4.61a.815.815 0 0 0 1.153 1.151L16 17.152l4.61 4.61a.815.815 0 1 0 1.151-1.153z"/>
  </symbol>
 
- <symbol id="icon-icon_stop-temporarily-closed-badge" viewBox="0 0 18 18">
+ <symbol id="icon-icon-temporarily-closed-badge" viewBox="0 0 18 18">
  <circle cx="9" cy="9" r="8.5" fill="#888" stroke="#fff"/>
  <path fill="#fff" d="M5.93 9.08a3.148 3.148 0 1 0 6.295 0 3.148 3.148 0 1 0-6.295 0m-1.18 0a4.329 4.329 0 1 1 8.656 0 4.33 4.33 0 0 1-4.329 4.332A4.33 4.33 0 0 1 4.75 9.08m5.039-.879.325-.322c.353-.349.9.195.545.545L9.365 9.702l-.015.016-.003.002-.012.011a.35.35 0 0 1-.392.065.35.35 0 0 1-.246-.315q-.005-.029-.003-.056V7.036c0-.497.77-.497.77 0v1.487z"/>
  </symbol>

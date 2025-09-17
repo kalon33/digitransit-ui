@@ -18,7 +18,7 @@ function SelectVehicleRentalClusterRow({
 }) {
   const img = isScooter
     ? 'icon-icon_scooter-lollipop'
-    : 'icon-icon_citybike-stop';
+    : 'icon-icon_citybike-lollipop';
 
   const linkAddress = `/${prefix}/${encodeURIComponent(id)}/${[
     ...networksInCluster,
