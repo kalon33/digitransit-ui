@@ -687,7 +687,7 @@ export function drawHybridStopIcon(
 export function drawScooterIcon(tile, geom, isHighlighted) {
   const color = '#647693';
   const zoom = tile.coords.z - 1;
-  const styles = getStopIconStyles('stop', zoom, isHighlighted);
+  const styles = getStopIconStyles('scooter', zoom, isHighlighted);
   if (!styles) {
     return;
   }
@@ -744,9 +744,80 @@ export function drawSmallVehicleRentalMarker(tile, geom, iconColor, mode) {
 
 /**
  * Draw an icon for citybike stations, including indicator to show bike availability. Draw closed icon for closed stations
- * Determine icon size based on zoom level
  */
 export function drawCitybikeIcon(
+  tile,
+  geom,
+  operative,
+  available,
+  iconName,
+  showAvailability,
+  isHighlighted,
+  color,
+) {
+  const zoom = tile.coords.z - 1;
+  const styles = getStopIconStyles('citybike', zoom, isHighlighted);
+  if (!styles) {
+    return;
+  }
+  const { style } = styles;
+  if (style === 'small') {
+    return;
+  }
+  let { width, height } = styles;
+  width *= tile.scaleratio;
+  height *= tile.scaleratio;
+  const radius = width / 2;
+  let x = geom.x / tile.ratio - width / 2;
+  let y = geom.y / tile.ratio - height;
+  const name = `${iconName}-lollipop`;
+
+  getImageFromSpriteCache(name, width, height, color).then(image => {
+    tile.ctx.drawImage(image, x, y);
+    if (!operative || showAvailability) {
+      let bcol = 'green';
+      if (!operative || !available) {
+        bcol = 'red';
+      } else if (available <= 3) {
+        bcol = 'yellow';
+      }
+      const bw = style === 'medium' ? width / 5 : width / 4;
+      getMemoizedCircleIcon(bw, bcol).then(badge => {
+        tile.ctx.drawImage(badge, x + width / 2, y);
+        if (style === 'large') {
+          const text = !operative ? 'x' : available;
+          x = x + width - bw;
+          y += bw;
+          /* eslint-disable no-param-reassign */
+          tile.ctx.font = `${
+            10.8 * tile.scaleratio
+          }px Gotham XNarrow SSm A, Gotham XNarrow SSm B, Gotham Rounded A, Gotham Rounded B, Arial, sans-serif`;
+          tile.ctx.fillStyle = bcol === 'yellow' ? '#000' : '#fff';
+          tile.ctx.textAlign = 'center';
+          tile.ctx.textBaseline = 'middle';
+          tile.ctx.fillText(text, x, y);
+        }
+      });
+    }
+  });
+
+  if (isHighlighted) {
+    const selectedCircleOffset = getSelectedIconCircleOffset(zoom, tile.ratio);
+    tile.ctx.beginPath();
+    tile.ctx.lineWidth = 2;
+    tile.ctx.arc(
+      x + selectedCircleOffset,
+      y + selectedCircleOffset,
+      radius + 2,
+      0,
+      FULL_CIRCLE,
+    );
+    tile.ctx.stroke();
+  }
+  /* eslint-enable no-param-reassign */
+}
+
+export function drawCitybikeIconOld(
   tile,
   geom,
   operative,
