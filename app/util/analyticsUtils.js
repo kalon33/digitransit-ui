@@ -105,6 +105,7 @@ const handleChange = () => {
 export function initAnalyticsClientSide(config, cookies = new Cookies()) {
   const useAnalytics =
     !config.useCookiesPrompt || cookies.get('cookieConsent') === true;
+
   if (useAnalytics) {
     window.dataLayer = window.dataLayer || [];
   }
