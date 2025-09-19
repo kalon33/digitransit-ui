@@ -110,7 +110,6 @@ class VehicleRentalStations {
 
   draw = (feature, zoomedIn) => {
     const { id, network, formFactors, operative } = feature.properties;
-
     const isHighlighted = this.tile.highlightedStops?.includes(id);
     const name = getRentalNetworkIcon(
       getRentalNetworkConfig(network, this.config),

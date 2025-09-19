@@ -382,6 +382,7 @@ export default {
       'mode-rail': '#af8dbc',
       'mode-ferry': '#247C7B',
       'mode-citybike': '#f2b62d',
+      'mode-citybike-secondary': '#333333',
       'mode-scooter': '#C5CAD2',
       'mode-taxi': '#647693',
       'mode-replacement-bus': '#DC0451',

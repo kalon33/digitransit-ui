@@ -59,7 +59,7 @@ function SelectStopRow(
     iconOptions.color =
       iconOptions.iconId === 'icon-icon_ferry-lollipop'
         ? colors.iconColors['mode-ferry-pier']
-        : colors.iconColors[`mode-{mode}`];
+        : colors.iconColors[`mode-${mode}`];
   }
   const showDesc = desc && desc !== 'null';
   const showCode = code && code !== 'null';
