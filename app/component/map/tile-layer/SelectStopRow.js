@@ -16,7 +16,7 @@ function SelectStopRow(
   { config },
 ) {
   let mode = type.toLowerCase();
-  if (routes && mode === 'bus' && config.useExtendedRouteTypes) {
+  if (!terminal && routes && mode === 'bus' && config.useExtendedRouteTypes) {
     const routesArray = JSON.parse(routes);
     if (routesArray.some(p => p.gtfsType === ExtendedRouteTypes.BusExpress)) {
       mode = 'bus-express';
@@ -49,16 +49,18 @@ function SelectStopRow(
       iconOptions.iconId = !isNull(code)
         ? 'icon-icon_ferry'
         : 'icon-icon_ferry-lollipop';
-      if (iconOptions.iconId === 'icon-icon_ferry-lollipop' && colors) {
-        iconOptions.color = colors.iconColors['mode-ferry-pier'];
-      }
       break;
     default:
       iconOptions.iconId = `icon-icon_${mode}-lollipop`;
       break;
   }
-  iconOptions.className = `${mode.toLowerCase()}`;
-
+  iconOptions.className = mode;
+  if (colors) {
+    iconOptions.color =
+      iconOptions.iconId === 'icon-icon_ferry-lollipop'
+        ? colors.iconColors['mode-ferry-pier']
+        : colors.iconColors[`mode-{mode}`];
+  }
   const showDesc = desc && desc !== 'null';
   const showCode = code && code !== 'null';
 
