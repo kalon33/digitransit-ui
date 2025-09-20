@@ -241,12 +241,6 @@ function getImageFromSpriteSync(icon, width, height, fill) {
     svg.appendChild(child);
   });
 
-  if (fill) {
-    const elements = svg.getElementsByClassName('modeColor');
-    for (let i = 0; i < elements.length; i++) {
-      elements[i].setAttribute('fill', fill);
-    }
-  }
   const image = new Image(width, height);
   image.src = `data:image/svg+xml;base64,${btoa(
     new XMLSerializer().serializeToString(svg),
