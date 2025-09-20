@@ -79,8 +79,8 @@ export function getStopIconStyles(type, zoom, isHighlighted) {
       },
       16: {
         style: 'large',
-        width: 34,
-        height: 43,
+        width: 24,
+        height: 33,
       },
     },
     scooter: {
@@ -101,8 +101,8 @@ export function getStopIconStyles(type, zoom, isHighlighted) {
       },
       16: {
         style: 'large',
-        width: 35,
-        height: 43,
+        width: 24,
+        height: 33,
       },
     },
   };
@@ -313,11 +313,14 @@ function drawTopRightCornerIconBadge(
   tile.ctx.drawImage(image, badgeX, badgeY);
 }
 
-function getSelectedIconCircleOffset(zoom, ratio) {
-  if (zoom > 15) {
-    return 94 / ratio;
-  }
-  return 78 / ratio;
+function drawSelectionCircle(tile, x, y, zoom, radius) {
+  const offset = zoom > 15 ? 94 / tile.ratio : 78 / tile.ratio;
+  tile.ctx.beginPath();
+  // eslint-disable-next-line no-param-reassign
+  tile.ctx.lineWidth = 2;
+  tile.ctx.arc(x + offset, y + offset, radius + 2, 0, FULL_CIRCLE);
+  tile.ctx.stroke();
+  // eslint-enable-next-line no-param-reassign
 }
 
 /**
@@ -484,21 +487,7 @@ export function drawStopIcon(
           );
         });
       } else {
-        const selectedCircleOffset = getSelectedIconCircleOffset(
-          zoom,
-          tile.ratio,
-        );
-        tile.ctx.beginPath();
-        // eslint-disable-next-line no-param-reassign
-        tile.ctx.lineWidth = 2;
-        tile.ctx.arc(
-          x + selectedCircleOffset,
-          y + selectedCircleOffset,
-          radius + 2,
-          0,
-          FULL_CIRCLE,
-        );
-        tile.ctx.stroke();
+        drawSelectionCircle(tile, x, y, zoom, radius);
       }
     }
   }
@@ -669,21 +658,7 @@ export function drawScooterIcon(tile, geom, isHighlighted) {
       tile.ctx.drawImage(image, x, y);
     });
     if (isHighlighted) {
-      const selectedCircleOffset = getSelectedIconCircleOffset(
-        zoom,
-        tile.ratio,
-      );
-      tile.ctx.beginPath();
-      // eslint-disable-next-line no-param-reassign
-      tile.ctx.lineWidth = 2;
-      tile.ctx.arc(
-        x + selectedCircleOffset,
-        y + selectedCircleOffset,
-        radius + 2,
-        0,
-        FULL_CIRCLE,
-      );
-      tile.ctx.stroke();
+      drawSelectionCircle(tile, x, y, zoom, radius);
     }
   }
 }
@@ -739,12 +714,12 @@ export function drawCitybikeIcon(
       } else if (available <= 3) {
         bcol = '#FBB800';
       }
-      const bw = style === 'medium' ? width / 5 : width / 4;
+      const bw = style === 'medium' ? width / 4 : width / 3;
       getMemoizedCircleIcon(bw, bcol).then(badge => {
         tile.ctx.drawImage(badge, x + width / 2, y);
         if (style === 'large') {
           const text = !operative ? 'X' : available;
-          x = x + width - bw;
+          x = x + width - bw / 2;
           y += bw;
           /* eslint-disable no-param-reassign */
           tile.ctx.font = `${
@@ -754,25 +729,15 @@ export function drawCitybikeIcon(
           tile.ctx.textAlign = 'center';
           tile.ctx.textBaseline = 'middle';
           tile.ctx.fillText(text, x, y);
+          /* eslint-enable no-param-reassign */
         }
       });
     }
   });
 
   if (isHighlighted) {
-    const selectedCircleOffset = getSelectedIconCircleOffset(zoom, tile.ratio);
-    tile.ctx.beginPath();
-    tile.ctx.lineWidth = 2;
-    tile.ctx.arc(
-      x + selectedCircleOffset,
-      y + selectedCircleOffset,
-      radius + 2,
-      0,
-      FULL_CIRCLE,
-    );
-    tile.ctx.stroke();
+    drawSelectionCircle(tile, x, y, zoom, radius);
   }
-  /* eslint-enable no-param-reassign */
 }
 
 export function drawTerminalIcon(tile, geom, type, isHighlighted, modeColors) {
