@@ -111,7 +111,7 @@ class VehicleRentalStations {
   draw = (feature, zoomedIn) => {
     const { id, network, formFactors, operative } = feature.properties;
     const isHighlighted = this.tile.highlightedStops?.includes(id);
-    const name = getRentalNetworkIcon(
+    let name = getRentalNetworkIcon(
       getRentalNetworkConfig(network, this.config),
     );
     let color;
@@ -123,7 +123,8 @@ class VehicleRentalStations {
       color = this.config.colors.iconColors['mode-citybike'];
     }
     if (operative === false) {
-      color = '#888';
+      name = 'icon-icon_citybike';
+      color = '#BBB';
     }
 
     if (zoomedIn) {

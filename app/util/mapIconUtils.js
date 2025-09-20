@@ -733,24 +733,24 @@ export function drawCitybikeIcon(
   getImageFromSpriteCache(name, width, height, color).then(image => {
     tile.ctx.drawImage(image, x, y);
     if (!operative || showAvailability) {
-      let bcol = 'green';
+      let bcol = '#008855';
       if (!operative || !available) {
-        bcol = 'red';
+        bcol = '#DC0451';
       } else if (available <= 3) {
-        bcol = 'yellow';
+        bcol = '#FBB800';
       }
       const bw = style === 'medium' ? width / 5 : width / 4;
       getMemoizedCircleIcon(bw, bcol).then(badge => {
         tile.ctx.drawImage(badge, x + width / 2, y);
         if (style === 'large') {
-          const text = !operative ? 'x' : available;
+          const text = !operative ? 'X' : available;
           x = x + width - bw;
           y += bw;
           /* eslint-disable no-param-reassign */
           tile.ctx.font = `${
             10.8 * tile.scaleratio
           }px Gotham XNarrow SSm A, Gotham XNarrow SSm B, Gotham Rounded A, Gotham Rounded B, Arial, sans-serif`;
-          tile.ctx.fillStyle = bcol === 'yellow' ? '#000' : '#fff';
+          tile.ctx.fillStyle = bcol === '#FBB800' ? '#000' : '#fff';
           tile.ctx.textAlign = 'center';
           tile.ctx.textBaseline = 'middle';
           tile.ctx.fillText(text, x, y);
