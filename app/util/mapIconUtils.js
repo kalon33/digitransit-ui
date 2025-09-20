@@ -716,11 +716,11 @@ export function drawCitybikeIcon(
       }
       const bw = style === 'medium' ? width / 4 : width / 3;
       getMemoizedCircleIcon(bw, bcol).then(badge => {
-        tile.ctx.drawImage(badge, x + width / 2, y);
+        tile.ctx.drawImage(badge, x + width / 2 + bw / 2, y - bw / 2);
         if (style === 'large') {
           const text = !operative ? 'X' : available;
-          x = x + width - bw / 2;
-          y += bw;
+          x += width;
+          y += bw / 2;
           /* eslint-disable no-param-reassign */
           tile.ctx.font = `${
             10.8 * tile.scaleratio
