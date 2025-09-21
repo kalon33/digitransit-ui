@@ -349,7 +349,7 @@ class NearYouPage extends React.Component {
           className="update-stops-button"
           onClick={this.updateLocation}
         >
-          <Icon img="icon-icon_update" />
+          <Icon img="icon_update" />
           <FormattedMessage
             id="nearest-stops-update-location"
             defaultMessage="Update stops"
@@ -507,7 +507,7 @@ class NearYouPage extends React.Component {
                           >
                             <Icon
                               color={config.colors.primary}
-                              img="icon-icon_close"
+                              img="icon_close"
                             />
                           </div>
                         </div>

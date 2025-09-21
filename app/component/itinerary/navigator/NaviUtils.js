@@ -471,7 +471,7 @@ function Transfer(route1, route2, config) {
         />
         &nbsp;
         <div className="arrow-center">
-          <Icon img="icon-icon_arrow-right" omitViewBox />
+          <Icon img="icon_arrow-right" omitViewBox />
         </div>
         &nbsp;
         <RouteNumberContainer
@@ -738,8 +738,8 @@ export const getDestinationProperties = (
     destination.name = vehicleRentalStation.name;
   } else {
     const iconId = terminalIcons.includes(mode)
-      ? `icon-icon_${mode}`
-      : `icon-icon_${mode}-lollipop`;
+      ? `icon_${mode}`
+      : `icon_${mode}-lollipop`;
     destination = {
       className: mode,
       iconId,

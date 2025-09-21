@@ -123,7 +123,7 @@ class VehicleRentalStations {
       color = this.config.colors.iconColors['mode-citybike'];
     }
     if (operative === false) {
-      name = 'icon-icon_citybike';
+      name = 'icon_citybike';
       color = '#BBB';
     }
 

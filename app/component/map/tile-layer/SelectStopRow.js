@@ -32,32 +32,26 @@ function SelectStopRow(
     case 'tram':
     case 'rail':
     case 'bus':
-      iconOptions.iconId = terminal
-        ? `icon-icon_${mode}`
-        : `icon-icon_${mode}-lollipop`;
+      iconOptions.iconId = terminal ? `icon_${mode}` : `icon_${mode}-lollipop`;
       break;
     case 'bus-express':
-      iconOptions.iconId = terminal
-        ? 'icon-icon_bus'
-        : 'icon-icon_bus-express-lollipop';
+      iconOptions.iconId = terminal ? 'icon_bus' : 'icon_bus-express-lollipop';
       break;
     case 'subway':
     case 'airplane':
-      iconOptions.iconId = `icon-icon_${mode}`;
+      iconOptions.iconId = `icon_${mode}`;
       break;
     case 'ferry':
-      iconOptions.iconId = !isNull(code)
-        ? 'icon-icon_ferry'
-        : 'icon-icon_ferry-lollipop';
+      iconOptions.iconId = !isNull(code) ? 'icon_ferry' : 'icon_ferry-lollipop';
       break;
     default:
-      iconOptions.iconId = `icon-icon_${mode}-lollipop`;
+      iconOptions.iconId = `icon_${mode}-lollipop`;
       break;
   }
   iconOptions.className = mode;
   if (colors) {
     iconOptions.color =
-      iconOptions.iconId === 'icon-icon_ferry-lollipop'
+      iconOptions.iconId === 'icon_ferry-lollipop'
         ? colors.iconColors['mode-ferry-pier']
         : colors.iconColors[`mode-${mode}`];
   }
@@ -101,7 +95,7 @@ function SelectStopRow(
         </div>
       </span>
       <span className="choose-row-right-column">
-        <Icon img="icon-icon_arrow-collapse--right" />
+        <Icon img="icon_arrow-collapse--right" />
       </span>
     </Link>
   );

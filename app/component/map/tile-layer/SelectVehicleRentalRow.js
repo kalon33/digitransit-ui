@@ -48,7 +48,7 @@ function SelectVehicleRentalRow(
         </span>
       </span>
       <span className="choose-row-right-column">
-        <Icon img="icon-icon_arrow-collapse--right" />
+        <Icon img="icon_arrow-collapse--right" />
       </span>
     </Link>
   );

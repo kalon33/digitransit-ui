@@ -17,9 +17,7 @@ function SelectVehicleRentalClusterRow({
   isScooter,
   colors,
 }) {
-  const img = isScooter
-    ? 'icon-icon_scooter-lollipop'
-    : 'icon-icon_citybike-lollipop';
+  const img = isScooter ? 'icon_scooter-lollipop' : 'icon_citybike-lollipop';
   const color =
     colors?.iconColors[isScooter ? 'mode-scooter' : 'mode-citybike'];
   const linkAddress = `/${prefix}/${encodeURIComponent(id)}/${[
@@ -42,7 +40,7 @@ function SelectVehicleRentalClusterRow({
         </span>
       </span>
       <span className="choose-row-right-column">
-        <Icon img="icon-icon_arrow-collapse--right" />
+        <Icon img="icon_arrow-collapse--right" />
       </span>
     </Link>
   );

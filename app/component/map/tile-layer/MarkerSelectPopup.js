@@ -78,7 +78,7 @@ function MarkerSelectPopup(props, { intl }) {
               id: 'e-scooter',
               defaultMessage: 'scooter',
             })}
-            icon="icon-icon_scooter-lollipop"
+            icon="icon_scooter-lollipop"
           />
         );
       }
