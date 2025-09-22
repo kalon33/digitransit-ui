@@ -2138,7 +2138,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@digitransit-component/digitransit-component-icon@^1.0.2, @digitransit-component/digitransit-component-icon@workspace:digitransit-component/packages/digitransit-component-icon":
+"@digitransit-component/digitransit-component-icon@^1.1.0, @digitransit-component/digitransit-component-icon@workspace:digitransit-component/packages/digitransit-component-icon":
   version: 0.0.0-use.local
   resolution: "@digitransit-component/digitransit-component-icon@workspace:digitransit-component/packages/digitransit-component-icon"
   peerDependencies:
@@ -2208,7 +2208,7 @@ __metadata:
     "@digitransit-component/digitransit-component-favourite-bar": 2.0.10
     "@digitransit-component/digitransit-component-favourite-editing-modal": ^2.0.5
     "@digitransit-component/digitransit-component-favourite-modal": ^1.0.7
-    "@digitransit-component/digitransit-component-icon": ^1.0.2
+    "@digitransit-component/digitransit-component-icon": ^1.1.0
     "@digitransit-component/digitransit-component-suggestion-item": ^2.2.0
     "@digitransit-component/digitransit-component-with-breakpoint": ^0.0.5
   peerDependencies:
