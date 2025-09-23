@@ -2375,20 +2375,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@digitransit-util/digitransit-util-route-pattern-option-text@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@digitransit-util/digitransit-util-route-pattern-option-text@npm:2.0.0"
-  peerDependencies:
-    i18next: ^19.2.0
-    i18next-xhr-backend: ^3.2.2
-    lodash: 4.17.21
-    lodash-es: 4.17.21
-    luxon: ^3.6.1
-  checksum: 5a64756fb84600927bc5445654cb5a8bc51f187b3fd4418dcba26ab27bd8a6294ba31e5876013c8a5c2e8cc959f726cd12d50ef5272f9eca105590cba641a4b8
-  languageName: node
-  linkType: hard
-
-"@digitransit-util/digitransit-util-route-pattern-option-text@workspace:digitransit-util/packages/digitransit-util-route-pattern-option-text":
+"@digitransit-util/digitransit-util-route-pattern-option-text@^4.0.0, @digitransit-util/digitransit-util-route-pattern-option-text@workspace:digitransit-util/packages/digitransit-util-route-pattern-option-text":
   version: 0.0.0-use.local
   resolution: "@digitransit-util/digitransit-util-route-pattern-option-text@workspace:digitransit-util/packages/digitransit-util-route-pattern-option-text"
   peerDependencies:
@@ -2406,7 +2393,7 @@ __metadata:
     "@digitransit-util/digitransit-util-day-range-allowed-diff": ^1.0.4
     "@digitransit-util/digitransit-util-day-range-pattern": ^1.1.0
     "@digitransit-util/digitransit-util-enrich-patterns": ^2.0.0
-    "@digitransit-util/digitransit-util-route-pattern-option-text": ^2.0.0
+    "@digitransit-util/digitransit-util-route-pattern-option-text": ^4.0.0
   languageName: unknown
   linkType: soft
 

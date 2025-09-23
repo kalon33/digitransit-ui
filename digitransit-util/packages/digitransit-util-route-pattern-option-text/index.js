@@ -10,9 +10,20 @@ const DATE_FORMAT = 'yyyyLLdd';
 const DATE_FORMAT2 = 'd.L.';
 const DATE_FORMAT3 = 'd.';
 
-Object.keys(translations).forEach(l =>
-  i18next.addResourceBundle(l, 'translation', translations[l], true),
-);
+i18next
+  .init({
+    fallbackLng: 'fi',
+    defaultNS: 'translation',
+    interpolation: {
+      escapeValue: false, // not needed for react as it escapes by default
+    },
+    resources: {},
+  })
+  .then(() =>
+    Object.keys(translations).forEach(l =>
+      i18next.addResourceBundle(l, 'translation', translations[l], true),
+    ),
+  );
 
 /**
  * <DESCRIPTION>
