@@ -283,7 +283,7 @@ class StopsNearYouContainer extends React.Component {
             {this.props.withSeparator && <div className="separator" />}
             <div className="stops-near-you-no-stops">
               <Icon
-                img="icon-icon_info"
+                img="icon_info"
                 color={this.context.config.colors.primary}
               />
               <FormattedMessage id="nearest-no-stops" />

@@ -419,7 +419,7 @@ class TransitLeg extends React.Component {
         >
           {createNotification(notification)}
           <Icon
-            img="icon-icon_arrow-collapse--right"
+            img="icon_arrow-collapse--right"
             className="disruption-link-arrow"
             color={config.colors.primary}
           />
@@ -532,12 +532,12 @@ class TransitLeg extends React.Component {
                 {leg.from.name}
                 {leg.isViaPoint && (
                   <Icon
-                    img="icon-icon_mapMarker"
+                    img="icon_mapMarker"
                     className="itinerary-mapmarker-icon"
                   />
                 )}
                 <Icon
-                  img="icon-icon_arrow-collapse--right"
+                  img="icon_arrow-collapse--right"
                   className="itinerary-arrow-icon"
                   color={config.colors.primary}
                 />
@@ -632,7 +632,7 @@ class TransitLeg extends React.Component {
                       : alert.alertDescriptionText}
                   </div>
                   <Icon
-                    img="icon-icon_arrow-collapse--right"
+                    img="icon_arrow-collapse--right"
                     className="disruption-link-arrow"
                     color={config.colors.primary}
                   />

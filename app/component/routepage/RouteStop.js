@@ -322,7 +322,7 @@ const RouteStop = (
               stop.stopTimesForPattern[0].pickupType === 'NONE' &&
               !last && (
                 <div className="drop-off-container">
-                  <Icon img="icon-icon_info" color={config.colors.primary} />
+                  <Icon img="icon_info" color={config.colors.primary} />
                   <FormattedMessage
                     id="route-destination-arrives"
                     defaultMessage="Drop-off only"

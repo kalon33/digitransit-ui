@@ -180,7 +180,7 @@ export default class SwipeableTabs extends React.Component {
                   })}
                 >
                   <Icon
-                    img="icon-icon_arrow-collapse--left"
+                    img="icon_arrow-collapse--left"
                     className={`itinerary-arrow-icon ${
                       disabled || this.props.tabIndex <= 0 ? 'disabled' : ''
                     }`}
@@ -224,7 +224,7 @@ export default class SwipeableTabs extends React.Component {
                   })}
                 >
                   <Icon
-                    img="icon-icon_arrow-collapse--right"
+                    img="icon_arrow-collapse--right"
                     className={`itinerary-arrow-icon ${
                       disabled || this.props.tabIndex >= tabs.length - 1
                         ? 'disabled'

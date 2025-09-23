@@ -60,8 +60,8 @@ export default function DepartureRow(
     );
     icon =
       alert.alertSeverityLevel !== 'INFO'
-        ? 'icon-icon_caution-white-excl-stroke'
-        : 'icon-icon_info';
+        ? 'icon_caution-white-excl-stroke'
+        : 'icon_info';
     iconColor = alert.alertSeverityLevel !== 'INFO' ? '#DC0451' : '#888';
     backgroundShape =
       alert.alertSeverityLevel !== 'INFO' ? undefined : 'circle';
@@ -91,7 +91,7 @@ export default function DepartureRow(
   const lowerCaseShortName = shortName?.toLowerCase();
   const nameOrIcon =
     shortName?.length > 6 || !shortName?.length ? (
-      <Icon className={mode} img={`icon-icon_${mode}`} />
+      <Icon className={mode} img={`icon_${mode}`} />
     ) : (
       shortName
     );
@@ -248,7 +248,7 @@ export default function DepartureRow(
             <Icon
               width={1.5}
               height={1.5}
-              img={`icon-icon_${capacity}`}
+              img={`icon_${capacity}`}
               color={config.colors.primary}
             />
           </span>

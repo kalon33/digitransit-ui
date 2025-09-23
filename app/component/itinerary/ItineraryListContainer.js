@@ -112,7 +112,7 @@ function ItineraryListContainer(
         onClick={() => onLater()}
       >
         <Icon
-          img="icon-icon_arrow-collapse"
+          img="icon_arrow-collapse"
           className={`cursor-pointer back ${reversed ? 'arrow-up' : ''}`}
         />
         <FormattedMessage
@@ -138,7 +138,7 @@ function ItineraryListContainer(
         onClick={() => onEarlier()}
       >
         <Icon
-          img="icon-icon_arrow-collapse"
+          img="icon_arrow-collapse"
           className={`cursor-pointer ${reversed ? '' : 'arrow-up'}`}
         />
         <FormattedMessage
@@ -182,7 +182,7 @@ function ItineraryListContainer(
         <ItineraryNotification
           headerId="settings-missing-itineraries-header"
           bodyId="settings-missing-itineraries-body"
-          iconId="icon-icon_settings"
+          iconId="icon_settings"
         />
       )}
       {bottomNote && <ItineraryNotification bodyId={bottomNote} />}
