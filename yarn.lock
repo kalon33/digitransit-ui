@@ -2375,7 +2375,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@digitransit-util/digitransit-util-route-pattern-option-text@^4.0.0, @digitransit-util/digitransit-util-route-pattern-option-text@workspace:digitransit-util/packages/digitransit-util-route-pattern-option-text":
+"@digitransit-util/digitransit-util-route-pattern-option-text@^4.1.0, @digitransit-util/digitransit-util-route-pattern-option-text@workspace:digitransit-util/packages/digitransit-util-route-pattern-option-text":
   version: 0.0.0-use.local
   resolution: "@digitransit-util/digitransit-util-route-pattern-option-text@workspace:digitransit-util/packages/digitransit-util-route-pattern-option-text"
   peerDependencies:
@@ -2393,7 +2393,7 @@ __metadata:
     "@digitransit-util/digitransit-util-day-range-allowed-diff": ^1.0.4
     "@digitransit-util/digitransit-util-day-range-pattern": ^1.1.0
     "@digitransit-util/digitransit-util-enrich-patterns": ^2.0.0
-    "@digitransit-util/digitransit-util-route-pattern-option-text": ^4.0.0
+    "@digitransit-util/digitransit-util-route-pattern-option-text": ^4.1.0
   languageName: unknown
   linkType: soft
 
