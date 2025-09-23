@@ -350,6 +350,7 @@ class Stops {
                     feature.geom,
                     type,
                     isHighlighted,
+                    this.config.colors.iconColors,
                   );
                 }
               }

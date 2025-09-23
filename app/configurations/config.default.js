@@ -377,10 +377,12 @@ export default {
       'mode-airplane': '#0046ad',
       'mode-bus': '#0088ce',
       'mode-tram': '#6a8925',
-      'mode-metro': '#ed8c00',
+      'mode-metro': '#ed8c00', // there is no 'metro' mode
+      'mode-subway': '#ed8c00',
       'mode-rail': '#af8dbc',
       'mode-ferry': '#247C7B',
       'mode-citybike': '#f2b62d',
+      'mode-citybike-secondary': '#333333',
       'mode-scooter': '#C5CAD2',
       'mode-taxi': '#647693',
       'mode-replacement-bus': '#DC0451',

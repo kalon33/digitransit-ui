@@ -157,6 +157,7 @@ export default {
       'mode-ferry': '#007A97',
       'mode-ferry-pier': '#666666',
       'mode-metro': '#CA4000',
+      'mode-subway': '#CA4000',
       'mode-citybike': '#f2b62d',
       'mode-citybike-secondary': '#333333',
       'mode-speedtram': '#007E79',
