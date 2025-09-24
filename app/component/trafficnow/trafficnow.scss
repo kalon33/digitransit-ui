@@ -1,0 +1,38 @@
+.trafficnow-main {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.tn-centered {
+  display: flex;
+  flex-direction: column;
+  min-width: 800px;
+  max-width: 1200px;
+  height: 100%;
+}
+
+.trafficnow-header {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  height: 216px;
+}
+
+.trafficnow-bottom {
+  display: flex;
+  flex-direction: row;
+}
+
+.trafficnow-filters {
+  min-width: 320px;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+}
+
+.trafficnow-content {
+  display: flex;
+  flex-direction: column;
+}
