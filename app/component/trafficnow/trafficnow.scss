@@ -33,6 +33,13 @@
     font-size: 16px;
     letter-spacing: -2%;
   }
+
+  .crumbarrow {
+    width: 10px;
+    height: 10px;
+    rotate: -90deg;
+    color: $link-color;
+  }
 }
 
 .separator {
