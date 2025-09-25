@@ -1,0 +1,127 @@
+.info-page-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.98);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.on-demand-info-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #fff;
+  padding: 0 var(--space-xl);
+  max-width: 480px;
+  min-height: 100%;
+  height: auto;
+
+  .divider {
+    border-top: 1px solid #ddd;
+    margin: var(--space-s) 0;
+
+    &.top {
+      margin: 0 0 var(--space-s) 0;
+    }
+  }
+
+  .route-header {
+    display: flex;
+    align-items: center;
+    height: 90px;
+
+    .back-button {
+      &.mobile {
+        position: fixed;
+        top: 65px;
+        z-index: 1001;
+      }
+    }
+
+    .bar-container {
+      padding-top: 21px;
+      min-width: calc(3.75em + 14px);
+      height: calc(1.5em + 14px);
+      font-size: 16px;
+      white-space: nowrap;
+
+      .bar {
+        width: 100%;
+        background-color: currentcolor;
+        height: 1.5em;
+        border-radius: $border-radius;
+        padding-right: 3px;
+      }
+
+      .vcenter-children {
+        width: 100%;
+        display: flex;
+      }
+
+      .vehicle-number-container-v {
+        width: calc(100% - 1.5em);
+
+        .vehicle-number {
+          color: $white;
+          left: 1.5em;
+          width: 2.25em;
+          text-align: center;
+          padding: 2px 0 0 0;
+
+          &.long {
+            left: 1.7em;
+            width: 100%;
+            text-align: left;
+          }
+        }
+      }
+
+      .icon {
+        height: 1.5em;
+        width: 1.5em;
+        margin: 0 0 2px 1px;
+        fill: $primary-color;
+
+        .call {
+          top: 50%;
+          transform: translateY(-50%);
+          margin-left: 1px;
+        }
+      }
+    }
+  }
+
+  .on-demand-info-headline {
+    align-self: stretch;
+    font-style: normal;
+    font-weight: $font-weight-medium;
+  }
+
+  .on-demand-info-content {
+    align-self: stretch;
+    padding-top: 4px;
+    font-weight: $font-weight-book;
+
+    .phone-section {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xxs);
+      align-self: stretch;
+      font-weight: $font-weight-medium;
+
+      .icon-container {
+        display: inline-flex;
+
+        .icon {
+          width: 0.9em;
+          height: 0.9em;
+        }
+      }
+    }
+  }
+}
