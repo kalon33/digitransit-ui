@@ -1014,9 +1014,9 @@ const translations = {
     'delete-favourite-failed-heading': 'Unable to delete save',
     'departure-list-update.sr-instructions':
       'The list of upcoming departures and departure times will update in real time.',
-    'departure-page-sr': 'Trip {shortName} {destination} {time} information',
+    'departure-page-sr': 'Route {shortName} {destination}, departs at {time},',
     'departure-time-in-minutes': '{minutes} min',
-    'departure-time-sr': '{when} clock {time}. {realTime}',
+    'departure-time-sr': '{when} clock {time}, {realTime}',
     departures: 'Departures',
     'departures-by-hour': 'Departures by hour',
     'departures-by-hour-minutes-route': '(minutes/route)',
@@ -2330,9 +2330,10 @@ const translations = {
     'delete-favourite-failed-heading': 'Tallennuksen poistaminen ei onnistunut',
     'departure-list-update.sr-instructions':
       'Tulevien lähtöjen lista ja lähtöajat päivittyvät reaaliajassa.',
-    'departure-page-sr': 'Lähdön {shortName} {destination} {time} tiedot',
+    'departure-page-sr':
+      'Lähtö {shortName} {destination}, lähtee kello {time},',
     'departure-time-in-minutes': '{minutes} min',
-    'departure-time-sr': '{when} kello {time}. {realTime}',
+    'departure-time-sr': '{when} kello {time}, {realTime}',
     departures: 'Lähdöt',
     'departures-by-hour': 'Lähdöt tunneittain',
     'departures-by-hour-minutes-route': '(minuutit/linja)',
@@ -3921,9 +3922,9 @@ const translations = {
     'departure-list-update.sr-instructions':
       'The list of upcoming departures and departure times will update in real time.',
     'departure-page-sr':
-      'Informacje o podróży {shortName} {destination} {time}',
+      'Informacje o podróży {shortName} {destination} {time}.',
     'departure-time-in-minutes': '{minutes} min.',
-    'departure-time-sr': '{when} clock {time}. {realTime}',
+    'departure-time-sr': '{when} clock {time}, {realTime}',
     departures: 'Odjazdy',
     'departures-by-hour': 'Odjazdy według godziny',
     'departures-by-hour-minutes-route': '(minuty/trasa)',
@@ -5269,9 +5270,10 @@ const translations = {
     'delete-favourite-failed-heading': 'Unable to delete save',
     'departure-list-update.sr-instructions':
       'Listan på avgångar och avgångstider uppdateras i realtid.',
-    'departure-page-sr': 'Visa avgång {shortName} {destination} {time}',
+    'departure-page-sr':
+      'Linjenumret {shortName} {destination}, avgår kl {time},',
     'departure-time-in-minutes': '{minutes} min',
-    'departure-time-sr': '{when} klockan {time}. {realTime}',
+    'departure-time-sr': '{when} klockan {time}, {realTime}',
     departures: 'Avgångar',
     'departures-by-hour': 'Avgångar per timme',
     'departures-by-hour-minutes-route': '(minuter/rad)',
