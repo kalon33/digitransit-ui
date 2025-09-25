@@ -1,20 +1,18 @@
-import { FormattedMessage } from 'react-intl';
 import React from 'react';
+import Header from './Header';
+import Filters from './Filters';
+import Contents from './Contents';
 
 export default function TrafficNow() {
   return (
     <div className="trafficnow-main">
       <div className="tn-centered">
-        <div className="trafficnow-header">
-          <h1>
-            <FormattedMessage id="trafficnow" />
-          </h1>
-          <FormattedMessage id="trafficnow-description" />
-        </div>
-        <div className="trafficnow-bottom">
-          <div className="trafficnow-filters">filter</div>
-          <div className="trafficnow-content">content</div>
-        </div>
+        <Header />
+      </div>
+      <div className="separator" />
+      <div className="trafficnow-bottom tn-centered">
+        <Filters />
+        <Contents />
       </div>
     </div>
   );

@@ -1743,6 +1743,7 @@ const translations = {
     'tracking-button-offline': 'tracking failed',
     'tracking-button-on': 'tracking on',
     trafficnow: 'Traffic now',
+    'trafficnow-bread': 'Travelling',
     'trafficnow-description':
       'Up-to-date information on disruptions and exceptions',
     traficom: 'Traficom',
@@ -3055,6 +3056,7 @@ const translations = {
     'tracking-button-offline': 'paikannus epäonnistui',
     'tracking-button-on': 'paikannus päällä',
     trafficnow: 'Liikenne nyt',
+    'trafficnow-bread': 'Matkustaminen',
     'trafficnow-description': 'Ajantasaiset tiedot häiriöistä ja poikkeuksista',
     traficom: 'Traficom',
     tram: 'Raitiovaunu',
@@ -6004,6 +6006,7 @@ const translations = {
     'tracking-button-offline': 'lokalisering misslyckades',
     'tracking-button-on': 'lokalisering på',
     trafficnow: 'Trafikläget nu',
+    'trafficnow-bread': 'Att resa med oss',
     'trafficnow-description': 'Aktuell information om störningar och undantag',
     traficom: 'Traficom',
     tram: 'Spårvagn',
