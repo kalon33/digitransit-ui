@@ -43,7 +43,7 @@ const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
 
   return (
     <div className="restore-settings-section">
-      <Icon img="icon-icon_checkmark" omitViewBox />
+      <Icon img="icon_checkmark" omitViewBox />
       <FormattedMessage
         id="settings-changed"
         defaultMessage="Settings changed"
