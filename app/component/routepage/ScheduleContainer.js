@@ -967,7 +967,7 @@ class ScheduleContainer extends PureComponent {
                     name: null,
                   });
                 }}
-                buttonIcon="icon-icon_print"
+                buttonIcon="icon_print"
                 smallSize
               />
             )}
@@ -982,7 +982,7 @@ class ScheduleContainer extends PureComponent {
                   name: null,
                 });
               }}
-              buttonIcon="icon-icon_print"
+              buttonIcon="icon_print"
               smallSize
             />
           </div>
