@@ -288,7 +288,7 @@ class CustomizeSearch extends React.Component {
               </div>
             )}
           <div className="settings-section background">
-            <div className="settings-option-container">
+            <div className="settings-option-container restore-settings-container">
               <RestoreDefaultSettingSection config={config} />
             </div>
           </div>

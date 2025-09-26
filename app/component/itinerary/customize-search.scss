@@ -201,25 +201,24 @@
 
   .restore-settings-section {
     display: flex;
-    padding: var(--spacing-space-s, 16px) 0 var(--spacing-space-s, 16px) var(--spacing-space-m, 24px);
+    padding: var(--fixed-space-s, 16px) 0 var(--fixed-space-s, 16px)
+      var(--fixed-space-m, 24px);
     align-items: center;
-    gap: var(--spacing-space-xs, 8px);
+    gap: var(--fixed-space-xs, 8px);
     align-self: stretch;
-
-    border-radius: var(--radius-radius-pill, 999px);
-    background: var(--color-surface-default, #FFF);
-
-    /* Box Shadow/box-shadow-popout */
-    box-shadow: 0 4px 4px 0 var(--color-shadow-weak, rgba(0, 52, 86, 0.25));
-
+    border-radius: var(--radius-pill, 999px);
+    background: #fff;
+    box-shadow: 0 4px 4px 0 rgba(0, 52, 86, 0.25);
     position: fixed;
     bottom: 0;
     z-index: 10;
-    width: 100%;
+    width: 368px;
+    margin-bottom: var(--fixed-space-s, 16px);
 
     .icon-container {
       width: 24px;
       height: 24px;
+
       .icon {
         width: 24px;
         height: 24px;
@@ -235,6 +234,10 @@
 
   .settings-option-container:last-child {
     border-bottom: 0;
+
+    &.restore-settings-container {
+      padding-bottom: 40px;
+    }
   }
 
   .settings-option-container:not(:last-child) {
