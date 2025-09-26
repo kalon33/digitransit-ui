@@ -19,9 +19,26 @@ import RouteNumberContainer from '../../RouteNumberContainer';
 import BoardingInfo from './BoardingInfo';
 import { getModeIconColor } from '../../../util/colorUtils';
 import Duration from '../Duration';
+import {
+  getIndoorStepsWithVerticalTransportationUse,
+  getStepFocusAction,
+} from '../../../util/indoorUtils';
+import NaviIndoorRouteButton from './indoorroute/NaviIndoorRouteButton';
+import NaviIndoorRouteContainer from './indoorroute/NaviIndoorRouteContainer';
+import NaviIndoorRouteStepInfo from './indoorroute/NaviIndoorRouteStepInfo';
 
 const NaviCardExtension = (
-  { legType, leg, nextLeg, time, platformUpdated },
+  {
+    focusToPoint,
+    legType,
+    previousLeg,
+    leg,
+    nextLeg,
+    time,
+    platformUpdated,
+    showIndoorRoute,
+    toggleShowIndoorRoute,
+  },
   { config },
 ) => {
   const { stop, name, rentalVehicle, vehicleParking, vehicleRentalStation } =
@@ -79,36 +96,69 @@ const NaviCardExtension = (
       </div>
     );
   }
-  const stopInformation = (expandIcon = false) => {
+  const stopInformation = (
+    expandIcon = false,
+    showIndoorRouteButton = false,
+  ) => {
+    let indoorRouteSteps = [];
+    if (showIndoorRouteButton) {
+      indoorRouteSteps = getIndoorStepsWithVerticalTransportationUse(
+        previousLeg,
+        leg,
+      );
+    }
     return (
       <div className="extension-walk">
-        {expandIcon && <Icon img="navi-expand" className="icon-expand" />}
-        <Icon
-          img={destination.iconId}
-          height={2}
-          width={2}
-          className={`destination-icon ${destination.className}`}
-          color={destination.iconColor}
-        />
-        <div className="destination">
-          {destination.name}
-          <div className="details">
-            {!stop && address && <div className="address">{address}</div>}
-            {code && <StopCode code={code} />}
-            {platformCode && (
-              <PlatformNumber
-                number={platformCode}
-                short
-                isRailOrSubway={modeUsesTrack(vehicleMode)}
-                updated={platformUpdated}
+        <div className="destination-container">
+          {expandIcon && <Icon img="navi-expand" className="icon-expand" />}
+          <Icon
+            img={destination.iconId}
+            height={2}
+            width={2}
+            className={`destination-icon ${destination.className}`}
+            color={destination.iconColor}
+          />
+          <div className="destination">
+            {destination.name}
+            <div className="details">
+              {!stop && address && <div className="address">{address}</div>}
+              {code && <StopCode code={code} />}
+              {platformCode && (
+                <PlatformNumber
+                  number={platformCode}
+                  short
+                  isRailOrSubway={modeUsesTrack(vehicleMode)}
+                  updated={platformUpdated}
+                />
+              )}
+              <ZoneIcon
+                zoneId={getZoneLabel(zoneId, config)}
+                showUnknown={false}
               />
-            )}
-            <ZoneIcon
-              zoneId={getZoneLabel(zoneId, config)}
-              showUnknown={false}
-            />
+            </div>
           </div>
         </div>
+        {indoorRouteSteps.length === 1 && (
+          <div className="navi-indoor-route-one-step-info-container">
+            <Icon img="navi-expand" className="icon-expand-small" />
+            <NaviIndoorRouteStepInfo
+              relativeDirection={indoorRouteSteps[0].relativeDirection}
+              verticalDirection={indoorRouteSteps[0].feature?.verticalDirection}
+              toLevelName={indoorRouteSteps[0].feature?.to?.name}
+              focusAction={getStepFocusAction(
+                indoorRouteSteps[0].lat,
+                indoorRouteSteps[0].lon,
+                focusToPoint,
+              )}
+            />
+          </div>
+        )}
+        {indoorRouteSteps.length > 1 && (
+          <NaviIndoorRouteButton
+            showIndoorRoute={showIndoorRoute}
+            toggleShowIndoorRoute={toggleShowIndoorRoute}
+          />
+        )}
       </div>
     );
   };
@@ -136,6 +186,30 @@ const NaviCardExtension = (
     );
   }
   if (legType === LEGTYPE.MOVE && nextLeg?.transitLeg) {
+    if (showIndoorRoute) {
+      const indoorRouteSteps = getIndoorStepsWithVerticalTransportationUse(
+        previousLeg,
+        leg,
+      );
+      return (
+        <div className={cx('extension', 'no-vertical-margin')}>
+          <div className="extension-divider" />
+          <div className="extension-indoor-route-button">
+            <NaviIndoorRouteButton
+              showIndoorRoute={showIndoorRoute}
+              toggleShowIndoorRoute={toggleShowIndoorRoute}
+            />
+          </div>
+          <div className="extension-divider" />
+          <div className="extension-indoor-route-container">
+            <NaviIndoorRouteContainer
+              focusToPoint={focusToPoint}
+              indoorRouteSteps={indoorRouteSteps}
+            />
+          </div>
+        </div>
+      );
+    }
     const { headsign, route, start } = nextLeg;
     const hs = headsign || nextLeg.trip?.tripHeadsign;
     const remainingDuration = <Duration duration={legTime(start) - time} />;
@@ -146,8 +220,9 @@ const NaviCardExtension = (
     };
     const routeMode = getRouteMode(route, config);
     return (
-      <div className={cx('extension', 'no-gap')}>
-        {stopInformation()}
+      <div className={cx('extension', 'no-vertical-margin')}>
+        <div className="extension-divider" />
+        {stopInformation(false, true)}
         <div className="extension-divider" />
         <BoardingInfo
           route={route}
@@ -161,25 +236,31 @@ const NaviCardExtension = (
   }
 
   return (
-    <>
+    <div className="extension">
       <div className="extension-divider" />
       {stopInformation(true)}
-    </>
+    </div>
   );
 };
 NaviCardExtension.propTypes = {
+  focusToPoint: PropTypes.func.isRequired,
+  previousLeg: legShape,
   leg: legShape,
   nextLeg: legShape,
   legType: PropTypes.string,
   time: PropTypes.number.isRequired,
   platformUpdated: PropTypes.bool,
+  showIndoorRoute: PropTypes.bool,
+  toggleShowIndoorRoute: PropTypes.func.isRequired,
 };
 
 NaviCardExtension.defaultProps = {
   legType: '',
+  previousLeg: undefined,
   leg: undefined,
   nextLeg: undefined,
   platformUpdated: false,
+  showIndoorRoute: false,
 };
 
 NaviCardExtension.contextTypes = {

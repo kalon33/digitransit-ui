@@ -208,7 +208,12 @@ export default class Legs extends React.Component {
         legs.push(<TaxiLeg {...legProps} />);
       } else if (isLegOnFoot(leg)) {
         legs.push(
-          <WalkLeg {...legProps} previousLeg={previousLeg} nextLeg={nextLeg}>
+          <WalkLeg
+            {...legProps}
+            previousLeg={previousLeg}
+            nextLeg={nextLeg}
+            focusToPoint={this.props.focusToPoint}
+          >
             {stopCode(leg.from.stop)}
           </WalkLeg>,
         );
@@ -315,6 +320,7 @@ export default class Legs extends React.Component {
           nextLeg={compressedLegs[numberOfLegs]}
           focusAction={this.focus(lastLeg.to)}
           focusToLeg={this.focusToLeg(lastLeg)}
+          focusToPoint={this.props.focusToPoint}
         >
           {stopCode(lastLeg.to.stop)}
         </WalkLeg>,

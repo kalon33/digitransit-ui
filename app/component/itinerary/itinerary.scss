@@ -898,6 +898,10 @@ $itinerary-tab-switch-height: 48px;
     top: 7px;
   }
 
+  &.only-one-step {
+    top: 10px;
+  }
+
   position: absolute;
   z-index: 9;
 
@@ -987,6 +991,13 @@ $itinerary-tab-switch-height: 48px;
 
     &.replacement-bus {
       @include setModeCircles($replacement-bus-color);
+    }
+
+    &.indoor-step {
+      > svg > circle.vertical-transportation-use-marker {
+        fill: #fff;
+        stroke: #666;
+      }
     }
   }
 }
@@ -1226,6 +1237,56 @@ $itinerary-tab-switch-height: 48px;
           }
         }
       }
+
+      &.indoor-route {
+        .route-number {
+          top: 46%;
+        }
+
+        .itinerary-icon-container {
+          top: 7px;
+        }
+
+        .leg-before-line {
+          border-radius: 10px;
+
+          &.walk {
+            height: 39%;
+            background-position-y: 1px;
+          }
+
+          &.bottom {
+            top: 59%;
+            height: 48%;
+            background-position-y: 0;
+          }
+        }
+      }
+
+      &.indoor-route.only-one-step {
+        .route-number {
+          top: 57%;
+        }
+
+        .itinerary-icon-container {
+          top: 7px;
+        }
+
+        .leg-before-line {
+          border-radius: 10px;
+
+          &.walk {
+            height: 47%;
+            background-position-y: 3px;
+          }
+
+          &.bottom {
+            top: 74%;
+            height: 48%;
+            background-position-y: 0;
+          }
+        }
+      }
     }
 
     &.taxi-external {
@@ -1443,6 +1504,7 @@ $itinerary-tab-switch-height: 48px;
       }
     }
 
+    &.indoor-step,
     &.walk,
     &.bicycle_walk,
     &.car_boarding,
@@ -1454,6 +1516,10 @@ $itinerary-tab-switch-height: 48px;
       border: none;
       width: 6px;
       left: 8px;
+
+      &.only-one-step {
+        top: 20px;
+      }
     }
 
     &.car {
@@ -1734,6 +1800,33 @@ $itinerary-tab-switch-height: 48px;
           flex-grow: 0;
         }
       }
+
+      .itinerary-leg-row-intermediate-indoor-step {
+        color: #666;
+        font-size: 0.9375rem;
+        padding-bottom: 10px;
+        display: flex;
+
+        &.only-one-step {
+          padding-top: 10px;
+          border-top: 1px solid #ddd;
+        }
+
+        .itinerary-intermediate-indoor-route-icon {
+          color: #333;
+          width: 24px;
+          height: 100%;
+          vertical-align: middle;
+          display: flex;
+          margin-right: 8px;
+        }
+
+        .itinerary-intermediate-indoor-route-step-info {
+          align-items: center;
+          display: flex;
+          flex-grow: 1;
+        }
+      }
     }
 
     .itinerary-icon {
@@ -1755,6 +1848,7 @@ $itinerary-tab-switch-height: 48px;
       }
     }
 
+    .intermediate-step-info-container,
     .intermediate-stop-info-container,
     .alternative-legs-info-container {
       @media print {
@@ -2317,6 +2411,15 @@ $itinerary-tab-switch-height: 48px;
       }
     }
 
+    .itinerary-leg-indoor-route-button-container {
+      border-top: 1px solid #ddd;
+      min-height: 40px;
+      height: auto;
+      font-size: 0.9375rem;
+
+      @extend .itinerary-leg-text-gray;
+    }
+
     .subway-entrance-info-container {
       display: flex;
       align-items: center;
@@ -2353,6 +2456,7 @@ $itinerary-tab-switch-height: 48px;
       min-height: 40px;
     }
 
+    .intermediate-steps-clickable,
     .intermediate-stops-clickable,
     .alternative-legs-clickable {
       height: 60px;
@@ -2364,6 +2468,19 @@ $itinerary-tab-switch-height: 48px;
 
         .icon-container {
           float: right;
+        }
+      }
+
+      .intermediate-steps-message {
+        color: $primary-color;
+        font-weight: $font-weight-medium;
+        line-height: 1.2;
+        border-bottom: none;
+        padding-right: 4px;
+        flex: 1;
+
+        @media print {
+          display: none;
         }
       }
 
@@ -2734,6 +2851,7 @@ div.itinerary-container-content {
   }
 }
 
+.intermediate-steps-message-no-steps,
 .intermediate-stop-no-stops {
   color: $gray;
   font-weight: $font-weight-book;

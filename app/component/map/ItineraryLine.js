@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 /* eslint-disable react/no-array-index-key */
 
+import Supercluster from 'supercluster';
+import { withLeaflet } from 'react-leaflet';
 import polyUtil from 'polyline-encoded';
 import React from 'react';
 import { getMiddleOf } from '../../util/geo-utils';
@@ -14,6 +16,15 @@ import TransitLegMarkers from './non-tile-layer/TransitLegMarkers';
 import VehicleMarker from './non-tile-layer/VehicleMarker';
 import SpeechBubble from './SpeechBubble';
 import EntranceMarker from './EntranceMarker';
+import ClusterNumberMarker from './ClusterNumberMarker';
+import IndoorRouteStepMarker from './IndoorRouteStepMarker';
+import { createFeatureObjects } from '../../util/clusterUtils';
+import { ClusterMarkerType, WheelchairBoarding } from '../../constants';
+import {
+  getEntranceObject,
+  getEntranceWheelchairAccessibility,
+  getIndoorStepsWithVerticalTransportationUse,
+} from '../../util/indoorUtils';
 
 class ItineraryLine extends React.Component {
   static contextTypes = {
@@ -28,6 +39,13 @@ class ItineraryLine extends React.Component {
     showDurationBubble: PropTypes.bool,
     streetMode: PropTypes.string,
     realtimeTransfers: PropTypes.bool,
+    leaflet: PropTypes.shape({
+      map: PropTypes.shape({
+        getZoom: PropTypes.func.isRequired,
+        on: PropTypes.func.isRequired,
+        off: PropTypes.func.isRequired,
+      }).isRequired,
+    }).isRequired,
   };
 
   static defaultProps = {
@@ -37,6 +55,10 @@ class ItineraryLine extends React.Component {
     showIntermediateStops: false,
     showDurationBubble: false,
     realtimeTransfers: false,
+  };
+
+  state = {
+    zoom: this.props.leaflet.map.getZoom(),
   };
 
   checkStreetMode(leg) {
@@ -49,11 +71,291 @@ class ItineraryLine extends React.Component {
     return false;
   }
 
+  handleEntrance(
+    leg,
+    nextLeg,
+    mode,
+    i,
+    geometry,
+    objs,
+    clusterObjs,
+    entranceObject,
+  ) {
+    const entranceCoordinates = [entranceObject.lat, entranceObject.lon];
+    const getDistance = (coord1, coord2) => {
+      const [lat1, lon1] = coord1;
+      const [lat2, lon2] = coord2;
+      return Math.sqrt((lat1 - lat2) ** 2 + (lon1 - lon2) ** 2);
+    };
+
+    const entranceIndex = geometry.reduce(
+      (closestIndex, currentCoord, currentIndex) => {
+        const currentDistance = getDistance(entranceCoordinates, currentCoord);
+        const closestDistance = getDistance(
+          entranceCoordinates,
+          geometry[closestIndex],
+        );
+        return currentDistance < closestDistance ? currentIndex : closestIndex;
+      },
+      0,
+    );
+
+    if (
+      entranceCoordinates[0] &&
+      entranceCoordinates[1] &&
+      !this.props.passive
+    ) {
+      clusterObjs.push({
+        lat: entranceCoordinates[0],
+        lon: entranceCoordinates[1],
+        properties: {
+          iconCount:
+            1 +
+            (entranceObject.feature.publicCode ? 1 : 0) +
+            (entranceObject.feature.wheelchairAccessible ===
+            WheelchairBoarding.Possible
+              ? 1
+              : 0),
+          type: ClusterMarkerType.Entrance,
+          code: entranceObject.feature.publicCode?.toLowerCase(),
+        },
+      });
+    }
+
+    objs.push(
+      <Line
+        color={leg.route && leg.route.color ? `#${leg.route.color}` : null}
+        key={`${this.props.hash}_${i}_${mode}_0`}
+        geometry={geometry.slice(0, entranceIndex + 1)}
+        mode={nextLeg?.mode === 'SUBWAY' ? 'walk' : 'walk-inside'}
+        passive={this.props.passive}
+      />,
+    );
+    objs.push(
+      <Line
+        color={leg.route && leg.route.color ? `#${leg.route.color}` : null}
+        key={`${this.props.hash}_${i}_${mode}_1`}
+        geometry={geometry.slice(entranceIndex)}
+        mode={nextLeg?.mode === 'SUBWAY' ? 'walk-inside' : 'walk'}
+        passive={this.props.passive}
+      />,
+    );
+  }
+
+  handleLine(previousLeg, leg, nextLeg, mode, i, geometry, objs, clusterObjs) {
+    const entranceObject = getEntranceObject(previousLeg, leg);
+    if (
+      leg.mode === 'WALK' &&
+      (nextLeg?.mode === 'SUBWAY' || previousLeg?.mode === 'SUBWAY') &&
+      entranceObject
+    ) {
+      this.handleEntrance(
+        leg,
+        nextLeg,
+        mode,
+        i,
+        geometry,
+        objs,
+        clusterObjs,
+        entranceObject,
+      );
+    } else {
+      objs.push(
+        <Line
+          color={leg.route && leg.route.color ? `#${leg.route.color}` : null}
+          key={`${this.props.hash}_${i}_${mode}`}
+          geometry={geometry}
+          mode={mode}
+          passive={this.props.passive}
+        />,
+      );
+    }
+  }
+
+  handleDurationBubble(leg, mode, i, objs, middle) {
+    if (
+      this.props.showDurationBubble ||
+      (this.checkStreetMode(leg) && leg.distance > 100)
+    ) {
+      const duration = durationToString(leg.duration * 1000);
+      objs.push(
+        <SpeechBubble
+          key={`speech_${this.props.hash}_${i}_${mode}`}
+          position={middle}
+          text={duration}
+        />,
+      );
+    }
+  }
+
+  handleIntermediateStops(leg, mode, objs) {
+    if (
+      !this.props.passive &&
+      this.props.showIntermediateStops &&
+      leg.intermediatePlaces != null
+    ) {
+      leg.intermediatePlaces
+        .filter(place => place.stop)
+        .forEach(place =>
+          objs.push(
+            <StopMarker
+              disableModeIcons
+              limitZoom={14}
+              stop={place.stop}
+              key={`intermediate-${place.stop.gtfsId}`}
+              mode={mode}
+              thin
+            />,
+          ),
+        );
+    }
+  }
+
+  /**
+   * Add dynamic transit leg and transfer stop markers.
+   */
+  handleTransitLegMarkers(transitLegs, objs) {
+    if (!this.props.passive) {
+      objs.push(
+        <TransitLegMarkers
+          key="transitlegmarkers"
+          transitLegs={transitLegs}
+          realtimeTransfers={this.props.realtimeTransfers}
+        />,
+      );
+    }
+  }
+
+  handleIndoorRouteStepMarkers(previousLeg, leg, clusterObjs) {
+    if (!this.props.passive) {
+      const indoorRouteSteps = getIndoorStepsWithVerticalTransportationUse(
+        previousLeg,
+        leg,
+      );
+
+      if (indoorRouteSteps) {
+        indoorRouteSteps.forEach((indoorRouteStep, i) => {
+          if (indoorRouteStep.lat && indoorRouteStep.lon) {
+            clusterObjs.push({
+              lat: indoorRouteStep.lat,
+              lon: indoorRouteStep.lon,
+              properties: {
+                iconCount: 1,
+                type: ClusterMarkerType.VerticalTransportationUse,
+                relativeDirection: indoorRouteStep.relativeDirection,
+                verticalDirection: indoorRouteStep.feature?.verticalDirection,
+                index: i,
+              },
+            });
+          }
+        });
+      }
+    }
+  }
+
+  componentDidMount() {
+    this.props.leaflet.map.on('zoomend', this.onMapZoom);
+  }
+
+  componentWillUnmount() {
+    this.props.leaflet.map.off('zoomend', this.onMapZoom);
+  }
+
+  onMapZoom = () => {
+    const zoom = this.props.leaflet.map.getZoom();
+    this.setState({ zoom });
+  };
+
+  handleClusterObjects(previousLeg, leg, objs, clusterObjs) {
+    if (!this.props.passive) {
+      const index = new Supercluster({
+        radius: 60, // in pixels
+        maxZoom: 15, // TODO if this is greater than max zoom (17) then max zoom icon can be number, dispay better icon than number
+        minPoints: 2,
+        extent: 512, // tile size (512)
+        // minZoom: 13,
+        // TODO maybe draw cluster icons based on what they have
+        map: properties => ({
+          iconCount: properties.iconCount,
+        }),
+        reduce: (accumulated, properties) => {
+          // eslint-disable-next-line no-param-reassign
+          accumulated.iconCount += properties.iconCount;
+        },
+      });
+
+      index.load(createFeatureObjects(clusterObjs));
+      const bbox = [-180, -85, 180, 85]; // Bounding box covers the entire world
+      // TODO fix to use correct bbox, probably requires moveend event listening?:
+      /*
+        const bounds = this.props.leaflet.map.getBounds(); 
+        const bbox = [
+        bounds.getWest(),
+        bounds.getSouth(),
+        bounds.getEast(),
+        bounds.getNorth(),
+      ]; */
+      const clusters = index.getClusters(bbox, this.state.zoom);
+      clusters.forEach(clusterFeature => {
+        const { coordinates } = clusterFeature.geometry;
+        const { properties } = clusterFeature;
+        if (properties.cluster) {
+          // Handle a cluster.
+          objs.push(
+            <ClusterNumberMarker
+              key={`clusternumbermarker_${coordinates[0]}_${coordinates[1]}_clusterId_${properties.cluster_id}`}
+              number={properties.iconCount}
+              position={{
+                lat: coordinates[0],
+                lon: coordinates[1],
+              }}
+            />,
+          );
+        } else {
+          // Handle a single point.
+          // eslint-disable-next-line no-lonely-if
+          if (properties.type === ClusterMarkerType.Entrance) {
+            objs.push(
+              <EntranceMarker
+                key={`entrance_${coordinates[0]}_${coordinates[1]}`}
+                entranceAccessible={getEntranceWheelchairAccessibility(leg)}
+                position={{
+                  lat: coordinates[0],
+                  lon: coordinates[1],
+                }}
+                code={properties.code}
+              />,
+            );
+          } else if (
+            properties.type === ClusterMarkerType.VerticalTransportationUse
+          ) {
+            objs.push(
+              <IndoorRouteStepMarker
+                key={`indoorroutestepmarker_${coordinates[0]}_${coordinates[1]}`}
+                position={{
+                  lat: coordinates[0],
+                  lon: coordinates[1],
+                }}
+                index={properties.index}
+                indoorRouteSteps={getIndoorStepsWithVerticalTransportationUse(
+                  previousLeg,
+                  leg,
+                )}
+              />,
+            );
+          }
+        }
+      });
+    }
+  }
+
   render() {
     const objs = [];
     const transitLegs = [];
 
     this.props.legs.forEach((leg, i) => {
+      const clusterObjs = [];
+
       if (!leg || leg.mode === LegMode.Wait) {
         return;
       }
@@ -103,142 +405,22 @@ class ItineraryLine extends React.Component {
         end = interliningLegs[interliningLegs.length - 1].end;
       }
 
-      if (
-        leg.mode === 'WALK' &&
-        (nextLeg?.mode === 'SUBWAY' || previousLeg?.mode === 'SUBWAY')
-      ) {
-        const entranceObjects = leg?.steps?.filter(
-          step =>
-            // eslint-disable-next-line no-underscore-dangle
-            step?.feature?.__typename === 'Entrance' || step?.feature?.code,
-        );
-
-        // Select the entrance to the outside if there are multiple entrances
-        const entranceObject =
-          previousLeg?.mode === 'SUBWAY'
-            ? entranceObjects[entranceObjects.length - 1]
-            : entranceObjects[0];
-
-        if (entranceObject) {
-          const entranceCoordinates = [entranceObject.lat, entranceObject.lon];
-          const getDistance = (coord1, coord2) => {
-            const [lat1, lon1] = coord1;
-            const [lat2, lon2] = coord2;
-            return Math.sqrt((lat1 - lat2) ** 2 + (lon1 - lon2) ** 2);
-          };
-
-          const entranceIndex = geometry.reduce(
-            (closestIndex, currentCoord, currentIndex) => {
-              const currentDistance = getDistance(
-                entranceCoordinates,
-                currentCoord,
-              );
-              const closestDistance = getDistance(
-                entranceCoordinates,
-                geometry[closestIndex],
-              );
-              return currentDistance < closestDistance
-                ? currentIndex
-                : closestIndex;
-            },
-            0,
-          );
-
-          if (entranceCoordinates && !this.props.passive) {
-            objs.push(
-              <EntranceMarker
-                key={`entrance_${entranceCoordinates[0]}_${entranceCoordinates[1]}`}
-                position={{
-                  lat: entranceCoordinates[0],
-                  lon: entranceCoordinates[1],
-                }}
-                code={entranceObject?.feature?.publicCode?.toLowerCase()}
-              />,
-            );
-          }
-
-          objs.push(
-            <Line
-              color={
-                leg.route && leg.route.color ? `#${leg.route.color}` : null
-              }
-              key={`${this.props.hash}_${i}_${mode}_0`}
-              geometry={geometry.slice(0, entranceIndex + 1)}
-              mode={nextLeg?.mode === 'SUBWAY' ? 'walk' : 'walk-inside'}
-              passive={this.props.passive}
-            />,
-          );
-          objs.push(
-            <Line
-              color={
-                leg.route && leg.route.color ? `#${leg.route.color}` : null
-              }
-              key={`${this.props.hash}_${i}_${mode}_1`}
-              geometry={geometry.slice(entranceIndex)}
-              mode={nextLeg?.mode === 'SUBWAY' ? 'walk-inside' : 'walk'}
-              passive={this.props.passive}
-            />,
-          );
-        } else {
-          objs.push(
-            <Line
-              color={
-                leg.route && leg.route.color ? `#${leg.route.color}` : null
-              }
-              key={`${this.props.hash}_${i}_${mode}`}
-              geometry={geometry}
-              mode={mode}
-              passive={this.props.passive}
-            />,
-          );
-        }
-      } else {
-        objs.push(
-          <Line
-            color={leg.route && leg.route.color ? `#${leg.route.color}` : null}
-            key={`${this.props.hash}_${i}_${mode}`}
-            geometry={geometry}
-            mode={mode}
-            passive={this.props.passive}
-          />,
-        );
-      }
-
-      if (
-        this.props.showDurationBubble ||
-        (this.checkStreetMode(leg) && leg.distance > 100)
-      ) {
-        const duration = durationToString(leg.duration * 1000);
-        objs.push(
-          <SpeechBubble
-            key={`speech_${this.props.hash}_${i}_${mode}`}
-            position={middle}
-            text={duration}
-          />,
-        );
-      }
+      this.handleLine(
+        previousLeg,
+        leg,
+        nextLeg,
+        mode,
+        i,
+        geometry,
+        objs,
+        clusterObjs,
+      );
+      this.handleDurationBubble(leg, mode, i, objs, middle);
+      this.handleIntermediateStops(leg, mode, objs);
+      this.handleIndoorRouteStepMarkers(previousLeg, leg, clusterObjs);
+      this.handleClusterObjects(previousLeg, leg, objs, clusterObjs);
 
       if (!this.props.passive) {
-        if (
-          this.props.showIntermediateStops &&
-          leg.intermediatePlaces != null
-        ) {
-          leg.intermediatePlaces
-            .filter(place => place.stop)
-            .forEach(place =>
-              objs.push(
-                <StopMarker
-                  disableModeIcons
-                  limitZoom={14}
-                  stop={place.stop}
-                  key={`intermediate-${place.stop.gtfsId}`}
-                  mode={mode}
-                  thin
-                />,
-              ),
-            );
-        }
-
         if (rentalId) {
           objs.push(
             <VehicleMarker
@@ -310,19 +492,10 @@ class ItineraryLine extends React.Component {
       }
     });
 
-    // Add dynamic transit leg and transfer stop markers
-    if (!this.props.passive) {
-      objs.push(
-        <TransitLegMarkers
-          key="transitlegmarkers"
-          transitLegs={transitLegs}
-          realtimeTransfers={this.props.realtimeTransfers}
-        />,
-      );
-    }
+    this.handleTransitLegMarkers(transitLegs, objs);
 
     return <div style={{ display: 'none' }}>{objs}</div>;
   }
 }
 
-export default ItineraryLine;
+export default withLeaflet(ItineraryLine);

@@ -128,3 +128,48 @@ export const PlannerMessageType = Object.freeze({
   NoStopsInRange: 'NO_STOPS_IN_RANGE',
   SystemError: 'SYSTEM_ERROR',
 });
+
+export const VerticalDirection = Object.freeze({
+  Up: 'UP',
+  Down: 'DOWN',
+  Unknown: 'UNKNOWN',
+});
+
+export const RelativeDirection = Object.freeze({
+  CircleClockwise: 'CIRCLE_CLOCKWISE',
+  CircleCounterclockwise: 'CIRCLE_COUNTERCLOCKWISE',
+  Continue: 'CONTINUE',
+  Depart: 'DEPART',
+  Elevator: 'ELEVATOR',
+  EnterStation: 'ENTER_STATION',
+  Escalator: 'ESCALATOR',
+  ExitStation: 'EXIT_STATION',
+  FollowSigns: 'FOLLOW_SIGNS',
+  HardLeft: 'HARD_LEFT',
+  HardRight: 'HARD_RIGHT',
+  Left: 'LEFT',
+  Right: 'RIGHT',
+  SlightyLeft: 'SLIGHTLY_LEFT',
+  SlightlyRight: 'SLIGHTLY_RIGHT',
+  Stairs: 'STAIRS',
+  UturnLeft: 'UTURN_LEFT',
+  UturnRight: 'UTURN_RIGHT',
+});
+
+export const ClusterMarkerType = Object.freeze({
+  Entrance: 'ENTRANCE',
+  VerticalTransportationUse: 'VERTICAL_TRANSPORTATION_USE',
+});
+
+export const IndoorRouteLegType = Object.freeze({
+  AllStepsInside: 'ALL_STEPS_INSIDE',
+  StepsAfterEntranceInside: 'STEPS_AFTER_ENTRANCE_INSIDE',
+  StepsBeforeEntranceInside: 'STEPS_BEFORE_ENTRANCE_INSIDE',
+  NoStepsInside: 'NO_STEPS_INSIDE',
+});
+
+export const WheelchairBoarding = Object.freeze({
+  NotPossible: 'NOT_POSSIBLE',
+  NoInformation: 'NO_INFORMATION',
+  Possible: 'POSSIBLE',
+});

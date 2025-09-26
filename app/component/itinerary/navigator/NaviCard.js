@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { isAnyLegPropertyIdentical, isRental } from '../../../util/legUtils';
 import { getRouteMode, transitIconName } from '../../../util/modeUtils';
 import { configShape, legShape } from '../../../util/shapes';
@@ -21,6 +21,8 @@ const iconMap = {
 
 export default function NaviCard(
   {
+    focusToPoint,
+    previousLeg,
     leg,
     nextLeg,
     legType,
@@ -33,6 +35,7 @@ export default function NaviCard(
   { config },
 ) {
   const [cardExpanded, setCardExpanded] = useState(false);
+  const [showIndoorRoute, setShowIndoorRoute] = useState(false);
   const contentRef = useRef();
   const { isEqual: legChanged } = usePrevious(leg, (prev, current) =>
     isAnyLegPropertyIdentical(prev, current, ['legId', 'mode']),
@@ -40,10 +43,12 @@ export default function NaviCard(
 
   const handleClick = () => {
     setCardExpanded(prev => !prev);
+    setShowIndoorRoute(false);
   };
 
   if (legChanged) {
     setCardExpanded(false);
+    setShowIndoorRoute(false);
   }
 
   if (
@@ -87,6 +92,18 @@ export default function NaviCard(
     ? `${contentRef.current?.scrollHeight}px`
     : '0px';
 
+  useEffect(() => {
+    const element = contentRef.current;
+    if (!element) {
+      return;
+    }
+
+    // Resize card when card size changes.
+    if (cardExpanded || showIndoorRoute) {
+      element.style.maxHeight = `${element.scrollHeight}px`;
+    }
+  }, [cardExpanded, showIndoorRoute]);
+
   return (
     <button
       type="button"
@@ -107,6 +124,7 @@ export default function NaviCard(
               time={time}
               position={position}
               tailLength={tailLength}
+              showIndoorRoute={showIndoorRoute}
             />
           </div>
           <div type="button" className="navi-top-card-arrow">
@@ -118,7 +136,7 @@ export default function NaviCard(
         </div>
         <div
           id={`navi-card-content-${leg?.legId}`}
-          className="extension"
+          className="extension-container"
           style={{
             maxHeight,
           }}
@@ -126,11 +144,15 @@ export default function NaviCard(
           aria-hidden={!cardExpanded}
         >
           <NaviCardExtension
+            focusToPoint={focusToPoint}
             legType={legType}
+            previousLeg={previousLeg}
             leg={leg}
             nextLeg={nextLeg}
             time={time}
             platformUpdated={platformUpdated}
+            showIndoorRoute={showIndoorRoute}
+            toggleShowIndoorRoute={() => setShowIndoorRoute(!showIndoorRoute)}
           />
         </div>
       </div>
@@ -139,6 +161,8 @@ export default function NaviCard(
 }
 
 NaviCard.propTypes = {
+  focusToPoint: PropTypes.func.isRequired,
+  previousLeg: legShape,
   leg: legShape,
   nextLeg: legShape,
   legType: PropTypes.string.isRequired,
@@ -152,6 +176,7 @@ NaviCard.propTypes = {
   platformUpdated: PropTypes.bool,
 };
 NaviCard.defaultProps = {
+  previousLeg: undefined,
   leg: undefined,
   nextLeg: undefined,
   position: undefined,

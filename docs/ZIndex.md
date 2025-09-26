@@ -28,3 +28,5 @@ Selector | Component | Z-Index | Comment
 `.itinerary-summary-row { .itinerary-legs { .line` | Summary result row leg lines | 1 |
 `.itinerary-summary-row { .itinerary-legs { .line { :after` | Hides the Summary result row leg lines behind the mode icon. | -1 |
 `.mobile.top-bar  | Mobile top bar | 1000 |
+`.TODO-map-cluster-marker` | Cluster objects for indoor routing | 13000 | TODO
+`.TODO-map-subway-entrance-info-icon-metro` | Entrance markers for indoor routing | 13100 | TODO
