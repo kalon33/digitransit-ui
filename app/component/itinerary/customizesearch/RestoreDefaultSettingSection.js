@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
 import { isKeyboardSelectionEvent } from '../../../util/browser';
 import { saveRoutingSettings } from '../../../action/SearchSettingsActions';
@@ -13,6 +13,8 @@ import { getCustomizedSettings } from '../../../store/localStorage';
 import Icon from '../../Icon';
 
 const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
+  const [showSnackbar, setShowSnackbar] = useState(false);
+
   const restoreDefaultSettings = () => {
     const customizedSettings = getCustomizedSettings(config);
     const defaultSettings = getDefaultSettings(config);
@@ -27,47 +29,73 @@ const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
     executeAction(saveRoutingSettings, {
       ...restoredSettings,
     });
+    setShowSnackbar(true);
+    setTimeout(() => setShowSnackbar(false), 4000);
   };
   const userHasCustomizedSettings = hasCustomizedSettings(config);
-
-  if (!userHasCustomizedSettings) {
-    return (
-      <span className="sr-only">
-        <FormattedMessage
-          id="restore-default-settings-aria-label-done"
-          defaultMessage="Default settings are in use."
-        />
-      </span>
-    );
-  }
+  const noChangesSRContainer = (
+    <span className="sr-only">
+      <FormattedMessage
+        id="restore-default-settings-aria-label-done"
+        defaultMessage="Default settings are in use."
+      />
+    </span>
+  );
 
   return (
-    <div className="restore-settings-section">
-      <Icon img="icon_checkmark" omitViewBox />
-      <FormattedMessage
-        id="settings-changed"
-        defaultMessage="Settings changed"
-      />
-
-      <button
-        type="button"
-        tabIndex="0"
-        onClick={restoreDefaultSettings}
-        onKeyPress={e =>
-          isKeyboardSelectionEvent(e) && restoreDefaultSettings()
-        }
-        className="noborder cursor-pointer restore-settings-button-text"
-        aria-label={intl.formatMessage({
-          id: 'restore-default-settings-aria-label',
-          defaultMessage: 'Restore default settings',
-        })}
-      >
-        <FormattedMessage
-          id="restore-default-settings"
-          defaultMessage="Restore default settings"
-        />
-      </button>
-    </div>
+    <>
+      {showSnackbar && (
+        <div className="restore-success-snackbar">
+          <Icon img="icon_checkmark-circled" omitViewBox />
+          <span className="snackbar-text">
+            <FormattedMessage
+              id="restore-default-settings-success"
+              defaultMessage="Settings restored to default."
+            />
+          </span>
+          <button
+            type="button"
+            className="close-button"
+            aria-label={intl.formatMessage({
+              id: 'close',
+              defaultMessage: 'Close notification',
+            })}
+            onClick={() => setShowSnackbar(false)}
+          >
+            <Icon id="close-icon" img="notification-close" omitViewBox />
+          </button>
+        </div>
+      )}
+      {userHasCustomizedSettings ? (
+        <div className="restore-settings-section">
+          <Icon img="icon_checkmark" omitViewBox />
+          <FormattedMessage
+            id="settings-changed"
+            defaultMessage="Settings changed"
+          />
+          <button
+            type="button"
+            tabIndex="0"
+            onClick={restoreDefaultSettings}
+            onKeyPress={e =>
+              isKeyboardSelectionEvent(e) && restoreDefaultSettings()
+            }
+            className="noborder cursor-pointer restore-settings-button-text"
+            aria-label={intl.formatMessage({
+              id: 'restore-default-settings-aria-label',
+              defaultMessage: 'Restore default settings',
+            })}
+          >
+            <FormattedMessage
+              id="restore-default-settings"
+              defaultMessage="Restore default settings"
+            />
+          </button>
+        </div>
+      ) : (
+        noChangesSRContainer
+      )}
+    </>
   );
 };
 

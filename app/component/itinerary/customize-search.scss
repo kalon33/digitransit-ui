@@ -1,3 +1,70 @@
+.restore-success-snackbar {
+  position: fixed;
+  left: 480px;
+  top: 78px;
+  transform: translateX(-50%);
+  z-index: 9999;
+  color: #fff;
+  animation: restoreSnackbarFadeIn 0.3s;
+  display: flex;
+  width: 480px;
+  min-width: 320px;
+  max-width: 480px;
+  max-height: 96px;
+  padding: var(--space-s, 16px);
+  gap: var(--space-xs, 8px);
+  border-radius: var(--border-radius-bigger, 8px);
+  background: $success-color;
+  box-shadow: 0 4px 4px 0 var(--color-shadow-weak, rgba(0, 52, 86, 0.25));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: $font-size-medium-large;
+  font-weight: $font-weight-medium;
+  line-height: 27px;
+  letter-spacing: $letter-spacing;
+  font-family: $font-family;
+  align-items: center;
+
+  .icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    align-self: center;
+
+    .icon {
+      width: 24px;
+      height: 24px;
+      color: #fff;
+    }
+  }
+
+  .close-button {
+    width: 32px;
+    height: 32px;
+    margin-left: auto;
+
+    .icon {
+      width: 32px;
+      height: 32px;
+      color: #fff;
+    }
+  }
+}
+
+@keyframes restoreSnackbarFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
 .offcanvas {
   width: 400px;
   height: 100%;
@@ -222,6 +289,7 @@
       .icon {
         width: 24px;
         height: 24px;
+        color: #c53291;
       }
     }
   }
