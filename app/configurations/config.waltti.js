@@ -261,7 +261,7 @@ export default {
 
   // if true we don't show fare information on top of the itinerary
   // when there are legs from unknown operators
-  hideUnknownFare: true,
+  hideUnknownFares: true,
 
   startSearchFromUserLocation: true,
 

@@ -93,7 +93,7 @@ export const getAlternativeFares = (zones, currentFares, allFares) => {
  * @param {*} config configuration.
  */
 export const shouldShowFareInfo = (config, legs, fares) => {
-  if (fares && config.hideUnknownFare && fares.some(fare => fare.isUnknown)) {
+  if (fares && config.hideUnknownFares && fares.some(fare => fare.isUnknown)) {
     return false;
   }
   if (

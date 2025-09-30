@@ -624,7 +624,7 @@ class TransitLeg extends React.Component {
             </div>
           )}
           {leg.fare?.isUnknown &&
-            !config.hideUnknownFare &&
+            !config.hideUnknownFares &&
             shouldShowFareInfo(config) &&
             (config.modeDisclaimers?.[mode]?.[lang] ? (
               <div className="disclaimer-container unknown-fare-disclaimer__leg">
