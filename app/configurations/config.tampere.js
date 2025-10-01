@@ -108,7 +108,7 @@ export default configMerger(walttiConfig, {
     RAIL: {
       fi: {
         disclaimer:
-          'Nyssen liput käyvät junaliikenteessä rajoitetusti vain Nysse-alueella. Lue lisää ',
+          'Nyssen liput käyvät Nysse-alueen junaliikenteessä rajoitetusti. Lue lisää ',
         link: 'https://www.nysse.fi/junat',
         text: 'nysse.fi/junat',
       },
