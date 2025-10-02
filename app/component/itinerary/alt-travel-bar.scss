@@ -258,4 +258,24 @@
       font-size: $font-size-xxsmall;
     }
   }
+
+  .customized-settings-indicator {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+
+    .icon-container {
+      .icon {
+        color: #c53291;
+        width: 16px;
+        height: 16px;
+        border: solid 1px #fff;
+        border-radius: 999px;
+      }
+    }
+  }
 }

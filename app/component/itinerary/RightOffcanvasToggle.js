@@ -28,7 +28,12 @@ export default function RightOffcanvasToggle(
       >
         <div>
           <div className="icon-holder">
-            <Icon img="icon_settings" color={config.colors.primary} />
+            <Icon img="icon_settings" />
+            {userHasCustomizedSettings && (
+              <span className="customized-settings-indicator">
+                <Icon img="icon_checkmark" />
+              </span>
+            )}
           </div>
           <span className="settings-button-text">
             <FormattedMessage
