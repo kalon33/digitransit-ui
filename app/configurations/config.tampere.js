@@ -81,12 +81,7 @@ export default configMerger(walttiConfig, {
     itinerary: true,
   },
 
-  ticketPurchaseLink: function purchaseTicketLink(
-    fare,
-    operatorCode,
-    appName,
-    availableTickets,
-  ) {
+  ticketPurchaseLink: function purchaseTicketLink(fare, availableTickets) {
     // tampere zones need to be mapped from letters to numbers for ticket link
     const zoneMapping = {
       A: '1',
@@ -99,7 +94,7 @@ export default configMerger(walttiConfig, {
     const zones = availableTickets[feed][fareId].zones.reduce((acc, zone) => {
       return `${acc}0${zoneMapping[zone]}`;
     }, '');
-    return `https://waltti.fi/${appName}/busTicket/?operator=${operatorCode}&ticketType=single&customerGroup=adult&zones=${zones}`;
+    return `https://waltti.fi/${this.appName}/busTicket/?operator=${this.ticketLinkOperatorCode}&ticketType=single&customerGroup=adult&zones=${zones}`;
   },
   appName: 'nysseapp',
 
