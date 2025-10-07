@@ -72,9 +72,6 @@ export default function RightOffcanvasToggle(
             <FormattedMessage
               id={translationId}
               defaultMessage={defaultMessage}
-              values={{
-                changedSettingsIndicator: userHasCustomizedSettings ? '' : '', // Indicator coming later
-              }}
             />
           </span>
         </div>
