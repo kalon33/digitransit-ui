@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { intlShape, FormattedMessage } from 'react-intl';
 import { configShape } from '../../util/shapes';
 import Icon from '../Icon';
 import { isKeyboardSelectionEvent } from '../../util/browser';
 import { hasCustomizedSettings } from '../../util/planParamUtil';
+import Popover from '../Popover';
+import { getDialogState, setDialogState } from '../../store/localStorage';
 
 export default function RightOffcanvasToggle(
   { onToggleClick, defaultMessage, translationId },
@@ -15,6 +17,16 @@ export default function RightOffcanvasToggle(
     defaultMessage: 'Change settings',
   });
   const userHasCustomizedSettings = hasCustomizedSettings(config);
+  const [isSettingChangeInfoDismissed, setSettingChangeInfoDismissed] =
+    useState(getDialogState('setting-change-acknowledged', config));
+
+  const dismissPopover = useCallback(acknowledged => {
+    setSettingChangeInfoDismissed(true);
+    if (acknowledged) {
+      setDialogState('setting-change-acknowledged');
+    }
+  }, []);
+
   return (
     <div className="right-offcanvas-toggle">
       <div
@@ -30,8 +42,29 @@ export default function RightOffcanvasToggle(
           <div className="icon-holder">
             <Icon img="icon_settings" />
             {userHasCustomizedSettings && (
-              <span className="customized-settings-indicator">
-                <Icon img="icon_checkmark" />
+              <span
+                className="customized-settings-indicator-popover-wrapper" // needed?
+              >
+                <span className="customized-settings-indicator">
+                  <Icon img="icon_checkmark" />
+                </span>
+                {!isSettingChangeInfoDismissed && (
+                  <Popover
+                    onCloseClick={dismissPopover}
+                    message={
+                      <FormattedMessage
+                        id="settings-changed-by-you"
+                        defaultMessage="You have changed the settings"
+                      />
+                    }
+                    buttonText={
+                      <FormattedMessage
+                        id="acknowledged"
+                        defaultMessage="Understood"
+                      />
+                    }
+                  />
+                )}
               </span>
             )}
           </div>

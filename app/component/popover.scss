@@ -1,0 +1,109 @@
+.popover-arrow {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  left: 110%;
+  top: 20px;
+  transform: translateX(-50%) rotate(45deg);
+  z-index: 2500;
+  border: 1px solid #ddd;
+  border-bottom: none;
+  border-right: none;
+  background: #fff;
+  pointer-events: none;
+}
+
+.popover {
+  display: flex;
+  position: absolute;
+  top: 160%;
+  left: -150px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 4px 0 var(--color-shadow-weak, rgba(0, 52, 86, 0.25));
+  padding: var(--space-s, 16px);
+  gap: 10px;
+  align-items: flex-start;
+  min-width: 220px;
+  z-index: 2000;
+
+  .icon {
+    &.checkmark {
+      color: #c53291;
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+  }
+
+  .popover-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+    align-self: stretch;
+
+    .popover-message-content {
+      display: inline-flex;
+      align-items: center;
+      align-self: stretch;
+
+      span {
+        display: inline-flex;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 325;
+        line-height: 18px;
+        letter-spacing: -0.5px;
+        color: #000;
+        font-family: $font-family;
+        width: max-content;
+      }
+
+      .popover-close-button {
+        width: 24px;
+        height: 24px;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        border-radius: 999px;
+        background: #f2f5f7;
+        margin-left: 20px;
+
+        .icon {
+          width: 16px;
+          height: 16px;
+          color: $primary-color;
+        }
+      }
+    }
+
+    .popover-acknowledge-button {
+      display: flex;
+      height: 28px;
+      min-width: 60px;
+      padding: 0 var(--space-m, 24px);
+      justify-content: center;
+      align-items: center;
+      border-radius: 999px;
+      border: 1px solid #888;
+      background: #fff;
+    }
+  }
+
+  .icon-container {
+    align-items: center;
+    display: flex;
+    height: 24px;
+
+    .icon {
+      &.checkmark {
+        color: #c53291;
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+      }
+    }
+  }
+}

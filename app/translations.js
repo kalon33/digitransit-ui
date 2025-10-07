@@ -820,6 +820,7 @@ const translations = {
     'accessibility-limited': 'Wheelchair',
     'accessibility-nolimit': 'No limits',
     'accessibility-statement': 'Accessibility statement',
+    acknowledged: 'Understood',
     'add-favourite-bikeStation-failed-heading':
       'Saving the citybike station failed',
     'add-favourite-place-failed-heading': 'Unable to save location',
@@ -1614,6 +1615,7 @@ const translations = {
     'settings-alternative-name-rail': 'Train',
     'settings-change-itinerary-settings': 'Change settings',
     'settings-changed': 'Settings changed',
+    'settings-changed-by-you': 'You have changed the settings',
     'settings-dropdown-close-label': 'Close options',
     'settings-dropdown-open-label': 'Open options',
     'settings-e-scooter':
@@ -2140,6 +2142,7 @@ const translations = {
     'accessibility-limited': 'Pyörätuoli',
     'accessibility-nolimit': 'Ei rajoitusta',
     'accessibility-statement': 'Saavutettavuusseloste',
+    acknowledged: 'Selvä',
     'add-favourite-bikeStation-failed-heading':
       'Kaupunkipyöräaseman tallentaminen ei onnistunut',
     'add-favourite-place-failed-heading': 'Paikan tallentaminen ei onnistunut',
@@ -2930,6 +2933,7 @@ const translations = {
     'settings-alternative-name-rail': 'Juna',
     'settings-change-itinerary-settings': 'Muuta asetuksia',
     'settings-changed': 'Asetuksia muokattu',
+    'settings-changed-by-you': 'Olet muokannut asetuksia',
     'settings-dropdown-close-label': 'Sulje vaihtoehdot',
     'settings-dropdown-open-label': 'Avaa vaihtoehdot',
     'settings-e-scooter':
@@ -5091,6 +5095,7 @@ const translations = {
     'accessibility-limited': 'Med rullstolen',
     'accessibility-nolimit': 'Ingen begränsning',
     'accessibility-statement': 'Tillgänglighetsförklaring',
+    acknowledged: 'TO_DO_ACKNOWLEDGE',
     'add-favourite-bikeStation-failed-heading':
       'Kunde inte spara stadscykelstationen',
     'add-favourite-place-failed-heading': 'Kunde inte spara platsen',
@@ -5881,6 +5886,7 @@ const translations = {
     'settings-alternative-name-rail': 'Tåg',
     'settings-change-itinerary-settings': 'Anpassa sökning',
     'settings-changed': 'Ändrade inställningar',
+    'settings-changed-by-you': 'TO_DO_settings-changed-by-you',
     'settings-dropdown-close-label': 'Stäng alternativen',
     'settings-dropdown-open-label': 'Öppna alternativen',
     'settings-e-scooter':
