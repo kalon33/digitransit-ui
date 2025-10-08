@@ -1,3 +1,12 @@
+.mobile {
+  .restore-success-snackbar {
+    width: calc(100% - 32px);
+    left: 16px;
+    top: unset;
+    bottom: 16px;
+  }
+}
+
 .restore-success-snackbar {
   position: fixed;
   left: 480px;
@@ -10,7 +19,7 @@
   min-width: 320px;
   max-width: 480px;
   max-height: 96px;
-  padding: var(--space-s, 16px);
+  padding: 16px;
   gap: var(--space-xs, 8px);
   border-radius: var(--border-radius-bigger, 8px);
   background: $success-color;
@@ -18,7 +27,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: $font-size-medium-large;
-  font-weight: $font-weight-medium;
+  font-weight: $font-weight-book;
   line-height: 27px;
   letter-spacing: $letter-spacing;
   font-family: $font-family;
@@ -145,6 +154,11 @@
         padding-top: 0.5em;
       }
     }
+
+    .restore-settings-section {
+      width: calc(100% - 32px);
+      left: 16px;
+    }
   }
 }
 
@@ -254,17 +268,6 @@
     }
   }
 
-  .restore-settings-button-text {
-    color: $link-button-color;
-    text-decoration: none;
-    font-weight: $font-weight-medium;
-    text-align: center;
-    display: block;
-    width: fit-content;
-    padding: 8px;
-    margin: 0 auto;
-  }
-
   .restore-settings-section {
     display: flex;
     padding: var(--fixed-space-s, 16px) 0 var(--fixed-space-s, 16px)
@@ -280,6 +283,17 @@
     z-index: 10;
     width: 368px;
     margin-bottom: var(--fixed-space-s, 16px);
+
+    .restore-settings-button {
+      color: $link-button-color;
+      text-decoration: none;
+      font-weight: $font-weight-medium;
+      text-align: center;
+      display: block;
+      width: fit-content;
+      padding: 8px;
+      margin: 0 16px 0 auto;
+    }
 
     .icon-container {
       width: 24px;

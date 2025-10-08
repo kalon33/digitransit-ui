@@ -42,15 +42,13 @@ export default function RightOffcanvasToggle(
           <div className="icon-holder">
             <Icon img="icon_settings" />
             {userHasCustomizedSettings && (
-              <span
-                className="customized-settings-indicator-popover-wrapper" // needed?
-              >
+              <>
                 <span className="customized-settings-indicator">
                   <Icon img="icon_checkmark" />
                 </span>
                 {!isSettingChangeInfoDismissed && (
                   <Popover
-                    onCloseClick={dismissPopover}
+                    onClose={dismissPopover}
                     message={
                       <FormattedMessage
                         id="settings-changed-by-you"
@@ -65,7 +63,7 @@ export default function RightOffcanvasToggle(
                     }
                   />
                 )}
-              </span>
+              </>
             )}
           </div>
           <span className="settings-button-text">

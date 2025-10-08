@@ -4,10 +4,7 @@ import { intlShape, FormattedMessage } from 'react-intl';
 import Icon from './Icon';
 import { isKeyboardSelectionEvent } from '../util/browser';
 
-export default function Popover(
-  { onCloseClick, message, buttonText },
-  { intl },
-) {
+export default function Popover({ onClose, message, buttonText }, { intl }) {
   const closeLabel = intl.formatMessage({
     id: 'close',
     defaultMessage: 'Close',
@@ -23,10 +20,16 @@ export default function Popover(
             <button
               type="button"
               tabIndex="0"
-              onClick={() => onCloseClick(false)}
-              onKeyPress={e =>
-                isKeyboardSelectionEvent(e) && onCloseClick(false)
-              }
+              onClick={e => {
+                e.stopPropagation();
+                onClose(false);
+              }}
+              onKeyPress={e => {
+                if (isKeyboardSelectionEvent(e)) {
+                  e.stopPropagation();
+                  onClose(false);
+                }
+              }}
               aria-label={closeLabel}
               title={closeLabel}
               className="noborder cursor-pointer popover-close-button"
@@ -37,8 +40,16 @@ export default function Popover(
           <button
             type="button"
             tabIndex="0"
-            onClick={() => onCloseClick(true)}
-            onKeyPress={e => isKeyboardSelectionEvent(e) && onCloseClick(true)}
+            onClick={e => {
+              e.stopPropagation();
+              onClose(true);
+            }}
+            onKeyPress={e => {
+              if (isKeyboardSelectionEvent(e)) {
+                e.stopPropagation();
+                onClose(true);
+              }
+            }}
             className="popover-acknowledge-button"
             aria-label={intl.formatMessage({
               id: 'acknowledged',
@@ -59,7 +70,7 @@ export default function Popover(
 }
 
 Popover.propTypes = {
-  onCloseClick: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
   message: PropTypes.node.isRequired,
   buttonText: PropTypes.node,
 };

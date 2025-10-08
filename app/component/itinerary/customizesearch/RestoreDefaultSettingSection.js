@@ -80,7 +80,7 @@ const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
             onKeyPress={e =>
               isKeyboardSelectionEvent(e) && restoreDefaultSettings()
             }
-            className="noborder cursor-pointer restore-settings-button-text"
+            className="noborder cursor-pointer restore-settings-button"
             aria-label={intl.formatMessage({
               id: 'restore-default-settings-aria-label',
               defaultMessage: 'Restore default settings',
