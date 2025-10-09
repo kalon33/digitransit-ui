@@ -24,7 +24,6 @@ export default function CardHeader(
     icons,
     unlinked,
     showBackButton,
-    headerConfig,
     favouriteContainer,
     isTerminal,
   },
@@ -67,8 +66,7 @@ export default function CardHeader(
                   isTerminal={isTerminal}
                 />
               </div>
-              {headerConfig &&
-                config.zones.stops &&
+              {config.zones?.stops &&
                 zoneId &&
                 stop.gtfsId &&
                 config.feedIds.includes(stop.gtfsId.split(':')[0]) && (
@@ -103,7 +101,6 @@ CardHeader.propTypes = {
   children: PropTypes.node,
   unlinked: PropTypes.bool,
   showBackButton: PropTypes.bool,
-  headerConfig: PropTypes.bool,
   favouriteContainer: PropTypes.element,
   name: PropTypes.string,
   isTerminal: PropTypes.bool,
@@ -122,7 +119,6 @@ CardHeader.defaultProps = {
   children: undefined,
   unlinked: false,
   showBackButton: false,
-  headerConfig: false,
   name: undefined,
   isTerminal: false,
 };
