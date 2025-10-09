@@ -31,6 +31,9 @@ export default function CardHeader(
   { config },
 ) {
   const headerTitle = stop.name ? stop.name : name;
+  // Station query does not return zoneId, so dig it up from child stops
+  const zoneId =
+    isTerminal && stop.stops.length ? stop.stops[0].zoneId : stop.zoneId;
   return (
     <Fragment>
       <div className={cx('card-header', className)}>
@@ -66,11 +69,11 @@ export default function CardHeader(
               </div>
               {headerConfig &&
                 config.zones.stops &&
-                stop.zoneId &&
+                zoneId &&
                 stop.gtfsId &&
                 config.feedIds.includes(stop.gtfsId.split(':')[0]) && (
                   <ZoneIcon
-                    zoneId={getZoneLabel(stop.zoneId, config)}
+                    zoneId={getZoneLabel(zoneId, config)}
                     showUnknown={false}
                   />
                 )}
