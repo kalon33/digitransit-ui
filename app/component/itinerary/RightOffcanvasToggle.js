@@ -12,14 +12,18 @@ export default function RightOffcanvasToggle(
   { onToggleClick, defaultMessage, translationId },
   { intl: { formatMessage }, config },
 ) {
-  const label = formatMessage({
-    id: 'settings-label-change',
-    defaultMessage: 'Change settings',
-  });
   const userHasCustomizedSettings = hasCustomizedSettings(config);
   const [isSettingChangeInfoDismissed, setSettingChangeInfoDismissed] =
     useState(getDialogState('setting-change-acknowledged', config));
-
+  const label = userHasCustomizedSettings
+    ? formatMessage({
+        id: 'settings-changed',
+        defaultMessage: 'Settings changed',
+      })
+    : formatMessage({
+        id: 'settings-label-change',
+        defaultMessage: 'Change settings',
+      });
   const dismissPopover = useCallback(acknowledged => {
     // wait 1 second before dismissing to allow user to see the popover disappearing
     const timeoutId = setTimeout(() => {
