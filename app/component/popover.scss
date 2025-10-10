@@ -1,20 +1,8 @@
-.popover-arrow {
-  width: 24px;
-  height: 24px;
-  position: absolute;
-  left: 110%;
-  top: 20px;
-  transform: translateX(-50%) rotate(45deg);
-  z-index: 2500;
-  border: 1px solid #ddd;
-  border-bottom: none;
-  border-right: none;
-  background: #fff;
-  pointer-events: none;
-  animation: fadeInSlidePopoverArrow 1s forwards;
-
-  &.fade-away {
-    animation: fadeAwayPopoverArrow 1s forwards;
+.mobile {
+  .popover {
+    &::before {
+      left: 67%;
+    }
   }
 }
 
@@ -33,6 +21,23 @@
   min-width: 220px;
   z-index: 2000;
   animation: fadeInSlidePopover 1s forwards;
+
+  // Popover arrow
+  &::before {
+    content: '';
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    left: 63%;
+    top: -13px;
+    transform: translateX(-50%) rotate(45deg);
+    z-index: 2500;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-right: none;
+    background: #fff;
+    pointer-events: none;
+  }
 
   .icon {
     &.checkmark {
@@ -118,18 +123,6 @@
   }
 }
 
-@keyframes fadeInSlidePopoverArrow {
-  from {
-    opacity: 0;
-    transform: translateY(-50%) translateX(-50%) rotate(45deg);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) translateX(-50%) rotate(45deg);
-  }
-}
-
 @keyframes fadeInSlidePopover {
   from {
     opacity: 0;
@@ -151,17 +144,5 @@
   to {
     opacity: 0;
     transform: translateY(-20%);
-  }
-}
-
-@keyframes fadeAwayPopoverArrow {
-  from {
-    opacity: 1;
-    transform: translateY(0) translateX(-50%) rotate(45deg);
-  }
-
-  to {
-    opacity: 0;
-    transform: translateY(-50%) translateX(-50%) rotate(45deg);
   }
 }

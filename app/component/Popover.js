@@ -13,72 +13,65 @@ export default function Popover({ onClose, message, buttonText }, { intl }) {
     defaultMessage: 'Close',
   });
   return (
-    <>
-      <div
-        className={`popover-arrow ${
-          isSettingChangeInfoDismissed ? 'fade-away' : ''
-        }`}
-      />
-      <div
-        className={`popover ${isSettingChangeInfoDismissed ? 'fade-away' : ''}`}
-      >
-        <Icon img="icon_checkmark" className="checkmark" />
-        <div className="popover-content">
-          <div className="popover-message-content">
-            {message}
-            <button
-              type="button"
-              tabIndex="0"
-              onClick={e => {
-                e.stopPropagation();
-                setSettingChangeInfoDismissed(true);
-                onClose(false);
-              }}
-              onKeyPress={e => {
-                if (isKeyboardSelectionEvent(e)) {
-                  e.stopPropagation();
-                  setSettingChangeInfoDismissed(true);
-                  onClose(false);
-                }
-              }}
-              aria-label={closeLabel}
-              title={closeLabel}
-              className="noborder cursor-pointer popover-close-button"
-            >
-              <Icon img="icon_close" />
-            </button>
-          </div>
+    <div
+      className={`popover ${isSettingChangeInfoDismissed ? 'fade-away' : ''}`}
+    >
+      <Icon img="icon_checkmark" className="checkmark" />
+      <div className="popover-content">
+        <div className="popover-message-content">
+          {message}
           <button
             type="button"
             tabIndex="0"
             onClick={e => {
               e.stopPropagation();
               setSettingChangeInfoDismissed(true);
-              onClose(true);
+              onClose(false);
             }}
             onKeyPress={e => {
               if (isKeyboardSelectionEvent(e)) {
                 e.stopPropagation();
                 setSettingChangeInfoDismissed(true);
-                onClose(true);
+                onClose(false);
               }
             }}
-            className="popover-acknowledge-button"
-            aria-label={intl.formatMessage({
-              id: 'acknowledged',
-              defaultMessage: 'Understood',
-            })}
+            aria-label={closeLabel}
+            title={closeLabel}
+            className="noborder cursor-pointer popover-close-button"
           >
-            {buttonText || (
-              <FormattedMessage
-                id="popover-button-got-it"
-                defaultMessage="Got it!"
-              />
-            )}
+            <Icon img="icon_close" />
           </button>
         </div>
+        <button
+          type="button"
+          tabIndex="0"
+          onClick={e => {
+            e.stopPropagation();
+            setSettingChangeInfoDismissed(true);
+            onClose(true);
+          }}
+          onKeyPress={e => {
+            if (isKeyboardSelectionEvent(e)) {
+              e.stopPropagation();
+              setSettingChangeInfoDismissed(true);
+              onClose(true);
+            }
+          }}
+          className="popover-acknowledge-button"
+          aria-label={intl.formatMessage({
+            id: 'acknowledged',
+            defaultMessage: 'Understood',
+          })}
+        >
+          {buttonText || (
+            <FormattedMessage
+              id="popover-button-got-it"
+              defaultMessage="Got it!"
+            />
+          )}
+        </button>
       </div>
-    </>
+    </div>
   );
 }
 
