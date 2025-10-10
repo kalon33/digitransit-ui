@@ -1,18 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, FormattedMessage } from 'react-intl';
 import Icon from './Icon';
 import { isKeyboardSelectionEvent } from '../util/browser';
 
 export default function Popover({ onClose, message, buttonText }, { intl }) {
+  const [isSettingChangeInfoDismissed, setSettingChangeInfoDismissed] =
+    useState(false);
+
   const closeLabel = intl.formatMessage({
     id: 'close',
     defaultMessage: 'Close',
   });
   return (
     <>
-      <div className="popover-arrow" />
-      <div className="popover">
+      <div
+        className={`popover-arrow ${
+          isSettingChangeInfoDismissed ? 'fade-away' : ''
+        }`}
+      />
+      <div
+        className={`popover ${isSettingChangeInfoDismissed ? 'fade-away' : ''}`}
+      >
         <Icon img="icon_checkmark" className="checkmark" />
         <div className="popover-content">
           <div className="popover-message-content">
@@ -22,11 +31,13 @@ export default function Popover({ onClose, message, buttonText }, { intl }) {
               tabIndex="0"
               onClick={e => {
                 e.stopPropagation();
+                setSettingChangeInfoDismissed(true);
                 onClose(false);
               }}
               onKeyPress={e => {
                 if (isKeyboardSelectionEvent(e)) {
                   e.stopPropagation();
+                  setSettingChangeInfoDismissed(true);
                   onClose(false);
                 }
               }}
@@ -42,11 +53,13 @@ export default function Popover({ onClose, message, buttonText }, { intl }) {
             tabIndex="0"
             onClick={e => {
               e.stopPropagation();
+              setSettingChangeInfoDismissed(true);
               onClose(true);
             }}
             onKeyPress={e => {
               if (isKeyboardSelectionEvent(e)) {
                 e.stopPropagation();
+                setSettingChangeInfoDismissed(true);
                 onClose(true);
               }
             }}

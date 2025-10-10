@@ -21,10 +21,14 @@ export default function RightOffcanvasToggle(
     useState(getDialogState('setting-change-acknowledged', config));
 
   const dismissPopover = useCallback(acknowledged => {
-    setSettingChangeInfoDismissed(true);
-    if (acknowledged) {
-      setDialogState('setting-change-acknowledged');
-    }
+    // wait 1 second before dismissing to allow user to see the popover disappearing
+    const timeoutId = setTimeout(() => {
+      setSettingChangeInfoDismissed(true);
+      if (acknowledged) {
+        setDialogState('setting-change-acknowledged');
+      }
+    }, 1000);
+    return () => clearTimeout(timeoutId);
   }, []);
 
   return (

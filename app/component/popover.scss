@@ -11,6 +11,11 @@
   border-right: none;
   background: #fff;
   pointer-events: none;
+  animation: fadeInSlidePopoverArrow 1s forwards;
+
+  &.fade-away {
+    animation: fadeAwayPopoverArrow 1s forwards;
+  }
 }
 
 .popover {
@@ -27,6 +32,7 @@
   align-items: flex-start;
   min-width: 220px;
   z-index: 2000;
+  animation: fadeInSlidePopover 1s forwards;
 
   .icon {
     &.checkmark {
@@ -105,5 +111,57 @@
         flex-shrink: 0;
       }
     }
+  }
+
+  &.fade-away {
+    animation: fadeAwayPopover 1s forwards;
+  }
+}
+
+@keyframes fadeInSlidePopoverArrow {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-50%) rotate(45deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(-50%) rotate(45deg);
+  }
+}
+
+@keyframes fadeInSlidePopover {
+  from {
+    opacity: 0;
+    transform: translateY(-20%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeAwayPopover {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-20%);
+  }
+}
+
+@keyframes fadeAwayPopoverArrow {
+  from {
+    opacity: 1;
+    transform: translateY(0) translateX(-50%) rotate(45deg);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-50%) rotate(45deg);
   }
 }

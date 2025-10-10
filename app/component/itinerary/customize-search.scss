@@ -1,19 +1,28 @@
 .mobile {
-  .restore-success-snackbar {
+  .restore-settings-success-snackbar {
     width: calc(100% - 32px);
     left: 16px;
     top: unset;
     bottom: 16px;
+
+    &.show {
+      animation: slideUpFromBottomWithMargin 0.5s $slide-up-down-animation;
+      transform: translateY(calc(100% + 16px));
+    }
+
+    &.slide-out {
+      animation: slideDownWithMargin 1s ease-in-out forwards;
+      transform: translateY(0);
+    }
   }
 }
 
-.restore-success-snackbar {
+.restore-settings-success-snackbar {
   position: fixed;
   left: 480px;
   top: 78px;
   z-index: 9999;
   color: #fff;
-  animation: restoreSnackbarFadeIn 0.3s;
   display: flex;
   width: 480px;
   min-width: 320px;
@@ -32,6 +41,16 @@
   letter-spacing: $letter-spacing;
   font-family: $font-family;
   align-items: center;
+
+  &.show {
+    animation: slideDownFromTop 0.5s $slide-up-down-animation;
+    transform: translateY(calc(-100% - 78px));
+  }
+
+  &.slide-out {
+    animation: slideUpToTop 1s ease-in-out forwards;
+    transform: translateY(0);
+  }
 
   .icon-container {
     display: flex;
@@ -58,18 +77,6 @@
       height: 32px;
       color: #fff;
     }
-  }
-}
-
-@keyframes restoreSnackbarFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -283,6 +290,16 @@
     z-index: 10;
     width: 368px;
     margin-bottom: var(--fixed-space-s, 16px);
+
+    &.show {
+      animation: slideUpFromBottom $slide-up-down-animation;
+      transform: translateY(calc(100% + 16px));
+    }
+
+    &.slide-out {
+      animation: slideDownWithMargin 1s ease-in-out forwards;
+      transform: translateY(0);
+    }
 
     .restore-settings-button {
       color: $link-button-color;
@@ -681,5 +698,25 @@
     margin-left: auto;
     cursor: pointer;
     font-weight: $font-weight-medium;
+  }
+}
+
+@keyframes slideUpFromBottomWithMargin {
+  from {
+    transform: translateY(calc(100% + 16px));
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDownWithMargin {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(calc(100% + 16px));
   }
 }
