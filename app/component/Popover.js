@@ -26,13 +26,13 @@ export default function Popover({ onClose, message, buttonText }, { intl }) {
             onClick={e => {
               e.stopPropagation();
               setSettingChangeInfoDismissed(true);
-              onClose(false);
+              onClose();
             }}
             onKeyDown={e => {
               if (isKeyboardSelectionEvent(e)) {
                 e.stopPropagation();
                 setSettingChangeInfoDismissed(true);
-                onClose(false);
+                onClose();
               }
             }}
             aria-label={closeLabel}

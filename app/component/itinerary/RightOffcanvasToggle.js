@@ -24,13 +24,11 @@ export default function RightOffcanvasToggle(
         id: 'settings-label-change',
         defaultMessage: 'Change settings',
       });
-  const dismissPopover = useCallback(acknowledged => {
+  const dismissPopover = useCallback(() => {
     // wait 1 second before dismissing to allow user to see the popover disappearing
     const timeoutId = setTimeout(() => {
       setSettingChangeInfoDismissed(true);
-      if (acknowledged) {
-        setDialogState('setting-change-acknowledged');
-      }
+      setDialogState('setting-change-acknowledged');
     }, 1000);
     return () => clearTimeout(timeoutId);
   }, []);
