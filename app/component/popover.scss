@@ -15,7 +15,7 @@
   background: #fff;
   border: 1px solid #ddd;
   box-shadow: 0 4px 4px 0 var(--color-shadow-weak, rgba(0, 52, 86, 0.25));
-  padding: var(--space-s, 16px);
+  padding: var(--space-s, 16px) !important;
   gap: 10px;
   align-items: flex-start;
   min-width: 220px;

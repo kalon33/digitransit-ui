@@ -28,7 +28,7 @@ export default function Popover({ onClose, message, buttonText }, { intl }) {
               setSettingChangeInfoDismissed(true);
               onClose(false);
             }}
-            onKeyPress={e => {
+            onKeyDown={e => {
               if (isKeyboardSelectionEvent(e)) {
                 e.stopPropagation();
                 setSettingChangeInfoDismissed(true);
@@ -50,7 +50,7 @@ export default function Popover({ onClose, message, buttonText }, { intl }) {
             setSettingChangeInfoDismissed(true);
             onClose(true);
           }}
-          onKeyPress={e => {
+          onKeyDown={e => {
             if (isKeyboardSelectionEvent(e)) {
               e.stopPropagation();
               setSettingChangeInfoDismissed(true);

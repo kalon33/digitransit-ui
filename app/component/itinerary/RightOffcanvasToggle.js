@@ -37,6 +37,20 @@ export default function RightOffcanvasToggle(
 
   return (
     <div className="right-offcanvas-toggle">
+      {userHasCustomizedSettings && !isSettingChangeInfoDismissed && (
+        <Popover
+          onClose={dismissPopover}
+          message={
+            <FormattedMessage
+              id="settings-changed-by-you"
+              defaultMessage="You have changed the settings"
+            />
+          }
+          buttonText={
+            <FormattedMessage id="acknowledged" defaultMessage="Understood" />
+          }
+        />
+      )}
       <div
         role="button"
         tabIndex="0"
@@ -50,28 +64,9 @@ export default function RightOffcanvasToggle(
           <div className="icon-holder">
             <Icon img="icon_settings" />
             {userHasCustomizedSettings && (
-              <>
-                <span className="customized-settings-indicator">
-                  <Icon img="icon_checkmark" />
-                </span>
-                {!isSettingChangeInfoDismissed && (
-                  <Popover
-                    onClose={dismissPopover}
-                    message={
-                      <FormattedMessage
-                        id="settings-changed-by-you"
-                        defaultMessage="You have changed the settings"
-                      />
-                    }
-                    buttonText={
-                      <FormattedMessage
-                        id="acknowledged"
-                        defaultMessage="Understood"
-                      />
-                    }
-                  />
-                )}
-              </>
+              <span className="customized-settings-indicator">
+                <Icon img="icon_checkmark" />
+              </span>
             )}
           </div>
           <span className="settings-button-text">
