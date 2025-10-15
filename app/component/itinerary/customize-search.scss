@@ -289,6 +289,8 @@
     z-index: 10;
     width: 368px;
     margin-bottom: var(--fixed-space-s, 16px);
+    line-height: normal;
+    max-height: 70px;
 
     &.show {
       animation: slideUpFromBottom $slide-up-down-animation;
@@ -306,7 +308,7 @@
       font-weight: $font-weight-medium;
       text-align: center;
       display: block;
-      width: fit-content;
+      width: min-content;
       padding: 8px;
       margin: 0 16px 0 auto;
     }
