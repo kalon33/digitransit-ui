@@ -15,23 +15,29 @@ import Icon from '../../Icon';
 
 const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
   const [showSnackbar, setShowSnackbar] = useState(null);
-  const snackbarRef = React.useRef(null);
   const [slideOutRestoreSettingsButton, setSlideOutRestoreSettingsButton] =
     useState(null);
+  const [liveRegionMessage, setLiveRegionMessage] = useState('');
+  const noChangesRef = React.useRef(null);
+  const liveRegionRef = React.useRef(null);
   const userHasCustomizedSettings = hasCustomizedSettings(config);
 
   useEffect(() => {
-    if (showSnackbar && snackbarRef.current) {
-      snackbarRef.current.focus();
+    if (userHasCustomizedSettings) {
+      setLiveRegionMessage(
+        intl.formatMessage({
+          id: 'settings-changed',
+          defaultMessage: 'Settings changed',
+        }),
+      );
     }
-  }, [showSnackbar]);
-
-  useEffect(() => {
     if (
       userHasCustomizedSettings === false &&
       slideOutRestoreSettingsButton !== null
     ) {
       setSlideOutRestoreSettingsButton(true);
+      setLiveRegionMessage('');
+
       const timeoutId = setTimeout(
         () => setSlideOutRestoreSettingsButton(false),
         1000,
@@ -57,11 +63,32 @@ const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
       ...restoredSettings,
     });
     setShowSnackbar(true);
-    setTimeout(() => setShowSnackbar(false), 4000);
+    setLiveRegionMessage(
+      intl.formatMessage({
+        id: 'restore-default-settings-success',
+        defaultMessage: 'Settings restored to default.',
+      }),
+    );
+    if (liveRegionRef.current) {
+      liveRegionRef.current.focus();
+    }
+    setTimeout(() => {
+      setLiveRegionMessage('');
+      setShowSnackbar(false);
+      if (noChangesRef.current) {
+        noChangesRef.current.focus();
+      }
+    }, 4000);
   };
 
   const noChangesSRContainer = (
-    <span className="sr-only">
+    <span
+      className="sr-only"
+      tabIndex="-1"
+      ref={noChangesRef}
+      aria-live="polite"
+      role="status"
+    >
       <FormattedMessage
         id="restore-default-settings-aria-label-done"
         defaultMessage="Default settings are in use."
@@ -72,15 +99,12 @@ const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
   return (
     <>
       <div
-        ref={snackbarRef}
         className={cx('restore-settings-success-snackbar', {
           hide: showSnackbar === null,
           show: showSnackbar === true,
           'slide-out': showSnackbar === false,
         })}
-        role="status"
-        aria-live="polite"
-        tabIndex="-1"
+        aria-hidden="true"
       >
         <Icon img="icon_checkmark-circled" omitViewBox />
         <span className="snackbar-text">
@@ -100,6 +124,21 @@ const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
         >
           <Icon id="close-icon" img="notification-close" omitViewBox />
         </button>
+      </div>
+      <div
+        aria-live="polite"
+        role="status"
+        tabIndex="-1"
+        ref={liveRegionRef}
+        style={{
+          position: 'absolute',
+          left: '-9999px',
+          height: '1px',
+          width: '1px',
+          overflow: 'hidden',
+        }}
+      >
+        {liveRegionMessage}
       </div>
       {userHasCustomizedSettings || slideOutRestoreSettingsButton ? (
         <div
