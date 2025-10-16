@@ -15,6 +15,32 @@ import Icon from '../../Icon';
 
 const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
   const [showSnackbar, setShowSnackbar] = useState(null);
+  const snackbarRef = React.useRef(null);
+  const [slideOutRestoreSettingsButton, setSlideOutRestoreSettingsButton] =
+    useState(null);
+  const userHasCustomizedSettings = hasCustomizedSettings(config);
+
+  useEffect(() => {
+    if (showSnackbar && snackbarRef.current) {
+      snackbarRef.current.focus();
+    }
+  }, [showSnackbar]);
+
+  useEffect(() => {
+    if (
+      userHasCustomizedSettings === false &&
+      slideOutRestoreSettingsButton !== null
+    ) {
+      setSlideOutRestoreSettingsButton(true);
+      const timeoutId = setTimeout(
+        () => setSlideOutRestoreSettingsButton(false),
+        1000,
+      );
+      return () => clearTimeout(timeoutId);
+    }
+    setSlideOutRestoreSettingsButton(false);
+    return () => {};
+  }, [userHasCustomizedSettings]);
 
   const restoreDefaultSettings = () => {
     const customizedSettings = getCustomizedSettings(config);
@@ -33,9 +59,6 @@ const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
     setShowSnackbar(true);
     setTimeout(() => setShowSnackbar(false), 4000);
   };
-  const userHasCustomizedSettings = hasCustomizedSettings(config);
-  const [slideOutRestoreSettingsButton, setSlideOutRestoreSettingsButton] =
-    useState(null);
 
   const noChangesSRContainer = (
     <span className="sr-only">
@@ -46,30 +69,18 @@ const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
     </span>
   );
 
-  useEffect(() => {
-    if (
-      userHasCustomizedSettings === false &&
-      slideOutRestoreSettingsButton !== null
-    ) {
-      setSlideOutRestoreSettingsButton(true);
-      const timeoutId = setTimeout(
-        () => setSlideOutRestoreSettingsButton(false),
-        1000,
-      );
-      return () => clearTimeout(timeoutId);
-    }
-    setSlideOutRestoreSettingsButton(false);
-    return () => {};
-  }, [userHasCustomizedSettings]);
-
   return (
     <>
       <div
+        ref={snackbarRef}
         className={cx('restore-settings-success-snackbar', {
           hide: showSnackbar === null,
           show: showSnackbar === true,
           'slide-out': showSnackbar === false,
         })}
+        role="status"
+        aria-live="polite"
+        tabIndex="-1"
       >
         <Icon img="icon_checkmark-circled" omitViewBox />
         <span className="snackbar-text">
