@@ -709,23 +709,3 @@
     font-weight: $font-weight-medium;
   }
 }
-
-@keyframes slideUpFromBottomWithMargin {
-  from {
-    transform: translateY(calc(100% + 16px));
-  }
-
-  to {
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideDownWithMargin {
-  from {
-    transform: translateY(0);
-  }
-
-  to {
-    transform: translateY(calc(100% + 16px));
-  }
-}
