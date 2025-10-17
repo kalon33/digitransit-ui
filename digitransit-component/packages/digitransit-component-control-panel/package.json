@@ -1,6 +1,6 @@
 {
   "name": "@digitransit-component/digitransit-component-control-panel",
-  "version": "5.0.1",
+  "version": "6.0.0",
   "description": "digitransit-component control-panel module",
   "main": "index.js",
   "files": [
@@ -33,6 +33,7 @@
     "@hsl-fi/sass": "^0.2.0",
     "classnames": "2.5.1",
     "i18next": "^22.5.1",
+    "react-i18next": "^12.3.1",
     "prop-types": "^15.8.1",
     "react": "^16.13.0"
   }
