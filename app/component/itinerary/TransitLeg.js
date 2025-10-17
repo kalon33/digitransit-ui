@@ -37,6 +37,7 @@ import {
   showCarBoardingNote,
   legTimeStr,
   legTime,
+  isPlatformChanged,
 } from '../../util/legUtils';
 import { shouldShowFareInfo } from '../../util/fareUtils';
 import { AlertEntityType, AlertSeverityLevelType } from '../../constants';
@@ -254,6 +255,7 @@ class TransitLeg extends React.Component {
         }}
       />
     );
+    // TODO TÄNNE KANS PLATTACHANGE
     const textVersionAfterLink = (
       <FormattedMessage
         id="itinerary-details.transit-leg-part-2"
@@ -409,6 +411,10 @@ class TransitLeg extends React.Component {
         }
       }
     }
+    const pfCode = isPlatformChanged(leg, leg.from, config);
+    // console.log('Platform changed:', pfCode);
+
+    const num = pfCode ? `!!${pfCode}` : leg.from.stop.platformCode;
 
     return (
       <div key={index} className="row itinerary-row">
@@ -502,7 +508,7 @@ class TransitLeg extends React.Component {
               <div className="stop-code-container">
                 {stopCode(leg.from.stop && leg.from.stop.code)}
                 <PlatformNumber
-                  number={leg.from.stop.platformCode}
+                  number={num}
                   short
                   isRailOrSubway={
                     modeClassName === 'rail' || modeClassName === 'subway'

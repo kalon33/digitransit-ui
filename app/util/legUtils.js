@@ -3,6 +3,7 @@ import get from 'lodash/get';
 import { getRouteMode } from './modeUtils';
 import { BIKEAVL_UNKNOWN } from './vehicleRentalUtils';
 import { ExtendedRouteTypes } from '../constants';
+import { getFormattedTimeDate, epochToTime } from './timeUtils';
 
 /**
  * Gets a (nested) property value from an object
@@ -864,4 +865,34 @@ export const legDestination = (intl, leg, secondary, nextLeg = null) => {
     id = 'modes.from-place';
   }
   return intl.formatMessage({ id, defaultMessage: 'place' });
+};
+
+export const isPlatformChanged = (leg, fromOrTo, config) => {
+  const start = leg.start.estimated?.time || leg.start.scheduled?.time;
+  //  console.log('start', start);
+  const thestop = leg.trip.stoptimesForDate.find(s => {
+    const departureTime = getFormattedTimeDate(
+      (s.serviceDay + s.scheduledDeparture) * 1000,
+      'HH:mm',
+    );
+    // console.log('start departureTime', epochToTime(new Date(start).getTime(), config) , departureTime);
+    return (
+      departureTime === epochToTime(new Date(start).getTime(), config) // &&
+      // s.stop.gtfsId === fromOrTo.stop.gtfsId
+    );
+  });
+  // console.log('thestop', thestop);
+  const fromPlatform = get(fromOrTo.stop, 'platformCode', null);
+  // const toPlatform = get(to.stop, 'platformCode', null);
+  const thePlatform = get(thestop?.stop, 'platformCode', null);
+  // console.log('fromPlatform', fromPlatform);
+  // console.log('toPlatform', toPlatform);
+  // console.log('thestop', thePlatform, fromPlatform);
+  const platformChanged = fromPlatform !== thePlatform;
+  if (platformChanged) {
+    // console.log('platform changed!!', fromPlatform, thestop);
+    return thePlatform;
+  }
+  return null;
+  // return fromPlatform == toPlatform;
 };
