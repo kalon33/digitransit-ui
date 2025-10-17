@@ -121,7 +121,7 @@ function getSuggestionContent(item, lng, t) {
   const name2 = destination.name;
   return [
     t('future-route', { lng }),
-    `${t('origin', { lng })} ${name1}${tail1} ${this.props.t('destination', {
+    `${t('origin', { lng })} ${name1}${tail1} ${t('destination', {
       lng,
     })} ${name2}${tail2}`,
     item.translatedText,
