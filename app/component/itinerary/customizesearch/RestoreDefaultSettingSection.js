@@ -69,15 +69,9 @@ const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
         defaultMessage: 'Settings restored to default.',
       }),
     );
-    if (liveRegionRef.current) {
-      liveRegionRef.current.focus();
-    }
     setTimeout(() => {
       setLiveRegionMessage('');
       setShowSnackbar(false);
-      if (noChangesRef.current) {
-        noChangesRef.current.focus();
-      }
     }, 4000);
   };
 
@@ -126,17 +120,11 @@ const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
         </button>
       </div>
       <div
+        className="sr-only"
         aria-live="polite"
         role="status"
         tabIndex="-1"
         ref={liveRegionRef}
-        style={{
-          position: 'absolute',
-          left: '-9999px',
-          height: '1px',
-          width: '1px',
-          overflow: 'hidden',
-        }}
       >
         {liveRegionMessage}
       </div>

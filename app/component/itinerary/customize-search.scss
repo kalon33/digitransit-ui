@@ -17,6 +17,14 @@
   }
 }
 
+.sr-only {
+  position: 'absolute';
+  left: '-9999px';
+  height: '1px';
+  width: '1px';
+  overflow: 'hidden';
+}
+
 .restore-settings-success-snackbar {
   position: fixed;
   left: 480px;
