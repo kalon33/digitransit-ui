@@ -291,7 +291,6 @@ class DTAutosuggest extends React.Component {
     showScroll: PropTypes.bool,
     isEmbedded: PropTypes.bool,
     t: PropTypes.func,
-    lng: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -926,7 +925,7 @@ class DTAutosuggest extends React.Component {
   };
 
   render() {
-    const { t, lng } = this.props;
+    const { t, lang: lng } = this.props;
     const { value, suggestions, renderMobileSearch, cleanExecuted } =
       this.state;
     const inputProps = {
