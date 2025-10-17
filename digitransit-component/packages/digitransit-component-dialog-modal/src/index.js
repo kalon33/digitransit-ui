@@ -6,6 +6,7 @@ import cx from 'classnames';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import Modal from '@hsl-fi/modal';
 import styles from './helpers/styles.scss';
+import i18n from './helpers/i18n';
 
 const isKeyboardSelectionEvent = event => {
   const space = [13, ' ', 'Spacebar'];
@@ -150,7 +151,7 @@ DialogModal.contextTypes = {
 };
 
 export default props => (
-  <I18nextProvider>
+  <I18nextProvider i18n={i18n}>
     <DialogModal {...props} />
   </I18nextProvider>
 );
