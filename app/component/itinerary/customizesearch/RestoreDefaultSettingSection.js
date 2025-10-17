@@ -26,7 +26,7 @@ const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
     if (userHasCustomizedSettings) {
       setLiveRegionMessage(
         intl.formatMessage({
-          id: 'settings-changed',
+          id: 'settings-changed-by-you',
           defaultMessage: 'Settings changed',
         }),
       );
@@ -140,7 +140,7 @@ const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
         >
           <Icon img="icon_checkmark" omitViewBox />
           <FormattedMessage
-            id="settings-changed"
+            id="settings-changed-by-you"
             defaultMessage="Settings changed"
           />
           <button
