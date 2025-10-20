@@ -499,12 +499,10 @@
   </symbol>
 
   <symbol id="icon_current-location" viewBox="0 0 48 49">
-   <circle cx="24" cy="24" r="12"/>
-   <g fill="none" transform="translate(0 .305)">
+    <circle cx="24" cy="24" r="12"/>
     <circle cx="24" cy="24" r="24" fill="#007ac9" fill-opacity=".15"/>
-    <circle cx="24" cy="24" r="10.5" fill="#007ac9" stroke="#fff" stroke-linejoin="square" stroke-width="3"/>
-    <circle cx="24" cy="24" r="12.5" stroke="#000" stroke-opacity=".1"/>
-   </g>
+    <circle cx="24" cy="24" r="10.5" fill="#007ac9" stroke="#fff" stroke-width="3"/>
+    <circle cx="24" cy="24" r="12.5" fill="none" stroke="#000" stroke-opacity=".1"/>
   </symbol>
 
   <symbol id="icon_map-layers" viewBox="0 0 25 25">
