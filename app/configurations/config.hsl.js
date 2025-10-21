@@ -804,16 +804,5 @@ export default {
     allowDirectFlexJourneys: false,
   },
 
-  replacementBusRoutes: [
-    'HSL:1099V',
-    'HSL:6211U',
-    'HSL:6211E',
-    'HSL:6249Y',
-    'HSL:2213X',
-    'HSL:4699X',
-    'HSL:9969X',
-    'HSL:2015X',
-  ],
-
   showStopStatusMarkers: true,
 };
