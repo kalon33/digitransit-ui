@@ -11,7 +11,7 @@ import usePrevious from './hooks/usePrevious';
 
 const iconMap = {
   BICYCLE: 'icon_cyclist',
-  CAR: 'icon_car-withoutBox',
+  CAR: 'icon_car',
   SCOOTER: 'icon_scooter_rider',
   WALK: 'icon_walk',
   WAIT: 'icon_navigation_wait',

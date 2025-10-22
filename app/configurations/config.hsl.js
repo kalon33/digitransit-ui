@@ -562,8 +562,6 @@ export default {
 
   includeCarSuggestions: true,
   includeParkAndRideSuggestions: true,
-  // Park and ride and car suggestions separated into two switches
-  separatedParkAndRideSwitch: true,
 
   parkingAreaSources: ['liipi'],
 

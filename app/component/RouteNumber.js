@@ -90,10 +90,7 @@ function RouteNumber(props, context) {
             />
           )}
           {withCar && (
-            <Icon
-              img="icon_car-withoutBox"
-              className="itinerary-icon_with-car"
-            />
+            <Icon img="icon_car" className="itinerary-icon_with-car" />
           )}
         </React.Fragment>
       );
@@ -122,9 +119,7 @@ function RouteNumber(props, context) {
             className="itinerary-icon_with-bicycle"
           />
         )}
-        {withCar && (
-          <Icon img="icon_car-withoutBox" className="itinerary-icon_with-car" />
-        )}
+        {withCar && <Icon img="icon_car" className="itinerary-icon_with-car" />}
       </React.Fragment>
     );
   };

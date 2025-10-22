@@ -761,8 +761,6 @@ export default {
   includeBikeSuggestions: true,
   includeCarSuggestions: false,
   includeParkAndRideSuggestions: false,
-  // Park and ride and car suggestions separated
-  separatedParkAndRideSwitch: false,
 
   showNearYouButtons: false,
   nearYouModes: [],
