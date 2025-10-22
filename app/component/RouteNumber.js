@@ -62,12 +62,20 @@ function RouteNumber(props, context) {
     badgeText,
     badgeTextFill,
   ) => {
+    let iconName;
+    if (icon) {
+      iconName = icon;
+    } else if (mode === 'bus-express') {
+      iconName = 'icon_bus';
+    } else {
+      iconName = `icon_${mode}`;
+    }
     if (isCallAgency) {
       return (
         <IconWithIcon
           color={color}
           className={`${mode} call`}
-          img={icon || `icon_${mode}`}
+          img={iconName}
           subIcon="icon_call"
         />
       );
@@ -80,7 +88,7 @@ function RouteNumber(props, context) {
             alertSeverityLevel={alertSeverityLevel}
             color={color}
             className={mode}
-            img={icon || `icon_${mode}`}
+            img={iconName}
             omitViewBox
           />
           {withBicycle && (
@@ -108,7 +116,7 @@ function RouteNumber(props, context) {
               props.icon &&
               props.icon.includes('secondary'), // Vantaa citybike station
           })}
-          img={icon || `icon_${mode}`}
+          img={iconName}
           subIcon=""
           mode={mode}
           omitViewBox

@@ -35,7 +35,7 @@ function SelectStopRow(
       iconOptions.iconId = terminal ? `icon_${mode}` : `icon_${mode}-lollipop`;
       break;
     case 'bus-express':
-      iconOptions.iconId = terminal ? 'icon_bus' : 'icon_bus-express-lollipop';
+      iconOptions.iconId = terminal ? 'icon_bus' : 'icon_bus-lollipop';
       break;
     case 'subway':
     case 'airplane':

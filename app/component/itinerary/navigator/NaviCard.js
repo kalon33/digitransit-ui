@@ -22,7 +22,7 @@ const iconMap = {
   FERRY: 'icon_ferry',
   'FERRY-EXTERNAL': 'icon_ferry-external',
   CALL: 'icon_call',
-  'BUS-EXPRESS': 'icon_bus-express',
+  'BUS-EXPRESS': 'icon_bus',
   'BUS-LOCAL': 'icon_bus-local',
   SPEEDTRAM: 'icon_speedtram',
   WAIT_IN_VEHICLE: 'icon_wait',

@@ -428,15 +428,18 @@ export function drawStopIcon(
     });
     return;
   }
+  let iconName;
+  if (isFerryTerminal) {
+    iconName = `icon_${mode}`;
+  } else if (mode === 'bus-express') {
+    iconName = 'icon_bus-lollipop';
+  } else {
+    iconName = `icon_${mode}-lollipop`;
+  }
   if (style === 'large') {
     x = geom.x / tile.ratio - width / 2;
     y = geom.y / tile.ratio - height;
-    getImageFromSpriteCache(
-      !isFerryTerminal ? `icon_${mode}-lollipop` : `icon_${mode}`,
-      width,
-      height,
-      color,
-    ).then(image => {
+    getImageFromSpriteCache(iconName, width, height, color).then(image => {
       tile.ctx.drawImage(image, x, y);
       drawStopStatusBadge(
         tile,

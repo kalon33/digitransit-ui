@@ -737,9 +737,14 @@ export const getDestinationProperties = (
   } else if (vehicleRentalStation) {
     destination.name = vehicleRentalStation.name;
   } else {
-    const iconId = terminalIcons.includes(mode)
-      ? `icon_${mode}`
-      : `icon_${mode}-lollipop`;
+    let iconId;
+    if (terminalIcons.includes(mode)) {
+      iconId = `icon_${mode}`;
+    } else if (mode === 'bus-express') {
+      iconId = 'icon-bus-lollipop';
+    } else {
+      iconId = `icon_${mode}-lollipop`;
+    }
     destination = {
       className: mode,
       iconId,
