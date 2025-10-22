@@ -146,7 +146,7 @@ export function getRouteMode(route, config) {
 /**
  * @returns icon name
  */
-export function transportIconName(mode, lollipop) {
+export function transitIconName(mode, lollipop) {
   switch (mode) {
     case 'bus-express':
       return lollipop ? 'icon_bus-lollipop' : 'icon_bus';

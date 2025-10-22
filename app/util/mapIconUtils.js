@@ -1,7 +1,7 @@
 import memoize from 'lodash/memoize';
 import getSelector from './get-selector';
 import glfun from './glfun';
-import { transportIconName } from './modeUtils';
+import { transitIconName } from './modeUtils';
 import { ParkTypes, TransportMode } from '../constants';
 
 /**
@@ -429,7 +429,7 @@ export function drawStopIcon(
     });
     return;
   }
-  const iconName = transportIconName(mode, !isFerryTerminal);
+  const iconName = transitIconName(mode, !isFerryTerminal);
   if (style === 'large') {
     x = geom.x / tile.ratio - width / 2;
     y = geom.y / tile.ratio - height;

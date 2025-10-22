@@ -3,6 +3,7 @@ import React from 'react';
 import cx from 'classnames';
 import { intlShape } from 'react-intl';
 import { configShape } from '../util/shapes';
+import { transitIconName } from '../util/modeUtils';
 import IconWithBigCaution from './IconWithBigCaution';
 import IconWithIcon from './IconWithIcon';
 import Icon from './Icon';
@@ -62,14 +63,7 @@ function RouteNumber(props, context) {
     badgeText,
     badgeTextFill,
   ) => {
-    let iconName;
-    if (icon) {
-      iconName = icon;
-    } else if (mode === 'bus-express') {
-      iconName = 'icon_bus';
-    } else {
-      iconName = `icon_${mode}`;
-    }
+    const iconName = icon || transitIconName(mode, false);
     if (isCallAgency) {
       return (
         <IconWithIcon

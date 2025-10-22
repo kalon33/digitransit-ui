@@ -6,7 +6,7 @@ import Icon from '../../Icon';
 import { PREFIX_TERMINALS, PREFIX_STOPS } from '../../../util/path';
 import { ExtendedRouteTypes } from '../../../constants';
 import { popupColorShape } from '../../../util/shapes';
-import { transportIconName } from '../../../util/modeUtils';
+import { transitIconName } from '../../../util/modeUtils';
 
 function isNull(val) {
   return val === 'null' || val === undefined || val === null;
@@ -29,7 +29,7 @@ function SelectStopRow(
     }
   }
   const iconOptions = {};
-  iconOptions.iconId = transportIconName(
+  iconOptions.iconId = transitIconName(
     mode,
     !(terminal || (mode === 'ferry' && !isNull(code))),
   );

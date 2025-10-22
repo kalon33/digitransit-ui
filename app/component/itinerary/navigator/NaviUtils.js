@@ -6,7 +6,7 @@ import { ExtendedRouteTypes } from '../../../constants';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { GeodeticToEnu } from '../../../util/geo-utils';
 import { legTime, legTimeAcc } from '../../../util/legUtils';
-import { getRouteMode } from '../../../util/modeUtils';
+import { getRouteMode, transitIconName } from '../../../util/modeUtils';
 import { locationToUri } from '../../../util/otpStrings';
 import { getItineraryPagePath } from '../../../util/path';
 import { durationToString, epochToIso, timeStr } from '../../../util/timeUtils';
@@ -704,8 +704,6 @@ export const getItineraryAlerts = (
  *
  */
 
-const terminalIcons = ['subway', 'ferry', 'ferry-external'];
-
 export const getDestinationProperties = (
   rentalVehicle,
   vehicleParking,
@@ -737,17 +735,9 @@ export const getDestinationProperties = (
   } else if (vehicleRentalStation) {
     destination.name = vehicleRentalStation.name;
   } else {
-    let iconId;
-    if (terminalIcons.includes(mode)) {
-      iconId = `icon_${mode}`;
-    } else if (mode === 'bus-express') {
-      iconId = 'icon-bus-lollipop';
-    } else {
-      iconId = `icon_${mode}-lollipop`;
-    }
     destination = {
       className: mode,
-      iconId,
+      iconId: transitIconName(mode, mode !== 'ferry'),
       iconColor: getModeIconColor(config, mode),
       name: stop.name,
     };
