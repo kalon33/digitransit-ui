@@ -535,14 +535,12 @@
   </symbol>
 
   <symbol id="icon_check" viewBox="0 0 15 11">
-   <path fill="none" stroke="#007ac9" stroke-linecap="round" stroke-width="2.4" d="M2 5.412 5.728 9 13 2"/>
+   <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.4" d="M2 5.412 5.728 9 13 2"/>
   </symbol>
 
-  <symbol id="icon_checkbox_checked" viewBox="0 0 30 30">
-   <g fill="none">
-    <rect width="30" height="30" fill="#007ac9" rx="3"/>
+  <symbol id="icon_box-checked" viewBox="0 0 30 30">
+    <rect width="30" height="30" rx="3"/>
     <path fill="#fff" d="m20.038 9.67-7.08 6.905-3.064-2.988a1.675 1.675 0 0 0-2.383 0c-.681.664-.681 1.66 0 2.324l5.446 5.311 9.532-9.228c.681-.664.681-1.66 0-2.324-.749-.597-1.77-.597-2.45 0"/>
-   </g>
   </symbol>
 
   <symbol id="icon_hybrid-lollipop" viewBox="0 0 17 37">
