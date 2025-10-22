@@ -144,6 +144,26 @@ export function getRouteMode(route, config) {
 }
 
 /**
+ * @returns icon name
+ */
+export function transportIconName(mode, lollipop) {
+  switch (mode) {
+    case 'bus-express':
+      return lollipop ? 'icon_bus-lollipop' : 'icon_bus';
+    case 'bus-local':
+      return lollipop ? 'icon_bus-lollipop' : 'icon_bus-local';
+    case 'replacement-bus':
+      return lollipop ? 'icon_bus-lollipop' : 'icon_replacement-bus';
+    case 'subway':
+    case 'ferry-external':
+    case 'airplane':
+      return `icon_${mode}`; // no lollipop version
+    default:
+      return lollipop ? `icon_${mode}-lollipop` : `icon_${mode}`;
+  }
+}
+
+/**
  * Retrieves all transport modes that have specified "availableForSelection": true.
  * The full configuration will be returned.
  *

@@ -6,6 +6,7 @@ import Icon from '../../Icon';
 import { PREFIX_TERMINALS, PREFIX_STOPS } from '../../../util/path';
 import { ExtendedRouteTypes } from '../../../constants';
 import { popupColorShape } from '../../../util/shapes';
+import { transportIconName } from '../../../util/modeUtils';
 
 function isNull(val) {
   return val === 'null' || val === undefined || val === null;
@@ -28,26 +29,10 @@ function SelectStopRow(
     }
   }
   const iconOptions = {};
-  switch (mode) {
-    case 'tram':
-    case 'rail':
-    case 'bus':
-      iconOptions.iconId = terminal ? `icon_${mode}` : `icon_${mode}-lollipop`;
-      break;
-    case 'bus-express':
-      iconOptions.iconId = terminal ? 'icon_bus' : 'icon_bus-lollipop';
-      break;
-    case 'subway':
-    case 'airplane':
-      iconOptions.iconId = `icon_${mode}`;
-      break;
-    case 'ferry':
-      iconOptions.iconId = !isNull(code) ? 'icon_ferry' : 'icon_ferry-lollipop';
-      break;
-    default:
-      iconOptions.iconId = `icon_${mode}-lollipop`;
-      break;
-  }
+  iconOptions.iconId = transportIconName(
+    mode,
+    !(terminal || (mode === 'ferry' && !isNull(code))),
+  );
   iconOptions.className = mode;
   if (colors) {
     iconOptions.color =
