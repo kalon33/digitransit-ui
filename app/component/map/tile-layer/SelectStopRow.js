@@ -4,9 +4,8 @@ import Link from 'found/Link';
 import { FormattedMessage } from 'react-intl';
 import Icon from '../../Icon';
 import { PREFIX_TERMINALS, PREFIX_STOPS } from '../../../util/path';
-import { ExtendedRouteTypes } from '../../../constants';
 import { popupColorShape } from '../../../util/shapes';
-import { transitIconName } from '../../../util/modeUtils';
+import { getStopMode, transitIconName } from '../../../util/modeUtils';
 
 function isNull(val) {
   return val === 'null' || val === undefined || val === null;
@@ -16,18 +15,7 @@ function SelectStopRow(
   { code, type, desc, gtfsId, name, terminal, colors, routes, platform },
   { config },
 ) {
-  let mode = type.toLowerCase();
-  if (!terminal && routes && mode === 'bus' && config.useExtendedRouteTypes) {
-    const routesArray = JSON.parse(routes);
-    if (routesArray.some(p => p.gtfsType === ExtendedRouteTypes.BusExpress)) {
-      mode = 'bus-express';
-    }
-  } else if (routes && mode === 'tram' && config.useExtendedRouteTypes) {
-    const routesArray = JSON.parse(routes);
-    if (routesArray.some(p => p.gtfsType === ExtendedRouteTypes.SpeedTram)) {
-      mode = 'speedtram';
-    }
-  }
+  const mode = getStopMode(type, routes, config);
   const iconOptions = {};
   iconOptions.iconId = transitIconName(
     mode,
