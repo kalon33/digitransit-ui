@@ -78,6 +78,7 @@ function MobilePickerModal({
       onAfterClose={onAfterClose}
     >
       <div
+        id="digitransit-mobile-datetime"
         style={{
           '--color': `${color}`,
           '--font-weight-medium': fontWeights.medium,
