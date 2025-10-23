@@ -320,6 +320,7 @@ class Stops {
                     feature.properties.type,
                     routes,
                     this.config,
+                    true,
                   );
                   drawTerminalIcon(
                     this.tile,

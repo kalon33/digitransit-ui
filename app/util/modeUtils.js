@@ -146,11 +146,11 @@ export function getRouteMode(route, config) {
 /**
  * extract stop's transit mode. Handles routes from map API and from OTP graphql query
  */
-export function getStopMode(vehicleMode, routes, config) {
+export function getStopMode(vehicleMode, routes, config, isTerminal) {
   if (routes) {
     switch (vehicleMode) {
       case 'BUS':
-        if (config.useExtendedRouteTypes) {
+        if (config.useExtendedRouteTypes && !isTerminal) {
           const arr = typeof routes === 'string' ? JSON.parse(routes) : routes;
           if (
             arr.some(

@@ -15,7 +15,7 @@ function SelectStopRow(
   { code, type, desc, gtfsId, name, terminal, colors, routes, platform },
   { config },
 ) {
-  const mode = getStopMode(type, routes, config);
+  const mode = getStopMode(type, routes, config, terminal);
   const iconOptions = {};
   iconOptions.iconId = transitIconName(
     mode,
