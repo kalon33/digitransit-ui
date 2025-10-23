@@ -2,18 +2,17 @@ import distance from '@digitransit-search-util/digitransit-search-util-distance'
 import cx from 'classnames';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { ExtendedRouteTypes } from '../../../constants';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { GeodeticToEnu } from '../../../util/geo-utils';
 import { legTime, legTimeAcc } from '../../../util/legUtils';
-import { getRouteMode, transitIconName } from '../../../util/modeUtils';
+import {
+  getRouteMode,
+  getStopMode,
+  transitIconName,
+} from '../../../util/modeUtils';
 import { locationToUri } from '../../../util/otpStrings';
 import { getItineraryPagePath } from '../../../util/path';
 import { durationToString, epochToIso, timeStr } from '../../../util/timeUtils';
-import {
-  getFeedWithoutId,
-  isExternalFeed,
-} from '../../../util/feedScopedIdUtils';
 import Icon from '../../Icon';
 import { getModeIconColor } from '../../../util/colorUtils';
 import RouteNumberContainer from '../../RouteNumberContainer';
@@ -713,20 +712,7 @@ export const getDestinationProperties = (
 ) => {
   const { routes, vehicleMode } = stop;
   let destination = {};
-  let mode = vehicleMode.toLowerCase();
-  if (routes && vehicleMode === 'BUS' && config.useExtendedRouteTypes) {
-    if (routes.some(p => p.type === ExtendedRouteTypes.BusExpress)) {
-      mode = 'bus-express';
-    }
-  } else if (routes && vehicleMode === 'TRAM' && config.useExtendedRouteTypes) {
-    if (routes.some(p => p.type === ExtendedRouteTypes.SpeedTram)) {
-      mode = 'speedtram';
-    }
-  } else if (routes && vehicleMode === 'FERRY') {
-    if (routes.some(p => isExternalFeed(getFeedWithoutId(p.gtfsId), config))) {
-      mode = 'ferry-external';
-    }
-  }
+  const mode = getStopMode(vehicleMode, routes, config);
   // todo: scooter and citybike icons etc.
   if (rentalVehicle) {
     destination.name = rentalVehicle.rentalNetwork.networkId;
