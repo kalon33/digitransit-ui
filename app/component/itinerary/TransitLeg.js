@@ -411,10 +411,8 @@ class TransitLeg extends React.Component {
         }
       }
     }
-    const pfCode = isPlatformChanged(leg, leg.from, config);
-    // console.log('Platform changed:', pfCode);
-
-    const num = pfCode ? `!!${pfCode}` : leg.from.stop.platformCode;
+    const platformChanged = isPlatformChanged(leg, config);
+    console.log('Platform changed:', platformChanged);
 
     return (
       <div key={index} className="row itinerary-row">
@@ -508,7 +506,7 @@ class TransitLeg extends React.Component {
               <div className="stop-code-container">
                 {stopCode(leg.from.stop && leg.from.stop.code)}
                 <PlatformNumber
-                  number={num}
+                  number={leg.from.stop.platformCode}
                   short
                   isRailOrSubway={
                     modeClassName === 'rail' || modeClassName === 'subway'

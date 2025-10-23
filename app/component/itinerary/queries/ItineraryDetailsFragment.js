@@ -295,6 +295,12 @@ export const ItineraryDetailsFragment = graphql`
             code
           }
         }
+        stoptimes {
+          stop {
+            platformCode
+          }
+          scheduledDeparture
+        }
         occupancy {
           occupancyStatus
         }

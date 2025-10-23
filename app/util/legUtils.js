@@ -867,32 +867,23 @@ export const legDestination = (intl, leg, secondary, nextLeg = null) => {
   return intl.formatMessage({ id, defaultMessage: 'place' });
 };
 
-export const isPlatformChanged = (leg, fromOrTo, config) => {
-  const start = leg.start.estimated?.time || leg.start.scheduled?.time;
-  //  console.log('start', start);
-  const thestop = leg.trip.stoptimesForDate.find(s => {
+export const isPlatformChanged = (leg, config) => {
+  const startTime = leg.start.scheduledTime;
+
+  // Find a matching stop in the updated stoptimesForDate
+  const updatedStop = leg.trip.stoptimesForDate.find(s => {
     const departureTime = getFormattedTimeDate(
       (s.serviceDay + s.scheduledDeparture) * 1000,
       'HH:mm',
     );
-    // console.log('start departureTime', epochToTime(new Date(start).getTime(), config) , departureTime);
-    return (
-      departureTime === epochToTime(new Date(start).getTime(), config) // &&
-      // s.stop.gtfsId === fromOrTo.stop.gtfsId
-    );
+    const startTimeEpoch = epochToTime(new Date(startTime).getTime(), config);
+    return startTime && departureTime === startTimeEpoch;
   });
-  // console.log('thestop', thestop);
-  const fromPlatform = get(fromOrTo.stop, 'platformCode', null);
-  // const toPlatform = get(to.stop, 'platformCode', null);
-  const thePlatform = get(thestop?.stop, 'platformCode', null);
-  // console.log('fromPlatform', fromPlatform);
-  // console.log('toPlatform', toPlatform);
-  // console.log('thestop', thePlatform, fromPlatform);
-  const platformChanged = fromPlatform !== thePlatform;
-  if (platformChanged) {
-    // console.log('platform changed!!', fromPlatform, thestop);
-    return thePlatform;
-  }
-  return null;
-  // return fromPlatform == toPlatform;
+
+  // Find a matching stop in the original stoptimes
+  const originalStop = leg.trip.stoptimes.find(s => {
+    return s.scheduledDeparture === updatedStop.scheduledDeparture;
+  });
+
+  return originalStop.stop.platformCode !== updatedStop.stop.platformCode;
 };
