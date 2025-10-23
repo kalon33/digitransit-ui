@@ -384,14 +384,14 @@ const getMemoizedCircleIcon = memoize(
 );
 
 /**
- * Draw stop icon based on type.
+ * Draw stop icon based on mode.
  * Determine size from zoom level.
  */
 
 export function drawStopIcon(
   tile,
   geom,
-  type,
+  mode,
   platformNumber,
   isHighlighted,
   isFerryTerminal,
@@ -399,10 +399,6 @@ export function drawStopIcon(
   stopOutOfService,
   noServiceOnServiceDay,
 ) {
-  if (type === 'SUBWAY') {
-    return;
-  }
-  const mode = type.toLowerCase();
   const color =
     mode === 'ferry' && !isFerryTerminal
       ? modeColors['mode-ferry-pier']
@@ -726,7 +722,7 @@ export function drawCitybikeIcon(
   }
 }
 
-export function drawTerminalIcon(tile, geom, type, isHighlighted, modeColors) {
+export function drawTerminalIcon(tile, geom, mode, isHighlighted, modeColors) {
   const zoom = tile.coords.z - 1;
   const styles = getTerminalIconStyles(zoom);
   if (!styles) {
@@ -735,10 +731,9 @@ export function drawTerminalIcon(tile, geom, type, isHighlighted, modeColors) {
   let { width, height } = styles;
   width *= tile.scaleratio;
   height *= tile.scaleratio;
-  const mode = type.toLowerCase();
   const color = modeColors[`mode-${mode}`];
-
-  getImageFromSpriteCache(`icon_${mode}`, width, height, color).then(image => {
+  const iconName = transitIconName(mode, false);
+  getImageFromSpriteCache(iconName, width, height, color).then(image => {
     tile.ctx.drawImage(
       image,
       geom.x / tile.ratio - width / 2,
