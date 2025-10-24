@@ -1,11 +1,23 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
+import cx from 'classnames';
+import Icon from './Icon';
 
-function PlatformNumber({ number, short, isRailOrSubway }) {
+function PlatformNumber({ number, short, isRailOrSubway, updated }) {
   if (!number) {
     return false;
   }
+
+  const platformUpdateIcon = (
+    <Icon
+      className="platform-updated-icon"
+      img="icon_arrow-right-long"
+      height={0.5}
+      width={0.5}
+    />
+  );
+
   if (short) {
     return (
       <span className="platform-short">
@@ -13,7 +25,14 @@ function PlatformNumber({ number, short, isRailOrSubway }) {
           id={isRailOrSubway ? 'track-short-no-num' : 'platform-short-no-num'}
           defaultMessage={isRailOrSubway ? 'Track ' : 'Plat. '}
         />
-        <span className="platform-number-wrapper">{number}</span>
+        <span
+          className={cx('platform-number-wrapper', {
+            'platform-updated': updated,
+          })}
+        >
+          {updated && platformUpdateIcon}
+          {number}
+        </span>
       </span>
     );
   }
@@ -24,7 +43,14 @@ function PlatformNumber({ number, short, isRailOrSubway }) {
         id={isRailOrSubway ? 'track' : 'platform'}
         defaultMessage={isRailOrSubway ? 'Track ' : 'Platform '}
       />
-      <span className="platform-number-wrapper">{number}</span>
+      <span
+        className={cx('platform-number-wrapper', {
+          'platform-updated': updated,
+        })}
+      >
+        {updated && platformUpdateIcon}
+        {number}
+      </span>
     </span>
   );
 }
@@ -33,12 +59,14 @@ PlatformNumber.propTypes = {
   number: PropTypes.string,
   short: PropTypes.bool,
   isRailOrSubway: PropTypes.bool,
+  updated: PropTypes.bool,
 };
 
 PlatformNumber.defaultProps = {
   number: undefined,
   short: true,
   isRailOrSubway: false,
+  updated: false,
 };
 
 PlatformNumber.contextTypes = {

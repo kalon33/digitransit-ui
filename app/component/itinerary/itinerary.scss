@@ -1853,9 +1853,11 @@ $itinerary-tab-switch-height: 48px;
       .platform-short {
         @include font-medium;
 
-        padding-left: 7px;
         font-weight: normal;
         font-size: 0.813rem;
+        align-items: center;
+        display: inline-flex;
+        gap: var(--space-xxs);
       }
 
       .platform-number-wrapper {
@@ -1865,13 +1867,35 @@ $itinerary-tab-switch-height: 48px;
         background-color: $background-color-lighter;
         font-weight: $font-weight-medium;
         font-family: $id-font-family;
+
+        &.platform-updated {
+          display: inline-flex;
+          height: 18px;
+          min-width: auto;
+          padding: 0 var(--space-xs) 0 var(--space-xxs);
+          justify-content: center;
+          align-items: center;
+          gap: var(--space-xxs);
+          border-radius: var(--radius-s);
+          background: #fdf3f6;
+          color: $cancelation-red;
+
+          .platform-updated-icon {
+            vertical-align: middle;
+            color: $cancelation-red;
+          }
+        }
       }
 
       .stop-code-container {
         padding-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: var(--space-xs);
 
         .itinerary-stop-code {
           margin-left: 0;
+          margin-right: 0;
           font-family: $id-font-family;
         }
       }
