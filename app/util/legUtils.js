@@ -871,7 +871,7 @@ export const isPlatformChanged = (leg, config) => {
   const startTime = leg.start.scheduledTime;
 
   // Find a matching stop in the updated stoptimesForDate
-  const updatedStop = leg.trip.stoptimesForDate?.find(s => {
+  const updatedStop = leg.trip?.stoptimesForDate?.find(s => {
     const departureTime = getFormattedTimeDate(
       (s.serviceDay + s.scheduledDeparture) * 1000,
       'HH:mm',
@@ -884,7 +884,7 @@ export const isPlatformChanged = (leg, config) => {
     return false;
   }
   // Find a matching stop in the original stoptimes
-  const originalStop = leg.trip.stoptimes?.find(s => {
+  const originalStop = leg.trip?.stoptimes?.find(s => {
     return s.scheduledDeparture === updatedStop.scheduledDeparture;
   });
 
