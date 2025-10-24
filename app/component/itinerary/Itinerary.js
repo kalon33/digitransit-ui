@@ -27,6 +27,7 @@ import {
   legTimeStr,
   LegMode,
   getZones,
+  isPlatformChanged,
 } from '../../util/legUtils';
 import { dateOrEmpty, isTomorrow, timeStr } from '../../util/timeUtils';
 import withBreakpoint from '../../util/withBreakpoint';
@@ -42,6 +43,7 @@ import { getCapacityForLeg } from '../../util/occupancyUtil';
 import getCo2Value from '../../util/emissions';
 import { ItineraryFragment } from './queries/ItineraryFragment';
 import { getTicketString } from '../../util/fareUtils';
+import PlatformNumber from '../PlatformNumber';
 
 const NAME_LENGTH_THRESHOLD = 65; // for truncating long short names
 
@@ -673,15 +675,31 @@ const Itinerary = (
         firstDepartureStopType = 'from-stop';
       }
       let firstDeparturePlatform;
+
+      const platformChanged = isPlatformChanged(firstDeparture, config);
       if (firstDeparture.from.stop.platformCode) {
         const comma = ', ';
         firstDeparturePlatform = (
           <span className="platform-or-track">
             {comma}
-            <FormattedMessage
-              id={firstDeparture.mode === 'RAIL' ? 'track-num' : 'platform-num'}
-              values={{ platformCode: firstDeparture.from.stop.platformCode }}
-            />
+            {platformChanged ? (
+              <PlatformNumber
+                number={firstDeparture.from.stop.platformCode}
+                updated={platformChanged}
+                short={false}
+                isRailOrSubway={
+                  firstDeparture.mode === 'rail' ||
+                  firstDeparture.mode === 'subway'
+                }
+              />
+            ) : (
+              <FormattedMessage
+                id={
+                  firstDeparture.mode === 'RAIL' ? 'track-num' : 'platform-num'
+                }
+                values={{ platformCode: firstDeparture.from.stop.platformCode }}
+              />
+            )}
           </span>
         );
       }

@@ -889,7 +889,8 @@ export const isPlatformChanged = (leg, config) => {
   });
 
   return (
-    originalStop &&
+    !!originalStop?.stop?.platformCode &&
+    !!updatedStop?.stop?.platformCode &&
     originalStop.stop.platformCode !== updatedStop.stop.platformCode
   );
 };
