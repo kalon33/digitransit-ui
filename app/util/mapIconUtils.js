@@ -1,5 +1,4 @@
 import memoize from 'lodash/memoize';
-import getSelector from './get-selector';
 import glfun from './glfun';
 import { transitIconName } from './modeUtils';
 import { ParkTypes, TransportMode } from '../constants';
@@ -207,17 +206,6 @@ export const getMapIconScale = memoize(
     ],
   }),
 );
-
-const getStyleOrDefault = (selector, defaultValue = {}) => {
-  const cssRule = selector && getSelector(selector.toLowerCase());
-  return (cssRule && cssRule.style) || defaultValue;
-};
-
-export const getColor = memoize(selector => getStyleOrDefault(selector).color);
-
-export const getFill = memoize(selector => getStyleOrDefault(selector).fill);
-
-export const getModeColor = mode => getColor(`.${mode}`);
 
 function getImageFromSpriteSync(icon, width, height, fill) {
   if (!document) {
