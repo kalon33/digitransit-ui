@@ -97,6 +97,18 @@ $itinerary-tab-switch-height: 48px;
   }
 }
 
+@mixin platformUpdated {
+  display: inline-flex;
+  height: 18px;
+  min-width: auto;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-xxs);
+  border-radius: var(--radius-s);
+  background: #fdf3f6;
+  color: $cancelation-red;
+}
+
 .itinerary-list-container {
   padding-bottom: 16px;
 }
@@ -1869,20 +1881,11 @@ $itinerary-tab-switch-height: 48px;
         font-family: $id-font-family;
 
         &.platform-updated {
-          display: inline-flex;
-          height: 18px;
-          min-width: auto;
-          padding: 0 var(--space-xs) 0 var(--space-xxs);
-          justify-content: center;
-          align-items: center;
-          gap: var(--space-xxs);
-          border-radius: var(--radius-s);
-          background: #fdf3f6;
-          color: $cancelation-red;
+          @include platformUpdated;
 
           .platform-updated-icon {
-            vertical-align: middle;
-            color: $cancelation-red;
+            height: 0.5em;
+            width: 0.5em;
           }
         }
       }
@@ -3386,6 +3389,30 @@ $font-print-decrease: 0.7;
       font-size: 15px;
       color: $link-color;
       text-decoration: none;
+    }
+  }
+}
+
+.platform-number-wrapper {
+  padding: 0 var(--space-xs) 0 var(--space-xxs);
+  border-radius: 5px;
+  margin: 0 3px 0 3px;
+  background-color: $background-color-lighter;
+  font-weight: $font-weight-medium;
+  font-family: $id-font-family;
+
+  &.platform-updated {
+    @include platformUpdated;
+
+    .icon-container {
+      display: inline-flex;
+      border-radius: var(--radius-s);
+      background: var(--color-surface-error);
+
+      .platform-updated-icon {
+        vertical-align: middle;
+        color: $cancelation-red;
+      }
     }
   }
 }

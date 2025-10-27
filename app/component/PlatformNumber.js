@@ -4,27 +4,24 @@ import { FormattedMessage, intlShape } from 'react-intl';
 import cx from 'classnames';
 import Icon from './Icon';
 
-function PlatformNumber({ number, short, isRailOrSubway, updated }) {
+function PlatformNumber({ number, short, isRailOrSubway, updated, withText }) {
   if (!number) {
     return false;
   }
 
   const platformUpdateIcon = (
-    <Icon
-      className="platform-updated-icon"
-      img="icon_arrow-right-long"
-      height={0.5}
-      width={0.5}
-    />
+    <Icon className="platform-updated-icon" img="icon_arrow-right-long" />
   );
 
   if (short) {
     return (
       <span className="platform-short">
-        <FormattedMessage
-          id={isRailOrSubway ? 'track-short-no-num' : 'platform-short-no-num'}
-          defaultMessage={isRailOrSubway ? 'Track ' : 'Plat. '}
-        />
+        {withText && (
+          <FormattedMessage
+            id={isRailOrSubway ? 'track-short-no-num' : 'platform-short-no-num'}
+            defaultMessage={isRailOrSubway ? 'Track ' : 'Plat. '}
+          />
+        )}
         <span
           className={cx('platform-number-wrapper', {
             'platform-updated': updated,
@@ -39,10 +36,12 @@ function PlatformNumber({ number, short, isRailOrSubway, updated }) {
 
   return (
     <span className="platform-number">
-      <FormattedMessage
-        id={isRailOrSubway ? 'track' : 'platform'}
-        defaultMessage={isRailOrSubway ? 'Track ' : 'Platform '}
-      />
+      {withText && (
+        <FormattedMessage
+          id={isRailOrSubway ? 'track' : 'platform'}
+          defaultMessage={isRailOrSubway ? 'Track ' : 'Platform '}
+        />
+      )}
       <span
         className={cx('platform-number-wrapper', {
           'platform-updated': updated,
@@ -60,6 +59,7 @@ PlatformNumber.propTypes = {
   short: PropTypes.bool,
   isRailOrSubway: PropTypes.bool,
   updated: PropTypes.bool,
+  withText: PropTypes.bool,
 };
 
 PlatformNumber.defaultProps = {
@@ -67,6 +67,7 @@ PlatformNumber.defaultProps = {
   short: true,
   isRailOrSubway: false,
   updated: false,
+  withText: true,
 };
 
 PlatformNumber.contextTypes = {

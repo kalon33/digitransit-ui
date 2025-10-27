@@ -680,18 +680,27 @@ const Itinerary = (
       if (firstDeparture.from.stop.platformCode) {
         const comma = ', ';
         firstDeparturePlatform = (
-          <span className="platform-or-track">
+          <span
+            className={cx('platform-or-track', {
+              'platform-updated': platformChanged,
+            })}
+          >
             {comma}
             {platformChanged ? (
-              <PlatformNumber
-                number={firstDeparture.from.stop.platformCode}
-                updated={platformChanged}
-                short={false}
-                isRailOrSubway={
-                  firstDeparture.mode === 'rail' ||
-                  firstDeparture.mode === 'subway'
-                }
-              />
+              <>
+                <FormattedMessage
+                  id={firstDeparture.mode === 'RAIL' ? 'track' : 'platform'}
+                />
+                <PlatformNumber
+                  number={firstDeparture.from.stop.platformCode}
+                  updated={platformChanged}
+                  isRailOrSubway={
+                    firstDeparture.mode === 'rail' ||
+                    firstDeparture.mode === 'subway'
+                  }
+                  withText={false}
+                />
+              </>
             ) : (
               <FormattedMessage
                 id={
