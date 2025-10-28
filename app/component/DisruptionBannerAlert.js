@@ -76,9 +76,9 @@ const DisruptionBannerAlert = (
               <a
                 className="disruption-info-content"
                 onClick={e => e.stopPropagation()}
-                href={`${config.URL.ROOTLINK}/${
-                  language === 'fi' ? '' : `${language}/`
-                }${config.trafficNowLink[language]}`}
+                href={`/${
+                  language === 'fi' || !language ? '' : `${language}/`
+                }${config.trafficNowLink}`}
               >
                 {message}
               </a>
