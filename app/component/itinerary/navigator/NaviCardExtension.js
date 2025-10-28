@@ -10,6 +10,7 @@ import {
   getHeadsignFromRouteLongName,
   legTime,
   legTimeStr,
+  isPlatformChanged,
 } from '../../../util/legUtils';
 import ZoneIcon from '../../ZoneIcon';
 import { legShape, configShape } from '../../../util/shapes';
@@ -99,6 +100,7 @@ const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
                 isRailOrSubway={
                   vehicleMode === 'RAIL' || vehicleMode === 'SUBWAY'
                 }
+                updated={isPlatformChanged(leg, config)}
               />
             )}
             <ZoneIcon

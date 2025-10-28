@@ -411,8 +411,6 @@ class TransitLeg extends React.Component {
         }
       }
     }
-    const platformChanged = isPlatformChanged(leg, config);
-    console.log('Platform changed:', platformChanged);
 
     return (
       <div key={index} className="row itinerary-row">
@@ -511,7 +509,7 @@ class TransitLeg extends React.Component {
                   isRailOrSubway={
                     modeClassName === 'rail' || modeClassName === 'subway'
                   }
-                  updated={platformChanged}
+                  updated={isPlatformChanged(leg, config)}
                 />
               </div>
             </div>

@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { ExtendedRouteTypes } from '../../../constants';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { GeodeticToEnu } from '../../../util/geo-utils';
-import { legTime, legTimeAcc } from '../../../util/legUtils';
+import { isPlatformChanged, legTime, legTimeAcc } from '../../../util/legUtils';
 import { getRouteMode } from '../../../util/modeUtils';
 import { locationToUri } from '../../../util/otpStrings';
 import { getItineraryPagePath } from '../../../util/path';
@@ -696,6 +696,36 @@ export const getItineraryAlerts = (
       });
     }
   }
+
+  // Platform change alerts
+  legs.forEach(leg => {
+    if (leg.transitLeg && legTime(leg.start) > time) {
+      const id = `platform-${leg.legId}`;
+      if (isPlatformChanged(leg, config) && !messages.get(id)?.closed) {
+        const boardingType =
+          leg.mode === 'RAIL' || leg.mode === 'SUBWAY' ? 'track' : 'platform';
+        const title = intl.formatMessage({
+          id: `navigation-${boardingType}-change`,
+        });
+        const lMode = getLocalizedMode(leg.mode, intl);
+        const routeName = `${lMode} ${leg.route?.shortName}`;
+        const body = intl.formatMessage(
+          { id: `navigation-${boardingType}-change-details` },
+          {
+            number: leg.from.stop.platformCode || '',
+            name: routeName || '',
+          },
+        );
+        alerts.push({
+          severity: 'WARNING',
+          id,
+          title,
+          body,
+        });
+      }
+    }
+  });
+
   return alerts;
 };
 

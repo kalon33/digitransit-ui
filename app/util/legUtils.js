@@ -868,6 +868,10 @@ export const legDestination = (intl, leg, secondary, nextLeg = null) => {
 };
 
 export const isPlatformChanged = (leg, config) => {
+  if (!leg) {
+    return false;
+  }
+
   const startTime = leg.start.scheduledTime;
 
   // Find a matching stop in the updated stoptimesForDate
