@@ -269,6 +269,13 @@ function findTransferProblems(legs, time, position, tailLength, slack) {
 }
 
 export const getLocalizedMode = (mode, intl) => {
+  if (mode === 'RAIL') {
+    return intl.formatMessage({
+      id: 'settings-alternative-name-rail',
+      defaultMessage: `${mode}`,
+    });
+  }
+
   return intl.formatMessage({
     id: `${mode.toLowerCase()}`,
     defaultMessage: `${mode}`,
