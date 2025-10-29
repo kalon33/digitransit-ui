@@ -151,7 +151,7 @@ function getIconProperties(item, modeSet, stopCode, modes) {
     if (item.properties.label?.split(',').length === 1 && !isFavourite(item)) {
       iconId = 'localadmin'; // plain city name
     } else {
-      iconId = item.properties.selectedIconId || item.properties.layer;
+      iconId = item.properties.layer;
     }
   }
   // Use more accurate icons in stop/station search, depending on mode from geocoding
