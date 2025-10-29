@@ -1873,7 +1873,7 @@ $itinerary-tab-switch-height: 48px;
       }
 
       .platform-number-wrapper {
-        padding: 0 var(--space-xs) 0 var(--space-xxs);
+        padding: 0 8px 0 4px;
         border-radius: 5px;
         margin: 0 3px 0 3px;
         background-color: $background-color-lighter;
@@ -3398,7 +3398,7 @@ $font-print-decrease: 0.7;
 }
 
 .platform-number-wrapper {
-  padding: 0 var(--space-xs) 0 var(--space-xxs);
+  padding: 0 8px 0 4px;
   border-radius: 5px;
   margin: 0 3px 0 3px;
   background-color: $background-color-lighter;
