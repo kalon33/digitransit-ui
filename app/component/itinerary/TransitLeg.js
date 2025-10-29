@@ -508,7 +508,7 @@ class TransitLeg extends React.Component {
                   isRailOrSubway={
                     modeClassName === 'rail' || modeClassName === 'subway'
                   }
-                  updated={isPlatformChanged(leg, config)}
+                  updated={isPlatformChanged(leg)}
                 />
               </div>
             </div>

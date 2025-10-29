@@ -708,7 +708,7 @@ export const getItineraryAlerts = (
   legs.forEach(leg => {
     if (leg.transitLeg && legTime(leg.start) > time) {
       const id = `platform-${leg.legId}`;
-      if (isPlatformChanged(leg, config) && !messages.get(id)?.closed) {
+      if (isPlatformChanged(leg) && !messages.get(id)?.closed) {
         const boardingType =
           leg.mode === 'RAIL' || leg.mode === 'SUBWAY' ? 'track' : 'platform';
         const title = intl.formatMessage({

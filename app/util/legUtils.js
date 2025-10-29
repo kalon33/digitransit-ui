@@ -3,7 +3,6 @@ import get from 'lodash/get';
 import { getRouteMode } from './modeUtils';
 import { BIKEAVL_UNKNOWN } from './vehicleRentalUtils';
 import { ExtendedRouteTypes } from '../constants';
-import { getFormattedTimeDate, epochToTime } from './timeUtils';
 
 /**
  * Gets a (nested) property value from an object
@@ -867,34 +866,26 @@ export const legDestination = (intl, leg, secondary, nextLeg = null) => {
   return intl.formatMessage({ id, defaultMessage: 'place' });
 };
 
-export const isPlatformChanged = (leg, config) => {
-  if (!leg) {
+export const isPlatformChanged = leg => {
+  if (!leg?.trip || !leg.start?.scheduledTime) {
     return false;
   }
-
-  const startTime = leg.start.scheduledTime;
+  const startTimeEpoch = new Date(leg.start.scheduledTime).getTime();
 
   // Find a matching stop in the updated stoptimesForDate
-  const updatedStop = leg.trip?.stoptimesForDate?.find(s => {
-    const departureTime = getFormattedTimeDate(
-      (s.serviceDay + s.scheduledDeparture) * 1000,
-      'HH:mm',
-    );
-    const startTimeEpoch = epochToTime(new Date(startTime).getTime(), config);
-    return startTime && departureTime === startTimeEpoch;
+  const updatedStop = leg.trip.stoptimesForDate?.find(s => {
+    const departureTimeEpoch = (s.serviceDay + s.scheduledDeparture) * 1000;
+    return departureTimeEpoch === startTimeEpoch;
   });
-
-  if (!updatedStop) {
+  const updatedPlatform = updatedStop?.stop?.platformCode;
+  if (!updatedPlatform) {
     return false;
   }
+
   // Find a matching stop in the original stoptimes
-  const originalStop = leg.trip?.stoptimes?.find(s => {
+  const originalStop = leg.trip.stoptimes?.find(s => {
     return s.scheduledDeparture === updatedStop.scheduledDeparture;
   });
-
-  return (
-    !!originalStop?.stop?.platformCode &&
-    !!updatedStop?.stop?.platformCode &&
-    originalStop.stop.platformCode !== updatedStop.stop.platformCode
-  );
+  const originalPlatform = originalStop?.stop?.platformCode;
+  return !!originalPlatform && originalPlatform !== updatedPlatform;
 };

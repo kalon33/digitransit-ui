@@ -676,7 +676,7 @@ const Itinerary = (
       }
       let firstDeparturePlatform;
 
-      const platformChanged = isPlatformChanged(firstDeparture, config);
+      const platformChanged = isPlatformChanged(firstDeparture);
       if (firstDeparture.from.stop.platformCode) {
         const comma = ', ';
         firstDeparturePlatform = (

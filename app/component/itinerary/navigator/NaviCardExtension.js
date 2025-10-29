@@ -100,7 +100,7 @@ const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
                 isRailOrSubway={
                   vehicleMode === 'RAIL' || vehicleMode === 'SUBWAY'
                 }
-                updated={isPlatformChanged(leg, config)}
+                updated={isPlatformChanged(leg)}
               />
             )}
             <ZoneIcon
