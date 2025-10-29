@@ -116,17 +116,9 @@ function getAriaDescription(ariaContentArray) {
   return description?.toLowerCase();
 }
 
-function getIconProperties(
-  item,
-  modeSet,
-  stopCode,
-  getIcons,
-  modes = undefined,
-) {
+function getIconProperties(item, modeSet, stopCode, modes) {
   let iconId;
-  if (item.properties?.layer === 'bikestation' && getIcons) {
-    return getIcons.citybikes(item);
-  }
+
   // because of legacy favourites there might be selectedIconId for some stops or stations
   // but we do not want to show those icons
   if (
@@ -226,20 +218,24 @@ const SuggestionItem = memo(
   }) => {
     const [suggestionType, name, label, stopCode, modes, platform] =
       content || ['', item.name, item.address];
-    const [iconId, colorId] = getIconProperties(
-      item,
-      modeSet,
-      stopCode,
-      getAutoSuggestIcons,
-      modes,
-    );
+
+    let iconId;
     let iconColor;
-    if (item.properties?.color) {
-      iconColor = `#${item.properties.color}`;
-    } else if (iconId === 'locate' || isFavourite(item)) {
-      iconColor = color;
+    if (
+      item.properties?.layer &&
+      getAutoSuggestIcons?.[item.properties?.layer]
+    ) {
+      [iconId, iconColor] = getAutoSuggestIcons[item.properties?.layer](item);
     } else {
-      iconColor = modeIconColors?.[colorId] || iconColors[colorId] || '#888';
+      let colorId;
+      [iconId, colorId] = getIconProperties(item, modeSet, stopCode, modes);
+      if (item.properties?.color) {
+        iconColor = `#${item.properties.color}`;
+      } else if (iconId === 'locate' || isFavourite(item)) {
+        iconColor = color;
+      } else {
+        iconColor = modeIconColors?.[colorId] || iconColors[colorId] || '#888';
+      }
     }
     // console.log(item, iconId, iconColor);
     // Arrow clicked is for street. Instead of selecting item when a user clicks on arrow,
