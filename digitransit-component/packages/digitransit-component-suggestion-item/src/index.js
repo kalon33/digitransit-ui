@@ -108,10 +108,7 @@ function getIconProperties(item, modeSet, stopCode, modes) {
 
   // because of legacy favourites there might be selectedIconId for some stops or stations
   // but we do not want to show those icons
-  if (
-    item.type === 'FavouriteStop' ||
-    item.type === 'FavouriteVehicleRentalStation'
-  ) {
+  if (isFavourite(item)) {
     return ['star'];
   }
   if (
