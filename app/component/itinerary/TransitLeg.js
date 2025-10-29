@@ -255,7 +255,6 @@ class TransitLeg extends React.Component {
         }}
       />
     );
-    // TODO TÄNNE KANS PLATTACHANGE
     const textVersionAfterLink = (
       <FormattedMessage
         id="itinerary-details.transit-leg-part-2"
