@@ -130,13 +130,13 @@ function getIconProperties(item, modeSet, stopCode, modes) {
       return [`citybike-stop-${modeSet}`, 'mode-citybike'];
     }
     if (item.properties.layer === 'carpark') {
-      return [`car-park`, 'mode-carpark'];
+      return [`car-park`];
     }
     if (item.properties.layer === 'bikepark') {
-      return [`bike-park`, 'mode-bikepark'];
+      return [`bike-park`];
     }
     if (item.properties.label?.split(',').length === 1 && !isFavourite(item)) {
-      iconId = 'localadmin'; // plain city name
+      return ['city'];
     } else {
       iconId = item.properties.layer;
     }
