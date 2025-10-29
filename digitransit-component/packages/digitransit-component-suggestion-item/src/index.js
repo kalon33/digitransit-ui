@@ -238,8 +238,6 @@ const SuggestionItem = memo(
       iconColor = `#${item.properties.color}`;
     } else if (iconId === 'locate' || isFavourite(item)) {
       iconColor = color;
-    } else if (item.iconColor) {
-      iconColor = item.iconColor;
     } else {
       iconColor = modeIconColors?.[colorId] || iconColors[colorId] || '#888';
     }
@@ -471,7 +469,6 @@ SuggestionItem.propTypes = {
     type: PropTypes.string,
     address: PropTypes.string,
     selectedIconId: PropTypes.string,
-    iconColor: PropTypes.string,
     translatedText: PropTypes.string,
     properties: PropTypes.shape({
       layer: PropTypes.string,
