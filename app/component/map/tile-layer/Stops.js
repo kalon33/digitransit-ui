@@ -70,7 +70,12 @@ class Stops {
       this.tile.highlightedStops.includes(feature.properties.gtfsId);
 
     const routes = JSON.parse(feature.properties.routes);
-    const mode = getStopMode(feature.properties.type, routes, this.config);
+    const mode = getStopMode(
+      feature.properties.type,
+      routes,
+      feature.properties.code,
+      this.config,
+    );
 
     const ignoreMinZoomLevel =
       feature.properties.type === 'FERRY' ||
@@ -117,6 +122,7 @@ class Stops {
           isHighlighted,
           !!(
             feature.properties.type === 'FERRY' &&
+            this.config.externalFerryByStopCode &&
             !isNull(feature.properties.code)
           ),
           this.config,
@@ -319,6 +325,7 @@ class Stops {
                   const mode = getStopMode(
                     feature.properties.type,
                     routes,
+                    undefined, // terminal has no stop code
                     this.config,
                     true,
                   );
@@ -359,9 +366,10 @@ class Stops {
           isHighlighted,
           !!(
             feature.properties.type === 'FERRY' &&
+            this.config.externalFerryByStopCode &&
             !isNull(feature.properties.code)
           ),
-          this.config.colors.iconColors,
+          this.config,
           stopOutOfService,
           noServiceOnServiceDay,
         );

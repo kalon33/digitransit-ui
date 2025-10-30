@@ -710,9 +710,9 @@ export const getDestinationProperties = (
   stop,
   config,
 ) => {
-  const { routes, vehicleMode } = stop;
+  const { routes, vehicleMode, code } = stop;
   let destination = {};
-  const mode = getStopMode(vehicleMode, routes, config);
+  const mode = getStopMode(vehicleMode, routes, code, config);
   // todo: scooter and citybike icons etc.
   if (rentalVehicle) {
     destination.name = rentalVehicle.rentalNetwork.networkId;
