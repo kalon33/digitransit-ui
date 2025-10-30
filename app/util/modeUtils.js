@@ -146,7 +146,7 @@ export function getRouteMode(route, config) {
 /**
  * extract stop's transit mode. Handles routes from map API and from OTP graphql query
  */
-export function getStopMode(vehicleMode, routes, config, isTerminal) {
+export function getStopMode(vehicleMode, routes, code, config, isTerminal) {
   if (routes) {
     switch (vehicleMode) {
       case 'BUS':
@@ -175,6 +175,9 @@ export function getStopMode(vehicleMode, routes, config, isTerminal) {
         break;
       case 'FERRY':
         {
+          if (config.externalFerryByStopCode && !isTerminal && !code) {
+            return 'ferry-external';
+          }
           const arr = typeof routes === 'string' ? JSON.parse(routes) : routes;
           if (
             arr.some(r => isExternalFeed(getFeedWithoutId(r.gtfsId), config))
@@ -202,7 +205,6 @@ export function transitIconName(mode, lollipop) {
     case 'replacement-bus':
       return lollipop ? 'icon_bus-lollipop' : 'icon_replacement-bus';
     case 'subway':
-    case 'ferry-external':
     case 'airplane':
       return `icon_${mode}`; // no lollipop version
     default:
