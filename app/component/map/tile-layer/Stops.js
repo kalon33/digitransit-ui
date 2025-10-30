@@ -82,7 +82,7 @@ class Stops {
           this.tile,
           feature.geom,
           isHighlighted,
-          this.config.colors.iconColors,
+          this.config,
           mode === 'bus-express',
         );
         return;
@@ -119,7 +119,7 @@ class Stops {
             feature.properties.type === 'FERRY' &&
             !isNull(feature.properties.code)
           ),
-          this.config.colors.iconColors,
+          this.config,
           stopOutOfService,
           noServiceOnServiceDay,
         );
@@ -302,7 +302,7 @@ class Stops {
                     this.tile,
                     feature.geom,
                     isHighlighted,
-                    this.config.colors.iconColors,
+                    this.config,
                   );
                 }
                 if (
@@ -327,7 +327,7 @@ class Stops {
                     feature.geom,
                     mode,
                     isHighlighted,
-                    this.config.colors.iconColors,
+                    this.config,
                   );
                 }
               }

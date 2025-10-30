@@ -2,7 +2,7 @@ import memoize from 'lodash/memoize';
 import glfun from './glfun';
 import { transitIconName } from './modeUtils';
 import { ParkTypes, TransportMode } from '../constants';
-
+import { getModeIconColor } from './colorUtils';
 /**
  * Corresponds to an arc forming a full circle (Math.PI * 2).
  */
@@ -383,14 +383,11 @@ export function drawStopIcon(
   platformNumber,
   isHighlighted,
   isFerryTerminal,
-  modeColors,
+  config,
   stopOutOfService,
   noServiceOnServiceDay,
 ) {
-  const color =
-    mode === 'ferry' && !isFerryTerminal
-      ? modeColors['mode-ferry-pier']
-      : modeColors[`mode-${mode}`];
+  const color = getModeIconColor(config, mode);
   const zoom = tile.coords.z - 1;
   const drawNumber = zoom >= 16;
   const styles = getStopIconStyles('stop', zoom, isHighlighted);
@@ -474,7 +471,7 @@ export function drawHybridStopIcon(
   tile,
   geom,
   isHighlighted,
-  modeColors,
+  config,
   hasTrunkRoute = false,
 ) {
   const zoom = tile.coords.z - 1;
@@ -482,6 +479,7 @@ export function drawHybridStopIcon(
   if (!styles) {
     return;
   }
+  const { iconColors } = config.colors;
   const { style } = styles;
   let { width, height } = styles;
   width *= tile.scaleratio;
@@ -499,7 +497,7 @@ export function drawHybridStopIcon(
     tile.ctx.arc(x, y, radiusOuter * tile.scaleratio, 0, FULL_CIRCLE);
     tile.ctx.fill();
     tile.ctx.beginPath();
-    tile.ctx.fillStyle = modeColors['mode-tram'];
+    tile.ctx.fillStyle = iconColors['mode-tram'];
     tile.ctx.arc(x, y, (radiusOuter - 1) * tile.scaleratio, 0, FULL_CIRCLE);
     tile.ctx.fill();
     // inner icon
@@ -509,7 +507,7 @@ export function drawHybridStopIcon(
     tile.ctx.fill();
     tile.ctx.beginPath();
     tile.ctx.fillStyle =
-      modeColors[hasTrunkRoute ? 'mode-bus-express' : 'mode-bus'];
+      iconColors[hasTrunkRoute ? 'mode-bus-express' : 'mode-bus'];
     tile.ctx.arc(x, y, (radiusInner - 0.5) * tile.scaleratio, 0, FULL_CIRCLE);
     tile.ctx.fill();
     /* eslint-enable no-param-reassign */
@@ -710,7 +708,7 @@ export function drawCitybikeIcon(
   }
 }
 
-export function drawTerminalIcon(tile, geom, mode, isHighlighted, modeColors) {
+export function drawTerminalIcon(tile, geom, mode, isHighlighted, config) {
   const zoom = tile.coords.z - 1;
   const styles = getTerminalIconStyles(zoom);
   if (!styles) {
@@ -719,7 +717,7 @@ export function drawTerminalIcon(tile, geom, mode, isHighlighted, modeColors) {
   let { width, height } = styles;
   width *= tile.scaleratio;
   height *= tile.scaleratio;
-  const color = modeColors[`mode-${mode}`];
+  const color = getModeIconColor(config, mode);
   const iconName = transitIconName(mode, false);
   getImageFromSpriteCache(iconName, width, height, color).then(image => {
     tile.ctx.drawImage(
