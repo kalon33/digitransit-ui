@@ -134,9 +134,8 @@ function getIconProperties(item, modeSet, stopCode, modes) {
     }
     if (item.properties.label?.split(',').length === 1 && !isFavourite(item)) {
       return ['city'];
-    } else {
-      iconId = item.properties.layer;
     }
+    iconId = item.properties.layer;
   }
   // Use more accurate icons in stop/station search, depending on mode from geocoding
   if (modes?.length) {
