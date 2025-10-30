@@ -4,15 +4,16 @@ import Link from 'found/Link';
 import { FormattedMessage } from 'react-intl';
 import Icon from '../../Icon';
 import { PREFIX_TERMINALS, PREFIX_STOPS } from '../../../util/path';
-import { popupColorShape } from '../../../util/shapes';
+import { configShape } from '../../../util/shapes';
 import { getStopMode, transitIconName } from '../../../util/modeUtils';
+import { getModeIconColor } from '../../../util/colorUtils';
 
 function isNull(val) {
   return val === 'null' || val === undefined || val === null;
 }
 
 function SelectStopRow(
-  { code, type, desc, gtfsId, name, terminal, colors, routes, platform },
+  { code, type, desc, gtfsId, name, terminal, routes, platform },
   { config },
 ) {
   const mode = getStopMode(type, routes, config, terminal);
@@ -22,12 +23,8 @@ function SelectStopRow(
     !(terminal || (mode === 'ferry' && !isNull(code))),
   );
   iconOptions.className = mode;
-  if (colors) {
-    iconOptions.color =
-      iconOptions.iconId === 'icon_ferry-lollipop'
-        ? colors.iconColors['mode-ferry-pier']
-        : colors.iconColors[`mode-${mode}`];
-  }
+  iconOptions.color = getModeIconColor(config, mode);
+
   const showDesc = desc && desc !== 'null';
   const showCode = code && code !== 'null';
 
@@ -84,7 +81,6 @@ SelectStopRow.propTypes = {
   code: PropTypes.string,
   desc: PropTypes.string,
   terminal: PropTypes.bool,
-  colors: popupColorShape,
   platform: PropTypes.string,
 };
 
@@ -93,14 +89,9 @@ SelectStopRow.defaultProps = {
   code: undefined,
   desc: undefined,
   terminal: undefined,
-  colors: undefined,
   platform: undefined,
 };
 
-SelectStopRow.contextTypes = {
-  config: PropTypes.shape({
-    useExtendedRouteTypes: PropTypes.bool.isRequired,
-  }).isRequired,
-};
+SelectStopRow.contextTypes = { config: configShape.isRequired };
 
 export default SelectStopRow;
