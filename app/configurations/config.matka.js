@@ -60,7 +60,14 @@ export default {
 
   favicon: './app/configurations/images/matka/matka-favicon.svg',
 
-  colors: { primary: '#000' },
+  colors: {
+    primary: '#000',
+    iconColors: {
+      'mode-tram': '#5E7921',
+      'mode-rail': '#000',
+      'mode-ferry': '#247C7B',
+    },
+  },
   feedIds: IS_DEV
     ? ['MATKA']
     : [

@@ -150,18 +150,9 @@ export default {
     accessiblePrimary: '#0074be',
     hover: '#0062a1',
     iconColors: {
-      'mode-bus': '#007ac9',
       'mode-bus-express': '#CA4000',
       'mode-bus-local': '#007ac9',
-      'mode-rail': '#8c4799',
-      'mode-tram': '#008151',
-      'mode-ferry': '#007A97',
-      'mode-ferry-external': '#666666',
-      'mode-subway': '#CA4000',
-      'mode-citybike': '#f2b62d',
-      'mode-citybike-secondary': '#333333',
       'mode-speedtram': '#007E79',
-      'mode-replacement-bus': '#DC0451',
     },
   },
   getAutoSuggestIcons: {
