@@ -77,7 +77,7 @@ const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
       </div>
     );
   }
-  const stopInformation = (expandIcon = false) => {
+  const stopInformation = (transitLeg, expandIcon = false) => {
     return (
       <div className="extension-walk">
         {expandIcon && <Icon img="navi-expand" className="icon-expand" />}
@@ -98,7 +98,7 @@ const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
                 number={platformCode}
                 short
                 isRailOrSubway={modeUsesTrack(vehicleMode)}
-                updated={isPlatformChanged(leg)}
+                updated={isPlatformChanged(transitLeg)}
               />
             )}
             <ZoneIcon
@@ -129,7 +129,7 @@ const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
             }}
           />
         </div>
-        {stopInformation(true)}
+        {stopInformation(nextLeg, true)}
       </div>
     );
   }
@@ -145,7 +145,7 @@ const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
     const routeMode = getRouteMode(route, config);
     return (
       <div className={cx('extension', 'no-gap')}>
-        {stopInformation()}
+        {stopInformation(nextLeg)}
         <div className="extension-divider" />
         <BoardingInfo
           route={route}
@@ -161,7 +161,7 @@ const NaviCardExtension = ({ legType, leg, nextLeg, time }, { config }) => {
   return (
     <>
       <div className="extension-divider" />
-      {stopInformation(true)}
+      {stopInformation(leg, true)}
     </>
   );
 };
