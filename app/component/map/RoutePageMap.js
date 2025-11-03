@@ -135,8 +135,6 @@ class RoutePageMap extends React.Component {
     }
     const tripSelected =
       this.props.trip && this.props.trip.gtfsId && isActiveDate(pattern);
-    let tripStart;
-    // BUG ??  tripStar prop is never set
     const leafletObjs = [
       <RouteLine
         key="line"
@@ -152,7 +150,6 @@ class RoutePageMap extends React.Component {
           pattern={pattern.code}
           headsign={pattern.headsign}
           topics={[pattern.route]}
-          tripStart={tripStart}
         />,
       );
     }
