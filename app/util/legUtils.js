@@ -867,7 +867,7 @@ export const legDestination = (intl, leg, secondary, nextLeg = null) => {
 };
 
 export const isPlatformChanged = leg => {
-  if (!leg?.trip || !leg.start?.scheduledTime) {
+  if (!leg?.trip || !leg.start.scheduledTime) {
     return false;
   }
   const startTimeEpoch = new Date(leg.start.scheduledTime).getTime();
