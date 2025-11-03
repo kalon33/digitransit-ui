@@ -134,7 +134,7 @@ class RoutePageMap extends React.Component {
       mwtProps.bounds = this.bounds;
     }
     const tripSelected =
-      this.props.trip && this.props.trip.gtfsId && isActiveDate(pattern);
+      lat && lon && this.props.trip?.gtfsId && isActiveDate(pattern);
     const leafletObjs = [
       <RouteLine
         key="line"
