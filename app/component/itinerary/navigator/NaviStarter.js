@@ -5,7 +5,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { configShape } from '../../../util/shapes';
 import Icon from '../../Icon';
-import { useLogo } from './hooks/useLogo';
+import { useLogo } from '../../../hooks/useLogo';
 
 const NaviStarter = (
   { time, startItinerary, containerTopPosition, isPastStart },

@@ -506,3 +506,7 @@ export const entityShape = (props, propName, componentName, ...rest) => {
       );
   }
 };
+
+export const stylesShape = PropTypes.objectOf(
+  PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+);
