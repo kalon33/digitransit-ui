@@ -2,7 +2,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { createFragmentContainer, graphql } from 'react-relay';
-import { matchShape } from 'found';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import { configShape, patternShape, errorShape } from '../../util/shapes';
 import MapWithTracking from './MapWithTracking';
@@ -17,10 +16,10 @@ import { getMapLayerOptions } from '../../util/mapLayerUtils';
 import CookieSettingsButton from '../CookieSettingsButton';
 
 function RoutePageMap(
-  { match, pattern, lat, lon, breakpoint, trip, error, ...rest },
+  { pattern, lat, lon, breakpoint, trip, error, ...rest },
   { config },
 ) {
-  const { tripId } = match.params;
+  const tripId = trip?.gtfsId;
   const [trackVehicle, setTrackVehicle] = useState(!!tripId);
   const tripIdRef = useRef();
   const mwtRef = useRef();
@@ -41,14 +40,14 @@ function RoutePageMap(
   }
 
   useEffect(() => {
-    if (tripId !== tripIdRef) {
+    if (tripId !== tripIdRef.current) {
       setTrackVehicle(!!tripId);
       mwtRef.current?.disableMapTracking();
     }
   }, [tripId]);
 
   useEffect(() => {
-    if (pattern.code !== code) {
+    if (pattern.code !== code.current) {
       mwtRef.current?.disableMapTracking();
     }
   }, [pattern.code]);
@@ -145,7 +144,6 @@ function RoutePageMap(
 }
 
 RoutePageMap.propTypes = {
-  match: matchShape.isRequired,
   pattern: patternShape.isRequired,
   lat: PropTypes.number,
   lon: PropTypes.number,
