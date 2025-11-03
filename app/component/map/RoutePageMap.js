@@ -4,12 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createFragmentContainer, graphql } from 'react-relay';
 import { matchShape } from 'found';
 import connectToStores from 'fluxible-addons-react/connectToStores';
-import {
-  configShape,
-  mapLayerOptionsShape,
-  patternShape,
-  errorShape,
-} from '../../util/shapes';
+import { configShape, patternShape, errorShape } from '../../util/shapes';
 import MapWithTracking from './MapWithTracking';
 import RouteLine from './route/RouteLine';
 import VehicleMarkerContainer from './VehicleMarkerContainer';
@@ -17,23 +12,12 @@ import { getStartTime } from '../../util/timeUtils';
 import withBreakpoint from '../../util/withBreakpoint';
 import BackButton from '../BackButton';
 import { isActiveDate } from '../../util/patternUtils';
-import { mapLayerShape } from '../../store/MapLayerStore';
 import { boundWithMinimumArea } from '../../util/geo-utils';
 import { getMapLayerOptions } from '../../util/mapLayerUtils';
 import CookieSettingsButton from '../CookieSettingsButton';
 
 function RoutePageMap(
-  {
-    match,
-    pattern,
-    lat,
-    lon,
-    breakpoint,
-    mapLayers,
-    mapLayerOptions,
-    trip,
-    error,
-  },
+  { match, pattern, lat, lon, breakpoint, trip, error, ...rest },
   { config },
 ) {
   const { tripId } = match.params;
@@ -144,11 +128,10 @@ function RoutePageMap(
       {...mwtProps}
       className="full"
       leafletObjs={leafletObjs}
-      mapLayers={mapLayers}
-      mapLayerOptions={mapLayerOptions}
       onStartNavigation={stopTracking}
       onMapTracking={stopTracking}
       setMWTRef={setMWTRef}
+      {...rest}
     >
       {breakpoint !== 'large' && (
         <BackButton
@@ -167,8 +150,6 @@ RoutePageMap.propTypes = {
   lat: PropTypes.number,
   lon: PropTypes.number,
   breakpoint: PropTypes.string.isRequired,
-  mapLayers: mapLayerShape.isRequired,
-  mapLayerOptions: mapLayerOptionsShape.isRequired,
   trip: PropTypes.shape({ gtfsId: PropTypes.string }),
   error: errorShape,
 };
