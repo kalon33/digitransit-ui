@@ -180,18 +180,11 @@ const RoutePageMapWithVehicles = connectToStores(
       const matchingVehicles = Object.keys(vehicles)
         .map(key => vehicles[key])
         .filter(
-          vehicle =>
-            vehicle.tripStartTime === undefined ||
-            vehicle.tripStartTime === tripStart,
-        )
-        .filter(
-          vehicle =>
-            vehicle.tripId === undefined || vehicle.tripId === trip.gtfsId,
-        )
-        .filter(
-          vehicle =>
-            vehicle.direction === undefined ||
-            vehicle.direction === Number(trip.directionId),
+          v =>
+            (v.tripStartTime === undefined || v.tripStartTime === tripStart) &&
+            (v.tripId === undefined || v.tripId === trip.gtfsId) &&
+            (v.direction === undefined ||
+              v.direction === Number(trip.directionId)),
         );
 
       if (!matchingVehicles.length) {
