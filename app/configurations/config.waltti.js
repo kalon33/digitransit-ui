@@ -354,4 +354,5 @@ export default {
       ],
     },
   },
+  useAlternativeNameForModes: ['RAIL'],
 };

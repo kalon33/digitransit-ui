@@ -38,7 +38,7 @@ import {
   getRentalNetworkConfig,
   getVehicleCapacity,
 } from '../../util/vehicleRentalUtils';
-import { getRouteMode } from '../../util/modeUtils';
+import { getRouteMode, modeUsesTrack } from '../../util/modeUtils';
 import { getCapacityForLeg } from '../../util/occupancyUtil';
 import getCo2Value from '../../util/emissions';
 import { ItineraryFragment } from './queries/ItineraryFragment';
@@ -689,22 +689,21 @@ const Itinerary = (
             {platformChanged ? (
               <>
                 <FormattedMessage
-                  id={firstDeparture.mode === 'RAIL' ? 'track' : 'platform'}
+                  id={modeUsesTrack(firstDeparture.mode) ? 'track' : 'platform'}
                 />
                 <PlatformNumber
                   number={firstDeparture.from.stop.platformCode}
                   updated={platformChanged}
-                  isRailOrSubway={
-                    firstDeparture.mode === 'rail' ||
-                    firstDeparture.mode === 'subway'
-                  }
+                  isRailOrSubway={modeUsesTrack(firstDeparture.mode)}
                   withText={false}
                 />
               </>
             ) : (
               <FormattedMessage
                 id={
-                  firstDeparture.mode === 'RAIL' ? 'track-num' : 'platform-num'
+                  modeUsesTrack(firstDeparture.mode)
+                    ? 'track-num'
+                    : 'platform-num'
                 }
                 values={{ platformCode: firstDeparture.from.stop.platformCode }}
               />

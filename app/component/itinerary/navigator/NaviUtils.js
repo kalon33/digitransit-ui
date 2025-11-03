@@ -6,7 +6,7 @@ import { ExtendedRouteTypes } from '../../../constants';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { GeodeticToEnu } from '../../../util/geo-utils';
 import { isPlatformChanged, legTime, legTimeAcc } from '../../../util/legUtils';
-import { getRouteMode } from '../../../util/modeUtils';
+import { getRouteMode, modeUsesTrack } from '../../../util/modeUtils';
 import { locationToUri } from '../../../util/otpStrings';
 import { getItineraryPagePath } from '../../../util/path';
 import { durationToString, epochToIso, timeStr } from '../../../util/timeUtils';
@@ -268,8 +268,8 @@ function findTransferProblems(legs, time, position, tailLength, slack) {
   return transfers;
 }
 
-export const getLocalizedMode = (mode, intl) => {
-  if (mode === 'RAIL') {
+export const getLocalizedMode = (mode, intl, config) => {
+  if (config?.useAlternativeNameForModes?.includes(mode)) {
     return intl.formatMessage({
       id: 'settings-alternative-name-rail',
       defaultMessage: `${mode}`,
@@ -709,12 +709,11 @@ export const getItineraryAlerts = (
     if (leg.transitLeg && legTime(leg.start) > time) {
       const id = `platform-${leg.legId}`;
       if (isPlatformChanged(leg) && !messages.get(id)?.closed) {
-        const boardingType =
-          leg.mode === 'RAIL' || leg.mode === 'SUBWAY' ? 'track' : 'platform';
+        const boardingType = modeUsesTrack(leg.mode) ? 'track' : 'platform';
         const title = intl.formatMessage({
           id: `navigation-${boardingType}-change`,
         });
-        const lMode = getLocalizedMode(leg.mode, intl);
+        const lMode = getLocalizedMode(leg.mode, intl, config);
         const routeName = `${lMode} ${leg.route?.shortName}`;
         const body = intl.formatMessage(
           { id: `navigation-${boardingType}-change-details` },

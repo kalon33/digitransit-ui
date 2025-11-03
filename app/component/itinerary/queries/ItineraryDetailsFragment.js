@@ -288,11 +288,9 @@ export const ItineraryDetailsFragment = graphql`
           realtimeState
           serviceDay
           scheduledDeparture
-          scheduledArrival
           stop {
             gtfsId
             platformCode
-            code
           }
         }
         stoptimes {
