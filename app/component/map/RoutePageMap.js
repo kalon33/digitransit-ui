@@ -211,8 +211,7 @@ const RoutePageMapWithVehicles = connectToStores(
             vehicle.direction === Number(trip.directionId),
         );
 
-      if (matchingVehicles.length !== 1) {
-        // no matching vehicles or cant distinguish between vehicles
+      if (!matchingVehicles.length) {
         return { mapLayers, mapLayerOptions };
       }
       const selectedVehicle = matchingVehicles[0];
