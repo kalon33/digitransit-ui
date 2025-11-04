@@ -9,6 +9,7 @@ import Icon from '../Icon';
 import ItineraryMapAction from './ItineraryMapAction';
 import ItineraryCircleLineWithIcon from './ItineraryCircleLineWithIcon';
 import PlatformNumber from '../PlatformNumber';
+import SubwayEntranceInfo from './SubwayEntranceInfo';
 import ServiceAlertIcon from '../ServiceAlertIcon';
 import { getActiveAlertSeverityLevel } from '../../util/alertUtils';
 import { PREFIX_STOPS } from '../../util/path';
@@ -268,42 +269,11 @@ function WalkLeg(
         )}
         <div className="itinerary-leg-action">
           {previousLeg?.mode === 'SUBWAY' && !hideSubwayEntrances && (
-            <div
-              className="subway-entrance-info-container"
-              aria-labelledby="subway-entrance-label"
-            >
-              <span id="subway-entrance-label" className="sr-only">
-                <FormattedMessage
-                  id={
-                    entranceAccessible === 'POSSIBLE'
-                      ? 'subway-exit.sr-description.accessible'
-                      : 'subway-exit.sr-description'
-                  }
-                  defaultMessage="Exit {entranceName}"
-                  values={{ entranceName: entranceName || '' }}
-                />
-              </span>
-
-              <div className="subway-entrance-info-text" aria-hidden="true">
-                <FormattedMessage id="station-exit" defaultMessage="Exit" />
-              </div>
-              <Icon
-                img="icon_subway_entrance"
-                className="subway-entrance-info-icon"
-              />
-              {entranceName && (
-                <Icon
-                  className="subway-entrance-info-icon"
-                  img={`icon_subway_entrance_${entranceName.toLowerCase()}`}
-                />
-              )}
-              {entranceAccessible === 'POSSIBLE' && (
-                <Icon
-                  className="subway-entrance-info-icon"
-                  img="icon_wheelchair_filled"
-                />
-              )}
-            </div>
+            <SubwayEntranceInfo
+              type="exit"
+              entranceName={entranceName}
+              entranceAccessible={entranceAccessible}
+            />
           )}
           <div className=" itinerary-leg-action-content">
             <FormattedMessage
@@ -325,44 +295,11 @@ function WalkLeg(
             />
           </div>
           {nextLeg?.mode === 'SUBWAY' && !hideSubwayEntrances && (
-            <div
-              className="subway-entrance-info-container"
-              aria-labelledby="subway-entrance-label"
-            >
-              <span id="subway-entrance-label" className="sr-only">
-                <FormattedMessage
-                  id={
-                    entranceAccessible === 'POSSIBLE'
-                      ? 'subway-entrance.sr-description.accessible'
-                      : 'subway-entrance.sr-description'
-                  }
-                  defaultMessage="Exit {entranceName}"
-                  values={{ entranceName: entranceName || '' }}
-                />
-              </span>
-              <div className="subway-entrance-info-text" aria-hidden="true">
-                <FormattedMessage
-                  id="station-entrance"
-                  defaultMessage="Entrance"
-                />
-              </div>
-              <Icon
-                img="icon_subway_entrance"
-                className="subway-entrance-info-icon"
-              />
-              {entranceName && (
-                <Icon
-                  className="subway-entrance-info-icon"
-                  img={`icon_subway_entrance_${entranceName.toLowerCase()}`}
-                />
-              )}
-              {entranceAccessible === 'POSSIBLE' && (
-                <Icon
-                  className="subway-entrance-info-icon"
-                  img="icon_wheelchair_filled"
-                />
-              )}
-            </div>
+            <SubwayEntranceInfo
+              type="entrance"
+              entranceName={entranceName}
+              entranceAccessible={entranceAccessible}
+            />
           )}
         </div>
       </div>
