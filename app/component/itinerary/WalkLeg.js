@@ -98,6 +98,13 @@ function WalkLeg(
       step?.feature?.wheelchairAccessible,
   )?.feature?.wheelchairAccessible;
 
+  // do not render subway exit/entrance if transfer happens within a station
+  const hideSubwayEntrances =
+    previousLeg?.mode === 'SUBWAY' &&
+    nextLeg?.mode === 'SUBWAY' &&
+    previousLeg.to.stop.parentStation?.gtfsId ===
+      nextLeg.from.stop.parentStation?.gtfsId;
+
   return (
     <div key={index} className="row itinerary-row">
       <span className="sr-only">
@@ -260,7 +267,7 @@ function WalkLeg(
           </div>
         )}
         <div className="itinerary-leg-action">
-          {previousLeg?.mode === 'SUBWAY' && (
+          {previousLeg?.mode === 'SUBWAY' && !hideSubwayEntrances && (
             <div
               className="subway-entrance-info-container"
               aria-labelledby="subway-entrance-label"
@@ -317,7 +324,7 @@ function WalkLeg(
               focusAction={focusToLeg}
             />
           </div>
-          {nextLeg?.mode === 'SUBWAY' && (
+          {nextLeg?.mode === 'SUBWAY' && !hideSubwayEntrances && (
             <div
               className="subway-entrance-info-container"
               aria-labelledby="subway-entrance-label"
