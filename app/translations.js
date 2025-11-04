@@ -1180,7 +1180,7 @@ const translations = {
     'itinerary-summary-row.description':
       'Itinerary departing at {departureDate} {departureTime} and arriving at {arrivalDate} {arrivalTime}. {firstDeparture} {transfers} Total time {totalTime}.',
     'itinerary-summary-row.first-departure':
-      '{vehicle} leaves at {departureTime} from stop {stopName}.',
+      '{vehicle} leaves at {departureTime} from stop {stopName} {platformOrTrack}.',
     'itinerary-summary-row.first-leg-start-time':
       'Leaves at {firstDepartureTime} from {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
     'itinerary-summary-row.first-leg-start-time-citybike':
@@ -2502,7 +2502,7 @@ const translations = {
     'itinerary-summary-row.description':
       'Lähtö {departureDate} kello {departureTime}. Perillä {arrivalDate} kello {arrivalTime}. {firstDeparture} {transfers} Matka-aika {totalTime}',
     'itinerary-summary-row.first-departure':
-      '{vehicle} lähtee asemalta {stopName} kello {departureTime}.',
+      '{vehicle} lähtee asemalta {stopName} kello {departureTime} {platformOrTrack}.',
     'itinerary-summary-row.first-leg-start-time':
       'Lähtee klo {firstDepartureTime} {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
     'itinerary-summary-row.first-leg-start-time-citybike':
@@ -5452,7 +5452,7 @@ const translations = {
     'itinerary-summary-row.description':
       'Avgång {departureDate} klockan {departureTime}. Framme {arrivalDate} klockan {arrivalTime}. {firstDeparture} {transfers} Restid {totalTime}.',
     'itinerary-summary-row.first-departure':
-      '{vehicle} avgår från station {stopName} klockan {departureTime}.',
+      '{vehicle} avgår från station {stopName} klockan {departureTime} {platformOrTrack}.',
     'itinerary-summary-row.first-leg-start-time':
       'Avgår kl {firstDepartureTime} från {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
     'itinerary-summary-row.first-leg-start-time-citybike':
