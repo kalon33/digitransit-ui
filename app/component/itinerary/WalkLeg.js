@@ -17,6 +17,7 @@ import {
   RentalNetworkType,
   getRentalNetworkConfig,
 } from '../../util/vehicleRentalUtils';
+import { subwayTransferUsesSameStation } from '../../util/indoorUtils';
 import { displayDistance } from '../../util/geo-utils';
 import { durationToString } from '../../util/timeUtils';
 import { splitStringToAddressAndPlace } from '../../util/otpStrings';
@@ -100,11 +101,10 @@ function WalkLeg(
   )?.feature?.wheelchairAccessible;
 
   // do not render subway exit/entrance if transfer happens within a station
-  const hideSubwayEntrances =
-    previousLeg?.mode === 'SUBWAY' &&
-    nextLeg?.mode === 'SUBWAY' &&
-    previousLeg.to.stop.parentStation?.gtfsId ===
-      nextLeg.from.stop.parentStation?.gtfsId;
+  const hideSubwayEntrances = subwayTransferUsesSameStation(
+    previousLeg,
+    nextLeg,
+  );
 
   return (
     <div key={index} className="row itinerary-row">
