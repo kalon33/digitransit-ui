@@ -30,6 +30,7 @@ import {
 
 import getStopRoutes from './stopRoutes';
 import routeRoutes from './routeRoutes';
+import { withRouteContext } from './util/RouteContext';
 
 export const historyMiddlewares = [queryMiddleware];
 
@@ -353,6 +354,7 @@ export default config => {
             /* webpackChunkName: "trafficnow" */ './component/trafficnow/TrafficNow'
           ).then(getDefault)
         }
+        render={withRouteContext()}
       />
       <Route
         path="/tietoja-palvelusta"
