@@ -27,7 +27,7 @@ import {
 import { isActiveDate } from '../../util/patternUtils';
 import {
   PREFIX_DISRUPTION,
-  PREFIX_ROUTES,
+  routePagePath,
   PREFIX_STOPS,
   PREFIX_TIMETABLE,
 } from '../../util/path';
@@ -326,9 +326,11 @@ class RouteControlPanel extends React.Component {
   }
 
   changeTab = tab => {
-    const path = `/${PREFIX_ROUTES}/${this.props.route.gtfsId}/${tab}/${
-      this.props.match.params.patternId || ''
-    }`;
+    const path = routePagePath(
+      this.props.route.gtfsId,
+      tab,
+      this.props.match.params.patternId,
+    );
     this.context.router.replace(path);
     let action;
     switch (tab) {

@@ -170,16 +170,16 @@ export function routePagePath(routeId, tab, patternId, tripId, queryParams) {
   let path = `/${PREFIX_ROUTES}/${encodeURIComponent(routeId)}`;
 
   if (tab) {
-    path = `/${path}/${tab}`;
+    path = `${path}/${tab}`;
   }
   if (patternId) {
-    path = `/${path}/${encodeURIComponent(patternId)}`;
+    path = `${path}/${encodeURIComponent(patternId)}`;
   }
   if (tripId) {
-    path = `/${path}/${encodeURIComponent(tripId)}`;
+    path = `${path}/${encodeURIComponent(tripId)}`;
   }
   if (queryParams) {
-    path = `/${path}${queryParams}`; // note: '?' is not added
+    path = `${path}${queryParams}`; // note: '?' is not added
   }
   return path;
 }

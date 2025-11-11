@@ -24,7 +24,7 @@ import hashCode from '../../util/hashUtil';
 import { getFormattedTimeDate } from '../../util/timeUtils';
 import ScheduleDropdown from './ScheduleDropdown';
 import RouteControlPanel from './RouteControlPanel';
-import { PREFIX_ROUTES, PREFIX_TIMETABLE } from '../../util/path';
+import { routePagePath, PREFIX_TIMETABLE } from '../../util/path';
 import ScrollableWrapper from '../ScrollableWrapper';
 import getTestData from './ScheduleDebugData';
 
@@ -436,7 +436,13 @@ class ScheduleContainer extends PureComponent {
     const trips = ScheduleContainer.sortTrips(currentPattern.trips);
 
     if (trips.length === 0 && newServiceDay) {
-      return `/${PREFIX_ROUTES}/${this.props.match.params.routeId}/${PREFIX_TIMETABLE}/${currentPattern.code}${queryParams}`;
+      return routePagePath(
+        this.props.match.params.routeId,
+        PREFIX_TIMETABLE,
+        currentPattern.code,
+        null,
+        queryParams,
+      );
     }
 
     if (trips !== null && !this.state.hasLoaded) {
@@ -724,7 +730,7 @@ class ScheduleContainer extends PureComponent {
         // Redirect back to routes default pattern
         // eslint-disable-next-line react/prop-types
         this.props.router.replace(
-          `/${PREFIX_ROUTES}/${this.props.match.params.routeId}/${PREFIX_TIMETABLE}`,
+          routePagePath(this.props.match.params.routeId, PREFIX_TIMETABLE),
         );
       }
       return false;
