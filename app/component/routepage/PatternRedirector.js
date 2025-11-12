@@ -54,10 +54,11 @@ const PatternRedirector = ({ router, match, route }, context) => {
         : undefined;
   }
 
+  const { routeId, type } = match.params;
   const path = routePagePath(
-    match.params.routeId,
-    match.params.type || PREFIX_STOPS,
-    pattern.code || `${match.params.routeId}:0:01`,
+    routeId,
+    type || PREFIX_STOPS,
+    pattern.code || `${routeId}:0:01`,
   );
 
   useEffect(() => {

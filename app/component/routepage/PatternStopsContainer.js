@@ -29,16 +29,16 @@ class PatternStopsContainer extends React.PureComponent {
   };
 
   render() {
+    const routeId = this.props.route.gtfsId;
     if (!this.props.pattern) {
-      if (this.props.route.gtfsId) {
+      if (routeId) {
         // Redirect back to routes default pattern
-        this.props.router.replace(routePagePath(this.props.route.gtfsId));
+        this.props.router.replace(routePagePath(routeId));
       } else {
         return <Error404 />;
       }
       return false;
     }
-    const routeId = this.props.route.gtfsId;
     const { locale } = this.context.intl;
     const { constantOperationRoutes } = this.context.config;
 

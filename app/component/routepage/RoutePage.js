@@ -60,8 +60,7 @@ class RoutePage extends React.Component {
   render() {
     const { breakpoint, router, route, error, currentTime } = this.props;
     const { config } = this.context;
-    const tripId = this.props.match.params?.tripId;
-    const patternId = this.props.match.params?.patternId;
+    const { tripId, patternId, routeId } = this.props.match.params;
 
     if (route == null && !error) {
       /* In this case there is little we can do
@@ -140,9 +139,9 @@ class RoutePage extends React.Component {
               <AlertBanner
                 alerts={filteredAlerts}
                 linkAddress={routePagePath(
-                  this.props.match.params.routeId,
+                  routeId,
                   PREFIX_DISRUPTION,
-                  this.props.match.params.patternId,
+                  patternId,
                 )}
               />
             </div>
