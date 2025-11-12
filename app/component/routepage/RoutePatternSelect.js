@@ -121,10 +121,9 @@ class RoutePatternSelect extends Component {
       similarRoutes: [],
       loadingSimilar: true,
     };
-    this.fetchSimilarRoutes(
-      this.props.route,
-      this.context.config.showSimilarRoutesOnRouteDropDown,
-    );
+    if (this.context.config.showSimilarRoutesOnRouteDropDown) {
+      this.fetchSimilarRoutes(this.props.route);
+    }
   }
 
   static propTypes = {
@@ -152,43 +151,43 @@ class RoutePatternSelect extends Component {
     intl: intlShape.isRequired,
   };
 
-  fetchSimilarRoutes = (route, callFetch) => {
-    if (callFetch) {
-      let searchSimilarTo = route.shortName;
-      if (Number.isNaN(Number(route.shortName))) {
-        searchSimilarTo = route.shortName.replace(/\D/g, ''); // Delete all non-digits from the string
-      }
-      if (!searchSimilarTo) {
-        // Dont try to search similar routes for routes that are named with letters (eg. P train)
-        return;
-      }
-      const query = graphql`
-        query RoutePatternSelect_similarRoutesQuery($name: String) {
-          routes(name: $name) {
-            gtfsId
-            shortName
-            longName
-            mode
-            color
-          }
-        }
-      `;
-
-      const params = { name: searchSimilarTo };
-      fetchQuery(this.props.relayEnvironment, query, params, {
-        force: true,
-      })
-        .toPromise()
-        .then(results => {
-          this.setState({
-            similarRoutes: filterSimilarRoutes(
-              results.routes,
-              this.props.route,
-            ),
-            loadingSimilar: false,
-          });
-        });
+  fetchSimilarRoutes = route => {
+    let searchSimilarTo = route.shortName;
+    const c = route.shortName.length ? route.shortName[0] : '';
+    if (c < '0' || c > '9') {
+      // must start with number
+      return;
     }
+    if (Number.isNaN(Number(route.shortName))) {
+      searchSimilarTo = route.shortName.replace(/\D/g, ''); // Delete all non-digits from the string
+    }
+    if (!searchSimilarTo) {
+      // Dont try to search similar routes for routes that are named with letters (eg. P train)
+      return;
+    }
+    const query = graphql`
+      query RoutePatternSelect_similarRoutesQuery($name: String) {
+        routes(name: $name) {
+          gtfsId
+          shortName
+          longName
+          mode
+          color
+        }
+      }
+    `;
+
+    const params = { name: searchSimilarTo };
+    fetchQuery(this.props.relayEnvironment, query, params, {
+      force: true,
+    })
+      .toPromise()
+      .then(results => {
+        this.setState({
+          similarRoutes: filterSimilarRoutes(results.routes, this.props.route),
+          loadingSimilar: false,
+        });
+      });
   };
 
   getOptions = () => {
