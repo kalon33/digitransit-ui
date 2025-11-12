@@ -1066,6 +1066,7 @@ const translations = {
     'embedded-search.form-heading': 'Embedding tools',
     engine_ignition_aid: 'Engine starting aid',
     english: 'English',
+    estimate: 'Estimate',
     explanations: 'Explanations',
     'extra-info': 'More info',
     'favourite-failed-text': 'Please try again in a while.',
@@ -1176,6 +1177,8 @@ const translations = {
     'itinerary-summary-page.title': 'Route suggestions',
     'itinerary-summary-row.biking-distance':
       'Total biking distance {totalDistance}.',
+    'itinerary-summary-row.call-agency-description':
+      'TO_DO_Call agency service. Details in itinerary.',
     'itinerary-summary-row.clickable-area-description': 'Show on map',
     'itinerary-summary-row.description':
       'Itinerary departing at {departureDate} {departureTime} and arriving at {arrivalDate} {arrivalTime}. {firstDeparture} {transfers} Total time {totalTime}.',
@@ -2388,6 +2391,7 @@ const translations = {
     'embedded-search.form-heading': 'Upotusvalinnat',
     engine_ignition_aid: 'Käynnistysapu',
     english: 'Englanti',
+    estimate: 'Arvio',
     explanations: 'Selitykset',
     'extra-info': 'Lisätiedot',
     'favourite-failed-text': 'Yritä hetken päästä uudelleen.',
@@ -2492,6 +2496,8 @@ const translations = {
     'itinerary-summary-page.description': 'Reittiehdotukset',
     'itinerary-summary-row.biking-distance':
       'Pyöräilyä yhteensä {totalDistance}.',
+    'itinerary-summary-row.call-agency-description':
+      'Kutsuliikennettä, lisätiedot reittiohjeessa.',
     'itinerary-summary-row.clickable-area-description': 'Näytä kartalla',
     'itinerary-summary-row.description':
       'Lähtö {departureDate} kello {departureTime}. Perillä {arrivalDate} kello {arrivalTime}. {firstDeparture} {transfers} Matka-aika {totalTime}',
@@ -5330,6 +5336,7 @@ const translations = {
     'embedded-search.form-heading': 'Inbäddningsverktyg',
     engine_ignition_aid: 'Starthjälp',
     english: 'Engelsk',
+    estimate: 'TO_DO_estimate',
     explanations: 'Förklaringar',
     'extra-info': 'Mer info',
     'favourite-failed-text': 'Försök på nytt senare.',
@@ -5438,6 +5445,8 @@ const translations = {
     'itinerary-summary-page.title': 'Ruttförslag',
     'itinerary-summary-row.biking-distance':
       'Cykling sammanlagt {totalDistance}.',
+    'itinerary-summary-row.call-agency-description':
+      'TO_DO_Kutsuliikennettä, lisätiedot reittiohjeessa.',
     'itinerary-summary-row.clickable-area-description': 'Visa på kartan',
     'itinerary-summary-row.description':
       'Avgång {departureDate} klockan {departureTime}. Framme {arrivalDate} klockan {arrivalTime}. {firstDeparture} {transfers} Restid {totalTime}.',
