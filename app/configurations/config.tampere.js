@@ -7,6 +7,7 @@ const tampereTimetables = ttConfig.tampere;
 const CONFIG = 'tampere';
 const APP_TITLE = 'Nyssen reittiopas';
 const APP_DESCRIPTION = 'Nyssen reittiopas';
+const CDN_URL = process.env.MAP_URL || 'https://dev-cdn.digitransit.fi';
 
 const IS_DEV =
   process.env.RUN_ENV === 'development' ||
@@ -66,7 +67,7 @@ export default configMerger(walttiConfig, {
           sv: 'Servicekontorer',
           en: 'Service points',
         },
-        url: '/assets/temporary/tampere-servicepoints-20250305.geojson',
+        url: `${CDN_URL}/waltti-assets/v1/salespoints/salespoints_tampere.geojson`,
       },
     ],
   },
