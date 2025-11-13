@@ -40,7 +40,6 @@ export default configMerger(walttiConfig, {
     iconColors: {
       'mode-bus': colorPrimary,
       'mode-ferry': '#0064f0',
-      'mode-ferry-pier': '#666666',
     },
   },
 
@@ -49,6 +48,11 @@ export default configMerger(walttiConfig, {
   socialMedia: {
     title: APP_TITLE,
     description: APP_DESCRIPTION,
+    image: {
+      url: 'img/social-share-seutuplus.png',
+      width: 611,
+      height: 225,
+    },
   },
 
   meta: {
@@ -73,6 +77,8 @@ export default configMerger(walttiConfig, {
       color: '#0064f0',
     },
   },
+
+  nearYouModes: ['bus', 'ferry'],
 
   searchParams: {
     'boundary.rect.min_lat': minLat,

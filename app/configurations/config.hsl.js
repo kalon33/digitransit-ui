@@ -96,6 +96,7 @@ export default {
 
   feedIds: ['HSL', 'HSLlautta', 'Sipoo'],
   externalFeedIds: ['HSLlautta', '02Taksi'],
+  externalFerryByStopCode: true, // no stop code means external ferry
 
   allowLogin: true,
   allowFavouritesFromLocalstorage: !process.env.OIDC_CLIENT_ID,
@@ -149,18 +150,9 @@ export default {
     accessiblePrimary: '#0074be',
     hover: '#0062a1',
     iconColors: {
-      'mode-bus': '#007ac9',
       'mode-bus-express': '#CA4000',
       'mode-bus-local': '#007ac9',
-      'mode-rail': '#8c4799',
-      'mode-tram': '#008151',
-      'mode-ferry': '#007A97',
-      'mode-ferry-pier': '#666666',
-      'mode-metro': '#CA4000',
-      'mode-citybike': '#f2b62d',
-      'mode-citybike-secondary': '#333333',
       'mode-speedtram': '#007E79',
-      'mode-replacement-bus': '#DC0451',
     },
   },
   getAutoSuggestIcons: {
@@ -182,16 +174,16 @@ export default {
 
   nationalServiceLink: {
     fi: {
-      name: 'matka.fi',
-      href: 'https://opas.matka.fi/',
+      name: 'matka.fintraffic.fi',
+      href: 'https://matka.fintraffic.fi/',
     },
     sv: {
-      name: 'matka.fi',
-      href: 'https://opas.matka.fi/sv/',
+      name: 'matka.fintraffic.fi',
+      href: 'https://matka.fintraffic.fi/sv/',
     },
     en: {
-      name: 'matka.fi',
-      href: 'https://opas.matka.fi/en/',
+      name: 'matka.fintraffic.fi',
+      href: 'https://matka.fintraffic.fi/en/',
     },
   },
 
@@ -204,7 +196,7 @@ export default {
     description: APP_DESCRIPTION,
 
     image: {
-      url: '/img/hsl-social-share.png',
+      url: 'img/hsl-social-share.png',
       width: 400,
       height: 400,
     },
@@ -224,9 +216,9 @@ export default {
       availableForSelection: true,
     },
     scooter: {
-      availableForSelection: true,
+      availableForSelection: false,
       defaultValue: false,
-      showIfSelectedForRouting: true,
+      showIfSelectedForRouting: false,
     },
     airplane: {
       availableForSelection: false,
@@ -525,21 +517,6 @@ export default {
         timeBeforeSurcharge: 120 * 60,
         showRentalStations: true,
       },
-      bolt_helsinki: {
-        enabled: true,
-        season: {
-          alwaysOn: true,
-        },
-        icon: 'scooter',
-        name: {
-          fi: 'Bolt',
-          sv: 'Bolt',
-          en: 'Bolt',
-        },
-        type: 'scooter',
-        showRentalVehicles: true,
-        showRentalStations: false,
-      },
     },
     buyUrl: {
       fi: 'https://www.hsl.fi/kaupunkipyorat?utm_campaign=kaupunkipyorat-omat&utm_source=reittiopas&utm_medium=referral#block-28474',
@@ -576,8 +553,6 @@ export default {
 
   includeCarSuggestions: true,
   includeParkAndRideSuggestions: true,
-  // Park and ride and car suggestions separated into two switches
-  separatedParkAndRideSwitch: true,
 
   parkingAreaSources: ['liipi'],
 
@@ -814,18 +789,9 @@ export default {
   crazyEgg: true,
   // features that should not be deployed to production
   experimental: {
-    allowFlexJourneys: IS_DEV,
+    allowFlexJourneys: false,
     allowDirectFlexJourneys: false,
   },
 
-  replacementBusRoutes: [
-    'HSL:1099V',
-    'HSL:6211U',
-    'HSL:6211E',
-    'HSL:6249Y',
-    'HSL:2213X',
-    'HSL:4699X',
-    'HSL:9969X',
-    'HSL:2015X',
-  ],
+  showStopStatusMarkers: true,
 };

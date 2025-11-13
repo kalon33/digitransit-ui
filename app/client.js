@@ -21,6 +21,7 @@ import { ReactRelayContext } from 'react-relay';
 import { setRelayEnvironment } from '@digitransit-search-util/digitransit-search-util-query-utils';
 import { Settings } from 'luxon';
 import { configShape } from './util/shapes';
+import i18n from './i18n';
 import { historyMiddlewares, render } from './routes';
 import StoreListeningIntlProvider from './util/StoreListeningIntlProvider';
 import appCreator from './app';
@@ -121,6 +122,8 @@ async function init() {
     .getComponentContext()
     .getStore('PreferencesStore')
     .getLanguage();
+
+  i18n.changeLanguage(language);
 
   const network = new RelayNetworkLayer([
     cacheMiddleware({

@@ -55,7 +55,6 @@ export default configMerger(walttiConfig, {
       'mode-bus': '#e8aa27',
       'mode-rail': '#8c4799',
       'mode-ferry': '#0064f0',
-      'mode-ferry-pier': '#666666',
       'mode-funicular': '#ff00ff',
     },
   },
@@ -68,6 +67,11 @@ export default configMerger(walttiConfig, {
 
     twitter: {
       site: '@Turkukaupunki',
+    },
+    image: {
+      url: 'img/social-share-foli.png',
+      width: 339,
+      height: 78,
     },
   },
 

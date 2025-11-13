@@ -25,6 +25,11 @@ export default configMerger(walttiConfig, {
   socialMedia: {
     title: APP_TITLE,
     description: APP_DESCRIPTION,
+    image: {
+      url: 'img/social-share-pori.png',
+      width: 400,
+      height: 116,
+    },
   },
 
   title: APP_TITLE,
@@ -141,11 +146,17 @@ export default configMerger(walttiConfig, {
   showTicketPrice: true,
   ticketLinkOperatorCode: 50231,
   externalFareRouteIds: [
+    '70',
+    '71',
+    '72',
     '301',
     '302',
     '303',
     '320',
     '321',
+    '701',
+    '702',
+    '703',
     '1001',
     '1011',
     '1021',

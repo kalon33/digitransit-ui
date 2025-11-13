@@ -9,7 +9,7 @@ import {
   drawHybridStopIcon,
   drawHybridStationIcon,
 } from '../../../util/mapIconUtils';
-import { ExtendedRouteTypes } from '../../../constants';
+import { getStopMode } from '../../../util/modeUtils';
 import {
   isFeatureLayerEnabled,
   getLayerBaseUrl,
@@ -68,25 +68,15 @@ class Stops {
     const isHighlighted =
       this.tile.highlightedStops &&
       this.tile.highlightedStops.includes(feature.properties.gtfsId);
-    let hasTrunkRoute = false;
-    let hasLocalTramRoute = false;
+
     const routes = JSON.parse(feature.properties.routes);
-    if (
-      feature.properties.type === 'BUS' &&
-      this.config.useExtendedRouteTypes
-    ) {
-      if (routes.some(p => p.gtfsType === ExtendedRouteTypes.BusExpress)) {
-        hasTrunkRoute = true;
-      }
-    }
-    if (
-      feature.properties.type === 'TRAM' &&
-      this.config.useExtendedRouteTypes
-    ) {
-      if (routes.some(p => p.gtfsType === ExtendedRouteTypes.SpeedTram)) {
-        hasLocalTramRoute = true;
-      }
-    }
+    const mode = getStopMode(
+      feature.properties.type,
+      routes,
+      feature.properties.code,
+      this.config,
+    );
+
     const ignoreMinZoomLevel =
       feature.properties.type === 'FERRY' ||
       feature.properties.type === 'RAIL' ||
@@ -97,24 +87,19 @@ class Stops {
           this.tile,
           feature.geom,
           isHighlighted,
-          this.config.colors.iconColors,
-          hasTrunkRoute,
+          this.config,
+          mode === 'bus-express',
         );
         return;
       }
 
-      let mode = feature.properties.type;
-      if (hasTrunkRoute) {
-        mode = 'bus-express';
-      }
-      if (hasLocalTramRoute) {
-        mode = 'speedtram';
-      }
       const stopOutOfService =
-        !!feature.properties.closedByServiceAlert ||
-        (feature.properties.servicesRunningInFuture === false &&
-          feature.properties.servicesRunningOnServiceDate === false); // if there are services added for the current day via realtime, servicesRunningOnServiceDate will be true
+        this.config.showStopStatusMarkers &&
+        (!!feature.properties.closedByServiceAlert ||
+          (feature.properties.servicesRunningInFuture === false &&
+            feature.properties.servicesRunningOnServiceDate === false)); // if there are services added for the current day via realtime, servicesRunningOnServiceDate will be true
       const noServiceOnServiceDay =
+        this.config.showStopStatusMarkers &&
         feature.properties.servicesRunningOnServiceDate === false;
 
       if (isHighlighted && zoom <= minZoom) {
@@ -137,9 +122,10 @@ class Stops {
           isHighlighted,
           !!(
             feature.properties.type === 'FERRY' &&
+            this.config.externalFerryByStopCode &&
             !isNull(feature.properties.code)
           ),
-          this.config.colors.iconColors,
+          this.config,
           stopOutOfService,
           noServiceOnServiceDay,
         );
@@ -322,7 +308,7 @@ class Stops {
                     this.tile,
                     feature.geom,
                     isHighlighted,
-                    this.config.colors.iconColors,
+                    this.config,
                   );
                 }
                 if (
@@ -335,11 +321,20 @@ class Stops {
                     this.tile?.vehicles,
                   )
                 ) {
+                  const routes = JSON.parse(feature.properties.routes);
+                  const mode = getStopMode(
+                    feature.properties.type,
+                    routes,
+                    undefined, // terminal has no stop code
+                    this.config,
+                    true,
+                  );
                   drawTerminalIcon(
                     this.tile,
                     feature.geom,
-                    feature.properties.type,
+                    mode,
                     isHighlighted,
+                    this.config,
                   );
                 }
               }
@@ -371,9 +366,10 @@ class Stops {
           isHighlighted,
           !!(
             feature.properties.type === 'FERRY' &&
+            this.config.externalFerryByStopCode &&
             !isNull(feature.properties.code)
           ),
-          this.config.colors.iconColors,
+          this.config,
           stopOutOfService,
           noServiceOnServiceDay,
         );

@@ -46,6 +46,11 @@ export default {
     title: APP_TITLE,
     description: APP_DESCRIPTION,
     locale: 'fi_FI',
+    image: {
+      url: 'img/social-share-matka.png',
+      width: 511,
+      height: 511,
+    },
   },
 
   title: APP_TITLE,
@@ -58,17 +63,9 @@ export default {
   colors: {
     primary: '#000',
     iconColors: {
-      'mode-airplane': '#0046AD',
-      'mode-bus': '#007ac9',
       'mode-tram': '#5E7921',
-      'mode-metro': '#CA4000',
       'mode-rail': '#000',
       'mode-ferry': '#247C7B',
-      'mode-ferry-pier': '#666666',
-      'mode-citybike': '#FCBC19',
-      'mode-citybike-secondary': '#333333',
-      'mode-scooter': '#C5CAD2',
-      'mode-taxi': '#647693',
     },
   },
   feedIds: IS_DEV
@@ -135,10 +132,10 @@ export default {
 
   meta: {
     description: APP_DESCRIPTION,
-    keywords: `reitti,reitit,opas,reittiopas,joukkoliikenne,joukkoliikenne, matkasuunnittelu, matkareitti, aikataulut, bussi, juna, metro, raitiovaunu, lautta, matka, suomen joukkoliikenne, reitti kartalla, matkareitti ovelta ovelle, opas.matka.fi, fintraffic matka, digitransit, reittiopas suomi, liikenneopas, julkinen liikenne, reittihaku, liityntäpysäköinti, pyöräily, autoilu, lennot, matkakumppani, matkaketju, reitti yhdellä haulla`,
+    keywords: `reitti,reitit,opas,reittiopas,joukkoliikenne,joukkoliikenne, matkasuunnittelu, matkareitti, aikataulut, bussi, juna, metro, raitiovaunu, lautta, matka, suomen joukkoliikenne, reitti kartalla, matkareitti ovelta ovelle, matka.fintraffic.fi, fintraffic matka, digitransit, reittiopas suomi, liikenneopas, julkinen liikenne, reittihaku, liityntäpysäköinti, pyöräily, autoilu, lennot, matkakumppani, matkaketju, reitti yhdellä haulla`,
   },
   menu: {
-    copyright: { label: `© Matka.fi ${YEAR}` },
+    copyright: { label: `© Matka.fintraffic.fi ${YEAR}` },
     content: [
       {
         name: 'Fintraffic',
@@ -223,7 +220,7 @@ export default {
       availableForSelection: true,
     },
     scooter: {
-      availableForSelection: true,
+      availableForSelection: false,
       defaultValue: false,
     },
     taxi: {
@@ -282,8 +279,6 @@ export default {
 
   includeCarSuggestions: true,
   includeParkAndRideSuggestions: true,
-  // Park and ride and car suggestions separated into two switches
-  separatedParkAndRideSwitch: true,
   showBikeAndParkItineraries: true,
 
   parkingAreaSources: ['liipi'],
@@ -472,4 +467,6 @@ export default {
     g.async=true; g.src='https://cdn.matomo.cloud/fintraffic.matomo.cloud/container_p27GPdXl.js'; s.parentNode.insertBefore(g,s);
     })();\n<\/script>\n`; // eslint-disable-line no-useless-escape
   },
+
+  showStopStatusMarkers: true,
 };

@@ -1,5 +1,5 @@
 export default function getMetadata(lang, host, url, config) {
-  const root = config.URL.ASSET_URL || config.APP_PATH;
+  const root = config.URL.ASSET_URL || '';
   const path = config.iconPath || 'icons';
   const iconPath = `${root}/${path}`;
   const imageHost = config.URL.ASSET_URL || `https://${host}`;
@@ -51,7 +51,7 @@ export default function getMetadata(lang, host, url, config) {
       },
       {
         property: 'og:image',
-        content: `${imageHost}${config.socialMedia.image.url}`,
+        content: `${imageHost}/${config.socialMedia.image.url}`,
       },
       {
         property: 'og:image:width',
@@ -87,7 +87,7 @@ export default function getMetadata(lang, host, url, config) {
       },
       {
         property: 'twitter:image',
-        content: `${imageHost}${config.socialMedia.image.url}`,
+        content: `${imageHost}/${config.socialMedia.image.url}`,
       },
     ],
     link: [

@@ -373,7 +373,6 @@ class TileLayerContainer extends GridLayer {
             <MarkerSelectPopup
               selectRow={this.selectRow}
               options={this.state.selectableTargets}
-              colors={this.context.config.colors}
             />
           );
         } else if (
@@ -423,7 +422,6 @@ class TileLayerContainer extends GridLayer {
             <MarkerSelectPopup
               selectRow={this.selectRow}
               options={this.state.selectableTargets}
-              colors={this.context.config.colors}
               zoom={this.state.zoom}
             />
           </Popup>

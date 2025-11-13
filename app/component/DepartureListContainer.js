@@ -324,7 +324,7 @@ class DepartureListContainer extends Component {
         );
       }
 
-      const id = `${departure.pattern.code}:${departure.time}:${departure.trip.gtfsId}`;
+      const id = `${departure.pattern.code}:${departure.time}:${departure.trip.gtfsId}:${departure.stop.gtfsId}`;
       const dropoffMessage = getDropoffMessage(
         departure.hasOnlyDropoff,
         departure.hasNoStop,
@@ -336,10 +336,7 @@ class DepartureListContainer extends Component {
         realtime: departure.realtime,
         bottomRow: dropoffMessage ? (
           <div className="drop-off-container">
-            <Icon
-              img="icon-icon_info"
-              color={this.context.config.colors.primary}
-            />
+            <Icon img="icon_info" color={this.context.config.colors.primary} />
             <FormattedMessage
               id={dropoffMessage}
               defaultMessage="Drop-off only"
@@ -436,6 +433,7 @@ const containerComponent = createFragmentContainer(DepartureListContainer, {
       dropoffType
       headsign
       stop {
+        gtfsId
         id
         code
         platformCode

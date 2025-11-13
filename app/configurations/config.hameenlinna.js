@@ -27,6 +27,11 @@ export default configMerger(walttiConfig, {
     twitter: {
       site: '@hmlkaupunki',
     },
+    image: {
+      url: 'img/social-share-hameenlinna.png',
+      width: 800,
+      height: 352,
+    },
   },
 
   title: APP_TITLE,
@@ -34,7 +39,7 @@ export default configMerger(walttiConfig, {
   favicon: './app/configurations/images/hameenlinna/hameenlinna-favicon.png',
 
   // Navbar logo
-  logo: 'hameenlinna/logo.png',
+  logo: 'hameenlinna/hameenlinna-logo.png',
   secondaryLogo: 'hameenlinna/secondary-logo.png',
 
   feedIds: ['Hameenlinna'],
@@ -53,18 +58,14 @@ export default configMerger(walttiConfig, {
     ],
   },
 
-  searchParams: {
-    'boundary.rect.min_lat': 60.75705,
-    'boundary.rect.max_lat': 61.30156,
-    'boundary.rect.min_lon': 23.73155,
-    'boundary.rect.max_lon': 25.28315,
-  },
+  useSearchPolygon: true,
 
   areaPolygon: [
     [23.73155, 60.75705],
-    [23.73155, 61.30156],
-    [25.28315, 61.30156],
+    [24.75326, 60.63741],
     [25.28315, 60.75705],
+    [25.28315, 61.33057],
+    [23.73155, 61.33057],
   ],
 
   defaultEndpoint: {

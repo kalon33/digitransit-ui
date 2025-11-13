@@ -13,7 +13,6 @@ const POI_MAP_PREFIX = `${MAP_URL}/map/v3/finland`;
 const OTP_URL = process.env.OTP_URL || `${API_URL}/routing/v2/finland/`;
 const HSL_TIMETABLES_URL =
   process.env.HSL_TIMETABLES_URL || 'https://dev.kartat.hsl.fi';
-const APP_PATH = process.env.APP_CONTEXT || '';
 const API_SUBSCRIPTION_QUERY_PARAMETER_NAME =
   process.env.API_SUBSCRIPTION_QUERY_PARAMETER_NAME ||
   'digitransit-subscription-key';
@@ -121,7 +120,6 @@ export default {
   hasAPISubscriptionHeader:
     API_SUBSCRIPTION_HEADER_NAME && API_SUBSCRIPTION_TOKEN,
 
-  APP_PATH: `${APP_PATH}`,
   indexPath: '',
   title: 'Reittihaku',
 
@@ -377,12 +375,14 @@ export default {
     backgroundInfo: '#ebf6fd',
     iconColors: {
       'mode-airplane': '#0046ad',
-      'mode-bus': '#0088ce',
-      'mode-tram': '#6a8925',
-      'mode-metro': '#ed8c00',
-      'mode-rail': '#af8dbc',
-      'mode-ferry': '#247C7B',
+      'mode-bus': '#007ac9',
+      'mode-tram': '#008151',
+      'mode-subway': '#CA4000',
+      'mode-rail': '#8c4799',
+      'mode-ferry': '#007A97',
+      'mode-ferry-external': '#666666',
       'mode-citybike': '#f2b62d',
+      'mode-citybike-secondary': '#333333',
       'mode-scooter': '#C5CAD2',
       'mode-taxi': '#647693',
       'mode-replacement-bus': '#DC0451',
@@ -409,7 +409,7 @@ export default {
     locale: 'en_US',
 
     image: {
-      url: '/img/default-social-share.png',
+      url: 'img/default-social-share.png',
       width: 2400,
       height: 1260,
     },
@@ -761,8 +761,6 @@ export default {
   includeBikeSuggestions: true,
   includeCarSuggestions: false,
   includeParkAndRideSuggestions: false,
-  // Park and ride and car suggestions separated
-  separatedParkAndRideSwitch: false,
 
   showNearYouButtons: false,
   nearYouModes: [],
@@ -858,4 +856,5 @@ export default {
   allowDirectFlexJourneys: false,
   allowedFlexRouteTypes: [1501],
   showRouteDescNotification: false,
+  showStopStatusMarkers: false,
 };

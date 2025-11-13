@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { memo } from 'react';
 import { intlShape, FormattedMessage } from 'react-intl';
 import { matchShape, routerShape } from 'found';
 import connectToStores from 'fluxible-addons-react/connectToStores';
-import shouldUpdate from 'recompose/shouldUpdate';
 import isEqual from 'lodash/isEqual';
 import DTAutoSuggest from '@digitransit-component/digitransit-component-autosuggest';
 import DTAutosuggestPanel from '@digitransit-component/digitransit-component-autosuggest-panel';
@@ -38,7 +37,6 @@ import scrollTop from '../util/scroll';
 import { LightenDarkenColor } from '../util/colorUtils';
 import { getRefPoint } from '../util/apiUtils';
 import { filterObject } from '../util/filterUtils';
-import { isKeyboardSelectionEvent } from '../util/browser';
 import {
   getTransportModes,
   getNearYouModes,
@@ -218,10 +216,7 @@ class IndexPage extends React.Component {
     }${this.context.config.trafficNowLink[lang]}`;
   };
 
-  clickStopNearIcon = (url, kbdEvent) => {
-    if (kbdEvent && !isKeyboardSelectionEvent(kbdEvent)) {
-      return;
-    }
+  clickStopNearIcon = url => {
     addAnalyticsEvent({
       event: 'sendMatomoEvent',
       category: 'nearbyStops',
@@ -395,7 +390,7 @@ class IndexPage extends React.Component {
             </span>
             <LocationSearch {...locationSearchProps} />
             <div className="datetimepicker-container">
-              <DatetimepickerContainer realtime color={color} />
+              <DatetimepickerContainer realtime color={color} lang={lang} />
             </div>
             {!config.hideFavourites && (
               <>
@@ -450,7 +445,7 @@ class IndexPage extends React.Component {
               {...locationSearchProps}
             />
             <div className="datetimepicker-container">
-              <DatetimepickerContainer realtime color={color} />
+              <DatetimepickerContainer realtime color={color} lang={lang} />
             </div>
             <FavouritesContainer
               onClickFavourite={this.clickFavourite}
@@ -478,19 +473,17 @@ class IndexPage extends React.Component {
   }
 }
 
-const Index = shouldUpdate(
-  // update only when origin/destination/breakpoint, favourite store status or language changes
-  (props, nextProps) => {
-    return !(
-      isEqual(nextProps.origin, props.origin) &&
-      isEqual(nextProps.destination, props.destination) &&
-      isEqual(nextProps.breakpoint, props.breakpoint) &&
-      isEqual(nextProps.lang, props.lang) &&
-      isEqual(nextProps.query, props.query) &&
-      isEqual(nextProps.locationState, props.locationState)
-    );
-  },
-)(IndexPage);
+// update only when origin/destination/breakpoint, favourite store status or language changes
+const Index = memo(
+  IndexPage,
+  (props, nextProps) =>
+    isEqual(nextProps.origin, props.origin) &&
+    isEqual(nextProps.destination, props.destination) &&
+    isEqual(nextProps.breakpoint, props.breakpoint) &&
+    isEqual(nextProps.lang, props.lang) &&
+    isEqual(nextProps.query, props.query) &&
+    isEqual(nextProps.locationState, props.locationState),
+);
 
 const IndexPageWithBreakpoint = withBreakpoint(Index);
 
