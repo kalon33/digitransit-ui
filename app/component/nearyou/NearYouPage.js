@@ -483,7 +483,7 @@ class NearYouPage extends React.Component {
                       mode={nearByStopMode}
                       breakpoint={this.props.breakpoint}
                       lang={this.props.lang}
-                      origin={this.state.searchPosition}
+                      originLocation={this.state.searchPosition}
                     />
                   )}
                   {this.state.showCityBikeTeaser &&
