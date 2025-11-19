@@ -128,3 +128,6 @@ export const PlannerMessageType = Object.freeze({
   NoStopsInRange: 'NO_STOPS_IN_RANGE',
   SystemError: 'SYSTEM_ERROR',
 });
+
+/** Label for marking via point legs */
+export const VIA_POINT_LABEL = 'ViaPoint';

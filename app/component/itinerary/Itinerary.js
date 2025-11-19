@@ -42,6 +42,7 @@ import { getCapacityForLeg } from '../../util/occupancyUtil';
 import getCo2Value from '../../util/emissions';
 import { ItineraryFragment } from './queries/ItineraryFragment';
 import { getTicketString } from '../../util/fareUtils';
+import { VIA_POINT_LABEL } from '../../constants';
 
 const NAME_LENGTH_THRESHOLD = 65; // for truncating long short names
 
@@ -428,7 +429,7 @@ const Itinerary = (
     // don't want to add it twice in the same place with the same key, so we
     // record whether we added it here at the first place.
     let viaAdded = false;
-    if (leg.intermediatePlace || leg.from.name?.indexOf('Via') > -1) {
+    if (leg.intermediatePlace || leg.from.name?.includes(VIA_POINT_LABEL)) {
       onlyIconLegs += 1;
       legs.push(<ViaLeg key={`via_${leg.mode}_${startMs}`} />);
       viaAdded = true;
