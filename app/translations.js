@@ -1148,7 +1148,7 @@ const translations = {
       'At {time} travel by scooter {distance} from {origin} to {destination}. Estimated time {duration}',
     'itinerary-details.transit-leg-part-1': 'At {time} {realtime} take',
     'itinerary-details.transit-leg-part-2':
-      'from stop {startStop} {startZoneInfo} {trackInfo} to stop {endStop} {endZoneInfo}. Estimated duration {duration}',
+      'from stop {startStop} {startZoneInfo} {trackInfo} to stop {endStop} {endZoneInfo}. Estimated duration {duration}. ',
     'itinerary-details.via-leg':
       '{arrivalTime} arrive to via point {viaPoint}. {leaveAction}',
     'itinerary-details.walk-leg':
@@ -2475,7 +2475,7 @@ const translations = {
       '{time} potkulautaile kohteesta {origin} {distance} {to} {destination}. Matka-aika {duration}',
     'itinerary-details.transit-leg-part-1': '{time} {realtime} ota',
     'itinerary-details.transit-leg-part-2':
-      'pysäkiltä {startStop} {startZoneInfo} {trackInfo} pysäkille {endStop} {endZoneInfo}. Arvioitu matka-aika {duration}',
+      'pysäkiltä {startStop} {startZoneInfo} {trackInfo} pysäkille {endStop} {endZoneInfo}. Arvioitu matka-aika {duration}. ',
     'itinerary-details.via-leg':
       '{arrivalTime} saavu välipisteeseen {viaPoint}. {leaveAction}',
     'itinerary-details.walk-leg':
@@ -4063,7 +4063,7 @@ const translations = {
       'At {time} ride your kick scooter {distance} from {origin} to {destination}. Estimated time {duration}',
     'itinerary-details.transit-leg-part-1': 'At {time} {realtime} take',
     'itinerary-details.transit-leg-part-2':
-      'from stop {startStop} {startZoneInfo} {trackInfo} to stop {endStop} {endZoneInfo}. Estimated duration {duration}',
+      'from stop {startStop} {startZoneInfo} {trackInfo} to stop {endStop} {endZoneInfo}. Estimated duration {duration}. ',
     'itinerary-details.via-leg':
       '{arrivalTime} arrive to via point {viaPoint}. {leaveAction}',
     'itinerary-details.walk-leg':
@@ -5427,7 +5427,7 @@ const translations = {
       '{time} åk elsparkcykel {distance} från {origin} till destinationen {destination}. Restid {duration}',
     'itinerary-details.transit-leg-part-1': '{time} {realtime} ta',
     'itinerary-details.transit-leg-part-2':
-      'från hållplats {startStop} {startZoneInfo} {trackInfo} till hållplats {endStop} {endZoneInfo}. Beräknad restid {duration}',
+      'från hållplats {startStop} {startZoneInfo} {trackInfo} till hållplats {endStop} {endZoneInfo}. Beräknad restid {duration}. ',
     'itinerary-details.via-leg':
       '{arrivalTime} du anländer till mellanstopp {viaPoint}. {leaveAction}',
     'itinerary-details.walk-leg':
