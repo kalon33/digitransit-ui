@@ -37,6 +37,7 @@ import {
   showCarBoardingNote,
   legTimeStr,
   legTime,
+  isPlatformChanged,
 } from '../../util/legUtils';
 import { shouldShowFareInfo } from '../../util/fareUtils';
 import { AlertEntityType, AlertSeverityLevelType } from '../../constants';
@@ -507,6 +508,7 @@ class TransitLeg extends React.Component {
                   isRailOrSubway={
                     modeClassName === 'rail' || modeClassName === 'subway'
                   }
+                  updated={isPlatformChanged(leg)}
                 />
               </div>
             </div>

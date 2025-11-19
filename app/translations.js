@@ -1181,7 +1181,7 @@ const translations = {
     'itinerary-summary-row.description':
       'Itinerary departing at {departureDate} {departureTime} and arriving at {arrivalDate} {arrivalTime}. {firstDeparture} {transfers} Total time {totalTime}.',
     'itinerary-summary-row.first-departure':
-      '{vehicle} leaves at {departureTime} from stop {stopName}.',
+      '{vehicle} leaves at {departureTime} from stop {stopName} {platformOrTrack}.',
     'itinerary-summary-row.first-leg-start-time':
       'Leaves at {firstDepartureTime} from {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
     'itinerary-summary-row.first-leg-start-time-citybike':
@@ -1333,9 +1333,14 @@ const translations = {
     'navigation-mode-late': '{name} is late',
     'navigation-outro-dismiss': 'End guidance',
     'navigation-outro-header': "You've arrived!",
+    'navigation-platform-change': 'Platform changed',
+    'navigation-platform-change-details':
+      '{name} leaves from platform {number}',
     'navigation-quit': 'Go back',
     'navigation-remember-ticket': 'Did you remember to buy a ticket?',
     'navigation-ticket': 'Ticket',
+    'navigation-track-change': 'Track changed',
+    'navigation-track-change-details': '{name} leaves from track {number}',
     'navigation-transfer-problem': 'Transfer no longer possible',
     'navigation-transfer-problem-details':
       'The transfer time {transfer} is too short.',
@@ -2501,7 +2506,7 @@ const translations = {
     'itinerary-summary-row.description':
       'Lähtö {departureDate} kello {departureTime}. Perillä {arrivalDate} kello {arrivalTime}. {firstDeparture} {transfers} Matka-aika {totalTime}',
     'itinerary-summary-row.first-departure':
-      '{vehicle} lähtee asemalta {stopName} kello {departureTime}.',
+      '{vehicle} lähtee asemalta {stopName} kello {departureTime} {platformOrTrack}.',
     'itinerary-summary-row.first-leg-start-time':
       'Lähtee klo {firstDepartureTime} {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
     'itinerary-summary-row.first-leg-start-time-citybike':
@@ -2652,9 +2657,13 @@ const translations = {
     'navigation-mode-late': '{name} on myöhässä',
     'navigation-outro-dismiss': 'Poistu opastuksesta',
     'navigation-outro-header': 'Olet perillä!',
+    'navigation-platform-change': 'Laituri muuttunut',
+    'navigation-platform-change-details': '{name} lähtee laiturilta {number}',
     'navigation-quit': 'Palaa',
     'navigation-remember-ticket': 'Muistithan ostaa lipun?',
     'navigation-ticket': 'Lippu',
+    'navigation-track-change': 'Raide muuttunut',
+    'navigation-track-change-details': '{name} lähtee raiteelta {number}',
     'navigation-transfer-problem': 'Vaihto ei enää onnistu',
     'navigation-transfer-problem-details':
       'Vaihtoaika {transfer} on liian lyhyt.',
@@ -5450,7 +5459,7 @@ const translations = {
     'itinerary-summary-row.description':
       'Avgång {departureDate} klockan {departureTime}. Framme {arrivalDate} klockan {arrivalTime}. {firstDeparture} {transfers} Restid {totalTime}.',
     'itinerary-summary-row.first-departure':
-      '{vehicle} avgår från station {stopName} klockan {departureTime}.',
+      '{vehicle} avgår från station {stopName} klockan {departureTime} {platformOrTrack}.',
     'itinerary-summary-row.first-leg-start-time':
       'Avgår kl {firstDepartureTime} från {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
     'itinerary-summary-row.first-leg-start-time-citybike':
@@ -5600,11 +5609,15 @@ const translations = {
     'navigation-mode-late': '{name} har försenats',
     'navigation-outro-dismiss': 'Stäng guidning',
     'navigation-outro-header': 'Du är framme!',
+    'navigation-platform-change': 'Plattformen har ändrats',
+    'navigation-platform-change-details': '{name} går från plattform {number}',
     'navigation-quit': 'Tillbaka',
     'navigation-remember-ticket': 'Kom du ihåg att köpa biljett?',
     'navigation-ticket': 'Biljett',
+    'navigation-track-change': 'Spåret har ändrats',
+    'navigation-track-change-details': '{name} går från spår {number}',
     'navigation-transfer-problem': 'Bytet är inte längre möjligt',
-    'navigation-transfer-problem-details': 'Bytestid {transfer] är för kort.',
+    'navigation-transfer-problem-details': 'Bytestid {transfer} är för kort.',
     'navileg-at-ferrypier': 'färjekajen',
     'navileg-at-station': 'stationen',
     'navileg-at-stop': 'hållplatsen',
