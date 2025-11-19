@@ -184,12 +184,17 @@ export function routePagePath(routeId, tab, patternId, tripId, queryParams) {
   return path;
 }
 
-export function stopPagePath(isStation, gtfsId, tab) {
-  const path = isStation
+export function stopPagePath(isStation, gtfsId, tab, search) {
+  let path = isStation
     ? `/${PREFIX_TERMINALS}/${encodeURIComponent(gtfsId)}`
     : `/${PREFIX_STOPS}/${encodeURIComponent(gtfsId)}`;
-
-  return tab ? `${path}/${tab}` : path;
+  if (tab) {
+    path = `${path}/${tab}`;
+  }
+  if (search) {
+    path = `${path}/${search}`;
+  }
+  return path;
 }
 
 export function definesItinerarySearch(origin, destination) {
