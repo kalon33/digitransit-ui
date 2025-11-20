@@ -10,7 +10,11 @@ import Icon from '../Icon';
 import RouteAgencyInfo from './RouteAgencyInfo';
 import RouteNumber from '../RouteNumber';
 import RouteControlPanel from './RouteControlPanel';
-import { PREFIX_DISRUPTION, PREFIX_ROUTES } from '../../util/path';
+import {
+  PREFIX_ROUTES,
+  PREFIX_DISRUPTION,
+  routePagePath,
+} from '../../util/path';
 import withBreakpoint from '../../util/withBreakpoint';
 import BackButton from '../BackButton';
 import { getRouteMode } from '../../util/modeUtils';
@@ -56,14 +60,13 @@ class RoutePage extends React.Component {
   render() {
     const { breakpoint, router, route, error, currentTime } = this.props;
     const { config } = this.context;
-    const tripId = this.props.match.params?.tripId;
-    const patternId = this.props.match.params?.patternId;
+    const { tripId, patternId, routeId } = this.props.match.params;
 
     if (route == null && !error) {
       /* In this case there is little we can do
        * There is no point continuing rendering as it can only
        * confuse user. Therefore redirect to Routes page */
-      router.replace(`/${PREFIX_ROUTES}`);
+      router.replace(PREFIX_ROUTES);
       return null;
     }
     const mode = getRouteMode(route, config);
@@ -135,7 +138,11 @@ class RoutePage extends React.Component {
             <div className="trip-page-alert-container">
               <AlertBanner
                 alerts={filteredAlerts}
-                linkAddress={`/${PREFIX_ROUTES}/${this.props.match.params.routeId}/${PREFIX_DISRUPTION}/${this.props.match.params.patternId}`}
+                linkAddress={routePagePath(
+                  routeId,
+                  PREFIX_DISRUPTION,
+                  patternId,
+                )}
               />
             </div>
           )}

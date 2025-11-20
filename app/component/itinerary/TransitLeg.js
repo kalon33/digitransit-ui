@@ -24,7 +24,7 @@ import {
 } from '../../util/alertUtils';
 import {
   PREFIX_DISRUPTION,
-  PREFIX_ROUTES,
+  routePagePath,
   PREFIX_STOPS,
 } from '../../util/path';
 import { durationToString } from '../../util/timeUtils';
@@ -564,7 +564,11 @@ class TransitLeg extends React.Component {
                 <Link
                   to={
                     (hasEntitiesOfType(alert, AlertEntityType.Route) &&
-                      `/${PREFIX_ROUTES}/${leg.route.gtfsId}/${PREFIX_DISRUPTION}/${leg.trip.pattern.code}`) ||
+                      routePagePath(
+                        leg.route.gtfsId,
+                        PREFIX_DISRUPTION,
+                        leg.trip.pattern.code,
+                      )) ||
                     (hasEntitiesOfType(alert, AlertEntityType.Stop) &&
                       `/${PREFIX_STOPS}/${alert.entities[0].gtfsId}/${PREFIX_DISRUPTION}/`)
                   }

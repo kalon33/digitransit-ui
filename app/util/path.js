@@ -166,6 +166,24 @@ export const getStopRoutePath = searchObj => {
   return path.concat(id);
 };
 
+export function routePagePath(routeId, tab, patternId, tripId, queryParams) {
+  let path = `/${PREFIX_ROUTES}/${encodeURIComponent(routeId)}`;
+
+  if (tab) {
+    path = `${path}/${tab}`;
+  }
+  if (patternId) {
+    path = `${path}/${encodeURIComponent(patternId)}`;
+  }
+  if (tripId) {
+    path = `${path}/${encodeURIComponent(tripId)}`;
+  }
+  if (queryParams) {
+    path = `${path}${queryParams}`; // note: '?' is not added
+  }
+  return path;
+}
+
 export function definesItinerarySearch(origin, destination) {
   return get(origin, 'address') && get(destination, 'address');
 }
