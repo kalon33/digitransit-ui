@@ -1,55 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
-
-const isBadgeTextLong = badgeText => badgeText.length > 1 || badgeText > 9;
-
-const IconBadge = ({ badgeFill, badgeText, textFill }) => {
-  if (!badgeFill || (!badgeText && badgeText !== 0)) {
-    return null;
-  }
-  return (
-    <svg className="icon-badge" viewBox="0 0 40 40">
-      <circle
-        className="badge-circle"
-        cx="20"
-        cy="20"
-        fill={badgeFill}
-        r="18"
-      />
-      <text
-        className={cx('badge-text', {
-          long: isBadgeTextLong(badgeText),
-        })}
-        dy="0.35em"
-        x="20"
-        y="20"
-        style={textFill ? { fill: textFill } : {}}
-      >
-        {badgeText}
-      </text>
-    </svg>
-  );
-};
-
-IconBadge.propTypes = {
-  badgeFill: PropTypes.string,
-  badgeText: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  textFill: PropTypes.string,
-};
-
-IconBadge.defaultProps = {
-  badgeFill: undefined,
-  badgeText: undefined,
-  textFill: '#fff',
-};
+import { getChildrenByType } from '../util/reactUtils';
 
 function Icon({
-  backgroundShape,
-  backgroundColor,
-  badgeFill,
-  badgeText,
-  badgeTextFill,
   className,
   color,
   height,
@@ -60,7 +14,12 @@ function Icon({
   width,
   dataURI,
   ariaLabel,
+  children,
+  iconScale,
 }) {
+  const background = getChildrenByType(children, 'IconBackground');
+  const badge = getChildrenByType(children, 'IconBadge');
+
   return (
     <span aria-hidden className="icon-container">
       <svg
@@ -75,35 +34,26 @@ function Icon({
         className={cx('icon', className)}
         aria-label={ariaLabel}
       >
-        {backgroundShape === 'circle' && (
-          <circle
-            className="icon-circle"
-            cx="20"
-            cy="20"
-            fill={backgroundColor}
-            r="20"
-          />
-        )}
-        {!dataURI && <use xlinkHref={`#${img}`} />}
-        {dataURI && (
-          <image href={dataURI} x={0} y={0} width="100%" height="100%" />
-        )}
+        {background}
+        <g
+          style={{
+            transformOrigin: 'center',
+            transform: `scale(${iconScale})`,
+          }}
+        >
+          {dataURI ? (
+            <image href={dataURI} x={0} y={0} width="100%" height="100%" />
+          ) : (
+            <use xlinkHref={`#${img}`} />
+          )}
+        </g>
       </svg>
-      <IconBadge
-        badgeFill={badgeFill}
-        badgeText={badgeText}
-        textFill={badgeTextFill}
-      />
+      {badge}
     </span>
   );
 }
 
 Icon.propTypes = {
-  backgroundShape: PropTypes.oneOf(['circle']),
-  backgroundColor: PropTypes.string,
-  badgeFill: PropTypes.string,
-  badgeText: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  badgeTextFill: PropTypes.string,
   className: PropTypes.string,
   color: PropTypes.string,
   height: PropTypes.number,
@@ -114,14 +64,11 @@ Icon.propTypes = {
   width: PropTypes.number,
   dataURI: PropTypes.string,
   ariaLabel: PropTypes.string,
+  children: PropTypes.node,
+  iconScale: PropTypes.number,
 };
 
 Icon.defaultProps = {
-  backgroundShape: undefined,
-  backgroundColor: 'white',
-  badgeFill: undefined,
-  badgeText: undefined,
-  badgeTextFill: undefined,
   className: undefined,
   color: undefined,
   height: undefined,
@@ -131,8 +78,11 @@ Icon.defaultProps = {
   width: undefined,
   ariaLabel: '',
   dataURI: undefined,
+  children: null,
+  iconScale: 1,
 };
 
 Icon.displayName = 'Icon';
 Icon.description = 'Shows an icon from the SVG sprite';
+
 export default Icon;
