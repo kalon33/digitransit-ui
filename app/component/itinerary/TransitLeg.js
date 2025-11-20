@@ -575,6 +575,8 @@ class TransitLeg extends React.Component {
             changeHash={this.props.changeHash}
             tabIndex={this.props.tabIndex}
             isCallAgency={mode === 'call'}
+            mobile={this.props.mobile}
+            isTransitLeg
           />
 
           {this.state.showAlternativeLegs &&
@@ -592,6 +594,8 @@ class TransitLeg extends React.Component {
                 )}
                 displayTime
                 isCallAgency={mode === 'call'}
+                mobile={this.props.mobile}
+                isTransitLeg
               />
             ))}
           {this.displayAlternativeLegs() && (
@@ -702,6 +706,7 @@ TransitLeg.propTypes = {
   changeHash: PropTypes.func,
   tabIndex: PropTypes.number,
   usingOwnCarWholeTrip: PropTypes.bool,
+  mobile: PropTypes.bool,
 };
 
 TransitLeg.defaultProps = {
@@ -711,6 +716,7 @@ TransitLeg.defaultProps = {
   tabIndex: undefined,
   children: undefined,
   usingOwnCarWholeTrip: false,
+  mobile: undefined,
 };
 
 TransitLeg.contextTypes = {
