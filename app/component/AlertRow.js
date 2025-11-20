@@ -10,7 +10,7 @@ import ExternalLink from './ExternalLink';
 import Icon from './Icon';
 import RouteNumber from './RouteNumber';
 import ServiceAlertIcon from './ServiceAlertIcon';
-import { routePagePath, PREFIX_STOPS } from '../util/path';
+import { routePagePath, stopPagePath, PREFIX_STOPS } from '../util/path';
 import {
   entityCompare,
   getEntitiesOfType,
@@ -160,7 +160,7 @@ export default function AlertRow(
               onClickLink?.();
             }}
             key={`${gtfsIdList[i]}-${index}`}
-            to={`/${PREFIX_STOPS}/${gtfsIdList[i]}`}
+            to={stopPagePath(false, gtfsIdList[i])}
             className={cx('alert-row-link', routeMode)}
             aria-label={`${intl.formatMessage({
               id: 'stop',

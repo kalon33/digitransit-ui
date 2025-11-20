@@ -25,7 +25,7 @@ import {
 import {
   PREFIX_DISRUPTION,
   routePagePath,
-  PREFIX_STOPS,
+  stopPagePath,
 } from '../../util/path';
 import { durationToString } from '../../util/timeUtils';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
@@ -477,7 +477,7 @@ class TransitLeg extends React.Component {
                     name: mode,
                   });
                 }}
-                to={`/${PREFIX_STOPS}/${leg.from.stop.gtfsId}`}
+                to={stopPagePath(false, leg.from.stop.gtfsId)}
               >
                 {leg.from.name}
                 {leg.isViaPoint && (
@@ -570,7 +570,11 @@ class TransitLeg extends React.Component {
                         leg.trip.pattern.code,
                       )) ||
                     (hasEntitiesOfType(alert, AlertEntityType.Stop) &&
-                      `/${PREFIX_STOPS}/${alert.entities[0].gtfsId}/${PREFIX_DISRUPTION}/`)
+                      stopPagePath(
+                        false,
+                        alert.entities[0].gtfsId,
+                        PREFIX_DISRUPTION,
+                      ))
                   }
                   className="disruption-link"
                 >
