@@ -51,7 +51,6 @@ const PatternOption = ({
     return (
       <li
         aria-label={patternOptionText(option)}
-        key={option.code}
         {...getItemProps({
           item: option,
           className: cx(
@@ -204,14 +203,17 @@ export default function RoutePatternSelect(
         >
           {optionArray.map(section => {
             return (
-              <div key={section.name} className="section-container">
+              <div
+                key={`section-${section.name}`}
+                className="section-container"
+              >
                 {section.name && (
                   <div className="section-title">{section.name}</div>
                 )}
                 <ul aria-hidden="true">
                   {section.options.map(option => (
                     <PatternOption
-                      key={option.code}
+                      key={option.code || option.gtfsId}
                       option={option}
                       optionIndexTable={optionIndexTable}
                       highlightedIndex={highlightedIndex}
