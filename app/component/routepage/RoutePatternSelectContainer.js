@@ -12,13 +12,11 @@ import {
 import cx from 'classnames';
 import sortBy from 'lodash/sortBy';
 import { routerShape } from 'found';
-import connectToStores from 'fluxible-addons-react/connectToStores';
 import { enrichPatterns } from '@digitransit-util/digitransit-util';
 import { FormattedMessage, intlShape } from 'react-intl';
 import { routeShape, relayShape, configShape } from '../../util/shapes';
 import Icon from '../Icon';
 import { routePagePath, PREFIX_STOPS } from '../../util/path';
-import { unixToYYYYMMDD } from '../../util/timeUtils';
 import RoutePatternSelect, { patternTextWithIcon } from './RoutePatternSelect';
 
 function filterSimilarRoutes(routes, currentRoute) {
@@ -248,7 +246,7 @@ class RoutePatternSelectContainer extends Component {
   }
 }
 
-const storeComponent = connectToStores(
+const withStore = createRefetchContainer(
   props => (
     <ReactRelayContext.Consumer>
       {({ environment }) => (
@@ -259,23 +257,6 @@ const storeComponent = connectToStores(
       )}
     </ReactRelayContext.Consumer>
   ),
-  ['PreferencesStore'],
-  context => ({
-    serviceDay: unixToYYYYMMDD(
-      context.getStore('TimeStore').getCurrentTime(),
-      context.config,
-    ),
-    lang: context.getStore('PreferencesStore').getLanguage(),
-  }),
-);
-
-storeComponent.contextTypes = {
-  getStore: PropTypes.func.isRequired,
-  config: configShape.isRequired,
-};
-
-const withStore = createRefetchContainer(
-  storeComponent,
   {
     route: graphql`
       fragment RoutePatternSelect_route on Route
