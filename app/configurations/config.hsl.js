@@ -633,15 +633,15 @@ export default {
       },
       content: {
         fi: [
-          'Pääset kyytiin myös keskiovista näyttämättä lippua kuljettajalle.',
+          'Pääset kyytiin myös bussin keskiovista. Varaudu näyttämään lippu pyydettäessä kuljettajalle tai tarkastajalle.',
           'Linja käyttää valikoituja pysäkkejä eli ei pysähdy kaikilla pysäkeillä.',
         ],
         en: [
-          'Passengers can board the buses also through the middle doors.',
+          'You can also board the bus through the middle doors. Please be ready to show your ticket to the driver or ticket.',
           'The bus will not serve all stops along the route.',
         ],
         sv: [
-          'Man kan stiga på genom mittdörren och behöver inte visa upp sin biljett för föraren.',
+          'Du kan också stiga på bussen genom mittdörren. Var beredd på att visa upp din biljett för föraren eller biljettkontrollanten om du blir ombedd.',
           'För att snabba upp trafiken stannar bussarna inte vid alla hållplatser.',
         ],
       },
