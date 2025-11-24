@@ -3,6 +3,7 @@ import React from 'react';
 
 import { intlShape } from 'react-intl';
 import Icon from './Icon';
+import IconBackground from './icon/IconBackground';
 import IconBadge from './icon/IconBadge';
 
 const IconWithIcon = (
@@ -29,20 +30,29 @@ const IconWithIcon = (
         img={img}
         viewBox={mode === 'call' ? '0 0 60 60' : undefined}
         omitViewBox={omitViewBox}
-      >
-        <IconBadge
-          badgeFill={badgeFill}
-          badgeText={badgeText}
-          badgeTextFill={badgeTextFill}
-        />
-      </Icon>
+        foreground={
+          (badgeFill || badgeText) && (
+            <IconBadge
+              badgeFill={badgeFill}
+              badgeText={badgeText}
+              badgeTextFill={badgeTextFill}
+            />
+          )
+        }
+      />
     </span>
     {subIcon && (
       <span
         className={subIconClassName}
         title={intl.formatMessage({ id: 'disruption' })}
       >
-        <Icon backgroundShape={subIconShape} img={subIcon} />
+        <Icon
+          img={subIcon}
+          omitViewBox={omitViewBox}
+          background={
+            subIconShape && <IconBackground backgroundShape={subIconShape} />
+          }
+        />
       </span>
     )}
   </span>
