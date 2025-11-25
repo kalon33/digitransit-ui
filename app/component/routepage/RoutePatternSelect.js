@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelect } from 'downshift';
-import { Link } from 'found';
+import { Link, routerShape } from 'found';
 import { FormattedMessage } from 'react-intl';
 import cx from 'classnames';
 import Icon from '../Icon';
@@ -131,7 +131,7 @@ PatternOption.propTypes = {
 
 export default function RoutePatternSelect(
   { currentPattern, optionArray, onSelectChange, className },
-  { config },
+  { config, router },
 ) {
   // flatten optionArray to an ungrouped 1-D array
   const flattenedOptions = optionArray.reduce(
@@ -160,6 +160,9 @@ export default function RoutePatternSelect(
     selectedItem: currentPattern,
     items: flattenedOptions,
     onSelectedItemChange: ({ selectedItem }) =>
+      // if selected item is a similar route, redirect to route page
+      (selectedItem.gtfsId &&
+        router.push(routePagePath(selectedItem.gtfsId))) ||
       onSelectChange(selectedItem.code),
     onIsOpenChange: changes =>
       changes.isOpen &&
@@ -260,4 +263,5 @@ RoutePatternSelect.propTypes = {
 
 RoutePatternSelect.contextTypes = {
   config: configShape.isRequired,
+  router: routerShape.isRequired,
 };
