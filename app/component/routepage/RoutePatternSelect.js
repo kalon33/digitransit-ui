@@ -211,7 +211,6 @@ export default function RoutePatternSelect(
             isOpen && 'suggestions-container--open',
           )}
           hidden={!isOpen}
-          {...getMenuProps({})}
         >
           {optionArray.map(section => {
             return (
@@ -219,9 +218,11 @@ export default function RoutePatternSelect(
                 key={`section-${section.name}`}
                 className="section-container"
               >
-                <ul aria-label={section.name}>
+                <ul aria-labelledby="section-title" {...getMenuProps({})}>
                   {section.name && (
-                    <label className="section-title">{section.name}</label>
+                    <label id="section-title" className="section-title">
+                      {section.name}
+                    </label>
                   )}
                   {section.options.map(option => (
                     <PatternOption

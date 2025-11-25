@@ -77,7 +77,7 @@ class RoutePatternSelectContainer extends Component {
       return;
     }
     const query = graphql`
-      query RoutePatternSelect_similarRoutesQuery($name: String) {
+      query RoutePatternSelectContainer_similarRoutesQuery($name: String) {
         routes(name: $name) {
           gtfsId
           shortName
@@ -259,7 +259,7 @@ const withStore = createRefetchContainer(
   ),
   {
     route: graphql`
-      fragment RoutePatternSelect_route on Route
+      fragment RoutePatternSelectContainer_route on Route
       @argumentDefinitions(date: { type: "String" }) {
         shortName
         mode
@@ -286,9 +286,9 @@ const withStore = createRefetchContainer(
     `,
   },
   graphql`
-    query RoutePatternSelectQuery($routeId: String!, $date: String!) {
+    query RoutePatternSelectContainerQuery($routeId: String!, $date: String!) {
       route(id: $routeId) {
-        ...RoutePatternSelect_route @arguments(date: $date)
+        ...RoutePatternSelectContainer_route @arguments(date: $date)
       }
     }
   `,
