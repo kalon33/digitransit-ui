@@ -148,6 +148,7 @@ export default function RoutePatternSelect(
     {},
   );
 
+  // refer to useSelect hook in downshift.js documentation
   const {
     isOpen,
     highlightedIndex,
@@ -160,7 +161,8 @@ export default function RoutePatternSelect(
     items: flattenedOptions,
     onSelectedItemChange: ({ selectedItem }) =>
       onSelectChange(selectedItem.code),
-    onIsOpenChange: () =>
+    onIsOpenChange: changes =>
+      changes.isOpen &&
       addAnalyticsEvent({
         category: 'Route',
         action: 'OpenDirectionMenu',
