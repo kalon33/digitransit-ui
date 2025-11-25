@@ -40,13 +40,24 @@ export function patternTextWithIcon(pattern) {
   return null;
 }
 
-const PatternOption = ({
+/**
+ * Renders a single option as a list item
+ * @param props
+ * @param props.option option to be rendered, can be a pattern or a similar route
+ * @param props.optionIndexTable lookup table from option id to index
+ * @param props.highlightedIndex index of the currently highlighted option
+ * @param props.getItemProps returns downshift item props
+ * @param currentPattern currently selected pattern
+ * @returns {JSX.Element}
+ */
+function PatternOption({
   option,
   optionIndexTable,
   highlightedIndex,
   getItemProps,
   currentPattern,
-}) => {
+}) {
+  // option is a pattern
   if (option.stops) {
     return (
       <li
@@ -67,6 +78,7 @@ const PatternOption = ({
       </li>
     );
   }
+  // option is a similar route
   if (option.shortName && option.longName && option.mode) {
     return (
       <li
@@ -107,11 +119,11 @@ const PatternOption = ({
     );
   }
   return null;
-};
+}
 
 PatternOption.propTypes = {
   option: patternShape.isRequired,
-  optionIndexTable: PropTypes.shape.isRequired,
+  optionIndexTable: PropTypes.objectOf(PropTypes.number.isRequired).isRequired,
   highlightedIndex: PropTypes.number.isRequired,
   getItemProps: PropTypes.func.isRequired,
   currentPattern: patternShape.isRequired,
@@ -207,10 +219,10 @@ export default function RoutePatternSelect(
                 key={`section-${section.name}`}
                 className="section-container"
               >
-                {section.name && (
-                  <div className="section-title">{section.name}</div>
-                )}
-                <ul aria-hidden="true">
+                <ul aria-label={section.name}>
+                  {section.name && (
+                    <label className="section-title">{section.name}</label>
+                  )}
                   {section.options.map(option => (
                     <PatternOption
                       key={option.code || option.gtfsId}
@@ -236,7 +248,7 @@ RoutePatternSelect.propTypes = {
   optionArray: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
-      option: patternShape.isRequired,
+      options: PropTypes.arrayOf(patternShape).isRequired,
     }),
   ).isRequired,
   onSelectChange: PropTypes.func.isRequired,
