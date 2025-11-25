@@ -340,6 +340,72 @@
 
           .icon-container {
             display: flex;
+      .extension-walk {
+        display: flex;
+        margin-left: var(--space-xl);
+        margin-bottom: var(--space-s);
+        margin-top: var(--space-xs);
+      }
+
+      .wait-in-vehicle {
+        display: flex;
+        align-items: flex-start;
+        text-align: start;
+        margin-left: var(--space-xl);
+      }
+
+      .wait-leg {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-left: var(--space-m);
+
+        .icon {
+          margin-top: 2px;
+          height: 25px;
+          width: 25px;
+        }
+      }
+
+      .icon-expand {
+        margin-top: 5px;
+        width: 24px;
+        height: 24px;
+      }
+
+      .icon-expand-small {
+        margin-top: 5px;
+        width: 16px;
+        height: 16px;
+        margin-right: var(--space-s);
+      }
+
+      .destination-icon {
+        margin: 0 10px;
+
+        &.place {
+          fill: $to-color;
+        }
+      }
+
+      .destination {
+        text-align: left;
+
+        .details {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+
+          .address {
+            color: #888;
+          }
+
+          .platform-short {
+            width: unset;
+            font-family: $font-family;
+            font-size: $font-size-small;
+            letter-spacing: $letter-spacing;
+            display: inline-flex;
             align-items: center;
 
             .icon {

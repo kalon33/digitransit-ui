@@ -7,6 +7,7 @@ import { useRouter } from 'found';
 import { legShape, locationShape, itineraryShape } from '../../util/shapes';
 import Icon from '../Icon';
 import Feedback from './Feedback';
+import IconBackground from '../icon/IconBackground';
 import Duration from './Duration';
 import RouteNumber from '../RouteNumber';
 import RouteNumberContainer from '../RouteNumberContainer';
@@ -971,6 +972,20 @@ const Itinerary = ({
               >
                 {startDate && (
                   <div className="itinerary-start-date">{startDate}</div>
+                {legs}
+              </div>
+              <div className="overflow-icon-container">
+                {showOverflowIcon && (
+                  <Icon
+                    img="icon_three-dots"
+                    className="overflow-icon"
+                    background={
+                      <IconBackground
+                        backgroundShape="circle"
+                        backgroundColor="#fff"
+                      />
+                    }
+                  />
                 )}
                 <div className="itinerary-start-time-and-end-time">
                   {hasCallAgencyLeg && <FormattedMessage id="estimate" />}{' '}

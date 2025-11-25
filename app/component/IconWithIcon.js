@@ -27,7 +27,8 @@ const IconWithIcon = ({
         <Icon
           color={color}
           img={img}
-          omitViewBox={backgroundShape ? undefined : omitViewBox}
+          viewBox={mode === 'call' ? '0 0 60 60' : undefined}
+          omitViewBox={omitViewBox}
           foreground={
             (badgeFill || badgeText) && (
               <IconBadge
@@ -55,7 +56,9 @@ const IconWithIcon = ({
           <Icon
             img={subIcon}
             omitViewBox={omitViewBox}
-            background={subIconShape && <IconBackground shape={subIconShape} />}
+            background={
+              subIconShape && <IconBackground backgroundShape={subIconShape} />
+            }
           />
         </span>
       )}
