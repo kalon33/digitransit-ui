@@ -10,15 +10,11 @@ import { addAnalyticsEvent } from '../../util/analyticsUtils';
 import { configShape, patternShape } from '../../util/shapes';
 
 function patternOptionText(pattern) {
-  if (pattern) {
-    let destinationName = pattern.headsign;
-    if (destinationName === null) {
-      destinationName = pattern.stops[pattern.stops.length - 1].name;
-    }
-    const text = `${pattern.stops[0].name} ➔ ${destinationName}`;
-    return text;
-  }
-  return '';
+  return pattern
+    ? `${pattern.stops[0].name} ➔ ${
+        pattern.headsign || pattern.stops[pattern.stops.length - 1].name
+      }`
+    : '';
 }
 
 export function patternTextWithIcon(pattern) {
@@ -57,9 +53,9 @@ function PatternOption({
   getItemProps,
   currentPattern,
 }) {
-  // option is a pattern
-  if (option.stops) {
-    return (
+  return (
+    // option is a pattern
+    (option.stops && (
       <li
         aria-label={patternOptionText(option)}
         {...getItemProps({
@@ -76,11 +72,9 @@ function PatternOption({
           <Icon aria-hidden="true" className="check" img="icon_check" />
         )}
       </li>
-    );
-  }
-  // option is a similar route
-  if (option.shortName && option.longName && option.mode) {
-    return (
+    )) ||
+    // option is a similar route
+    (option.shortName && option.longName && option.mode && (
       <li
         {...getItemProps({
           item: option,
@@ -116,9 +110,9 @@ function PatternOption({
           </div>
         </Link>
       </li>
-    );
-  }
-  return null;
+    )) ||
+    null
+  );
 }
 
 PatternOption.propTypes = {
