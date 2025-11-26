@@ -1,6 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable func-names */
-/* eslint-disable import/no-unresolved */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import {
@@ -12,7 +9,7 @@ import {
 import cx from 'classnames';
 import sortBy from 'lodash/sortBy';
 import { routerShape } from 'found';
-import { enrichPatterns } from '@digitransit-util/digitransit-util';
+import enrichPatterns from '@digitransit-util/digitransit-util-enrich-patterns';
 import { FormattedMessage, intlShape } from 'react-intl';
 import { routeShape, relayShape, configShape } from '../../util/shapes';
 import Icon from '../Icon';
@@ -152,14 +149,12 @@ class RoutePatternSelectContainer extends Component {
       .slice(mainRoutes.length)
       .filter(o => o.inFuture);
 
-    const noSpecialRoutes = !specialRoutes || specialRoutes.length === 0;
-    const noFutureRoutes = !futureRoutes || futureRoutes.length === 0;
-    const noSimilarRoutes =
-      !this.state.similarRoutes || this.state.similarRoutes.length === 0;
+    const noSpecialRoutes = !specialRoutes.length;
+    const noFutureRoutes = !futureRoutes.length;
+    const noSimilarRoutes = !this.state.similarRoutes?.length;
 
     const renderButtonOnly =
-      mainRoutes &&
-      mainRoutes.length > 0 &&
+      mainRoutes.length &&
       mainRoutes.length <= 2 &&
       noSpecialRoutes &&
       noFutureRoutes &&
