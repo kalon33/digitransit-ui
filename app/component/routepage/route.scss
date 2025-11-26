@@ -132,6 +132,14 @@ $margin-left-right: 21.3px;
     letter-spacing: -0.03em;
   }
 
+  .content {
+    margin: 3px 0 0 0;
+    font-size: $font-size-xsmall;
+    font-weight: $font-weight-book;
+    line-height: 16px;
+    letter-spacing: -0.03em;
+  }
+
   .route-notification-link {
     font-size: $font-size-xsmall;
     text-decoration: none;
