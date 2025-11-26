@@ -124,10 +124,9 @@ function matchLegEnds(legs) {
 /**
  * Extracts legs of interest (current, next, previous, etc.) based on the current time.
  * @param {Array} legs - Array of legs.
- * @param {number} now - Current timestamp in milliseconds.
  * @returns {Object} Object containing legs of interest.
  */
-function getLegsOfInterest(legs, now) {
+function getLegsOfInterest(legs) {
   if (!legs?.length) {
     return {
       firstLeg: undefined,
@@ -136,6 +135,7 @@ function getLegsOfInterest(legs, now) {
       nextLeg: undefined,
     };
   }
+  const now = Date.now();
   const currentLeg = legs.find(
     ({ start, end }) => legTime(start) <= now && legTime(end) >= now,
   );
@@ -246,7 +246,7 @@ const BOARD_DELAY = 20000; // 20s, default delay for card change in transit boar
 // Apparently we should consider if the leg ends at an end stop
 // also geolocation certainty plays important role
 function shiftLegsByGeolocation(legs, time, vehicles, position, origin) {
-  const { previousLeg, currentLeg, nextLeg } = getLegsOfInterest(legs, time);
+  const { previousLeg, currentLeg, nextLeg } = getLegsOfInterest(legs);
   let confirm;
 
   if (previousLeg && !previousLeg.freezeEnd) {

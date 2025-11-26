@@ -82,7 +82,7 @@ const useRealtimeLegs = (
   }, [fetchAndSetRealtimeLegs]);
 
   const { firstLeg, lastLeg, currentLeg, nextLeg, previousLeg } =
-    getLegsOfInterest(itinerary.legs, params.updatedAt);
+    getLegsOfInterest(itinerary.legs);
 
   const tailLength = currentLeg
     ? getRemainingTraversal(

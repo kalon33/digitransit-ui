@@ -19,9 +19,10 @@ import usePrevious from './hooks/usePrevious';
 
 const HIDE_TOPCARD_DURATION = 2000; // milliseconds
 
-const getLegType = (leg, firstLeg, time, interlineWithPreviousLeg) => {
+const getLegType = (leg, firstLeg, interlineWithPreviousLeg) => {
   let legType;
-  if (time < legTime(firstLeg.start)) {
+  const currentTime = Date.now();
+  if (currentTime < legTime(firstLeg.start)) {
     if (!firstLeg.forceStart) {
       legType = LEGTYPE.PENDING;
     } else {
@@ -78,7 +79,7 @@ function NaviCardContainer(
   }
 
   // track only relevant vehicles for the journey.
-  // addd 20 s buffer so that vehicle location is available
+  // add 20 s buffer so that vehicle location is available
   // for leg validation long enough
   const getNaviTopics = () =>
     getTopics(
@@ -185,17 +186,14 @@ function NaviCardContainer(
     return () => clearTimeout(timeoutId);
   }, [time, firstLeg]);
 
-  // LegChange fires animation, we need to keep the old data until card goes out of the view.
-  const l = legChanging ? previousLeg : currentLeg;
-  const legType = getLegType(
-    l,
-    firstLeg,
-    time,
-    nextLeg?.interlineWithPreviousLeg,
-  );
+  // LegChange fires animation, we need to keep the old data from the first render until card goes out of the view.
+  const cardChanging = legChanged || legChanging;
+  const l = cardChanging ? previousLeg : currentLeg;
+  const nl = cardChanging ? currentLeg : nextLeg;
+  const legType = getLegType(l, firstLeg, nl?.interlineWithPreviousLeg);
 
   let className;
-  if (isJourneyCompleted || legChanging) {
+  if (isJourneyCompleted || cardChanging) {
     className = 'hide-card';
   } else {
     className = 'show-card';
@@ -210,7 +208,7 @@ function NaviCardContainer(
     >
       <NaviCard
         leg={l}
-        nextLeg={nextLeg}
+        nextLeg={nl}
         legType={legType}
         time={time}
         position={position}
