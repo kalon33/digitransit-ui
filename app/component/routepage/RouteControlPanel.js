@@ -368,17 +368,10 @@ class RouteControlPanel extends React.Component {
       config.routeNotifications.length > 0
     ) {
       for (let i = 0; i < config.routeNotifications.length; i++) {
-        const notification = config.routeNotifications[i];
-        if (notification.showForRoute?.(route)) {
+        const n = config.routeNotifications[i];
+        if (n.showForRoute?.(route)) {
           routeNotifications.push(
-            <RouteNotification
-              key={notification.id}
-              header={notification.header[language]}
-              content={notification.content[language]}
-              link={notification.link?.[language]}
-              id={notification.id}
-              closeButtonLabel={notification.closeButtonLabel?.[language]}
-            />,
+            <RouteNotification notification={n} lang={language} key={n.id} />,
           );
         }
       }
