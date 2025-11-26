@@ -11,7 +11,7 @@ import connectToStores from 'fluxible-addons-react/connectToStores';
 import { configShape } from '../../util/shapes';
 import CallAgencyWarning from './CallAgencyWarning';
 import RoutePatternSelect from './RoutePatternSelect';
-import RouteNotification from './RouteNotification';
+import Notification from './Notification';
 import { DATE_FORMAT, ExtendedRouteTypes } from '../../constants';
 import {
   startRealTimeClient,
@@ -371,7 +371,7 @@ class RouteControlPanel extends React.Component {
         const n = config.routeNotifications[i];
         if (n.showForRoute?.(route)) {
           routeNotifications.push(
-            <RouteNotification notification={n} lang={language} key={n.id} />,
+            <Notification notification={n} lang={language} key={n.id} />,
           );
         }
       }
