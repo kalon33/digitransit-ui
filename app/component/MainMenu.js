@@ -24,7 +24,7 @@ function MainMenu(props, { config, executeAction }) {
       <div className="main-menu-top-section">
         <button
           type="button"
-          onClick={props.closeMenu}
+          onClick={closeMenu}
           className="close-button cursor-pointer"
           aria-label={intl.formatMessage({
             id: 'main-menu-label-close',
@@ -40,17 +40,17 @@ function MainMenu(props, { config, executeAction }) {
       <section className="menu-section main-links">
         {config.mainMenu.showFrontPageLink && (
           <div className="offcanvas-section">
-            {props.homeUrl !== undefined && (
+            {homeUrl !== undefined && (
               <Link
                 id="frontpage"
-                to={props.homeUrl}
+                to={homeUrl}
                 onClick={() => {
                   addAnalyticsEvent({
                     category: 'Navigation',
                     action: 'Home',
                     name: null,
                   });
-                  props.closeMenu();
+                  closeMenu();
                 }}
               >
                 <FormattedMessage id="frontpage" defaultMessage="Frontpage" />
@@ -60,9 +60,7 @@ function MainMenu(props, { config, executeAction }) {
         )}
         {config.mainMenu.showDisruptions && (
           <div className="offcanvas-section">
-            <DisruptionInfoButtonContainer
-              setDisruptionInfoOpen={props.setDisruptionInfoOpen}
-            />
+            <DisruptionInfoButtonContainer onClick={closeMenu} />
           </div>
         )}
         {config.mainMenu.stopMonitor.show && (
@@ -80,7 +78,7 @@ function MainMenu(props, { config, executeAction }) {
           <div className="offcanvas-section">
             <Link
               to={`${config.URL.EMBEDDED_SEARCH_GENERATION}`}
-              onClick={props.closeMenu}
+              onClick={closeMenu}
             >
               <FormattedMessage
                 id="create-embedded-search"
@@ -146,7 +144,7 @@ function MainMenu(props, { config, executeAction }) {
           content={((config.menu && config.menu.content) || []).filter(
             item => item.href || item.route,
           )}
-          closeMenu={props.closeMenu}
+          closeMenu={closeMenu}
         />
       </section>
       {config.menu?.copyright && (
@@ -157,7 +155,6 @@ function MainMenu(props, { config, executeAction }) {
 }
 
 MainMenu.propTypes = {
-  setDisruptionInfoOpen: PropTypes.func.isRequired,
   closeMenu: PropTypes.func.isRequired,
   homeUrl: PropTypes.string.isRequired,
   countries: PropTypes.objectOf(PropTypes.bool),
