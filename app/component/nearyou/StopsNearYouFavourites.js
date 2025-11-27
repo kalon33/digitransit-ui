@@ -13,26 +13,26 @@ import StopsNearYouFavouritesContainer from './StopsNearYouFavouritesContainer';
 import withBreakpoint from '../../util/withBreakpoint';
 import Loading from '../Loading';
 
-function StopsNearYouFavorites({
-  favoriteStops,
-  favoriteStations,
-  favoriteVehicleRentalStationIds,
+function StopsNearYouFavourites({
+  favouriteStops,
+  favouriteStations,
+  favouriteVehicleRentalStationIds,
   relayEnvironment,
   searchPosition,
   breakpoint,
-  noFavorites,
+  noFavourites,
   isParentTabActive,
 }) {
-  if (noFavorites) {
+  if (noFavourites) {
     return (
-      <div className="no-favorites-container">
+      <div className="no-favourites-container">
         {breakpoint !== 'large' && (
-          <div className="no-favorites-header">
-            <FormattedMessage id="nearest-favorites" />
+          <div className="no-favourites-header">
+            <FormattedMessage id="nearest-favourites" />
           </div>
         )}
-        <div className="no-favorites-content">
-          <FormattedMessage id="nearest-favorites-no-favorites" />
+        <div className="no-favourites-content">
+          <FormattedMessage id="nearest-favourites-no-favourites" />
         </div>
         <img
           className="instruction-image"
@@ -41,14 +41,14 @@ function StopsNearYouFavorites({
           }animation.gif`}
           alt="Käyttöohje"
         />
-        <FormattedMessage id="nearest-favorites-browse-stops" />
+        <FormattedMessage id="nearest-favourites-browse-stops" />
       </div>
     );
   }
   return (
     <QueryRenderer
       query={graphql`
-        query StopsNearYouFavoritesQuery(
+        query StopsNearYouFavouritesQuery(
           $stopIds: [String!]!
           $stationIds: [String!]!
           $vehicleRentalStationIds: [String!]!
@@ -67,9 +67,9 @@ function StopsNearYouFavorites({
         }
       `}
       variables={{
-        stopIds: favoriteStops || [],
-        stationIds: favoriteStations || [],
-        vehicleRentalStationIds: favoriteVehicleRentalStationIds || [],
+        stopIds: favouriteStops || [],
+        stationIds: favouriteStations || [],
+        vehicleRentalStationIds: favouriteVehicleRentalStationIds || [],
       }}
       environment={relayEnvironment}
       render={({ props }) => {
@@ -89,38 +89,38 @@ function StopsNearYouFavorites({
     />
   );
 }
-StopsNearYouFavorites.propTypes = {
-  favoriteStops: PropTypes.arrayOf(PropTypes.string),
-  favoriteStations: PropTypes.arrayOf(PropTypes.string),
-  favoriteVehicleRentalStationIds: PropTypes.arrayOf(PropTypes.string),
+StopsNearYouFavourites.propTypes = {
+  favouriteStops: PropTypes.arrayOf(PropTypes.string),
+  favouriteStations: PropTypes.arrayOf(PropTypes.string),
+  favouriteVehicleRentalStationIds: PropTypes.arrayOf(PropTypes.string),
   relayEnvironment: relayShape.isRequired,
   searchPosition: locationShape.isRequired,
   stops: PropTypes.arrayOf(stopShape),
   stations: PropTypes.arrayOf(stationShape),
   vehicleStations: PropTypes.arrayOf(vehicleRentalStationShape),
   breakpoint: PropTypes.string,
-  noFavorites: PropTypes.bool,
+  noFavourites: PropTypes.bool,
   isParentTabActive: PropTypes.bool,
 };
 
-StopsNearYouFavorites.defaultProps = {
-  favoriteStops: undefined,
-  favoriteStations: undefined,
-  favoriteVehicleRentalStationIds: undefined,
+StopsNearYouFavourites.defaultProps = {
+  favouriteStops: undefined,
+  favouriteStations: undefined,
+  favouriteVehicleRentalStationIds: undefined,
   stops: undefined,
   stations: undefined,
   vehicleStations: undefined,
   breakpoint: undefined,
-  noFavorites: false,
+  noFavourites: false,
   isParentTabActive: false,
 };
 
-const StopsNearYouFavoritesWithBreakpoint = withBreakpoint(props => (
+const StopsNearYouFavouritesWithBreakpoint = withBreakpoint(props => (
   <ReactRelayContext.Consumer>
     {({ environment }) => (
-      <StopsNearYouFavorites {...props} relayEnvironment={environment} />
+      <StopsNearYouFavourites {...props} relayEnvironment={environment} />
     )}
   </ReactRelayContext.Consumer>
 ));
 
-export default StopsNearYouFavoritesWithBreakpoint;
+export default StopsNearYouFavouritesWithBreakpoint;

@@ -35,9 +35,9 @@ import {
 import { PREFIX_NEARYOU } from '../../util/path';
 import StopsNearYouContainer from './StopsNearYouContainer';
 import SwipeableTabs from '../SwipeableTabs';
-import StopsNearYouFavorites from './StopsNearYouFavorites';
+import StopsNearYouFavourites from './StopsNearYouFavourites';
 import StopsNearYouMapContainer from './StopsNearYouMapContainer';
-import StopsNearYouFavoritesMapContainer from './StopsNearYouFavoritesMapContainer';
+import StopsNearYouFavouritesMapContainer from './StopsNearYouFavouritesMapContainer';
 import { mapLayerShape } from '../../store/MapLayerStore';
 import {
   getRentalNetworkConfig,
@@ -366,7 +366,7 @@ class NearYouPage extends React.Component {
     );
   };
 
-  noFavorites = () => {
+  noFavourites = () => {
     return (
       !this.props.favouriteStopIds.length &&
       !this.props.favouriteStationIds.length &&
@@ -384,8 +384,8 @@ class NearYouPage extends React.Component {
   renderContent = () => {
     const { centerOfMapChanged } = this.state;
     const { mode } = this.props.match.params;
-    const noFavorites = mode === 'FAVORITE' && this.noFavorites();
-    const renderRefetchButton = centerOfMapChanged && !noFavorites;
+    const noFavourites = mode === 'FAVORITE' && this.noFavourites();
+    const renderRefetchButton = centerOfMapChanged && !noFavourites;
     const nearByStopModes = this.modes;
     const index = nearByStopModes.indexOf(mode);
     const { config } = this.context;
@@ -395,7 +395,7 @@ class NearYouPage extends React.Component {
       const renderDisruptionBanner = nearByStopMode !== 'CITYBIKE';
       const isActive = nearByStopMode === mode;
       if (nearByStopMode === 'FAVORITE') {
-        const noFavs = this.noFavorites();
+        const noFavs = this.noFavourites();
         return (
           <div
             key={nearByStopMode}
@@ -406,15 +406,15 @@ class NearYouPage extends React.Component {
           >
             {renderRefetchButton && this.refetchButton()}
             {this.props.favouritesFetched ? (
-              <StopsNearYouFavorites
+              <StopsNearYouFavourites
                 searchPosition={this.state.searchPosition}
                 match={this.props.match}
-                favoriteStops={this.props.favouriteStopIds}
-                favoriteStations={this.props.favouriteStationIds}
-                favoriteVehicleRentalStationIds={
+                favouriteStops={this.props.favouriteStopIds}
+                favouriteStations={this.props.favouriteStationIds}
+                favouriteVehicleRentalStationIds={
                   this.props.favouriteVehicleStationIds
                 }
-                noFavorites={noFavs}
+                noFavourites={noFavs}
                 isParentTabActive={isActive}
               />
             ) : (
@@ -651,21 +651,21 @@ class NearYouPage extends React.Component {
       return (
         <QueryRenderer
           query={graphql`
-            query NearYouPageFavoritesMapQuery(
+            query NearYouPageFavouritesMapQuery(
               $stopIds: [String!]!
               $stationIds: [String!]!
               $vehicleRentalStationIds: [String!]!
             ) {
               stops: stops(ids: $stopIds) {
-                ...StopsNearYouFavoritesMapContainer_stops
+                ...StopsNearYouFavouritesMapContainer_stops
               }
               stations: stations(ids: $stationIds) {
-                ...StopsNearYouFavoritesMapContainer_stations
+                ...StopsNearYouFavouritesMapContainer_stations
               }
               vehicleStations: vehicleRentalStations(
                 ids: $vehicleRentalStationIds
               ) {
-                ...StopsNearYouFavoritesMapContainer_vehicleStations
+                ...StopsNearYouFavouritesMapContainer_vehicleStations
               }
             }
           `}
@@ -678,7 +678,7 @@ class NearYouPage extends React.Component {
           render={({ props }) => {
             if (props) {
               return (
-                <StopsNearYouFavoritesMapContainer
+                <StopsNearYouFavouritesMapContainer
                   position={this.state.searchPosition}
                   match={this.props.match}
                   onEndNavigation={this.setCenterOfMap}

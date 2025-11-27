@@ -13,7 +13,7 @@ import {
   locationShape,
 } from '../../util/shapes';
 
-function StopsNearYouFavoritesMapContainer(props) {
+function StopsNearYouFavouritesMapContainer(props) {
   const { stops, stations, vehicleStations, position } = props;
   const stopList = [];
   stopList.push(
@@ -68,21 +68,21 @@ function StopsNearYouFavoritesMapContainer(props) {
   return <NearYouMap {...props} stopsNearYou={stopList} />;
 }
 
-StopsNearYouFavoritesMapContainer.propTypes = {
+StopsNearYouFavouritesMapContainer.propTypes = {
   stops: PropTypes.arrayOf(stopShape),
   stations: PropTypes.arrayOf(stationShape),
   vehicleStations: PropTypes.arrayOf(vehicleRentalStationShape),
   position: locationShape.isRequired,
 };
 
-StopsNearYouFavoritesMapContainer.defaultProps = {
+StopsNearYouFavouritesMapContainer.defaultProps = {
   stops: undefined,
   stations: undefined,
   vehicleStations: undefined,
 };
 
 const StopsNearYouMapWithStores = connectToStores(
-  StopsNearYouFavoritesMapContainer,
+  StopsNearYouFavouritesMapContainer,
   [PreferencesStore, FavouriteStore],
   ({ getStore }) => {
     const language = getStore(PreferencesStore).getLanguage();
@@ -92,7 +92,7 @@ const StopsNearYouMapWithStores = connectToStores(
 
 const containerComponent = createFragmentContainer(StopsNearYouMapWithStores, {
   stops: graphql`
-    fragment StopsNearYouFavoritesMapContainer_stops on Stop
+    fragment StopsNearYouFavouritesMapContainer_stops on Stop
     @relay(plural: true)
     @argumentDefinitions(startTime: { type: "Long!", defaultValue: 0 }) {
       gtfsId
@@ -117,7 +117,7 @@ const containerComponent = createFragmentContainer(StopsNearYouMapWithStores, {
     }
   `,
   stations: graphql`
-    fragment StopsNearYouFavoritesMapContainer_stations on Stop
+    fragment StopsNearYouFavouritesMapContainer_stations on Stop
     @relay(plural: true)
     @argumentDefinitions(startTime: { type: "Long!", defaultValue: 0 }) {
       gtfsId
@@ -144,7 +144,7 @@ const containerComponent = createFragmentContainer(StopsNearYouMapWithStores, {
     }
   `,
   vehicleStations: graphql`
-    fragment StopsNearYouFavoritesMapContainer_vehicleStations on VehicleRentalStation
+    fragment StopsNearYouFavouritesMapContainer_vehicleStations on VehicleRentalStation
     @relay(plural: true) {
       name
       lat
@@ -156,5 +156,5 @@ const containerComponent = createFragmentContainer(StopsNearYouMapWithStores, {
 
 export {
   containerComponent as default,
-  StopsNearYouFavoritesMapContainer as Component,
+  StopsNearYouFavouritesMapContainer as Component,
 };
