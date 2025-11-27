@@ -66,7 +66,7 @@ class RoutePage extends React.Component {
       /* In this case there is little we can do
        * There is no point continuing rendering as it can only
        * confuse user. Therefore redirect to Routes page */
-      router.replace(PREFIX_ROUTES);
+      router.replace(`/${PREFIX_ROUTES}`);
       return null;
     }
     const mode = getRouteMode(route, config);
