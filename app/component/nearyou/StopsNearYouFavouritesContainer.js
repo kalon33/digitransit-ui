@@ -9,7 +9,7 @@ import {
   locationShape,
 } from '../../util/shapes';
 import StopNearYouContainer from './StopNearYouContainer';
-import CityBikeStopNearYou from './VehicleRentalStationNearYou';
+import VehicleRentalStationNearYou from './VehicleRentalStationNearYou';
 
 function StopsNearYouFavouritesContainer({
   stops,
@@ -66,7 +66,7 @@ function StopsNearYouFavouritesContainer({
           />
         );
       case 'vehicleRentalStation':
-        return <CityBikeStopNearYou key={stop.name} stop={stop} />;
+        return <VehicleRentalStationNearYou key={stop.name} stop={stop} />;
       default:
         return null;
     }

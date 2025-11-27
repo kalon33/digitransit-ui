@@ -11,7 +11,7 @@ import {
   sortNearbyRentalStations,
   sortNearbyStops,
 } from '../../util/sortUtils';
-import CityBikeStopNearYou from './VehicleRentalStationNearYou';
+import VehicleRentalStationNearYou from './VehicleRentalStationNearYou';
 import Loading from '../Loading';
 import Icon from '../Icon';
 import { getDefaultNetworks } from '../../util/vehicleRentalUtils';
@@ -236,7 +236,7 @@ class StopsNearYouContainer extends React.Component {
           break;
         case 'VehicleRentalStation':
           return (
-            <CityBikeStopNearYou
+            <VehicleRentalStationNearYou
               key={`${stop.stationId}`}
               stop={stop}
               color={this.context.config.colors.primary}
