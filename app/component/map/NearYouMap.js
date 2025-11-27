@@ -80,19 +80,21 @@ const startClient = (context, routes) => {
     context.executeAction(startRealTimeClient, config);
   }
 };
+
 const stopClient = context => {
   const { client } = context.getStore('RealTimeInformationStore');
   if (client) {
     context.executeAction(stopRealTimeClient, client);
   }
 };
+
 const updateClient = (context, topics) => {
   const { client } = context.getStore('RealTimeInformationStore');
   const config = getRealTimeSettings(topics, context);
   if (config) {
-    config.client = client;
     if (client) {
-      context.executeAction(changeRealTimeClientTopics, config, client);
+      config.client = client;
+      context.executeAction(changeRealTimeClientTopics, config);
     }
   }
 };
