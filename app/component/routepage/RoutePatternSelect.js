@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelect } from 'downshift';
 import { Link, routerShape } from 'found';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, intlShape } from 'react-intl';
 import cx from 'classnames';
 import Icon from '../Icon';
 import { routePagePath } from '../../util/path';
@@ -46,29 +46,31 @@ export function patternTextWithIcon(pattern) {
  * @param currentPattern currently selected pattern
  * @returns {JSX.Element}
  */
-function PatternOption({
-  option,
-  optionIndexTable,
-  highlightedIndex,
-  getItemProps,
-  currentPattern,
-}) {
+function PatternOption(
+  { option, optionIndexTable, highlightedIndex, getItemProps, currentPattern },
+  { intl },
+) {
+  const isSelected = option.code === currentPattern.code;
+  const selectedText = isSelected
+    ? intl.formatMessage({ id: 'route-page.pattern-chosen' })
+    : '';
   return (
     // option is a pattern
     (option.stops && (
       <li
-        aria-label={patternOptionText(option)}
+        aria-label={`${patternOptionText(option)}, ${selectedText}`}
+        className={cx(
+          'suggestion',
+          optionIndexTable[option.code] === highlightedIndex &&
+            'suggestion--highlighted',
+        )}
         {...getItemProps({
           item: option,
-          className: cx(
-            'suggestion',
-            optionIndexTable[option.code] === highlightedIndex &&
-              'suggestion--highlighted',
-          ),
+          index: optionIndexTable[option.code],
         })}
       >
         {patternTextWithIcon(option)}
-        {option.code === currentPattern.code && (
+        {isSelected && (
           <Icon aria-hidden="true" className="check" img="icon_check" />
         )}
       </li>
@@ -76,13 +78,14 @@ function PatternOption({
     // option is a similar route
     (option.shortName && option.longName && option.mode && (
       <li
+        className={cx(
+          'suggestion',
+          optionIndexTable[option.gtfsId] === highlightedIndex &&
+            'suggestion--highlighted',
+        )}
         {...getItemProps({
           item: option,
-          className: cx(
-            'suggestion',
-            optionIndexTable[option.gtfsId] === highlightedIndex &&
-              'suggestion--highlighted',
-          ),
+          index: optionIndexTable[option.code],
         })}
       >
         <Link
@@ -121,6 +124,10 @@ PatternOption.propTypes = {
   highlightedIndex: PropTypes.number.isRequired,
   getItemProps: PropTypes.func.isRequired,
   currentPattern: patternShape.isRequired,
+};
+
+PatternOption.contextTypes = {
+  intl: intlShape.isRequired,
 };
 
 export default function RoutePatternSelect(
@@ -210,19 +217,24 @@ export default function RoutePatternSelect(
             isOpen && 'suggestions-container--open',
           )}
           hidden={!isOpen}
+          {...getMenuProps({})}
         >
-          {optionArray.map(section => {
+          {optionArray.map((section, sectionIndex) => {
             return (
               <div
                 key={`section-${section.name}`}
                 className="section-container"
               >
-                <ul aria-labelledby="section-title" {...getMenuProps({})}>
-                  {section.name && (
-                    <label id="section-title" className="section-title">
-                      {section.name}
-                    </label>
-                  )}
+                <ul aria-labelledby={`section-${sectionIndex}`} role="group">
+                  <label
+                    id={`section-${sectionIndex}`}
+                    className={cx([
+                      'section-title',
+                      section.name ? '' : 'sr-only',
+                    ])}
+                  >
+                    {section.name}
+                  </label>
                   {section.options.map(option => (
                     <PatternOption
                       key={option.code || option.gtfsId}
