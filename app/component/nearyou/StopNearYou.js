@@ -86,7 +86,7 @@ const StopNearYou = (
               mode={stopMode}
               stopTimes={stop.stoptimesWithoutPatterns}
               isStation={isStation && stopMode !== 'SUBWAY'}
-              setCapacityModalOpen={() => setCapacityModalOpen(true)}
+              openCapacityModal={() => setCapacityModalOpen(true)}
               isParentTabActive={isParentTabActive}
             />
             <Link

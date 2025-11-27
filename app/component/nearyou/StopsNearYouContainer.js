@@ -24,7 +24,6 @@ class StopsNearYouContainer extends React.Component {
     setLoadState: PropTypes.func.isRequired,
     currentTime: PropTypes.number.isRequired,
     relay: relayShape.isRequired,
-    // eslint-disable-next-line
     favouriteIds: PropTypes.objectOf(PropTypes.string).isRequired,
     match: matchShape.isRequired,
     position: PropTypes.shape({
