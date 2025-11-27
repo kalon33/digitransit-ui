@@ -11,7 +11,7 @@ import {
 import StopNearYouContainer from './StopNearYouContainer';
 import VehicleRentalStationNearYou from './VehicleRentalStationNearYou';
 
-function StopsNearYouFavouritesContainer({
+function NearYouFavouritesContainer({
   stops,
   stations,
   vehicleStations,
@@ -74,7 +74,7 @@ function StopsNearYouFavouritesContainer({
   return stopElements;
 }
 
-StopsNearYouFavouritesContainer.propTypes = {
+NearYouFavouritesContainer.propTypes = {
   stops: PropTypes.arrayOf(stopShape),
   stations: PropTypes.arrayOf(stationShape),
   vehicleStations: PropTypes.arrayOf(vehicleRentalStationShape),
@@ -82,55 +82,47 @@ StopsNearYouFavouritesContainer.propTypes = {
   isParentTabActive: PropTypes.bool,
 };
 
-const refetchContainer = createFragmentContainer(
-  StopsNearYouFavouritesContainer,
-  {
-    stops: graphql`
-      fragment StopsNearYouFavouritesContainer_stops on Stop
-      @relay(plural: true) {
-        ...StopNearYouContainer_stop
+const refetchContainer = createFragmentContainer(NearYouFavouritesContainer, {
+  stops: graphql`
+    fragment NearYouFavouritesContainer_stops on Stop @relay(plural: true) {
+      ...StopNearYouContainer_stop
+      gtfsId
+      lat
+      lon
+    }
+  `,
+  stations: graphql`
+    fragment NearYouFavouritesContainer_stations on Stop @relay(plural: true) {
+      ...StopNearYouContainer_stop
+      gtfsId
+      lat
+      lon
+      stops {
         gtfsId
-        lat
-        lon
+        desc
       }
-    `,
-    stations: graphql`
-      fragment StopsNearYouFavouritesContainer_stations on Stop
-      @relay(plural: true) {
-        ...StopNearYouContainer_stop
-        gtfsId
-        lat
-        lon
-        stops {
-          gtfsId
-          desc
-        }
+    }
+  `,
+  vehicleStations: graphql`
+    fragment NearYouFavouritesContainer_vehicleStations on VehicleRentalStation
+    @relay(plural: true) {
+      stationId
+      name
+      availableVehicles {
+        total
       }
-    `,
-    vehicleStations: graphql`
-      fragment StopsNearYouFavouritesContainer_vehicleStations on VehicleRentalStation
-      @relay(plural: true) {
-        stationId
-        name
-        availableVehicles {
-          total
-        }
-        availableSpaces {
-          total
-        }
-        capacity
-        rentalNetwork {
-          networkId
-        }
-        lat
-        lon
-        operative
+      availableSpaces {
+        total
       }
-    `,
-  },
-);
+      capacity
+      rentalNetwork {
+        networkId
+      }
+      lat
+      lon
+      operative
+    }
+  `,
+});
 
-export {
-  refetchContainer as default,
-  StopsNearYouFavouritesContainer as Component,
-};
+export { refetchContainer as default, NearYouFavouritesContainer as Component };

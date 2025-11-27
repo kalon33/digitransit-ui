@@ -8,10 +8,7 @@ import PlatformNumber from '../PlatformNumber';
 import FavouriteStopContainer from '../FavouriteStopContainer';
 import { getZoneLabel } from '../../util/legUtils';
 
-const StopNearYouHeader = (
-  { stop, desc, isStation, linkAddress },
-  { config },
-) => {
+const NearYouHeader = ({ stop, desc, isStation, linkAddress }, { config }) => {
   const zoneId =
     isStation && stop.stops.length ? stop.stops[0].zoneId : stop.zoneId;
   return (
@@ -52,20 +49,20 @@ const StopNearYouHeader = (
   );
 };
 
-StopNearYouHeader.propTypes = {
+NearYouHeader.propTypes = {
   stop: stopShape.isRequired,
   linkAddress: PropTypes.string.isRequired,
   desc: PropTypes.string,
   isStation: PropTypes.bool,
 };
 
-StopNearYouHeader.defaultProps = {
+NearYouHeader.defaultProps = {
   isStation: false,
   desc: undefined,
 };
 
-StopNearYouHeader.contextTypes = {
+NearYouHeader.contextTypes = {
   config: configShape.isRequired,
 };
 
-export default StopNearYouHeader;
+export default NearYouHeader;

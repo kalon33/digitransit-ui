@@ -22,7 +22,7 @@ import {
   checkPositioningPermission,
   startLocationWatch,
 } from '../../action/PositionActions';
-import StopsNearYouSearch from './StopsNearYouSearch';
+import NearYouSearch from './NearYouSearch';
 import {
   getGeolocationState,
   getReadMessageIds,
@@ -33,11 +33,11 @@ import {
   getLocationSearchTargets,
 } from '../WithSearchContext';
 import { PREFIX_NEARYOU } from '../../util/path';
-import StopsNearYouContainer from './StopsNearYouContainer';
+import NearYouContainer from './NearYouContainer';
 import SwipeableTabs from '../SwipeableTabs';
-import StopsNearYouFavourites from './StopsNearYouFavourites';
-import StopsNearYouMapContainer from './StopsNearYouMapContainer';
-import StopsNearYouFavouritesMapContainer from './StopsNearYouFavouritesMapContainer';
+import NearYouFavourites from './NearYouFavourites';
+import NearYouMapContainer from './NearYouMapContainer';
+import NearYouFavouritesMapContainer from './NearYouFavouritesMapContainer';
 import { mapLayerShape } from '../../store/MapLayerStore';
 import {
   getRentalNetworkConfig,
@@ -406,7 +406,7 @@ class NearYouPage extends React.Component {
           >
             {renderRefetchButton && this.refetchButton()}
             {this.props.favouritesFetched ? (
-              <StopsNearYouFavourites
+              <NearYouFavourites
                 searchPosition={this.state.searchPosition}
                 match={this.props.match}
                 favouriteStops={this.props.favouriteStopIds}
@@ -444,7 +444,7 @@ class NearYouPage extends React.Component {
                 $filterByNetwork: [String!]
               ) {
                 stopPatterns: viewer {
-                  ...StopsNearYouContainer_stopPatterns
+                  ...NearYouContainer_stopPatterns
                     @arguments(
                       lat: $lat
                       lon: $lon
@@ -482,7 +482,7 @@ class NearYouPage extends React.Component {
               return (
                 <div className="stops-near-you-page">
                   {renderSearch && (
-                    <StopsNearYouSearch
+                    <NearYouSearch
                       mode={nearByStopMode}
                       breakpoint={this.props.breakpoint}
                       lang={this.props.lang}
@@ -609,7 +609,7 @@ class NearYouPage extends React.Component {
                     </div>
                   )}
                   {props && (
-                    <StopsNearYouContainer
+                    <NearYouContainer
                       prioritizedStops={prioritizedStops}
                       setLoadState={this.setLoadState}
                       match={this.props.match}
@@ -657,15 +657,15 @@ class NearYouPage extends React.Component {
               $vehicleRentalStationIds: [String!]!
             ) {
               stops: stops(ids: $stopIds) {
-                ...StopsNearYouFavouritesMapContainer_stops
+                ...NearYouFavouritesMapContainer_stops
               }
               stations: stations(ids: $stationIds) {
-                ...StopsNearYouFavouritesMapContainer_stations
+                ...NearYouFavouritesMapContainer_stations
               }
               vehicleStations: vehicleRentalStations(
                 ids: $vehicleRentalStationIds
               ) {
-                ...StopsNearYouFavouritesMapContainer_vehicleStations
+                ...NearYouFavouritesMapContainer_vehicleStations
               }
             }
           `}
@@ -678,7 +678,7 @@ class NearYouPage extends React.Component {
           render={({ props }) => {
             if (props) {
               return (
-                <StopsNearYouFavouritesMapContainer
+                <NearYouFavouritesMapContainer
                   position={this.state.searchPosition}
                   match={this.props.match}
                   onEndNavigation={this.setCenterOfMap}
@@ -733,7 +733,7 @@ class NearYouPage extends React.Component {
             $filterByNetwork: [String!]
           ) {
             stops: viewer {
-              ...StopsNearYouMapContainer_stopsNearYou
+              ...NearYouMapContainer_stopsNearYou
                 @arguments(
                   lat: $lat
                   lon: $lon
@@ -747,7 +747,7 @@ class NearYouPage extends React.Component {
                 )
             }
             prioritizedStops: stops(ids: $prioritizedStopIds) {
-              ...StopsNearYouMapContainer_prioritizedStopsNearYou
+              ...NearYouMapContainer_prioritizedStopsNearYou
             }
           }
         `}
@@ -755,7 +755,7 @@ class NearYouPage extends React.Component {
         environment={this.props.relayEnvironment}
         render={({ props }) => {
           return (
-            <StopsNearYouMapContainer
+            <NearYouMapContainer
               position={this.state.searchPosition}
               stopsNearYou={props && props.stops}
               prioritizedStopsNearYou={props && props.prioritizedStops}

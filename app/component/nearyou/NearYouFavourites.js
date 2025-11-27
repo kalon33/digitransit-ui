@@ -9,11 +9,11 @@ import {
   stationShape,
   vehicleRentalStationShape,
 } from '../../util/shapes';
-import StopsNearYouFavouritesContainer from './StopsNearYouFavouritesContainer';
+import NearYouFavouritesContainer from './NearYouFavouritesContainer';
 import withBreakpoint from '../../util/withBreakpoint';
 import Loading from '../Loading';
 
-function StopsNearYouFavourites({
+function NearYouFavourites({
   favouriteStops,
   favouriteStations,
   favouriteVehicleRentalStationIds,
@@ -48,21 +48,21 @@ function StopsNearYouFavourites({
   return (
     <QueryRenderer
       query={graphql`
-        query StopsNearYouFavouritesQuery(
+        query NearYouFavouritesQuery(
           $stopIds: [String!]!
           $stationIds: [String!]!
           $vehicleRentalStationIds: [String!]!
         ) {
           stops: stops(ids: $stopIds) {
-            ...StopsNearYouFavouritesContainer_stops
+            ...NearYouFavouritesContainer_stops
           }
           stations: stations(ids: $stationIds) {
-            ...StopsNearYouFavouritesContainer_stations
+            ...NearYouFavouritesContainer_stations
           }
           vehicleStations: vehicleRentalStations(
             ids: $vehicleRentalStationIds
           ) {
-            ...StopsNearYouFavouritesContainer_vehicleStations
+            ...NearYouFavouritesContainer_vehicleStations
           }
         }
       `}
@@ -75,7 +75,7 @@ function StopsNearYouFavourites({
       render={({ props }) => {
         if (props) {
           return (
-            <StopsNearYouFavouritesContainer
+            <NearYouFavouritesContainer
               searchPosition={searchPosition}
               stops={props.stops}
               stations={props.stations}
@@ -89,7 +89,7 @@ function StopsNearYouFavourites({
     />
   );
 }
-StopsNearYouFavourites.propTypes = {
+NearYouFavourites.propTypes = {
   favouriteStops: PropTypes.arrayOf(PropTypes.string),
   favouriteStations: PropTypes.arrayOf(PropTypes.string),
   favouriteVehicleRentalStationIds: PropTypes.arrayOf(PropTypes.string),
@@ -103,7 +103,7 @@ StopsNearYouFavourites.propTypes = {
   isParentTabActive: PropTypes.bool,
 };
 
-StopsNearYouFavourites.defaultProps = {
+NearYouFavourites.defaultProps = {
   favouriteStops: undefined,
   favouriteStations: undefined,
   favouriteVehicleRentalStationIds: undefined,
@@ -115,12 +115,12 @@ StopsNearYouFavourites.defaultProps = {
   isParentTabActive: false,
 };
 
-const StopsNearYouFavouritesWithBreakpoint = withBreakpoint(props => (
+const NearYouFavouritesWithBreakpoint = withBreakpoint(props => (
   <ReactRelayContext.Consumer>
     {({ environment }) => (
-      <StopsNearYouFavourites {...props} relayEnvironment={environment} />
+      <NearYouFavourites {...props} relayEnvironment={environment} />
     )}
   </ReactRelayContext.Consumer>
 ));
 
-export default StopsNearYouFavouritesWithBreakpoint;
+export default NearYouFavouritesWithBreakpoint;

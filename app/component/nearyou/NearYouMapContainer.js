@@ -1,11 +1,10 @@
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import { graphql, createPaginationContainer } from 'react-relay';
 import NearYouMap from '../map/NearYouMap';
-
 import FavouriteStore from '../../store/FavouriteStore';
 import PreferencesStore from '../../store/PreferencesStore';
 
-const StopsNearYouMapWithStores = connectToStores(
+const NearYouMapWithStores = connectToStores(
   NearYouMap,
   [PreferencesStore, FavouriteStore],
   ({ getStore }, { match }) => {
@@ -30,10 +29,10 @@ const StopsNearYouMapWithStores = connectToStores(
 );
 
 const containerComponent = createPaginationContainer(
-  StopsNearYouMapWithStores,
+  NearYouMapWithStores,
   {
     stopsNearYou: graphql`
-      fragment StopsNearYouMapContainer_stopsNearYou on QueryType
+      fragment NearYouMapContainer_stopsNearYou on QueryType
       @argumentDefinitions(
         startTime: { type: "Long!", defaultValue: 0 }
         omitNonPickups: { type: "Boolean!", defaultValue: false }
@@ -57,7 +56,7 @@ const containerComponent = createPaginationContainer(
           maxResults: $maxResults
           maxDistance: $maxDistance
           filterByNetwork: $filterByNetwork
-        ) @connection(key: "StopsNearYouMapContainer_nearest") {
+        ) @connection(key: "NearYouMapContainer_nearest") {
           edges {
             node {
               distance
@@ -119,7 +118,7 @@ const containerComponent = createPaginationContainer(
       }
     `,
     prioritizedStopsNearYou: graphql`
-      fragment StopsNearYouMapContainer_prioritizedStopsNearYou on Stop
+      fragment NearYouMapContainer_prioritizedStopsNearYou on Stop
       @relay(plural: true) {
         gtfsId
         lat
@@ -177,7 +176,7 @@ const containerComponent = createPaginationContainer(
       };
     },
     query: graphql`
-      query StopsNearYouMapContainerRefetchQuery(
+      query NearYouMapContainerRefetchQuery(
         $lat: Float!
         $lon: Float!
         $filterByPlaceTypes: [FilterPlaceType]
@@ -191,7 +190,7 @@ const containerComponent = createPaginationContainer(
         $filterByNetwork: [String!]
       ) {
         viewer {
-          ...StopsNearYouMapContainer_stopsNearYou
+          ...NearYouMapContainer_stopsNearYou
             @arguments(
               startTime: $startTime
               omitNonPickups: $omitNonPickups

@@ -8,7 +8,7 @@ import { stopShape, configShape, relayShape } from '../../util/shapes';
 import { hasEntitiesOfType } from '../../util/alertUtils';
 import { stopPagePath, PREFIX_DISRUPTION } from '../../util/path';
 import { AlertEntityType } from '../../constants';
-import StopNearYouHeader from './StopNearYouHeader';
+import NearYouHeader from './NearYouHeader';
 import AlertBanner from '../AlertBanner';
 import StopNearYouDepartureRowContainer from './StopNearYouDepartureRowContainer';
 import CapacityModal from '../CapacityModal';
@@ -49,7 +49,7 @@ const StopNearYou = (
   return (
     <span role="listitem">
       <div className="stop-near-you-container">
-        <StopNearYouHeader
+        <NearYouHeader
           stop={stop}
           desc={description}
           isStation={isStation}

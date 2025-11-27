@@ -17,7 +17,7 @@ import Icon from '../Icon';
 import { getDefaultNetworks } from '../../util/vehicleRentalUtils';
 import DisruptionBanner from '../DisruptionBanner';
 
-class StopsNearYouContainer extends React.Component {
+class NearYouContainer extends React.Component {
   static propTypes = {
     // eslint-disable-next-line
     stopPatterns: PropTypes.object,
@@ -323,12 +323,10 @@ class StopsNearYouContainer extends React.Component {
     );
   }
 }
-const StopsNearYouContainerWithBreakpoint = withBreakpoint(
-  StopsNearYouContainer,
-);
+const NearYouContainerWithBreakpoint = withBreakpoint(NearYouContainer);
 
 const connectedContainer = connectToStores(
-  StopsNearYouContainerWithBreakpoint,
+  NearYouContainerWithBreakpoint,
   ['TimeStore', 'FavouriteStore'],
   ({ getStore }, { match }) => {
     const favouriteIds =
@@ -354,7 +352,7 @@ const refetchContainer = createPaginationContainer(
   connectedContainer,
   {
     stopPatterns: graphql`
-      fragment StopsNearYouContainer_stopPatterns on QueryType
+      fragment NearYouContainer_stopPatterns on QueryType
       @argumentDefinitions(
         startTime: { type: "Long!", defaultValue: 0 }
         omitNonPickups: { type: "Boolean!", defaultValue: false }
@@ -378,7 +376,7 @@ const refetchContainer = createPaginationContainer(
           maxResults: $maxResults
           maxDistance: $maxDistance
           filterByNetwork: $filterByNetwork
-        ) @connection(key: "StopsNearYouContainer_nearest") {
+        ) @connection(key: "NearYouContainer_nearest") {
           edges {
             node {
               distance
@@ -455,7 +453,7 @@ const refetchContainer = createPaginationContainer(
       };
     },
     query: graphql`
-      query StopsNearYouContainerRefetchQuery(
+      query NearYouContainerRefetchQuery(
         $lat: Float!
         $lon: Float!
         $filterByPlaceTypes: [FilterPlaceType]
@@ -469,7 +467,7 @@ const refetchContainer = createPaginationContainer(
         $filterByNetwork: [String!]
       ) {
         viewer {
-          ...StopsNearYouContainer_stopPatterns
+          ...NearYouContainer_stopPatterns
             @arguments(
               startTime: $startTime
               omitNonPickups: $omitNonPickups
@@ -489,4 +487,4 @@ const refetchContainer = createPaginationContainer(
   },
 );
 
-export { refetchContainer as default, StopsNearYouContainer as Component };
+export { refetchContainer as default, NearYouContainer as Component };
