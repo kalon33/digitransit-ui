@@ -28,31 +28,29 @@ function StopsNearYouSearch(
   };
   return (
     <div className="stops-near-you-search-container">
-      <div className="search-container-first">
-        <DTAutoSuggestWithSearchContext
-          icon="search"
-          id="stop-route-station"
-          lang={lang}
-          refPoint={originLocation}
-          className="destination"
-          placeholder={`stop-near-you-${mode.toLowerCase()}`}
-          transportMode={transportMode}
-          geocodingSize={40}
-          value=""
-          filterResults={filter}
-          sources={searchSources}
-          targets={
-            mode === 'CITYBIKE'
-              ? ['VehicleRentalStations']
-              : ['Stops', 'Stations', 'Routes']
-          }
-          isMobile={isMobile}
-          selectHandler={selectHandler} // prop for context handler
-          getAutoSuggestIcons={config.getAutoSuggestIcons}
-          modeIconColors={config.colors.iconColors}
-          modeSet={config.iconModeSet}
-        />
-      </div>
+      <DTAutoSuggestWithSearchContext
+        icon="search"
+        id="stop-route-station"
+        lang={lang}
+        refPoint={originLocation}
+        className="destination"
+        placeholder={`stop-near-you-${mode.toLowerCase()}`}
+        transportMode={transportMode}
+        geocodingSize={40}
+        value=""
+        filterResults={filter}
+        sources={searchSources}
+        targets={
+          mode === 'CITYBIKE'
+            ? ['VehicleRentalStations']
+            : ['Stops', 'Stations', 'Routes']
+        }
+        isMobile={isMobile}
+        selectHandler={selectHandler} // prop for context handler
+        getAutoSuggestIcons={config.getAutoSuggestIcons}
+        modeIconColors={config.colors.iconColors}
+        modeSet={config.iconModeSet}
+      />
     </div>
   );
 }
