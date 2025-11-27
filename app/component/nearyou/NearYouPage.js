@@ -405,18 +405,21 @@ class NearYouPage extends React.Component {
             aria-hidden={!isActive}
           >
             {renderRefetchButton && this.refetchButton()}
-            <StopsNearYouFavorites
-              searchPosition={this.state.searchPosition}
-              match={this.props.match}
-              favoriteStops={this.props.favouriteStopIds}
-              favoriteStations={this.props.favouriteStationIds}
-              favoriteVehicleRentalStationIds={
-                this.props.favouriteVehicleStationIds
-              }
-              noFavorites={noFavs}
-              favouritesFetched={this.props.favouritesFetched}
-              isParentTabActive={isActive}
-            />
+            {this.props.favouritesFetched ? (
+              <StopsNearYouFavorites
+                searchPosition={this.state.searchPosition}
+                match={this.props.match}
+                favoriteStops={this.props.favouriteStopIds}
+                favoriteStations={this.props.favouriteStationIds}
+                favoriteVehicleRentalStationIds={
+                  this.props.favouriteVehicleStationIds
+                }
+                noFavorites={noFavs}
+                isParentTabActive={isActive}
+              />
+            ) : (
+              <Loading />
+            )}
           </div>
         );
       }

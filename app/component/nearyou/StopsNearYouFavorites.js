@@ -21,12 +21,8 @@ function StopsNearYouFavorites({
   searchPosition,
   breakpoint,
   noFavorites,
-  favouritesFetched,
   isParentTabActive,
 }) {
-  if (!favouritesFetched) {
-    return <Loading />;
-  }
   if (noFavorites) {
     return (
       <div className="no-favorites-container">
@@ -104,7 +100,6 @@ StopsNearYouFavorites.propTypes = {
   vehicleStations: PropTypes.arrayOf(vehicleRentalStationShape),
   breakpoint: PropTypes.string,
   noFavorites: PropTypes.bool,
-  favouritesFetched: PropTypes.bool,
   isParentTabActive: PropTypes.bool,
 };
 
@@ -117,7 +112,6 @@ StopsNearYouFavorites.defaultProps = {
   vehicleStations: undefined,
   breakpoint: undefined,
   noFavorites: false,
-  favouritesFetched: false,
   isParentTabActive: false,
 };
 
