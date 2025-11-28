@@ -9,20 +9,20 @@ import { PREFIX_BIKESTATIONS } from '../../util/path';
 import { isKeyboardSelectionEvent } from '../../util/browser';
 import { hasVehicleRentalCode } from '../../util/vehicleRentalUtils';
 import { getIdWithoutFeed } from '../../util/feedScopedIdUtils';
-import { relayShape } from '../../util/shapes';
+import { vehicleRentalStationShape, relayShape } from '../../util/shapes';
 
 const VehicleRentalStationNearYou = ({
-  stop,
+  station,
   relay,
   currentTime,
   isParentTabActive,
 }) => {
   useEffect(() => {
-    const { stationId } = stop;
+    const { stationId } = station;
     if (isParentTabActive) {
-      relay?.refetch(
+      relay.refetch(
         oldVariables => {
-          return { ...oldVariables, stopId: stationId };
+          return { ...oldVariables, stationId };
         },
         null,
         null,
@@ -44,47 +44,34 @@ const VehicleRentalStationNearYou = ({
                   e.stopPropagation();
                 }
               }}
-              to={`/${PREFIX_BIKESTATIONS}/${stop.stationId}`}
+              to={`/${PREFIX_BIKESTATIONS}/${station.stationId}`}
             >
-              <h3 className="stop-near-you-name">{stop.name}</h3>
+              <h3 className="stop-near-you-name">{station.name}</h3>
             </Link>
             <div className="bike-station-code">
               <FormattedMessage
                 id="citybike-station"
                 values={{
-                  stationId: hasVehicleRentalCode(stop.stationId)
-                    ? getIdWithoutFeed(stop.stationId)
+                  stationId: hasVehicleRentalCode(station.stationId)
+                    ? getIdWithoutFeed(station.stationId)
                     : '',
                 }}
               />
             </div>
           </div>
           <FavouriteVehicleRentalStationContainer
-            vehicleRentalStation={stop}
+            vehicleRentalStation={station}
             className="bike-rental-favourite-container"
           />
         </div>
-        <VehicleRentalStation vehicleRentalStation={stop} />
+        <VehicleRentalStation vehicleRentalStation={station} />
       </div>
     </span>
   );
 };
+
 VehicleRentalStationNearYou.propTypes = {
-  stop: PropTypes.shape({
-    capacity: PropTypes.number,
-    distance: PropTypes.number,
-    lat: PropTypes.number,
-    lon: PropTypes.number,
-    name: PropTypes.string,
-    rentalNetwork: PropTypes.shape({
-      networkId: PropTypes.string,
-    }),
-    operative: PropTypes.bool,
-    stationId: PropTypes.string,
-    type: PropTypes.string,
-    availableVehicles: PropTypes.shape({ total: PropTypes.number }),
-    availableSpaces: PropTypes.shape({ total: PropTypes.number }),
-  }).isRequired,
+  station: vehicleRentalStationShape.isRequired,
   currentTime: PropTypes.number,
   isParentTabActive: PropTypes.bool,
   relay: relayShape.isRequired,
@@ -98,7 +85,7 @@ VehicleRentalStationNearYou.defaultProps = {
 const containerComponent = createRefetchContainer(
   VehicleRentalStationNearYou,
   {
-    stop: graphql`
+    station: graphql`
       fragment VehicleRentalStationNearYou_station on VehicleRentalStation {
         stationId
         name
@@ -117,8 +104,8 @@ const containerComponent = createRefetchContainer(
     `,
   },
   graphql`
-    query VehicleRentalStationNearYouRefetchQuery($stopId: String!) {
-      vehicleRentalStation(id: $stopId) {
+    query VehicleRentalStationNearYouRefetchQuery($stationId: String!) {
+      vehicleRentalStation(id: $stationId) {
         ...VehicleRentalStationNearYou_station
       }
     }

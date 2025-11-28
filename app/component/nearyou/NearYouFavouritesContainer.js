@@ -70,7 +70,7 @@ function NearYouFavouritesContainer({
         return (
           <VehicleRentalStationNearYou
             key={stop.name}
-            stop={stop}
+            station={stop}
             currentTime={currentTime}
             isParentTabActive={isParentTabActive}
           />

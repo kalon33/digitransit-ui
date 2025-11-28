@@ -237,7 +237,7 @@ class NearYouContainer extends React.Component {
           return (
             <VehicleRentalStationNearYou
               key={`${stop.stationId}`}
-              stop={stop}
+              station={stop}
               currentTime={this.props.currentTime}
               isParentTabActive={this.props.isParentTabActive}
             />
