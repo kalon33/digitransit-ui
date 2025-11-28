@@ -182,7 +182,7 @@ export default function DepartureRow(
       </td>
       <td className={cx('route-headsign', departure.bottomRow ? 'bottom' : '')}>
         <div className="headsign">
-          {headsign} {departure.bottomRow && departure.bottomRow}
+          {headsign} {departure.bottomRow}
         </div>
       </td>
       <td className="time-cell">
