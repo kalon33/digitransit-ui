@@ -13,7 +13,7 @@ import StopNearYouDepartureRowContainer from './StopNearYouDepartureRowContainer
 import CapacityModal from '../CapacityModal';
 
 const StopNearYou = (
-  { stop, desc, stopId, currentTime, relay, isParentTabActive },
+  { stop, currentTime, relay, isParentTabActive },
   { config, intl },
 ) => {
   if (!stop.stoptimesWithoutPatterns) {
@@ -24,33 +24,28 @@ const StopNearYou = (
   const { gtfsId } = stop;
 
   useEffect(() => {
-    let id = gtfsId;
-    if (stopId) {
-      id = stopId;
-    }
     if (isParentTabActive) {
-      relay?.refetch(oldVariables => {
-        return { ...oldVariables, stopId: id, startTime: currentTime };
+      relay.refetch(oldVariables => {
+        return { ...oldVariables, stopId: gtfsId, startTime: currentTime };
       }, null);
     }
   }, [currentTime, isParentTabActive]);
 
-  const description = desc || stop.desc;
   const isStation = stop.locationType === 'STATION';
   const linkAddress = stopPagePath(isStation, gtfsId, PREFIX_DISRUPTION);
-
   const { constantOperationStops } = config;
   const { locale } = intl;
   const isConstantOperation = constantOperationStops[gtfsId];
   const filteredAlerts = stop.alerts.filter(alert =>
     hasEntitiesOfType(alert, AlertEntityType.Stop),
   );
+
   return (
     <span role="listitem">
       <div className="stop-near-you-container">
         <NearYouHeader
           stop={stop}
-          desc={description}
+          desc={stop.desc}
           isStation={isStation}
           linkAddress={linkAddress}
         />
@@ -120,18 +115,9 @@ const StopNearYou = (
 
 StopNearYou.propTypes = {
   stop: stopShape.isRequired,
-  stopId: PropTypes.string,
   currentTime: PropTypes.number.isRequired,
-  desc: PropTypes.string,
-  relay: relayShape,
-  isParentTabActive: PropTypes.bool,
-};
-
-StopNearYou.defaultProps = {
-  stopId: undefined,
-  desc: undefined,
-  relay: undefined,
-  isParentTabActive: false,
+  relay: relayShape.isRequired,
+  isParentTabActive: PropTypes.bool.isRequired,
 };
 
 StopNearYou.contextTypes = {
