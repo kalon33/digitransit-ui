@@ -46,23 +46,22 @@ function NearYouFavouritesMapContainer(props) {
         };
       }),
   );
-  if (vehicleStations) {
-    stopList.push(
-      ...vehicleStations
-        .filter(s => s)
-        .map(stop => {
-          return {
-            type: 'vehicleRentalStation',
-            node: {
-              distance: distance(position, stop),
-              place: {
-                ...stop,
-              },
+  stopList.push(
+    ...vehicleStations
+      .filter(s => s)
+      .map(stop => {
+        return {
+          type: 'vehicleRentalStation',
+          node: {
+            distance: distance(position, stop),
+            place: {
+              ...stop,
             },
-          };
-        }),
-    );
-  }
+          },
+        };
+      }),
+  );
+
   stopList.sort((a, b) => a.node.distance - b.node.distance);
 
   return <NearYouMap {...props} stopsNearYou={stopList} />;

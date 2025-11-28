@@ -693,7 +693,7 @@ class NearYouPage extends React.Component {
                   stops={props.stops}
                   mapLayers={this.props.mapLayers}
                   stations={props.stations}
-                  bikeStations={props.bikeStations}
+                  vehicleStations={props.vehicleStations}
                   favouriteIds={[
                     ...this.props.favouriteStopIds,
                     ...this.props.favouriteStationIds,
