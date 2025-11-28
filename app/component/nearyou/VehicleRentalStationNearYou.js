@@ -15,11 +15,11 @@ const VehicleRentalStationNearYou = ({
   stop,
   relay,
   currentTime,
-  currentMode,
+  isParentTabActive,
 }) => {
   useEffect(() => {
     const { stationId } = stop;
-    if (currentMode === 'CITYBIKE') {
+    if (isParentTabActive) {
       relay?.refetch(
         oldVariables => {
           return { ...oldVariables, stopId: stationId };
@@ -29,7 +29,7 @@ const VehicleRentalStationNearYou = ({
         { force: true }, // query variables stay the same between refetches
       );
     }
-  }, [currentTime]);
+  }, [currentTime, isParentTabActive]);
   return (
     <span role="listitem">
       <div className="stop-near-you-container">
@@ -86,13 +86,13 @@ VehicleRentalStationNearYou.propTypes = {
     availableSpaces: PropTypes.shape({ total: PropTypes.number }),
   }).isRequired,
   currentTime: PropTypes.number,
-  currentMode: PropTypes.string,
+  isParentTabActive: PropTypes.bool,
   relay: relayShape.isRequired,
 };
 
 VehicleRentalStationNearYou.defaultProps = {
   currentTime: undefined,
-  currentMode: undefined,
+  isParentTabActive: false,
 };
 
 const containerComponent = createRefetchContainer(

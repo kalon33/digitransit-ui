@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, intlShape } from 'react-intl';
 import { Link } from 'found';
-import connectToStores from 'fluxible-addons-react/connectToStores';
 import Modal from '@hsl-fi/modal';
 import { stopShape, configShape, relayShape } from '../../util/shapes';
 import { hasEntitiesOfType } from '../../util/alertUtils';
@@ -14,7 +13,7 @@ import StopNearYouDepartureRowContainer from './StopNearYouDepartureRowContainer
 import CapacityModal from '../CapacityModal';
 
 const StopNearYou = (
-  { stop, desc, stopId, currentTime, currentMode, relay, isParentTabActive },
+  { stop, desc, stopId, currentTime, relay, isParentTabActive },
   { config, intl },
 ) => {
   if (!stop.stoptimesWithoutPatterns) {
@@ -29,12 +28,12 @@ const StopNearYou = (
     if (stopId) {
       id = stopId;
     }
-    if (currentMode === stopMode || !currentMode) {
+    if (isParentTabActive) {
       relay?.refetch(oldVariables => {
         return { ...oldVariables, stopId: id, startTime: currentTime };
       }, null);
     }
-  }, [currentTime, currentMode]);
+  }, [currentTime, isParentTabActive]);
 
   const description = desc || stop.desc;
   const isStation = stop.locationType === 'STATION';
@@ -119,22 +118,10 @@ const StopNearYou = (
   );
 };
 
-const connectedComponent = connectToStores(
-  StopNearYou,
-  ['TimeStore'],
-  (context, props) => {
-    return {
-      ...props,
-      currentTime: context.getStore('TimeStore').getCurrentTime(),
-    };
-  },
-);
-
 StopNearYou.propTypes = {
   stop: stopShape.isRequired,
   stopId: PropTypes.string,
   currentTime: PropTypes.number.isRequired,
-  currentMode: PropTypes.string.isRequired,
   desc: PropTypes.string,
   relay: relayShape,
   isParentTabActive: PropTypes.bool,
@@ -152,4 +139,4 @@ StopNearYou.contextTypes = {
   intl: intlShape.isRequired,
 };
 
-export default connectedComponent;
+export default StopNearYou;

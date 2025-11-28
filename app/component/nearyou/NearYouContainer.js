@@ -226,7 +226,7 @@ class NearYouContainer extends React.Component {
                 <StopNearYouContainer
                   key={`${stop.gtfsId}`}
                   stop={stop}
-                  currentMode={this.props.match.params.mode}
+                  currentTime={this.props.currentTime}
                   isParentTabActive={this.props.isParentTabActive}
                 />
               );
@@ -238,9 +238,8 @@ class NearYouContainer extends React.Component {
             <VehicleRentalStationNearYou
               key={`${stop.stationId}`}
               stop={stop}
-              color={this.context.config.colors.primary}
               currentTime={this.props.currentTime}
-              currentMode={this.props.match.params.mode}
+              isParentTabActive={this.props.isParentTabActive}
             />
           );
         default:

@@ -17,6 +17,7 @@ function NearYouFavouritesContainer({
   vehicleStations,
   searchPosition,
   isParentTabActive,
+  currentTime,
 }) {
   const stopList = [];
   stopList.push(
@@ -61,12 +62,19 @@ function NearYouFavouritesContainer({
           <StopNearYouContainer
             key={stop.gtfsId}
             stop={stop}
-            currentMode="FAVORITE"
             isParentTabActive={isParentTabActive}
+            currentTime={currentTime}
           />
         );
       case 'vehicleRentalStation':
-        return <VehicleRentalStationNearYou key={stop.name} stop={stop} />;
+        return (
+          <VehicleRentalStationNearYou
+            key={stop.name}
+            stop={stop}
+            currentTime={currentTime}
+            isParentTabActive={isParentTabActive}
+          />
+        );
       default:
         return null;
     }
@@ -80,6 +88,7 @@ NearYouFavouritesContainer.propTypes = {
   vehicleStations: PropTypes.arrayOf(vehicleRentalStationShape),
   searchPosition: locationShape,
   isParentTabActive: PropTypes.bool,
+  currentTime: PropTypes.number.isRequired,
 };
 
 const refetchContainer = createFragmentContainer(NearYouFavouritesContainer, {

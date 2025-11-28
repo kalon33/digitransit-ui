@@ -97,6 +97,7 @@ class NearYouPage extends React.Component {
     favouriteVehicleStationIds: PropTypes.arrayOf(PropTypes.string),
     mapLayers: mapLayerShape.isRequired,
     favouritesFetched: PropTypes.bool,
+    currentTime: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
@@ -416,6 +417,7 @@ class NearYouPage extends React.Component {
                 }
                 noFavourites={noFavs}
                 isParentTabActive={isActive}
+                currentTime={this.props.currentTime}
               />
             ) : (
               <Loading />
@@ -591,7 +593,7 @@ class NearYouPage extends React.Component {
                                   <StopNearYouContainer
                                     stop={stop}
                                     key={stop.gtfsId}
-                                    currentMode={nearByStopMode}
+                                    currentTime={this.props.currentTime}
                                     isParentTabActive={isActive}
                                   />
                                 );
@@ -619,6 +621,7 @@ class NearYouPage extends React.Component {
                       nearByStopMode={nearByStopMode}
                       renderDisruptionBanner={renderDisruptionBanner}
                       isParentTabActive={isActive}
+                      currentTime={this.props.currentTime}
                     />
                   )}
                 </div>
@@ -963,7 +966,13 @@ const NearYouPageWithBreakpoint = withBreakpoint(props => (
 
 const PositioningWrapper = connectToStores(
   NearYouPageWithBreakpoint,
-  ['PositionStore', 'PreferencesStore', 'FavouriteStore', 'MapLayerStore'],
+  [
+    'PositionStore',
+    'PreferencesStore',
+    'FavouriteStore',
+    'MapLayerStore',
+    'TimeStore',
+  ],
   (context, props) => {
     const favouriteStopIds = context
       .getStore('FavouriteStore')
@@ -985,6 +994,7 @@ const PositioningWrapper = connectToStores(
     const status = context.getStore('FavouriteStore').getStatus();
     return {
       ...props,
+      currentTime: context.getStore('TimeStore').getCurrentTime(),
       position: context.getStore('PositionStore').getLocationState(),
       lang: context.getStore('PreferencesStore').getLanguage(),
       mapLayers: context

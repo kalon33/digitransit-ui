@@ -22,6 +22,7 @@ function NearYouFavourites({
   breakpoint,
   noFavourites,
   isParentTabActive,
+  currentTime,
 }) {
   if (noFavourites) {
     return (
@@ -81,6 +82,7 @@ function NearYouFavourites({
               stations={props.stations}
               vehicleStations={props.vehicleStations}
               isParentTabActive={isParentTabActive}
+              currentTime={currentTime}
             />
           );
         }
@@ -101,6 +103,7 @@ NearYouFavourites.propTypes = {
   breakpoint: PropTypes.string,
   noFavourites: PropTypes.bool,
   isParentTabActive: PropTypes.bool,
+  currentTime: PropTypes.number.isRequired,
 };
 
 NearYouFavourites.defaultProps = {
