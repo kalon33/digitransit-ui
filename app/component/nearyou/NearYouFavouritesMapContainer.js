@@ -1,11 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import connectToStores from 'fluxible-addons-react/connectToStores';
 import { graphql, createFragmentContainer } from 'react-relay';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
 import NearYouMap from '../map/NearYouMap';
-import PreferencesStore from '../../store/PreferencesStore';
-import FavouriteStore from '../../store/FavouriteStore';
 import {
   vehicleRentalStationShape,
   stopShape,
@@ -70,58 +67,21 @@ function NearYouFavouritesMapContainer(props) {
 NearYouFavouritesMapContainer.propTypes = {
   stops: PropTypes.arrayOf(stopShape).isRequired,
   stations: PropTypes.arrayOf(stationShape).isRequired,
-  vehicleStations: PropTypes.arrayOf(vehicleRentalStationShape),
+  vehicleStations: PropTypes.arrayOf(vehicleRentalStationShape).isRequired,
   position: locationShape.isRequired,
 };
 
-NearYouFavouritesMapContainer.defaultProps = {
-  vehicleStations: null,
-};
-
-const NearYouMapWithStores = connectToStores(
+const containerComponent = createFragmentContainer(
   NearYouFavouritesMapContainer,
-  [PreferencesStore, FavouriteStore],
-  ({ getStore }) => {
-    const language = getStore(PreferencesStore).getLanguage();
-    return { language };
-  },
-);
-
-const containerComponent = createFragmentContainer(NearYouMapWithStores, {
-  stops: graphql`
-    fragment NearYouFavouritesMapContainer_stops on Stop
-    @relay(plural: true)
-    @argumentDefinitions(startTime: { type: "Long!", defaultValue: 0 }) {
-      gtfsId
-      lat
-      lon
-      name
-      patterns {
-        route {
-          gtfsId
-          shortName
-          mode
-        }
-        code
-        directionId
-        patternGeometry {
-          points
-        }
-      }
-      stoptimesWithoutPatterns(startTime: $startTime, omitNonPickups: true) {
-        scheduledArrival
-      }
-    }
-  `,
-  stations: graphql`
-    fragment NearYouFavouritesMapContainer_stations on Stop
-    @relay(plural: true)
-    @argumentDefinitions(startTime: { type: "Long!", defaultValue: 0 }) {
-      gtfsId
-      lat
-      lon
-      name
-      stops {
+  {
+    stops: graphql`
+      fragment NearYouFavouritesMapContainer_stops on Stop
+      @relay(plural: true)
+      @argumentDefinitions(startTime: { type: "Long!", defaultValue: 0 }) {
+        gtfsId
+        lat
+        lon
+        name
         patterns {
           route {
             gtfsId
@@ -134,22 +94,49 @@ const containerComponent = createFragmentContainer(NearYouMapWithStores, {
             points
           }
         }
+        stoptimesWithoutPatterns(startTime: $startTime, omitNonPickups: true) {
+          scheduledArrival
+        }
       }
-      stoptimesWithoutPatterns(startTime: $startTime, omitNonPickups: true) {
-        scheduledArrival
+    `,
+    stations: graphql`
+      fragment NearYouFavouritesMapContainer_stations on Stop
+      @relay(plural: true)
+      @argumentDefinitions(startTime: { type: "Long!", defaultValue: 0 }) {
+        gtfsId
+        lat
+        lon
+        name
+        stops {
+          patterns {
+            route {
+              gtfsId
+              shortName
+              mode
+            }
+            code
+            directionId
+            patternGeometry {
+              points
+            }
+          }
+        }
+        stoptimesWithoutPatterns(startTime: $startTime, omitNonPickups: true) {
+          scheduledArrival
+        }
       }
-    }
-  `,
-  vehicleStations: graphql`
-    fragment NearYouFavouritesMapContainer_vehicleStations on VehicleRentalStation
-    @relay(plural: true) {
-      name
-      lat
-      lon
-      stationId
-    }
-  `,
-});
+    `,
+    vehicleStations: graphql`
+      fragment NearYouFavouritesMapContainer_vehicleStations on VehicleRentalStation
+      @relay(plural: true) {
+        name
+        lat
+        lon
+        stationId
+      }
+    `,
+  },
+);
 
 export {
   containerComponent as default,
