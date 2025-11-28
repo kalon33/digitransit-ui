@@ -382,7 +382,7 @@ const refetchContainer = createPaginationContainer(
               place {
                 __typename
                 ... on VehicleRentalStation {
-                  ...VehicleRentalStationNearYou_stop
+                  ...VehicleRentalStationNearYou_station
                   stationId
                   rentalNetwork {
                     networkId

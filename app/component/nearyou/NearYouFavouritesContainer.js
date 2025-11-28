@@ -115,6 +115,7 @@ const refetchContainer = createFragmentContainer(NearYouFavouritesContainer, {
   vehicleStations: graphql`
     fragment NearYouFavouritesContainer_vehicleStations on VehicleRentalStation
     @relay(plural: true) {
+      ...VehicleRentalStationNearYou_station
       stationId
       name
       availableVehicles {
