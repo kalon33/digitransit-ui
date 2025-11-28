@@ -9,7 +9,7 @@ import { displayDistance } from '../../util/geo-utils';
 
 export default function StreetSummary(props, { config, intl }) {
   const distance = displayDistance(props.distance, config, intl.formatNumber);
-  const icon = `${props.icon || 'icon_walk'}`;
+  const icon = props.icon || 'icon_walk';
   const duration = durationToString(props.duration * 1000);
   return (
     <span className={cx(props.className)} style={{ whiteSpace: 'nowrap' }}>
