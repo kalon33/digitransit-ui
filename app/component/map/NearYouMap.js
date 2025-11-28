@@ -443,7 +443,6 @@ NearYouMap.propTypes = {
   position: locationShape.isRequired,
   match: matchShape.isRequired,
   breakpoint: PropTypes.string.isRequired,
-  language: PropTypes.string.isRequired,
   relay: relayShape.isRequired,
   loading: PropTypes.bool,
   showWalkRoute: PropTypes.bool,
