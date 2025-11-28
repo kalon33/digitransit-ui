@@ -2,21 +2,15 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { graphql, QueryRenderer, ReactRelayContext } from 'react-relay';
 import { FormattedMessage } from 'react-intl';
-import {
-  locationShape,
-  relayShape,
-  stopShape,
-  stationShape,
-  vehicleRentalStationShape,
-} from '../../util/shapes';
+import { locationShape, relayShape } from '../../util/shapes';
 import NearYouFavouritesContainer from './NearYouFavouritesContainer';
 import withBreakpoint from '../../util/withBreakpoint';
 import Loading from '../Loading';
 
 function NearYouFavourites({
-  favouriteStops,
-  favouriteStations,
-  favouriteVehicleRentalStationIds,
+  stopIds,
+  stationIds,
+  vehicleRentalStationIds,
   relayEnvironment,
   searchPosition,
   breakpoint,
@@ -68,9 +62,9 @@ function NearYouFavourites({
         }
       `}
       variables={{
-        stopIds: favouriteStops || [],
-        stationIds: favouriteStations || [],
-        vehicleRentalStationIds: favouriteVehicleRentalStationIds || [],
+        stopIds: stopIds || [],
+        stationIds: stationIds || [],
+        vehicleRentalStationIds: vehicleRentalStationIds || [],
       }}
       environment={relayEnvironment}
       render={({ props }) => {
@@ -78,11 +72,9 @@ function NearYouFavourites({
           return (
             <NearYouFavouritesContainer
               searchPosition={searchPosition}
-              stops={props.stops}
-              stations={props.stations}
-              vehicleStations={props.vehicleStations}
               isParentTabActive={isParentTabActive}
               currentTime={currentTime}
+              {...props}
             />
           );
         }
@@ -92,14 +84,11 @@ function NearYouFavourites({
   );
 }
 NearYouFavourites.propTypes = {
-  favouriteStops: PropTypes.arrayOf(PropTypes.string),
-  favouriteStations: PropTypes.arrayOf(PropTypes.string),
-  favouriteVehicleRentalStationIds: PropTypes.arrayOf(PropTypes.string),
+  stopIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  stationIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  vehicleRentalStationIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   relayEnvironment: relayShape.isRequired,
   searchPosition: locationShape.isRequired,
-  stops: PropTypes.arrayOf(stopShape),
-  stations: PropTypes.arrayOf(stationShape),
-  vehicleStations: PropTypes.arrayOf(vehicleRentalStationShape),
   breakpoint: PropTypes.string,
   noFavourites: PropTypes.bool,
   isParentTabActive: PropTypes.bool,
@@ -107,12 +96,6 @@ NearYouFavourites.propTypes = {
 };
 
 NearYouFavourites.defaultProps = {
-  favouriteStops: undefined,
-  favouriteStations: undefined,
-  favouriteVehicleRentalStationIds: undefined,
-  stops: undefined,
-  stations: undefined,
-  vehicleStations: undefined,
   breakpoint: undefined,
   noFavourites: false,
   isParentTabActive: false,

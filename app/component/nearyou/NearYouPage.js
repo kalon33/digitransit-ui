@@ -408,13 +408,10 @@ class NearYouPage extends React.Component {
             {renderRefetchButton && this.refetchButton()}
             {this.props.favouritesFetched ? (
               <NearYouFavourites
+                stopIds={this.props.favouriteStopIds}
+                stationIds={this.props.favouriteStationIds}
+                vehicleRentalStationIds={this.props.favouriteVehicleStationIds}
                 searchPosition={this.state.searchPosition}
-                match={this.props.match}
-                favouriteStops={this.props.favouriteStopIds}
-                favouriteStations={this.props.favouriteStationIds}
-                favouriteVehicleRentalStationIds={
-                  this.props.favouriteVehicleStationIds
-                }
                 noFavourites={noFavs}
                 isParentTabActive={isActive}
                 currentTime={this.props.currentTime}
