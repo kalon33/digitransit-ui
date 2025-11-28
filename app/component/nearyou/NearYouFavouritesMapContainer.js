@@ -69,16 +69,14 @@ function NearYouFavouritesMapContainer(props) {
 }
 
 NearYouFavouritesMapContainer.propTypes = {
-  stops: PropTypes.arrayOf(stopShape),
-  stations: PropTypes.arrayOf(stationShape),
+  stops: PropTypes.arrayOf(stopShape).isRequired,
+  stations: PropTypes.arrayOf(stationShape).isRequired,
   vehicleStations: PropTypes.arrayOf(vehicleRentalStationShape),
   position: locationShape.isRequired,
 };
 
 NearYouFavouritesMapContainer.defaultProps = {
-  stops: undefined,
-  stations: undefined,
-  vehicleStations: undefined,
+  vehicleStations: null,
 };
 
 const NearYouMapWithStores = connectToStores(
