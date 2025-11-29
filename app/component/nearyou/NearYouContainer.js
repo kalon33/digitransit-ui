@@ -2,8 +2,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { createPaginationContainer, graphql } from 'react-relay';
 import { intlShape, FormattedMessage } from 'react-intl';
-import connectToStores from 'fluxible-addons-react/connectToStores';
-import { matchShape } from 'found';
 import { configShape, relayShape } from '../../util/shapes';
 import StopNearYouContainer from './StopNearYouContainer';
 import withBreakpoint from '../../util/withBreakpoint';
@@ -24,8 +22,6 @@ class NearYouContainer extends React.Component {
     setLoadState: PropTypes.func.isRequired,
     currentTime: PropTypes.number.isRequired,
     relay: relayShape.isRequired,
-    favouriteIds: PropTypes.objectOf(PropTypes.string).isRequired,
-    match: matchShape.isRequired,
     position: PropTypes.shape({
       address: PropTypes.string,
       lat: PropTypes.number,
@@ -36,6 +32,9 @@ class NearYouContainer extends React.Component {
     nearByStopMode: PropTypes.string.isRequired,
     renderDisruptionBanner: PropTypes.bool,
     isParentTabActive: PropTypes.bool,
+    favouriteStopIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+    favouriteStationIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+    favouriteVehicleStationIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   };
 
   static defaultProps = {
@@ -183,14 +182,14 @@ class NearYouContainer extends React.Component {
   };
 
   createNearbyStops = () => {
-    if (!this.props.stopPatterns || !this.props.stopPatterns.nearest) {
+    if (!this.props.stopPatterns?.nearest) {
       return null;
     }
-    const { mode } = this.props.match.params;
+    const mode = this.props.nearByStopMode;
     const walkRoutingThreshold =
       mode === 'RAIL' || mode === 'SUBWAY' || mode === 'FERRY' ? 3000 : 1500;
     const stopPatterns = this.props.stopPatterns.nearest.edges;
-    const isCityBikeView = this.props.match.params.mode === 'CITYBIKE';
+    const isCityBikeView = this.props.nearByStopMode === 'CITYBIKE';
     let sortedPatterns;
     if (isCityBikeView) {
       const withNetworks = stopPatterns.filter(pattern => {
@@ -203,12 +202,16 @@ class NearYouContainer extends React.Component {
       });
       sortedPatterns = filteredCityBikeStopPatterns
         .slice(0, 5)
-        .sort(sortNearbyRentalStations(this.props.favouriteIds));
+        .sort(sortNearbyRentalStations(this.props.favouriteVehicleStationIds));
       sortedPatterns.push(...filteredCityBikeStopPatterns.slice(5));
     } else {
+      const merged = [
+        ...this.props.favouriteStopIds,
+        ...this.props.favouriteStationIds,
+      ];
       sortedPatterns = stopPatterns
         .slice(0, 5)
-        .sort(sortNearbyStops(this.props.favouriteIds, walkRoutingThreshold));
+        .sort(sortNearbyStops(merged, walkRoutingThreshold));
       sortedPatterns.push(...stopPatterns.slice(5));
     }
 
@@ -322,33 +325,11 @@ class NearYouContainer extends React.Component {
     );
   }
 }
+
 const NearYouContainerWithBreakpoint = withBreakpoint(NearYouContainer);
 
-const connectedContainer = connectToStores(
-  NearYouContainerWithBreakpoint,
-  ['TimeStore', 'FavouriteStore'],
-  ({ getStore }, { match }) => {
-    const favouriteIds =
-      match.params.mode === 'CITYBIKE'
-        ? new Set(
-            getStore('FavouriteStore')
-              .getVehicleRentalStations()
-              .map(station => station.stationId),
-          )
-        : new Set(
-            getStore('FavouriteStore')
-              .getStopsAndStations()
-              .map(stop => stop.gtfsId),
-          );
-    return {
-      currentTime: getStore('TimeStore').getCurrentTime(),
-      favouriteIds,
-    };
-  },
-);
-
 const refetchContainer = createPaginationContainer(
-  connectedContainer,
+  NearYouContainerWithBreakpoint,
   {
     stopPatterns: graphql`
       fragment NearYouContainer_stopPatterns on QueryType

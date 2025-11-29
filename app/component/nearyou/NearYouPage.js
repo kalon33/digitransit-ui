@@ -611,7 +611,6 @@ class NearYouPage extends React.Component {
                     <NearYouContainer
                       prioritizedStops={prioritizedStops}
                       setLoadState={this.setLoadState}
-                      match={this.props.match}
                       stopPatterns={props.stopPatterns}
                       position={this.state.searchPosition}
                       withSeparator={!renderSearch}
@@ -619,6 +618,11 @@ class NearYouPage extends React.Component {
                       renderDisruptionBanner={renderDisruptionBanner}
                       isParentTabActive={isActive}
                       currentTime={this.props.currentTime}
+                      favouriteStopIds={this.props.favouriteStopIds}
+                      favouriteVehicleStationIds={
+                        this.props.favouriteVehicleStationIds
+                      }
+                      favouriteStationIds={this.props.favouriteStationIds}
                     />
                   )}
                 </div>
