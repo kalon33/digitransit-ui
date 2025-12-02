@@ -721,6 +721,13 @@ class NearYouPage extends React.Component {
         filteredMapLayers.stop[mode.toLowerCase()] = true;
       }
     }
+    const favouriteIds =
+      mode === 'CITYBIKE'
+        ? new Set(this.props.favouriteVehicleStationIds)
+        : new Set([
+            ...this.props.favouriteStopIds,
+            ...this.props.favouriteStationIds,
+          ]);
     return (
       <QueryRenderer
         query={graphql`
@@ -761,8 +768,8 @@ class NearYouPage extends React.Component {
           return (
             <NearYouMapContainer
               position={this.state.searchPosition}
-              stopsNearYou={props && props.stops}
-              prioritizedStopsNearYou={props && props.prioritizedStops}
+              stopsNearYou={props?.stops}
+              prioritizedStopsNearYou={props?.prioritizedStops}
               match={this.props.match}
               mapLayers={filteredMapLayers}
               mapLayerOptions={this.state.mapLayerOptions}
@@ -774,6 +781,7 @@ class NearYouPage extends React.Component {
               onMapTracking={this.setCenterOfMap}
               breakpoint={this.props.breakpoint}
               setMWTRef={this.setMWTRef}
+              favouriteIds={favouriteIds}
             />
           );
         }}

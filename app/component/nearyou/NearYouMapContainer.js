@@ -1,35 +1,8 @@
-import connectToStores from 'fluxible-addons-react/connectToStores';
 import { graphql, createPaginationContainer } from 'react-relay';
 import NearYouMap from '../map/NearYouMap';
-import FavouriteStore from '../../store/FavouriteStore';
-import PreferencesStore from '../../store/PreferencesStore';
-
-const NearYouMapWithStores = connectToStores(
-  NearYouMap,
-  [PreferencesStore, FavouriteStore],
-  ({ getStore }, { match }) => {
-    const language = getStore(PreferencesStore).getLanguage();
-    const favouriteIds =
-      match.params.mode === 'CITYBIKE'
-        ? new Set(
-            getStore('FavouriteStore')
-              .getVehicleRentalStations()
-              .map(station => station.stationId),
-          )
-        : new Set(
-            getStore('FavouriteStore')
-              .getStopsAndStations()
-              .map(stop => stop.gtfsId),
-          );
-    return {
-      language,
-      favouriteIds,
-    };
-  },
-);
 
 const containerComponent = createPaginationContainer(
-  NearYouMapWithStores,
+  NearYouMap,
   {
     stopsNearYou: graphql`
       fragment NearYouMapContainer_stopsNearYou on QueryType
