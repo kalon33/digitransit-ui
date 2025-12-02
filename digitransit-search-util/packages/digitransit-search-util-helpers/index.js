@@ -181,7 +181,7 @@ export const getLayerRank = (layer, source) => {
  * @param {String} term The search term that was used
  */
 export const sortSearchResults = (lineRegexp, results, term = '') => {
-  if (!Array.isArray(results) || results.length) {
+  if (!Array.isArray(results) || !results.length) {
     return results;
   }
   const isLineIdentifier = value =>
