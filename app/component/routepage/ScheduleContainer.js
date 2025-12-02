@@ -824,7 +824,10 @@ class ScheduleContainer extends PureComponent {
           !DateTime.now().hasSame(firstDepartureDate, 'day')
         ) {
           this.redirectWithServiceDay(firstDepartureDate);
-        } else {
+        } else if (
+          !firstDepartureDate ||
+          !DateTime.now().hasSame(firstDepartureDate, 'week')
+        ) {
           this.redirectWithServiceDay(nextMonday);
         }
       }
