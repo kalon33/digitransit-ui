@@ -237,7 +237,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sbom-artifact
-          path: ${{ github.repository }}-$${{ github.sha }}.json
+          path: ${{ github.repository }}-${{ github.sha }}.json
 
   # This is only done when pushing to v3
   publish-npm:
