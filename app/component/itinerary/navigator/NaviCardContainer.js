@@ -3,7 +3,12 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { intlShape } from 'react-intl';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
-import { isAnyLegPropertyIdentical, legTime } from '../../../util/legUtils';
+import {
+  isAnyLegPropertyIdentical,
+  legTime,
+  getPlatformChangeStatus,
+  PLATFORM_STATUS,
+} from '../../../util/legUtils';
 import { configShape, legShape } from '../../../util/shapes';
 import { getTopics, updateClient } from '../ItineraryPageUtils';
 import NaviCard from './NaviCard';
@@ -65,6 +70,12 @@ function NaviCardContainer(
 
   const { intl, config, match, router } = context;
 
+  const nextLegPlatformCode = nextLeg?.from?.stop?.platformCode;
+  const platformStatus = getPlatformChangeStatus(
+    nextLeg,
+    usePrevious(nextLegPlatformCode).previous,
+  );
+
   const handleRemove = index => {
     const msg = messages.get(activeMessages[index].id);
     msg.closed = true; // remember closing action
@@ -122,13 +133,15 @@ function NaviCardContainer(
         makeNewItinerarySearch,
         config,
         settings,
+        nextLeg,
+        platformStatus,
       ),
     );
 
     if (nextLeg?.transitLeg) {
       // Messages for NaviStack.
       addMessages(incomingMessages, [
-        ...getTransitLegState(nextLeg, intl, messages, time, settings),
+        ...getTransitLegState(nextLeg, intl, messages, time, settings, config),
         ...getAdditionalMessages(
           currentLeg,
           nextLeg,
@@ -216,6 +229,10 @@ function NaviCardContainer(
         position={position}
         tailLength={tailLength}
         cardAnimation={className}
+        platformUpdated={
+          platformStatus === PLATFORM_STATUS.CHANGED ||
+          platformStatus === PLATFORM_STATUS.RESTORED
+        }
       />
       {activeMessages.length > 0 && (
         <NaviStack

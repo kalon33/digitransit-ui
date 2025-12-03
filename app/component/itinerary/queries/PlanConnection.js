@@ -147,13 +147,16 @@ export const planConnection = graphql`
               stoptimesForDate {
                 stop {
                   gtfsId
+                  platformCode
                 }
                 scheduledDeparture
                 serviceDay
               }
               stoptimes {
+                scheduledDeparture
                 stop {
                   gtfsId
+                  platformCode
                 }
               }
             }

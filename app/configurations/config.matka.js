@@ -271,7 +271,7 @@ export default {
     'citybike',
     'airplane',
   ],
-  useAlternativeNameForModes: ['rail'],
+  useAlternativeNameForModes: ['RAIL'],
 
   showVehiclesOnStopPage: false,
   showVehiclesOnItineraryPage: true,
