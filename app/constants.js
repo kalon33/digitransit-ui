@@ -129,5 +129,10 @@ export const PlannerMessageType = Object.freeze({
   SystemError: 'SYSTEM_ERROR',
 });
 
-/** Label for marking via point legs */
-export const VIA_POINT_LABEL = 'ViaPoint';
+/**
+ * OpenTripPlanner (v2) via point types.
+ */
+export const ViaLocationType = Object.freeze({
+  PassThrough: 'PASS_THROUGH',
+  Visit: 'VISIT',
+});

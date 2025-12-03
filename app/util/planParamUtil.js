@@ -9,7 +9,7 @@ import { otpToLocation, getIntermediatePlaces } from './otpStrings';
 import { getAllNetworksOfType, getDefaultNetworks } from './vehicleRentalUtils';
 import { getCustomizedSettings } from '../store/localStorage';
 import { estimateItineraryDistance } from './geo-utils';
-import { TransportMode, VIA_POINT_LABEL } from '../constants';
+import { TransportMode } from '../constants';
 
 export const PLANTYPE = {
   WALK: 'WALK',
@@ -329,7 +329,6 @@ export function getPlanParams(
               latitude: loc.lat,
               longitude: loc.lon,
             },
-            label: VIA_POINT_LABEL,
           },
         };
       }
