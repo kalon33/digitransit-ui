@@ -1364,9 +1364,9 @@ const translations = {
     'navileg-start-schedule': '{mode} {route} scheduled departure {time}',
     'navileg-walk': 'Walk to',
     nearest: '{ mode } near you',
-    'nearest-favorites': 'Stops nearby me',
-    'nearest-favorites-browse-stops': 'Browse and select stops',
-    'nearest-favorites-no-favorites':
+    'nearest-favourites': 'Stops nearby me',
+    'nearest-favourites-browse-stops': 'Browse and select stops',
+    'nearest-favourites-no-favourites':
       'Timetables for the selected stops and vehicles on map',
     'nearest-no-stops':
       'There are no stops or stations for the selected mode of transport nearby.',
@@ -2683,9 +2683,9 @@ const translations = {
       '{mode} {route} aikataulun mukainen lähtö klo {time}',
     'navileg-walk': 'Kävele',
     nearest: 'Lähimmät {mode}',
-    'nearest-favorites': 'Omat lähipysäkit',
-    'nearest-favorites-browse-stops': 'Selaa ja valitse pysäkkejä',
-    'nearest-favorites-no-favorites':
+    'nearest-favourites': 'Omat lähipysäkit',
+    'nearest-favourites-browse-stops': 'Selaa ja valitse pysäkkejä',
+    'nearest-favourites-no-favourites':
       'Valitsemiesi pysäkkien aikataulut ja ajoneuvot kartalla',
     'nearest-no-stops':
       'Valitun liikennevälineen asemia tai pysäkkejä ei ole lähialueella.',
@@ -4193,9 +4193,9 @@ const translations = {
     'move-to-tab': 'Przejdź do karty {number}',
     navigate: 'Nawiguj',
     nearest: '{ mode } w Twojej okolicy',
-    'nearest-favorites': 'Przystanki w pobliżu',
-    'nearest-favorites-browse-stops': 'Przeglądaj i wybieraj przystanki',
-    'nearest-favorites-no-favorites':
+    'nearest-favourites': 'Przystanki w pobliżu',
+    'nearest-favourites-browse-stops': 'Przeglądaj i wybieraj przystanki',
+    'nearest-favourites-no-favourites':
       'Rozkłady jazdy dla wybranych przystanków i pojazdów na mapie',
     'nearest-no-stops':
       'Brak przystanków lub stacji dla zaznaczonego rodzaju transportu w pobliżu.',
@@ -5630,9 +5630,9 @@ const translations = {
     'navileg-start-schedule': '{mode} {route} avgång enligt tidtabell {time}',
     'navileg-walk': 'Gå till',
     nearest: 'Närmaste { mode }',
-    'nearest-favorites': 'Hållplatser nära mig',
-    'nearest-favorites-browse-stops': 'Bläddra och välj hållplatser',
-    'nearest-favorites-no-favorites':
+    'nearest-favourites': 'Hållplatser nära mig',
+    'nearest-favourites-browse-stops': 'Bläddra och välj hållplatser',
+    'nearest-favourites-no-favourites':
       'Tidtabeller och fordon vid de valda hållplatserna på kartan',
     'nearest-no-stops':
       'Inga stationer eller hållplatser för det valda trafikfordont i närheten.',

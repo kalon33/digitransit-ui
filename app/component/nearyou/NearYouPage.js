@@ -442,8 +442,8 @@ class NearYouPage extends React.Component {
                 $omitNonPickups: Boolean!
                 $filterByNetwork: [String!]
               ) {
-                stopPatterns: viewer {
-                  ...NearYouContainer_stopPatterns
+                places: viewer {
+                  ...NearYouContainer_places
                     @arguments(
                       lat: $lat
                       lon: $lon
@@ -617,7 +617,7 @@ class NearYouPage extends React.Component {
                   )}
                   {props && (
                     <NearYouContainer
-                      stopPatterns={props.stopPatterns}
+                      places={props.places}
                       prioritizedStops={prioritizedStops}
                       setLoadState={this.setLoadState}
                       position={this.state.searchPosition}
@@ -771,7 +771,6 @@ class NearYouPage extends React.Component {
           return props ? (
             <NearYouMapContainer
               position={this.state.searchPosition}
-              prioritizedStopsNearYou={props?.prioritizedStops}
               match={this.props.match}
               mapLayers={filteredMapLayers}
               mapLayerOptions={this.state.mapLayerOptions}
@@ -784,6 +783,7 @@ class NearYouPage extends React.Component {
               breakpoint={this.props.breakpoint}
               setMWTRef={this.setMWTRef}
               favouriteIds={favouriteIds}
+              prioritizedStopsNearYou={props.prioritizedStops}
               stopsNearYou={props.stops}
             />
           ) : null;
@@ -926,7 +926,7 @@ class NearYouPage extends React.Component {
             <DesktopView
               title={
                 mode === 'FAVORITE' ? (
-                  <FormattedMessage id="nearest-favorites" />
+                  <FormattedMessage id="nearest-favourites" />
                 ) : (
                   <FormattedMessage
                     id="nearest"

@@ -18,7 +18,7 @@ import DisruptionBanner from '../DisruptionBanner';
 class NearYouContainer extends React.Component {
   static propTypes = {
     // eslint-disable-next-line
-    stopPatterns: PropTypes.object,
+    places: PropTypes.object,
     setLoadState: PropTypes.func.isRequired,
     currentTime: PropTypes.number.isRequired,
     relay: relayShape.isRequired,
@@ -37,7 +37,7 @@ class NearYouContainer extends React.Component {
   };
 
   static defaultProps = {
-    stopPatterns: undefined,
+    places: undefined,
     withSeparator: false,
     prioritizedStops: undefined,
     renderDisruptionBanner: false,
@@ -78,8 +78,8 @@ class NearYouContainer extends React.Component {
         currentPosition: nextProps.position,
       };
     }
-    if (nextProps.stopPatterns) {
-      const stopsForFiltering = [...nextProps.stopPatterns.nearest.edges];
+    if (nextProps.places) {
+      const stopsForFiltering = [...nextProps.places.nearest.edges];
       const newestStops = stopsForFiltering.splice(
         stopsForFiltering.length - 5,
       );
@@ -181,17 +181,17 @@ class NearYouContainer extends React.Component {
   };
 
   createNearbyStops = () => {
-    if (!this.props.stopPatterns?.nearest) {
+    if (!this.props.places?.nearest) {
       return null;
     }
     const mode = this.props.nearByStopMode;
     const walkRoutingThreshold =
       mode === 'RAIL' || mode === 'SUBWAY' || mode === 'FERRY' ? 3000 : 1500;
-    const stopPatterns = this.props.stopPatterns.nearest.edges;
+    const { edges } = this.props.places.nearest;
     const isCityBikeView = this.props.nearByStopMode === 'CITYBIKE';
-    let sortedPatterns;
+    let sorted;
     if (isCityBikeView) {
-      const withNetworks = stopPatterns.filter(pattern => {
+      const withNetworks = edges.filter(pattern => {
         return !!pattern.node.place?.rentalNetwork?.networkId;
       });
       const filteredCityBikeStopPatterns = withNetworks.filter(pattern => {
@@ -199,18 +199,18 @@ class NearYouContainer extends React.Component {
           pattern.node.place?.rentalNetwork?.networkId,
         );
       });
-      sortedPatterns = filteredCityBikeStopPatterns
+      sorted = filteredCityBikeStopPatterns
         .slice(0, 5)
         .sort(sortNearbyRentalStations(this.props.favouriteIds));
-      sortedPatterns.push(...filteredCityBikeStopPatterns.slice(5));
+      sorted.push(...filteredCityBikeStopPatterns.slice(5));
     } else {
-      sortedPatterns = stopPatterns
+      sorted = edges
         .slice(0, 5)
         .sort(sortNearbyStops(this.props.favouriteIds, walkRoutingThreshold));
-      sortedPatterns.push(...stopPatterns.slice(5));
+      sorted.push(...edges.slice(5));
     }
 
-    const stops = sortedPatterns.map(({ node }) => {
+    const stops = sorted.map(({ node }) => {
       const stop = node.place;
       /* eslint-disable-next-line no-underscore-dangle */
       switch (stop.__typename) {
@@ -326,8 +326,8 @@ const NearYouContainerWithBreakpoint = withBreakpoint(NearYouContainer);
 const refetchContainer = createPaginationContainer(
   NearYouContainerWithBreakpoint,
   {
-    stopPatterns: graphql`
-      fragment NearYouContainer_stopPatterns on QueryType
+    places: graphql`
+      fragment NearYouContainer_places on QueryType
       @argumentDefinitions(
         startTime: { type: "Long!", defaultValue: 0 }
         omitNonPickups: { type: "Boolean!", defaultValue: false }
@@ -412,7 +412,7 @@ const refetchContainer = createPaginationContainer(
   {
     direction: 'forward',
     getConnectionFromProps(props) {
-      return props.stopPatterns && props.stopPatterns.nearest;
+      return props.places?.nearest;
     },
     getFragmentVariables(prevVars, totalCount) {
       return {
@@ -442,7 +442,7 @@ const refetchContainer = createPaginationContainer(
         $filterByNetwork: [String!]
       ) {
         viewer {
-          ...NearYouContainer_stopPatterns
+          ...NearYouContainer_places
             @arguments(
               startTime: $startTime
               omitNonPickups: $omitNonPickups

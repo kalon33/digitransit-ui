@@ -71,8 +71,8 @@ function NearYouFavouritesContainer({
           <VehicleRentalStationNearYou
             key={stop.name}
             station={stop}
-            currentTime={currentTime}
             isParentTabActive={isParentTabActive}
+            currentTime={currentTime}
           />
         );
       default:
