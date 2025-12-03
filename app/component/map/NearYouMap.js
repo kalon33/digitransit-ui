@@ -431,12 +431,15 @@ function NearYouMap(
 }
 
 NearYouMap.propTypes = {
-  stopsNearYou: PropTypes.shape({
-    nearest: PropTypes.shape({
-      // eslint-disable-next-line
+  stopsNearYou: PropTypes.oneOfType([
+    PropTypes.shape({
+      nearest: PropTypes.shape({
+        // eslint-disable-next-line
       edges: PropTypes.arrayOf(PropTypes.object).isRequired,
-    }).isRequired,
-  }),
+      }).isRequired,
+    }),
+    PropTypes.arrayOf(PropTypes.object),
+  ]),
   prioritizedStopsNearYou: PropTypes.arrayOf(stopShape),
   // eslint-disable-next-line
   favouriteIds: PropTypes.object.isRequired,
