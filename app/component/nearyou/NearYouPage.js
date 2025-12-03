@@ -691,11 +691,13 @@ class NearYouPage extends React.Component {
                   this.state.phase === PH_USEDEFAULTPOS
                 }
                 mapLayers={this.props.mapLayers}
-                favouriteIds={[
-                  ...this.props.favouriteStopIds,
-                  ...this.props.favouriteStationIds,
-                  ...this.props.favouriteVehicleStationIds,
-                ]}
+                favouriteIds={
+                  new Set([
+                    ...this.props.favouriteStopIds,
+                    ...this.props.favouriteStationIds,
+                    ...this.props.favouriteVehicleStationIds,
+                  ])
+                }
                 breakpoint={this.props.breakpoint}
                 setMWTRef={this.setMWTRef}
                 stops={props.stops}
