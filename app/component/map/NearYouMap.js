@@ -439,7 +439,7 @@ NearYouMap.propTypes = {
   }),
   prioritizedStopsNearYou: PropTypes.arrayOf(stopShape),
   // eslint-disable-next-line
-  favouriteIds: PropTypes.object,
+  favouriteIds: PropTypes.object.isRequired,
   position: locationShape.isRequired,
   match: matchShape.isRequired,
   breakpoint: PropTypes.string.isRequired,
@@ -453,7 +453,6 @@ NearYouMap.defaultProps = {
   stopsNearYou: null,
   showWalkRoute: false,
   loading: false,
-  favouriteIds: undefined,
   setMWTRef: undefined,
   prioritizedStopsNearYou: [],
 };
