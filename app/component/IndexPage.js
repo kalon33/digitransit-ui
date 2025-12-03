@@ -190,10 +190,12 @@ function IndexPage(props, context) {
     executeAction(storeDestination, favourite);
   };
 
-  const trafficNowHandler = (e, lang) => {
-    window.location = `${config.URL.ROOTLINK}/${
-      lang === 'fi' ? '' : `${lang}/`
-    }${config.trafficNowLink[lang]}`;
+  const trafficNowHandler = e => {
+    e.preventDefault();
+    const trafficNowUrl = `${config.URL.ROOTLINK}/${
+      language === 'fi' ? '' : `${language}/`
+    }${config.trafficNowLink[language]}`;
+    window.location = trafficNowUrl;
   };
 
   const clickStopNearIcon = url => {
@@ -262,6 +264,11 @@ function IndexPage(props, context) {
   };
 
   const { trafficNowLink } = config;
+  const trafficNowHref = trafficNowLink
+    ? `${config.URL.ROOTLINK}/${language === 'fi' ? '' : `${language}/`}${
+        config.trafficNowLink[language]
+      }`
+    : undefined;
   const { breakpoint } = props;
 
   const origin = pendingOriginRef.current || props.origin;
@@ -392,7 +399,10 @@ function IndexPage(props, context) {
           )}
 
           {trafficNowLink && (
-            <TrafficNowLink lang={language} handleClick={trafficNowHandler} />
+            <TrafficNowLink
+              handleClick={trafficNowHandler}
+              href={trafficNowHref}
+            />
           )}
         </CtrlPanel>
       </div>
@@ -433,9 +443,8 @@ function IndexPage(props, context) {
           <CtrlPanel.SeparatorLine usePaddingBottom20 />
           {trafficNowLink && (
             <TrafficNowLink
-              lang={language}
               handleClick={trafficNowHandler}
-              fontWeights={fontWeights}
+              href={trafficNowHref}
             />
           )}
         </CtrlPanel>
