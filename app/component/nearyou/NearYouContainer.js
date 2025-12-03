@@ -32,9 +32,8 @@ class NearYouContainer extends React.Component {
     nearByStopMode: PropTypes.string.isRequired,
     renderDisruptionBanner: PropTypes.bool,
     isParentTabActive: PropTypes.bool,
-    favouriteStopIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-    favouriteStationIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-    favouriteVehicleStationIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+    // eslint-disable-next-line
+    favouriteIds: PropTypes.object,
   };
 
   static defaultProps = {
@@ -202,16 +201,12 @@ class NearYouContainer extends React.Component {
       });
       sortedPatterns = filteredCityBikeStopPatterns
         .slice(0, 5)
-        .sort(sortNearbyRentalStations(this.props.favouriteVehicleStationIds));
+        .sort(sortNearbyRentalStations(this.props.favouriteIds));
       sortedPatterns.push(...filteredCityBikeStopPatterns.slice(5));
     } else {
-      const merged = [
-        ...this.props.favouriteStopIds,
-        ...this.props.favouriteStationIds,
-      ];
       sortedPatterns = stopPatterns
         .slice(0, 5)
-        .sort(sortNearbyStops(merged, walkRoutingThreshold));
+        .sort(sortNearbyStops(this.props.favouriteIds, walkRoutingThreshold));
       sortedPatterns.push(...stopPatterns.slice(5));
     }
 

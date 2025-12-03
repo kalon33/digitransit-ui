@@ -478,6 +478,14 @@ class NearYouPage extends React.Component {
               }
               const prioritizedStops =
                 config.prioritizedStopsNearYou[nearByStopMode.toLowerCase()];
+              const favouriteIds =
+                mode === 'CITYBIKE'
+                  ? new Set(this.props.favouriteVehicleStationIds)
+                  : new Set([
+                      ...this.props.favouriteStopIds,
+                      ...this.props.favouriteStationIds,
+                    ]);
+
               return (
                 <div className="stops-near-you-page">
                   {renderSearch && (
@@ -609,20 +617,16 @@ class NearYouPage extends React.Component {
                   )}
                   {props && (
                     <NearYouContainer
+                      stopPatterns={props.stopPatterns}
                       prioritizedStops={prioritizedStops}
                       setLoadState={this.setLoadState}
-                      stopPatterns={props.stopPatterns}
                       position={this.state.searchPosition}
                       withSeparator={!renderSearch}
                       nearByStopMode={nearByStopMode}
                       renderDisruptionBanner={renderDisruptionBanner}
                       isParentTabActive={isActive}
                       currentTime={this.props.currentTime}
-                      favouriteStopIds={this.props.favouriteStopIds}
-                      favouriteVehicleStationIds={
-                        this.props.favouriteVehicleStationIds
-                      }
-                      favouriteStationIds={this.props.favouriteStationIds}
+                      favouriteIds={favouriteIds}
                     />
                   )}
                 </div>
