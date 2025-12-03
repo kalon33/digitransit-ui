@@ -680,32 +680,29 @@ class NearYouPage extends React.Component {
           }}
           environment={this.props.relayEnvironment}
           render={({ props }) => {
-            if (props) {
-              return (
-                <NearYouFavouritesMapContainer
-                  position={this.state.searchPosition}
-                  match={this.props.match}
-                  onEndNavigation={this.setCenterOfMap}
-                  onMapTracking={this.setCenterOfMap}
-                  showWalkRoute={
-                    this.state.phase === PH_USEGEOLOCATION ||
-                    this.state.phase === PH_USEDEFAULTPOS
-                  }
-                  stops={props.stops}
-                  mapLayers={this.props.mapLayers}
-                  stations={props.stations}
-                  vehicleStations={props.vehicleStations}
-                  favouriteIds={[
-                    ...this.props.favouriteStopIds,
-                    ...this.props.favouriteStationIds,
-                    ...this.props.favouriteVehicleStationIds,
-                  ]}
-                  breakpoint={this.props.breakpoint}
-                  setMWTRef={this.setMWTRef}
-                />
-              );
-            }
-            return undefined;
+            return props ? (
+              <NearYouFavouritesMapContainer
+                position={this.state.searchPosition}
+                match={this.props.match}
+                onEndNavigation={this.setCenterOfMap}
+                onMapTracking={this.setCenterOfMap}
+                showWalkRoute={
+                  this.state.phase === PH_USEGEOLOCATION ||
+                  this.state.phase === PH_USEDEFAULTPOS
+                }
+                mapLayers={this.props.mapLayers}
+                favouriteIds={[
+                  ...this.props.favouriteStopIds,
+                  ...this.props.favouriteStationIds,
+                  ...this.props.favouriteVehicleStationIds,
+                ]}
+                breakpoint={this.props.breakpoint}
+                setMWTRef={this.setMWTRef}
+                stops={props.stops}
+                stations={props.stations}
+                vehicleStations={props.vehicleStations}
+              />
+            ) : null;
           }}
         />
       );
@@ -765,10 +762,9 @@ class NearYouPage extends React.Component {
         variables={this.getQueryVariables(mode)}
         environment={this.props.relayEnvironment}
         render={({ props }) => {
-          return (
+          return props ? (
             <NearYouMapContainer
               position={this.state.searchPosition}
-              stopsNearYou={props?.stops}
               prioritizedStopsNearYou={props?.prioritizedStops}
               match={this.props.match}
               mapLayers={filteredMapLayers}
@@ -782,8 +778,9 @@ class NearYouPage extends React.Component {
               breakpoint={this.props.breakpoint}
               setMWTRef={this.setMWTRef}
               favouriteIds={favouriteIds}
+              stopsNearYou={props.stops}
             />
-          );
+          ) : null;
         }}
       />
     );

@@ -133,7 +133,7 @@ const containerComponent = createPaginationContainer(
   {
     direction: 'forward',
     getConnectionFromProps(props) {
-      return props.stopsNearYou && props.stopsNearYou.nearest;
+      return props.stopsNearYou?.nearest;
     },
     getFragmentVariables(prevVars, totalCount) {
       return {
