@@ -308,7 +308,7 @@ const Itinerary = (
       nameLengthSum += getRouteText(leg.route, config).length;
     }
     nameLengthSum += 10; // every leg requires some minimum space
-    if (i > 0 && (leg.from.viaLocationType || leg.to?.viaLocationType)) {
+    if (i > 0 && (leg.from.viaLocationType || leg.to.viaLocationType)) {
       intermediateSlack +=
         legTime(leg.start) - legTime(compressedLegs[i - 1].end); // calculate time spent at each intermediate place
     }
@@ -354,7 +354,7 @@ const Itinerary = (
     let legLength = relativeLength(endMs - startMs);
     const longName = !leg?.route?.shortName || leg?.route?.shortName.length > 5;
 
-    if (nextLeg && !leg.to?.viaLocationType) {
+    if (nextLeg && !leg.to.viaLocationType) {
       // don't show waiting in intermediate places
       waitTime = legTime(nextLeg.start) - endMs;
       waitLength = relativeLength(waitTime);
