@@ -4,6 +4,7 @@ import cx from 'classnames';
 import Icon from '../Icon';
 import RouteNumber from '../RouteNumber';
 import { legShape } from '../../util/shapes';
+import { ViaLocationType } from '../../constants';
 
 const ItineraryCircleLineLong = props => {
   const [imgUrl, setImgUrl] = useState('');
@@ -28,7 +29,7 @@ const ItineraryCircleLineLong = props => {
         </div>
       );
     }
-    if (props.isVia === true) {
+    if (props.viaType === ViaLocationType.Visit) {
       return (
         <div className="itinerary-icon-container">
           <Icon img="icon_mapMarker" className="itinerary-icon via via-it" />
@@ -163,13 +164,13 @@ ItineraryCircleLineLong.propTypes = {
   renderBottomMarker: PropTypes.bool,
   modeClassName: PropTypes.string.isRequired,
   boardingLeg: legShape.isRequired,
-  isVia: PropTypes.bool,
+  viaType: PropTypes.string,
 };
 
 ItineraryCircleLineLong.defaultProps = {
   color: undefined,
   renderBottomMarker: false,
-  isVia: false,
+  viaType: null,
 };
 
 export default ItineraryCircleLineLong;

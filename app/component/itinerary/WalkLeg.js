@@ -133,7 +133,7 @@ function WalkLeg(
         appendClass={appendClass}
         index={index}
         modeClassName={modeClassName}
-        isVia={!!leg.from.viaLocationType}
+        viaType={leg.from.viaLocationType}
       />
       <div
         className={`small-9 columns itinerary-instruction-column ${leg.mode.toLowerCase()}`}

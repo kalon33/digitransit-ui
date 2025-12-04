@@ -96,7 +96,7 @@ function ViaLeg(props, { config, intl }) {
         </div>
       </div>
       <ItineraryCircleLineWithIcon
-        isVia
+        viaType={props.leg.from.viaLocationType}
         index={props.index}
         modeClassName={props.leg.mode.toLowerCase()}
       />
