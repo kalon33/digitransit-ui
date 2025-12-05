@@ -775,3 +775,64 @@ export const legDestination = (intl, leg, secondary, nextLeg = null) => {
   }
   return intl.formatMessage({ id, defaultMessage: 'place' });
 };
+
+/** The platform status depicts the current state of changes to a platform for a leg. */
+export const PLATFORM_STATUS = {
+  NORMAL: 'normal',
+  CHANGED: 'changed',
+  RESTORED: 'restored',
+};
+
+/**
+ * Returns platform change status for a leg or a specific departure in the case of a terminal page.
+ * @param {object} leg
+ * @returns {string} status
+ */
+export function getPlatformChangeStatus(leg, prevPlatform) {
+  let status = PLATFORM_STATUS.NORMAL;
+  if (!leg?.trip || (!leg.start?.scheduledTime && !leg.time)) {
+    return status;
+  }
+  const startTime = leg.start?.scheduledTime || leg.time * 1000;
+  const startTimeEpoch = new Date(startTime).getTime();
+  // Find a matching stop in the updated stoptimesForDate
+  const updatedStop = leg.trip.stoptimesForDate?.find(s => {
+    const departureTimeEpoch = (s.serviceDay + s.scheduledDeparture) * 1000;
+    return departureTimeEpoch === startTimeEpoch;
+  });
+  const updatedPlatform = updatedStop?.stop?.platformCode;
+  if (!updatedPlatform) {
+    return status;
+  }
+
+  // Find a matching stop in the original stoptimes
+  const originalStop = leg.trip.stoptimes?.find(s => {
+    return s.scheduledDeparture === updatedStop.scheduledDeparture;
+  });
+  const originalPlatform = originalStop?.stop?.platformCode;
+  if (!originalPlatform) {
+    return status;
+  }
+
+  if (
+    prevPlatform &&
+    prevPlatform !== updatedPlatform &&
+    originalPlatform === updatedPlatform
+  ) {
+    status = PLATFORM_STATUS.RESTORED;
+  } else if (originalPlatform !== updatedPlatform) {
+    status = PLATFORM_STATUS.CHANGED;
+  }
+  return status;
+}
+
+/**
+ * Checks if the platform has changed for a given leg.
+ * Doesn't consider if it has returned to original.
+ * @param {*} leg
+ * @returns {boolean}
+ */
+export const isPlatformChanged = leg => {
+  const status = getPlatformChangeStatus(leg);
+  return status === PLATFORM_STATUS.CHANGED;
+};
