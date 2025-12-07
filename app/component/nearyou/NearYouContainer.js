@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { createPaginationContainer, graphql } from 'react-relay';
 import { intlShape, FormattedMessage } from 'react-intl';
 import { configShape, relayShape } from '../../util/shapes';
@@ -15,198 +15,112 @@ import Icon from '../Icon';
 import { getDefaultNetworks } from '../../util/vehicleRentalUtils';
 import DisruptionBanner from '../DisruptionBanner';
 
-class NearYouContainer extends React.Component {
-  static propTypes = {
-    // eslint-disable-next-line
-    places: PropTypes.object,
-    setLoadState: PropTypes.func.isRequired,
-    currentTime: PropTypes.number.isRequired,
-    relay: relayShape.isRequired,
-    position: PropTypes.shape({
-      address: PropTypes.string,
-      lat: PropTypes.number,
-      lon: PropTypes.number,
-    }).isRequired,
-    withSeparator: PropTypes.bool,
-    prioritizedStops: PropTypes.arrayOf(PropTypes.string),
-    nearByStopMode: PropTypes.string.isRequired,
-    renderDisruptionBanner: PropTypes.bool,
-    isParentTabActive: PropTypes.bool,
-    // eslint-disable-next-line
-    favouriteIds: PropTypes.object,
-  };
+function NearYouContainer(
+  {
+    places,
+    loadingDone,
+    currentTime,
+    relay,
+    position,
+    withSeparator,
+    prioritizedStops,
+    mode,
+    renderDisruptionBanner,
+    isParentTabActive,
+    favouriteIds,
+  },
+  { config, intl },
+) {
+  const ariaRef = useRef('stop-near-you');
+  const searchPos = useRef(position); // position used for fetching nearest places
+  const refetches = useRef(0);
+  const stopCount = useRef(5);
+  const [loading, setLoading] = useState(0);
 
-  static defaultProps = {
-    places: undefined,
-    withSeparator: false,
-    prioritizedStops: undefined,
-    renderDisruptionBanner: false,
-    isParentTabActive: false,
-  };
-
-  static contextTypes = {
-    config: configShape,
-    intl: intlShape.isRequired,
-    executeAction: PropTypes.func.isRequired,
-    getStore: PropTypes.func,
-  };
-
-  constructor(props, context) {
-    super(props, context);
-    this.resultsUpdatedAlertRef = React.createRef();
-    this.state = {
-      maxRefetches: context.config.maxNearbyStopRefetches,
-      refetches: 0,
-      stopCount: 5,
-      currentPosition: props.position,
-      fetchMoreStops: false,
-      isLoadingmoreStops: false,
-      isUpdatingPosition: false,
-    };
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    let newState = null;
-    if (
-      !prevState.currentPosition ||
-      (!prevState.currentPosition.address &&
-        nextProps.position &&
-        nextProps.position.address)
-    ) {
-      newState = {
-        ...newState,
-        currentPosition: nextProps.position,
-      };
-    }
-    if (nextProps.places) {
-      const stopsForFiltering = [...nextProps.places.nearest.edges];
-      const newestStops = stopsForFiltering.splice(
-        stopsForFiltering.length - 5,
-      );
-      if (
-        newestStops.every(stop => {
-          return (
-            stop.node.place.stoptimesWithoutPatterns &&
-            stop.node.place.stoptimesWithoutPatterns.length === 0
-          );
-        }) &&
-        prevState.refetches < prevState.maxRefetches
-      ) {
-        newState = {
-          ...newState,
-          fetchMoreStops: true,
-        };
-      } else {
-        newState = {
-          ...newState,
-          fetchMoreStops: false,
-        };
-      }
-    }
-    return newState;
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { position } = prevProps;
-    if (position && this.state.currentPosition) {
-      if (
-        position.lat !== this.props.position.lat ||
-        position.lon !== this.props.position.lon
-      ) {
-        this.updatePosition();
-      }
-    }
-    if (this.state.fetchMoreStops) {
-      this.showMore(true);
-    }
-    if (
-      this.resultsUpdatedAlertRef.current &&
-      prevState.isLoadingmoreStops &&
-      !this.state.isLoadingmoreStops
-    ) {
-      this.resultsUpdatedAlertRef.current.innerHTML =
-        this.context.intl.formatMessage({
-          id: 'stop-near-you-update-alert',
-          defaultMessage: 'Search results updated',
-        });
-      setTimeout(() => {
-        this.resultsUpdatedAlertRef.current.innerHTML = null;
-      }, 100);
-    }
-  }
-
-  componentDidMount() {
-    this.props.setLoadState();
-    if (this.state.fetchMoreStops) {
-      this.showMore(true);
-    }
-  }
-
-  updatePosition = () => {
+  const updatePosition = () => {
     const variables = {
-      lat: this.props.position.lat,
-      lon: this.props.position.lon,
-      startTime: this.props.currentTime,
+      ...position,
+      startTime: currentTime,
     };
-    this.setState({
-      isUpdatingPosition: true,
-    });
-    this.props.relay.refetchConnection(
-      this.state.stopCount,
+    setLoading(1);
+    relay.refetchConnection(
+      stopCount.current,
       () => {
-        this.setState({
-          isUpdatingPosition: false,
-          currentPosition: this.props.position,
-        });
+        setLoading(0);
+        searchPos.current = position;
       },
       variables,
     );
   };
 
-  showMore = automatic => {
-    if (!this.props.relay.hasMore() || this.state.isLoadingmoreStops) {
+  const showMore = automatic => {
+    if (!relay.hasMore() || loading) {
       return;
     }
-    this.setState({ isLoadingmoreStops: true, fetchMoreStops: false });
-    this.props.relay.loadMore(5, () => {
-      this.setState(previousState => ({
-        refetches: automatic
-          ? previousState.refetches + 1
-          : previousState.refetches,
-        stopCount: previousState.stopCount + 5,
-        fetchMoreStops: false,
-        isLoadingmoreStops: false,
-      }));
+    setLoading(2);
+    if (!automatic) {
+      ariaRef.current = 'loading';
+    }
+    relay.loadMore(5, () => {
+      if (automatic) {
+        refetches.current += 1;
+      }
+      stopCount.current += 5;
+      ariaRef.current = 'stop-near-you-update-alert';
+      setLoading(0);
     });
   };
 
-  createNearbyStops = () => {
-    if (!this.props.places?.nearest) {
-      return null;
+  useEffect(() => {
+    const { edges } = places.nearest;
+    const fetchMore =
+      edges.filter(
+        stop => !(stop.node.place.stoptimesWithoutPatterns?.length === 0),
+      ).length < 5 && refetches.current < config.maxNearbyStopRefetches;
+    if (fetchMore) {
+      showMore(true);
     }
-    const mode = this.props.nearByStopMode;
+  }, [places]);
+
+  useEffect(() => {
+    if (
+      position.lat !== searchPos.current.lat ||
+      position.lon !== searchPos.current.lon
+    ) {
+      updatePosition();
+    }
+  }, [position.lat, position.lon]);
+
+  useEffect(() => {
+    loadingDone();
+  }, []);
+
+  const createNearbyStops = () => {
+    if (!places?.nearest) {
+      return [];
+    }
     const walkRoutingThreshold =
       mode === 'RAIL' || mode === 'SUBWAY' || mode === 'FERRY' ? 3000 : 1500;
-    const { edges } = this.props.places.nearest;
-    const isCityBikeView = this.props.nearByStopMode === 'CITYBIKE';
+    const { edges } = places.nearest;
+    const isCityBikeView = mode === 'CITYBIKE';
     let sorted;
     if (isCityBikeView) {
-      const withNetworks = edges.filter(pattern => {
-        return !!pattern.node.place?.rentalNetwork?.networkId;
+      const withNetworks = edges.filter(edge => {
+        return !!edge.node.place?.rentalNetwork?.networkId;
       });
-      const filteredCityBikeStopPatterns = withNetworks.filter(pattern => {
-        return getDefaultNetworks(this.context.config).includes(
-          pattern.node.place?.rentalNetwork?.networkId,
+      const filteredCityBikeStopEdges = withNetworks.filter(edge => {
+        return getDefaultNetworks(config).includes(
+          edge.node.place?.rentalNetwork?.networkId,
         );
       });
-      sorted = filteredCityBikeStopPatterns
+      sorted = filteredCityBikeStopEdges
         .slice(0, 5)
-        .sort(sortNearbyRentalStations(this.props.favouriteIds));
-      sorted.push(...filteredCityBikeStopPatterns.slice(5));
+        .sort(sortNearbyRentalStations(favouriteIds));
+      sorted.push(...filteredCityBikeStopEdges.slice(5));
     } else {
       sorted = edges
         .slice(0, 5)
-        .sort(sortNearbyStops(this.props.favouriteIds, walkRoutingThreshold));
+        .sort(sortNearbyStops(favouriteIds, walkRoutingThreshold));
       sorted.push(...edges.slice(5));
     }
 
@@ -215,17 +129,14 @@ class NearYouContainer extends React.Component {
       /* eslint-disable-next-line no-underscore-dangle */
       switch (stop.__typename) {
         case 'Stop':
-          if (
-            stop.stoptimesWithoutPatterns &&
-            stop.stoptimesWithoutPatterns.length > 0
-          ) {
-            if (!this.props.prioritizedStops?.includes(stop.gtfsId)) {
+          if (stop.stoptimesWithoutPatterns?.length > 0) {
+            if (!prioritizedStops?.includes(stop.gtfsId)) {
               return (
                 <StopNearYouContainer
                   key={`${stop.gtfsId}`}
                   stop={stop}
-                  currentTime={this.props.currentTime}
-                  isParentTabActive={this.props.isParentTabActive}
+                  currentTime={currentTime}
+                  isParentTabActive={isParentTabActive}
                 />
               );
             }
@@ -236,8 +147,8 @@ class NearYouContainer extends React.Component {
             <VehicleRentalStationNearYou
               key={`${stop.stationId}`}
               station={stop}
-              currentTime={this.props.currentTime}
-              isParentTabActive={this.props.isParentTabActive}
+              currentTime={currentTime}
+              isParentTabActive={isParentTabActive}
             />
           );
         default:
@@ -248,78 +159,94 @@ class NearYouContainer extends React.Component {
     return stops;
   };
 
-  render() {
-    const screenReaderUpdateAlert = (
-      <span
-        className="sr-only"
-        role="alert"
-        ref={this.resultsUpdatedAlertRef}
-      />
-    );
-    const stops = this.createNearbyStops().filter(e => e);
-    const alerts = stops
-      .flatMap(stop => stop.props.stop?.routes || [])
-      .flatMap(route => route?.alerts || [])
-      .filter(alert => alert.alertSeverityLevel === 'SEVERE');
-    const noStopsFound =
-      !stops.length &&
-      this.state.refetches >= this.state.maxRefetches &&
-      !this.state.isLoadingmoreStops;
-    return (
-      <>
-        {this.props.renderDisruptionBanner && (
-          <DisruptionBanner
-            alerts={alerts || []}
-            mode={this.props.nearByStopMode}
-            trafficNowLink={this.context.config.trafficNowLink}
-          />
-        )}
-        {((!this.props.relay.hasMore() &&
-          !stops.length &&
-          !this.props.prioritizedStops?.length) ||
-          (noStopsFound && !this.props.prioritizedStops?.length)) && (
-          <>
-            {this.props.withSeparator && <div className="separator" />}
-            <div className="stops-near-you-no-stops">
-              <Icon
-                img="icon_info"
-                color={this.context.config.colors.primary}
-              />
-              <FormattedMessage id="nearest-no-stops" />
-            </div>
-          </>
-        )}
-        {screenReaderUpdateAlert}
-        {this.state.isUpdatingPosition && (
-          <div className="stops-near-you-spinner-container">
-            <Loading />
+  const stops = createNearbyStops();
+  const alerts = stops
+    .flatMap(stop => stop?.props?.stop?.routes || [])
+    .flatMap(route => route?.alerts || [])
+    .filter(alert => alert.alertSeverityLevel === 'SEVERE');
+  const noStopsFound =
+    !stops.length && refetches >= config.maxNearbyStopRefetches && !loading;
+  return (
+    <>
+      {renderDisruptionBanner && (
+        <DisruptionBanner alerts={alerts || []} mode={mode} />
+      )}
+      {((!relay.hasMore() && !stops.length && !prioritizedStops?.length) ||
+        (noStopsFound && !prioritizedStops?.length)) && (
+        <>
+          {withSeparator && <div className="separator" />}
+          <div className="stops-near-you-no-stops">
+            <Icon img="icon_info" color={config.colors.primary} />
+            <FormattedMessage id="nearest-no-stops" />
           </div>
-        )}
-        <div role="list" className="stops-near-you-container">
-          {stops}
+        </>
+      )}
+      <div role="status" className="sr-only" id="status" aria-live="polite">
+        <FormattedMessage id={ariaRef.current} />
+      </div>
+      {loading === 1 && (
+        <div className="stops-near-you-spinner-container">
+          <Loading />
         </div>
-        {this.state.isLoadingmoreStops && (
-          <div className="stops-near-you-spinner-container">
-            <Loading />
-          </div>
-        )}
-        {this.props.relay.hasMore() && !noStopsFound && (
-          <button
-            type="button"
-            aria-label={this.context.intl.formatMessage({
-              id: 'show-more-stops-near-you',
-              defaultMessage: 'Load more nearby stops',
-            })}
-            className="show-more-button"
-            onClick={() => this.showMore(false)}
-          >
-            <FormattedMessage id="show-more" defaultMessage="Show more" />
-          </button>
-        )}
-      </>
-    );
-  }
+      )}
+      <div role="list" className="stops-near-you-container">
+        {stops}
+      </div>
+      {loading === 2 && (
+        <div className="stops-near-you-spinner-container">
+          <Loading />
+        </div>
+      )}
+      {relay.hasMore() && !noStopsFound && (
+        <button
+          type="button"
+          aria-label={intl.formatMessage({
+            id: 'show-more-stops-near-you',
+            defaultMessage: 'Load more nearby stops',
+          })}
+          className="show-more-button"
+          onClick={() => showMore(false)}
+        >
+          <FormattedMessage id="show-more" defaultMessage="Show more" />
+        </button>
+      )}
+    </>
+  );
 }
+
+NearYouContainer.propTypes = {
+  // eslint-disable-next-line
+  places: PropTypes.object,
+  loadingDone: PropTypes.func.isRequired,
+  currentTime: PropTypes.number.isRequired,
+  relay: relayShape.isRequired,
+  position: PropTypes.shape({
+    lat: PropTypes.number,
+    lon: PropTypes.number,
+  }).isRequired,
+  withSeparator: PropTypes.bool,
+  prioritizedStops: PropTypes.arrayOf(PropTypes.string),
+  mode: PropTypes.string.isRequired,
+  renderDisruptionBanner: PropTypes.bool,
+  isParentTabActive: PropTypes.bool,
+  // eslint-disable-next-line
+  favouriteIds: PropTypes.object,
+};
+
+NearYouContainer.defaultProps = {
+  places: undefined,
+  withSeparator: false,
+  prioritizedStops: undefined,
+  renderDisruptionBanner: false,
+  isParentTabActive: false,
+};
+
+NearYouContainer.contextTypes = {
+  config: configShape,
+  intl: intlShape.isRequired,
+  executeAction: PropTypes.func.isRequired,
+  getStore: PropTypes.func,
+};
 
 const NearYouContainerWithBreakpoint = withBreakpoint(NearYouContainer);
 

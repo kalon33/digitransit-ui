@@ -208,7 +208,7 @@ class NearYouPage extends React.Component {
     return newState;
   }
 
-  setLoadState = () => {
+  loadingDone = () => {
     // trigger a state update in this component to force a rerender when stop data is received for the first time.
     // this fixes a bug where swipeable tabs were not keeping focusable elements up to date after receving stop data
     // and keyboard focus could be lost to hidden elements.
@@ -619,10 +619,10 @@ class NearYouPage extends React.Component {
                     <NearYouContainer
                       places={props.places}
                       prioritizedStops={prioritizedStops}
-                      setLoadState={this.setLoadState}
+                      loadingDone={this.loadingDone}
                       position={this.state.searchPosition}
                       withSeparator={!renderSearch}
-                      nearByStopMode={nearByStopMode}
+                      mode={nearByStopMode}
                       renderDisruptionBanner={renderDisruptionBanner}
                       isParentTabActive={isActive}
                       currentTime={this.props.currentTime}
