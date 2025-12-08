@@ -980,12 +980,7 @@ const Itinerary = ({
                   <Icon
                     img="icon_three-dots"
                     className="overflow-icon"
-                    background={
-                      <IconBackground
-                        backgroundShape="circle"
-                        backgroundColor="#fff"
-                      />
-                    }
+                    background={<IconBackground shape="circle" color="#fff" />}
                   />
                 )}
                 <div className="itinerary-start-time-and-end-time">
