@@ -18,6 +18,7 @@ import { otpToLocation, locationToUri } from '../../util/otpStrings';
 import { isKeyboardSelectionEvent } from '../../util/browser';
 import Loading from '../Loading';
 import StopNearYouContainer from './StopNearYouContainer';
+import UpdateLocationButton from './UpdateLocationButton';
 import {
   checkPositioningPermission,
   startLocationWatch,
@@ -335,38 +336,6 @@ class NearYouPage extends React.Component {
     this.setState({ centerOfMapChanged: false });
   };
 
-  refetchButton = nearByMode => {
-    const { mode } = this.props.match.params;
-    const modeClass = nearByMode || mode;
-    return (
-      <div className="nearest-stops-update-container">
-        <FormattedMessage id="nearest-stops-updated-location" />
-        <button
-          type="button"
-          aria-label={this.context.intl.formatMessage({
-            id: 'show-more-stops-near-you',
-            defaultMessage: 'Load more nearby stops',
-          })}
-          className="update-stops-button"
-          onClick={this.updateLocation}
-        >
-          <Icon img="icon_update" />
-          <FormattedMessage
-            id="nearest-stops-update-location"
-            defaultMessage="Update stops"
-            values={{
-              mode: (
-                <FormattedMessage
-                  id={`nearest-stops-${modeClass.toLowerCase()}`}
-                />
-              ),
-            }}
-          />
-        </button>
-      </div>
-    );
-  };
-
   noFavourites = () => {
     return (
       !this.props.favouriteStopIds.length &&
@@ -386,7 +355,7 @@ class NearYouPage extends React.Component {
     const { centerOfMapChanged } = this.state;
     const { mode } = this.props.match.params;
     const noFavourites = mode === 'FAVORITE' && this.noFavourites();
-    const renderRefetchButton = centerOfMapChanged && !noFavourites;
+    const renderUpdateButton = centerOfMapChanged && !noFavourites;
     const nearByStopModes = this.modes;
     const index = nearByStopModes.indexOf(mode);
     const { config } = this.context;
@@ -405,7 +374,12 @@ class NearYouPage extends React.Component {
             }`}
             aria-hidden={!isActive}
           >
-            {renderRefetchButton && this.refetchButton()}
+            {renderUpdateButton && (
+              <UpdateLocationButton
+                mode={nearByStopMode}
+                onClick={this.updateLocation}
+              />
+            )}
             {this.props.favouritesFetched ? (
               <NearYouFavourites
                 stopIds={this.props.favouriteStopIds}
@@ -563,8 +537,12 @@ class NearYouPage extends React.Component {
                         </div>
                       </div>
                     )}
-
-                  {renderRefetchButton && this.refetchButton(nearByStopMode)}
+                  {renderUpdateButton && (
+                    <UpdateLocationButton
+                      mode={nearByStopMode}
+                      onClick={this.updateLocation}
+                    />
+                  )}
                   {prioritizedStops?.length && (
                     <QueryRenderer
                       query={graphql`
