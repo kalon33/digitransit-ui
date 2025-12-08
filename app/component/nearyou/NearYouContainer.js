@@ -125,16 +125,16 @@ function NearYouContainer(
     }
 
     const stops = sorted.map(({ node }) => {
-      const stop = node.place;
+      const { place } = node;
       /* eslint-disable-next-line no-underscore-dangle */
-      switch (stop.__typename) {
+      switch (place.__typename) {
         case 'Stop':
-          if (stop.stoptimesWithoutPatterns?.length > 0) {
-            if (!prioritizedStops?.includes(stop.gtfsId)) {
+          if (place.stoptimesWithoutPatterns?.length > 0) {
+            if (!prioritizedStops?.includes(place.gtfsId)) {
               return (
                 <StopNearYouContainer
-                  key={`${stop.gtfsId}`}
-                  stop={stop}
+                  key={`${place.gtfsId}`}
+                  stop={place}
                   currentTime={currentTime}
                   isParentTabActive={isParentTabActive}
                 />
@@ -145,8 +145,8 @@ function NearYouContainer(
         case 'VehicleRentalStation':
           return (
             <VehicleRentalStationNearYou
-              key={`${stop.stationId}`}
-              station={stop}
+              key={`${place.stationId}`}
+              station={place}
               currentTime={currentTime}
               isParentTabActive={isParentTabActive}
             />
