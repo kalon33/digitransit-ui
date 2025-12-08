@@ -220,6 +220,25 @@ function getViaPointAddress(from, viaPoints) {
   );
 }
 
+// Once a via place is matched, it is used and will not match again.
+function includesAndRemove(array, id) {
+  const index = array.indexOf(id);
+  if (index >= 0) {
+    array.splice(index, 1);
+    return true;
+  }
+  return false;
+}
+
+function isViaPointMatch(stop, viaPoints) {
+  return (
+    stop &&
+    (includesAndRemove(viaPoints, stop.gtfsId) ||
+      (stop.parentStation &&
+        includesAndRemove(viaPoints, stop.parentStation.gtfsId)))
+  );
+}
+
 /**
  * Mark via points to legs and possible intermediatePlaces in them. Once a via
  * point is matched, it is not used again. Used for expanded view of the
@@ -234,11 +253,31 @@ export function markViaPoints(originalLegs, viaPlaces) {
   originalLegs.forEach(leg => {
     const viaAddress = getViaPointAddress(leg.from, viaPlaces)?.address;
     const isViaPoint = leg.from.viaLocationType;
-    legs.push({
-      ...leg,
-      isViaPoint,
-      viaAddress,
-    });
+
+    if (leg.intermediatePlaces) {
+      // ViaLocationType pass_through
+      const viaPoints = viaPlaces.map(p => p.gtfsId);
+      const intermediatePlaces = [];
+
+      leg.intermediatePlaces.forEach(place => {
+        intermediatePlaces.push({
+          ...place,
+          isViaPoint: isViaPointMatch(place.stop, viaPoints),
+        });
+      });
+      legs.push({
+        ...leg,
+        intermediatePlaces,
+        isViaPoint,
+        viaAddress,
+      });
+    } else {
+      legs.push({
+        ...leg,
+        isViaPoint,
+        viaAddress,
+      });
+    }
   });
   return legs;
 }
