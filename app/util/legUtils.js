@@ -239,6 +239,73 @@ function isViaPointMatch(stop, viaPoints) {
   );
 }
 
+function syntheticEndpoint(originalEndpoint, place) {
+  return {
+    ...originalEndpoint,
+    stop: place.stop,
+    lat: place.stop.lat,
+    lon: place.stop.lon,
+    name: place.stop.name,
+  };
+}
+
+/**
+ * Split legs in case the via point belongs in the middle.
+ * Once a via point is used, it is not matched again.
+ *
+ * @param originalLegs Leg objects from graphql query
+ * @param viaPlaces Location objects (otpToLocation) from query parameter
+ * @returns {*[]}
+ */
+export function splitLegsAtViaPoints(originalLegs, viaPlaces) {
+  const splitLegs = [];
+  // Once a via place is matched, it is used and will not match again.
+  const viaPoints = viaPlaces.map(p => p.gtfsId);
+  let nextLegStartsWithIntermediate = false;
+  originalLegs.forEach(originalLeg => {
+    const leg = { ...originalLeg };
+    const { intermediatePlaces } = leg;
+    if (
+      nextLegStartsWithIntermediate ||
+      (leg.transitLeg && isViaPointMatch(leg.from.stop, viaPoints))
+    ) {
+      leg.viaStopCall = true;
+      nextLegStartsWithIntermediate = false;
+    }
+    if (intermediatePlaces) {
+      let start = 0;
+      let lastSplit = -1;
+      intermediatePlaces.forEach((place, i) => {
+        if (isViaPointMatch(place.stop, viaPoints)) {
+          const leftLeg = {
+            ...leg,
+            to: syntheticEndpoint(leg.to, place),
+            end: place.arrival,
+            intermediatePlaces: intermediatePlaces.slice(start, i),
+          };
+          leg.viaStopCall = true;
+          leg.start = place.arrival;
+          leg.from = syntheticEndpoint(leg.from, place);
+          splitLegs.push(leftLeg);
+          start = i + 1;
+          lastSplit = i;
+        }
+      });
+      if (lastSplit >= 0) {
+        const lastPlace = intermediatePlaces[lastSplit];
+        leg.from = syntheticEndpoint(leg.from, lastPlace);
+        leg.start = lastPlace.arrival;
+        leg.intermediatePlaces = intermediatePlaces.slice(lastSplit + 1);
+      }
+    }
+    splitLegs.push(leg);
+    if (leg.transitLeg && isViaPointMatch(leg.to.stop, viaPoints)) {
+      nextLegStartsWithIntermediate = true;
+    }
+  });
+  return splitLegs;
+}
+
 /**
  * Mark via points to legs and possible intermediatePlaces in them. Once a via
  * point is matched, it is not used again. Used for expanded view of the

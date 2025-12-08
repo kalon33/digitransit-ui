@@ -26,6 +26,7 @@ import {
   legTimeStr,
   LegMode,
   getZones,
+  splitLegsAtViaPoints,
 } from '../../util/legUtils';
 import { dateOrEmpty, isTomorrow, timeStr } from '../../util/timeUtils';
 import withBreakpoint from '../../util/withBreakpoint';
@@ -297,7 +298,8 @@ const Itinerary = (
   const mobile = bp => !(bp === 'large');
   const legs = [];
   let noTransitLegs = true;
-  const compressedLegs = compressLegs(itinerary.legs).map(leg => ({
+  const splitLegs = splitLegsAtViaPoints(itinerary.legs, intermediatePlaces);
+  const compressedLegs = compressLegs(splitLegs).map(leg => ({
     ...leg,
   }));
   let intermediateSlack = 0;
@@ -569,7 +571,10 @@ const Itinerary = (
       const withCar =
         usingOwnCarWholeTrip &&
         config.carBoardingModes[leg.route.mode] !== undefined;
-      if (leg.from.viaLocationType === ViaLocationType.PassThrough) {
+      if (
+        leg.from.viaLocationType === ViaLocationType.PassThrough ||
+        leg.viaStopCall
+      ) {
         onlyIconLegs += 1;
         legs.push(<ViaLeg key={`via_${leg.mode}_${startMs}`} />);
       }
