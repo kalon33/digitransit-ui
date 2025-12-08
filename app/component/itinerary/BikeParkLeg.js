@@ -45,6 +45,7 @@ const BikeParkLeg = (
         bikePark
         index={index}
         modeClassName="walk"
+        viaType={leg.from.viaLocationType}
       />
       <div className="small-9 columns itinerary-instruction-column">
         <div className={cx('itinerary-leg-first-row', 'bicycle')}>
