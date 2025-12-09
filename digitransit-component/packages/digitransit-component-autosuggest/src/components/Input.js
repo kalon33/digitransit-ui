@@ -1,0 +1,92 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import cx from 'classnames';
+import { ClearButton } from './ClearButton';
+
+export function Input({
+  id,
+  lng,
+  value,
+  placeholder,
+  required,
+  getInputProps,
+  getLabelProps,
+  clearInput,
+  ariaLabel,
+  inputRef,
+  styles,
+  renderLabel,
+  isMobile,
+  inputClassName,
+  transportMode,
+  clearButtonColor,
+  autoFocus,
+}) {
+  return (
+    <div className={styles.container}>
+      {renderLabel && (
+        <label
+          {...getLabelProps({
+            className: styles['sr-only'],
+            htmlFor: id,
+          })}
+        >
+          {ariaLabel}
+        </label>
+      )}
+      <input
+        aria-label={ariaLabel}
+        // eslint-disable-next-line jsx-a11y/no-autofocus
+        autoFocus={autoFocus}
+        placeholder={placeholder}
+        required={required}
+        className={cx(
+          styles.input,
+          isMobile && transportMode ? styles.thin : '',
+          styles[id] || '',
+          value ? styles.hasValue : '',
+          inputClassName,
+        )}
+        value={value}
+        id={id}
+        {...getInputProps({ ref: inputRef })}
+      />
+      {value && (
+        <ClearButton
+          lng={lng}
+          clearInput={() => clearInput(inputRef)}
+          styles={styles}
+          color={clearButtonColor}
+          onKeyDown={clearInput}
+        />
+      )}
+    </div>
+  );
+}
+
+Input.propTypes = {
+  id: PropTypes.string.isRequired,
+  lng: PropTypes.string.isRequired,
+  placeholder: PropTypes.string.isRequired,
+  required: PropTypes.bool.isRequired,
+  value: PropTypes.string.isRequired,
+  getInputProps: PropTypes.func.isRequired,
+  getLabelProps: PropTypes.func.isRequired,
+  clearInput: PropTypes.func.isRequired,
+  ariaLabel: PropTypes.string.isRequired,
+  inputRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(HTMLInputElement) }),
+  ]).isRequired,
+  styles: PropTypes.objectOf(PropTypes.string).isRequired,
+  renderLabel: PropTypes.bool.isRequired,
+  isMobile: PropTypes.bool.isRequired,
+  inputClassName: PropTypes.string.isRequired,
+  transportMode: PropTypes.string.isRequired,
+  clearButtonColor: PropTypes.string.isRequired,
+  autoFocus: PropTypes.bool,
+};
+
+Input.defaultProps = {
+  autoFocus: false,
+};
