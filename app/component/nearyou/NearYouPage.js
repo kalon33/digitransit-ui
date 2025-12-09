@@ -5,9 +5,7 @@ import { FormattedMessage, intlShape } from 'react-intl';
 import { graphql, ReactRelayContext, QueryRenderer } from 'react-relay';
 import { matchShape, routerShape } from 'found';
 import connectToStores from 'fluxible-addons-react/connectToStores';
-import Modal from '@hsl-fi/modal';
 import DTAutoSuggest from '@digitransit-component/digitransit-component-autosuggest';
-import DTIcon from '@digitransit-component/digitransit-component-icon';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
 import { relayShape, configShape, locationShape } from '../../util/shapes';
 import Icon from '../Icon';
@@ -20,6 +18,7 @@ import Loading from '../Loading';
 import StopNearYouContainer from './StopNearYouContainer';
 import UpdateLocationButton from './UpdateLocationButton';
 import MapWrapper from './MapWrapper';
+import LocationModal from './LocationModal';
 import {
   checkPositioningPermission,
   startLocationWatch,
@@ -111,7 +110,7 @@ class NearYouPage extends React.Component {
       centerOfMapChanged: false,
       showCityBikeTeaser: true,
       searchPosition: {},
-      mapLayerOptions: null,
+      mapLayerOptions: {},
       // eslint-disable-next-line react/no-unused-state
       resultsLoaded: false,
     };
@@ -719,67 +718,22 @@ class NearYouPage extends React.Component {
     );
   };
 
-  renderDialogModal = () => {
-    return (
-      <Modal
-        appElement="#app"
-        contentLabel="content label"
-        closeButtonLabel={this.context.intl.formatMessage({
-          id: 'close',
-        })}
-        variant="small"
-        isOpen
-        onCrossClick={this.handleClose}
-      >
-        <div className="modal-desktop-container">
-          <div className="modal-desktop-top">
-            <div className="modal-desktop-header">
-              <FormattedMessage id="stop-near-you-modal-header" />
-            </div>
-          </div>
-          <div className="modal-desktop-text">
-            <FormattedMessage id="stop-near-you-modal-info" />
-          </div>
-          <div className="modal-desktop-text title">
-            <FormattedMessage id="origin" />
-          </div>
-          <div className="modal-desktop-main">
-            <div className="modal-desktop-location-search">
-              {this.renderAutoSuggestField()}
-            </div>
-          </div>
-          <div className="modal-desktop-text title2">
-            <FormattedMessage id="stop-near-you-modal-grant-permission" />
-          </div>
-          {this.state.phase === PH_SEARCH_GEOLOCATION && (
-            <div className="modal-desktop-buttons">
-              <button
-                type="submit"
-                className="modal-desktop-button save"
-                onClick={() => this.handleStartGeolocation()}
-              >
-                <DTIcon img="locate" height={1.375} width={1.375} />
-                <FormattedMessage id="use-own-position" />
-              </button>
-            </div>
-          )}
-          {this.state.phase === PH_SEARCH && (
-            <div className="modal-desktop-text info">
-              <FormattedMessage id="stop-near-you-modal-grant-permission-info" />
-            </div>
-          )}
-        </div>
-      </Modal>
-    );
-  };
-
   render() {
     const { mode } = this.props.match.params;
     const { phase } = this.state;
     const nearByStopModes = this.modes;
 
     if (PH_SHOWSEARCH.includes(phase)) {
-      return <div>{this.renderDialogModal()}</div>;
+      return (
+        <LocationModal
+          handleClose={this.handleClose}
+          startGeolocation={this.handleStartGeolocation}
+          showGeolocationButton={this.state.phase === PH_SEARCH_GEOLOCATION}
+          showInfo={this.state.phase === PH_SEARCH}
+        >
+          {this.renderAutoSuggestField()}
+        </LocationModal>
+      );
     }
     if (PH_READY.includes(phase)) {
       return (
