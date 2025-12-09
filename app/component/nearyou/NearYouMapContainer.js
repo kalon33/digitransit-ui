@@ -4,8 +4,8 @@ import NearYouMap from '../map/NearYouMap';
 const containerComponent = createPaginationContainer(
   NearYouMap,
   {
-    stopsNearYou: graphql`
-      fragment NearYouMapContainer_stopsNearYou on QueryType
+    stops: graphql`
+      fragment NearYouMapContainer_stops on QueryType
       @argumentDefinitions(
         startTime: { type: "Long!", defaultValue: 0 }
         omitNonPickups: { type: "Boolean!", defaultValue: false }
@@ -90,8 +90,8 @@ const containerComponent = createPaginationContainer(
         }
       }
     `,
-    prioritizedStopsNearYou: graphql`
-      fragment NearYouMapContainer_prioritizedStopsNearYou on Stop
+    prioritizedStops: graphql`
+      fragment NearYouMapContainer_prioritizedStops on Stop
       @relay(plural: true) {
         gtfsId
         lat
@@ -133,7 +133,7 @@ const containerComponent = createPaginationContainer(
   {
     direction: 'forward',
     getConnectionFromProps(props) {
-      return props.stopsNearYou?.nearest;
+      return props.stops?.nearest;
     },
     getFragmentVariables(prevVars, totalCount) {
       return {
@@ -163,7 +163,7 @@ const containerComponent = createPaginationContainer(
         $filterByNetwork: [String!]
       ) {
         viewer {
-          ...NearYouMapContainer_stopsNearYou
+          ...NearYouMapContainer_stops
             @arguments(
               startTime: $startTime
               omitNonPickups: $omitNonPickups

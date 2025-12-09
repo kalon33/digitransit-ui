@@ -19,6 +19,7 @@ import { isKeyboardSelectionEvent } from '../../util/browser';
 import Loading from '../Loading';
 import StopNearYouContainer from './StopNearYouContainer';
 import UpdateLocationButton from './UpdateLocationButton';
+import MapWrapper from './MapWrapper';
 import {
   checkPositioningPermission,
   startLocationWatch,
@@ -37,8 +38,6 @@ import { PREFIX_NEARYOU } from '../../util/path';
 import NearYouContainer from './NearYouContainer';
 import SwipeableTabs from '../SwipeableTabs';
 import NearYouFavourites from './NearYouFavourites';
-import NearYouMapContainer from './NearYouMapContainer';
-import NearYouFavouritesMapContainer from './NearYouFavouritesMapContainer';
 import { mapLayerShape } from '../../store/MapLayerStore';
 import {
   getRentalNetworkConfig,
@@ -93,18 +92,15 @@ class NearYouPage extends React.Component {
     position: locationShape.isRequired,
     lang: PropTypes.string.isRequired,
     match: matchShape.isRequired,
-    favouriteStopIds: PropTypes.arrayOf(PropTypes.string),
-    favouriteStationIds: PropTypes.arrayOf(PropTypes.string),
-    favouriteVehicleStationIds: PropTypes.arrayOf(PropTypes.string),
+    favouriteStopIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+    favouriteStationIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+    favouriteVehicleStationIds: PropTypes.arrayOf(PropTypes.string).isRequired,
     mapLayers: mapLayerShape.isRequired,
     favouritesFetched: PropTypes.bool,
     currentTime: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
-    favouriteStopIds: [],
-    favouriteStationIds: [],
-    favouriteVehicleStationIds: [],
     favouritesFetched: false,
   };
 
@@ -227,6 +223,13 @@ class NearYouPage extends React.Component {
   };
 
   getQueryVariables = mode => {
+    if (mode === 'FAVORITE') {
+      return {
+        stopIds: this.props.favouriteStopIds,
+        stationIds: this.props.favouriteStationIds,
+        vehicleRentalStationIds: this.props.favouriteVehicleStationIds,
+      };
+    }
     const { searchPosition } = this.state;
     let placeTypes = ['STOP', 'STATION'];
     let modes = [mode];
@@ -631,144 +634,26 @@ class NearYouPage extends React.Component {
     return tabs[0];
   };
 
-  renderMap = () => {
-    const { mode } = this.props.match.params;
-    if (mode === 'FAVORITE') {
-      return (
-        <QueryRenderer
-          query={graphql`
-            query NearYouPageFavouritesMapQuery(
-              $stopIds: [String!]!
-              $stationIds: [String!]!
-              $vehicleRentalStationIds: [String!]!
-            ) {
-              stops: stops(ids: $stopIds) {
-                ...NearYouFavouritesMapContainer_stops
-              }
-              stations: stations(ids: $stationIds) {
-                ...NearYouFavouritesMapContainer_stations
-              }
-              vehicleStations: vehicleRentalStations(
-                ids: $vehicleRentalStationIds
-              ) {
-                ...NearYouFavouritesMapContainer_vehicleStations
-              }
-            }
-          `}
-          variables={{
-            stopIds: this.props.favouriteStopIds,
-            stationIds: this.props.favouriteStationIds,
-            vehicleRentalStationIds: this.props.favouriteVehicleStationIds,
-          }}
-          environment={this.props.relayEnvironment}
-          render={({ props }) => {
-            return props ? (
-              <NearYouFavouritesMapContainer
-                position={this.state.searchPosition}
-                match={this.props.match}
-                onEndNavigation={this.setCenterOfMap}
-                onMapTracking={this.setCenterOfMap}
-                showWalkRoute={
-                  this.state.phase === PH_USEGEOLOCATION ||
-                  this.state.phase === PH_USEDEFAULTPOS
-                }
-                mapLayers={this.props.mapLayers}
-                favouriteIds={
-                  new Set([
-                    ...this.props.favouriteStopIds,
-                    ...this.props.favouriteStationIds,
-                    ...this.props.favouriteVehicleStationIds,
-                  ])
-                }
-                breakpoint={this.props.breakpoint}
-                setMWTRef={this.setMWTRef}
-                stops={props.stops}
-                stations={props.stations}
-                vehicleStations={props.vehicleStations}
-              />
-            ) : null;
-          }}
-        />
-      );
-    }
-    const filteredMapLayers = {
-      ...this.props.mapLayers,
-      citybike: mode === 'CITYBIKE',
-      citybikeOverrideMinZoom: mode === 'CITYBIKE',
-    };
-    if (!this.context.config.map.showLayerSelector) {
-      filteredMapLayers.stop = {};
-      if (mode !== 'CITYBIKE') {
-        filteredMapLayers.stop[mode.toLowerCase()] = true;
+  renderMap = () => (
+    <MapWrapper
+      favouriteStopIds={this.props.favouriteStopIds}
+      favouriteStationIds={this.props.favouriteStationIds}
+      favouriteVehicleStationIds={this.props.favouriteVehicleStationIds}
+      relayEnvironment={this.props.relayEnvironment}
+      position={this.state.searchPosition}
+      match={this.props.match}
+      setCenterOfMap={this.setCenterOfMap}
+      showWalkRoute={
+        this.state.phase === PH_USEGEOLOCATION ||
+        this.state.phase === PH_USEDEFAULTPOS
       }
-    }
-    const favouriteIds =
-      mode === 'CITYBIKE'
-        ? new Set(this.props.favouriteVehicleStationIds)
-        : new Set([
-            ...this.props.favouriteStopIds,
-            ...this.props.favouriteStationIds,
-          ]);
-    return (
-      <QueryRenderer
-        query={graphql`
-          query NearYouPageStopsQuery(
-            $lat: Float!
-            $lon: Float!
-            $filterByPlaceTypes: [FilterPlaceType]
-            $filterByModes: [Mode]
-            $first: Int!
-            $maxResults: Int!
-            $maxDistance: Int!
-            $omitNonPickups: Boolean!
-            $prioritizedStopIds: [String!]!
-            $filterByNetwork: [String!]
-          ) {
-            stops: viewer {
-              ...NearYouMapContainer_stopsNearYou
-                @arguments(
-                  lat: $lat
-                  lon: $lon
-                  filterByPlaceTypes: $filterByPlaceTypes
-                  filterByModes: $filterByModes
-                  first: $first
-                  maxResults: $maxResults
-                  maxDistance: $maxDistance
-                  omitNonPickups: $omitNonPickups
-                  filterByNetwork: $filterByNetwork
-                )
-            }
-            prioritizedStops: stops(ids: $prioritizedStopIds) {
-              ...NearYouMapContainer_prioritizedStopsNearYou
-            }
-          }
-        `}
-        variables={this.getQueryVariables(mode)}
-        environment={this.props.relayEnvironment}
-        render={({ props }) => {
-          return props ? (
-            <NearYouMapContainer
-              position={this.state.searchPosition}
-              match={this.props.match}
-              mapLayers={filteredMapLayers}
-              mapLayerOptions={this.state.mapLayerOptions}
-              showWalkRoute={
-                this.state.phase === PH_USEGEOLOCATION ||
-                this.state.phase === PH_USEDEFAULTPOS
-              }
-              onEndNavigation={this.setCenterOfMap}
-              onMapTracking={this.setCenterOfMap}
-              breakpoint={this.props.breakpoint}
-              setMWTRef={this.setMWTRef}
-              favouriteIds={favouriteIds}
-              prioritizedStopsNearYou={props.prioritizedStops}
-              stopsNearYou={props.stops}
-            />
-          ) : null;
-        }}
-      />
-    );
-  };
+      mapLayers={this.props.mapLayers}
+      mapLayerOptions={this.state.mapLayerOptions}
+      breakpoint={this.props.breakpoint}
+      setMWTRef={this.setMWTRef}
+      variables={this.getQueryVariables(this.props.match.params.mode)}
+    />
+  );
 
   handleClose = () => {
     this.setState({ phase: PH_USEDEFAULTPOS });
