@@ -29,7 +29,7 @@ const ItineraryCircleLineLong = props => {
         </div>
       );
     }
-    if (props.viaType === ViaLocationType.Visit) {
+    if (props.viaType === ViaLocationType.Visit && !props.isStop) {
       return (
         <div className="itinerary-icon-container">
           <Icon img="icon_mapMarker" className="itinerary-icon via via-it" />
@@ -165,12 +165,14 @@ ItineraryCircleLineLong.propTypes = {
   modeClassName: PropTypes.string.isRequired,
   boardingLeg: legShape.isRequired,
   viaType: PropTypes.string,
+  isStop: PropTypes.bool,
 };
 
 ItineraryCircleLineLong.defaultProps = {
   color: undefined,
   renderBottomMarker: false,
   viaType: null,
+  isStop: false,
 };
 
 export default ItineraryCircleLineLong;

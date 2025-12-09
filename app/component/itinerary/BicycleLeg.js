@@ -139,6 +139,7 @@ export default function BicycleLeg(
         appendClass={!scooterSettingsOn ? 'settings' : 'scooter'}
         style={style}
         viaType={leg.from.viaLocationType}
+        isStop={!!leg.from.stop}
       />
     );
   } else if (bicycleWalkLeg) {
@@ -148,6 +149,7 @@ export default function BicycleLeg(
         modeClassName={modeClassName}
         boardingLeg={bicycleWalkLeg}
         viaType={leg.from.viaLocationType}
+        isStop={!!leg.from.stop}
       />
     );
   } else if (mode === 'BICYCLE') {
@@ -156,6 +158,7 @@ export default function BicycleLeg(
         index={index}
         modeClassName={modeClassName}
         viaType={leg.from.viaLocationType}
+        isStop={!!leg.from.stop}
       />
     );
   } else {
@@ -164,6 +167,7 @@ export default function BicycleLeg(
         index={index}
         modeClassName={modeClassName}
         viaType={leg.from.viaLocationType}
+        isStop={!!leg.from.stop}
       />
     );
   }

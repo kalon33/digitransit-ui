@@ -51,7 +51,9 @@ function WalkLeg(
   const modeClassName = 'walk';
   const fromMode = (leg[toOrFrom].stop && leg[toOrFrom].stop.vehicleMode) || '';
   const isFirstLeg = i => i === 0;
-  const [address, place] = splitStringToAddressAndPlace(leg[toOrFrom].name);
+  const [name, place] = splitStringToAddressAndPlace(leg[toOrFrom].name);
+  const address =
+    leg[toOrFrom].viaLocationType && leg.viaAddress ? leg.viaAddress : name;
   const network =
     previousLeg?.[toOrFrom]?.vehicleRentalStation?.rentalNetwork.networkId ||
     previousLeg?.[toOrFrom]?.rentalVehicle?.rentalNetwork.networkId;
@@ -133,7 +135,8 @@ function WalkLeg(
         appendClass={appendClass}
         index={index}
         modeClassName={modeClassName}
-        viaType={leg.from.viaLocationType}
+        viaType={leg.isViaPoint ? leg.from.viaLocationType : null}
+        isStop={!!leg.from.stop}
       />
       <div
         className={`small-9 columns itinerary-instruction-column ${leg.mode.toLowerCase()}`}

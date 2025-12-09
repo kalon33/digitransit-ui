@@ -317,7 +317,7 @@ export function getPlanParams(
     .map(loc => {
       if (loc.gtfsId) {
         return {
-          passThrough: {
+          visit: {
             stopLocationIds: [loc.gtfsId],
           },
         };

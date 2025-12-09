@@ -215,8 +215,8 @@ function getViaPointAddress(from, viaPoints) {
   }
   return viaPoints.find(
     p =>
-      p.lat.toFixed(5) === from.lat.toFixed(5) &&
-      p.lon.toFixed(5) === from.lon.toFixed(5),
+      Math.round(p.lat * 1e5) === Math.round(from.lat * 1e5) &&
+      Math.round(p.lon * 1e5) === Math.round(from.lon * 1e5),
   );
 }
 
@@ -319,7 +319,7 @@ export function markViaPoints(originalLegs, viaPlaces) {
   const legs = [];
   originalLegs.forEach(leg => {
     const viaAddress = getViaPointAddress(leg.from, viaPlaces)?.address;
-    const isViaPoint = leg.from.viaLocationType;
+    const isViaPoint = !!leg.from.viaLocationType;
 
     if (leg.intermediatePlaces) {
       // ViaLocationType pass_through

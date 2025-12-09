@@ -408,7 +408,9 @@ const Itinerary = (
       renderBar = false;
       addition += legLength; // carry over the length of the leg to the next
     }
+    let viaPointAdded = false;
     if (leg.from.viaLocationType === ViaLocationType.Visit) {
+      viaPointAdded = true;
       onlyIconLegs += 1;
       legs.push(<ViaLeg key={`via_${leg.mode}_${startMs}`} />);
     }
@@ -573,8 +575,9 @@ const Itinerary = (
         config.carBoardingModes[leg.route.mode] !== undefined;
       if (
         leg.from.viaLocationType === ViaLocationType.PassThrough ||
-        leg.viaStopCall
+        (leg.viaStopCall && !viaPointAdded)
       ) {
+        viaPointAdded = true;
         onlyIconLegs += 1;
         legs.push(<ViaLeg key={`via_${leg.mode}_${startMs}`} />);
       }

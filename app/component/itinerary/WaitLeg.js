@@ -34,6 +34,7 @@ function WaitLeg(
         modeClassName={modeClassName}
         index={index}
         icon={icon}
+        isNotFirstLeg
       />
       <div className="small-9 columns itinerary-instruction-column wait">
         <span className="sr-only">

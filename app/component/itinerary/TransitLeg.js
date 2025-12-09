@@ -40,11 +40,7 @@ import {
   isPlatformChanged,
 } from '../../util/legUtils';
 import { shouldShowFareInfo } from '../../util/fareUtils';
-import {
-  AlertEntityType,
-  AlertSeverityLevelType,
-  ViaLocationType,
-} from '../../constants';
+import { AlertEntityType, AlertSeverityLevelType } from '../../constants';
 import { legShape, configShape } from '../../util/shapes';
 import ZoneIcon from '../ZoneIcon';
 import StopInfo from './StopInfo';
@@ -451,6 +447,7 @@ class TransitLeg extends React.Component {
             (leg.intermediatePlaces.length === 0 && interliningLegs.length < 1)
           }
           viaType={leg.from.viaLocationType}
+          isStop={!!leg.from.stop}
         />
         <div
           style={{
@@ -487,7 +484,7 @@ class TransitLeg extends React.Component {
                 to={stopPagePath(false, leg.from.stop.gtfsId)}
               >
                 {leg.from.name}
-                {leg.from.viaLocationType === ViaLocationType.PassThrough && (
+                {leg.from.viaLocationType && (
                   <Icon
                     img="icon_mapMarker"
                     className="itinerary-mapmarker-icon"

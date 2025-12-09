@@ -11,6 +11,7 @@ class ItineraryCircleLine extends React.Component {
     renderBottomMarker: true,
     carPark: false,
     appendClass: undefined,
+    isStop: false,
   };
 
   static propTypes = {
@@ -21,6 +22,7 @@ class ItineraryCircleLine extends React.Component {
     renderBottomMarker: PropTypes.bool,
     carPark: PropTypes.bool,
     appendClass: PropTypes.string,
+    isStop: PropTypes.bool,
   };
 
   constructor(props) {
@@ -81,7 +83,7 @@ class ItineraryCircleLine extends React.Component {
         </div>
       );
     }
-    if (this.props.viaType === ViaLocationType.Visit) {
+    if (this.props.viaType === ViaLocationType.Visit && !this.props.isStop) {
       return (
         <div className="itinerary-icon-container">
           <Icon img="icon_mapMarker" className="itinerary-icon via via-it" />

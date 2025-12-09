@@ -17,6 +17,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
     icon: PropTypes.string,
     style: PropTypes.shape({}),
     isNotFirstLeg: PropTypes.bool,
+    isStop: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -28,6 +29,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
     icon: undefined,
     style: {},
     isNotFirstLeg: undefined,
+    isStop: false,
   };
 
   state = {
@@ -49,7 +51,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
   }
 
   getMarker = top => {
-    if (this.props.viaType === ViaLocationType.Visit) {
+    if (this.props.viaType === ViaLocationType.Visit && !this.props.isStop) {
       return (
         <div className="itinerary-icon-container">
           <Icon img="icon_mapMarker" className="itinerary-icon via via-it" />
