@@ -362,16 +362,15 @@ class NearYouPage extends React.Component {
     const nearByStopModes = this.modes;
     const index = nearByStopModes.indexOf(mode);
     const { config } = this.context;
-    const tabs = nearByStopModes.map(nearByStopMode => {
-      const renderSearch =
-        nearByStopMode !== 'FERRY' && nearByStopMode !== 'FAVORITE';
-      const renderDisruptionBanner = nearByStopMode !== 'CITYBIKE';
-      const isActive = nearByStopMode === mode;
-      if (nearByStopMode === 'FAVORITE') {
+    const tabs = nearByStopModes.map(tabMode => {
+      const renderSearch = tabMode !== 'FERRY' && tabMode !== 'FAVORITE';
+      const renderDisruptionBanner = tabMode !== 'CITYBIKE';
+      const isActive = tabMode === mode;
+      if (tabMode === 'FAVORITE') {
         const noFavs = this.noFavourites();
         return (
           <div
-            key={nearByStopMode}
+            key={tabMode}
             className={`stops-near-you-page swipeable-tab ${
               !isActive && 'inactive'
             }`}
@@ -379,7 +378,7 @@ class NearYouPage extends React.Component {
           >
             {renderUpdateButton && (
               <UpdateLocationButton
-                mode={nearByStopMode}
+                mode={tabMode}
                 onClick={this.updateLocation}
               />
             )}
@@ -403,7 +402,7 @@ class NearYouPage extends React.Component {
       return (
         <div
           className={`swipeable-tab ${!isActive && 'inactive'}`}
-          key={nearByStopMode}
+          key={tabMode}
           aria-hidden={!isActive}
         >
           <QueryRenderer
@@ -435,7 +434,7 @@ class NearYouPage extends React.Component {
                 }
               }
             `}
-            variables={this.getQueryVariables(nearByStopMode)}
+            variables={this.getQueryVariables(tabMode)}
             environment={this.props.relayEnvironment}
             render={({ props }) => {
               const { vehicleRental } = config;
@@ -454,7 +453,7 @@ class NearYouPage extends React.Component {
                 ).url;
               }
               const prioritizedStops =
-                config.prioritizedStopsNearYou[nearByStopMode.toLowerCase()];
+                config.prioritizedStopsNearYou[tabMode.toLowerCase()];
               const favouriteIds =
                 mode === 'CITYBIKE'
                   ? new Set(this.props.favouriteVehicleStationIds)
@@ -467,14 +466,14 @@ class NearYouPage extends React.Component {
                 <div className="stops-near-you-page">
                   {renderSearch && (
                     <NearYouSearch
-                      mode={nearByStopMode}
+                      mode={tabMode}
                       breakpoint={this.props.breakpoint}
                       lang={this.props.lang}
                       originLocation={this.state.searchPosition}
                     />
                   )}
                   {this.state.showCityBikeTeaser &&
-                    nearByStopMode === 'CITYBIKE' &&
+                    tabMode === 'CITYBIKE' &&
                     (cityBikeBuyUrl || cityBikeNetworkUrl) && (
                       <div className="citybike-use-disclaimer">
                         <div className="disclaimer-header">
@@ -542,7 +541,7 @@ class NearYouPage extends React.Component {
                     )}
                   {renderUpdateButton && (
                     <UpdateLocationButton
-                      mode={nearByStopMode}
+                      mode={tabMode}
                       onClick={this.updateLocation}
                     />
                   )}
@@ -603,7 +602,7 @@ class NearYouPage extends React.Component {
                       loadingDone={this.loadingDone}
                       position={this.state.searchPosition}
                       withSeparator={!renderSearch}
-                      mode={nearByStopMode}
+                      mode={tabMode}
                       renderDisruptionBanner={renderDisruptionBanner}
                       isParentTabActive={isActive}
                       currentTime={this.props.currentTime}
