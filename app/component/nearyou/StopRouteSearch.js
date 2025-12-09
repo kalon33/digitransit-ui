@@ -10,7 +10,7 @@ import { getStopRoutePath } from '../../util/path';
 const DTAutoSuggestWithSearchContext = withSearchContext(DTAutoSuggest);
 const searchSources = ['Favourite', 'History', 'Datasource'];
 
-function NearYouSearch(
+function StopRouteSearch(
   { mode, breakpoint, lang, originLocation },
   { router, config },
 ) {
@@ -55,7 +55,7 @@ function NearYouSearch(
   );
 }
 
-NearYouSearch.propTypes = {
+StopRouteSearch.propTypes = {
   mode: PropTypes.string.isRequired,
   breakpoint: PropTypes.string.isRequired,
   lang: PropTypes.string.isRequired,
@@ -66,13 +66,13 @@ NearYouSearch.propTypes = {
   }),
 };
 
-NearYouSearch.defaultProps = {
+StopRouteSearch.defaultProps = {
   originLocation: {},
 };
 
-NearYouSearch.contextTypes = {
+StopRouteSearch.contextTypes = {
   router: routerShape.isRequired,
   config: configShape.isRequired,
 };
 
-export default memo(NearYouSearch);
+export default memo(StopRouteSearch);

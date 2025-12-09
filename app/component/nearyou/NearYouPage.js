@@ -23,7 +23,7 @@ import {
   checkPositioningPermission,
   startLocationWatch,
 } from '../../action/PositionActions';
-import NearYouSearch from './NearYouSearch';
+import StopRouteSearch from './StopRouteSearch';
 import {
   getGeolocationState,
   getReadMessageIds,
@@ -362,8 +362,8 @@ class NearYouPage extends React.Component {
     const index = nearByStopModes.indexOf(mode);
     const { config } = this.context;
     const tabs = nearByStopModes.map(tabMode => {
-      const renderSearch = tabMode !== 'FERRY' && tabMode !== 'FAVORITE';
-      const renderDisruptionBanner = tabMode !== 'CITYBIKE';
+      const renderStopRouteSearch =
+        tabMode !== 'FERRY' && tabMode !== 'FAVORITE';
       const isActive = tabMode === mode;
       if (tabMode === 'FAVORITE') {
         const noFavs = this.noFavourites();
@@ -463,8 +463,8 @@ class NearYouPage extends React.Component {
 
               return (
                 <div className="stops-near-you-page">
-                  {renderSearch && (
-                    <NearYouSearch
+                  {renderStopRouteSearch && (
+                    <StopRouteSearch
                       mode={tabMode}
                       breakpoint={this.props.breakpoint}
                       lang={this.props.lang}
@@ -600,9 +600,9 @@ class NearYouPage extends React.Component {
                       prioritizedStops={prioritizedStops}
                       loadingDone={this.loadingDone}
                       position={this.state.searchPosition}
-                      withSeparator={!renderSearch}
+                      withSeparator={!renderStopRouteSearch}
                       mode={tabMode}
-                      renderDisruptionBanner={renderDisruptionBanner}
+                      renderDisruptionBanner={tabMode !== 'CITYBIKE'}
                       isParentTabActive={isActive}
                       currentTime={this.props.currentTime}
                       favouriteIds={favouriteIds}
@@ -677,7 +677,7 @@ class NearYouPage extends React.Component {
     });
   };
 
-  renderSearchBox = () => {
+  locationSearch = () => {
     return (
       <div className="stops-near-you-location-search">
         {this.renderAutoSuggestField(true)}
@@ -762,7 +762,7 @@ class NearYouPage extends React.Component {
               scrollable={nearByStopModes.length === 1}
               map={
                 <>
-                  {this.renderSearchBox()}
+                  {this.locationSearch()}
                   {this.renderMap()}
                 </>
               }
@@ -772,7 +772,7 @@ class NearYouPage extends React.Component {
             <MobileView
               content={this.renderContent()}
               map={this.renderMap()}
-              searchBox={this.renderSearchBox()}
+              searchBox={this.locationSearch()}
               mapRef={this.MWTRef}
               match={this.props.match}
             />
