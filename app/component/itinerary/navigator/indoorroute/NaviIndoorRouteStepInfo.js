@@ -9,6 +9,7 @@ import {
 } from '../../../../util/indoorUtils';
 import { RelativeDirection, VerticalDirection } from '../../../../constants';
 import ItineraryMapAction from '../../ItineraryMapAction';
+import { isKeyboardSelectionEvent } from '../../../../util/browser';
 
 function NaviIndoorRouteStepInfo({
   focusAction,
@@ -23,7 +24,13 @@ function NaviIndoorRouteStepInfo({
   );
 
   return (
-    <div className="navi-indoor-route-step-info">
+    <div
+      className="navi-indoor-route-step-info"
+      role="button"
+      tabIndex="0"
+      onClick={focusAction}
+      onKeyPress={e => isKeyboardSelectionEvent(e) && focusAction(e)}
+    >
       <Icon
         img={getVerticalTransportationUseIconId(
           verticalDirection,
