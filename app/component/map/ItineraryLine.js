@@ -19,10 +19,15 @@ import EntranceMarker from './EntranceMarker';
 import ClusterNumberMarker from './ClusterNumberMarker';
 import IndoorRouteStepMarker from './IndoorRouteStepMarker';
 import { createFeatureObjects } from '../../util/clusterUtils';
-import { ClusterMarkerType, WheelchairBoarding } from '../../constants';
+import {
+  ClusterMarkerType,
+  IndoorRouteLegType,
+  WheelchairBoarding,
+} from '../../constants';
 import {
   getEntranceObject,
   getEntranceWheelchairAccessibility,
+  getIndoorRouteLegType,
   getIndoorStepsWithVerticalTransportationUse,
 } from '../../util/indoorUtils';
 
@@ -80,6 +85,7 @@ class ItineraryLine extends React.Component {
     objs,
     clusterObjs,
     entranceObject,
+    indoorRouteLegType,
   ) {
     const entranceCoordinates = [entranceObject.lat, entranceObject.lon];
     const getDistance = (coord1, coord2) => {
@@ -127,7 +133,11 @@ class ItineraryLine extends React.Component {
         color={leg.route && leg.route.color ? `#${leg.route.color}` : null}
         key={`${this.props.hash}_${i}_${mode}_0`}
         geometry={geometry.slice(0, entranceIndex + 1)}
-        mode={nextLeg?.mode === 'SUBWAY' ? 'walk' : 'walk-inside'}
+        mode={
+          indoorRouteLegType === IndoorRouteLegType.StepsBeforeEntranceInside
+            ? 'walk-inside'
+            : 'walk'
+        }
         passive={this.props.passive}
       />,
     );
@@ -136,7 +146,11 @@ class ItineraryLine extends React.Component {
         color={leg.route && leg.route.color ? `#${leg.route.color}` : null}
         key={`${this.props.hash}_${i}_${mode}_1`}
         geometry={geometry.slice(entranceIndex)}
-        mode={nextLeg?.mode === 'SUBWAY' ? 'walk-inside' : 'walk'}
+        mode={
+          indoorRouteLegType === IndoorRouteLegType.StepsAfterEntranceInside
+            ? 'walk-inside'
+            : 'walk'
+        }
         passive={this.props.passive}
       />,
     );
@@ -144,11 +158,8 @@ class ItineraryLine extends React.Component {
 
   handleLine(previousLeg, leg, nextLeg, mode, i, geometry, objs, clusterObjs) {
     const entranceObject = getEntranceObject(previousLeg, leg);
-    if (
-      leg.mode === 'WALK' &&
-      (nextLeg?.mode === 'SUBWAY' || previousLeg?.mode === 'SUBWAY') &&
-      entranceObject
-    ) {
+    const indoorRouteLegType = getIndoorRouteLegType(previousLeg, leg, nextLeg);
+    if (indoorRouteLegType !== IndoorRouteLegType.NoStepsInside) {
       this.handleEntrance(
         leg,
         nextLeg,
@@ -158,6 +169,7 @@ class ItineraryLine extends React.Component {
         objs,
         clusterObjs,
         entranceObject,
+        indoorRouteLegType,
       );
     } else {
       objs.push(
@@ -226,11 +238,12 @@ class ItineraryLine extends React.Component {
     }
   }
 
-  handleIndoorRouteStepMarkers(previousLeg, leg, clusterObjs) {
+  handleIndoorRouteStepMarkers(previousLeg, leg, nextLeg, clusterObjs) {
     if (!this.props.passive) {
       const indoorRouteSteps = getIndoorStepsWithVerticalTransportationUse(
         previousLeg,
         leg,
+        nextLeg,
       );
 
       if (indoorRouteSteps) {
@@ -266,7 +279,7 @@ class ItineraryLine extends React.Component {
     this.setState({ zoom });
   };
 
-  handleClusterObjects(previousLeg, leg, objs, clusterObjs) {
+  handleClusterObjects(previousLeg, leg, nextLeg, objs, clusterObjs) {
     if (!this.props.passive) {
       const index = new Supercluster({
         radius: 60, // in pixels
@@ -340,6 +353,7 @@ class ItineraryLine extends React.Component {
                 indoorRouteSteps={getIndoorStepsWithVerticalTransportationUse(
                   previousLeg,
                   leg,
+                  nextLeg,
                 )}
               />,
             );
@@ -417,8 +431,8 @@ class ItineraryLine extends React.Component {
       );
       this.handleDurationBubble(leg, mode, i, objs, middle);
       this.handleIntermediateStops(leg, mode, objs);
-      this.handleIndoorRouteStepMarkers(previousLeg, leg, clusterObjs);
-      this.handleClusterObjects(previousLeg, leg, objs, clusterObjs);
+      this.handleIndoorRouteStepMarkers(previousLeg, leg, nextLeg, clusterObjs);
+      this.handleClusterObjects(previousLeg, leg, nextLeg, objs, clusterObjs);
 
       if (!this.props.passive) {
         if (rentalId) {

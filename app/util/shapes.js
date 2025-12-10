@@ -294,7 +294,6 @@ export const legShape = PropTypes.shape({
     name: PropTypes.string,
     stop: stopShape,
     vehicleRentalStation: vehicleRentalStationShape,
-
     bikePark: parkShape,
     carPark: parkShape,
   }),

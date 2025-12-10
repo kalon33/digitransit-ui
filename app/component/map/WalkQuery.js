@@ -120,6 +120,7 @@ const walkQuery = graphql`
                 gtfsId
                 code
                 platformCode
+                vehicleMode
               }
             }
             to {
@@ -141,6 +142,7 @@ const walkQuery = graphql`
                 gtfsId
                 code
                 platformCode
+                vehicleMode
               }
             }
             intermediatePlaces {

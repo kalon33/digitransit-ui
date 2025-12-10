@@ -105,6 +105,7 @@ const NaviCardExtension = (
       indoorRouteSteps = getIndoorStepsWithVerticalTransportationUse(
         previousLeg,
         leg,
+        nextLeg,
       );
     }
     return (
@@ -190,6 +191,7 @@ const NaviCardExtension = (
       const indoorRouteSteps = getIndoorStepsWithVerticalTransportationUse(
         previousLeg,
         leg,
+        nextLeg,
       );
       return (
         <div className={cx('extension', 'no-vertical-margin')}>

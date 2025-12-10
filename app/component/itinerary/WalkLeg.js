@@ -88,6 +88,7 @@ function WalkLeg(
   const indoorRouteSteps = getIndoorStepsWithVerticalTransportationUse(
     previousLeg,
     leg,
+    nextLeg,
   );
 
   useEffect(() => {

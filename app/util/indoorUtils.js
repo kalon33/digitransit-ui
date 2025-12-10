@@ -73,17 +73,40 @@ export function getEntranceStepIndex(previousLeg, leg) {
   return getEntranceObject(previousLeg, leg)?.index;
 }
 
-export function getIndoorSteps(previousLeg, leg) {
+export function getIndoorRouteLegType(previousLeg, leg, nextLeg) {
+  const entranceObject = getEntranceObject(previousLeg, leg);
+  // Outdoor routing starts from an entrance if the leg started from the subway.
+  if (
+    entranceObject &&
+    ((leg.mode === 'WALK' && previousLeg?.mode === 'SUBWAY') ||
+      leg.from.stop?.vehicleMode === 'SUBWAY')
+  ) {
+    return IndoorRouteLegType.StepsBeforeEntranceInside;
+  }
+  // Indoor routing starts from an entrance if the leg ends in the subway.
+  if (
+    entranceObject &&
+    ((leg.mode === 'WALK' && nextLeg?.mode === 'SUBWAY') ||
+      leg.to.stop?.vehicleMode === 'SUBWAY')
+  ) {
+    return IndoorRouteLegType.StepsAfterEntranceInside;
+  }
+  return IndoorRouteLegType.NoStepsInside;
+}
+
+export function getIndoorSteps(previousLeg, leg, nextLeg) {
   const entranceIndex = getEntranceStepIndex(previousLeg, leg);
   if (!entranceIndex) {
     return [];
   }
-  // Outdoor routing starts from entrance.
-  if (leg.mode === 'WALK' && previousLeg?.mode === 'SUBWAY') {
+  const indoorRouteLegType = getIndoorRouteLegType(previousLeg, leg, nextLeg);
+  if (indoorRouteLegType === IndoorRouteLegType.StepsBeforeEntranceInside) {
     return leg.steps.slice(0, entranceIndex + 1);
   }
-  // Indoor routing starts from entrance.
-  return leg.steps.slice(entranceIndex);
+  if (indoorRouteLegType === IndoorRouteLegType.StepsAfterEntranceInside) {
+    return leg.steps.slice(entranceIndex);
+  }
+  return [];
 }
 
 export function isVerticalTransportationUse(relativeDirection) {
@@ -94,32 +117,14 @@ export function isVerticalTransportationUse(relativeDirection) {
   );
 }
 
-export function getIndoorStepsWithVerticalTransportationUse(previousLeg, leg) {
-  return getIndoorSteps(previousLeg, leg).filter(step =>
+export function getIndoorStepsWithVerticalTransportationUse(
+  previousLeg,
+  leg,
+  nextLeg,
+) {
+  return getIndoorSteps(previousLeg, leg, nextLeg).filter(step =>
     isVerticalTransportationUse(step?.relativeDirection),
   );
-}
-
-export function getIndoorRouteLegType(previousLeg, leg, nextLeg) {
-  const indoorSteps = getIndoorStepsWithVerticalTransportationUse(
-    previousLeg,
-    leg,
-  );
-  if (
-    indoorSteps.length > 0 &&
-    leg.mode === 'WALK' &&
-    previousLeg?.mode === 'SUBWAY'
-  ) {
-    return IndoorRouteLegType.StepsBeforeEntranceInside;
-  }
-  if (
-    indoorSteps.length > 0 &&
-    leg.mode === 'WALK' &&
-    nextLeg?.mode === 'SUBWAY'
-  ) {
-    return IndoorRouteLegType.StepsAfterEntranceInside;
-  }
-  return IndoorRouteLegType.NoStepsInside;
 }
 
 export function getIndoorRouteTranslationId(
