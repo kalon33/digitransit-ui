@@ -10,8 +10,8 @@ import { enrichPatterns } from '@digitransit-util/digitransit-util';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import { configShape } from '../../util/shapes';
 import CallAgencyWarning from './CallAgencyWarning';
-import RoutePatternSelect from './RoutePatternSelect';
-import RouteNotification from './RouteNotification';
+import RoutePatternSelectContainer from './RoutePatternSelectContainer';
+import Notification from './Notification';
 import { DATE_FORMAT, ExtendedRouteTypes } from '../../constants';
 import {
   startRealTimeClient,
@@ -368,17 +368,10 @@ class RouteControlPanel extends React.Component {
       config.routeNotifications.length > 0
     ) {
       for (let i = 0; i < config.routeNotifications.length; i++) {
-        const notification = config.routeNotifications[i];
-        if (notification.showForRoute?.(route)) {
+        const n = config.routeNotifications[i];
+        if (n.showForRoute?.(route)) {
           routeNotifications.push(
-            <RouteNotification
-              key={notification.id}
-              header={notification.header[language]}
-              content={notification.content[language]}
-              link={notification.link?.[language]}
-              id={notification.id}
-              closeButtonLabel={notification.closeButtonLabel?.[language]}
-            />,
+            <Notification notification={n} lang={language} key={n.id} />,
           );
         }
       }
@@ -446,7 +439,7 @@ class RouteControlPanel extends React.Component {
         >
           {routeNotifications}
           {patternId && (
-            <RoutePatternSelect
+            <RoutePatternSelectContainer
               params={match.params}
               route={route}
               onSelectChange={this.onPatternChange}

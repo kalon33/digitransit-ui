@@ -818,13 +818,16 @@ class ScheduleContainer extends PureComponent {
     if ((!this.testNum || this.testNum !== 0) && isBeforeFirstDataDate) {
       this.redirectWithServiceDay(firstDataDate);
     } else if ((isBeforeNextWeek && firstWeekEmpty) || firstDepartureDate) {
-      if (!isSameOrAfterNextWeek) {
+      if (wantedDay && !isSameOrAfterNextWeek) {
         if (
           firstDepartureDate &&
           !DateTime.now().hasSame(firstDepartureDate, 'day')
         ) {
           this.redirectWithServiceDay(firstDepartureDate);
-        } else {
+        } else if (
+          !firstDepartureDate ||
+          !DateTime.now().hasSame(firstDepartureDate, 'week')
+        ) {
           this.redirectWithServiceDay(nextMonday);
         }
       }
@@ -1028,7 +1031,7 @@ const containerComponent = createFragmentContainer(
         mode
         type
         ...RouteAgencyInfo_route
-        ...RoutePatternSelect_route @arguments(date: $date)
+        ...RoutePatternSelectContainer_route @arguments(date: $date)
         agency {
           name
           phone
