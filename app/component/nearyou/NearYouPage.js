@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
 import { graphql, ReactRelayContext, QueryRenderer } from 'react-relay';
 import { matchShape, routerShape } from 'found';
@@ -70,81 +70,68 @@ function getModes(config) {
   return modes.map(nearYouMode => nearYouMode.toUpperCase());
 }
 
-class NearYouPage extends React.Component {
-  static contextTypes = {
-    config: configShape.isRequired,
-    executeAction: PropTypes.func.isRequired,
-    getStore: PropTypes.func,
-    intl: intlShape.isRequired,
-    router: routerShape.isRequired,
-  };
+function NearYouPage(
+  {
+    breakpoint,
+    relayEnvironment,
+    position,
+    lang,
+    match,
+    favouriteStopIds,
+    favouriteStationIds,
+    favouriteVehicleStationIds,
+    mapLayers,
+    favouritesFetched,
+    currentTime,
+  },
+  { config, executeAction, router },
+) {
+  const MWTRef = useRef();
+  const modes = useRef(getModes(config));
+  const centerOfMap = useRef({});
+  const [phase, setPhase] = useState(PH_START);
+  const [centerOfMapChanged, setCenterOfMapChanged] = useState(false);
+  const [showCityBikeTeaser, setShowCityBikeTeaser] = useState(
+    !getReadMessageIds().includes('citybike_teaser'),
+  );
+  const [searchPosition, setSearchPosition] = useState({});
+  const [mapLayerOptions, setMapLayerOptions] = useState({});
+  // eslint-disable-next-line
+  const [resultsLoaded, setResultsLoaded] = useState(false);
 
-  static propTypes = {
-    breakpoint: PropTypes.string.isRequired,
-    relayEnvironment: relayShape.isRequired,
-    position: locationShape.isRequired,
-    lang: PropTypes.string.isRequired,
-    match: matchShape.isRequired,
-    favouriteStopIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-    favouriteStationIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-    favouriteVehicleStationIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-    mapLayers: mapLayerShape.isRequired,
-    favouritesFetched: PropTypes.bool,
-    currentTime: PropTypes.number.isRequired,
-  };
+  const { mode } = match.params;
+  const allModes = modes.current;
 
-  static defaultProps = {
-    favouritesFetched: false,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      phase: PH_START,
-      centerOfMapChanged: false,
-      showCityBikeTeaser: true,
-      searchPosition: {},
-      mapLayerOptions: {},
-      // eslint-disable-next-line react/no-unused-state
-      resultsLoaded: false,
-    };
-  }
-
-  componentDidMount() {
-    this.modes = getModes(this.context.config);
-    const readMessageIds = getReadMessageIds();
-    const showCityBikeTeaser = !readMessageIds.includes('citybike_teaser');
-    if (this.context.config.map.showLayerSelector) {
-      const { mode } = this.props.match.params;
-      const mapLayerOptions = getMapLayerOptions({
+  const updateMapLayerOptions = () => {
+    if (config.map.showLayerSelector) {
+      const options = getMapLayerOptions({
         lockedMapLayers: ['vehicles', 'citybike', 'stop'],
         selectedMapLayers: ['vehicles', mode.toLowerCase()],
       });
-      this.setState({ showCityBikeTeaser, mapLayerOptions });
-    } else {
-      this.setState({ showCityBikeTeaser });
+      setMapLayerOptions(options);
     }
+  };
+
+  useEffect(() => {
+    updateMapLayerOptions();
     checkPositioningPermission().then(permission => {
-      const { origin: matchParamsOrigin, place } = this.props.match.params;
+      const { origin: matchParamsOrigin, place } = match.params;
       const savedPermission = getGeolocationState();
       const { state } = permission;
-      const newState = {};
-
-      if (matchParamsOrigin) {
-        newState.searchPosition = otpToLocation(matchParamsOrigin);
-      } else {
-        newState.searchPosition = this.context.config.defaultEndpoint;
-      }
+      let newSearchPosition = matchParamsOrigin
+        ? otpToLocation(matchParamsOrigin)
+        : config.defaultEndpoint;
+      let newPhase;
       if (savedPermission === 'unknown') {
         if (!matchParamsOrigin) {
           // state = 'error' means no permission api, so we assume geolocation will work
           if (state === 'prompt' || state === 'granted' || state === 'error') {
-            newState.phase = PH_SEARCH_GEOLOCATION;
+            newPhase = PH_SEARCH_GEOLOCATION;
           } else {
-            newState.phase = PH_SEARCH;
+            newPhase = PH_SEARCH;
           }
         } else {
-          newState.phase = PH_USEDEFAULTPOS;
+          newPhase = PH_USEDEFAULTPOS;
         }
       } else if (
         state === 'prompt' ||
@@ -152,110 +139,89 @@ class NearYouPage extends React.Component {
         (state === 'error' && savedPermission !== 'denied')
       ) {
         // reason to expect that geolocation will work
-        newState.phase = PH_GEOLOCATIONING;
-        this.context.executeAction(startLocationWatch);
+        newPhase = PH_GEOLOCATIONING;
+        executeAction(startLocationWatch);
       } else if (matchParamsOrigin) {
-        newState.phase = PH_USEDEFAULTPOS;
+        newPhase = PH_USEDEFAULTPOS;
       } else if (state === 'error') {
         // No permission api.
         // Suggest geolocation, user may have changed permissions from browser settings
-        newState.phase = PH_SEARCH_GEOLOCATION;
+        newPhase = PH_SEARCH_GEOLOCATION;
       } else {
         // Geolocationing is known to be denied. Provide search modal
-        newState.phase = PH_SEARCH;
+        newPhase = PH_SEARCH;
       }
       if (place !== 'POS') {
-        newState.searchPosition = otpToLocation(place);
-        newState.phase = PH_USEDEFAULTPOS;
+        newSearchPosition = otpToLocation(place);
+        newPhase = PH_USEDEFAULTPOS;
       }
-      this.setState(newState);
+      setSearchPosition(newSearchPosition);
+      setPhase(newPhase);
     });
-  }
+  }, []);
 
-  componentDidUpdate(prevProps) {
-    if (this.context.config.map.showLayerSelector) {
-      const { mode } = this.props.match.params;
-      const { mode: prevMode } = prevProps.match.params;
-      if (mode !== prevMode) {
-        this.setMapLayerOptions();
+  useEffect(() => {
+    updateMapLayerOptions();
+  }, [mode]);
+
+  useEffect(() => {
+    if (phase === PH_GEOLOCATIONING) {
+      if (position.locationingFailed) {
+        setPhase(PH_USEDEFAULTPOS);
+      } else if (position.hasLocation) {
+        setPhase(PH_USEGEOLOCATION);
+        setSearchPosition(position);
       }
     }
-  }
+  }, [phase, position.locationingFailed, position.hasLocation]);
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    let newState = null;
-    if (prevState.phase === PH_GEOLOCATIONING) {
-      if (nextProps.position.locationingFailed) {
-        newState = { phase: PH_USEDEFAULTPOS };
-      } else if (nextProps.position.hasLocation) {
-        newState = {
-          phase: PH_USEGEOLOCATION,
-          searchPosition: nextProps.position,
-        };
-      }
-      return newState;
-    }
-    return newState;
-  }
-
-  loadingDone = () => {
+  const loadingDone = () => {
     // trigger a state update in this component to force a rerender when stop data is received for the first time.
     // this fixes a bug where swipeable tabs were not keeping focusable elements up to date after receving stop data
     // and keyboard focus could be lost to hidden elements.
     // eslint-disable-next-line react/no-unused-state
-    this.setState({ resultsLoaded: true });
+    setResultsLoaded(true);
   };
 
-  setMapLayerOptions = () => {
-    const { mode } = this.props.match.params;
-    const mapLayerOptions = getMapLayerOptions({
-      lockedMapLayers: ['vehicles', 'citybike', 'stop'],
-      selectedMapLayers: ['vehicles', mode.toLowerCase()],
-    });
-    this.setState({ mapLayerOptions });
-  };
-
-  getQueryVariables = mode => {
-    if (mode === 'FAVORITE') {
+  const getQueryVariables = queryMode => {
+    if (queryMode === 'FAVORITE') {
       return {
-        stopIds: this.props.favouriteStopIds,
-        stationIds: this.props.favouriteStationIds,
-        vehicleRentalStationIds: this.props.favouriteVehicleStationIds,
+        stopIds: favouriteStopIds,
+        stationIds: favouriteStationIds,
+        vehicleRentalStationIds: favouriteVehicleStationIds,
       };
     }
-    const { searchPosition } = this.state;
     let placeTypes = ['STOP', 'STATION'];
-    let modes = [mode];
+    let qModes = [queryMode];
     let allowedNetworks = [];
-    if (mode === 'CITYBIKE') {
+    if (queryMode === 'CITYBIKE') {
       placeTypes = 'VEHICLE_RENT';
-      modes = ['BICYCLE'];
-      allowedNetworks = getDefaultNetworks(this.context.config);
+      qModes = ['BICYCLE'];
+      allowedNetworks = getDefaultNetworks(config);
     }
     const prioritizedStops =
-      this.context.config.prioritizedStopsNearYou[mode.toLowerCase()] || [];
+      config.prioritizedStopsNearYou[queryMode.toLowerCase()] || [];
     return {
       lat: searchPosition.lat,
       lon: searchPosition.lon,
       maxResults: 10,
-      first: this.context.config.maxNearbyStopAmount,
-      maxDistance:
-        this.context.config.maxNearbyStopDistance[mode.toLowerCase()],
-      filterByModes: modes,
+      first: config.maxNearbyStopAmount,
+      maxDistance: config.maxNearbyStopDistance[queryMode.toLowerCase()],
+      filterByModes: qModes,
       filterByPlaceTypes: placeTypes,
-      omitNonPickups: this.context.config.omitNonPickups,
+      omitNonPickups: config.omitNonPickups,
       prioritizedStopIds: prioritizedStops,
       filterByNetwork: allowedNetworks,
     };
   };
 
-  setCenterOfMap = mapElement => {
+  const setCenterOfMap = mapElement => {
     let location;
     if (!mapElement) {
-      location = this.props.position;
-    } else if (this.props.breakpoint === 'large') {
-      const centerOfMap = mapElement.leafletElement.getCenter();
-      location = { lat: centerOfMap.lat, lon: centerOfMap.lng };
+      location = position;
+    } else if (breakpoint === 'large') {
+      const center = mapElement.leafletElement.getCenter();
+      location = { lat: center.lat, lon: center.lng };
     } else {
       // find center pixel coordinates of the visible part of the map
       // and convert to lat, lon
@@ -271,96 +237,78 @@ class NearYouPage extends React.Component {
       const point = mapElement.leafletElement.containerPointToLatLng([x, y]);
       location = { lat: point.lat, lon: point.lng };
     }
-    this.centerOfMap = location;
-    const changed = distance(location, this.state.searchPosition) > 200;
-    if (changed !== this.state.centerOfMapChanged) {
-      this.setState({ centerOfMapChanged: changed });
+    centerOfMap.current = location;
+    const changed = distance(location, searchPosition) > 200;
+    if (changed !== centerOfMapChanged) {
+      setCenterOfMapChanged(changed);
     }
   };
 
   // store ref to map
-  setMWTRef = ref => {
-    this.MWTRef = ref;
+  const setMWTRef = ref => {
+    MWTRef.current = ref;
   };
 
-  updateLocation = () => {
-    const { centerOfMap } = this;
-    const { mode } = this.props.match.params;
-    if (centerOfMap?.lat && centerOfMap?.lon) {
-      let phase = PH_USEMAPCENTER;
+  const updateLocation = () => {
+    const center = centerOfMap.current;
+    if (center?.lat && center?.lon) {
+      let newPhase = PH_USEMAPCENTER;
       let type = 'CenterOfMap';
-      if (centerOfMap.type === 'CurrentLocation') {
-        phase = PH_USEGEOLOCATION;
-        type = centerOfMap.type;
+      if (center.type === 'CurrentLocation') {
+        newPhase = PH_USEGEOLOCATION;
+        type = center.type;
         const path = `/${PREFIX_NEARYOU}/${mode}/POS`;
-        this.context.router.replace({
-          ...this.props.match.location,
+        router.replace({
+          ...match.location,
           pathname: path,
         });
       } else {
-        const path = `/${PREFIX_NEARYOU}/${mode}/${locationToUri(centerOfMap)}`;
-        this.context.router.replace({
-          ...this.props.match.location,
+        const path = `/${PREFIX_NEARYOU}/${mode}/${locationToUri(center)}`;
+        router.replace({
+          ...match.location,
           pathname: path,
         });
       }
-      return this.setState({
-        searchPosition: { ...centerOfMap, type },
-        centerOfMapChanged: false,
-        phase,
-      });
+      setSearchPosition({ ...center, type });
+      setCenterOfMapChanged(false);
+      setPhase(newPhase);
+    } else {
+      setSearchPosition(phase === PH_USEDEFAULTPOS ? searchPosition : position);
     }
-    return this.setState({ searchPosition: this.getPosition() });
   };
 
-  getPosition = () => {
-    return this.state.phase === PH_USEDEFAULTPOS
-      ? this.state.searchPosition
-      : this.props.position;
-  };
-
-  onSwipe = e => {
-    const { mode } = this.props.match.params;
-    const newMode = this.modes[e];
-    const paramArray = this.props.match.location.pathname.split(mode);
+  const onSwipe = e => {
+    const newMode = allModes[e];
+    const paramArray = match.location.pathname.split(mode);
     const pathParams = paramArray.length > 1 ? paramArray[1] : '/POS';
     const path = `/${PREFIX_NEARYOU}/${newMode}${pathParams}`;
-    this.context.router.replace({
-      ...this.props.match.location,
+    router.replace({
+      ...match.location,
       pathname: path,
     });
-    this.setState({ centerOfMapChanged: false });
+    setCenterOfMapChanged(false);
   };
 
-  noFavourites = () => {
-    return (
-      !this.props.favouriteStopIds.length &&
-      !this.props.favouriteStationIds.length &&
-      !this.props.favouriteVehicleStationIds.length
-    );
-  };
+  const noFavourites = () =>
+    !favouriteStopIds.length &&
+    !favouriteStationIds.length &&
+    !favouriteVehicleStationIds.length;
 
-  handleCityBikeTeaserClose = () => {
+  const handleCityBikeTeaserClose = () => {
     const readMessageIds = getReadMessageIds() || [];
     readMessageIds.push('citybike_teaser');
     setReadMessageIds(readMessageIds);
-    this.setState({ showCityBikeTeaser: false });
+    setShowCityBikeTeaser(false);
   };
 
-  renderContent = () => {
-    const { centerOfMapChanged } = this.state;
-    const { mode } = this.props.match.params;
-    const noFavourites = mode === 'FAVORITE' && this.noFavourites();
-    const renderUpdateButton = centerOfMapChanged && !noFavourites;
-    const nearByStopModes = this.modes;
-    const index = nearByStopModes.indexOf(mode);
-    const { config } = this.context;
-    const tabs = nearByStopModes.map(tabMode => {
+  const renderContent = () => {
+    const index = allModes.indexOf(mode);
+    const tabs = allModes.map(tabMode => {
       const renderStopRouteSearch =
         tabMode !== 'FERRY' && tabMode !== 'FAVORITE';
       const isActive = tabMode === mode;
       if (tabMode === 'FAVORITE') {
-        const noFavs = this.noFavourites();
+        const noFavs = noFavourites();
         return (
           <div
             key={tabMode}
@@ -369,21 +317,18 @@ class NearYouPage extends React.Component {
             }`}
             aria-hidden={!isActive}
           >
-            {renderUpdateButton && (
-              <UpdateLocationButton
-                mode={tabMode}
-                onClick={this.updateLocation}
-              />
+            {centerOfMapChanged && !noFavs && (
+              <UpdateLocationButton mode={tabMode} onClick={updateLocation} />
             )}
-            {this.props.favouritesFetched ? (
+            {favouritesFetched ? (
               <NearYouFavourites
-                stopIds={this.props.favouriteStopIds}
-                stationIds={this.props.favouriteStationIds}
-                vehicleRentalStationIds={this.props.favouriteVehicleStationIds}
-                searchPosition={this.state.searchPosition}
+                stopIds={favouriteStopIds}
+                stationIds={favouriteStationIds}
+                vehicleRentalStationIds={favouriteVehicleStationIds}
+                searchPosition={searchPosition}
                 noFavourites={noFavs}
                 isParentTabActive={isActive}
-                currentTime={this.props.currentTime}
+                currentTime={currentTime}
               />
             ) : (
               <Loading />
@@ -427,14 +372,14 @@ class NearYouPage extends React.Component {
                 }
               }
             `}
-            variables={this.getQueryVariables(tabMode)}
-            environment={this.props.relayEnvironment}
+            variables={getQueryVariables(tabMode)}
+            environment={relayEnvironment}
             render={({ props }) => {
               const { vehicleRental } = config;
               // Use buy instructions if available
               const cityBikeBuyUrl = vehicleRental.buyUrl;
               const buyInstructions = cityBikeBuyUrl
-                ? vehicleRental.buyInstructions?.[this.props.lang]
+                ? vehicleRental.buyInstructions?.[lang]
                 : undefined;
 
               let cityBikeNetworkUrl;
@@ -449,23 +394,20 @@ class NearYouPage extends React.Component {
                 config.prioritizedStopsNearYou[tabMode.toLowerCase()];
               const favouriteIds =
                 mode === 'CITYBIKE'
-                  ? new Set(this.props.favouriteVehicleStationIds)
-                  : new Set([
-                      ...this.props.favouriteStopIds,
-                      ...this.props.favouriteStationIds,
-                    ]);
+                  ? new Set(favouriteVehicleStationIds)
+                  : new Set([...favouriteStopIds, ...favouriteStationIds]);
 
               return (
                 <div className="stops-near-you-page">
                   {renderStopRouteSearch && (
                     <StopRouteSearch
                       mode={tabMode}
-                      isMobile={this.props.breakpoint !== 'large'}
-                      lang={this.props.lang}
-                      refPoint={this.state.searchPosition}
+                      isMobile={breakpoint !== 'large'}
+                      lang={lang}
+                      refPoint={searchPosition}
                     />
                   )}
-                  {this.state.showCityBikeTeaser &&
+                  {showCityBikeTeaser &&
                     tabMode === 'CITYBIKE' &&
                     (cityBikeBuyUrl || cityBikeNetworkUrl) && (
                       <div className="citybike-use-disclaimer">
@@ -480,10 +422,10 @@ class NearYouPage extends React.Component {
                                 isKeyboardSelectionEvent(e) &&
                                 (e.keyCode === 13 || e.keyCode === 32)
                               ) {
-                                this.handleCityBikeTeaserClose();
+                                handleCityBikeTeaserClose();
                               }
                             }}
-                            onClick={this.handleCityBikeTeaserClose}
+                            onClick={handleCityBikeTeaserClose}
                             role="button"
                           >
                             <Icon
@@ -496,7 +438,7 @@ class NearYouPage extends React.Component {
                           {buyInstructions || (
                             <a
                               className="external-link-citybike"
-                              href={cityBikeNetworkUrl[this.props.lang]}
+                              href={cityBikeNetworkUrl[lang]}
                               target="_blank"
                               rel="noreferrer"
                             >
@@ -505,7 +447,7 @@ class NearYouPage extends React.Component {
                           )}
                           {cityBikeBuyUrl && (
                             <a
-                              href={cityBikeBuyUrl[this.props.lang]}
+                              href={cityBikeBuyUrl[lang]}
                               target="_blank"
                               rel="noreferrer"
                               className="disclaimer-close-button-container"
@@ -516,8 +458,7 @@ class NearYouPage extends React.Component {
                                   isKeyboardSelectionEvent(e) &&
                                   (e.keyCode === 13 || e.keyCode === 32)
                                 ) {
-                                  window.location =
-                                    cityBikeBuyUrl[this.props.lang];
+                                  window.location = cityBikeBuyUrl[lang];
                                 }
                               }}
                             >
@@ -532,10 +473,10 @@ class NearYouPage extends React.Component {
                         </div>
                       </div>
                     )}
-                  {renderUpdateButton && (
+                  {centerOfMapChanged && (
                     <UpdateLocationButton
                       mode={tabMode}
-                      onClick={this.updateLocation}
+                      onClick={updateLocation}
                     />
                   )}
                   {prioritizedStops?.length && (
@@ -561,7 +502,7 @@ class NearYouPage extends React.Component {
                         startTime: 0,
                         omitNonPickups: false,
                       }}
-                      environment={this.props.relayEnvironment}
+                      environment={relayEnvironment}
                       render={res => {
                         if (res.props) {
                           return (
@@ -571,7 +512,7 @@ class NearYouPage extends React.Component {
                                   <StopNearYouContainer
                                     stop={stop}
                                     key={stop.gtfsId}
-                                    currentTime={this.props.currentTime}
+                                    currentTime={currentTime}
                                     isParentTabActive={isActive}
                                   />
                                 );
@@ -590,15 +531,16 @@ class NearYouPage extends React.Component {
                   )}
                   {props && (
                     <NearYouContainer
+                      // eslint-disable-next-line
                       places={props.places}
                       prioritizedStops={prioritizedStops}
-                      loadingDone={this.loadingDone}
-                      position={this.state.searchPosition}
+                      loadingDone={loadingDone}
+                      position={searchPosition}
                       withSeparator={!renderStopRouteSearch}
                       mode={tabMode}
                       renderDisruptionBanner={tabMode !== 'CITYBIKE'}
                       isParentTabActive={isActive}
-                      currentTime={this.props.currentTime}
+                      currentTime={currentTime}
                       favouriteIds={favouriteIds}
                     />
                   )}
@@ -614,11 +556,9 @@ class NearYouPage extends React.Component {
       return (
         <SwipeableTabs
           tabIndex={index}
-          onSwipe={this.onSwipe}
+          onSwipe={onSwipe}
           tabs={tabs}
-          classname={
-            this.props.breakpoint === 'large' ? 'swipe-desktop-view' : ''
-          }
+          classname={breakpoint === 'large' ? 'swipe-desktop-view' : ''}
           ariaRole="swipe-stops-near-you-tab"
         />
       );
@@ -626,132 +566,142 @@ class NearYouPage extends React.Component {
     return tabs[0];
   };
 
-  renderMap = () => (
+  const renderMap = () => (
     <MapWrapper
-      favouriteStopIds={this.props.favouriteStopIds}
-      favouriteStationIds={this.props.favouriteStationIds}
-      favouriteVehicleStationIds={this.props.favouriteVehicleStationIds}
-      relayEnvironment={this.props.relayEnvironment}
-      position={this.state.searchPosition}
-      match={this.props.match}
-      setCenterOfMap={this.setCenterOfMap}
-      showWalkRoute={
-        this.state.phase === PH_USEGEOLOCATION ||
-        this.state.phase === PH_USEDEFAULTPOS
-      }
-      mapLayers={this.props.mapLayers}
-      mapLayerOptions={this.state.mapLayerOptions}
-      breakpoint={this.props.breakpoint}
-      setMWTRef={this.setMWTRef}
-      variables={this.getQueryVariables(this.props.match.params.mode)}
+      favouriteStopIds={favouriteStopIds}
+      favouriteStationIds={favouriteStationIds}
+      favouriteVehicleStationIds={favouriteVehicleStationIds}
+      relayEnvironment={relayEnvironment}
+      position={searchPosition}
+      match={match}
+      setCenterOfMap={setCenterOfMap}
+      showWalkRoute={phase === PH_USEGEOLOCATION || phase === PH_USEDEFAULTPOS}
+      mapLayers={mapLayers}
+      mapLayerOptions={mapLayerOptions}
+      breakpoint={breakpoint}
+      setMWTRef={setMWTRef}
+      variables={getQueryVariables(mode)}
     />
   );
 
-  handleClose = () => {
-    this.setState({ phase: PH_USEDEFAULTPOS });
+  const handleClose = () => setPhase(PH_USEDEFAULTPOS);
+
+  const handleStartGeolocation = () => {
+    executeAction(startLocationWatch);
+    setPhase(PH_GEOLOCATIONING);
   };
 
-  handleStartGeolocation = () => {
-    this.context.executeAction(startLocationWatch);
-    this.setState({ phase: PH_GEOLOCATIONING });
-  };
-
-  selectHandler = item => {
-    const { mode } = this.props.match.params;
+  const selectHandler = item => {
     const path = `/${PREFIX_NEARYOU}/${mode}/${locationToUri(item)}`;
-    this.context.router.replace({
-      ...this.props.match.location,
+    router.replace({
+      ...match.location,
       pathname: path,
     });
-    this.centerOfMap = null;
-    this.setState({
-      phase: PH_USEDEFAULTPOS,
-      searchPosition: item,
-      centerOfMapChanged: false,
-    });
+    centerOfMap.current = {};
+    setPhase(PH_USEDEFAULTPOS);
+    setSearchPosition(item);
+    setCenterOfMapChanged(false);
   };
 
-  search = onMap => (
+  const search = onMap => (
     <Search
       onMap={onMap}
-      lang={this.props.lang}
-      selectHandler={this.selectHandler}
-      isMobile={this.props.breakpoint !== 'large'}
-      refPoint={this.state.searchPosition}
+      lang={lang}
+      selectHandler={selectHandler}
+      isMobile={breakpoint !== 'large'}
+      refPoint={searchPosition}
     />
   );
 
-  mapSearch = () => {
-    return (
-      <div className="stops-near-you-location-search">{this.search(true)}</div>
-    );
+  const mapSearch = () => {
+    return <div className="stops-near-you-location-search">{search(true)}</div>;
   };
 
-  render() {
-    const { mode } = this.props.match.params;
-    const { phase } = this.state;
-    const nearByStopModes = this.modes;
-
-    if (PH_SHOWSEARCH.includes(phase)) {
-      return (
-        <LocationModal
-          handleClose={this.handleClose}
-          startGeolocation={this.handleStartGeolocation}
-          showGeolocationButton={this.state.phase === PH_SEARCH_GEOLOCATION}
-          showInfo={this.state.phase === PH_SEARCH}
-        >
-          {this.search(false)}
-        </LocationModal>
-      );
-    }
-    if (PH_READY.includes(phase)) {
-      return (
-        <DesktopOrMobile
-          desktop={() => (
-            <DesktopView
-              title={
-                mode === 'FAVORITE' ? (
-                  <FormattedMessage id="nearest-favourites" />
-                ) : (
-                  <FormattedMessage
-                    id="nearest"
-                    defaultMessage="Stops near you"
-                    values={{
-                      mode: (
-                        <FormattedMessage
-                          id={`nearest-stops-${mode.toLowerCase()}`}
-                        />
-                      ),
-                    }}
-                  />
-                )
-              }
-              bckBtnFallback="back"
-              content={this.renderContent()}
-              scrollable={nearByStopModes.length === 1}
-              map={
-                <>
-                  {this.mapSearch()}
-                  {this.renderMap()}
-                </>
-              }
-            />
-          )}
-          mobile={() => (
-            <MobileView
-              content={this.renderContent()}
-              map={this.renderMap()}
-              searchBox={this.mapSearch()}
-              mapRef={this.MWTRef}
-              match={this.props.match}
-            />
-          )}
-        />
-      );
-    }
-    return <Loading />;
+  if (PH_SHOWSEARCH.includes(phase)) {
+    return (
+      <LocationModal
+        handleClose={handleClose}
+        startGeolocation={handleStartGeolocation}
+        showGeolocationButton={phase === PH_SEARCH_GEOLOCATION}
+        showInfo={phase === PH_SEARCH}
+      >
+        {search(false)}
+      </LocationModal>
+    );
   }
+  if (PH_READY.includes(phase)) {
+    return (
+      <DesktopOrMobile
+        desktop={() => (
+          <DesktopView
+            title={
+              mode === 'FAVORITE' ? (
+                <FormattedMessage id="nearest-favourites" />
+              ) : (
+                <FormattedMessage
+                  id="nearest"
+                  defaultMessage="Stops near you"
+                  values={{
+                    mode: (
+                      <FormattedMessage
+                        id={`nearest-stops-${mode.toLowerCase()}`}
+                      />
+                    ),
+                  }}
+                />
+              )
+            }
+            bckBtnFallback="back"
+            content={renderContent()}
+            scrollable={allModes.length === 1}
+            map={
+              <>
+                {mapSearch()}
+                {renderMap()}
+              </>
+            }
+          />
+        )}
+        mobile={() => (
+          <MobileView
+            content={renderContent()}
+            map={renderMap()}
+            searchBox={mapSearch()}
+            mapRef={MWTRef.current}
+            match={match}
+          />
+        )}
+      />
+    );
+  }
+  return <Loading />;
 }
+
+NearYouPage.contextTypes = {
+  config: configShape.isRequired,
+  executeAction: PropTypes.func.isRequired,
+  getStore: PropTypes.func,
+  intl: intlShape.isRequired,
+  router: routerShape.isRequired,
+};
+
+NearYouPage.propTypes = {
+  breakpoint: PropTypes.string.isRequired,
+  relayEnvironment: relayShape.isRequired,
+  position: locationShape.isRequired,
+  lang: PropTypes.string.isRequired,
+  match: matchShape.isRequired,
+  favouriteStopIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  favouriteStationIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  favouriteVehicleStationIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  mapLayers: mapLayerShape.isRequired,
+  favouritesFetched: PropTypes.bool,
+  currentTime: PropTypes.number.isRequired,
+};
+
+NearYouPage.defaultProps = {
+  favouritesFetched: false,
+};
 
 const NearYouPageWithBreakpoint = withBreakpoint(props => (
   <ReactRelayContext.Consumer>
