@@ -319,6 +319,10 @@ export function getPlanParams(
         return {
           visit: {
             stopLocationIds: [loc.gtfsId],
+            coordinate: {
+              latitude: loc.lat,
+              longitude: loc.lon,
+            },
           },
         };
       }
