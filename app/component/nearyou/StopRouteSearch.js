@@ -10,11 +10,7 @@ import { getStopRoutePath } from '../../util/path';
 const DTAutoSuggestWithSearchContext = withSearchContext(DTAutoSuggest);
 const searchSources = ['Favourite', 'History', 'Datasource'];
 
-function StopRouteSearch(
-  { mode, breakpoint, lang, originLocation },
-  { router, config },
-) {
-  const isMobile = breakpoint !== 'large';
+function StopRouteSearch({ mode, ...rest }, { router, config }) {
   const transportMode = `route-${mode}`;
 
   const filter = config.stopSearchFilter
@@ -31,8 +27,6 @@ function StopRouteSearch(
       <DTAutoSuggestWithSearchContext
         icon="search"
         id="stop-route-station"
-        lang={lang}
-        refPoint={originLocation}
         className="destination"
         placeholder={`stop-near-you-${mode.toLowerCase()}`}
         transportMode={transportMode}
@@ -45,30 +39,17 @@ function StopRouteSearch(
             ? ['VehicleRentalStations']
             : ['Stops', 'Stations', 'Routes']
         }
-        isMobile={isMobile}
         selectHandler={selectHandler} // prop for context handler
         getAutoSuggestIcons={config.getAutoSuggestIcons}
         modeIconColors={config.colors.iconColors}
         modeSet={config.iconModeSet}
+        {...rest}
       />
     </div>
   );
 }
 
-StopRouteSearch.propTypes = {
-  mode: PropTypes.string.isRequired,
-  breakpoint: PropTypes.string.isRequired,
-  lang: PropTypes.string.isRequired,
-  originLocation: PropTypes.shape({
-    address: PropTypes.string,
-    lat: PropTypes.number,
-    lon: PropTypes.number,
-  }),
-};
-
-StopRouteSearch.defaultProps = {
-  originLocation: {},
-};
+StopRouteSearch.propTypes = { mode: PropTypes.string.isRequired };
 
 StopRouteSearch.contextTypes = {
   router: routerShape.isRequired,

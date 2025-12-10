@@ -460,9 +460,9 @@ class NearYouPage extends React.Component {
                   {renderStopRouteSearch && (
                     <StopRouteSearch
                       mode={tabMode}
-                      breakpoint={this.props.breakpoint}
+                      isMobile={this.props.breakpoint !== 'large'}
                       lang={this.props.lang}
-                      originLocation={this.state.searchPosition}
+                      refPoint={this.state.searchPosition}
                     />
                   )}
                   {this.state.showCityBikeTeaser &&
@@ -671,15 +671,19 @@ class NearYouPage extends React.Component {
     });
   };
 
-  locationSearch = () => {
+  search = onMap => (
+    <Search
+      onMap={onMap}
+      lang={this.props.lang}
+      selectHandler={this.selectHandler}
+      isMobile={this.props.breakpoint !== 'large'}
+      refPoint={this.state.searchPosition}
+    />
+  );
+
+  mapSearch = () => {
     return (
-      <div className="stops-near-you-location-search">
-        <Search
-          onMap
-          lang={this.props.lang}
-          selectHandler={this.selectHandler}
-        />
-      </div>
+      <div className="stops-near-you-location-search">{this.search(true)}</div>
     );
   };
 
@@ -696,7 +700,7 @@ class NearYouPage extends React.Component {
           showGeolocationButton={this.state.phase === PH_SEARCH_GEOLOCATION}
           showInfo={this.state.phase === PH_SEARCH}
         >
-          <Search lang={this.props.lang} selectHandler={this.selectHandler} />
+          {this.search(false)}
         </LocationModal>
       );
     }
@@ -727,7 +731,7 @@ class NearYouPage extends React.Component {
               scrollable={nearByStopModes.length === 1}
               map={
                 <>
-                  {this.locationSearch()}
+                  {this.mapSearch()}
                   {this.renderMap()}
                 </>
               }
@@ -737,7 +741,7 @@ class NearYouPage extends React.Component {
             <MobileView
               content={this.renderContent()}
               map={this.renderMap()}
-              searchBox={this.locationSearch()}
+              searchBox={this.mapSearch()}
               mapRef={this.MWTRef}
               match={this.props.match}
             />
