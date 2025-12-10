@@ -106,7 +106,7 @@ export function Suggestions({
           return (
             <Suggestion
               key={`${suggestion.type}-${
-                suggestion.properties.id || suggestion.properties.labelId
+                suggestion.properties.id || suggestion.properties.name
               }`}
               highlightedIndex={highlightedIndex}
               itemIndex={i}

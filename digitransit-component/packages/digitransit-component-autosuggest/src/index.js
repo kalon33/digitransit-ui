@@ -246,7 +246,6 @@ function DTAutosuggest({
   required,
   color,
   hoverColor,
-  inputId,
   ariaLabel,
   accessiblePrimaryColor,
   fontWeights,
@@ -258,11 +257,11 @@ function DTAutosuggest({
   ...props
 }) {
   const [t] = useTranslation();
+  const [shouldRenderMobile, setShouldRenderMobile] = useState(false);
+
   const [suggestions, setSuggestions] = useState([]);
   const [valid] = useState(true);
   const [isLoading, setLoading] = useState(false);
-  const [shouldRenderMobile, setShouldRenderMobile] = useState(false);
-
   const [sources, setSources] = useState(props.sources);
   const [ownPlaces, setOwnPlaces] = useState(false);
   const [pendingSelection, setPendingSelection] = useState(null);
@@ -270,7 +269,7 @@ function DTAutosuggest({
   const enterPressedRef = useRef(null);
 
   // create and store input ref in the parent if storeRef is provided
-  const inputRef = React.useRef(inputId);
+  const inputRef = React.useRef(id);
   useEffect(() => {
     if (storeRef) {
       storeRef(inputRef.current);
@@ -309,7 +308,7 @@ function DTAutosuggest({
     selectItem,
     openMenu,
   } = useCombobox({
-    inputId,
+    inputId: id,
     defaultHighlightedIndex: 0,
     stateReducer: useCallback(
       (state, { type, changes }) => {
@@ -347,6 +346,8 @@ function DTAutosuggest({
             };
           }
           case useCombobox.stateChangeTypes.InputBlur: {
+            setPendingSelection(null);
+            setOwnPlaces(false);
             if (changes.selectedItem !== undefined) {
               const { selectedItem, ...changesWitoutSelection } = changes;
               return changesWitoutSelection;
@@ -581,6 +582,7 @@ function DTAutosuggest({
           clearButtonColor={color}
           accessiblePrimaryColor={accessiblePrimaryColor}
           inputClassName={inputClassName}
+          required={required}
         />
       )}
 
@@ -632,6 +634,8 @@ function DTAutosuggest({
           clearButtonColor={color}
           placeholder={translatedPlaceholder || t(placeholder, { lng })}
           required={required}
+          transportMode={transportMode}
+          isMobile={isMobile}
         />
 
         <Suggestions
@@ -699,14 +703,7 @@ DTAutosuggest.propTypes = {
   modeSet: PropTypes.string,
   // showScroll: PropTypes.bool,
   // isEmbedded: PropTypes.bool,
-  inputId: PropTypes.string.isRequired,
   showScroll: PropTypes.bool,
-  ariaProps: PropTypes.shape({
-    ariaCurrentSuggestion: PropTypes.string,
-    ariaRequiredText: PropTypes.string,
-    SearchBarId: PropTypes.string,
-    ariaLabelText: PropTypes.string,
-  }).isRequired,
 };
 
 DTAutosuggest.defaultProps = {
@@ -728,7 +725,6 @@ DTAutosuggest.defaultProps = {
   color: '#007ac9',
   hoverColor: '#0062a1',
   accessiblePrimaryColor: '#0074be',
-  // timeZone: 'Europe/Helsinki',
   pathOpts: {
     routesPrefix: 'linjat',
     stopsPrefix: 'pysakit',

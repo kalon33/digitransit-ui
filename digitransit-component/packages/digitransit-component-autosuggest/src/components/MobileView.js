@@ -46,6 +46,7 @@ const MobileView = ({
   inputValue,
   setInputValue,
   inputClassName,
+  required,
 }) => {
   const [t] = useTranslation();
   const { lock, unlock } = hooks.useScrollLock();
@@ -158,6 +159,8 @@ const MobileView = ({
               clearButtonColor={clearButtonColor}
               autoFocus
               inputClassName={inputClassName}
+              required={required}
+              isMobile
             />
             <Suggestions
               suggestions={suggestions}
@@ -166,6 +169,7 @@ const MobileView = ({
               itemProps={itemProps}
               highlightedIndex={highlightedIndex}
               isOpen // when mobile view is open we always want to show suggestions
+              hidden={false}
               lng={lng}
               styles={styles}
               renderClearHistoryButton
@@ -199,19 +203,17 @@ MobileView.propTypes = {
   lng: PropTypes.string.isRequired,
   color: PropTypes.string,
   clearInput: PropTypes.func.isRequired,
-  isOpen: PropTypes.bool.isRequired,
   accessiblePrimaryColor: PropTypes.string.isRequired,
   hoverColor: PropTypes.string,
   fontWeights: PropTypes.shape({
-    normal: PropTypes.string,
-    medium: PropTypes.string,
-    bold: PropTypes.string,
+    normal: PropTypes.number,
+    medium: PropTypes.number,
+    bold: PropTypes.number,
   }).isRequired,
   appElement: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   mobileLabel: PropTypes.string,
   clearOldSearches: PropTypes.func.isRequired,
-  highlightedIndex: PropTypes.number.isRequired,
   itemProps: PropTypes.shape({}).isRequired,
   suggestions: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   closeHandle: PropTypes.func.isRequired,
@@ -229,6 +231,7 @@ MobileView.propTypes = {
   setInputValue: PropTypes.func.isRequired,
   renderMobile: PropTypes.bool.isRequired,
   inputClassName: PropTypes.string.isRequired,
+  required: PropTypes.bool.isRequired,
 };
 
 MobileView.defaultProps = {

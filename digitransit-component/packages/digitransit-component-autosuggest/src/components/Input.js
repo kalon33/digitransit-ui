@@ -74,19 +74,20 @@ Input.propTypes = {
   getLabelProps: PropTypes.func.isRequired,
   clearInput: PropTypes.func.isRequired,
   ariaLabel: PropTypes.string.isRequired,
-  inputRef: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.shape({ current: PropTypes.instanceOf(HTMLInputElement) }),
-  ]).isRequired,
+  inputRef: PropTypes.shape({
+    current: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  }).isRequired,
   styles: PropTypes.objectOf(PropTypes.string).isRequired,
-  renderLabel: PropTypes.bool.isRequired,
+  renderLabel: PropTypes.bool,
   isMobile: PropTypes.bool.isRequired,
   inputClassName: PropTypes.string.isRequired,
-  transportMode: PropTypes.string.isRequired,
+  transportMode: PropTypes.string,
   clearButtonColor: PropTypes.string.isRequired,
   autoFocus: PropTypes.bool,
 };
 
 Input.defaultProps = {
   autoFocus: false,
+  renderLabel: false,
+  transportMode: undefined,
 };
