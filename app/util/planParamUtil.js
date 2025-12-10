@@ -313,7 +313,7 @@ export function getPlanParams(
   const intermediateLocations = getIntermediatePlaces({
     intermediatePlaces,
   });
-  const via = intermediateLocations
+  let via = intermediateLocations
     .map(loc => {
       if (loc.gtfsId) {
         return {
@@ -417,10 +417,19 @@ export function getPlanParams(
       settings.bikeReluctance = null;
       // As of writing this comment, iterating (paging) does not support filtering of bad car transit itineraries.
       maxQueryIterations = 1;
+      // Via routing for cars is too performance intensive.
+      via = null;
       break;
     case PLANTYPE.PARKANDRIDE:
       access = ['CAR_PARKING'];
       transitOnly = true;
+      // Via routing for cars is too performance intensive.
+      via = null;
+      break;
+    case PLANTYPE.CAR:
+      direct = ['CAR'];
+      // Via routing for cars is too performance intensive.
+      via = null;
       break;
     case PLANTYPE.TRANSIT:
       direct = access;
@@ -435,6 +444,7 @@ export function getPlanParams(
       egress = access;
       direct = directFlexOnly ? ['WALK', 'FLEX'] : null;
       transitOnly = false;
+      via = null;
       break;
     default: // direct modes
       direct = [planType];
