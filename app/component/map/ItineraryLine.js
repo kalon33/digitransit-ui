@@ -283,11 +283,9 @@ class ItineraryLine extends React.Component {
     if (!this.props.passive) {
       const index = new Supercluster({
         radius: 60, // in pixels
-        maxZoom: 15, // TODO if this is greater than max zoom (17) then max zoom icon can be number, dispay better icon than number
+        maxZoom: 15,
         minPoints: 2,
         extent: 512, // tile size (512)
-        // minZoom: 13,
-        // TODO maybe draw cluster icons based on what they have
         map: properties => ({
           iconCount: properties.iconCount,
         }),
@@ -299,15 +297,17 @@ class ItineraryLine extends React.Component {
 
       index.load(createFeatureObjects(clusterObjs));
       const bbox = [-180, -85, 180, 85]; // Bounding box covers the entire world
-      // TODO fix to use correct bbox, probably requires moveend event listening?:
-      /*
-        const bounds = this.props.leaflet.map.getBounds(); 
-        const bbox = [
-        bounds.getWest(),
-        bounds.getSouth(),
-        bounds.getEast(),
-        bounds.getNorth(),
-      ]; */
+      // TODO Fix to use smaller bbox, probably requires moveend event listening?
+      // The same fix should also be applied to RentalVehicles where supercluster is also used.
+      //
+      //  const bounds = this.props.leaflet.map.getBounds();
+      //  const bbox = [
+      //    bounds.getWest(),
+      //    bounds.getSouth(),
+      //    bounds.getEast(),
+      //    bounds.getNorth(),
+      //  ];
+
       const clusters = index.getClusters(bbox, this.state.zoom);
       clusters.forEach(clusterFeature => {
         const { coordinates } = clusterFeature.geometry;
