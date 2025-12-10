@@ -5,7 +5,6 @@ import { FormattedMessage, intlShape } from 'react-intl';
 import { graphql, ReactRelayContext, QueryRenderer } from 'react-relay';
 import { matchShape, routerShape } from 'found';
 import connectToStores from 'fluxible-addons-react/connectToStores';
-import DTAutoSuggest from '@digitransit-component/digitransit-component-autosuggest';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
 import { relayShape, configShape, locationShape } from '../../util/shapes';
 import Icon from '../Icon';
@@ -23,16 +22,13 @@ import {
   checkPositioningPermission,
   startLocationWatch,
 } from '../../action/PositionActions';
+import Search from './Search';
 import StopRouteSearch from './StopRouteSearch';
 import {
   getGeolocationState,
   getReadMessageIds,
   setReadMessageIds,
 } from '../../store/localStorage';
-import {
-  withSearchContext,
-  getLocationSearchTargets,
-} from '../WithSearchContext';
 import { PREFIX_NEARYOU } from '../../util/path';
 import NearYouContainer from './NearYouContainer';
 import SwipeableTabs from '../SwipeableTabs';
@@ -62,8 +58,6 @@ const PH_USEMAPCENTER = 'usemapcenter';
 
 const PH_SHOWSEARCH = [PH_SEARCH, PH_SEARCH_GEOLOCATION]; // show modal
 const PH_READY = [PH_USEDEFAULTPOS, PH_USEGEOLOCATION, PH_USEMAPCENTER]; // render the actual page
-
-const DTAutoSuggestWithSearchContext = withSearchContext(DTAutoSuggest);
 
 function getModes(config) {
   const transportModes = getTransportModes(config);
@@ -680,41 +674,12 @@ class NearYouPage extends React.Component {
   locationSearch = () => {
     return (
       <div className="stops-near-you-location-search">
-        {this.renderAutoSuggestField(true)}
+        <Search
+          onMap
+          lang={this.props.lang}
+          selectHandler={this.selectHandler}
+        />
       </div>
-    );
-  };
-
-  renderAutoSuggestField = onMap => {
-    const isMobile = this.props.breakpoint !== 'large';
-    const searchProps = {
-      id: 'origin-stop-near-you',
-      placeholder: 'origin',
-      translatedPlaceholder: onMap
-        ? this.context.intl.formatMessage({ id: 'move-on-map' })
-        : undefined,
-      mobileLabel: onMap
-        ? this.context.intl.formatMessage({ id: 'position' })
-        : undefined,
-      inputClassName: onMap ? 'origin-stop-near-you-selector' : undefined,
-      modeIconColors: this.context.config.colors.iconColors,
-      modeSet: this.context.config.iconModeSet,
-      getAutoSuggestIcons: this.context.config.getAutoSuggestIcons,
-    };
-    const targets = getLocationSearchTargets(this.context.config, false);
-    return (
-      <DTAutoSuggestWithSearchContext
-        appElement="#app"
-        icon="search"
-        sources={['History', 'Datasource', 'Favourite']}
-        targets={targets}
-        value=""
-        lang={this.props.lang}
-        mode={this.props.match.params.mode}
-        isMobile={isMobile}
-        selectHandler={this.selectHandler} // prop for context handler
-        {...searchProps}
-      />
     );
   };
 
@@ -731,7 +696,7 @@ class NearYouPage extends React.Component {
           showGeolocationButton={this.state.phase === PH_SEARCH_GEOLOCATION}
           showInfo={this.state.phase === PH_SEARCH}
         >
-          {this.renderAutoSuggestField()}
+          <Search lang={this.props.lang} selectHandler={this.selectHandler} />
         </LocationModal>
       );
     }

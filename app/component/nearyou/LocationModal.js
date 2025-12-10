@@ -65,6 +65,8 @@ LocationModal.propTypes = {
   children: PropTypes.node,
 };
 
+LocationModal.defaultProps = { children: null };
+
 LocationModal.contextTypes = {
   intl: intlShape.isRequired,
 };
