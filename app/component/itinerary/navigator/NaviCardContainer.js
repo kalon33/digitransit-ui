@@ -69,12 +69,11 @@ function NaviCardContainer(
   const focusRef = useRef(false);
 
   const { intl, config, match, router } = context;
-
-  const nextLegPlatformCode = nextLeg?.from?.stop?.platformCode;
-  const platformStatus = getPlatformChangeStatus(
-    nextLeg,
-    usePrevious(nextLegPlatformCode).previous,
-  );
+  const nextLegPlatformCode = legChanged
+    ? undefined
+    : nextLeg?.from?.stop?.platformCode;
+  const prev = usePrevious(nextLegPlatformCode).previous;
+  const platformStatus = getPlatformChangeStatus(nextLeg, prev);
 
   const handleRemove = index => {
     const msg = messages.get(activeMessages[index].id);
