@@ -131,14 +131,14 @@ const getLocationMarker = location => {
 function NearYouMap(
   {
     breakpoint,
-    stopsNearYou,
+    stops,
     match,
     loading,
     favouriteIds,
     relay,
     position,
     showWalkRoute,
-    prioritizedStopsNearYou,
+    prioritizedStops,
     setMWTRef,
     ...rest
   },
@@ -298,8 +298,8 @@ function NearYouMap(
   }, [uniqueRealtimeTopics]);
 
   useEffect(() => {
-    if (stopsNearYou?.nearest?.edges) {
-      const active = stopsNearYou.nearest.edges
+    if (stops?.nearest?.edges) {
+      const active = stops.nearest.edges
         .slice()
         .filter(
           stop =>
@@ -312,7 +312,7 @@ function NearYouMap(
       }
       let sortedEdges;
       if (!isTransitMode) {
-        const withNetworks = stopsNearYou.nearest.edges.filter(edge => {
+        const withNetworks = stops.nearest.edges.filter(edge => {
           return !!edge.node.place?.rentalNetwork?.networkId;
         });
         const filteredCityBikeEdges = withNetworks.filter(pattern => {
@@ -330,7 +330,7 @@ function NearYouMap(
       }
 
       sortedEdges.unshift(
-        ...prioritizedStopsNearYou.map(stop => {
+        ...prioritizedStops.map(stop => {
           return {
             node: {
               distance: distance(position, stop),
@@ -347,11 +347,11 @@ function NearYouMap(
       updateRoutes(sortedEdges);
     }
     if (mode === 'FAVORITE') {
-      handleWalkRoutes(handleStopsAndStations(stopsNearYou));
-      setSortedStopEdges(stopsNearYou);
-      updateRoutes(stopsNearYou);
+      handleWalkRoutes(handleStopsAndStations(stops));
+      setSortedStopEdges(stops);
+      updateRoutes(stops);
     }
-  }, [stopsNearYou, favouriteIds]);
+  }, [stops, favouriteIds]);
 
   if (loading) {
     return <Loading />;
@@ -431,7 +431,7 @@ function NearYouMap(
 }
 
 NearYouMap.propTypes = {
-  stopsNearYou: PropTypes.oneOfType([
+  stops: PropTypes.oneOfType([
     PropTypes.shape({
       nearest: PropTypes.shape({
         // eslint-disable-next-line
@@ -440,7 +440,7 @@ NearYouMap.propTypes = {
     }),
     PropTypes.arrayOf(PropTypes.object),
   ]),
-  prioritizedStopsNearYou: PropTypes.arrayOf(stopShape),
+  prioritizedStops: PropTypes.arrayOf(stopShape),
   // eslint-disable-next-line
   favouriteIds: PropTypes.object.isRequired,
   position: locationShape.isRequired,
@@ -453,11 +453,11 @@ NearYouMap.propTypes = {
 };
 
 NearYouMap.defaultProps = {
-  stopsNearYou: null,
+  stops: null,
   showWalkRoute: false,
   loading: false,
   setMWTRef: undefined,
-  prioritizedStopsNearYou: [],
+  prioritizedStops: [],
 };
 
 NearYouMap.contextTypes = {
