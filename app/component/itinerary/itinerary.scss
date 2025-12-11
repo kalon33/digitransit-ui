@@ -994,7 +994,7 @@ $itinerary-tab-switch-height: 48px;
     }
 
     &.indoor-step {
-      > svg > circle.vertical-transportation-use-marker {
+      > svg > circle.indoor-route-step-marker {
         fill: #fff;
         stroke: #666;
       }

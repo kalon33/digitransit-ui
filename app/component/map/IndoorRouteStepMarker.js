@@ -35,7 +35,7 @@ export default function IndoorRouteStepMarker(
     const iconSvg = `
         <svg viewBox="0 0 ${radius * 2} ${radius * 2}">
           <circle
-            class="vertical-transportation-use-marker"
+            class="indoor-route-step-marker"
             cx="${radius}"
             cy="${radius}"
             r="${radius * 0.7}"
@@ -46,7 +46,7 @@ export default function IndoorRouteStepMarker(
     return L.divIcon({
       html: iconSvg,
       iconSize: [radius * 2, radius * 2],
-      className: 'map-vertical-transportation-use-marker disable-icon-border',
+      className: 'map-indoor-route-step-marker disable-icon-border',
     });
   };
 
@@ -55,6 +55,7 @@ export default function IndoorRouteStepMarker(
       key={`verticaltransportationusegenericmarker_lat_${position.lat}_lon_${position.lon}`}
       position={position}
       getIcon={getIcon}
+      zIndexOffset={13050}
       maxWidth={450}
       minWidth={180}
     >
@@ -65,8 +66,8 @@ export default function IndoorRouteStepMarker(
             defaultMessage: 'Indoor route',
           })}
         />
-        <div className="bottom vertical-transportation-use-popup-container">
-          <div className="vertical-transportation-use-popup-icons">
+        <div className="bottom indoor-route-step-popup-container">
+          <div className="indoor-route-step-popup-icons">
             {indoorRouteSteps.map((obj, i, filteredObjs) => (
               <React.Fragment
                 key={`verticaltransportationuseicon_lat_${position.lat}_lon_${position.lon}_index_${i}`}
@@ -77,7 +78,7 @@ export default function IndoorRouteStepMarker(
                     obj.relativeDirection,
                     true,
                   )}
-                  className="vertical-transportation-use-popup-icon"
+                  className="indoor-route-step-popup-icon"
                 />
                 {filteredObjs.length !== i + 1 ? (
                   <Icon
@@ -88,16 +89,16 @@ export default function IndoorRouteStepMarker(
               </React.Fragment>
             ))}
           </div>
-          <div className="vertical-transportation-use-popup-line-container">
-            <div className="vertical-transportation-use-popup-line-circle-container">
+          <div className="indoor-route-step-popup-line-container">
+            <div className="indoor-route-step-popup-line-circle-container">
               {indoorRouteSteps.map((obj, i) => (
                 <React.Fragment
                   key={`indoorroutestepmarker_lat_${position.lat}_lon_${position.lon}_index_${i}`}
                 >
-                  <div className="vertical-transportation-use-popup-line-circle">
+                  <div className="indoor-route-step-popup-line-circle">
                     <svg width={28} height={28}>
                       <circle
-                        className={cx('vertical-transportation-use-marker', {
+                        className={cx('indoor-route-step-marker', {
                           selected: index === i,
                         })}
                         width={28}
@@ -115,7 +116,7 @@ export default function IndoorRouteStepMarker(
               style={{
                 backgroundImage: indoorBackgroundImageUrl,
               }}
-              className="vertical-transportation-use-popup-line"
+              className="indoor-route-step-popup-line"
             />
           </div>
         </div>

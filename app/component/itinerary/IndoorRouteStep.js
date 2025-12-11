@@ -59,7 +59,7 @@ function IndoorRouteStep({
         >
           <svg xmlns="http://www.w3.org/2000/svg" width={28} height={28}>
             <circle
-              className="vertical-transportation-use-marker"
+              className="indoor-route-step-marker"
               width={28}
               cx={11}
               cy={18}
