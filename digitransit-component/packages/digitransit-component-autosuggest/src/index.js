@@ -469,15 +469,11 @@ function DTAutosuggest({
   // TODO: this logic needs to be revisited
   useEffect(() => {
     if (!shouldRenderMobile && !isOpen && !enterPressedRef.current) {
-      setInputValue(value || '');
+      setInputValue(cleared ? '' : value || '');
+      setCleared(false);
+    } else {
+      setInputValue(cleared ? '' : value || '');
     }
-    if (cleared) {
-      setInputValue('');
-    }
-    if (!cleared && shouldRenderMobile) {
-      setInputValue(value || '');
-    }
-    return () => setCleared(false);
   }, [cleared, value, shouldRenderMobile, isOpen, setInputValue]);
 
   // Fetch suggestions when isOpen, value, or fetchSuggestions dependies change
