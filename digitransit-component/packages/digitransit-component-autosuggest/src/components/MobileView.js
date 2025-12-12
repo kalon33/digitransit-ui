@@ -23,6 +23,35 @@ const isKeyboardSelectionEvent = event => {
   return true;
 };
 
+/**
+ * @typedef MobileViewProps
+ * @property {string} appElement
+ * @property {string} id
+ * @property {string} placeholder
+ * @property {function} closeHandle
+ * @property {function} clearInput
+ * @property {array} suggestions
+ * @property {function} onSelectedItemChange
+ * @property {object} fontWeights
+ * @property {function} clearOldSearches
+ * @property {object} itemProps
+ * @property {string} color
+ * @property {string} accessiblePrimaryColor
+ * @property {string} hoverColor
+ * @property {string} lng
+ * @property {object} ariaProps
+ * @property {boolean} renderMobile
+ * @property {string} clearButtonColor
+ * @property {string} inputValue
+ * @property {function} setInputValue
+ * @property {string} inputClassName
+ * @property {boolean} required
+ * @property {string} [mobileLabel]
+ * @property {boolean} [showScroll]
+ *
+ * @param {MobileViewProps} props
+ * @returns {JSX.Element}
+ */
 const MobileView = ({
   appElement,
   id,
@@ -51,12 +80,11 @@ const MobileView = ({
   const [t] = useTranslation();
   const { lock, unlock } = hooks.useScrollLock();
   const styles = showScroll ? mobileStyles : mobileNoScrollStyles;
-
   const inputId = `${id}-input`;
   const labelId = `${id}-label`;
-
   const [isDialogOpen, setDialogOpen] = useState(false);
   const inputRef = React.useRef();
+
   useEffect(() => {
     ReactModal.setAppElement(appElement);
   }, []);
@@ -70,7 +98,7 @@ const MobileView = ({
   }, [renderMobile]);
 
   /**
-   * Downshift hooks do not support conditional rendering so we need independent hooks in mobile view.
+   * independent hooks in mobile view.
    * inputValue and suggestion states are kept in the parent
    */
   const {
@@ -84,8 +112,9 @@ const MobileView = ({
     inputValue,
     onInputValueChange: ({ inputValue: newValue }) => setInputValue(newValue),
     onSelectedItemChange,
-    defaultHighlightedIndex: 0,
+    defaultHighlightedIndex: -1,
   });
+  // call to suppress ref errors from downshift, might need better solution
   getLabelProps({}, { suppressRefError: true });
   getMenuProps({}, { suppressRefError: true });
   getInputProps({}, { suppressRefError: true });
@@ -103,7 +132,6 @@ const MobileView = ({
     .concat(SearchBarId)
     .concat(' ')
     .concat(ariaCurrentSuggestion);
-
   return (
     <ReactModal
       isOpen={renderMobile}
@@ -138,7 +166,7 @@ const MobileView = ({
               id={labelId}
               {...getLabelProps()}
             >
-              {mobileLabel || t(id, { lng })}
+              {mobileLabel}
             </span>
             <Input
               placeholder={
@@ -200,46 +228,35 @@ const MobileView = ({
 };
 
 MobileView.propTypes = {
-  lng: PropTypes.string.isRequired,
-  color: PropTypes.string,
-  clearInput: PropTypes.func.isRequired,
-  accessiblePrimaryColor: PropTypes.string.isRequired,
-  hoverColor: PropTypes.string,
-  fontWeights: PropTypes.shape({
-    normal: PropTypes.number,
-    medium: PropTypes.number,
-    bold: PropTypes.number,
-  }).isRequired,
   appElement: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
-  mobileLabel: PropTypes.string,
+  clearInput: PropTypes.func.isRequired,
   clearOldSearches: PropTypes.func.isRequired,
+  closeHandle: PropTypes.func.isRequired,
+  onSelectedItemChange: PropTypes.func.isRequired,
+  inputValue: PropTypes.string.isRequired,
+  setInputValue: PropTypes.func.isRequired,
+  color: PropTypes.string.isRequired,
+  accessiblePrimaryColor: PropTypes.string.isRequired,
+  clearButtonColor: PropTypes.string.isRequired,
+  hoverColor: PropTypes.string.isRequired,
+  fontWeights: PropTypes.shape({
+    medium: PropTypes.number.isRequired,
+  }).isRequired,
   itemProps: PropTypes.shape({}).isRequired,
   suggestions: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  closeHandle: PropTypes.func.isRequired,
-  showScroll: PropTypes.bool,
-  focusInput: PropTypes.bool,
-  clearButtonColor: PropTypes.string.isRequired,
-  onSelectedItemChange: PropTypes.func.isRequired,
   ariaProps: PropTypes.shape({
     ariaRequiredText: PropTypes.string.isRequired,
     SearchBarId: PropTypes.string.isRequired,
     ariaCurrentSuggestion: PropTypes.string.isRequired,
   }).isRequired,
-  placeholder: PropTypes.string.isRequired,
-  inputValue: PropTypes.string.isRequired,
-  setInputValue: PropTypes.func.isRequired,
-  renderMobile: PropTypes.bool.isRequired,
   inputClassName: PropTypes.string.isRequired,
+  placeholder: PropTypes.string.isRequired,
+  mobileLabel: PropTypes.string.isRequired,
   required: PropTypes.bool.isRequired,
-};
-
-MobileView.defaultProps = {
-  mobileLabel: undefined,
-  focusInput: false,
-  color: undefined,
-  hoverColor: undefined,
-  showScroll: undefined,
+  renderMobile: PropTypes.bool.isRequired,
+  showScroll: PropTypes.bool.isRequired,
+  lng: PropTypes.string.isRequired,
 };
 
 export default MobileView;

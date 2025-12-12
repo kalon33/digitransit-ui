@@ -166,7 +166,6 @@ const getNewTargets = ({
  *    value="" // e.g. user typed string that is shown in search field
  *    onSelect={onSelect}
  *    onClear={onClear}
- *    autoFocus={false} // defines that should this field be automatically focused when page is loaded.
  *    lang={lang}
  *    getAutoSuggestIcons={getAutoSuggestIcons}
  *    transportMode={transportMode} // transportmode with which we filter the routes, e.g. route-BUS
@@ -182,63 +181,57 @@ const getNewTargets = ({
  *    inputClassName="" // Optional. Custom classname applied to the input element of the component for providing CSS styles.
  *    translatedPlaceholder= // Optional. Custon translated placeholder text for autosuggest field.
  *
- * @param {object} props
- * @param {Element} props.appElement
- * @param {Object} props.searchContext
- * @param {string} props.icon
- * @param {string} props.id
- * @param {string} props.placeholder
- * @param {string} props.value
- * @param {function} props.onSelect
- * @param {function} props.onClear
- * @param {boolean} props.autoFocus
- * @param {string} props.lang
- * @param {Object} props.getAutoSuggestIcons
- * @param {string} props.transportMode
- * @param {number} props.geocodingSize
- * @param {function} props.filterResults
- * @param {function} props.handleViaPoints
- * @param {function} props.focusChange
- * @param {function} props.storeRef
- * @param {string[]} props.sources
- * @param {string[]} props.targets
- * @param {boolean} props.isMobile
- * @param {string} props.mobileLabel
- * @param {string} props.inputClassName
- * @param {string} props.translatedPlaceholder
- * @param {boolean} props.required
- * @param {string} props.color
- * @param {string} props.hoverColor
- * @param {string} props.inputId
- * @param {string} props.dialogSecondaryButtonText
- * @param {function} props.closeHandle
- * @param {string} props.accessiblePrimaryColor
- * @param {Object} props.fontWeights
- * @param {Object} props.modeIconColors
- * @param {string} props.modeSet
- * @param {Object} props.pathOpts
- * @param {Object} props.refPoint
- *
+ * @typedef DTAutosuggestProps
+ * @property {string} appElement
+ * @property {string} id
+ * @property {string} placeholder
+ * @property {function} onSelect
+ * @property {string} [icon]
+ * @property {string} [value]
+ * @property {function} [onClear]
+ * @property {string} [lang]
+ * @property {Object} [getAutoSuggestIcons]
+ * @property {function} [handleViaPoints]
+ * @property {function} [focusChange]
+ * @property {function} [storeRef]
+ * @property {boolean} [isMobile]
+ * @property {string} [mobileLabel]
+ * @property {string} [inputClassName]
+ * @property {string} [translatedPlaceholder]
+ * @property {boolean} [required]
+ * @property {string} [color]
+ * @property {string} [hoverColor]
+ * @property {string} [accessiblePrimaryColor]
+ * @property {Object} [fontWeights]
+ * @property {Object} [modeIconColors]
+ * @property {string} [modeSet]
+ * @property {boolean} [showScroll]
+ * @property {boolean} [isEmbedded]
+ * Geocoding related props
+ * @property {Object} searchContext
+ * @property {string} [transportMode]
+ * @property {string[]} [targets]
+ * @property {string[]} [sources]
+ * @property {number} [geocodingSize]
+ * @property {function} [filterResults]
+ * @property {Object} [pathOpts]
+ * @property {Object} [refPoint]
+ * @param {DTAutosuggestProps} props
  * @returns {JSX.Element}
  */
 function DTAutosuggest({
   appElement,
-  searchContext,
-  icon,
   id,
   placeholder,
-  value: valueIn,
   onSelect,
+  icon,
+  value,
   onClear,
   lang: lng,
   getAutoSuggestIcons,
-  transportMode,
-  geocodingSize,
-  filterResults,
   handleViaPoints,
   focusChange,
   storeRef,
-  targets,
   isMobile,
   mobileLabel,
   inputClassName,
@@ -251,20 +244,26 @@ function DTAutosuggest({
   fontWeights,
   modeIconColors,
   modeSet,
+  showScroll,
+  isEmbedded,
+  transportMode,
+  targets,
+  sources,
+  geocodingSize,
+  filterResults,
+  searchContext,
   pathOpts,
   refPoint,
-  showScroll,
-  ...props
 }) {
   const [t] = useTranslation();
   const [shouldRenderMobile, setShouldRenderMobile] = useState(false);
 
   const [suggestions, setSuggestions] = useState([]);
-  const [valid] = useState(true);
   const [isLoading, setLoading] = useState(false);
-  const [sources, setSources] = useState(props.sources);
-  const [ownPlaces, setOwnPlaces] = useState(false);
+  const [currentSources, setCurrentSources] = useState(sources);
+  const [showOwnPlaces, setShowOwnPlaces] = useState(false);
   const [pendingSelection, setPendingSelection] = useState(null);
+  const [cleared, setCleared] = useState(false);
 
   const enterPressedRef = useRef(null);
 
@@ -276,22 +275,25 @@ function DTAutosuggest({
     }
   }, [inputRef.current]);
 
-  const selectSuggestion = useCallback((suggestion, index) => {
-    if (!suggestion) {
-      return;
-    }
-    if (handleViaPoints) {
-      handleViaPoints(suggestion, index);
-    }
-    onSelect(suggestion, id);
-
-    if (focusChange) {
-      focusChange();
-    }
-    if (isMobile) {
-      setShouldRenderMobile(false);
-    }
-  });
+  const selectSuggestion = useCallback(
+    (suggestion, index) => {
+      if (!suggestion) {
+        return;
+      }
+      if (handleViaPoints) {
+        handleViaPoints(suggestion, index);
+      } else {
+        onSelect(suggestion, id);
+      }
+      if (focusChange && (!isMobile || isEmbedded)) {
+        focusChange();
+      }
+      if (isMobile) {
+        setShouldRenderMobile(false);
+      }
+    },
+    [isMobile],
+  );
 
   const onSelectedItemChange = changes =>
     selectSuggestion(changes.selectedItem, changes.highlightedIndex);
@@ -326,16 +328,16 @@ function DTAutosuggest({
             }
             // if selecting from own locations, keep menu open and keep old state
             if (changes.selectedItem.type === 'SelectFromOwnLocations') {
-              setSources(['Favourite', 'Back']);
-              setOwnPlaces(true);
+              setCurrentSources(['Favourite', 'Back']);
+              setShowOwnPlaces(true);
               setPendingSelection(changes.selectedItem.type);
-              return { ...state, isOpen: true };
+              return state;
             }
             if (changes.selectedItem.type === 'back') {
-              setSources(props.sources);
-              setOwnPlaces(false);
+              setCurrentSources(sources);
+              setShowOwnPlaces(false);
               setPendingSelection(null);
-              return { ...state, isOpen: true };
+              return state;
             }
             return changes;
           }
@@ -347,7 +349,7 @@ function DTAutosuggest({
           }
           case useCombobox.stateChangeTypes.InputBlur: {
             setPendingSelection(null);
-            setOwnPlaces(false);
+            setShowOwnPlaces(false);
             if (changes.selectedItem !== undefined) {
               const { selectedItem, ...changesWitoutSelection } = changes;
               return changesWitoutSelection;
@@ -375,7 +377,7 @@ function DTAutosuggest({
     if (ref.current) {
       ref.current.focus();
     }
-    setInputValue('');
+    setCleared(true);
     openMenu();
   };
 
@@ -388,21 +390,19 @@ function DTAutosuggest({
         targets,
         isLocationSearch,
         isMobile,
-        ownPlaces,
-        sources,
+        ownPlaces: showOwnPlaces,
+        sources: currentSources,
       });
       // remove  location favourites in desktop search (collection item replaces it in target array)
-      const newSources = sources
-        ? sources.filter(
+      const newSources = currentSources
+        ? currentSources.filter(
             s =>
-              !(
-                isLocationSearch &&
-                s === 'Favourite' &&
-                !ownPlaces &&
-                !isMobile
-              ),
+              !isLocationSearch ||
+              !s === 'Favourite' ||
+              showOwnPlaces ||
+              isMobile,
           )
-        : sources;
+        : currentSources;
       executeSearch(
         newTargets,
         newSources,
@@ -451,12 +451,12 @@ function DTAutosuggest({
     },
     [
       targets,
-      sources,
+      currentSources,
       transportMode,
       searchContext,
       filterResults,
       geocodingSize,
-      ownPlaces,
+      showOwnPlaces,
       isMobile,
       lng,
       pathOpts,
@@ -466,19 +466,26 @@ function DTAutosuggest({
     ],
   );
 
-  // when menu is closed, return to prop given value
+  // TODO: this logic needs to be revisited
   useEffect(() => {
-    if (!isOpen && !enterPressedRef.current) {
-      setInputValue(valueIn || '');
+    if (!shouldRenderMobile && !isOpen && !enterPressedRef.current) {
+      setInputValue(value || '');
     }
-  }, [valueIn, isOpen, setInputValue]);
+    if (cleared) {
+      setInputValue('');
+    }
+    if (!cleared && shouldRenderMobile) {
+      setInputValue(value || '');
+    }
+    return () => setCleared(false);
+  }, [cleared, value, shouldRenderMobile, isOpen, setInputValue]);
 
-  // Fetch suggestions
+  // Fetch suggestions when isOpen, value, or fetchSuggestions dependies change
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen || shouldRenderMobile) {
       fetchSuggestions(inputValue);
     }
-  }, [isOpen, inputValue, fetchSuggestions]);
+  }, [isOpen, shouldRenderMobile, inputValue, fetchSuggestions]);
 
   useEffect(() => {
     if (enterPressedRef.current && !isLoading) {
@@ -488,7 +495,7 @@ function DTAutosuggest({
   }, [isLoading]);
 
   const baseItemProps = {
-    loading: valid,
+    loading: isLoading,
     isMobile,
     ariaFavouriteString: t('favourite', { lng }),
     color,
@@ -534,7 +541,6 @@ function DTAutosuggest({
 
   const closeHandle = () => {
     setShouldRenderMobile(false);
-    setInputValue(valueIn);
     if (inputRef.current) {
       inputRef.current.blur();
     }
@@ -558,13 +564,13 @@ function DTAutosuggest({
     <>
       {isMobile && (
         <MobileView
-          placeholder={placeholder}
+          placeholder={t(placeholder, { lng })}
           renderMobile={shouldRenderMobile}
           fontWeights={fontWeights}
           clearOldSearches={mobileClearOldSearches}
           closeHandle={closeHandle}
           appElement={appElement}
-          mobileLabel={mobileLabel}
+          mobileLabel={mobileLabel || t(id, { lng })}
           ariaProps={{
             ariaCurrentSuggestion,
             SearchBarId,
@@ -578,7 +584,7 @@ function DTAutosuggest({
           clearInput={clearInput}
           suggestions={suggestions}
           itemProps={baseItemProps}
-          showScroll={showScroll}
+          showScroll={!!showScroll}
           clearButtonColor={color}
           accessiblePrimaryColor={accessiblePrimaryColor}
           inputClassName={inputClassName}
@@ -639,7 +645,7 @@ function DTAutosuggest({
         />
 
         <Suggestions
-          hidden={!isOpen}
+          hidden={!isOpen || isMobile}
           highlightedIndex={highlightedIndex}
           getItemProps={getItemProps}
           getMenuProps={getMenuProps}
@@ -660,6 +666,9 @@ DTAutosuggest.propTypes = {
   placeholder: PropTypes.string.isRequired,
   translatedPlaceholder: PropTypes.string,
   value: PropTypes.string,
+  transportMode: PropTypes.string,
+  geocodingSize: PropTypes.number,
+  filterResults: PropTypes.func,
   searchContext: PropTypes.shape({
     URL_PELIAS: PropTypes.string,
     // eslint-disable-next-line
@@ -667,18 +676,15 @@ DTAutosuggest.propTypes = {
     clearOldSearches: PropTypes.func,
     clearFutureRoutes: PropTypes.func,
   }).isRequired,
+  sources: PropTypes.arrayOf(PropTypes.string),
+  targets: PropTypes.arrayOf(PropTypes.string),
   ariaLabel: PropTypes.string,
   onSelect: PropTypes.func.isRequired,
-  transportMode: PropTypes.string,
-  filterResults: PropTypes.func,
-  geocodingSize: PropTypes.number,
   onClear: PropTypes.func,
   storeRef: PropTypes.func,
   handleViaPoints: PropTypes.func,
   focusChange: PropTypes.func,
   lang: PropTypes.string,
-  sources: PropTypes.arrayOf(PropTypes.string),
-  targets: PropTypes.arrayOf(PropTypes.string),
   isMobile: PropTypes.bool,
   color: PropTypes.string,
   hoverColor: PropTypes.string,
@@ -701,9 +707,8 @@ DTAutosuggest.propTypes = {
   getAutoSuggestIcons: PropTypes.objectOf(PropTypes.func),
   required: PropTypes.bool,
   modeSet: PropTypes.string,
-  // showScroll: PropTypes.bool,
-  // isEmbedded: PropTypes.bool,
   showScroll: PropTypes.bool,
+  isEmbedded: PropTypes.bool,
 };
 
 DTAutosuggest.defaultProps = {
@@ -720,7 +725,7 @@ DTAutosuggest.defaultProps = {
   sources: [],
   targets: undefined,
   isMobile: false,
-  // isEmbedded: false,
+  isEmbedded: false,
   geocodingSize: undefined,
   color: '#007ac9',
   hoverColor: '#0062a1',

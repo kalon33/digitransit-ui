@@ -40,6 +40,7 @@ export function Input({
         autoFocus={autoFocus}
         placeholder={placeholder}
         required={required}
+        type="text"
         className={cx(
           styles.input,
           isMobile && transportMode ? styles.thin : '',

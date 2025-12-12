@@ -106,7 +106,9 @@ export function Suggestions({
           return (
             <Suggestion
               key={`${suggestion.type}-${
-                suggestion.properties.id || suggestion.properties.name
+                suggestion.properties.id ||
+                suggestion.properties.name ||
+                suggestion.properties.gtfsId
               }`}
               highlightedIndex={highlightedIndex}
               itemIndex={i}
@@ -119,7 +121,7 @@ export function Suggestions({
           );
         })}
         {renderClearHistoryButton && (
-          <li>
+          <li {...getItemProps({ index: suggestions.length })}>
             <button
               onClick={handleClearHistory}
               type="button"
