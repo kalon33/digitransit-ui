@@ -71,7 +71,6 @@ export const ItineraryDetailsFragment = graphql`
             }
           }
         }
-        relativeDirection
         lat
         lon
       }
