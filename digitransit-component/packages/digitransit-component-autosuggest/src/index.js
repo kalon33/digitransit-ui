@@ -581,6 +581,8 @@ function DTAutosuggest({
           suggestions={suggestions}
           itemProps={baseItemProps}
           showScroll={!!showScroll}
+          color={color}
+          hoverColor={hoverColor}
           clearButtonColor={color}
           accessiblePrimaryColor={accessiblePrimaryColor}
           inputClassName={inputClassName}
