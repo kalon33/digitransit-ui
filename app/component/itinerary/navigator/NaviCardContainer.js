@@ -69,11 +69,18 @@ function NaviCardContainer(
   const focusRef = useRef(false);
 
   const { intl, config, match, router } = context;
-  const nextLegPlatformCode = legChanged
-    ? undefined
-    : nextLeg?.from?.stop?.platformCode;
-  const prev = usePrevious(nextLegPlatformCode).previous;
-  const platformStatus = getPlatformChangeStatus(nextLeg, prev);
+  const platformRef = useRef();
+
+  if (legChanged) {
+    platformRef.current = undefined;
+  }
+  let platformStatus = PLATFORM_STATUS.NORMAL;
+  if (nextLeg?.transitLeg) {
+    platformStatus = getPlatformChangeStatus(nextLeg, platformRef.current);
+    if (platformStatus === PLATFORM_STATUS.CHANGED) {
+      platformRef.current = nextLeg.from.stop.platformCode;
+    }
+  }
 
   const handleRemove = index => {
     const msg = messages.get(activeMessages[index].id);
