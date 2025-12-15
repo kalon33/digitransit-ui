@@ -442,7 +442,9 @@ function DTAutosuggest({
               }
               return suggestion;
             });
-          setSuggestions(newSuggestions);
+          if (newSuggestions.length) {
+            setSuggestions(newSuggestions);
+          }
           setLoading(false);
         },
         pathOpts,
@@ -466,13 +468,12 @@ function DTAutosuggest({
     ],
   );
 
-  // TODO: this logic needs to be revisited
   useEffect(() => {
     if (!shouldRenderMobile && !isOpen && !enterPressedRef.current) {
       setInputValue(cleared ? '' : value || '');
       setCleared(false);
-    } else {
-      setInputValue(cleared ? '' : value || '');
+    } else if (cleared) {
+      setInputValue('');
     }
   }, [cleared, value, shouldRenderMobile, isOpen, setInputValue]);
 
