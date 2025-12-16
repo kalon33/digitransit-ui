@@ -350,7 +350,7 @@ function DTAutosuggest({
           case useCombobox.stateChangeTypes.InputBlur: {
             setPendingSelection(null);
             setShowOwnPlaces(false);
-            if (changes.selectedItem !== undefined) {
+            if (changes.selectedItem !== undefined && isMobile) {
               const { selectedItem, ...changesWitoutSelection } = changes;
               return changesWitoutSelection;
             }
@@ -474,6 +474,9 @@ function DTAutosuggest({
       setCleared(false);
     } else if (cleared) {
       setInputValue('');
+    }
+    if (shouldRenderMobile) {
+      setInputValue(cleared ? '' : value || '');
     }
   }, [cleared, value, shouldRenderMobile, isOpen, setInputValue]);
 
