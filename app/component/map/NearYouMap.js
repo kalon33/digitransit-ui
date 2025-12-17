@@ -118,16 +118,6 @@ const handleBounds = (location, edges) => {
   return bounds;
 };
 
-const getLocationMarker = location => {
-  return (
-    <LocationMarker
-      key={`from-${location.lat}:${location.lat}`}
-      position={location}
-      type="from"
-    />
-  );
-};
-
 function NearYouMap(
   {
     breakpoint,
@@ -395,7 +385,13 @@ function NearYouMap(
 
   // Marker for the search point.
   if (position.type !== 'CurrentLocation' && showWalkRoute) {
-    leafletObjs.push(getLocationMarker(position));
+    leafletObjs.push(
+      <LocationMarker
+        key={`from-${position.lat}:${position.lon}`}
+        position={position}
+        type="from"
+      />,
+    );
   }
 
   const mapProps = {
