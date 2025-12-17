@@ -312,6 +312,21 @@ function DTAutosuggest({
   const onSelectedItemChange = changes =>
     selectSuggestion(changes.selectedItem, changes.highlightedIndex);
 
+  const pendingEnterCallback = useCallback(
+    (state, changes) => {
+      if (isLoading) {
+        enterPressedRef.current = true;
+        const { selectedItem, ...changesWitoutSelection } = changes;
+        return {
+          ...changesWitoutSelection,
+          inputValue: state.inputValue,
+        };
+      }
+      return undefined;
+    },
+    [isLoading],
+  );
+
   const {
     inputValue,
     isOpen,
@@ -335,13 +350,9 @@ function DTAutosuggest({
           case useCombobox.stateChangeTypes.InputKeyDownEnter: {
             setCleared(false);
             // keep enterPressedRef to make selection when suggestions have loaded
-            if (isLoading) {
-              enterPressedRef.current = true;
-              const { selectedItem, ...changesWitoutSelection } = changes;
-              return {
-                ...changesWitoutSelection,
-                inputValue: state.inputValue,
-              };
+            const tempChanges = pendingEnterCallback(state, changes);
+            if (tempChanges) {
+              return tempChanges;
             }
             // if selecting from own locations, keep menu open and keep old state
             if (changes.selectedItem.type === 'SelectFromOwnLocations') {
@@ -385,7 +396,7 @@ function DTAutosuggest({
           }
         }
       },
-      [isLoading, value, isMobile],
+      [pendingEnterCallback, value, isMobile],
     ),
     items: suggestions,
     itemToString(suggestion) {
@@ -493,21 +504,27 @@ function DTAutosuggest({
   );
 
   useEffect(() => {
-    // set input value to prop when not typing
+    // set inputValue to prop when not typing
     if (!shouldRenderMobile && !isOpen && !enterPressedRef.current) {
       setInputValue(value);
     } else if (isCleared) {
       setInputValue('');
     }
+  }, [isCleared, value, shouldRenderMobile, isOpen]);
+
+  useEffect(() => {
     // this is needed to render value correclty when opening mobile view
     if (shouldRenderMobile) {
+      if (positions.includes(value)) {
+        setCleared(true);
+      }
       setInputValue(isCleared ? '' : value || '');
     }
     // blur input when closing mobile view
     if (isMobile && !shouldRenderMobile) {
       inputRef.current.blur();
     }
-  }, [isCleared, value, shouldRenderMobile, isOpen]);
+  }, [shouldRenderMobile]);
 
   // Fetch suggestions when isOpen, value, or fetchSuggestions dependies change
   useEffect(() => {
@@ -522,7 +539,7 @@ function DTAutosuggest({
       selectSuggestion(suggestions[0], 0);
       enterPressedRef.current = false;
     }
-  }, [isLoading]);
+  }, [isLoading, suggestions]);
 
   const baseItemProps = {
     loading: isLoading,
@@ -592,6 +609,7 @@ function DTAutosuggest({
     <>
       {isMobile && (
         <MobileView
+          pendingEnterCallback={pendingEnterCallback}
           placeholder={t(placeholder, { lng })}
           renderMobile={shouldRenderMobile}
           fontWeights={fontWeights}

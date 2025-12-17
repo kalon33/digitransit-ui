@@ -65,6 +65,7 @@ const MobileView = ({
   setInputValue,
   inputClassName,
   required,
+  pendingEnterCallback,
 }) => {
   const [t] = useTranslation();
   const { lock, unlock } = hooks.useScrollLock();
@@ -103,7 +104,23 @@ const MobileView = ({
       setInputValue(newValue);
     },
     onSelectedItemChange,
+    inputId,
+    labelId,
     defaultHighlightedIndex: -1,
+    stateReducer: (state, actionAndChanges) => {
+      const { changes, type } = actionAndChanges;
+      if (type === useCombobox.stateChangeTypes.InputKeyDownEscape) {
+        closeHandle();
+      }
+      if (type === useCombobox.stateChangeTypes.InputKeyDownEnter) {
+        const tempChanges = pendingEnterCallback(state, changes);
+        if (tempChanges) {
+          return tempChanges;
+        }
+        return changes;
+      }
+      return changes;
+    },
   });
   // call to suppress ref errors from downshift, might need better solution
   getLabelProps({}, { suppressRefError: true });
@@ -227,6 +244,7 @@ MobileView.propTypes = {
   onSelectedItemChange: PropTypes.func.isRequired,
   inputValue: PropTypes.string.isRequired,
   setInputValue: PropTypes.func.isRequired,
+  pendingEnterCallback: PropTypes.func.isRequired,
   color: PropTypes.string.isRequired,
   accessiblePrimaryColor: PropTypes.string.isRequired,
   clearButtonColor: PropTypes.string.isRequired,
