@@ -87,6 +87,7 @@ const containerComponent = createFragmentContainer(
             gtfsId
             shortName
             mode
+            type
           }
           code
           directionId
@@ -113,6 +114,7 @@ const containerComponent = createFragmentContainer(
               gtfsId
               shortName
               mode
+              type
             }
             code
             directionId

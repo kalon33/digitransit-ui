@@ -318,7 +318,7 @@ function NearYouMap(
       <VehicleMarkerContainer
         key="vehicles"
         useLargeIcon
-        mode={mode}
+        mode={mode === 'FAVORITE' ? undefined : mode}
         topics={uniqueRealtimeTopics}
       />,
     );
