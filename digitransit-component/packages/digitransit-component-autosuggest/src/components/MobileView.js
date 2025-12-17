@@ -10,18 +10,7 @@ import mobileStyles from './MobileSearch.scss';
 import mobileNoScrollStyles from './MobileNoScroll.scss';
 import { Suggestions } from './Suggestions';
 import { Input } from './Input';
-
-const isKeyboardSelectionEvent = event => {
-  const space = [13, ' ', 'Spacebar'];
-  const enter = [32, 'Enter'];
-  const key = (event && (event.key || event.which || event.keyCode)) || '';
-
-  if (!key || !space.concat(enter).includes(key)) {
-    return false;
-  }
-  event.preventDefault();
-  return true;
-};
+import { isKeyboardSelectionEvent } from '../utils/utils';
 
 /**
  * @typedef MobileViewProps
@@ -110,7 +99,9 @@ const MobileView = ({
   } = useCombobox({
     items: suggestions,
     inputValue,
-    onInputValueChange: ({ inputValue: newValue }) => setInputValue(newValue),
+    onInputValueChange: ({ inputValue: newValue }) => {
+      setInputValue(newValue);
+    },
     onSelectedItemChange,
     defaultHighlightedIndex: -1,
   });

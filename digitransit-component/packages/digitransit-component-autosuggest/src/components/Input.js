@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { ClearButton } from './ClearButton';
+import { isKeyboardSelectionEvent } from '../utils/utils';
 
 export function Input({
   id,
@@ -58,7 +59,7 @@ export function Input({
           clearInput={() => clearInput(inputRef)}
           styles={styles}
           color={clearButtonColor}
-          onKeyDown={clearInput}
+          onKeyDown={e => isKeyboardSelectionEvent(e) && clearInput(inputRef)}
         />
       )}
     </div>
