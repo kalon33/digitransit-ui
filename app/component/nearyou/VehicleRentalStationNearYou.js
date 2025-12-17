@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'found';
@@ -17,9 +17,11 @@ const VehicleRentalStationNearYou = ({
   currentTime,
   isParentTabActive,
 }) => {
+  const timeRef = useRef(currentTime);
+
   useEffect(() => {
     const { stationId } = station;
-    if (isParentTabActive) {
+    if (isParentTabActive && currentTime - timeRef.current > 30) {
       relay.refetch(
         oldVariables => {
           return { ...oldVariables, stationId };
@@ -28,8 +30,10 @@ const VehicleRentalStationNearYou = ({
         null,
         { force: true }, // query variables stay the same between refetches
       );
+      timeRef.current = currentTime;
     }
   }, [currentTime, isParentTabActive]);
+
   return (
     <span role="listitem">
       <div className="stop-near-you-container">

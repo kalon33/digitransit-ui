@@ -17,6 +17,8 @@ import { routePagePath, PREFIX_STOPS } from '../util/path';
 import { configShape, departureShape } from '../util/shapes';
 import { epochToTime } from '../util/timeUtils';
 import Icon from './Icon';
+import PlatformNumber from './PlatformNumber';
+import IconBackground from './icon/IconBackground';
 
 const getMostSevereAlert = route => {
   const alerts = [...getAlertsForObject(route)];
@@ -31,6 +33,7 @@ export default function DepartureRow(
     canceled,
     onCapacityClick,
     isParentTabActive,
+    platformUpdated,
     ...props
   },
   { config, intl },
@@ -174,7 +177,7 @@ export default function DepartureRow(
               className={backgroundShape}
               img={icon}
               color={iconColor}
-              backgroundShape={backgroundShape}
+              background={<IconBackground backgroundShape={backgroundShape} />}
             />
             {sr}
           </>
@@ -230,7 +233,13 @@ export default function DepartureRow(
                 : 'platform-code'
             }
           >
-            {departure.stop?.platformCode}
+            <PlatformNumber
+              number={departure.stop?.platformCode}
+              short
+              isRailOrSubway={mode === 'RAIL' || mode === 'SUBWAY'}
+              withText={false}
+              updated={platformUpdated}
+            />
           </div>
         </td>
       )}
@@ -266,6 +275,7 @@ DepartureRow.propTypes = {
   className: PropTypes.string,
   onCapacityClick: PropTypes.func,
   isParentTabActive: PropTypes.bool,
+  platformUpdated: PropTypes.bool,
 };
 
 DepartureRow.defaultProps = {
@@ -274,6 +284,7 @@ DepartureRow.defaultProps = {
   className: '',
   onCapacityClick: undefined,
   isParentTabActive: false,
+  platformUpdated: false,
 };
 
 DepartureRow.contextTypes = {

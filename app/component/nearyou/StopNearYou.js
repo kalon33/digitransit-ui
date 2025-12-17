@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, intlShape } from 'react-intl';
 import { Link } from 'found';
 import Modal from '@hsl-fi/modal';
 import { stopShape, configShape, relayShape } from '../../util/shapes';
 import { hasEntitiesOfType } from '../../util/alertUtils';
-import { stopPagePath, PREFIX_DISRUPTION } from '../../util/path';
+import { stopPagePath } from '../../util/path';
 import { AlertEntityType } from '../../constants';
 import NearYouHeader from './NearYouHeader';
 import AlertBanner from '../AlertBanner';
@@ -19,20 +19,22 @@ const StopNearYou = (
   if (!stop.stoptimesWithoutPatterns) {
     return null;
   }
+  const timeRef = useRef(currentTime);
   const [capacityModalOpen, setCapacityModalOpen] = useState(false);
   const stopMode = stop.stoptimesWithoutPatterns[0]?.trip.route.mode;
   const { gtfsId } = stop;
 
   useEffect(() => {
-    if (isParentTabActive) {
+    if (isParentTabActive && currentTime - timeRef.current > 30) {
       relay.refetch(oldVariables => {
         return { ...oldVariables, stopId: gtfsId, startTime: currentTime };
       }, null);
+      timeRef.current = currentTime;
     }
   }, [currentTime, isParentTabActive]);
 
   const isStation = stop.locationType === 'STATION';
-  const linkAddress = stopPagePath(isStation, gtfsId, PREFIX_DISRUPTION);
+  const linkAddress = stopPagePath(isStation, gtfsId);
   const { constantOperationStops } = config;
   const { locale } = intl;
   const isConstantOperation = constantOperationStops[gtfsId];
