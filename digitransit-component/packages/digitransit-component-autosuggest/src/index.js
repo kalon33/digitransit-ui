@@ -385,7 +385,7 @@ function DTAutosuggest({
             }
             setPendingSelection(null);
             setShowOwnPlaces(false);
-            if (changes.selectedItem !== undefined) {
+            if (changes.selectedItem) {
               const { selectedItem, ...changesWitoutSelection } = changes;
               return changesWitoutSelection;
             }
@@ -510,9 +510,6 @@ function DTAutosuggest({
     } else if (isCleared) {
       setInputValue('');
     }
-  }, [isCleared, value, shouldRenderMobile, isOpen]);
-
-  useEffect(() => {
     // this is needed to render value correclty when opening mobile view
     if (shouldRenderMobile) {
       if (positions.includes(value)) {
@@ -524,7 +521,7 @@ function DTAutosuggest({
     if (isMobile && !shouldRenderMobile) {
       inputRef.current.blur();
     }
-  }, [shouldRenderMobile]);
+  }, [isCleared, value, shouldRenderMobile, isOpen]);
 
   // Fetch suggestions when isOpen, value, or fetchSuggestions dependies change
   useEffect(() => {
