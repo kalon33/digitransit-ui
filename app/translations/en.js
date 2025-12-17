@@ -793,6 +793,8 @@ export default {
     'trafficnow-bread': 'Travelling',
     'trafficnow-description':
       'Up-to-date information on disruptions and exceptions',
+    'traffic-now_filters_validity-period': 'Filter by validity period',
+    'traffic-now_filters_vehicle-mode': 'Filter by vehicle mode',
     tram: 'Tram',
     'tram-with-route-number': 'Tram {routeNumber} {headSign}',
     transfer: 'Transfer',
