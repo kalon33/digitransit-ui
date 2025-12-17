@@ -61,7 +61,7 @@ function NearYouFavouritesMapContainer(props) {
 
   stopList.sort((a, b) => a.node.distance - b.node.distance);
 
-  return <NearYouMap {...props} stopsNearYou={stopList} />;
+  return <NearYouMap {...props} stops={stopList} />;
 }
 
 NearYouFavouritesMapContainer.propTypes = {

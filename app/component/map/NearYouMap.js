@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { matchShape } from 'found';
 import { fetchQuery } from 'react-relay';
 import uniqBy from 'lodash/uniqBy';
-import compact from 'lodash/compact';
 import isEqual from 'lodash/isEqual';
 import polyline from 'polyline-encoded';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
@@ -36,11 +35,9 @@ import { walkQuery } from './WalkQuery';
 import LocationMarker from './LocationMarker';
 
 const handleStopsAndStations = edges => {
-  const stopsAndStations = edges.map(({ node }) => {
-    const stop = { ...node.place, distance: node.distance };
-    return stop;
+  return edges.map(({ node }) => {
+    return { ...node.place, distance: node.distance };
   });
-  return compact(stopsAndStations);
 };
 
 const getRealTimeSettings = (routes, context) => {
@@ -132,7 +129,7 @@ function NearYouMap(
     setMWTRef,
     ...rest
   },
-  { ...context },
+  context,
 ) {
   const [sortedStopEdges, setSortedStopEdges] = useState([]);
   const [uniqueRealtimeTopics, setUniqueRealtimeTopics] = useState([]);
@@ -140,18 +137,17 @@ function NearYouMap(
   const [bounds, setBounds] = useState([]);
   const [clientOn, setClientOn] = useState(false);
   const [walk, setWalk] = useState({ itinerary: null, stop: null });
-  const prevPlace = useRef();
-  const prevMode = useRef();
   const mwtRef = useRef();
   const { mode } = match.params;
   const isTransitMode = mode !== 'CITYBIKE';
   const walkRoutingThreshold =
     mode === 'RAIL' || mode === 'SUBWAY' || mode === 'FERRY' ? 3000 : 1500;
   const { environment } = relay;
+  const { config } = context;
 
   const fetchPlan = stop => {
     if (stop.distance < walkRoutingThreshold) {
-      const settings = getSettings(context.config);
+      const settings = getSettings(config);
       const variables = {
         origin: {
           location: {
@@ -209,8 +205,6 @@ function NearYouMap(
   };
 
   useEffect(() => {
-    prevPlace.current = match.params.place;
-    prevMode.current = match.params.mode;
     return function cleanup() {
       stopClient(context);
     };
@@ -264,13 +258,8 @@ function NearYouMap(
       if (!clientOn) {
         startClient(context, uniqueRealtimeTopics);
         setClientOn(true);
-      } else if (
-        match.params.place !== prevPlace.current ||
-        match.params.mode !== prevMode.current
-      ) {
+      } else {
         updateClient(context, uniqueRealtimeTopics);
-        prevPlace.current = match.params.place;
-        prevMode.current = match.params.mode;
       }
     }
   }, [uniqueRealtimeTopics]);
@@ -279,11 +268,7 @@ function NearYouMap(
     if (stops?.nearest?.edges) {
       const active = stops.nearest.edges
         .slice()
-        .filter(
-          stop =>
-            stop.node.place.stoptimesWithoutPatterns &&
-            stop.node.place.stoptimesWithoutPatterns.length,
-        );
+        .filter(stop => stop.node.place.stoptimesWithoutPatterns?.length);
       if (isTransitMode && !active.length && relay.hasMore()) {
         relay.loadMore(5);
         return;
@@ -294,7 +279,7 @@ function NearYouMap(
           return !!edge.node.place?.rentalNetwork?.networkId;
         });
         const filteredCityBikeEdges = withNetworks.filter(pattern => {
-          return getDefaultNetworks(context.config).includes(
+          return getDefaultNetworks(config).includes(
             pattern.node.place?.rentalNetwork.networkId,
           );
         });
@@ -319,8 +304,7 @@ function NearYouMap(
           };
         }),
       );
-      const stopsAndStations = handleStopsAndStations(sortedEdges);
-      handleWalkRoutes(stopsAndStations);
+      handleWalkRoutes(handleStopsAndStations(sortedEdges));
       setSortedStopEdges(sortedEdges);
       updateRoutes(sortedEdges);
     }
@@ -360,14 +344,14 @@ function NearYouMap(
 
   const highlightedStops = () => {
     const stopsAndStations = handleStopsAndStations(sortedStopEdges);
-    if (Array.isArray(stopsAndStations) && stopsAndStations.length > 0) {
+    if (stopsAndStations.length) {
       return [
-        stopsAndStations[0]?.gtfsId ||
-          stopsAndStations[0]?.stationId ||
+        stopsAndStations[0].gtfsId ||
+          stopsAndStations[0].stationId ||
           stopsAndStations[0].node.place.gtfsId,
       ];
     }
-    return [''];
+    return [];
   };
 
   // Marker for the search point.
@@ -395,7 +379,7 @@ function NearYouMap(
   if (breakpoint === 'large') {
     return (
       <>
-        {context.config.useCookiesPrompt && <CookieSettingsButton />}
+        {config.useCookiesPrompt && <CookieSettingsButton />}
         <MapWithTracking {...mapProps} />
       </>
     );
@@ -405,7 +389,7 @@ function NearYouMap(
       <BackButton
         icon="icon_arrow-collapse--left"
         iconClassName="arrow-icon"
-        color={context.config.colors.primary}
+        color={config.colors.primary}
         fallback="back"
       />
       <MapWithTracking {...mapProps} />
