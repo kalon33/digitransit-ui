@@ -224,41 +224,29 @@ function NearYouMap(
     }
   }, [position, sortedStopEdges]);
 
-  const updateRoutes = sortedRoutes => {
+  const updateRoutes = places => {
     let patterns = [];
     const realtimeTopics = [];
-    sortedRoutes.forEach(item => {
+    places.forEach(item => {
       const { place } = item.node;
-      // eslint-disable-next-line no-unused-expressions
-      place.patterns &&
-        place.patterns.forEach(pattern => {
-          const feedId = pattern.route.gtfsId.split(':')[0];
+      const stopArray = place.stops || [place]; // station stops, single stop or other place
+      stopArray.forEach(stop => {
+        stop.patterns?.forEach(pattern => {
+          const [feedId, route] = pattern.route.gtfsId.split(':');
           realtimeTopics.push({
             feedId,
-            route: pattern.route.gtfsId.split(':')[1],
+            route,
             shortName: pattern.route.shortName,
             type: pattern.route.type,
           });
           patterns.push(pattern);
         });
-      // eslint-disable-next-line no-unused-expressions
-      place.stops &&
-        place.stops.forEach(stop => {
-          stop.patterns.forEach(pattern => {
-            const feedId = pattern.route.gtfsId.split(':')[0];
-            realtimeTopics.push({
-              feedId,
-              route: pattern.route.gtfsId.split(':')[1],
-              shortName: pattern.route.shortName,
-              type: pattern.route.type,
-            });
-            patterns.push(pattern);
-          });
-        });
+      });
     });
+
     patterns = uniqBy(patterns, p => p.patternGeometry?.points || '');
     const lines = patterns
-      .filter(p => p.patternGeometry)
+      .filter(p => p.patternGeometry?.points)
       .map(p => (
         <Line
           key={`${p.code}`}
@@ -268,7 +256,7 @@ function NearYouMap(
         />
       ));
     setRouteLines(lines);
-    setUniqueRealtimeTopics(uniqBy(realtimeTopics, route => route.route));
+    setUniqueRealtimeTopics(uniqBy(realtimeTopics, topic => topic.route));
   };
 
   useEffect(() => {
@@ -347,8 +335,7 @@ function NearYouMap(
     return <Loading />;
   }
 
-  const leafletObjs =
-    isTransitMode && Array.isArray(routeLines) ? [...routeLines] : [];
+  const leafletObjs = isTransitMode ? [...routeLines] : [];
   if (uniqueRealtimeTopics.length > 0) {
     leafletObjs.push(
       <VehicleMarkerContainer
