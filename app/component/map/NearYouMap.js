@@ -34,11 +34,10 @@ import CookieSettingsButton from '../CookieSettingsButton';
 import { walkQuery } from './WalkQuery';
 import LocationMarker from './LocationMarker';
 
-const handleStopsAndStations = edges => {
-  return edges.map(({ node }) => {
-    return { ...node.place, distance: node.distance };
-  });
-};
+function getId(edge) {
+  const { place } = edge.node;
+  return place.gtfsId || place.stationId || place.id;
+}
 
 const getRealTimeSettings = (routes, context) => {
   const { realTime } = context.config;
@@ -61,7 +60,7 @@ const getRealTimeSettings = (routes, context) => {
   });
 
   const source = feedId && realTime[feedId];
-  if (source && source.active) {
+  if (source?.active) {
     return {
       ...source,
       feedId,
@@ -135,8 +134,8 @@ function NearYouMap(
   const [uniqueRealtimeTopics, setUniqueRealtimeTopics] = useState([]);
   const [routeLines, setRouteLines] = useState([]);
   const [bounds, setBounds] = useState([]);
-  const [clientOn, setClientOn] = useState(false);
   const [walk, setWalk] = useState({ itinerary: null, stop: null });
+  const clientOn = useRef(false);
   const mwtRef = useRef();
   const { mode } = match.params;
   const isTransitMode = mode !== 'CITYBIKE';
@@ -145,8 +144,8 @@ function NearYouMap(
   const { environment } = relay;
   const { config } = context;
 
-  const fetchPlan = stop => {
-    if (stop.distance < walkRoutingThreshold) {
+  const fetchPlan = node => {
+    if (node.distance < walkRoutingThreshold) {
       const settings = getSettings(config);
       const variables = {
         origin: {
@@ -156,7 +155,7 @@ function NearYouMap(
         },
         destination: {
           location: {
-            coordinate: { latitude: stop.lat, longitude: stop.lon },
+            coordinate: { latitude: node.place.lat, longitude: node.place.lon },
           },
         },
         walkSpeed: settings.walkSpeed,
@@ -167,31 +166,28 @@ function NearYouMap(
         .then(result => {
           setWalk({
             itinerary: result.plan.edges.length
-              ? result.plan.edges?.[0].node
+              ? result.plan.edges[0].node
               : null,
-            stop,
+            node,
           });
         });
     } else {
-      setWalk({ itinerary: null, stop });
+      setWalk({ itinerary: null, node });
     }
   };
 
-  const handleWalkRoutes = stopsAndStations => {
-    if (showWalkRoute) {
-      if (stopsAndStations.length > 0) {
-        const firstStop = stopsAndStations[0];
-        const shouldFetch =
-          (mode !== 'BUS' && mode !== 'TRAM') ||
-          favouriteIds.has(firstStop.gtfsId);
-        if (shouldFetch && !isEqual(firstStop, walk.stop)) {
-          fetchPlan(firstStop);
-        } else if (!shouldFetch) {
-          setWalk({ itinerary: null, stop: null });
-        }
+  const handleWalkRoutes = edges => {
+    if (showWalkRoute && edges.length > 0) {
+      const first = edges[0];
+      const shouldFetch =
+        (mode !== 'BUS' && mode !== 'TRAM') || favouriteIds.has(getId(first));
+      if (shouldFetch && !isEqual(first.node, walk.node)) {
+        fetchPlan(first.node);
+      } else if (!shouldFetch) {
+        setWalk({ itinerary: null, node: null });
       }
     } else {
-      setWalk({ itinerary: null, stop: null });
+      setWalk({ itinerary: null, node: null });
     }
   };
 
@@ -218,10 +214,10 @@ function NearYouMap(
     }
   }, [position, sortedStopEdges]);
 
-  const updateRoutes = places => {
+  const updateRoutes = edges => {
     let patterns = [];
     const realtimeTopics = [];
-    places.forEach(item => {
+    edges.forEach(item => {
       const { place } = item.node;
       const stopArray = place.stops || [place]; // station stops, single stop or other place
       stopArray.forEach(stop => {
@@ -255,9 +251,9 @@ function NearYouMap(
 
   useEffect(() => {
     if (uniqueRealtimeTopics.length > 0) {
-      if (!clientOn) {
+      if (!clientOn.current) {
         startClient(context, uniqueRealtimeTopics);
-        setClientOn(true);
+        clientOn.current = true;
       } else {
         updateClient(context, uniqueRealtimeTopics);
       }
@@ -265,7 +261,8 @@ function NearYouMap(
   }, [uniqueRealtimeTopics]);
 
   useEffect(() => {
-    if (stops?.nearest?.edges) {
+    let sortedEdges;
+    if (stops.nearest?.edges) {
       const active = stops.nearest.edges
         .slice()
         .filter(stop => stop.node.place.stoptimesWithoutPatterns?.length);
@@ -273,7 +270,6 @@ function NearYouMap(
         relay.loadMore(5);
         return;
       }
-      let sortedEdges;
       if (!isTransitMode) {
         const withNetworks = stops.nearest.edges.filter(edge => {
           return !!edge.node.place?.rentalNetwork?.networkId;
@@ -304,15 +300,12 @@ function NearYouMap(
           };
         }),
       );
-      handleWalkRoutes(handleStopsAndStations(sortedEdges));
-      setSortedStopEdges(sortedEdges);
-      updateRoutes(sortedEdges);
+    } else if (mode === 'FAVORITE') {
+      sortedEdges = stops;
     }
-    if (mode === 'FAVORITE') {
-      handleWalkRoutes(handleStopsAndStations(stops));
-      setSortedStopEdges(stops);
-      updateRoutes(stops);
-    }
+    handleWalkRoutes(sortedEdges);
+    setSortedStopEdges(sortedEdges);
+    updateRoutes(sortedEdges);
   }, [stops, favouriteIds]);
 
   if (loading) {
@@ -342,18 +335,6 @@ function NearYouMap(
     );
   }
 
-  const highlightedStops = () => {
-    const stopsAndStations = handleStopsAndStations(sortedStopEdges);
-    if (stopsAndStations.length) {
-      return [
-        stopsAndStations[0].gtfsId ||
-          stopsAndStations[0].stationId ||
-          stopsAndStations[0].node.place.gtfsId,
-      ];
-    }
-    return [];
-  };
-
   // Marker for the search point.
   if (position.type !== 'CurrentLocation' && showWalkRoute) {
     leafletObjs.push(
@@ -367,7 +348,7 @@ function NearYouMap(
 
   const mapProps = {
     stopsToShow: mode === 'FAVORITE' ? Array.from(favouriteIds) : undefined,
-    highlightedStops: highlightedStops(),
+    highlightedStops: sortedStopEdges.length ? [getId(sortedStopEdges[0])] : [],
     mergeStops: false,
     bounds,
     leafletObjs,
@@ -420,7 +401,7 @@ NearYouMap.propTypes = {
 };
 
 NearYouMap.defaultProps = {
-  stops: null,
+  stops: [],
   showWalkRoute: false,
   loading: false,
   setMWTRef: undefined,
