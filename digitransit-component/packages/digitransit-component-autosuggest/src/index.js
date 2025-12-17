@@ -62,6 +62,20 @@ const getAriaProps = ({
   };
 };
 
+const positions = [
+  'Valittu sijainti',
+  'Nykyinen sijaintisi',
+  'Current position',
+  'Selected location',
+  'Vald position',
+  'Använd min position',
+  'Min position',
+  'Käytä nykyistä sijaintia',
+  'Use current location',
+  'Your current location',
+  'Wybrane miejsce',
+];
+
 /**
  * Takes the targets and modifies them based on ownPlaces and isLocationSearch
  * @param {object} props
@@ -345,6 +359,10 @@ function DTAutosuggest({
             return changes;
           }
           case useCombobox.stateChangeTypes.InputClick: {
+            // clear input if current position or selected location is shown
+            if (positions.includes(value)) {
+              return { ...changes, inputValue: '', isOpen: true };
+            }
             return {
               ...changes,
               isOpen: true,
@@ -367,7 +385,7 @@ function DTAutosuggest({
           }
         }
       },
-      [isLoading],
+      [isLoading, value, isMobile],
     ),
     items: suggestions,
     itemToString(suggestion) {
@@ -375,6 +393,7 @@ function DTAutosuggest({
     },
     onSelectedItemChange,
   });
+
   const clearInput = ref => {
     if (onClear) {
       onClear(id);
