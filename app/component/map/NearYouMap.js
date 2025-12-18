@@ -263,13 +263,6 @@ function NearYouMap(
   useEffect(() => {
     let sortedEdges;
     if (stops.nearest?.edges) {
-      const active = stops.nearest.edges
-        .slice()
-        .filter(stop => stop.node.place.stoptimesWithoutPatterns?.length);
-      if (isTransitMode && !active.length && relay.hasMore()) {
-        relay.loadMore(5);
-        return;
-      }
       if (!isTransitMode) {
         const withNetworks = stops.nearest.edges.filter(edge => {
           return !!edge.node.place?.rentalNetwork?.networkId;
@@ -283,7 +276,7 @@ function NearYouMap(
           .slice()
           .sort(sortNearbyRentalStations(favouriteIds));
       } else {
-        sortedEdges = active
+        sortedEdges = stops.nearest.edges
           .slice()
           .sort(sortNearbyStops(favouriteIds, walkRoutingThreshold));
       }
