@@ -31,13 +31,13 @@ function NearYouFavouritesMapContainer(props) {
   stopList.push(
     ...stations
       .filter(s => s)
-      .map(stop => {
+      .map(station => {
         return {
           type: 'station',
           node: {
-            distance: distance(position, stop),
+            distance: distance(position, station),
             place: {
-              ...stop,
+              ...station,
             },
           },
         };
@@ -46,13 +46,13 @@ function NearYouFavouritesMapContainer(props) {
   stopList.push(
     ...vehicleStations
       .filter(s => s)
-      .map(stop => {
+      .map(station => {
         return {
           type: 'vehicleRentalStation',
           node: {
-            distance: distance(position, stop),
+            distance: distance(position, station),
             place: {
-              ...stop,
+              ...station,
             },
           },
         };
@@ -76,12 +76,10 @@ const containerComponent = createFragmentContainer(
   {
     stops: graphql`
       fragment NearYouFavouritesMapContainer_stops on Stop
-      @relay(plural: true)
-      @argumentDefinitions(startTime: { type: "Long!", defaultValue: 0 }) {
+      @relay(plural: true) {
         gtfsId
         lat
         lon
-        name
         patterns {
           route {
             gtfsId
@@ -90,24 +88,18 @@ const containerComponent = createFragmentContainer(
             type
           }
           code
-          directionId
           patternGeometry {
             points
           }
-        }
-        stoptimesWithoutPatterns(startTime: $startTime, omitNonPickups: true) {
-          scheduledArrival
         }
       }
     `,
     stations: graphql`
       fragment NearYouFavouritesMapContainer_stations on Stop
-      @relay(plural: true)
-      @argumentDefinitions(startTime: { type: "Long!", defaultValue: 0 }) {
+      @relay(plural: true) {
         gtfsId
         lat
         lon
-        name
         stops {
           patterns {
             route {
@@ -117,14 +109,10 @@ const containerComponent = createFragmentContainer(
               type
             }
             code
-            directionId
             patternGeometry {
               points
             }
           }
-        }
-        stoptimesWithoutPatterns(startTime: $startTime, omitNonPickups: true) {
-          scheduledArrival
         }
       }
     `,
