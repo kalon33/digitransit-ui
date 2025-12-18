@@ -12,56 +12,20 @@ import {
 
 function NearYouFavouritesMapContainer(props) {
   const { stops, stations, vehicleStations, position } = props;
-  const stopList = [];
-  stopList.push(
-    ...stops
-      .filter(s => s)
-      .map(stop => {
-        return {
-          type: 'stop',
-          node: {
-            distance: distance(position, stop),
-            place: {
-              ...stop,
-            },
-          },
-        };
-      }),
-  );
-  stopList.push(
-    ...stations
-      .filter(s => s)
-      .map(station => {
-        return {
-          type: 'station',
-          node: {
-            distance: distance(position, station),
-            place: {
-              ...station,
-            },
-          },
-        };
-      }),
-  );
-  stopList.push(
-    ...vehicleStations
-      .filter(s => s)
-      .map(station => {
-        return {
-          type: 'vehicleRentalStation',
-          node: {
-            distance: distance(position, station),
-            place: {
-              ...station,
-            },
-          },
-        };
-      }),
-  );
+  const favs = [...stops, ...stations, ...vehicleStations];
+  const edges = favs
+    .filter(s => s)
+    .map(stop => {
+      return {
+        node: {
+          distance: distance(position, stop),
+          place: { ...stop },
+        },
+      };
+    })
+    .sort((a, b) => a.node.distance - b.node.distance);
 
-  stopList.sort((a, b) => a.node.distance - b.node.distance);
-
-  return <NearYouMap {...props} stops={stopList} />;
+  return <NearYouMap {...props} stops={edges} />;
 }
 
 NearYouFavouritesMapContainer.propTypes = {
