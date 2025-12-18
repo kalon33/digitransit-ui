@@ -467,7 +467,7 @@ export default {
         season: {
           preSeasonStart: '18.3',
           start: '1.4',
-          end: '31.11',
+          end: '30.12',
         },
         capacity: BIKEAVL_WITHMAX,
         icon: 'citybike',

@@ -104,7 +104,6 @@ export default function MapWrapper(
           $first: Int!
           $maxResults: Int!
           $maxDistance: Int!
-          $omitNonPickups: Boolean!
           $prioritizedStopIds: [String!]!
           $filterByNetwork: [String!]
         ) {
@@ -118,7 +117,6 @@ export default function MapWrapper(
                 first: $first
                 maxResults: $maxResults
                 maxDistance: $maxDistance
-                omitNonPickups: $omitNonPickups
                 filterByNetwork: $filterByNetwork
               )
           }

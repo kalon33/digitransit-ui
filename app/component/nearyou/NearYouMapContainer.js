@@ -7,8 +7,6 @@ const containerComponent = createPaginationContainer(
     stops: graphql`
       fragment NearYouMapContainer_stops on QueryType
       @argumentDefinitions(
-        startTime: { type: "Long!", defaultValue: 0 }
-        omitNonPickups: { type: "Boolean!", defaultValue: false }
         lat: { type: "Float!" }
         lon: { type: "Float!", defaultValue: 0 }
         filterByPlaceTypes: { type: "[FilterPlaceType]", defaultValue: null }
@@ -36,19 +34,14 @@ const containerComponent = createPaginationContainer(
               place {
                 __typename
                 ... on VehicleRentalStation {
-                  name
                   lat
                   lon
                   stationId
-                  rentalNetwork {
-                    networkId
-                  }
                 }
                 ... on Stop {
                   gtfsId
                   lat
                   lon
-                  name
                   patterns {
                     route {
                       gtfsId
@@ -57,7 +50,6 @@ const containerComponent = createPaginationContainer(
                       type
                     }
                     code
-                    directionId
                     patternGeometry {
                       points
                     }
@@ -71,17 +63,10 @@ const containerComponent = createPaginationContainer(
                         type
                       }
                       code
-                      directionId
                       patternGeometry {
                         points
                       }
                     }
-                  }
-                  stoptimesWithoutPatterns(
-                    startTime: $startTime
-                    omitNonPickups: $omitNonPickups
-                  ) {
-                    scheduledArrival
                   }
                 }
               }
@@ -96,7 +81,6 @@ const containerComponent = createPaginationContainer(
         gtfsId
         lat
         lon
-        name
         stops {
           patterns {
             route {
@@ -106,7 +90,6 @@ const containerComponent = createPaginationContainer(
               type
             }
             code
-            directionId
             patternGeometry {
               points
             }
@@ -119,13 +102,9 @@ const containerComponent = createPaginationContainer(
             mode
           }
           code
-          directionId
           patternGeometry {
             points
           }
-        }
-        stoptimesWithoutPatterns {
-          scheduledArrival
         }
       }
     `,
@@ -158,15 +137,11 @@ const containerComponent = createPaginationContainer(
         $after: String
         $maxResults: Int!
         $maxDistance: Int!
-        $startTime: Long!
-        $omitNonPickups: Boolean!
         $filterByNetwork: [String!]
       ) {
         viewer {
           ...NearYouMapContainer_stops
             @arguments(
-              startTime: $startTime
-              omitNonPickups: $omitNonPickups
               lat: $lat
               lon: $lon
               filterByPlaceTypes: $filterByPlaceTypes
