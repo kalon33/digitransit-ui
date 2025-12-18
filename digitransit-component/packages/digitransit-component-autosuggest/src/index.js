@@ -289,6 +289,93 @@ function DTAutosuggest({
     }
   }, [inputRef.current]);
 
+  const fetchSuggestions = useCallback(
+    searchValue => {
+      const useAll = !targets?.length;
+      const isLocationSearch = useAll || targets.includes('Locations');
+
+      const newTargets = getNewTargets({
+        targets,
+        isLocationSearch,
+        isMobile,
+        ownPlaces: showOwnPlaces,
+        sources: currentSources,
+      });
+      // remove  location favourites in desktop search (collection item replaces it in target array)
+      const newSources = currentSources
+        ? currentSources.filter(
+            s =>
+              !isLocationSearch ||
+              !s === 'Favourite' ||
+              showOwnPlaces ||
+              isMobile,
+          )
+        : currentSources;
+      executeSearch(
+        newTargets,
+        newSources,
+        transportMode,
+        searchContext,
+        filterResults,
+        geocodingSize,
+        {
+          input: searchValue || '',
+        },
+        searchResult => {
+          if (searchResult == null) {
+            setLoading(true);
+            return;
+          }
+
+          const newSuggestions = (searchResult.results || [])
+            .filter(
+              suggestion =>
+                suggestion.type !== 'FutureRoute' ||
+                (suggestion.type === 'FutureRoute' &&
+                  suggestion.properties.time > Date.now() / 1000),
+            )
+            .map(suggestion => {
+              if (
+                suggestion.type === 'CurrentLocation' ||
+                suggestion.type === 'SelectFromMap' ||
+                suggestion.type === 'SelectFromOwnLocations' ||
+                suggestion.type === 'back'
+              ) {
+                const translatedSuggestion = { ...suggestion };
+                translatedSuggestion.properties.labelId = t(
+                  suggestion.properties.labelId,
+                  { lng },
+                );
+                return translatedSuggestion;
+              }
+              return suggestion;
+            });
+          if (newSuggestions.length) {
+            setSuggestions(newSuggestions);
+          }
+          setLoading(false);
+        },
+        pathOpts,
+        refPoint,
+      );
+    },
+    [
+      targets,
+      currentSources,
+      transportMode,
+      searchContext,
+      filterResults,
+      geocodingSize,
+      showOwnPlaces,
+      isMobile,
+      lng,
+      pathOpts,
+      refPoint,
+      id,
+      t,
+    ],
+  );
+
   const selectSuggestion = useCallback(
     (suggestion, index) => {
       if (!suggestion) {
@@ -372,8 +459,12 @@ function DTAutosuggest({
           case useCombobox.stateChangeTypes.InputClick: {
             // clear input if current position or selected location is shown
             if (positions.includes(value)) {
+              fetchSuggestions('');
               return { ...changes, inputValue: '', isOpen: true };
             }
+            // always update suggestions on click
+            fetchSuggestions(inputValue);
+
             return {
               ...changes,
               isOpen: true,
@@ -416,93 +507,6 @@ function DTAutosuggest({
     openMenu();
   };
 
-  const fetchSuggestions = useCallback(
-    input => {
-      const useAll = !targets?.length;
-      const isLocationSearch = useAll || targets.includes('Locations');
-
-      const newTargets = getNewTargets({
-        targets,
-        isLocationSearch,
-        isMobile,
-        ownPlaces: showOwnPlaces,
-        sources: currentSources,
-      });
-      // remove  location favourites in desktop search (collection item replaces it in target array)
-      const newSources = currentSources
-        ? currentSources.filter(
-            s =>
-              !isLocationSearch ||
-              !s === 'Favourite' ||
-              showOwnPlaces ||
-              isMobile,
-          )
-        : currentSources;
-      executeSearch(
-        newTargets,
-        newSources,
-        transportMode,
-        searchContext,
-        filterResults,
-        geocodingSize,
-        {
-          input: input || '',
-        },
-        searchResult => {
-          if (searchResult == null) {
-            setLoading(true);
-            return;
-          }
-
-          const newSuggestions = (searchResult.results || [])
-            .filter(
-              suggestion =>
-                suggestion.type !== 'FutureRoute' ||
-                (suggestion.type === 'FutureRoute' &&
-                  suggestion.properties.time > Date.now() / 1000),
-            )
-            .map(suggestion => {
-              if (
-                suggestion.type === 'CurrentLocation' ||
-                suggestion.type === 'SelectFromMap' ||
-                suggestion.type === 'SelectFromOwnLocations' ||
-                suggestion.type === 'back'
-              ) {
-                const translatedSuggestion = { ...suggestion };
-                translatedSuggestion.properties.labelId = t(
-                  suggestion.properties.labelId,
-                  { lng },
-                );
-                return translatedSuggestion;
-              }
-              return suggestion;
-            });
-          if (newSuggestions.length) {
-            setSuggestions(newSuggestions);
-          }
-          setLoading(false);
-        },
-        pathOpts,
-        refPoint,
-      );
-    },
-    [
-      targets,
-      currentSources,
-      transportMode,
-      searchContext,
-      filterResults,
-      geocodingSize,
-      showOwnPlaces,
-      isMobile,
-      lng,
-      pathOpts,
-      refPoint,
-      id,
-      t,
-    ],
-  );
-
   useEffect(() => {
     // set inputValue to prop when not typing
     if (!shouldRenderMobile && !isOpen && !enterPressedRef.current) {
@@ -528,7 +532,7 @@ function DTAutosuggest({
     if (isOpen || shouldRenderMobile) {
       fetchSuggestions(inputValue);
     }
-  }, [isOpen, shouldRenderMobile, inputValue, fetchSuggestions]);
+  }, [inputValue, fetchSuggestions]);
 
   // this effect handles selecting the suggestion when enter was pressed but suggestions were still loading
   useEffect(() => {
