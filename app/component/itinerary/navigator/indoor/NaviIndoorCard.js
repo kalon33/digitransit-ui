@@ -3,18 +3,18 @@ import React from 'react';
 import cx from 'classnames';
 import { configShape, legShape } from '../../../../util/shapes';
 import { getIndoorStepsWithVerticalTransportationUse } from '../../../../util/indoorUtils';
-import NaviIndoorRouteButton from './NaviIndoorRouteButton';
-import NaviIndoorRouteContainer from './NaviIndoorRouteContainer';
+import NaviIndoorButton from './NaviIndoorButton';
+import NaviIndoorContainer from './NaviIndoorContainer';
 
 function NaviIndoorCard({
-  showIndoorRoute,
-  toggleShowIndoorRoute,
+  showIndoor,
+  toggleShowIndoor,
   previousLeg,
   leg,
   nextLeg,
   focusToPoint,
 }) {
-  const indoorRouteSteps = getIndoorStepsWithVerticalTransportationUse(
+  const indoorSteps = getIndoorStepsWithVerticalTransportationUse(
     previousLeg,
     leg,
     nextLeg,
@@ -22,17 +22,17 @@ function NaviIndoorCard({
   return (
     <div className={cx('extension', 'no-vertical-margin')}>
       <div className="extension-divider" />
-      <div className="extension-indoor-route-button">
-        <NaviIndoorRouteButton
-          showIndoorRoute={showIndoorRoute}
-          toggleShowIndoorRoute={toggleShowIndoorRoute}
+      <div className="extension-indoor-button">
+        <NaviIndoorButton
+          showIndoor={showIndoor}
+          toggleShowIndoor={toggleShowIndoor}
         />
       </div>
       <div className="extension-divider" />
-      <div className="extension-indoor-route-container">
-        <NaviIndoorRouteContainer
+      <div className="extension-indoor-container">
+        <NaviIndoorContainer
           focusToPoint={focusToPoint}
-          indoorRouteSteps={indoorRouteSteps}
+          indoorSteps={indoorSteps}
         />
       </div>
     </div>
@@ -40,8 +40,8 @@ function NaviIndoorCard({
 }
 
 NaviIndoorCard.propTypes = {
-  showIndoorRoute: PropTypes.bool,
-  toggleShowIndoorRoute: PropTypes.func.isRequired,
+  showIndoor: PropTypes.bool,
+  toggleShowIndoor: PropTypes.func.isRequired,
   focusToPoint: PropTypes.func.isRequired,
   previousLeg: legShape,
   leg: legShape,
@@ -49,7 +49,7 @@ NaviIndoorCard.propTypes = {
 };
 
 NaviIndoorCard.defaultProps = {
-  showIndoorRoute: false,
+  showIndoor: false,
   previousLeg: undefined,
   leg: undefined,
   nextLeg: undefined,

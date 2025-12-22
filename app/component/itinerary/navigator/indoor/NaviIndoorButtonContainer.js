@@ -6,45 +6,45 @@ import {
   getIndoorStepsWithVerticalTransportationUse,
   getStepFocusAction,
 } from '../../../../util/indoorUtils';
-import NaviIndoorRouteStepInfo from './NaviIndoorRouteStepInfo';
-import NaviIndoorRouteButton from './NaviIndoorRouteButton';
+import NaviIndoorStepInfo from './NaviIndoorStepInfo';
+import NaviIndoorButton from './NaviIndoorButton';
 
 export default function NaviIndoorButtonContainer({
-  showIndoorRoute,
-  toggleShowIndoorRoute,
+  showIndoor,
+  toggleShowIndoor,
   previousLeg,
   leg,
   nextLeg,
   focusToPoint,
 }) {
-  const indoorRouteSteps = getIndoorStepsWithVerticalTransportationUse(
+  const indoorSteps = getIndoorStepsWithVerticalTransportationUse(
     previousLeg,
     leg,
     nextLeg,
   );
-  if (indoorRouteSteps.length === 1) {
+  if (indoorSteps.length === 1) {
     return (
-      <div className="navi-indoor-route-one-step-info-container">
+      <div className="navi-indoor-one-step-info-container">
         <Icon img="navi-expand" className="icon-expand-small" />
-        <NaviIndoorRouteStepInfo
+        <NaviIndoorStepInfo
           // eslint-disable-next-line no-underscore-dangle
-          type={indoorRouteSteps[0].feature?.__typename}
-          verticalDirection={indoorRouteSteps[0].feature?.verticalDirection}
-          toLevelName={indoorRouteSteps[0].feature?.to?.name}
+          type={indoorSteps[0].feature?.__typename}
+          verticalDirection={indoorSteps[0].feature?.verticalDirection}
+          toLevelName={indoorSteps[0].feature?.to?.name}
           focusAction={getStepFocusAction(
-            indoorRouteSteps[0].lat,
-            indoorRouteSteps[0].lon,
+            indoorSteps[0].lat,
+            indoorSteps[0].lon,
             focusToPoint,
           )}
         />
       </div>
     );
   }
-  if (indoorRouteSteps.length > 1) {
+  if (indoorSteps.length > 1) {
     return (
-      <NaviIndoorRouteButton
-        showIndoorRoute={showIndoorRoute}
-        toggleShowIndoorRoute={toggleShowIndoorRoute}
+      <NaviIndoorButton
+        showIndoor={showIndoor}
+        toggleShowIndoor={toggleShowIndoor}
       />
     );
   }
@@ -52,8 +52,8 @@ export default function NaviIndoorButtonContainer({
 }
 
 NaviIndoorButtonContainer.propTypes = {
-  showIndoorRoute: PropTypes.bool,
-  toggleShowIndoorRoute: PropTypes.func.isRequired,
+  showIndoor: PropTypes.bool,
+  toggleShowIndoor: PropTypes.func.isRequired,
   previousLeg: legShape,
   leg: legShape,
   nextLeg: legShape,
@@ -61,7 +61,7 @@ NaviIndoorButtonContainer.propTypes = {
 };
 
 NaviIndoorButtonContainer.defaultProps = {
-  showIndoorRoute: false,
+  showIndoor: false,
   previousLeg: undefined,
   leg: undefined,
   nextLeg: undefined,

@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { configShape } from '../../../../util/shapes';
-import { IndoorRouteStepType, VerticalDirection } from '../../../../constants';
-import NaviIndoorRouteStepInfo from './NaviIndoorRouteStepInfo';
+import { IndoorStepType, VerticalDirection } from '../../../../constants';
+import NaviIndoorStepInfo from './NaviIndoorStepInfo';
 import { getStepFocusAction } from '../../../../util/indoorUtils';
 
-function NaviIndoorRouteContainer({ focusToPoint, indoorRouteSteps }) {
+function NaviIndoorContainer({ focusToPoint, indoorSteps }) {
   const [indoorBackgroundImageUrl, setIndoorBackgroundImageUrl] = useState();
   useEffect(() => {
     import(
@@ -16,18 +16,18 @@ function NaviIndoorRouteContainer({ focusToPoint, indoorRouteSteps }) {
   }, []);
 
   return (
-    <div className="navi-indoor-route-step-container">
-      <div className="navi-indoor-route-step-line-container">
-        <div className="navi-indoor-route-step-line-circle-container">
-          {indoorRouteSteps.map((step, i) => (
+    <div className="navi-indoor-step-container">
+      <div className="navi-indoor-step-line-container">
+        <div className="navi-indoor-step-line-circle-container">
+          {indoorSteps.map((step, i) => (
             <React.Fragment
               // eslint-disable-next-line react/no-array-index-key
-              key={`naviindoorroutesteplinecircle_lat_${step.lat}_lon_${step.lon}_i_${i}`}
+              key={`naviindoorsteplinecircle_lat_${step.lat}_lon_${step.lon}_i_${i}`}
             >
-              <div className="navi-indoor-route-step-line-circle">
+              <div className="navi-indoor-step-line-circle">
                 <svg width={28} height={28}>
                   <circle
-                    className="indoor-route-step-marker"
+                    className="indoor-step-marker"
                     width={28}
                     cx={11}
                     cy={18}
@@ -43,14 +43,14 @@ function NaviIndoorRouteContainer({ focusToPoint, indoorRouteSteps }) {
           style={{
             backgroundImage: indoorBackgroundImageUrl,
           }}
-          className="navi-indoor-route-step-line"
+          className="navi-indoor-step-line"
         />
       </div>
-      <div className="navi-indoor-route-step-info-container">
-        {indoorRouteSteps.map((step, i) => (
-          <NaviIndoorRouteStepInfo
+      <div className="navi-indoor-step-info-container">
+        {indoorSteps.map((step, i) => (
+          <NaviIndoorStepInfo
             // eslint-disable-next-line react/no-array-index-key
-            key={`naviindoorroutestepinfo_lat_${step.lat}_lon_${step.lon}_index_i_${i}`}
+            key={`naviindoorstepinfo_lat_${step.lat}_lon_${step.lon}_index_i_${i}`}
             // eslint-disable-next-line no-underscore-dangle
             type={step.feature?.__typename}
             verticalDirection={step.feature?.verticalDirection}
@@ -63,11 +63,11 @@ function NaviIndoorRouteContainer({ focusToPoint, indoorRouteSteps }) {
   );
 }
 
-NaviIndoorRouteContainer.propTypes = {
+NaviIndoorContainer.propTypes = {
   focusToPoint: PropTypes.func.isRequired,
-  indoorRouteSteps: PropTypes.arrayOf(
+  indoorSteps: PropTypes.arrayOf(
     PropTypes.shape({
-      type: PropTypes.oneOf(Object.values(IndoorRouteStepType)),
+      type: PropTypes.oneOf(Object.values(IndoorStepType)),
       feature: PropTypes.shape({
         verticalDirection: PropTypes.oneOf(Object.values(VerticalDirection)),
         to: PropTypes.shape({
@@ -78,12 +78,12 @@ NaviIndoorRouteContainer.propTypes = {
   ),
 };
 
-NaviIndoorRouteContainer.defaultProps = {
-  indoorRouteSteps: [],
+NaviIndoorContainer.defaultProps = {
+  indoorSteps: [],
 };
 
-NaviIndoorRouteContainer.contextTypes = {
+NaviIndoorContainer.contextTypes = {
   config: configShape.isRequired,
 };
 
-export default NaviIndoorRouteContainer;
+export default NaviIndoorContainer;

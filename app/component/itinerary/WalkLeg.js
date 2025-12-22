@@ -21,16 +21,16 @@ import { displayDistance } from '../../util/geo-utils';
 import { durationToString } from '../../util/timeUtils';
 import { splitStringToAddressAndPlace } from '../../util/otpStrings';
 import VehicleRentalLeg from './VehicleRentalLeg';
-import IndoorRouteInfo from './IndoorRouteInfo';
+import IndoorInfo from './IndoorInfo';
 import {
   subwayTransferUsesSameStation,
-  getIndoorRouteLegType,
+  getIndoorLegType,
   getIndoorStepsWithVerticalTransportationUse,
   getStepFocusAction,
   getEntranceWheelchairAccessibility,
 } from '../../util/indoorUtils';
-import IndoorRouteStep from './IndoorRouteStep';
-import { IndoorRouteLegType } from '../../constants';
+import IndoorStep from './IndoorStep';
+import { IndoorLegType } from '../../constants';
 
 function WalkLeg(
   {
@@ -85,7 +85,7 @@ function WalkLeg(
       defaultMessage="Return the bike to {station} station"
     />
   ) : null;
-  const indoorRouteSteps = getIndoorStepsWithVerticalTransportationUse(
+  const indoorSteps = getIndoorStepsWithVerticalTransportationUse(
     previousLeg,
     leg,
     nextLeg,
@@ -93,12 +93,12 @@ function WalkLeg(
 
   useEffect(() => {
     // If there is only one indoor routing step, always show it.
-    if (indoorRouteSteps.length === 1) {
+    if (indoorSteps.length === 1) {
       setShowIntermediateSteps(true);
     }
-  }, [indoorRouteSteps]);
+  }, [indoorSteps]);
 
-  const indoorRouteLegType = getIndoorRouteLegType(previousLeg, leg, nextLeg);
+  const indoorLegType = getIndoorLegType(previousLeg, leg, nextLeg);
 
   let appendClass;
   if (returnNotice) {
@@ -156,9 +156,9 @@ function WalkLeg(
         appendClass={appendClass}
         index={index}
         modeClassName={modeClassName}
-        indoorRouteLegType={indoorRouteLegType}
+        indoorLegType={indoorLegType}
         showIntermediateSteps={showIntermediateSteps}
-        indoorStepsLength={indoorRouteSteps.length}
+        indoorStepsLength={indoorSteps.length}
       />
       <div
         className={`small-9 columns itinerary-instruction-column ${leg.mode.toLowerCase()}`}
@@ -332,11 +332,11 @@ function WalkLeg(
             />
           )}
         </div>
-        {indoorRouteLegType !== IndoorRouteLegType.NoStepsInside &&
-        indoorRouteSteps.length > 1 ? (
-          <div className="itinerary-leg-indoor-route-button-container">
-            <IndoorRouteInfo
-              intermediateStepCount={indoorRouteSteps.length}
+        {indoorLegType !== IndoorLegType.NoStepsInside &&
+        indoorSteps.length > 1 ? (
+          <div className="itinerary-leg-indoor-button-container">
+            <IndoorInfo
+              intermediateStepCount={indoorSteps.length}
               showIntermediateSteps={showIntermediateSteps}
               toggleFunction={() =>
                 setShowIntermediateSteps(!showIntermediateSteps)
@@ -351,18 +351,18 @@ function WalkLeg(
   const getIntermediateRows = () =>
     showIntermediateSteps ? (
       <div className="itinerary-leg-container">
-        {indoorRouteSteps.map((step, i) => (
-          <IndoorRouteStep
+        {indoorSteps.map((step, i) => (
+          <IndoorStep
             // eslint-disable-next-line react/no-array-index-key
-            key={`indoorroutestep_lat_${step.lat}_lon_${step.lon}_index_${index}_i_${i}`}
+            key={`indoorstep_lat_${step.lat}_lon_${step.lon}_index_${index}_i_${i}`}
             // eslint-disable-next-line no-underscore-dangle
             type={step.feature?.__typename}
             verticalDirection={step.feature?.verticalDirection}
             toLevelName={step.feature?.to?.name}
             focusAction={getStepFocusAction(step.lat, step.lon, focusToPoint)}
-            isLastPlace={i === indoorRouteSteps.length - 1}
-            onlyOneStep={indoorRouteSteps.length === 1}
-            indoorRouteLegType={indoorRouteLegType}
+            isLastPlace={i === indoorSteps.length - 1}
+            onlyOneStep={indoorSteps.length === 1}
+            indoorLegType={indoorLegType}
           />
         ))}
       </div>

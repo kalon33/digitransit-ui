@@ -3,14 +3,14 @@ import React from 'react';
 import cx from 'classnames';
 import Icon from '../Icon';
 import RouteNumber from '../RouteNumber';
-import { IndoorRouteLegType } from '../../constants';
+import { IndoorLegType } from '../../constants';
 
 class ItineraryCircleLineWithIcon extends React.Component {
   static propTypes = {
     index: PropTypes.number.isRequired,
     modeClassName: PropTypes.string.isRequired,
     isVia: PropTypes.bool,
-    indoorRouteLegType: PropTypes.oneOf(Object.values(IndoorRouteLegType)),
+    indoorLegType: PropTypes.oneOf(Object.values(IndoorLegType)),
     showIntermediateSteps: PropTypes.bool,
     bikePark: PropTypes.bool,
     carPark: PropTypes.bool,
@@ -24,7 +24,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
 
   static defaultProps = {
     isVia: false,
-    indoorRouteLegType: IndoorRouteLegType.NoStepsInside,
+    indoorLegType: IndoorLegType.NoStepsInside,
     showIntermediateSteps: false,
     color: null,
     bikePark: false,
@@ -131,12 +131,12 @@ class ItineraryCircleLineWithIcon extends React.Component {
       this.props.modeClassName === 'bicycle_walk'
     ) {
       legBeforeLineStyle.backgroundImage = this.state.defaultImageUrl;
-      switch (this.props.indoorRouteLegType) {
-        case IndoorRouteLegType.StepsAfterEntranceInside:
+      switch (this.props.indoorLegType) {
+        case IndoorLegType.StepsAfterEntranceInside:
           legBeforeLineStyle.backgroundImage = this.state.defaultImageUrl;
           legBeforeLineBottomStyle.backgroundImage = this.state.insideImageUrl;
           break;
-        case IndoorRouteLegType.StepsBeforeEntranceInside:
+        case IndoorLegType.StepsBeforeEntranceInside:
           if (this.props.showIntermediateSteps) {
             legBeforeLineStyle.backgroundImage = this.state.insideImageUrl;
             legBeforeLineBottomStyle.backgroundImage =
@@ -156,8 +156,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
       <div
         className={cx('leg-before', this.props.modeClassName, {
           via: this.props.isVia,
-          'indoor-route':
-            this.props.indoorRouteLegType !== IndoorRouteLegType.NoStepsInside,
+          indoor: this.props.indoorLegType !== IndoorLegType.NoStepsInside,
           'has-indoor-steps': this.props.indoorStepsLength !== 0,
           'only-one-step': this.props.indoorStepsLength === 1,
           'first-leg': this.props.index === 0 && !this.props.isNotFirstLeg,

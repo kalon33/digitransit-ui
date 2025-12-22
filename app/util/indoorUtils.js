@@ -1,8 +1,4 @@
-import {
-  IndoorRouteLegType,
-  IndoorRouteStepType,
-  VerticalDirection,
-} from '../constants';
+import { IndoorLegType, IndoorStepType, VerticalDirection } from '../constants';
 import { addAnalyticsEvent } from './analyticsUtils';
 
 export function subwayTransferUsesSameStation(prevLeg, nextLeg) {
@@ -39,7 +35,7 @@ export function getVerticalTransportationUseIconId(
   if (
     verticalDirection === undefined ||
     verticalDirection === VerticalDirection.Unknown ||
-    type === IndoorRouteStepType.ElevatorUse
+    type === IndoorStepType.ElevatorUse
   ) {
     return iconMappings[
       `${type?.toLowerCase().replace('use', '')}${filled ? '-filled' : ''}`
@@ -75,7 +71,7 @@ export function getEntranceStepIndex(previousLeg, leg) {
   return getEntranceObject(previousLeg, leg)?.index;
 }
 
-export function getIndoorRouteLegType(previousLeg, leg, nextLeg) {
+export function getIndoorLegType(previousLeg, leg, nextLeg) {
   const entranceObject = getEntranceObject(previousLeg, leg);
   // Outdoor routing starts from an entrance if the leg started from the subway.
   if (
@@ -83,7 +79,7 @@ export function getIndoorRouteLegType(previousLeg, leg, nextLeg) {
     ((leg.mode === 'WALK' && previousLeg?.mode === 'SUBWAY') ||
       leg.from.stop?.vehicleMode === 'SUBWAY')
   ) {
-    return IndoorRouteLegType.StepsBeforeEntranceInside;
+    return IndoorLegType.StepsBeforeEntranceInside;
   }
   // Indoor routing starts from an entrance if the leg ends in the subway.
   if (
@@ -91,9 +87,9 @@ export function getIndoorRouteLegType(previousLeg, leg, nextLeg) {
     ((leg.mode === 'WALK' && nextLeg?.mode === 'SUBWAY') ||
       leg.to.stop?.vehicleMode === 'SUBWAY')
   ) {
-    return IndoorRouteLegType.StepsAfterEntranceInside;
+    return IndoorLegType.StepsAfterEntranceInside;
   }
-  return IndoorRouteLegType.NoStepsInside;
+  return IndoorLegType.NoStepsInside;
 }
 
 export function getIndoorSteps(previousLeg, leg, nextLeg) {
@@ -101,11 +97,11 @@ export function getIndoorSteps(previousLeg, leg, nextLeg) {
   if (!entranceIndex) {
     return [];
   }
-  const indoorRouteLegType = getIndoorRouteLegType(previousLeg, leg, nextLeg);
-  if (indoorRouteLegType === IndoorRouteLegType.StepsBeforeEntranceInside) {
+  const indoorLegType = getIndoorLegType(previousLeg, leg, nextLeg);
+  if (indoorLegType === IndoorLegType.StepsBeforeEntranceInside) {
     return leg.steps.slice(0, entranceIndex + 1);
   }
-  if (indoorRouteLegType === IndoorRouteLegType.StepsAfterEntranceInside) {
+  if (indoorLegType === IndoorLegType.StepsAfterEntranceInside) {
     return leg.steps.slice(entranceIndex);
   }
   return [];
@@ -113,9 +109,9 @@ export function getIndoorSteps(previousLeg, leg, nextLeg) {
 
 export function isVerticalTransportationUse(type) {
   return (
-    type === IndoorRouteStepType.ElevatorUse ||
-    type === IndoorRouteStepType.EscalatorUse ||
-    type === IndoorRouteStepType.StairsUse
+    type === IndoorStepType.ElevatorUse ||
+    type === IndoorStepType.EscalatorUse ||
+    type === IndoorStepType.StairsUse
   );
 }
 
@@ -130,18 +126,14 @@ export function getIndoorStepsWithVerticalTransportationUse(
   );
 }
 
-export function getIndoorRouteTranslationId(
-  type,
-  verticalDirection,
-  toLevelName,
-) {
-  if (type === IndoorRouteStepType.ElevatorUse && toLevelName) {
+export function getIndoorTranslationId(type, verticalDirection, toLevelName) {
+  if (type === IndoorStepType.ElevatorUse && toLevelName) {
     return 'indoor-step-message-elevator-to-floor';
   }
   return `indoor-step-message-${type?.toLowerCase().replace('use', '')}${
     verticalDirection &&
     verticalDirection !== VerticalDirection.Unknown &&
-    type !== IndoorRouteStepType.ElevatorUse
+    type !== IndoorStepType.ElevatorUse
       ? `-${verticalDirection.toLowerCase()}`
       : ''
   }`;

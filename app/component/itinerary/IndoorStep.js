@@ -5,24 +5,24 @@ import cx from 'classnames';
 import { configShape } from '../../util/shapes';
 import Icon from '../Icon';
 import {
-  getIndoorRouteTranslationId,
+  getIndoorTranslationId,
   getVerticalTransportationUseIconId,
 } from '../../util/indoorUtils';
 import {
-  IndoorRouteLegType,
-  IndoorRouteStepType,
+  IndoorLegType,
+  IndoorStepType,
   VerticalDirection,
 } from '../../constants';
 import ItineraryMapAction from './ItineraryMapAction';
 
-function IndoorRouteStep({
+function IndoorStep({
   focusAction,
   type,
   verticalDirection,
   toLevelName,
   isLastPlace,
   onlyOneStep,
-  indoorRouteLegType,
+  indoorLegType,
 }) {
   const [defaultBackgroundImageUrl, setDefaultBackgroundImageUrl] = useState();
   const [indoorBackgroundImageUrl, setIndoorBackgroundImageUrl] = useState();
@@ -40,7 +40,7 @@ function IndoorRouteStep({
     });
   }, []);
 
-  const indoorTranslationId = getIndoorRouteTranslationId(
+  const indoorTranslationId = getIndoorTranslationId(
     type,
     verticalDirection,
     toLevelName,
@@ -59,7 +59,7 @@ function IndoorRouteStep({
         >
           <svg xmlns="http://www.w3.org/2000/svg" width={28} height={28}>
             <circle
-              className="indoor-route-step-marker"
+              className="indoor-step-marker"
               width={28}
               cx={11}
               cy={18}
@@ -72,8 +72,7 @@ function IndoorRouteStep({
           style={{
             backgroundImage:
               isLastPlace &&
-              indoorRouteLegType ===
-                IndoorRouteLegType.StepsBeforeEntranceInside
+              indoorLegType === IndoorLegType.StepsBeforeEntranceInside
                 ? defaultBackgroundImageUrl
                 : indoorBackgroundImageUrl,
           }}
@@ -94,9 +93,9 @@ function IndoorRouteStep({
               type,
               false,
             )}
-            className="itinerary-intermediate-indoor-route-icon"
+            className="itinerary-intermediate-indoor-icon"
           />
-          <div className="itinerary-intermediate-indoor-route-step-info">
+          <div className="itinerary-intermediate-indoor-step-info">
             <FormattedMessage
               id={indoorTranslationId}
               defaultMessage="Indoor step"
@@ -110,26 +109,26 @@ function IndoorRouteStep({
   );
 }
 
-IndoorRouteStep.propTypes = {
+IndoorStep.propTypes = {
   focusAction: PropTypes.func.isRequired,
-  type: PropTypes.oneOf(Object.values(IndoorRouteStepType)).isRequired,
+  type: PropTypes.oneOf(Object.values(IndoorStepType)).isRequired,
   verticalDirection: PropTypes.oneOf(Object.values(VerticalDirection)),
   toLevelName: PropTypes.string,
   isLastPlace: PropTypes.bool,
   onlyOneStep: PropTypes.bool,
-  indoorRouteLegType: PropTypes.oneOf(Object.values(IndoorRouteLegType)),
+  indoorLegType: PropTypes.oneOf(Object.values(IndoorLegType)),
 };
 
-IndoorRouteStep.defaultProps = {
+IndoorStep.defaultProps = {
   verticalDirection: undefined,
   toLevelName: undefined,
   isLastPlace: false,
   onlyOneStep: false,
-  indoorRouteLegType: IndoorRouteLegType.NoStepsInside,
+  indoorLegType: IndoorLegType.NoStepsInside,
 };
 
-IndoorRouteStep.contextTypes = {
+IndoorStep.contextTypes = {
   config: configShape.isRequired,
 };
 
-export default IndoorRouteStep;
+export default IndoorStep;

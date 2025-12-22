@@ -19,8 +19,8 @@ import RouteNumberContainer from '../../RouteNumberContainer';
 import BoardingInfo from './BoardingInfo';
 import { getModeIconColor } from '../../../util/colorUtils';
 import Duration from '../Duration';
-import NaviIndoorButtonContainer from './indoorroute/NaviIndoorButtonContainer';
-import NaviIndoorCard from './indoorroute/NaviIndoorCard';
+import NaviIndoorButtonContainer from './indoor/NaviIndoorButtonContainer';
+import NaviIndoorCard from './indoor/NaviIndoorCard';
 
 const NaviCardExtension = (
   {
@@ -31,8 +31,8 @@ const NaviCardExtension = (
     nextLeg,
     time,
     platformUpdated,
-    showIndoorRoute,
-    toggleShowIndoorRoute,
+    showIndoor,
+    toggleShowIndoor,
   },
   { config },
 ) => {
@@ -91,10 +91,7 @@ const NaviCardExtension = (
       </div>
     );
   }
-  const stopInformation = (
-    expandIcon = false,
-    showIndoorRouteButton = false,
-  ) => {
+  const stopInformation = (expandIcon = false, showIndoorButton = false) => {
     return (
       <div className="extension-walk">
         <div className="destination-container">
@@ -126,10 +123,10 @@ const NaviCardExtension = (
             </div>
           </div>
         </div>
-        {showIndoorRouteButton && (
+        {showIndoorButton && (
           <NaviIndoorButtonContainer
-            showIndoorRoute={showIndoorRoute}
-            toggleShowIndoorRoute={toggleShowIndoorRoute}
+            showIndoor={showIndoor}
+            toggleShowIndoor={toggleShowIndoor}
             previousLeg={previousLeg}
             leg={leg}
             nextLeg={nextLeg}
@@ -163,11 +160,11 @@ const NaviCardExtension = (
     );
   }
   if (legType === LEGTYPE.MOVE && nextLeg?.transitLeg) {
-    if (showIndoorRoute) {
+    if (showIndoor) {
       return (
         <NaviIndoorCard
-          showIndoorRoute={showIndoorRoute}
-          toggleShowIndoorRoute={toggleShowIndoorRoute}
+          showIndoor={showIndoor}
+          toggleShowIndoor={toggleShowIndoor}
           previousLeg={previousLeg}
           leg={leg}
           nextLeg={nextLeg}
@@ -215,8 +212,8 @@ NaviCardExtension.propTypes = {
   legType: PropTypes.string,
   time: PropTypes.number.isRequired,
   platformUpdated: PropTypes.bool,
-  showIndoorRoute: PropTypes.bool,
-  toggleShowIndoorRoute: PropTypes.func.isRequired,
+  showIndoor: PropTypes.bool,
+  toggleShowIndoor: PropTypes.func.isRequired,
 };
 
 NaviCardExtension.defaultProps = {
@@ -225,7 +222,7 @@ NaviCardExtension.defaultProps = {
   leg: undefined,
   nextLeg: undefined,
   platformUpdated: false,
-  showIndoorRoute: false,
+  showIndoor: false,
 };
 
 NaviCardExtension.contextTypes = {
