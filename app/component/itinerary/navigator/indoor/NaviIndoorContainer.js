@@ -1,20 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { configShape } from '../../../../util/shapes';
 import { IndoorStepType, VerticalDirection } from '../../../../constants';
 import NaviIndoorStepInfo from './NaviIndoorStepInfo';
 import { getStepFocusAction } from '../../../../util/indoorUtils';
 
 function NaviIndoorContainer({ focusToPoint, indoorSteps }) {
-  const [indoorBackgroundImageUrl, setIndoorBackgroundImageUrl] = useState();
-  useEffect(() => {
-    import(
-      /* webpackChunkName: "indoor-dotted-line" */ `../../../../configurations/images/default/indoor-dotted-line.svg`
-    ).then(insideImageUrl => {
-      setIndoorBackgroundImageUrl(`url(${insideImageUrl.default})`);
-    });
-  }, []);
-
   return (
     <div className="navi-indoor-step-container">
       <div className="navi-indoor-step-line-container">
@@ -39,12 +30,7 @@ function NaviIndoorContainer({ focusToPoint, indoorSteps }) {
             </React.Fragment>
           ))}
         </div>
-        <div
-          style={{
-            backgroundImage: indoorBackgroundImageUrl,
-          }}
-          className="navi-indoor-step-line"
-        />
+        <div className="navi-indoor-step-line indoor-dotted-line" />
       </div>
       <div className="navi-indoor-step-info-container">
         {indoorSteps.map((step, i) => (

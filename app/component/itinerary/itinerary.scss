@@ -110,6 +110,18 @@ $itinerary-tab-switch-height: 48px;
   padding: 0 8px 0 4px;
 }
 
+.default-dotted-line {
+  background-image: $default-dotted-line;
+}
+
+.indoor-dotted-line {
+  background-image: $indoor-dotted-line;
+}
+
+.indoor-dotted-line-horizontal {
+  background-image: $indoor-dotted-line-horizontal;
+}
+
 .itinerary-list-container {
   padding-bottom: 16px;
 }

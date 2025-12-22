@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import cx from 'classnames';
 import { configShape } from '../../util/shapes';
@@ -24,22 +24,6 @@ function IndoorStep({
   onlyOneStep,
   indoorLegType,
 }) {
-  const [defaultBackgroundImageUrl, setDefaultBackgroundImageUrl] = useState();
-  const [indoorBackgroundImageUrl, setIndoorBackgroundImageUrl] = useState();
-  useEffect(() => {
-    Promise.all([
-      import(
-        /* webpackChunkName: "dotted-line" */ `../../configurations/images/default/dotted-line.svg`
-      ),
-      import(
-        /* webpackChunkName: "indoor-dotted-line" */ `../../configurations/images/default/indoor-dotted-line.svg`
-      ),
-    ]).then(([defaultImageUrl, insideImageUrl]) => {
-      setDefaultBackgroundImageUrl(`url(${defaultImageUrl.default})`);
-      setIndoorBackgroundImageUrl(`url(${insideImageUrl.default})`);
-    });
-  }, []);
-
   const indoorTranslationId = getIndoorTranslationId(
     type,
     verticalDirection,
@@ -69,16 +53,17 @@ function IndoorStep({
           </svg>
         </div>
         <div
-          style={{
-            backgroundImage:
-              isLastPlace &&
+          className={cx(
+            'leg-before-line',
+            'indoor-step',
+            {
+              'only-one-step': onlyOneStep,
+            },
+            isLastPlace &&
               indoorLegType === IndoorLegType.StepsBeforeEntranceInside
-                ? defaultBackgroundImageUrl
-                : indoorBackgroundImageUrl,
-          }}
-          className={cx('leg-before-line', 'indoor-step', {
-            'only-one-step': onlyOneStep,
-          })}
+              ? 'default-dotted-line'
+              : 'indoor-dotted-line',
+          )}
         />
       </div>
       <div className="small-9 columns itinerary-instruction-column intermediate indoor-step">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 /* eslint-disable react/no-array-index-key */
 
 import PropTypes from 'prop-types';
@@ -19,15 +19,6 @@ export default function IndoorStepMarker(
   { position, index, indoorSteps },
   { intl },
 ) {
-  const [indoorBackgroundImageUrl, setIndoorBackgroundImageUrl] = useState();
-  useEffect(() => {
-    import(
-      /* webpackChunkName: "indoor-dotted-line-horizontal" */ `../../configurations/images/default/indoor-dotted-line-horizontal.svg`
-    ).then(insideImageUrl => {
-      setIndoorBackgroundImageUrl(`url(${insideImageUrl.default})`);
-    });
-  }, []);
-
   const objs = [];
 
   const getIcon = () => {
@@ -113,12 +104,7 @@ export default function IndoorStepMarker(
                 </React.Fragment>
               ))}
             </div>
-            <div
-              style={{
-                backgroundImage: indoorBackgroundImageUrl,
-              }}
-              className="indoor-step-popup-line"
-            />
+            <div className="indoor-step-popup-line indoor-dotted-line-horizontal" />
           </div>
         </div>
       </Card>
