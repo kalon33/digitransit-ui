@@ -19,13 +19,8 @@ import RouteNumberContainer from '../../RouteNumberContainer';
 import BoardingInfo from './BoardingInfo';
 import { getModeIconColor } from '../../../util/colorUtils';
 import Duration from '../Duration';
-import {
-  getIndoorStepsWithVerticalTransportationUse,
-  getStepFocusAction,
-} from '../../../util/indoorUtils';
-import NaviIndoorRouteButton from './indoorroute/NaviIndoorRouteButton';
-import NaviIndoorRouteContainer from './indoorroute/NaviIndoorRouteContainer';
-import NaviIndoorRouteStepInfo from './indoorroute/NaviIndoorRouteStepInfo';
+import NaviIndoorButtonContainer from './indoorroute/NaviIndoorButtonContainer';
+import NaviIndoorCard from './indoorroute/NaviIndoorCard';
 
 const NaviCardExtension = (
   {
@@ -100,14 +95,6 @@ const NaviCardExtension = (
     expandIcon = false,
     showIndoorRouteButton = false,
   ) => {
-    let indoorRouteSteps = [];
-    if (showIndoorRouteButton) {
-      indoorRouteSteps = getIndoorStepsWithVerticalTransportationUse(
-        previousLeg,
-        leg,
-        nextLeg,
-      );
-    }
     return (
       <div className="extension-walk">
         <div className="destination-container">
@@ -139,26 +126,14 @@ const NaviCardExtension = (
             </div>
           </div>
         </div>
-        {indoorRouteSteps.length === 1 && (
-          <div className="navi-indoor-route-one-step-info-container">
-            <Icon img="navi-expand" className="icon-expand-small" />
-            <NaviIndoorRouteStepInfo
-              // eslint-disable-next-line no-underscore-dangle
-              type={indoorRouteSteps[0].feature?.__typename}
-              verticalDirection={indoorRouteSteps[0].feature?.verticalDirection}
-              toLevelName={indoorRouteSteps[0].feature?.to?.name}
-              focusAction={getStepFocusAction(
-                indoorRouteSteps[0].lat,
-                indoorRouteSteps[0].lon,
-                focusToPoint,
-              )}
-            />
-          </div>
-        )}
-        {indoorRouteSteps.length > 1 && (
-          <NaviIndoorRouteButton
+        {showIndoorRouteButton && (
+          <NaviIndoorButtonContainer
             showIndoorRoute={showIndoorRoute}
             toggleShowIndoorRoute={toggleShowIndoorRoute}
+            previousLeg={previousLeg}
+            leg={leg}
+            nextLeg={nextLeg}
+            focusToPoint={focusToPoint}
           />
         )}
       </div>
@@ -189,28 +164,15 @@ const NaviCardExtension = (
   }
   if (legType === LEGTYPE.MOVE && nextLeg?.transitLeg) {
     if (showIndoorRoute) {
-      const indoorRouteSteps = getIndoorStepsWithVerticalTransportationUse(
-        previousLeg,
-        leg,
-        nextLeg,
-      );
       return (
-        <div className={cx('extension', 'no-vertical-margin')}>
-          <div className="extension-divider" />
-          <div className="extension-indoor-route-button">
-            <NaviIndoorRouteButton
-              showIndoorRoute={showIndoorRoute}
-              toggleShowIndoorRoute={toggleShowIndoorRoute}
-            />
-          </div>
-          <div className="extension-divider" />
-          <div className="extension-indoor-route-container">
-            <NaviIndoorRouteContainer
-              focusToPoint={focusToPoint}
-              indoorRouteSteps={indoorRouteSteps}
-            />
-          </div>
-        </div>
+        <NaviIndoorCard
+          showIndoorRoute={showIndoorRoute}
+          toggleShowIndoorRoute={toggleShowIndoorRoute}
+          previousLeg={previousLeg}
+          leg={leg}
+          nextLeg={nextLeg}
+          focusToPoint={focusToPoint}
+        />
       );
     }
     const { headsign, route, start } = nextLeg;
