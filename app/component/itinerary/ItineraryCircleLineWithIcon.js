@@ -19,7 +19,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
     icon: PropTypes.string,
     style: PropTypes.shape({}),
     isNotFirstLeg: PropTypes.bool,
-    onlyOneStep: PropTypes.bool,
+    indoorStepsLength: PropTypes.number,
   };
 
   static defaultProps = {
@@ -33,7 +33,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
     icon: undefined,
     style: {},
     isNotFirstLeg: undefined,
-    onlyOneStep: false,
+    indoorStepsLength: 0,
   };
 
   state = {
@@ -158,7 +158,8 @@ class ItineraryCircleLineWithIcon extends React.Component {
           via: this.props.isVia,
           'indoor-route':
             this.props.indoorRouteLegType !== IndoorRouteLegType.NoStepsInside,
-          'only-one-step': this.props.onlyOneStep,
+          'has-indoor-steps': this.props.indoorStepsLength !== 0,
+          'only-one-step': this.props.indoorStepsLength === 1,
           'first-leg': this.props.index === 0 && !this.props.isNotFirstLeg,
         })}
         aria-hidden="true"

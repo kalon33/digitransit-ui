@@ -899,7 +899,7 @@ $itinerary-tab-switch-height: 48px;
   }
 
   &.only-one-step {
-    top: 10px;
+    top: 12px;
   }
 
   position: absolute;
@@ -1239,6 +1239,19 @@ $itinerary-tab-switch-height: 48px;
       }
 
       &.indoor-route {
+        .leg-before-line {
+          border-radius: 10px;
+          height: 47%;
+
+          &.bottom {
+            background-position-y: 1px;
+            height: 24%;
+            top: 85%;
+          }
+        }
+      }
+
+      &.indoor-route.has-indoor-steps {
         .route-number {
           top: 46%;
         }
@@ -1251,19 +1264,19 @@ $itinerary-tab-switch-height: 48px;
           border-radius: 10px;
 
           &.walk {
-            height: 39%;
+            height: 36%;
             background-position-y: 1px;
           }
 
           &.bottom {
-            top: 59%;
+            top: 62%;
             height: 48%;
             background-position-y: 0;
           }
         }
       }
 
-      &.indoor-route.only-one-step {
+      &.indoor-route.has-indoor-steps.only-one-step {
         .route-number {
           top: 57%;
         }
@@ -1276,13 +1289,13 @@ $itinerary-tab-switch-height: 48px;
           border-radius: 10px;
 
           &.walk {
-            height: 47%;
+            height: 43%;
             background-position-y: 3px;
           }
 
           &.bottom {
-            top: 74%;
-            height: 48%;
+            top: 78%;
+            height: 46%;
             background-position-y: 0;
           }
         }
@@ -1518,7 +1531,8 @@ $itinerary-tab-switch-height: 48px;
       left: 8px;
 
       &.only-one-step {
-        top: 20px;
+        top: 30px;
+        background-position-y: 2px;
       }
     }
 
@@ -2381,6 +2395,16 @@ $itinerary-tab-switch-height: 48px;
 
       :first-child {
         flex-grow: 1;
+      }
+
+      &.subway-entrance-info {
+        .itinerary-map-action {
+          padding-bottom: 0;
+
+          .icon-container {
+            margin-top: 0;
+          }
+        }
       }
     }
 

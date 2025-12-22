@@ -125,6 +125,9 @@ function WalkLeg(
     previousLeg,
     nextLeg,
   );
+  const showSubwayEntranceInfo =
+    (nextLeg?.mode === 'SUBWAY' || previousLeg?.mode === 'SUBWAY') &&
+    !hideSubwayEntrances;
 
   const getMainRow = () => (
     <div key={index} className="row itinerary-row">
@@ -155,7 +158,7 @@ function WalkLeg(
         modeClassName={modeClassName}
         indoorRouteLegType={indoorRouteLegType}
         showIntermediateSteps={showIntermediateSteps}
-        onlyOneStep={indoorRouteSteps.length === 1}
+        indoorStepsLength={indoorRouteSteps.length}
       />
       <div
         className={`small-9 columns itinerary-instruction-column ${leg.mode.toLowerCase()}`}
@@ -298,7 +301,11 @@ function WalkLeg(
               entranceAccessible={entranceAccessible}
             />
           )}
-          <div className=" itinerary-leg-action-content">
+          <div
+            className={cx('itinerary-leg-action-content', {
+              'subway-entrance-info': showSubwayEntranceInfo,
+            })}
+          >
             <FormattedMessage
               id="walk-distance-duration"
               values={{
@@ -326,7 +333,7 @@ function WalkLeg(
           )}
         </div>
         {indoorRouteLegType !== IndoorRouteLegType.NoStepsInside &&
-        indoorRouteSteps.length !== 1 ? (
+        indoorRouteSteps.length > 1 ? (
           <div className="itinerary-leg-indoor-route-button-container">
             <IndoorRouteInfo
               intermediateStepCount={indoorRouteSteps.length}
