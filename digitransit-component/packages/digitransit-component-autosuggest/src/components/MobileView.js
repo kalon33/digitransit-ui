@@ -13,13 +13,15 @@ import { Input } from './Input';
 import { isKeyboardSelectionEvent } from '../utils/utils';
 
 /**
+ * @typedef AutosuggestState
+ * @property {array} suggestions
+ * @property {boolean} renderMobile
+ *
  * @typedef MobileViewProps
  * @property {string} appElement
  * @property {string} id
  * @property {string} placeholder
- * @property {function} closeHandle
  * @property {function} clearInput
- * @property {array} suggestions
  * @property {function} onSelectedItemChange
  * @property {object} fontWeights
  * @property {function} clearOldSearches
@@ -29,7 +31,6 @@ import { isKeyboardSelectionEvent } from '../utils/utils';
  * @property {string} hoverColor
  * @property {string} lng
  * @property {object} ariaProps
- * @property {boolean} renderMobile
  * @property {string} clearButtonColor
  * @property {string} inputValue
  * @property {function} setInputValue
@@ -37,6 +38,9 @@ import { isKeyboardSelectionEvent } from '../utils/utils';
  * @property {boolean} required
  * @property {string} [mobileLabel]
  * @property {boolean} [showScroll]
+ * @property {function} closeMobile
+ * @property {AutosuggestState} state
+ * @property {function} dispatch
  *
  * @param {MobileViewProps} props
  * @returns {JSX.Element}
@@ -45,9 +49,7 @@ const MobileView = ({
   appElement,
   id,
   placeholder,
-  closeHandle,
   clearInput,
-  suggestions,
   onSelectedItemChange,
   fontWeights,
   clearOldSearches,
@@ -59,13 +61,13 @@ const MobileView = ({
   lng,
   ariaProps,
   mobileLabel,
-  renderMobile,
   clearButtonColor,
-  inputValue,
-  setInputValue,
+  value,
   inputClassName,
   required,
-  pendingEnterCallback,
+  state,
+  dispatch,
+  closeMobile,
 }) => {
   const [t] = useTranslation();
   const { lock, unlock } = hooks.useScrollLock();
@@ -80,12 +82,12 @@ const MobileView = ({
   }, []);
 
   useEffect(() => {
-    if (renderMobile) {
+    if (state.renderMobile) {
       lock();
     } else {
       unlock();
     }
-  }, [renderMobile]);
+  }, [state.renderMobile]);
 
   /**
    * independent hooks in mobile view.
@@ -98,31 +100,37 @@ const MobileView = ({
     getInputProps,
     getItemProps,
   } = useCombobox({
-    items: suggestions,
-    inputValue,
-    onInputValueChange: ({ inputValue: newValue }) => {
-      setInputValue(newValue);
-    },
+    items: state.suggestions,
+    inputValue: value,
     onSelectedItemChange,
     inputId,
     labelId,
     defaultHighlightedIndex: -1,
-    stateReducer: (state, actionAndChanges) => {
+    stateReducer: (oldState, actionAndChanges) => {
       const { changes, type } = actionAndChanges;
+      if (type === useCombobox.stateChangeTypes.InputChange) {
+        dispatch({ type: 'INPUT_CHANGE', value: changes.inputValue });
+      }
       if (type === useCombobox.stateChangeTypes.InputKeyDownEscape) {
-        closeHandle();
+        closeMobile();
       }
       if (type === useCombobox.stateChangeTypes.InputKeyDownEnter) {
-        const tempChanges = pendingEnterCallback(state, changes);
-        if (tempChanges) {
-          return tempChanges;
+        if (state.loading) {
+          dispatch({ type: 'PENDING_ENTER', enterPending: true });
+          return oldState;
+        }
+        if (oldState.highlightedIndex === -1) {
+          return {
+            ...changes,
+            selectedItem: state.suggestions[0],
+          };
         }
         return changes;
       }
       return changes;
     },
   });
-  // call to suppress ref errors from downshift, might need better solution
+  // call to suppress ref errors from downshift
   getLabelProps({}, { suppressRefError: true });
   getMenuProps({}, { suppressRefError: true });
   getInputProps({}, { suppressRefError: true });
@@ -142,10 +150,10 @@ const MobileView = ({
     .concat(ariaCurrentSuggestion);
   return (
     <ReactModal
-      isOpen={renderMobile}
+      isOpen={state.renderMobile}
       className={styles['mobile-modal']}
       overlayClassName={styles['mobile-modal-overlay']}
-      onAfterClose={closeHandle}
+      shouldReturnFocusAfterClose={false}
       shouldCloseOnEsc
     >
       <div
@@ -161,8 +169,8 @@ const MobileView = ({
           <button
             type="button"
             className={styles['combobox-icon']}
-            onClick={closeHandle}
-            onKeyDown={e => isKeyboardSelectionEvent(e) && closeHandle()}
+            onClick={closeMobile}
+            onKeyDown={e => isKeyboardSelectionEvent(e) && closeMobile()}
             aria-label={t('cancel', { lng })}
             tabIndex={0}
           >
@@ -184,7 +192,7 @@ const MobileView = ({
               }
               id={id}
               lng={lng}
-              value={inputValue}
+              value={value}
               getInputProps={getInputProps}
               getLabelProps={getLabelProps}
               clearInput={() => clearInput(inputRef)}
@@ -199,7 +207,7 @@ const MobileView = ({
               isMobile
             />
             <Suggestions
-              suggestions={suggestions}
+              suggestions={state.suggestions}
               getMenuProps={getMenuProps}
               getItemProps={getItemProps}
               itemProps={itemProps}
@@ -240,11 +248,8 @@ MobileView.propTypes = {
   id: PropTypes.string.isRequired,
   clearInput: PropTypes.func.isRequired,
   clearOldSearches: PropTypes.func.isRequired,
-  closeHandle: PropTypes.func.isRequired,
   onSelectedItemChange: PropTypes.func.isRequired,
-  inputValue: PropTypes.string.isRequired,
-  setInputValue: PropTypes.func.isRequired,
-  pendingEnterCallback: PropTypes.func.isRequired,
+  value: PropTypes.string.isRequired,
   color: PropTypes.string.isRequired,
   accessiblePrimaryColor: PropTypes.string.isRequired,
   clearButtonColor: PropTypes.string.isRequired,
@@ -253,7 +258,6 @@ MobileView.propTypes = {
     medium: PropTypes.number.isRequired,
   }).isRequired,
   itemProps: PropTypes.shape({}).isRequired,
-  suggestions: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   ariaProps: PropTypes.shape({
     ariaRequiredText: PropTypes.string.isRequired,
     SearchBarId: PropTypes.string.isRequired,
@@ -263,9 +267,15 @@ MobileView.propTypes = {
   placeholder: PropTypes.string.isRequired,
   mobileLabel: PropTypes.string.isRequired,
   required: PropTypes.bool.isRequired,
-  renderMobile: PropTypes.bool.isRequired,
   showScroll: PropTypes.bool.isRequired,
   lng: PropTypes.string.isRequired,
+  closeMobile: PropTypes.func.isRequired,
+  state: PropTypes.shape({
+    suggestions: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+    renderMobile: PropTypes.bool.isRequired,
+    loading: PropTypes.bool.isRequired,
+  }).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 export default MobileView;

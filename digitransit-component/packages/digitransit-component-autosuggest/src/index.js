@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import PropTypes from 'prop-types';
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useEffect, useCallback, useRef, useReducer } from 'react';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import cx from 'classnames';
 import { executeSearch } from '@digitransit-search-util/digitransit-search-util-execute-search-immidiate';
@@ -12,6 +12,7 @@ import { getSuggestionValue, suggestionAsAriaContent } from './utils/utils';
 import MobileView from './components/MobileView';
 import { Input } from './components/Input';
 import { Suggestions } from './components/Suggestions';
+import { searchReducer } from './utils/searchReducer';
 
 const getAriaProps = ({
   id,
@@ -270,111 +271,116 @@ function DTAutosuggest({
   refPoint,
 }) {
   const [t] = useTranslation();
-  const [shouldRenderMobile, setShouldRenderMobile] = useState(false);
-
-  const [suggestions, setSuggestions] = useState([]);
-  const [isLoading, setLoading] = useState(false);
-  const [currentSources, setCurrentSources] = useState(sources);
-  const [showOwnPlaces, setShowOwnPlaces] = useState(false);
-  const [pendingSelection, setPendingSelection] = useState(null);
-  const [isCleared, setCleared] = useState(false);
-
-  const enterPressedRef = useRef(null);
-
+  const initialState = {
+    suggestions: [],
+    loading: false,
+    sources,
+    showOwnPlaces: false,
+    pendingSelection: null,
+    isCleared: false,
+    renderMobile: false,
+    value,
+    enterPending: false,
+    isMenuOpen: false,
+  };
+  const [state, dispatch] = useReducer(searchReducer, initialState);
+  // Reset the state when value prop changes
+  useEffect(() => dispatch({ type: 'RESET', initialState }), [value]);
   // create and store input ref in the parent if storeRef is provided
-  const inputRef = React.useRef(id);
+  const inputRef = useRef(id);
   useEffect(() => {
     if (storeRef) {
       storeRef(inputRef.current);
     }
   }, [inputRef.current]);
 
-  const fetchSuggestions = useCallback(
-    searchValue => {
-      const useAll = !targets?.length;
-      const isLocationSearch = useAll || targets.includes('Locations');
+  const fetchSuggestions = useCallback(() => {
+    const useAll = !targets?.length;
+    const isLocationSearch = useAll || targets.includes('Locations');
 
-      const newTargets = getNewTargets({
-        targets,
-        isLocationSearch,
-        isMobile,
-        ownPlaces: showOwnPlaces,
-        sources: currentSources,
-      });
-      // remove  location favourites in desktop search (collection item replaces it in target array)
-      const newSources = currentSources
-        ? currentSources.filter(
-            s =>
-              !isLocationSearch ||
-              !s === 'Favourite' ||
-              showOwnPlaces ||
-              isMobile,
-          )
-        : currentSources;
-      executeSearch(
-        newTargets,
-        newSources,
-        transportMode,
-        searchContext,
-        filterResults,
-        geocodingSize,
-        {
-          input: searchValue || '',
-        },
-        searchResult => {
-          if (searchResult == null) {
-            setLoading(true);
-            return;
-          }
-
-          const newSuggestions = (searchResult.results || [])
-            .filter(
-              suggestion =>
-                suggestion.type !== 'FutureRoute' ||
-                (suggestion.type === 'FutureRoute' &&
-                  suggestion.properties.time > Date.now() / 1000),
-            )
-            .map(suggestion => {
-              if (
-                suggestion.type === 'CurrentLocation' ||
-                suggestion.type === 'SelectFromMap' ||
-                suggestion.type === 'SelectFromOwnLocations' ||
-                suggestion.type === 'back'
-              ) {
-                const translatedSuggestion = { ...suggestion };
-                translatedSuggestion.properties.labelId = t(
-                  suggestion.properties.labelId,
-                  { lng },
-                );
-                return translatedSuggestion;
-              }
-              return suggestion;
-            });
-          if (newSuggestions.length) {
-            setSuggestions(newSuggestions);
-          }
-          setLoading(false);
-        },
-        pathOpts,
-        refPoint,
-      );
-    },
-    [
+    const newTargets = getNewTargets({
       targets,
-      currentSources,
+      isLocationSearch,
+      isMobile,
+      ownPlaces: state.showOwnPlaces,
+      sources: state.sources,
+    });
+    // remove  location favourites in desktop search (collection item replaces it in target array)
+    const newSources = state.sources
+      ? state.sources.filter(
+          s =>
+            !isLocationSearch ||
+            !s === 'Favourite' ||
+            state.showOwnPlaces ||
+            isMobile,
+        )
+      : state.sources;
+    executeSearch(
+      newTargets,
+      newSources,
       transportMode,
       searchContext,
       filterResults,
       geocodingSize,
-      showOwnPlaces,
-      isMobile,
-      lng,
+      {
+        input: state.value || '',
+      },
+      searchResult => {
+        if (searchResult == null) {
+          dispatch({
+            type: 'FETCH_SUGGESTIONS',
+            loading: true,
+          });
+          return;
+        }
+
+        const newSuggestions = (searchResult.results || [])
+          .filter(
+            suggestion =>
+              suggestion.type !== 'FutureRoute' ||
+              (suggestion.type === 'FutureRoute' &&
+                suggestion.properties.time > Date.now() / 1000),
+          )
+          .map(suggestion => {
+            if (
+              suggestion.type === 'CurrentLocation' ||
+              suggestion.type === 'SelectFromMap' ||
+              suggestion.type === 'SelectFromOwnLocations' ||
+              suggestion.type === 'back'
+            ) {
+              const translatedSuggestion = { ...suggestion };
+              translatedSuggestion.properties.labelId = t(
+                suggestion.properties.labelId,
+                { lng },
+              );
+              return translatedSuggestion;
+            }
+            return suggestion;
+          });
+        dispatch({
+          type: 'FETCH_SUGGESTIONS',
+          loading: false,
+          suggestions: newSuggestions,
+        });
+      },
       pathOpts,
       refPoint,
-      id,
-      t,
-    ],
-  );
+    );
+  }, [
+    state.value,
+    state.sources,
+    state.showOwnPlaces,
+    targets,
+    transportMode,
+    searchContext,
+    filterResults,
+    geocodingSize,
+    isMobile,
+    lng,
+    pathOpts,
+    refPoint,
+    id,
+  ]);
 
   const selectSuggestion = useCallback(
     (suggestion, index) => {
@@ -389,9 +395,6 @@ function DTAutosuggest({
       if (focusChange && (!isMobile || isEmbedded)) {
         focusChange();
       }
-      if (isMobile) {
-        setShouldRenderMobile(false);
-      }
     },
     [isMobile],
   );
@@ -399,26 +402,9 @@ function DTAutosuggest({
   const onSelectedItemChange = changes =>
     selectSuggestion(changes.selectedItem, changes.highlightedIndex);
 
-  const pendingEnterCallback = useCallback(
-    (state, changes) => {
-      if (isLoading) {
-        enterPressedRef.current = true;
-        const { selectedItem, ...changesWitoutSelection } = changes;
-        return {
-          ...changesWitoutSelection,
-          inputValue: state.inputValue,
-        };
-      }
-      return undefined;
-    },
-    [isLoading],
-  );
-
   const {
-    inputValue,
     isOpen,
     highlightedIndex,
-    setInputValue,
     getLabelProps,
     getMenuProps,
     getInputProps,
@@ -427,58 +413,70 @@ function DTAutosuggest({
     openMenu,
   } = useCombobox({
     inputId: id,
+    inputValue: state.value,
     defaultHighlightedIndex: 0,
-    onInputValueChange: ({ inputValue: newValue }) =>
-      setInputValue(newValue) && setCleared(false),
+    onInputValueChange: ({ inputValue }) =>
+      dispatch({ type: 'INPUT_CHANGE', value: inputValue }),
     stateReducer: useCallback(
-      (state, { type, changes }) => {
+      (oldState, { type, changes }) => {
         switch (type) {
           case useCombobox.stateChangeTypes.ItemClick:
           case useCombobox.stateChangeTypes.InputKeyDownEnter: {
-            setCleared(false);
+            // setCleared(false);
             // keep enterPressedRef to make selection when suggestions have loaded
-            const tempChanges = pendingEnterCallback(state, changes);
-            if (tempChanges) {
-              return tempChanges;
+            if (state.loading) {
+              dispatch({ type: 'PENDING_ENTER', enterPending: true });
+              return oldState;
             }
-            // if selecting from own locations, keep menu open and keep old state
             if (changes.selectedItem.type === 'SelectFromOwnLocations') {
-              setCurrentSources(['Favourite', 'Back']);
-              setShowOwnPlaces(true);
-              setPendingSelection(changes.selectedItem.type);
-              return state;
+              // if selecting from own locations, keep menu open and keep old state
+              dispatch({
+                type: 'SET_SOURCES',
+                sources: ['Favourite', 'Back'],
+                showOwnPlaces: true,
+                pendingSelection: changes.selectedItem.type,
+              });
+              return oldState;
             }
             if (changes.selectedItem.type === 'back') {
-              setCurrentSources(sources);
-              setShowOwnPlaces(false);
-              setPendingSelection(null);
-              return state;
+              dispatch({
+                type: 'SET_SOURCES',
+                sources,
+                showOwnPlaces: false,
+                pendingSelection: null,
+              });
+              return oldState;
             }
             return changes;
           }
           case useCombobox.stateChangeTypes.InputClick: {
             // clear input if current position or selected location is shown
             if (positions.includes(value)) {
-              fetchSuggestions('');
               return { ...changes, inputValue: '', isOpen: true };
             }
-            // always update suggestions on click
-            fetchSuggestions(inputValue);
-
             return {
               ...changes,
               isOpen: true,
             };
           }
           case useCombobox.stateChangeTypes.InputBlur: {
+            dispatch({
+              isMobile,
+              value: !isMobile && value,
+              type: 'INPUT_BLUR',
+            });
             if (!isMobile) {
-              setCleared(false);
+              dispatch({
+                type: 'RESET',
+                initialState,
+              });
             }
-            setPendingSelection(null);
-            setShowOwnPlaces(false);
             if (changes.selectedItem) {
-              const { selectedItem, ...changesWitoutSelection } = changes;
-              return changesWitoutSelection;
+              return {
+                ...changes,
+                selectedItem: oldState.selectItem,
+                inputValue: oldState.inputValue,
+              };
             }
             return changes;
           }
@@ -487,63 +485,47 @@ function DTAutosuggest({
           }
         }
       },
-      [pendingEnterCallback, value, isMobile],
+      [state.loading, value, isMobile],
     ),
-    items: suggestions,
+    items: state.suggestions,
     itemToString(suggestion) {
       return suggestion ? getSuggestionValue(suggestion) : '';
     },
     onSelectedItemChange,
+    onStateChange: c => {
+      if (c.isOpen && !state.renderMobile) {
+        dispatch({ type: 'TOGGLE_MENU', isMobile });
+      }
+    },
   });
 
   const clearInput = ref => {
+    dispatch({ type: 'CLEAR' });
     if (onClear) {
       onClear(id);
     }
     if (ref.current) {
       ref.current.focus();
     }
-    setCleared(true);
     openMenu();
   };
 
-  useEffect(() => {
-    // set inputValue to prop when not typing
-    if (!shouldRenderMobile && !isOpen && !enterPressedRef.current) {
-      setInputValue(value);
-    } else if (isCleared) {
-      setInputValue('');
-    }
-    // this is needed to render value correclty when opening mobile view
-    if (shouldRenderMobile) {
-      if (positions.includes(value)) {
-        setCleared(true);
-      }
-      setInputValue(isCleared ? '' : value || '');
-    }
-    // blur input when closing mobile view
-    if (isMobile && !shouldRenderMobile) {
-      inputRef.current.blur();
-    }
-  }, [isCleared, value, shouldRenderMobile, isOpen]);
-
   // Fetch suggestions when isOpen, value, or fetchSuggestions dependies change
   useEffect(() => {
-    if (isOpen || shouldRenderMobile) {
-      fetchSuggestions(inputValue);
+    if (isOpen || state.renderMobile) {
+      fetchSuggestions(state.value);
     }
-  }, [inputValue, fetchSuggestions]);
+  }, [isOpen, state.renderMobile, state.value, fetchSuggestions]);
 
   // this effect handles selecting the suggestion when enter was pressed but suggestions were still loading
   useEffect(() => {
-    if (enterPressedRef.current && !isLoading) {
-      selectSuggestion(suggestions[0], 0);
-      enterPressedRef.current = false;
+    if (state.enterPending && !state.loading) {
+      selectSuggestion(state.suggestions[0], 0);
     }
-  }, [isLoading, suggestions]);
+  }, [state.loading, state.pendingEnter, state.suggestions]);
 
   const baseItemProps = {
-    loading: isLoading,
+    loading: state.loading,
     isMobile,
     ariaFavouriteString: t('favourite', { lng }),
     color,
@@ -565,8 +547,8 @@ function DTAutosuggest({
     t,
     isMobile,
     ariaLabel,
-    suggestions,
-    inputValue,
+    suggestions: state.suggestions,
+    value: state.value,
     required,
   });
 
@@ -577,45 +559,21 @@ function DTAutosuggest({
       if (clearFutureRoutes) {
         clearFutureRoutes(context);
       }
-      fetchSuggestions(inputValue);
+      fetchSuggestions(state.value);
     }
   };
 
-  useEffect(() => {
-    if (isMobile && isOpen) {
-      setShouldRenderMobile(true);
-    }
-  }, [isMobile, isOpen]);
-
-  const closeHandle = () => {
-    setCleared(false);
-    setShouldRenderMobile(false);
+  const closeMobile = () => {
+    dispatch({ type: 'RESET', initialState });
   };
-
-  const checkPendingSelection = () => {
-    if (
-      pendingSelection === 'SelectFromOwnLocations' ||
-      pendingSelection === 'back'
-    ) {
-      setInputValue('');
-      openMenu();
-    }
-  };
-
-  useEffect(() => {
-    checkPendingSelection();
-  }, [pendingSelection]);
 
   return (
     <>
       {isMobile && (
         <MobileView
-          pendingEnterCallback={pendingEnterCallback}
           placeholder={t(placeholder, { lng })}
-          renderMobile={shouldRenderMobile}
           fontWeights={fontWeights}
           clearOldSearches={mobileClearOldSearches}
-          closeHandle={closeHandle}
           appElement={appElement}
           mobileLabel={mobileLabel || t(id, { lng })}
           ariaProps={{
@@ -626,19 +584,19 @@ function DTAutosuggest({
           id={id}
           lng={lng}
           onSelectedItemChange={onSelectedItemChange}
-          inputValue={inputValue}
-          setInputValue={setInputValue}
-          setCleared={setCleared}
+          value={state.value}
           clearInput={clearInput}
-          suggestions={suggestions}
           itemProps={baseItemProps}
           showScroll={!!showScroll}
+          closeMobile={closeMobile}
           color={color}
           hoverColor={hoverColor}
           clearButtonColor={color}
           accessiblePrimaryColor={accessiblePrimaryColor}
           inputClassName={inputClassName}
           required={required}
+          state={state}
+          dispatch={dispatch}
         />
       )}
 
@@ -646,7 +604,7 @@ function DTAutosuggest({
         className={cx([
           styles['autosuggest-input-container'],
           styles[id],
-          shouldRenderMobile && 'hidden',
+          state.renderMobile && 'hidden',
         ])}
         style={{
           '--color': color,
@@ -683,7 +641,7 @@ function DTAutosuggest({
           getInputProps={getInputProps}
           getLabelProps={getLabelProps}
           selectItem={selectItem}
-          value={inputValue}
+          value={state.value}
           clearInput={clearInput}
           inputRef={inputRef}
           styles={styles}
@@ -699,7 +657,7 @@ function DTAutosuggest({
           highlightedIndex={highlightedIndex}
           getItemProps={getItemProps}
           getMenuProps={getMenuProps}
-          suggestions={suggestions}
+          suggestions={state.suggestions}
           itemProps={baseItemProps}
           lng={lng}
           styles={styles}
