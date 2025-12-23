@@ -3,7 +3,7 @@ import React from 'react';
 import Icon from '../../../Icon';
 import { legShape } from '../../../../util/shapes';
 import {
-  getIndoorStepsWithVerticalTransportationUse,
+  getIndoorStepsWithVerticalTransportation,
   getStepFocusAction,
 } from '../../../../util/indoorUtils';
 import NaviIndoorStepInfo from './NaviIndoorStepInfo';
@@ -17,7 +17,7 @@ export default function NaviIndoorButtonContainer({
   nextLeg,
   focusToPoint,
 }) {
-  const indoorSteps = getIndoorStepsWithVerticalTransportationUse(
+  const indoorSteps = getIndoorStepsWithVerticalTransportation(
     previousLeg,
     leg,
     nextLeg,

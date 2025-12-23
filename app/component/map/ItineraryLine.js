@@ -28,7 +28,7 @@ import {
   getEntranceObject,
   getEntranceWheelchairAccessibility,
   getIndoorLegType,
-  getIndoorStepsWithVerticalTransportationUse,
+  getIndoorStepsWithVerticalTransportation,
   isVerticalTransportationUse,
 } from '../../util/indoorUtils';
 
@@ -241,7 +241,7 @@ class ItineraryLine extends React.Component {
 
   handleIndoorStepMarkers(previousLeg, leg, nextLeg, clusterObjs) {
     if (!this.props.passive) {
-      const indoorSteps = getIndoorStepsWithVerticalTransportationUse(
+      const indoorSteps = getIndoorStepsWithVerticalTransportation(
         previousLeg,
         leg,
         nextLeg,
@@ -349,7 +349,7 @@ class ItineraryLine extends React.Component {
                   lon: coordinates[1],
                 }}
                 index={properties.index}
-                indoorSteps={getIndoorStepsWithVerticalTransportationUse(
+                indoorSteps={getIndoorStepsWithVerticalTransportation(
                   previousLeg,
                   leg,
                   nextLeg,

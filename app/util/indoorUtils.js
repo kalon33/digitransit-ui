@@ -115,7 +115,7 @@ export function isVerticalTransportationUse(type) {
   );
 }
 
-export function getIndoorStepsWithVerticalTransportationUse(
+export function getIndoorStepsWithVerticalTransportation(
   previousLeg,
   leg,
   nextLeg,

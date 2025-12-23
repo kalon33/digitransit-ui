@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
 import { configShape, legShape } from '../../../../util/shapes';
-import { getIndoorStepsWithVerticalTransportationUse } from '../../../../util/indoorUtils';
+import { getIndoorStepsWithVerticalTransportation } from '../../../../util/indoorUtils';
 import NaviIndoorButton from './NaviIndoorButton';
 import NaviIndoorContainer from './NaviIndoorContainer';
 
@@ -14,7 +14,7 @@ function NaviIndoorCard({
   nextLeg,
   focusToPoint,
 }) {
-  const indoorSteps = getIndoorStepsWithVerticalTransportationUse(
+  const indoorSteps = getIndoorStepsWithVerticalTransportation(
     previousLeg,
     leg,
     nextLeg,

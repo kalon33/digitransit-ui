@@ -25,7 +25,7 @@ import IndoorInfo from './IndoorInfo';
 import {
   subwayTransferUsesSameStation,
   getIndoorLegType,
-  getIndoorStepsWithVerticalTransportationUse,
+  getIndoorStepsWithVerticalTransportation,
   getStepFocusAction,
   getEntranceWheelchairAccessibility,
 } from '../../util/indoorUtils';
@@ -85,7 +85,7 @@ function WalkLeg(
       defaultMessage="Return the bike to {station} station"
     />
   ) : null;
-  const indoorSteps = getIndoorStepsWithVerticalTransportationUse(
+  const indoorSteps = getIndoorStepsWithVerticalTransportation(
     previousLeg,
     leg,
     nextLeg,
