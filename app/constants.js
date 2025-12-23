@@ -154,3 +154,8 @@ export const WheelchairBoarding = Object.freeze({
   NoInformation: 'NO_INFORMATION',
   Possible: 'POSSIBLE',
 });
+
+export const NaviCardType = Object.freeze({
+  Default: 'DEFAULT',
+  Indoor: 'INDOOR',
+});
