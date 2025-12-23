@@ -391,7 +391,7 @@ function NearYouPage(
                 ).url;
               }
               const prioritizedStops =
-                config.prioritizedStopsNearYou[tabMode.toLowerCase()];
+                config.prioritizedStopsNearYou[tabMode.toLowerCase()] || [];
               const favouriteIds =
                 mode === 'CITYBIKE'
                   ? new Set(favouriteVehicleStationIds)
@@ -479,7 +479,7 @@ function NearYouPage(
                       onClick={updateLocation}
                     />
                   )}
-                  {prioritizedStops?.length && (
+                  {prioritizedStops.length && (
                     <QueryRenderer
                       query={graphql`
                         query NearYouPagePrioritizedStopsQuery(
@@ -503,33 +503,20 @@ function NearYouPage(
                         omitNonPickups: false,
                       }}
                       environment={relayEnvironment}
-                      render={res => {
-                        if (res.props) {
-                          return (
-                            <>
-                              {res.props.stops.map(stop => {
-                                return (
-                                  <StopNearYouContainer
-                                    stop={stop}
-                                    key={stop.gtfsId}
-                                    currentTime={currentTime}
-                                    isParentTabActive={isActive}
-                                  />
-                                );
-                              })}
-                            </>
-                          );
-                        }
-                        return null;
-                      }}
+                      render={res =>
+                        res.props?.stops.map(stop => (
+                          <StopNearYouContainer
+                            stop={stop}
+                            key={stop.gtfsId}
+                            currentTime={currentTime}
+                            isParentTabActive={isActive}
+                          />
+                        ))
+                      }
                     />
                   )}
-                  {!props && (
-                    <div className="stops-near-you-spinner-container">
-                      <Loading />
-                    </div>
-                  )}
-                  {props && (
+
+                  {props ? (
                     <NearYouContainer
                       // eslint-disable-next-line
                       places={props.places}
@@ -543,6 +530,10 @@ function NearYouPage(
                       currentTime={currentTime}
                       favouriteIds={favouriteIds}
                     />
+                  ) : (
+                    <div className="stops-near-you-spinner-container">
+                      <Loading />
+                    </div>
                   )}
                 </div>
               );
@@ -721,24 +712,22 @@ const PositioningWrapper = connectToStores(
     'TimeStore',
   ],
   (context, props) => {
-    const favouriteStopIds = context
-      .getStore('FavouriteStore')
+    const favStore = context.getStore('FavouriteStore');
+    const favouriteStopIds = favStore
       .getStopsAndStations()
       .filter(stop => stop.type === 'stop')
       .map(stop => stop.gtfsId);
-    const favouriteStationIds = context
-      .getStore('FavouriteStore')
+    const favouriteStationIds = favStore
       .getStopsAndStations()
       .filter(stop => stop.type === 'station')
       .map(stop => stop.gtfsId);
-    let favouriteVehicleStationIds = [];
-    if (useCitybikes(context.config.vehicleRental?.networks, context.config)) {
-      favouriteVehicleStationIds = context
-        .getStore('FavouriteStore')
-        .getVehicleRentalStations()
-        .map(station => station.stationId);
-    }
-    const status = context.getStore('FavouriteStore').getStatus();
+    const favouriteVehicleStationIds = useCitybikes(
+      context.config.vehicleRental?.networks,
+      context.config,
+    )
+      ? favStore.getVehicleRentalStations().map(station => station.stationId)
+      : [];
+
     return {
       ...props,
       currentTime: context.getStore('TimeStore').getCurrentTime(),
@@ -750,7 +739,8 @@ const PositioningWrapper = connectToStores(
       favouriteStopIds,
       favouriteVehicleStationIds,
       favouriteStationIds,
-      favouritesFetched: status !== FavouriteStore.STATUS_FETCHING_OR_UPDATING,
+      favouritesFetched:
+        favStore.getStatus() !== FavouriteStore.STATUS_FETCHING_OR_UPDATING,
     };
   },
 );

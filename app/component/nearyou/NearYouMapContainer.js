@@ -100,6 +100,7 @@ const containerComponent = createPaginationContainer(
             gtfsId
             shortName
             mode
+            type
           }
           code
           patternGeometry {

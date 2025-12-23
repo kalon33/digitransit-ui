@@ -102,15 +102,14 @@ function NearYouContainer(
     const walkRoutingThreshold =
       mode === 'RAIL' || mode === 'SUBWAY' || mode === 'FERRY' ? 3000 : 1500;
     const { edges } = places.nearest;
-    const isCityBikeView = mode === 'CITYBIKE';
     let sorted;
-    if (isCityBikeView) {
+    if (mode === 'CITYBIKE') {
       const withNetworks = edges.filter(edge => {
-        return !!edge.node.place?.rentalNetwork?.networkId;
+        return !!edge.node.place.rentalNetwork?.networkId;
       });
       const filteredCityBikeStopEdges = withNetworks.filter(edge => {
         return getDefaultNetworks(config).includes(
-          edge.node.place?.rentalNetwork?.networkId,
+          edge.node.place.rentalNetwork?.networkId,
         );
       });
       sorted = filteredCityBikeStopEdges
@@ -129,8 +128,8 @@ function NearYouContainer(
       /* eslint-disable-next-line no-underscore-dangle */
       switch (place.__typename) {
         case 'Stop':
-          if (place.stoptimesWithoutPatterns?.length > 0) {
-            if (!prioritizedStops?.includes(place.gtfsId)) {
+          if (place.stoptimesWithoutPatterns.length > 0) {
+            if (!prioritizedStops.includes(place.gtfsId)) {
               return (
                 <StopNearYouContainer
                   key={`${place.gtfsId}`}
@@ -171,8 +170,8 @@ function NearYouContainer(
       {renderDisruptionBanner && (
         <DisruptionBanner alerts={alerts || []} mode={mode} />
       )}
-      {((!relay.hasMore() && !stops.length && !prioritizedStops?.length) ||
-        (noStopsFound && !prioritizedStops?.length)) && (
+      {((!relay.hasMore() && !stops.length && !prioritizedStops.length) ||
+        (noStopsFound && !prioritizedStops.length)) && (
         <>
           {withSeparator && <div className="separator" />}
           <div className="stops-near-you-no-stops">
@@ -225,7 +224,7 @@ NearYouContainer.propTypes = {
     lon: PropTypes.number,
   }).isRequired,
   withSeparator: PropTypes.bool,
-  prioritizedStops: PropTypes.arrayOf(PropTypes.string),
+  prioritizedStops: PropTypes.arrayOf(PropTypes.string).isRequired,
   mode: PropTypes.string.isRequired,
   renderDisruptionBanner: PropTypes.bool,
   isParentTabActive: PropTypes.bool,
@@ -236,7 +235,6 @@ NearYouContainer.propTypes = {
 NearYouContainer.defaultProps = {
   places: undefined,
   withSeparator: false,
-  prioritizedStops: undefined,
   renderDisruptionBanner: false,
   isParentTabActive: false,
 };
