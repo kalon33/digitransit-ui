@@ -1,11 +1,11 @@
 import { IndoorLegType, IndoorStepType, VerticalDirection } from '../constants';
 import { addAnalyticsEvent } from './analyticsUtils';
 
-export function subwayTransferUsesSameStation(prevLeg, nextLeg) {
+export function subwayTransferUsesSameStation(previousLeg, nextLeg) {
   return (
-    prevLeg?.mode === 'SUBWAY' &&
+    previousLeg?.mode === 'SUBWAY' &&
     nextLeg?.mode === 'SUBWAY' &&
-    prevLeg.to.stop.parentStation?.gtfsId ===
+    previousLeg.to.stop.parentStation?.gtfsId ===
       nextLeg.from.stop.parentStation?.gtfsId
   );
 }
@@ -50,15 +50,31 @@ export function getVerticalTransportationUseIconId(
   ];
 }
 
+export function getIndoorTranslationId(type, verticalDirection, toLevelName) {
+  if (type === IndoorStepType.ElevatorUse && toLevelName) {
+    return 'indoor-step-message-elevator-to-floor';
+  }
+  return `indoor-step-message-${type?.toLowerCase().replace('use', '')}${
+    verticalDirection &&
+    verticalDirection !== VerticalDirection.Unknown &&
+    type !== IndoorStepType.ElevatorUse
+      ? `-${verticalDirection.toLowerCase()}`
+      : ''
+  }`;
+}
+
+/**
+ * @return an entrance object or undefined if one can not be found
+ */
 export function getEntranceObject(previousLeg, leg) {
-  const entranceObjects = leg?.steps
-    ?.map((step, index) => ({ ...step, index }))
+  const entranceObjects = leg.steps
+    .map((step, index) => ({ ...step, index }))
     .filter(
       step =>
         // eslint-disable-next-line no-underscore-dangle
-        step?.feature?.__typename === 'Entrance' || step?.feature?.code,
+        step.feature?.__typename === 'Entrance',
     );
-  // Select the entrance to the outside if there are multiple entrances
+  // Select the entrance to the outside if there are multiple entrances.
   const entranceObject =
     previousLeg?.mode === 'SUBWAY'
       ? entranceObjects[entranceObjects.length - 1]
@@ -67,6 +83,9 @@ export function getEntranceObject(previousLeg, leg) {
   return entranceObject;
 }
 
+/**
+ * @return the index of an entrance in the steps of a leg or undefined if one can not be found
+ */
 export function getEntranceStepIndex(previousLeg, leg) {
   return getEntranceObject(previousLeg, leg)?.index;
 }
@@ -115,6 +134,9 @@ export function isVerticalTransportationUse(type) {
   );
 }
 
+/**
+ * @return a filtered array of only indoor steps with vertical transportation or an empty array
+ */
 export function getIndoorStepsWithVerticalTransportation(
   previousLeg,
   leg,
@@ -122,30 +144,29 @@ export function getIndoorStepsWithVerticalTransportation(
 ) {
   return getIndoorSteps(previousLeg, leg, nextLeg).filter(step =>
     // eslint-disable-next-line no-underscore-dangle
-    isVerticalTransportationUse(step?.feature?.__typename),
+    isVerticalTransportationUse(step.feature?.__typename),
   );
 }
 
-export function getIndoorTranslationId(type, verticalDirection, toLevelName) {
-  if (type === IndoorStepType.ElevatorUse && toLevelName) {
-    return 'indoor-step-message-elevator-to-floor';
-  }
-  return `indoor-step-message-${type?.toLowerCase().replace('use', '')}${
-    verticalDirection &&
-    verticalDirection !== VerticalDirection.Unknown &&
-    type !== IndoorStepType.ElevatorUse
-      ? `-${verticalDirection.toLowerCase()}`
-      : ''
-  }`;
-}
-
-export function getEntranceWheelchairAccessibility(leg) {
-  return leg?.steps?.find(
-    // eslint-disable-next-line no-underscore-dangle
+/**
+ * @return the name (letter identifier) of an entrance in the steps of a leg or undefined if one can not be found
+ */
+export function getEntranceName(leg) {
+  return leg.steps.find(
     step =>
       // eslint-disable-next-line no-underscore-dangle
-      step?.feature?.__typename === 'Entrance' ||
-      step?.feature?.wheelchairAccessible,
+      step.feature?.__typename === 'Entrance',
+  )?.feature?.publicCode;
+}
+
+/**
+ * @return wheelchair accessibility information for an entrance in the steps of a leg or undefined if it can not be found
+ */
+export function getEntranceWheelchairAccessibility(leg) {
+  return leg.steps.find(
+    step =>
+      // eslint-disable-next-line no-underscore-dangle
+      step.feature?.__typename === 'Entrance',
   )?.feature?.wheelchairAccessible;
 }
 

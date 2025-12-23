@@ -28,6 +28,7 @@ import {
   getIndoorStepsWithVerticalTransportation,
   getStepFocusAction,
   getEntranceWheelchairAccessibility,
+  getEntranceName,
 } from '../../util/indoorUtils';
 import IndoorStep from './IndoorStep';
 import { IndoorLegType } from '../../constants';
@@ -88,12 +89,6 @@ function WalkLeg(
       defaultMessage="Return the bike to {station} station"
     />
   ) : null;
-  const indoorSteps = getIndoorStepsWithVerticalTransportation(
-    previousLeg,
-    leg,
-    nextLeg,
-  );
-  const indoorLegType = getIndoorLegType(previousLeg, leg, nextLeg);
 
   let appendClass;
   if (returnNotice) {
@@ -107,14 +102,15 @@ function WalkLeg(
           defaultMessage: 'scooter',
         })
       : leg.to.name;
-  const entranceName = leg?.steps?.find(
-    step =>
-      // eslint-disable-next-line no-underscore-dangle
-      step?.feature?.__typename === 'Entrance' || step?.feature?.publicCode,
-  )?.feature?.publicCode;
 
+  const indoorSteps = getIndoorStepsWithVerticalTransportation(
+    previousLeg,
+    leg,
+    nextLeg,
+  );
+  const indoorLegType = getIndoorLegType(previousLeg, leg, nextLeg);
+  const entranceName = getEntranceName(leg);
   const entranceAccessible = getEntranceWheelchairAccessibility(leg);
-
   // do not render subway exit/entrance if transfer happens within a station
   const hideSubwayEntrances = subwayTransferUsesSameStation(
     previousLeg,
