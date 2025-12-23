@@ -380,7 +380,7 @@ function NearYouPage(
                       onClick={updateLocation}
                     />
                   )}
-                  {prioritizedStops.length && (
+                  {prioritizedStops.length ? (
                     <QueryRenderer
                       query={graphql`
                         query NearYouPagePrioritizedStopsQuery(
@@ -415,7 +415,7 @@ function NearYouPage(
                         ))
                       }
                     />
-                  )}
+                  ) : null}
 
                   {props ? (
                     <NearYouContainer
