@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
 import Link from 'found/Link';
 import { legShape, configShape } from '../../util/shapes';
@@ -46,14 +46,17 @@ function WalkLeg(
   },
   { config, intl },
 ) {
-  const [showIntermediateSteps, setShowIntermediateSteps] = useState(false);
+  // If there is only one indoor routing step, always show it.
+  const [showIntermediateSteps, setShowIntermediateSteps] = useState(
+    getIndoorStepsWithVerticalTransportation(previousLeg, leg, nextLeg)
+      .length === 1,
+  );
 
   const distance = displayDistance(
     parseInt(leg.mode !== 'WALK' ? 0 : leg.distance, 10),
     config,
     intl.formatNumber,
   );
-  //
   const duration = durationToString(
     leg.mode !== 'WALK' ? 0 : leg.duration * 1000,
   );
@@ -90,14 +93,6 @@ function WalkLeg(
     leg,
     nextLeg,
   );
-
-  useEffect(() => {
-    // If there is only one indoor routing step, always show it.
-    if (indoorSteps.length === 1) {
-      setShowIntermediateSteps(true);
-    }
-  }, [indoorSteps]);
-
   const indoorLegType = getIndoorLegType(previousLeg, leg, nextLeg);
 
   let appendClass;
