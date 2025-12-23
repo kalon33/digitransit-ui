@@ -7,38 +7,29 @@ import { matchShape, routerShape } from 'found';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import distance from '@digitransit-search-util/digitransit-search-util-distance';
 import { relayShape, configShape, locationShape } from '../../util/shapes';
-import Icon from '../Icon';
 import DesktopView from '../DesktopView';
 import MobileView from '../MobileView';
 import withBreakpoint, { DesktopOrMobile } from '../../util/withBreakpoint';
 import { otpToLocation, locationToUri } from '../../util/otpStrings';
-import { isKeyboardSelectionEvent } from '../../util/browser';
 import Loading from '../Loading';
 import StopNearYouContainer from './StopNearYouContainer';
 import UpdateLocationButton from './UpdateLocationButton';
 import MapWrapper from './MapWrapper';
 import LocationModal from './LocationModal';
+import CityBikeInfo from './CityBikeInfo';
 import {
   checkPositioningPermission,
   startLocationWatch,
 } from '../../action/PositionActions';
 import Search from './Search';
 import StopRouteSearch from './StopRouteSearch';
-import {
-  getGeolocationState,
-  getReadMessageIds,
-  setReadMessageIds,
-} from '../../store/localStorage';
+import { getGeolocationState } from '../../store/localStorage';
 import { PREFIX_NEARYOU } from '../../util/path';
 import NearYouContainer from './NearYouContainer';
 import SwipeableTabs from '../SwipeableTabs';
 import NearYouFavourites from './NearYouFavourites';
 import { mapLayerShape } from '../../store/MapLayerStore';
-import {
-  getRentalNetworkConfig,
-  getRentalNetworkId,
-  getDefaultNetworks,
-} from '../../util/vehicleRentalUtils';
+import { getDefaultNetworks } from '../../util/vehicleRentalUtils';
 import { getMapLayerOptions } from '../../util/mapLayerUtils';
 import {
   getTransportModes,
@@ -91,9 +82,6 @@ function NearYouPage(
   const centerOfMap = useRef({});
   const [phase, setPhase] = useState(PH_START);
   const [centerOfMapChanged, setCenterOfMapChanged] = useState(false);
-  const [showCityBikeTeaser, setShowCityBikeTeaser] = useState(
-    !getReadMessageIds().includes('citybike_teaser'),
-  );
   const [searchPosition, setSearchPosition] = useState({});
   const [mapLayerOptions, setMapLayerOptions] = useState({});
   // eslint-disable-next-line
@@ -294,13 +282,6 @@ function NearYouPage(
     !favouriteStationIds.length &&
     !favouriteVehicleStationIds.length;
 
-  const handleCityBikeTeaserClose = () => {
-    const readMessageIds = getReadMessageIds() || [];
-    readMessageIds.push('citybike_teaser');
-    setReadMessageIds(readMessageIds);
-    setShowCityBikeTeaser(false);
-  };
-
   const renderContent = () => {
     const index = allModes.indexOf(mode);
     const tabs = allModes.map(tabMode => {
@@ -375,21 +356,6 @@ function NearYouPage(
             variables={getQueryVariables(tabMode)}
             environment={relayEnvironment}
             render={({ props }) => {
-              const { vehicleRental } = config;
-              // Use buy instructions if available
-              const cityBikeBuyUrl = vehicleRental.buyUrl;
-              const buyInstructions = cityBikeBuyUrl
-                ? vehicleRental.buyInstructions?.[lang]
-                : undefined;
-
-              let cityBikeNetworkUrl;
-              // Use general information about using city bike, if one network config is available
-              if (Object.keys(vehicleRental.networks).length === 1) {
-                cityBikeNetworkUrl = getRentalNetworkConfig(
-                  getRentalNetworkId(Object.keys(vehicleRental.networks)),
-                  config,
-                ).url;
-              }
               const prioritizedStops =
                 config.prioritizedStopsNearYou[tabMode.toLowerCase()] || [];
               const favouriteIds =
@@ -407,72 +373,7 @@ function NearYouPage(
                       refPoint={searchPosition}
                     />
                   )}
-                  {showCityBikeTeaser &&
-                    tabMode === 'CITYBIKE' &&
-                    (cityBikeBuyUrl || cityBikeNetworkUrl) && (
-                      <div className="citybike-use-disclaimer">
-                        <div className="disclaimer-header">
-                          <FormattedMessage id="citybike-start-using" />
-                          <div
-                            className="disclaimer-close"
-                            aria-label="Sulje kaupunkipyöräoikeuden ostaminen"
-                            tabIndex="0"
-                            onKeyDown={e => {
-                              if (
-                                isKeyboardSelectionEvent(e) &&
-                                (e.keyCode === 13 || e.keyCode === 32)
-                              ) {
-                                handleCityBikeTeaserClose();
-                              }
-                            }}
-                            onClick={handleCityBikeTeaserClose}
-                            role="button"
-                          >
-                            <Icon
-                              color={config.colors.primary}
-                              img="icon_close"
-                            />
-                          </div>
-                        </div>
-                        <div className="disclaimer-content">
-                          {buyInstructions || (
-                            <a
-                              className="external-link-citybike"
-                              href={cityBikeNetworkUrl[lang]}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              <FormattedMessage id="citybike-start-using-info" />
-                            </a>
-                          )}
-                          {cityBikeBuyUrl && (
-                            <a
-                              href={cityBikeBuyUrl[lang]}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="disclaimer-close-button-container"
-                              tabIndex="0"
-                              role="button"
-                              onKeyDown={e => {
-                                if (
-                                  isKeyboardSelectionEvent(e) &&
-                                  (e.keyCode === 13 || e.keyCode === 32)
-                                ) {
-                                  window.location = cityBikeBuyUrl[lang];
-                                }
-                              }}
-                            >
-                              <div
-                                aria-label="Siirry ostamaan kaupunkipyöräoikeutta."
-                                className="disclaimer-close-button"
-                              >
-                                <FormattedMessage id="buy" />
-                              </div>
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    )}
+                  {tabMode === 'CITYBIKE' && <CityBikeInfo lang={lang} />}
                   {centerOfMapChanged && (
                     <UpdateLocationButton
                       mode={tabMode}
