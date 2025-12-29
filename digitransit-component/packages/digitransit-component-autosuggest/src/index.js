@@ -411,6 +411,7 @@ function DTAutosuggest({
     getItemProps,
     selectItem,
     openMenu,
+    closeMenu,
   } = useCombobox({
     inputId: id,
     inputValue: state.value,
@@ -463,17 +464,6 @@ function DTAutosuggest({
             };
           }
           case useCombobox.stateChangeTypes.InputBlur: {
-            dispatch({
-              isMobile,
-              value: !isMobile && value,
-              type: 'INPUT_BLUR',
-            });
-            if (!isMobile) {
-              dispatch({
-                type: 'RESET',
-                initialState,
-              });
-            }
             if (changes.selectedItem) {
               return {
                 ...changes,
@@ -482,6 +472,12 @@ function DTAutosuggest({
               };
             }
             return changes;
+          }
+          case useCombobox.stateChangeTypes.InputKeyDownEscape: {
+            return {
+              ...changes,
+              inputValue: '',
+            };
           }
           default: {
             return changes;
@@ -495,12 +491,26 @@ function DTAutosuggest({
       return suggestion ? getSuggestionValue(suggestion) : '';
     },
     onSelectedItemChange,
-    onStateChange: c => {
-      if (c.isOpen && !state.renderMobile) {
+    onIsOpenChange: changes => {
+      if (changes.isOpen && !state.renderMobile) {
         dispatch({ type: 'TOGGLE_MENU', isMobile });
       }
     },
   });
+
+  const inputOnBlur = () => {
+    dispatch({
+      isMobile,
+      value: !isMobile && value,
+      type: 'INPUT_BLUR',
+    });
+    if (!isMobile) {
+      dispatch({
+        type: 'RESET',
+        initialState,
+      });
+    }
+  };
 
   const clearInput = ref => {
     dispatch({ type: 'CLEAR' });
@@ -524,6 +534,7 @@ function DTAutosuggest({
   useEffect(() => {
     if (state.enterPending && !state.loading) {
       selectSuggestion(state.suggestions[0], 0);
+      closeMenu();
     }
   }, [state.loading, state.pendingEnter, state.suggestions]);
 
@@ -654,6 +665,7 @@ function DTAutosuggest({
           required={required}
           transportMode={transportMode}
           isMobile={isMobile}
+          inputOnBlur={inputOnBlur}
         />
 
         <Suggestions

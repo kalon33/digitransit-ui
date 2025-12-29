@@ -22,6 +22,7 @@ export function Input({
   transportMode,
   clearButtonColor,
   autoFocus,
+  inputOnBlur,
 }) {
   return (
     <div className={styles.container}>
@@ -51,7 +52,10 @@ export function Input({
         )}
         value={value}
         id={id}
-        {...getInputProps({ ref: inputRef })}
+        {...getInputProps({
+          ref: inputRef,
+          onBlur: inputOnBlur,
+        })}
       />
       {value && (
         <ClearButton
@@ -86,10 +90,12 @@ Input.propTypes = {
   transportMode: PropTypes.string,
   clearButtonColor: PropTypes.string.isRequired,
   autoFocus: PropTypes.bool,
+  inputOnBlur: PropTypes.func,
 };
 
 Input.defaultProps = {
   autoFocus: false,
   renderLabel: false,
   transportMode: undefined,
+  inputOnBlur: () => {},
 };
