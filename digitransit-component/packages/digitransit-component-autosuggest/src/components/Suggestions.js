@@ -8,32 +8,6 @@ import {
   translateFutureRouteSuggestionTime,
 } from '../utils/utils';
 
-const itemShape = PropTypes.shape({
-  name: PropTypes.string,
-  type: PropTypes.string,
-  address: PropTypes.string,
-  selectedIconId: PropTypes.string,
-  iconColor: PropTypes.string,
-  translatedText: PropTypes.string,
-  properties: PropTypes.shape({
-    layer: PropTypes.string,
-    color: PropTypes.string,
-    localadmin: PropTypes.string,
-    mode: PropTypes.string,
-    id: PropTypes.string,
-    source: PropTypes.string,
-    arrowClicked: PropTypes.bool,
-    destination: PropTypes.shape({
-      name: PropTypes.string,
-      localadmin: PropTypes.string,
-    }),
-    origin: PropTypes.shape({
-      name: PropTypes.string,
-      localadmin: PropTypes.string,
-    }),
-  }),
-});
-
 function Suggestion({
   item,
   lng,
@@ -69,6 +43,31 @@ function Suggestion({
     </li>
   );
 }
+const itemShape = PropTypes.shape({
+  name: PropTypes.string,
+  type: PropTypes.string,
+  address: PropTypes.string,
+  selectedIconId: PropTypes.string,
+  iconColor: PropTypes.string,
+  translatedText: PropTypes.string,
+  properties: PropTypes.shape({
+    layer: PropTypes.string,
+    color: PropTypes.string,
+    localadmin: PropTypes.string,
+    mode: PropTypes.string,
+    id: PropTypes.string,
+    source: PropTypes.string,
+    arrowClicked: PropTypes.bool,
+    destination: PropTypes.shape({
+      name: PropTypes.string,
+      localadmin: PropTypes.string,
+    }),
+    origin: PropTypes.shape({
+      name: PropTypes.string,
+      localadmin: PropTypes.string,
+    }),
+  }),
+});
 
 Suggestion.propTypes = {
   item: itemShape.isRequired,
@@ -106,7 +105,7 @@ export function Suggestions({
           return (
             <Suggestion
               key={`${suggestion.type}-${
-                suggestion.properties.id ||
+                suggestion.properties.gid ||
                 suggestion.properties.name ||
                 suggestion.properties.gtfsId
               }`}

@@ -428,6 +428,9 @@ function DTAutosuggest({
               dispatch({ type: 'PENDING_ENTER', enterPending: true });
               return oldState;
             }
+            if (!changes.selectedItem) {
+              return changes;
+            }
             if (changes.selectedItem.type === 'SelectFromOwnLocations') {
               // if selecting from own locations, keep menu open and keep old state
               dispatch({
@@ -563,9 +566,11 @@ function DTAutosuggest({
     }
   };
 
-  const closeMobile = () => {
-    dispatch({ type: 'RESET', initialState });
-  };
+  useEffect(() => {
+    if (!state.renderMobile) {
+      dispatch({ type: 'RESET', initialState });
+    }
+  }, [state.renderMobile]);
 
   return (
     <>
@@ -588,7 +593,6 @@ function DTAutosuggest({
           clearInput={clearInput}
           itemProps={baseItemProps}
           showScroll={!!showScroll}
-          closeMobile={closeMobile}
           color={color}
           hoverColor={hoverColor}
           clearButtonColor={color}

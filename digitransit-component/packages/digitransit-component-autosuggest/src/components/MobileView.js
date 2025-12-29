@@ -10,7 +10,7 @@ import mobileStyles from './MobileSearch.scss';
 import mobileNoScrollStyles from './MobileNoScroll.scss';
 import { Suggestions } from './Suggestions';
 import { Input } from './Input';
-import { isKeyboardSelectionEvent } from '../utils/utils';
+import { isKeyboardSelectionEvent, getSuggestionValue } from '../utils/utils';
 
 /**
  * @typedef AutosuggestState
@@ -32,13 +32,11 @@ import { isKeyboardSelectionEvent } from '../utils/utils';
  * @property {string} lng
  * @property {object} ariaProps
  * @property {string} clearButtonColor
- * @property {string} inputValue
- * @property {function} setInputValue
+ * @property {string} value
  * @property {string} inputClassName
  * @property {boolean} required
  * @property {string} [mobileLabel]
  * @property {boolean} [showScroll]
- * @property {function} closeMobile
  * @property {AutosuggestState} state
  * @property {function} dispatch
  *
@@ -57,17 +55,16 @@ const MobileView = ({
   color,
   accessiblePrimaryColor,
   hoverColor,
-  showScroll,
   lng,
   ariaProps,
-  mobileLabel,
   clearButtonColor,
   value,
   inputClassName,
   required,
+  mobileLabel,
+  showScroll,
   state,
   dispatch,
-  closeMobile,
 }) => {
   const [t] = useTranslation();
   const { lock, unlock } = hooks.useScrollLock();
@@ -102,39 +99,52 @@ const MobileView = ({
   } = useCombobox({
     items: state.suggestions,
     inputValue: value,
-    onSelectedItemChange,
+    onSelectedItemChange: changes => {
+      onSelectedItemChange(changes);
+      dispatch({ type: 'TOGGLE_MENU', isMobile: true });
+    },
     inputId,
     labelId,
+    selectedItem: null,
     defaultHighlightedIndex: -1,
-    stateReducer: (oldState, actionAndChanges) => {
-      const { changes, type } = actionAndChanges;
-      if (type === useCombobox.stateChangeTypes.InputChange) {
-        dispatch({ type: 'INPUT_CHANGE', value: changes.inputValue });
-      }
-      if (type === useCombobox.stateChangeTypes.InputKeyDownEscape) {
-        closeMobile();
-      }
-      if (type === useCombobox.stateChangeTypes.InputKeyDownEnter) {
-        if (state.loading) {
-          dispatch({ type: 'PENDING_ENTER', enterPending: true });
+    onInputValueChange: ({ inputValue }) =>
+      dispatch({ type: 'INPUT_CHANGE', value: inputValue }),
+    stateReducer: (oldState, { changes, type }) => {
+      switch (type) {
+        case useCombobox.stateChangeTypes.InputKeyDownEscape: {
+          dispatch({ type: 'TOGGLE_MENU', isMobile: true });
           return oldState;
         }
-        if (oldState.highlightedIndex === -1) {
-          return {
-            ...changes,
-            selectedItem: state.suggestions[0],
-          };
+        case useCombobox.stateChangeTypes.InputKeyDownEnter:
+          if (state.loading) {
+            dispatch({ type: 'PENDING_ENTER', enterPending: true });
+            return oldState;
+          }
+          // select the first item if none is highlighted
+          if (oldState.highlightedIndex === -1) {
+            return {
+              ...changes,
+              selectedItem: state.suggestions[0],
+            };
+          }
+          return changes;
+        // allows tabbing out of input field without closing
+        case useCombobox.stateChangeTypes.InputBlur: {
+          return oldState;
         }
-        return changes;
+        default:
+          return changes;
       }
-      return changes;
+    },
+    itemToString(suggestion) {
+      return suggestion ? getSuggestionValue(suggestion) : '';
     },
   });
   // call to suppress ref errors from downshift
   getLabelProps({}, { suppressRefError: true });
   getMenuProps({}, { suppressRefError: true });
   getInputProps({}, { suppressRefError: true });
-  getItemProps({ index: 0 }, { suppressRefError: true });
+  getItemProps({ index: -1 }, { suppressRefError: true });
 
   const isOriginDestinationOrViapoint =
     id === 'origin' ||
@@ -169,8 +179,11 @@ const MobileView = ({
           <button
             type="button"
             className={styles['combobox-icon']}
-            onClick={closeMobile}
-            onKeyDown={e => isKeyboardSelectionEvent(e) && closeMobile()}
+            onClick={() => dispatch({ type: 'TOGGLE_MENU', isMobile: true })}
+            onKeyDown={e =>
+              isKeyboardSelectionEvent(e) &&
+              dispatch({ type: 'TOGGLE_MENU', isMobile: true })
+            }
             aria-label={t('cancel', { lng })}
             tabIndex={0}
           >
@@ -269,7 +282,6 @@ MobileView.propTypes = {
   required: PropTypes.bool.isRequired,
   showScroll: PropTypes.bool.isRequired,
   lng: PropTypes.string.isRequired,
-  closeMobile: PropTypes.func.isRequired,
   state: PropTypes.shape({
     suggestions: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     renderMobile: PropTypes.bool.isRequired,
