@@ -102,8 +102,6 @@ export default configMerger(walttiConfig, {
   },
 
   viaPointsEnabled: false,
-  showVehiclesOnStopPage: true,
-  showVehiclesOnItineraryPage: true,
 
   sourceForAlertsAndDisruptions: {
     Kajaani: {

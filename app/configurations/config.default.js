@@ -748,11 +748,10 @@ export default {
 
   vehicles: false,
   showVehiclesOnStopPage: false,
+  showVehiclesOnItineraryPage: false,
   trafficNowLink: '',
 
   timetables: {},
-
-  showVehiclesOnItineraryPage: false,
 
   showWeatherInformation: true,
   showBikeAndParkItineraries: false,

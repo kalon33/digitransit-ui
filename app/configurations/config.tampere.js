@@ -246,8 +246,6 @@ export default configMerger(walttiConfig, {
     ],
   },
 
-  staticMessages: [],
-
   aboutThisService: {
     fi: [
       {
@@ -278,9 +276,6 @@ export default configMerger(walttiConfig, {
       },
     ],
   },
-  vehicles: true,
-  showVehiclesOnStopPage: true,
-  showVehiclesOnItineraryPage: true,
   timetables: {
     tampere: tampereTimetables,
   },

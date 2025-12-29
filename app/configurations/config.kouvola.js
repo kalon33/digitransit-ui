@@ -115,10 +115,6 @@ export default configMerger(walttiConfig, {
     lon: 26.705328946745546,
   },
 
-  vehicles: true,
-  showVehiclesOnStopPage: true,
-  showVehiclesOnItineraryPage: true,
-
   menu: {
     copyright: { label: `© Kouvola ${walttiConfig.YEAR}` },
     content: [

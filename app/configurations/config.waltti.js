@@ -60,6 +60,9 @@ export default {
   availableLanguages: ['fi', 'sv', 'en'],
   defaultLanguage: 'fi',
 
+  vehicles: true,
+  showVehiclesOnStopPage: true,
+  showVehiclesOnItineraryPage: true,
   showCO2InItinerarySummary: true,
 
   transportModes: {
@@ -144,9 +147,18 @@ export default {
     },
   },
 
+  showNearYouButtons: true,
+  nearYouButton: {
+    borderRadius: '50%',
+    color: '#000F94',
+  },
+  nearYouTitle: {
+    fi: 'Aikataulut ja linjat',
+    sv: 'Tidtabeller och linjer',
+    en: 'Timetables and routes',
+  },
   nearYouModes: ['bus'],
   nearbyModeSet: 'waltti',
-
   maxNearbyStopDistance: {
     bus: 30000,
     tram: 30000,
@@ -172,19 +184,6 @@ export default {
       href: 'https://matka.fintraffic.fi/',
     },
   },
-
-  showNearYouButtons: true,
-  nearYouButton: {
-    borderRadius: '50%',
-    color: '#000F94',
-  },
-  nearYouTitle: {
-    fi: 'Aikataulut ja linjat',
-    sv: 'Tidtabeller och linjer',
-    en: 'Timetables and routes',
-  },
-
-  allowLogin: false,
 
   messageBarAlerts: true,
 

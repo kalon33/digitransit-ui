@@ -125,8 +125,6 @@ export default configMerger(walttiConfig, {
   /* Enable real-time map layer for vehicle positions */
   vehicles: false,
   viaPointsEnabled: false,
-  showVehiclesOnStopPage: true,
-  showVehiclesOnItineraryPage: true,
 
   aboutThisService: {
     fi: [
@@ -185,10 +183,6 @@ export default configMerger(walttiConfig, {
     },
   },
 
-  staticMessages: [],
-  showCO2InItinerarySummary: true,
-  showNearYouButtons: true,
-  allowLogin: false,
   routeNotifications: [],
   analyticsScript: '',
   GTMid: null,

@@ -127,8 +127,4 @@ export default configMerger(walttiConfig, {
     stops: true,
     itinerary: true,
   },
-
-  vehicles: true,
-  showVehiclesOnStopPage: true,
-  showVehiclesOnItineraryPage: true,
 });
