@@ -10,7 +10,7 @@ import {
 
 const DTAutoSuggestWithSearchContext = withSearchContext(DTAutoSuggest);
 
-function Search({ onMap, ...rest }, { config, intl }) {
+function Search({ onMap, ...rest }, { config, intl, getStore }) {
   const searchProps = {
     id: 'origin-stop-near-you',
     placeholder: 'origin',
@@ -23,11 +23,15 @@ function Search({ onMap, ...rest }, { config, intl }) {
     modeSet: config.iconModeSet,
     getAutoSuggestIcons: config.getAutoSuggestIcons,
   };
+  const sources = ['History', 'Datasource'];
+  if (getStore('FavouriteStore').getLocationCount()) {
+    sources.push('Favourite');
+  }
   return (
     <DTAutoSuggestWithSearchContext
       appElement="#app"
       icon="search"
-      sources={['History', 'Datasource', 'Favourite']}
+      sources={sources}
       targets={getLocationSearchTargets(config, false)}
       value=""
       {...searchProps}
@@ -47,6 +51,7 @@ Search.defaultProps = {
 Search.contextTypes = {
   config: configShape.isRequired,
   intl: intlShape.isRequired,
+  getStore: PropTypes.func.isRequired,
 };
 
 export default memo(Search);

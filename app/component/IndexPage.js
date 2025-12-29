@@ -288,12 +288,15 @@ class IndexPage extends React.Component {
     const { breakpoint, lang } = this.props;
     const origin = this.pendingOrigin || this.props.origin;
     const destination = this.pendingDestination || this.props.destination;
+    const locationSources = ['History', 'Datasource'];
     const sources = ['Favourite', 'History', 'Datasource'];
     const stopAndRouteSearchTargets = ['Stations', 'Stops', 'Routes'];
     const targets = getLocationSearchTargets(config, breakpoint !== 'large');
 
     targets.push('FutureRoutes');
-
+    if (this.context.getStore('FavouriteStore').getLocationCount()) {
+      locationSources.push('Favourite');
+    }
     if (!config.targetsFromOTP) {
       if (useCitybikes(config.vehicleRental?.networks, config)) {
         stopAndRouteSearchTargets.push('VehicleRentalStations');
@@ -312,7 +315,7 @@ class IndexPage extends React.Component {
       origin,
       destination,
       lang,
-      sources,
+      locationSources,
       targets,
       color,
       hoverColor,
