@@ -57,6 +57,7 @@ export default class FavouriteStore extends Store {
     this.config = dispatcher.getContext().config;
     if (!this.config.allowLogin) {
       this.favourites = mapFromStore(getFavouriteStorage());
+      this.status = FavouriteStore.STATUS_HAS_DATA;
     } else {
       this.status = FavouriteStore.STATUS_FETCHING_OR_UPDATING;
     }
