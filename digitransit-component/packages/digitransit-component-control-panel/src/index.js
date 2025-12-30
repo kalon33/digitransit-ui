@@ -169,7 +169,7 @@ function NearStopsAndRoutes({
             )}
           </span>
           <span className={styles['transport-mode-title']}>
-            {t(mode, language)}
+            {t(mode, { lng: language })}
           </span>
         </span>
       );
@@ -216,8 +216,8 @@ function NearStopsAndRoutes({
       <div
         className={
           horizontal
-            ? styles['near-you-buttons-container-wide']
-            : styles['near-you-buttons-container']
+            ? styles['near-you-buttons-container']
+            : styles['near-you-buttons-container-wide']
         }
       >
         {buttons}

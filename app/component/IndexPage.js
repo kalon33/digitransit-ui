@@ -249,10 +249,11 @@ class IndexPage extends React.Component {
     };
 
     const directionProps = config.narrowNearYouButtons
-      ? { modeSet: config.iconModeSet, horizontal: true }
+      ? { modeSet: config.iconModeSet }
       : {
           buttonStyle: config.nearYouButton,
           modeSet: config.nearbyModeSet,
+          horizontal: false,
         };
 
     return config.showNearYouButtons ? (
