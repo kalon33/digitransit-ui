@@ -17,8 +17,8 @@ import {
   changeRealTimeClientTopics,
 } from '../../action/realTimeClientAction';
 import {
-  sortNearbyRentalStations,
-  sortNearbyStops,
+  sortNearYouRentalStations,
+  sortNearYouStops,
 } from '../../util/sortUtils';
 import ItineraryLine from './ItineraryLine';
 import {
@@ -274,11 +274,11 @@ function NearYouMap(
         });
         sortedEdges = filteredCityBikeEdges
           .slice()
-          .sort(sortNearbyRentalStations(favouriteIds));
+          .sort(sortNearYouRentalStations(favouriteIds));
       } else {
         sortedEdges = stops.nearest.edges
           .slice()
-          .sort(sortNearbyStops(favouriteIds, walkRoutingThreshold));
+          .sort(sortNearYouStops(favouriteIds, walkRoutingThreshold));
       }
 
       sortedEdges.unshift(

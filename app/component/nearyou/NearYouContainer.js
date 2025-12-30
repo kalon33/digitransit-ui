@@ -6,8 +6,8 @@ import { configShape, relayShape } from '../../util/shapes';
 import StopNearYouContainer from './StopNearYouContainer';
 import withBreakpoint from '../../util/withBreakpoint';
 import {
-  sortNearbyRentalStations,
-  sortNearbyStops,
+  sortNearYouRentalStations,
+  sortNearYouStops,
 } from '../../util/sortUtils';
 import VehicleRentalStationNearYou from './VehicleRentalStationNearYou';
 import Loading from '../Loading';
@@ -76,7 +76,7 @@ function NearYouContainer(
     const fetchMore =
       edges.filter(
         stop => !(stop.node.place.stoptimesWithoutPatterns?.length === 0),
-      ).length < 5 && refetches.current < config.maxNearbyStopRefetches;
+      ).length < 5 && refetches.current < config.maxNearYouStopRefetches;
     if (fetchMore) {
       showMore(true);
     }
@@ -95,7 +95,7 @@ function NearYouContainer(
     loadingDone();
   }, []);
 
-  const createNearbyStops = () => {
+  const createNearYouStops = () => {
     if (!places?.nearest) {
       return [];
     }
@@ -114,12 +114,12 @@ function NearYouContainer(
       });
       sorted = filteredCityBikeStopEdges
         .slice(0, 5)
-        .sort(sortNearbyRentalStations(favouriteIds));
+        .sort(sortNearYouRentalStations(favouriteIds));
       sorted.push(...filteredCityBikeStopEdges.slice(5));
     } else {
       sorted = edges
         .slice(0, 5)
-        .sort(sortNearbyStops(favouriteIds, walkRoutingThreshold));
+        .sort(sortNearYouStops(favouriteIds, walkRoutingThreshold));
       sorted.push(...edges.slice(5));
     }
 
@@ -158,13 +158,13 @@ function NearYouContainer(
     return stops;
   };
 
-  const stops = createNearbyStops();
+  const stops = createNearYouStops();
   const alerts = stops
     .flatMap(stop => stop?.props?.stop?.routes || [])
     .flatMap(route => route?.alerts || [])
     .filter(alert => alert.alertSeverityLevel === 'SEVERE');
   const noStopsFound =
-    !stops.length && refetches >= config.maxNearbyStopRefetches && !loading;
+    !stops.length && refetches >= config.maxNearYouStopRefetches && !loading;
   return (
     <>
       {renderDisruptionBanner && (

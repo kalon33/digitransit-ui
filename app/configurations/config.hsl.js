@@ -108,7 +108,7 @@ export default {
   loginAnalyticsEventName: 'user-hsl-id',
   loginAnalyticsKey: 'hsl-id',
 
-  nearbyRoutes: {
+  nearYouRoutes: {
     radius: 500,
     bucketSize: 100,
   },
@@ -335,7 +335,7 @@ export default {
     en: 'HSL',
   },
 
-  maxNearbyStopDistance: {
+  maxNearYouStopDistance: {
     favorite: 20000,
     bus: 20000,
     tram: 20000,

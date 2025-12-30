@@ -252,7 +252,7 @@ class IndexPage extends React.Component {
       ? { modeSet: config.iconModeSet }
       : {
           buttonStyle: config.nearYouButton,
-          modeSet: config.nearbyModeSet,
+          modeSet: config.nearYouModeSet,
           horizontal: false,
         };
 
