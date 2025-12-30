@@ -395,6 +395,9 @@ function DTAutosuggest({
       if (focusChange && (!isMobile || isEmbedded)) {
         focusChange();
       }
+      if (inputRef.current) {
+        inputRef.current.blur();
+      }
     },
     [isMobile],
   );
@@ -497,7 +500,6 @@ function DTAutosuggest({
       }
     },
   });
-
   const inputOnBlur = () => {
     dispatch({
       isMobile,
@@ -578,10 +580,10 @@ function DTAutosuggest({
   };
 
   useEffect(() => {
-    if (!state.renderMobile) {
+    if (!state.renderMobile && !isOpen) {
       dispatch({ type: 'RESET', initialState });
     }
-  }, [state.renderMobile]);
+  }, [state.renderMobile, isOpen]);
 
   return (
     <>

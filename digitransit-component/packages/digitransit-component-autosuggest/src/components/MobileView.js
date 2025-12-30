@@ -108,6 +108,7 @@ const MobileView = ({
     selectedItem: null,
     defaultHighlightedIndex: -1,
     onInputValueChange: ({ inputValue }) =>
+      state.renderMobile && // prevent updating value when the search is not open
       dispatch({ type: 'INPUT_CHANGE', value: inputValue }),
     stateReducer: (oldState, { changes, type }) => {
       switch (type) {
