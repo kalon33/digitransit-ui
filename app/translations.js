@@ -519,6 +519,7 @@ const translations = {
     'more-settings': 'Erweiterte Einstellungen',
     'move-on-map': 'Position auf der Karte hat sich geändert',
     navigate: 'Navigieren',
+    'near-you-search': 'Suche nach Haltestellen oder Linien',
     nearest: '{ mode } in der Nähe',
     'nearest-stops': 'Nächstgelegene Haltestellen',
     'nearest-stops-bus': 'Nächstgelegene Bushaltestellen',
@@ -713,7 +714,6 @@ const translations = {
       'Sie haben die Standortabfrage nicht freigegeben.',
     'stop-near-you-modal-info':
       'Zur Nutzung der Suche nach Haltestellen in der Nähe wird Zugriff auf die Standortabfrage benötigt.',
-    'stop-near-you-title': 'Suche nach Haltestellen oder Linien',
     'stop-number': 'Haltestellennummer',
     'stop-page.description': 'Haltestelle - {name} {code}, {desc}',
     'stop-page.title': 'Haltestelle - {name} {code}',
@@ -1370,6 +1370,7 @@ const translations = {
       'Departs at {time} from {stopName} {stopOrStation}',
     'navileg-start-schedule': '{mode} {route} scheduled departure {time}',
     'navileg-walk': 'Walk to',
+    'near-you-search': 'Search for stops and routes',
     nearest: '{ mode } near you',
     'nearest-favourites': 'Stops nearby me',
     'nearest-favourites-browse-stops': 'Browse and select stops',
@@ -1668,7 +1669,6 @@ const translations = {
     'stop-near-you-modal-header': 'You have not enabled location services',
     'stop-near-you-modal-info':
       'Using the nearby stops function requires location access.',
-    'stop-near-you-title': 'Search for stops and routes',
     'stop-near-you-update-alert': 'Nearest stops updated',
     'stop-number': 'Stop number',
     'stop-page.description': 'Stop {name} - {code}',
@@ -2695,6 +2695,7 @@ const translations = {
     'navileg-start-schedule':
       '{mode} {route} aikataulun mukainen lähtö klo {time}',
     'navileg-walk': 'Kävele',
+    'near-you-search': 'Linja- ja pysäkkihaku',
     nearest: 'Lähimmät {mode}',
     'nearest-favourites': 'Omat lähipysäkit',
     'nearest-favourites-browse-stops': 'Selaa ja valitse pysäkkejä',
@@ -2990,7 +2991,6 @@ const translations = {
     'stop-near-you-modal-header': 'Et ole sallinut paikannusta',
     'stop-near-you-modal-info':
       'Lähipysäkkien käyttö edellyttää tietoa sijainnista.',
-    'stop-near-you-title': 'Linja- ja pysäkkihaku',
     'stop-near-you-update-alert': 'Lähimmät pysäkit päivitetty',
     'stop-number': 'Pysäkkinumero',
     'stop-page.description': 'Pysäkki - {name} {code}, {desc}',
@@ -4205,6 +4205,7 @@ const translations = {
     'move-on-map': 'Rozglądaj się po mapie',
     'move-to-tab': 'Przejdź do karty {number}',
     navigate: 'Nawiguj',
+    'near-you-search': 'Szukaj przystanków i tras',
     nearest: '{ mode } w Twojej okolicy',
     'nearest-favourites': 'Przystanki w pobliżu',
     'nearest-favourites-browse-stops': 'Przeglądaj i wybieraj przystanki',
@@ -4475,7 +4476,6 @@ const translations = {
     'stop-near-you-modal-header': 'Nie masz włączonych usług lokalizacji',
     'stop-near-you-modal-info':
       'Korzystanie z funkcji najbliższych przystanków wymaga włączenia dostępu do lokalizacji.',
-    'stop-near-you-title': 'Szukaj przystanków i tras',
     'stop-near-you-update-alert': 'Zaktualizowano najbliższe przystanki',
     'stop-number': 'Numer przystanku',
     'stop-page.description': 'Przystanek {name} - {code}',
@@ -5649,6 +5649,7 @@ const translations = {
       'Avgår klockan {time} från {stopName} {stopOrStation}',
     'navileg-start-schedule': '{mode} {route} avgång enligt tidtabell {time}',
     'navileg-walk': 'Gå till',
+    'near-you-search': 'Sök hållplatser och linjer',
     nearest: 'Närmaste { mode }',
     'nearest-favourites': 'Hållplatser nära mig',
     'nearest-favourites-browse-stops': 'Bläddra och välj hållplatser',
@@ -5951,7 +5952,6 @@ const translations = {
     'stop-near-you-modal-header': 'Du har inte aktiverat positionering',
     'stop-near-you-modal-info':
       'Användning av funktion ”hållplatserna nära dig” förutsätter information om din position.',
-    'stop-near-you-title': 'Sök hållplatser och linjer',
     'stop-near-you-update-alert': 'Närliggande hållplatser uppdaterade',
     'stop-number': 'Hållplatsnummer',
     'stop-page.description': 'Hållplats {name} - {code}',

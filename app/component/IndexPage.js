@@ -229,18 +229,18 @@ class IndexPage extends React.Component {
     const { intl, config } = this.context;
     const { colors, fontWeights } = config;
     const { lang } = this.props;
-    const transportModes = getTransportModes(config);
     const nearYouModes = getNearYouModes(config);
-
-    // Styles are defined by which button type is configured (narrow/wide)
-    const modeTitles = filterObject(
-      transportModes,
-      'availableForSelection',
-      true,
-    );
     // If nearYouModes is configured, display those. Otherwise, display all configured transport modes
-    const modes =
-      nearYouModes?.length > 0 ? nearYouModes : Object.keys(modeTitles);
+    const modeArray =
+      nearYouModes.length > 0
+        ? nearYouModes
+        : Object.keys(
+            filterObject(
+              getTransportModes(config),
+              'availableForSelection',
+              true,
+            ),
+          );
 
     const alertsContext = {
       currentTime: this.props.currentTime,
@@ -248,35 +248,33 @@ class IndexPage extends React.Component {
       feedIds: config.feedIds,
     };
 
-    const wideProps = config.narrowNearYouButtons
-      ? {}
+    const directionProps = config.narrowNearYouButtons
+      ? { modeSet: config.iconModeSet, horizontal: true }
       : {
           buttonStyle: config.nearYouButton,
-          title: config.nearYouTitle,
-          modes: modeTitles,
+          modeSet: config.nearbyModeSet,
         };
 
     return config.showNearYouButtons ? (
       <CtrlPanel.NearStopsAndRoutes
-        modeArray={modes}
+        modeArray={modeArray}
         urlPrefix={`/${PREFIX_NEARYOU}`}
         language={lang}
-        showTitle
+        title={config.nearYouTitle}
         alertsContext={alertsContext}
         origin={this.props.origin}
         omitLanguageUrl
         onClick={this.clickStopNearIcon}
-        modeSet={config.nearbyModeSet || config.iconModeSet}
         modeIconColors={colors.iconColors}
         fontWeights={fontWeights}
-        {...wideProps}
+        {...directionProps}
       />
     ) : (
       <div className="stops-near-you-text">
         <h2>
           {intl.formatMessage({
-            id: 'stop-near-you-title',
-            defaultMessage: 'Stops and lines near you',
+            id: 'near-you-search',
+            defaultMessage: 'Search stops and routes',
           })}
         </h2>
       </div>
