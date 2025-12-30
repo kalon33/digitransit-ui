@@ -333,6 +333,7 @@ export default configMerger(walttiConfig, {
   },
 
   nearYouModes: ['bus', 'tram', 'rail', 'citybike'],
+  narrowNearYouButtons: true,
 
   bikeBoardingModes: {
     RAIL: { showNotification: true },
