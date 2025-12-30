@@ -233,7 +233,6 @@ class IndexPage extends React.Component {
     const nearYouModes = getNearYouModes(config);
 
     // Styles are defined by which button type is configured (narrow/wide)
-    const narrowButtons = config.narrowNearYouButtons;
     const modeTitles = filterObject(
       transportModes,
       'availableForSelection',
@@ -249,6 +248,14 @@ class IndexPage extends React.Component {
       feedIds: config.feedIds,
     };
 
+    const wideProps = config.narrowNearYouButtons
+      ? {}
+      : {
+          buttonStyle: config.nearYouButton,
+          title: config.nearYouTitle,
+          modes: modeTitles,
+        };
+
     return config.showNearYouButtons ? (
       <CtrlPanel.NearStopsAndRoutes
         modeArray={modes}
@@ -259,12 +266,10 @@ class IndexPage extends React.Component {
         origin={this.props.origin}
         omitLanguageUrl
         onClick={this.clickStopNearIcon}
-        buttonStyle={narrowButtons ? undefined : config.nearYouButton}
-        title={narrowButtons ? undefined : config.nearYouTitle}
-        modes={narrowButtons ? undefined : modeTitles}
         modeSet={config.nearbyModeSet || config.iconModeSet}
         modeIconColors={colors.iconColors}
         fontWeights={fontWeights}
+        {...wideProps}
       />
     ) : (
       <div className="stops-near-you-text">
