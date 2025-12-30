@@ -96,9 +96,11 @@ const MobileView = ({
     getMenuProps,
     getInputProps,
     getItemProps,
+    setHighlightedIndex,
   } = useCombobox({
     items: state.suggestions,
     inputValue: value,
+    isOpen: true,
     onSelectedItemChange: changes => {
       onSelectedItemChange(changes);
       dispatch({ type: 'TOGGLE_MENU', isMobile: true });
@@ -113,6 +115,7 @@ const MobileView = ({
     stateReducer: (oldState, { changes, type }) => {
       switch (type) {
         case useCombobox.stateChangeTypes.InputKeyDownEscape: {
+          setHighlightedIndex(-1);
           dispatch({ type: 'TOGGLE_MENU', isMobile: true });
           return oldState;
         }
@@ -180,11 +183,16 @@ const MobileView = ({
           <button
             type="button"
             className={styles['combobox-icon']}
-            onClick={() => dispatch({ type: 'TOGGLE_MENU', isMobile: true })}
-            onKeyDown={e =>
-              isKeyboardSelectionEvent(e) &&
-              dispatch({ type: 'TOGGLE_MENU', isMobile: true })
-            }
+            onClick={() => {
+              setHighlightedIndex(-1);
+              dispatch({ type: 'TOGGLE_MENU', isMobile: true });
+            }}
+            onKeyDown={e => {
+              if (isKeyboardSelectionEvent(e)) {
+                setHighlightedIndex(-1);
+                dispatch({ type: 'TOGGLE_MENU', isMobile: true });
+              }
+            }}
             aria-label={t('cancel', { lng })}
             tabIndex={0}
           >
