@@ -67,7 +67,9 @@ function StopPageTabs({ stop }, { match }) {
     maxAlertSeverity === AlertSeverityLevelType.Unknown
   ) {
     disruptionClassName = 'active-disruption-alert';
-    disruptionIcon = <Icon img="icon_caution-no-excl-no-stroke" />;
+    disruptionIcon = (
+      <Icon img="icon_caution-no-excl-no-stroke" color="#DC0451" />
+    );
   } else if (maxAlertSeverity === AlertSeverityLevelType.Info) {
     disruptionClassName = 'active-service-alert';
     disruptionIcon = <Icon className="service-alert-icon" img="icon_info" />;
