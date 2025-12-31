@@ -79,10 +79,18 @@ const validNearYouModes = [
   'airplane',
   'ferry',
   'citybike',
+  'bike-park',
+  'car-park',
 ];
 
 function getIconName(mode, modeSet) {
-  return modeSet === 'default' ? `mode-${mode}` : `mode-${modeSet}-${mode}`;
+  switch (mode) {
+    case 'bike-park':
+    case 'car-park':
+      return mode;
+    default:
+      return modeSet === 'default' ? `mode-${mode}` : `mode-${modeSet}-${mode}`;
+  }
 }
 
 function NearStopsAndRoutes({
