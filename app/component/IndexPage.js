@@ -382,13 +382,7 @@ class IndexPage extends React.Component {
           <h1 className="sr-only">
             <FormattedMessage id="index.title" default="Journey Planner" />
           </h1>
-          <CtrlPanel
-            instance="hsl"
-            language={lang}
-            origin={origin}
-            position="left"
-            fontWeights={fontWeights}
-          >
+          <CtrlPanel position="left" fontWeights={fontWeights}>
             <span className="sr-only">
               <FormattedMessage
                 id="search-fields.sr-instructions"
@@ -440,12 +434,7 @@ class IndexPage extends React.Component {
             backgroundColor: '#ffffff',
           }}
         >
-          <CtrlPanel
-            instance="hsl"
-            language={lang}
-            position="bottom"
-            fontWeights={fontWeights}
-          >
+          <CtrlPanel position="bottom" fontWeights={fontWeights}>
             <LocationSearch
               disableAutoFocus
               isMobile
