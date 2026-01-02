@@ -22,6 +22,19 @@ function StopRouteSearch({ mode, ...rest }, { router, config }) {
   const selectHandler = item => {
     router.push(getStopRoutePath(item));
   };
+  let targets;
+  switch (mode) {
+    case 'CITYBIKE':
+      targets = ['VehicleRentalStations'];
+      break;
+    case 'BIKEPARK':
+    case 'CARPARK':
+      targets = ['ParkingAreas'];
+      break;
+    default:
+      targets = ['Stops', 'Stations', 'Routes'];
+      break;
+  }
   return (
     <div className="stops-near-you-search-container">
       <DTAutoSuggestWithSearchContext
@@ -34,11 +47,7 @@ function StopRouteSearch({ mode, ...rest }, { router, config }) {
         value=""
         filterResults={filter}
         sources={searchSources}
-        targets={
-          mode === 'CITYBIKE'
-            ? ['VehicleRentalStations']
-            : ['Stops', 'Stations', 'Routes']
-        }
+        targets={targets}
         selectHandler={selectHandler} // prop for context handler
         getAutoSuggestIcons={config.getAutoSuggestIcons}
         modeIconColors={config.colors.iconColors}
