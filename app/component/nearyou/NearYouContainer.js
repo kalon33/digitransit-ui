@@ -179,7 +179,7 @@ function NearYouContainer(
     !items.length && refetches >= config.maxNearYouRefetches && !loading;
   return (
     <>
-      {alerts?.length && <DisruptionBanner alerts={alerts} mode={mode} />}
+      {alerts?.length ? <DisruptionBanner alerts={alerts} mode={mode} /> : null}
       {((!relay.hasMore() && !items.length && !prioritizedStops.length) ||
         (noStopsFound && !prioritizedStops.length)) && (
         <>
