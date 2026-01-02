@@ -38,6 +38,9 @@ const containerComponent = createPaginationContainer(
                   lon
                   stationId
                 }
+                ... on VehicleParking {
+                  ...ParkNearYou_park
+                }
                 ... on Stop {
                   gtfsId
                   lat
