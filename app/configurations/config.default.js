@@ -169,9 +169,9 @@ export default {
   },
 
   omitNonPickups: true,
-  maxNearYouStopAmount: 5,
-  maxNearYouStopRefetches: 5,
-  maxNearYouStopDistance: {
+  maxNearYouCount: 5,
+  maxNearYouRefetches: 5,
+  maxNearYouDistance: {
     favorite: 20000,
     bus: 50000,
     tram: 20000,
@@ -180,6 +180,8 @@ export default {
     ferry: 50000,
     citybike: 20000,
     airplane: 100000,
+    bikepark: 10000,
+    carpark: 50000,
   },
 
   defaultSettings: {

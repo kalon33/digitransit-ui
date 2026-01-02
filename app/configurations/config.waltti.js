@@ -124,7 +124,7 @@ export default {
   },
   nearYouModes: ['bus'],
   nearYouModeSet: 'waltti',
-  maxNearYouStopDistance: {
+  maxNearYouDistance: {
     bus: 30000,
     tram: 30000,
     rail: 50000,

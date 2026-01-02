@@ -335,7 +335,7 @@ export default {
     en: 'HSL',
   },
 
-  maxNearYouStopDistance: {
+  maxNearYouDistance: {
     favorite: 20000,
     bus: 20000,
     tram: 20000,

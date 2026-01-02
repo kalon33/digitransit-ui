@@ -76,7 +76,7 @@ function NearYouContainer(
     const fetchMore =
       edges.filter(
         stop => !(stop.node.place.stoptimesWithoutPatterns?.length === 0),
-      ).length < 5 && refetches.current < config.maxNearYouStopRefetches;
+      ).length < 5 && refetches.current < config.maxNearYouRefetches;
     if (fetchMore) {
       showMore(true);
     }
@@ -95,7 +95,7 @@ function NearYouContainer(
     loadingDone();
   }, []);
 
-  const createNearYouStops = () => {
+  const createNearYouPlaces = () => {
     if (!places?.nearest) {
       return [];
     }
@@ -170,17 +170,17 @@ function NearYouContainer(
     return stops;
   };
 
-  const stops = createNearYouStops();
-  const alerts = stops
+  const items = createNearYouPlaces();
+  const alerts = items
     .flatMap(stop => stop?.props?.stop?.routes || [])
     .flatMap(route => route?.alerts || [])
     .filter(alert => alert.alertSeverityLevel === 'SEVERE');
   const noStopsFound =
-    !stops.length && refetches >= config.maxNearYouStopRefetches && !loading;
+    !items.length && refetches >= config.maxNearYouRefetches && !loading;
   return (
     <>
       {alerts?.length && <DisruptionBanner alerts={alerts} mode={mode} />}
-      {((!relay.hasMore() && !stops.length && !prioritizedStops.length) ||
+      {((!relay.hasMore() && !items.length && !prioritizedStops.length) ||
         (noStopsFound && !prioritizedStops.length)) && (
         <>
           {withSeparator && <div className="separator" />}
@@ -199,7 +199,7 @@ function NearYouContainer(
         </div>
       )}
       <div role="list" className="stops-near-you-container">
-        {stops}
+        {items}
       </div>
       {loading === 2 && (
         <div className="stops-near-you-spinner-container">
