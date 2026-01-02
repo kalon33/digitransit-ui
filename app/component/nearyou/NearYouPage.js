@@ -179,13 +179,25 @@ function NearYouPage(
         vehicleRentalStationIds: favouriteVehicleStationIds,
       };
     }
-    let placeTypes = ['STOP', 'STATION'];
-    let qModes = [queryMode];
+    let placeTypes = [];
+    let qModes = [];
     let allowedNetworks = [];
-    if (queryMode === 'CITYBIKE') {
-      placeTypes = 'VEHICLE_RENT';
-      qModes = ['BICYCLE'];
-      allowedNetworks = getDefaultNetworks(config);
+    switch (queryMode) {
+      case 'CITYBIKE':
+        placeTypes = 'VEHICLE_RENT';
+        qModes = ['BICYCLE'];
+        allowedNetworks = getDefaultNetworks(config);
+        break;
+      case 'BIKEPARK':
+        placeTypes = 'BIKE_PARK';
+        break;
+      case 'CARPARK':
+        placeTypes = 'CAR_PARK';
+        break;
+      default:
+        placeTypes = ['STOP', 'STATION'];
+        qModes = [queryMode];
+        break;
     }
     const prioritizedStops =
       config.prioritizedStopsNearYou[queryMode.toLowerCase()] || [];
@@ -358,11 +370,22 @@ function NearYouPage(
             render={({ props }) => {
               const prioritizedStops =
                 config.prioritizedStopsNearYou[tabMode.toLowerCase()] || [];
-              const favouriteIds =
-                mode === 'CITYBIKE'
-                  ? new Set(favouriteVehicleStationIds)
-                  : new Set([...favouriteStopIds, ...favouriteStationIds]);
-
+              let favIds;
+              switch (mode) {
+                case 'CITYBIKE':
+                  favIds = new Set(favouriteVehicleStationIds);
+                  break;
+                case 'BIKEPARK':
+                case 'CARPARK':
+                  favIds = new Set();
+                  break;
+                default:
+                  favIds = new Set([
+                    ...favouriteStopIds,
+                    ...favouriteStationIds,
+                  ]);
+                  break;
+              }
               return (
                 <div className="stops-near-you-page">
                   {renderStopRouteSearch && (
@@ -428,7 +451,7 @@ function NearYouPage(
                       mode={tabMode}
                       isParentTabActive={isActive}
                       currentTime={currentTime}
-                      favouriteIds={favouriteIds}
+                      favouriteIds={favIds}
                     />
                   ) : (
                     <div className="stops-near-you-spinner-container">
