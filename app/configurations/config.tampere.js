@@ -332,7 +332,7 @@ export default configMerger(walttiConfig, {
     },
   },
 
-  nearYouModes: ['bus', 'tram', 'rail', 'citybike', 'bike-park'],
+  nearYouModes: ['bus', 'tram', 'rail', 'citybike', 'bikepark', 'carpark'],
   narrowNearYouButtons: true,
 
   bikeBoardingModes: {
