@@ -37,7 +37,7 @@ function ParkAndRideContent(
     spacesAvailable = vehicleParking.availability?.bicycleSpaces;
   } else {
     spacesAvailable = vehicleParking.availability?.carSpaces;
-    maxCapacity = vehicleParking.capacity?.carSpaces || 1;
+    maxCapacity = vehicleParking.parkCapacity?.carSpaces || 1;
   }
 
   const {
