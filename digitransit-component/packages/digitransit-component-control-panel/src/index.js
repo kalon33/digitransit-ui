@@ -79,15 +79,16 @@ const validNearYouModes = [
   'airplane',
   'ferry',
   'citybike',
-  'bike-park',
-  'car-park',
+  'bikepark',
+  'carpark',
 ];
 
 function getIconName(mode, modeSet) {
   switch (mode) {
-    case 'bike-park':
-    case 'car-park':
-      return mode;
+    case 'bikepark':
+      return 'bike-park';
+    case 'carpark':
+      return 'car-park';
     default:
       return modeSet === 'default' ? `mode-${mode}` : `mode-${modeSet}-${mode}`;
   }
