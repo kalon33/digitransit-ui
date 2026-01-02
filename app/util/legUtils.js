@@ -530,7 +530,7 @@ export function getTotalBikingDistance(itinerary) {
 
 export function getTotalDrivingDistance(itinerary, config = {}) {
   // Don't rely only driving legs when calculating the one way journey.
-  if (config?.emphasizeOneWayJourney) {
+  if (config.emphasizeOneWayJourney) {
     return sumDistances(itinerary.legs);
   }
   return sumDistances(itinerary.legs.filter(isDrivingLeg));
