@@ -114,6 +114,8 @@ const handleBounds = (location, edges) => {
   return bounds;
 };
 
+const nonTransit = ['CITYBIKE', 'BIKEPARK', 'CARPARK'];
+
 function NearYouMap(
   {
     breakpoint,
@@ -138,11 +140,11 @@ function NearYouMap(
   const clientOn = useRef(false);
   const mwtRef = useRef();
   const { mode } = match.params;
-  const isTransitMode = mode !== 'CITYBIKE';
   const walkRoutingThreshold =
     mode === 'RAIL' || mode === 'SUBWAY' || mode === 'FERRY' ? 3000 : 1500;
   const { environment } = relay;
   const { config } = context;
+  const isTransitMode = !nonTransit.includes(mode);
 
   const fetchPlan = node => {
     if (node.distance < walkRoutingThreshold) {
@@ -263,7 +265,7 @@ function NearYouMap(
   useEffect(() => {
     let sortedEdges;
     if (stops.nearest?.edges) {
-      if (!isTransitMode) {
+      if (mode === 'CITYBIKE') {
         const withNetworks = stops.nearest.edges.filter(edge => {
           return !!edge.node.place?.rentalNetwork?.networkId;
         });
@@ -275,10 +277,12 @@ function NearYouMap(
         sortedEdges = filteredCityBikeEdges
           .slice()
           .sort(sortNearYouRentalStations(favouriteIds));
-      } else {
+      } else if (isTransitMode) {
         sortedEdges = stops.nearest.edges
           .slice()
           .sort(sortNearYouStops(favouriteIds, walkRoutingThreshold));
+      } else {
+        sortedEdges = stops.nearest.edges.slice();
       }
 
       sortedEdges.unshift(
