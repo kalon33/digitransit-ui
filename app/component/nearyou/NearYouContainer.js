@@ -26,7 +26,6 @@ function NearYouContainer(
     withSeparator,
     prioritizedStops,
     mode,
-    renderDisruptionBanner,
     isParentTabActive,
     favouriteIds,
   },
@@ -180,9 +179,7 @@ function NearYouContainer(
     !stops.length && refetches >= config.maxNearYouStopRefetches && !loading;
   return (
     <>
-      {renderDisruptionBanner && (
-        <DisruptionBanner alerts={alerts || []} mode={mode} />
-      )}
+      {alerts?.length && <DisruptionBanner alerts={alerts} mode={mode} />}
       {((!relay.hasMore() && !stops.length && !prioritizedStops.length) ||
         (noStopsFound && !prioritizedStops.length)) && (
         <>
@@ -239,7 +236,6 @@ NearYouContainer.propTypes = {
   withSeparator: PropTypes.bool,
   prioritizedStops: PropTypes.arrayOf(PropTypes.string).isRequired,
   mode: PropTypes.string.isRequired,
-  renderDisruptionBanner: PropTypes.bool,
   isParentTabActive: PropTypes.bool,
   // eslint-disable-next-line
   favouriteIds: PropTypes.object,
@@ -248,7 +244,6 @@ NearYouContainer.propTypes = {
 NearYouContainer.defaultProps = {
   places: undefined,
   withSeparator: false,
-  renderDisruptionBanner: false,
   isParentTabActive: false,
 };
 

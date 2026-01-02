@@ -426,7 +426,6 @@ function NearYouPage(
                       position={searchPosition}
                       withSeparator={!renderStopRouteSearch}
                       mode={tabMode}
-                      renderDisruptionBanner={tabMode !== 'CITYBIKE'}
                       isParentTabActive={isActive}
                       currentTime={currentTime}
                       favouriteIds={favouriteIds}
