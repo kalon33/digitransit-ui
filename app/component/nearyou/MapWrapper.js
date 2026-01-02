@@ -82,9 +82,9 @@ export default function MapWrapper(
 
   const filteredMapLayers = {
     ...mapLayers,
+    parkAndRide: mode === 'CARPARK',
+    parkAndRideForBikes: mode === 'BIKEPARK',
     citybike: mode === 'CITYBIKE',
-    parkAndRide: mode === 'CAR_PARK',
-    parkAndRideForBikes: mode === 'BIKE_PARK',
     citybikeOverrideMinZoom: mode === 'CITYBIKE',
   };
   if (!config.map.showLayerSelector) {
@@ -98,8 +98,8 @@ export default function MapWrapper(
     case 'CITYBIKE':
       favouriteIds = new Set(favouriteVehicleStationIds);
       break;
-    case 'BIKE_PARK':
-    case 'CAR_PARK':
+    case 'BIKEPARK':
+    case 'CARPARK':
       favouriteIds = new Set();
       break;
     default:

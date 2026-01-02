@@ -10,6 +10,7 @@ import {
   sortNearYouStops,
 } from '../../util/sortUtils';
 import VehicleRentalStationNearYou from './VehicleRentalStationNearYou';
+import ParkNearYou from './ParkNearYou';
 import Loading from '../Loading';
 import Icon from '../Icon';
 import { getDefaultNetworks } from '../../util/vehicleRentalUtils';
@@ -116,6 +117,8 @@ function NearYouContainer(
         .slice(0, 5)
         .sort(sortNearYouRentalStations(favouriteIds));
       sorted.push(...filteredCityBikeStopEdges.slice(5));
+    } else if (mode === 'BIKEPARK' || mode === 'CARPARK') {
+      sorted = edges;
     } else {
       sorted = edges
         .slice(0, 5)
@@ -148,6 +151,16 @@ function NearYouContainer(
               station={place}
               currentTime={currentTime}
               isParentTabActive={isParentTabActive}
+            />
+          );
+        case 'VehicleParking':
+          return (
+            <ParkNearYou
+              key={`${place.stationId}`}
+              park={place}
+              currentTime={currentTime}
+              isParentTabActive={isParentTabActive}
+              mode={mode}
             />
           );
         default:
@@ -288,6 +301,9 @@ const refetchContainer = createPaginationContainer(
                   rentalNetwork {
                     networkId
                   }
+                }
+                ... on VehicleParking {
+                  ...ParkNearYou_park
                 }
                 ... on Stop {
                   ...StopNearYouContainer_stop

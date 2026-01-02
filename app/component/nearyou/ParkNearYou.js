@@ -25,7 +25,7 @@ const ParkNearYou = ({ park, relay, currentTime, isParentTabActive, mode }) => {
     }
   }, [currentTime, isParentTabActive]);
 
-  const prefix = mode === 'BIKE_PARK' ? PREFIX_BIKEPARK : PREFIX_CARPARK;
+  const prefix = mode === 'BIKEPARK' ? PREFIX_BIKEPARK : PREFIX_CARPARK;
   return (
     <span role="listitem">
       <div className="stop-near-you-container">
