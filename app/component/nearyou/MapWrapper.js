@@ -11,6 +11,8 @@ import NearYouMapContainer from './NearYouMapContainer';
 import NearYouFavouritesMapContainer from './NearYouFavouritesMapContainer';
 import { mapLayerShape } from '../../store/MapLayerStore';
 
+const TransitStopModes = ['BUS', 'FERRY', 'RAIL', 'SUBWAY', 'TRAM'];
+
 export default function MapWrapper(
   {
     match,
@@ -78,21 +80,33 @@ export default function MapWrapper(
     );
   }
 
-  const citybike = mode === 'CITYBIKE';
   const filteredMapLayers = {
     ...mapLayers,
-    citybike,
-    citybikeOverrideMinZoom: citybike,
+    citybike: mode === 'CITYBIKE',
+    parkAndRide: mode === 'CAR_PARK',
+    parkAndRideForBikes: mode === 'BIKE_PARK',
+    citybikeOverrideMinZoom: mode === 'CITYBIKE',
   };
   if (!config.map.showLayerSelector) {
     filteredMapLayers.stop = {};
-    if (!citybike) {
+    if (TransitStopModes.includes(mode)) {
       filteredMapLayers.stop[mode.toLowerCase()] = true;
     }
   }
-  const favouriteIds = citybike
-    ? new Set(favouriteVehicleStationIds)
-    : new Set([...favouriteStopIds, ...favouriteStationIds]);
+  let favouriteIds;
+  switch (mode) {
+    case 'CITYBIKE':
+      favouriteIds = new Set(favouriteVehicleStationIds);
+      break;
+    case 'BIKE_PARK':
+    case 'CAR_PARK':
+      favouriteIds = new Set();
+      break;
+    default:
+      favouriteIds = new Set([...favouriteStopIds, ...favouriteStationIds]);
+      break;
+  }
+
   return (
     <QueryRenderer
       query={graphql`
