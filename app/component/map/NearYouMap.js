@@ -263,6 +263,9 @@ function NearYouMap(
   }, [uniqueRealtimeTopics]);
 
   useEffect(() => {
+    if (!stops) {
+      return;
+    }
     let sortedEdges;
     if (stops.nearest?.edges) {
       if (mode === 'CITYBIKE') {

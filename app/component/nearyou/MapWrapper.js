@@ -59,23 +59,21 @@ export default function MapWrapper(
         `}
         variables={variables}
         environment={relayEnvironment}
-        render={({ props }) => {
-          return props ? (
-            <NearYouFavouritesMapContainer
-              mapLayers={mapLayers}
-              favouriteIds={
-                new Set([
-                  ...favouriteStopIds,
-                  ...favouriteStationIds,
-                  ...favouriteVehicleStationIds,
-                ])
-              }
-              {...commonProps}
-              {...props}
-              {...rest}
-            />
-          ) : null;
-        }}
+        render={({ props }) => (
+          <NearYouFavouritesMapContainer
+            mapLayers={mapLayers}
+            favouriteIds={
+              new Set([
+                ...favouriteStopIds,
+                ...favouriteStationIds,
+                ...favouriteVehicleStationIds,
+              ])
+            }
+            {...commonProps}
+            {...props}
+            {...rest}
+          />
+        )}
       />
     );
   }
@@ -141,18 +139,16 @@ export default function MapWrapper(
       `}
       variables={variables}
       environment={relayEnvironment}
-      render={({ props }) => {
-        return props ? (
-          <NearYouMapContainer
-            mapLayers={filteredMapLayers}
-            mapLayerOptions={mapLayerOptions}
-            favouriteIds={favouriteIds}
-            {...commonProps}
-            {...props}
-            {...rest}
-          />
-        ) : null;
-      }}
+      render={({ props }) => (
+        <NearYouMapContainer
+          mapLayers={filteredMapLayers}
+          mapLayerOptions={mapLayerOptions}
+          favouriteIds={favouriteIds}
+          {...commonProps}
+          {...props}
+          {...rest}
+        />
+      )}
     />
   );
 }
