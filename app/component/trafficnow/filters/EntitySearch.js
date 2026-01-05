@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { withSearchContext } from '../../WithSearchContext';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 import { useFilterContext } from './FiltersContext';
-import { useTranslationsContext } from '../../../util/useTranslationsContext';
 
 const searchSources = ['Favourite', 'History', 'Datasource'];
 
@@ -16,7 +15,6 @@ const EntitySearch = ({ filterId }) => {
     iconModeSet,
   } = useConfigContext();
   const { selectedFilters, setFilter } = useFilterContext();
-  const intl = useTranslationsContext();
 
   const DTAutoSuggestWithSearchContext = withSearchContext(DTAutoSuggest);
 
@@ -32,17 +30,14 @@ const EntitySearch = ({ filterId }) => {
       <FormattedMessage
         tagName="legend"
         id="traffic-now_filters_entity-search"
-        defaultMessage="Search for individual route or stop"
+        defaultMessage="Hae yksittäistä linjaa tai pysäkkiä"
       />
       <DTAutoSuggestWithSearchContext
         appElement="#app"
         icon="search"
         id="traffic-now_filters_entity-search--input"
         className="traffic-now_filters_entity-search--input"
-        placeholder={intl.formatMessage({
-          id: 'traffic-now_filters_entity-search--placeholder',
-          defaultMessage: 'Route, stop or station',
-        })}
+        placeholder="Linja, pysäkki tai asema"
         geocodingSize={40}
         sources={searchSources}
         value={selectedFilters[filterId]?.address}
