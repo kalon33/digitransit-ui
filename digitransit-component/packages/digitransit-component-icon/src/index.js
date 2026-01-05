@@ -28,6 +28,8 @@ import Plus from './assets/plus.svg';
 import Attention from './assets/attention.svg';
 import Dropdown from './assets/dropdown.svg';
 import CarPark from './assets/car-park.svg';
+import CarParkFill from './assets/car-park-fill.svg';
+import BikeParkFill from './assets/bike-park-fill.svg';
 import BikePark from './assets/bike-park.svg';
 import Time from './assets/time.svg';
 import Ellipsis from './assets/ellipsis.svg';
@@ -53,11 +55,11 @@ import ModeDigiFunicular from './assets/mode_digi_funicular.svg';
 import FutureRoute from './assets/icon-route.svg';
 import Position from './assets/position.svg';
 import SearchStreetName from './assets/search-streetname.svg';
-import BusWaltti from './assets/bus-waltti.svg';
-import FerryWaltti from './assets/ferry-waltti.svg';
-import BikeRentalStationWaltti from './assets/citybike-waltti.svg';
-import RailWaltti from './assets/rail-waltti.svg';
-import TramWaltti from './assets/tram-waltti.svg';
+import BusFill from './assets/bus-fill.svg';
+import FerryFill from './assets/ferry-fill.svg';
+import BikeRentalStationFill from './assets/citybike-fill.svg';
+import RailFill from './assets/rail-fill.svg';
+import TramFill from './assets/tram-fill.svg';
 import Check from './assets/check.svg';
 import SearchBusStopDefault from './assets/search-bus-stop-default.svg';
 import SearchBusStopExpressDefault from './assets/search-bus-stop-express-default.svg';
@@ -139,11 +141,13 @@ const iconMap = {
   'mode-digitransit-airplane': ModeAirplane,
   'mode-digitransit-subway': Subway,
   'mode-digitransit-funicular': ModeDigiFunicular,
-  'mode-waltti-bus': BusWaltti,
-  'mode-waltti-citybike': BikeRentalStationWaltti,
-  'mode-waltti-ferry': FerryWaltti,
-  'mode-waltti-rail': RailWaltti,
-  'mode-waltti-tram': TramWaltti,
+  'bus-fill': BusFill,
+  'citybike-fill': BikeRentalStationFill,
+  'ferry-fill': FerryFill,
+  'rail-fill': RailFill,
+  'tram-fill': TramFill,
+  'bike-park-fill': BikeParkFill,
+  'car-park-fill': CarParkFill,
   'future-route': FutureRoute,
   position: Position,
   'search-street-name': SearchStreetName,
