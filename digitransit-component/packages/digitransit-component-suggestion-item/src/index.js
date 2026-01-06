@@ -60,8 +60,8 @@ const iconProps = {
   'BUS-digitransit': ['bus-digitransit', 'mode-bus'],
   'BUS-stop-digitransit': ['bus-stop-digitransit', 'mode-bus'],
 
-  'BUS-EXPRESS-hsl': ['bus-stop-express-hsl', 'mode-bus-express'],
-  'BUS-EXPRESS-stop-hsl': ['bus-express-stop-hsl', 'mode-bus-express'],
+  'BUS-EXPRESS-hsl': ['bus-hsl', 'mode-bus-express'],
+  'BUS-EXPRESS-stop-hsl': ['bus-stop-hsl', 'mode-bus-express'],
   'BUS-EXPRESS-digitransit': ['bus-digitransit', 'mode-bus'],
   'BUS-EXPRESS-stop-digitransit': ['bus-stop-digitransit', 'mode-bus'],
 

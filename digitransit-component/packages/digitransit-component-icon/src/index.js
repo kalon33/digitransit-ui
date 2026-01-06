@@ -39,7 +39,6 @@ import Subway from './assets/subway.svg';
 import Funicular from './assets/funicular.svg';
 import FunicularStop from './assets/funicular-stop.svg';
 import BusHsl from './assets/bus-hsl.svg';
-import BusExpressHsl from './assets/bus-express-hsl.svg';
 import BusReplacementHsl from './assets/bus-replacement-hsl.svg';
 import SpeedTramHsl from './assets/speedtram-hsl.svg';
 import BusLocalHsl from './assets/bus-local-hsl.svg';
@@ -48,7 +47,6 @@ import TramHsl from './assets/tram-hsl.svg';
 import CityBikeHsl from './assets/citybike-hsl.svg';
 import FerryHsl from './assets/ferry-hsl.svg';
 import BusStopHsl from './assets/bus-stop-hsl.svg';
-import BusStopExpressHsl from './assets/bus-express-stop-hsl.svg';
 import SpeedTramStopHsl from './assets/speedtram-stop-hsl.svg';
 import RailStopHsl from './assets/rail-stop-hsl.svg';
 import FerryStopHsl from './assets/ferry-stop-hsl.svg';
@@ -119,7 +117,6 @@ const iconMap = {
   'funicular-stop': FunicularStop,
   // HSL
   'bus-hsl': BusHsl,
-  'bus-express-hsl': BusExpressHsl,
   'bus-local-hsl': BusLocalHsl,
   'bus-replacement-hsl': BusReplacementHsl,
   'ferry-hsl': FerryHsl,
@@ -128,7 +125,6 @@ const iconMap = {
   'tram-hsl': TramHsl,
   'citybike-hsl': CityBikeHsl,
   'bus-stop-hsl': BusStopHsl,
-  'bus-stop-express-hsl': BusStopExpressHsl,
   'speedtram-stop-hsl': SpeedTramStopHsl,
   'rail-stop-hsl': RailStopHsl,
   'ferry-stop-hsl': FerryStopHsl,
