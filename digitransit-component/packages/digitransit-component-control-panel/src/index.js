@@ -64,7 +64,6 @@ SeparatorLine.defaultProps = {
  *      modeArray={['bus', 'tram', 'subway', 'rail', 'ferry', 'citybike']}
  *      language="fi"
  *      urlPrefix="http://example.com/lahellasi"
- *      showTitle
  *      alertsContext={alertsContext}
  *    />
  *
@@ -83,15 +82,12 @@ const validNearYouModes = [
   'carpark',
 ];
 
-function getIconName(mode, modeSet) {
-  switch (mode) {
-    case 'bikepark':
-      return 'bike-park';
-    case 'carpark':
-      return 'car-park';
-    default:
-      return modeSet === 'default' ? `mode-${mode}` : `mode-${modeSet}-${mode}`;
-  }
+const noTheme = ['bikepark', 'carpark', 'subway', 'airplane']; // common icon in all themes
+
+function getIconName(mode, modeSet, horizontal) {
+  const theme = noTheme.includes[mode] ? '' : `-${modeSet}`;
+  const fill = horizontal ? '' : '-fill'; // do not render boxed icon for vertical
+  return `${mode}${fill}${theme}`;
 }
 
 function NearStopsAndRoutes({
@@ -150,7 +146,11 @@ function NearStopsAndRoutes({
           <span className={styles['transport-mode-icon-container']}>
             <span className={styles['transport-mode-icon-with-icon']}>
               <Icon
-                img={mode === 'favorite' ? 'star' : getIconName(mode, modeSet)}
+                img={
+                  mode === 'favorite'
+                    ? 'star'
+                    : getIconName(mode, modeSet, true)
+                }
                 color={modeIconColors[`mode-${mode}`]}
               />
               {withAlert && (
@@ -170,7 +170,7 @@ function NearStopsAndRoutes({
               '--borderRadius': buttonStyle.borderRadius,
             }}
           >
-            <Icon img={getIconName(mode, modeSet)} />
+            <Icon img={getIconName(mode, modeSet, false)} />
             {withAlert && (
               <span className={styles['transport-mode-alert-icon']}>
                 <Icon img="caution" color="#dc0451" />
@@ -280,7 +280,7 @@ NearStopsAndRoutes.defaultProps = {
     'mode-ferry': '#007A97',
     'mode-citybike': '#F2B62D',
   },
-  modeSet: 'default',
+  modeSet: 'hsl',
   fontWeights: {
     medium: 500,
   },
@@ -296,7 +296,6 @@ NearStopsAndRoutes.defaultProps = {
  *      modearray={['bus', 'tram', 'subway', 'rail', 'ferry', 'citybike']}
  *      language="fi"
  *      urlPrefix="http://example.com/lahellasi"
- *      showTitle
  *    />
  *  </CtrlPanel>
  */
