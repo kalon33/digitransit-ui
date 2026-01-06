@@ -249,16 +249,16 @@ class IndexPage extends React.Component {
     };
 
     const directionProps = config.narrowNearYouButtons
-      ? { modeSet: config.iconModeSet }
+      ? {}
       : {
           buttonStyle: config.nearYouButton,
-          modeSet: config.nearYouModeSet,
           horizontal: false,
         };
 
     return config.showNearYouButtons ? (
       <CtrlPanel.NearStopsAndRoutes
         modeArray={modeArray}
+        modeSet={config.iconModeSet}
         urlPrefix={`/${PREFIX_NEARYOU}`}
         language={lang}
         title={config.nearYouTitle}

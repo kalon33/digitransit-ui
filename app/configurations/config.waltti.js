@@ -123,7 +123,6 @@ export default {
     en: 'Timetables and routes',
   },
   nearYouModes: ['bus'],
-  nearYouModeSet: 'waltti',
   maxNearYouDistance: {
     bus: 30000,
     tram: 30000,
