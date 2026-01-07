@@ -85,7 +85,7 @@ const validNearYouModes = [
 const noTheme = ['bikepark', 'carpark', 'subway', 'airplane']; // common icon in all themes
 
 function getIconName(mode, modeSet, horizontal) {
-  const theme = noTheme.includes[mode] ? '' : `-${modeSet}`;
+  const theme = noTheme.includes(mode) ? '' : `-${modeSet}`;
   const fill = horizontal ? '' : '-fill'; // do not render boxed icon for vertical
   return `${mode}${fill}${theme}`;
 }
