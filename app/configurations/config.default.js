@@ -387,6 +387,8 @@ export default {
       'mode-scooter': '#C5CAD2',
       'mode-taxi': '#647693',
       'mode-replacement-bus': '#DC0451',
+      'mode-bikepark': '#f2b62d',
+      'mode-carpark': '#007ac9',
     },
   },
   iconModeSet: 'digitransit',
