@@ -528,11 +528,7 @@ export function getTotalBikingDistance(itinerary) {
   return sumDistances(itinerary.legs.filter(isBikingLeg));
 }
 
-export function getTotalDrivingDistance(itinerary, config = {}) {
-  // Don't rely only driving legs when calculating the one way journey.
-  if (config.emphasizeOneWayJourney) {
-    return sumDistances(itinerary.legs);
-  }
+export function getTotalDrivingDistance(itinerary) {
   return sumDistances(itinerary.legs.filter(isDrivingLeg));
 }
 

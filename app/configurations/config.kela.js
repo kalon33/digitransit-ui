@@ -49,9 +49,7 @@ export default {
       },
     ],
   },
-  carBoardingModes: {
-    FERRY: { showNotification: false },
-  },
+
   transportModes: {
     citybike: {
       availableForSelection: false,
