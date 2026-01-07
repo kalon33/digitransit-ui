@@ -39,7 +39,6 @@ const getRouteMode = (props, set) => {
 const iconProps = {
   bikestation: ['citybike'],
   currentPosition: ['locate'],
-  stop: ['busstop'],
   locality: ['city'],
   station: ['station'],
   localadmin: ['city'],
@@ -55,42 +54,16 @@ const iconProps = {
   back: ['arrow'],
   futureRoute: ['future-route'],
 
-  'BUS-hsl': ['bus-hsl', 'mode-bus'],
-  'BUS-stop-hsl': ['bus-stop-hsl', 'mode-bus'],
-  'BUS-digitransit': ['bus-digitransit', 'mode-bus'],
-  'BUS-stop-digitransit': ['bus-stop-digitransit', 'mode-bus'],
-
-  'BUS-EXPRESS-hsl': ['bus-hsl', 'mode-bus-express'],
-  'BUS-EXPRESS-stop-hsl': ['bus-stop-hsl', 'mode-bus-express'],
-  'BUS-EXPRESS-digitransit': ['bus-digitransit', 'mode-bus'],
-  'BUS-EXPRESS-stop-digitransit': ['bus-stop-digitransit', 'mode-bus'],
-
-  'SPEEDTRAM-hsl': ['speedtram-hsl', 'mode-speedtram'],
-  'SPEEDTRAM-digitransit': ['mode-tram', 'mode-tram'],
-  'SPEEDTRAM-stop-hsl': ['speedtram-stop-hsl', 'mode-speedtram'],
-  'SPEEDTRAM-stop-digitransit': ['tram-stop', 'mode-tram'],
-
-  'RAIL-hsl': ['rail-hsl', 'mode-rail'],
-  'RAIL-stop-hsl': ['rail-stop-hsl', 'mode-rail'],
-  'RAIL-digitransit': ['rail-digitransit', 'mode-rail'],
-  'RAIL-stop-digitransit': ['rail-stop-digitransit', 'mode-rail'],
-
-  'TRAM-hsl': ['tram-hsl', 'mode-tram'],
-  'TRAM-stop-hsl': ['tram-stop-hsl', 'mode-tram'],
-  'TRAM-digitransit': ['tram-digitransit', 'mode-tram'],
-  'TRAM-stop-digitransit': ['tram-stop-digitransit', 'mode-tram'],
-
-  'FERRY-hsl': ['ferry-hsl', 'mode-ferry'],
-  'FERRY-stop-hsl': ['ferry-stop-hsl', 'mode-ferry-external'],
-  'FERRY-digitransit': ['ferry-digitransit', 'mode-ferry'],
-  'FERRY-stop-digitransit': ['ferry-stop-digitransit', 'mode-ferry-external'],
-
-  'BUS-TRAM-stop-digitransit': ['bustram-stop-digitransit', 'mode-tram'],
-
-  SUBWAY: ['subway', 'mode-subway'],
-  AIRPLANE: ['airplane', 'mode-airplane'],
-  FUNICULAR: ['funicular', 'mode-funicular'],
-  'FUNICULAR-stop': ['funicular-stop', 'mode-funicular'],
+  // map unusual transport modes
+  'bus-express-hsl': ['bus-hsl', 'mode-bus-express'],
+  'bus-express-stop-hsl': ['bus-stop-hsl', 'mode-bus-express'],
+  'bus-express-digitransit': ['bus-digitransit', 'mode-bus'],
+  'bus-express-stop-digitransit': ['bus-stop-digitransit', 'mode-bus'],
+  'speedtram-digitransit': ['mode-tram', 'mode-tram'],
+  'speedtram-stop-digitransit': ['tram-stop-digitransit', 'mode-tram'],
+  'ferry-stop-hsl': ['ferry-stop-hsl', 'mode-ferry-external'],
+  'ferry-stop-digitransit': ['ferry-stop-digitransit', 'mode-ferry-external'],
+  'bus-tram-stop-digitransit': ['bustram-stop-digitransit', 'mode-tram'],
 };
 
 function isFavourite(item) {
@@ -114,8 +87,8 @@ function getIconProps(mode, isStop, modeSet) {
   const themePostfix = noTheme.includes(mode) ? '' : `-${modeSet}`;
   return (
     iconProps[`${mode}${stopDesc}${themePostfix}`] || [
-      'bus-stop-digitransit',
-      'mode-bus',
+      `${mode}${stopDesc}${themePostfix}`,
+      `mode-${mode}`,
     ]
   );
 }
@@ -158,15 +131,17 @@ function getIconProperties(item, modeSet, stopCode, modes) {
   }
   // Use more accurate icons in stop/station search, depending on mode from geocoding
   if (modes?.length) {
-    // select dominating mode
-    let mode = modes[0];
+    let station = item.properties.layer === 'station';
+    let mode; // select dominating mode
     if (modes.includes('SPEEDTRAM')) {
-      mode = 'SPEEDTRAM';
-    } else if (modes.includes('BUS-EXPRESS')) {
-      mode = 'BUS-EXPRESS';
+      mode = 'speedtram';
+    } else if (modes.includes('BUS-EXPRESS' && !station)) {
+      mode = 'bus-express';
+    } else {
+      mode = modes[0].toLowerCase();
     }
-    const station =
-      item.properties.layer === 'station' || (mode === 'FERRY' && stopCode);
+    station = station || (mode === 'ferry' && stopCode);
+
     return getIconProps(mode, !station, modeSet);
   }
   return iconProps[iconId] || ['place'];
