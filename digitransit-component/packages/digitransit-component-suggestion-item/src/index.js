@@ -27,6 +27,8 @@ const iconColors = {
   'mode-funicular': '#ff00ff',
   'mode-citybike': '#f2b62d',
   'mode-citybike-secondary': '#333333',
+  'mode-bikepark': '#f2b62d',
+  'mode-carpark': '#007ac9',
 };
 
 const getRouteMode = (props, set) => {
@@ -80,6 +82,7 @@ function getAriaDescription(ariaContentArray) {
 }
 
 const stopLayers = ['station', 'stop'];
+const parkLayers = ['bikepark', 'carpark'];
 const noTheme = ['subway', 'airplane', 'funicular']; // common icon in all themes
 
 function getIconProps(mode, isStop, modeSet) {
@@ -116,11 +119,8 @@ function getIconProperties(item, modeSet, stopCode, modes) {
     if (item.properties.layer === 'bikestation') {
       return [`citybike-stop-${modeSet}`, 'mode-citybike'];
     }
-    if (item.properties.layer === 'carpark') {
-      return [`carpark`];
-    }
-    if (item.properties.layer === 'bikepark') {
-      return [`bikepark`];
+    if (parkLayers.includes(item.properties.layer)) {
+      return [item.properties.layer, `mode-${item.properties.layer}`];
     }
     if (
       item.properties.label?.split(',').length === 1 &&
