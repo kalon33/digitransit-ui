@@ -273,12 +273,15 @@ NearStopsAndRoutes.defaultProps = {
   onClick: undefined,
   title: undefined,
   modeIconColors: {
+    'mode-airplane': '#0046ad',
     'mode-bus': '#007ac9',
     'mode-rail': '#8c4799',
     'mode-tram': '#008151',
     'mode-subway': '#ed8c00',
     'mode-ferry': '#007A97',
     'mode-citybike': '#F2B62D',
+    'mode-bikepark': '#f2b62d',
+    'mode-carpark': '#007ac9',
   },
   modeSet: 'hsl',
   fontWeights: {
