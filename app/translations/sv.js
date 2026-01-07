@@ -785,8 +785,20 @@ export default {
     trafficnow: 'Trafikläget nu',
     'trafficnow-bread': 'Att resa med oss',
     'trafficnow-description': 'Aktuell information om störningar och undantag',
+    'traffic-now_bread': 'Att resa med oss',
+    'traffic-now_description':
+      'Aktuell information om störningar och undantag. ',
+    'traffic-now_description_see-also':
+      'Se även {amount, plural, =1 {{link1},} other {{link1} samt {link2},} } som du hittar mer information om på deras respektive sidor.',
+    'traffic-now_description_see-also--link1': 'helgdagar och undantag',
+    'traffic-now_description_see-also--link2': 'större förändringar',
+    'traffic-now_filters_entity-search': 'Sök linje eller hållplats',
+    'traffic-now_filters_entity-search--placeholder':
+      'Linje, hållplats eller station',
     'traffic-now_filters_validity-period': 'Filtrera efter giltighetstid',
     'traffic-now_filters_vehicle-mode': 'Filtrera efter fordonsläge',
+    'traffic-now_link': 'Trafikläget nu',
+    'traffic-now_link-description': 'Se störningar och förändringar',
     tram: 'Spårvagn',
     'tram-with-route-number': 'Spårvagn {routeNumber} {headSign}',
     transfer: 'Byte',

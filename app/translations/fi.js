@@ -775,8 +775,20 @@ export default {
     trafficnow: 'Liikenne nyt',
     'trafficnow-bread': 'Matkustaminen',
     'trafficnow-description': 'Ajantasaiset tiedot häiriöistä ja poikkeuksista',
+    'traffic-now_bread': 'Matkustaminen',
+    'traffic-now_description':
+      'Ajantasaiset tiedot häiriöistä ja poikkeuksista. ',
+    'traffic-now_description_see-also':
+      'Katso myös {amount, plural, =1 {{link1},} other {{link1} sekä {link2},} } jotka löydät yksityiskohtaisemmin omilta sivuiltaan.',
+    'traffic-now_description_see-also--link1': 'lomat ja poikkeukset',
+    'traffic-now_description_see-also--link2': 'suuret muutokset',
+    'traffic-now_filters_entity-search': 'Hae yksittäistä linjaa tai pysäkkiä',
+    'traffic-now_filters_entity-search--placeholder':
+      'Linja, pysäkki tai asema',
     'traffic-now_filters_validity-period': 'Näytä voimassaolon mukaan',
     'traffic-now_filters_vehicle-mode': 'Näytä liikennevälineen mukaan',
+    'traffic-now_link': 'Liikennetilanne nyt',
+    'traffic-now_link-description': 'Katso häiriöt ja poikkeukset',
     tram: 'Raitiovaunu',
     'tram-with-route-number': 'Raitiovaunu {routeNumber} {headSign}',
     transfer: 'Vaihto',

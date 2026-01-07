@@ -793,8 +793,19 @@ export default {
     'trafficnow-bread': 'Travelling',
     'trafficnow-description':
       'Up-to-date information on disruptions and exceptions',
+    'traffic-now_bread': 'Travelling',
+    'traffic-now_description':
+      'Up-to-date information on disruptions and exceptions. ',
+    'traffic-now_description_see-also':
+      'See also {amount, plural, =1 {{link1},} other {{link1} as well as {link2},} } which you will find in detail on its own page.',
+    'traffic-now_description_see-also--link1': 'holidays and exceptions',
+    'traffic-now_description_see-also--link2': 'major changes',
+    'traffic-now_filters_entity-search': 'Search for individual route or stop',
+    'traffic-now_filters_entity-search--placeholder': 'Route, stop or station',
     'traffic-now_filters_validity-period': 'Filter by validity period',
     'traffic-now_filters_vehicle-mode': 'Filter by vehicle mode',
+    'traffic-now_link': 'Services now',
+    'traffic-now_link-description': 'See changes and disruptions',
     tram: 'Tram',
     'tram-with-route-number': 'Tram {routeNumber} {headSign}',
     transfer: 'Transfer',
