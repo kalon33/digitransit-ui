@@ -568,6 +568,8 @@ export default {
     'rail',
     'ferry',
     'citybike',
+    'bikepark',
+    'carpark',
   ],
   narrowNearYouButtons: true,
 
