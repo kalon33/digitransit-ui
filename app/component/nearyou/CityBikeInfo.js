@@ -36,7 +36,7 @@ const CityBikeInfo = ({ lang }, { config }) => {
     ).url;
 
   if (!showCityBikeTeaser || !(buyUrl || networkUrl)) {
-    return undefined;
+    return null;
   }
   return (
     <div className="citybike-use-disclaimer">
