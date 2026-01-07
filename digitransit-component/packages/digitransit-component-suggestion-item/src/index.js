@@ -8,7 +8,7 @@ import styles from './helpers/styles.scss';
 const extendedModes = {
   702: 'bus-express',
   704: 'bus-local',
-  714: 'bus-replacement',
+  714: 'replacement-bus',
   900: 'speedtram',
 };
 
@@ -17,7 +17,7 @@ const iconColors = {
   'mode-bus': '#007ac9',
   'mode-bus-express': '#ca4000',
   'mode-bus-local': '#007ac9',
-  'mode-bus-replacement': '#dc0451',
+  'mode-replacement-bus': '#dc0451',
   'mode-rail': '#8c4799',
   'mode-tram': '#008151',
   'mode-speedtram': '#007e79',

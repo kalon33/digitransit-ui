@@ -114,7 +114,7 @@ const iconMap = {
   // HSL
   'bus-hsl': BusHsl,
   'bus-local-hsl': BusLocalHsl,
-  'bus-replacement-hsl': BusReplacementHsl,
+  'replacement-bus-hsl': BusReplacementHsl,
   'ferry-hsl': FerryHsl,
   'rail-hsl': RailHsl,
   'speedtram-hsl': SpeedTramHsl,
