@@ -55,6 +55,7 @@ const iconProps = {
   futureRoute: ['future-route'],
 
   // map unusual transport modes
+  'subway-stop': ['subway', 'mode-subway'],
   'bus-express-hsl': ['bus-hsl', 'mode-bus-express'],
   'bus-express-stop-hsl': ['bus-stop-hsl', 'mode-bus-express'],
   'bus-express-digitransit': ['bus-digitransit', 'mode-bus'],
