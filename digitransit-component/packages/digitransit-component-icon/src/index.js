@@ -16,7 +16,6 @@ import Work from './assets/work.svg';
 import Map from './assets/map.svg';
 import Close from './assets/close.svg';
 import Mapmarker from './assets/mapmarker.svg';
-import MapmarkerVia from './assets/mapmarker-via.svg';
 import Search from './assets/search.svg';
 import Plus from './assets/plus.svg';
 import Attention from './assets/attention.svg';
@@ -28,7 +27,6 @@ import Ellipsis from './assets/ellipsis.svg';
 import Opposite from './assets/opposite.svg';
 import Viapoint from './assets/viapoint.svg';
 import Calendar from './assets/calendar.svg';
-import SelectFromMap from './assets/select-from-map.svg';
 import CautionWhite from './assets/caution_white_exclamation.svg';
 import Trash from './assets/trash.svg';
 import FutureRoute from './assets/icon-route.svg';
@@ -90,7 +88,6 @@ const iconMap = {
   station: Station,
   work: Work,
   close: Close,
-  'mapMarker-via': MapmarkerVia,
   bikepark: BikePark,
   carpark: CarPark,
   mapMarker: Mapmarker,
@@ -103,7 +100,6 @@ const iconMap = {
   opposite: Opposite,
   viapoint: Viapoint,
   calendar: Calendar,
-  'select-from-map': SelectFromMap,
   'caution-white': CautionWhite,
   trash: Trash,
   position: Position,
