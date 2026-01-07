@@ -107,6 +107,19 @@ function getAriaDescription(ariaContentArray) {
 const stopLayers = ['station', 'stop'];
 const noTheme = ['subway', 'airplane', 'funicular']; // common icon in all themes
 
+function getIconProps(mode, isStop, modeSet) {
+  // select stop lollipop or mode/station icon
+  const stopDesc = isStop ? '-stop' : '';
+  // is the icon theme specific
+  const themePostfix = noTheme.includes(mode) ? '' : `-${modeSet}`;
+  return (
+    iconProps[`${mode}${stopDesc}${themePostfix}`] || [
+      'bus-stop-digitransit',
+      'mode-bus',
+    ]
+  );
+}
+
 function getIconProperties(item, modeSet, stopCode, modes) {
   let iconId;
 
@@ -120,9 +133,7 @@ function getIconProperties(item, modeSet, stopCode, modes) {
     (item.type === 'OldSearch' && item.properties?.mode)
   ) {
     const mode = getRouteMode(item.properties, modeSet);
-    return noTheme.includes(mode)
-      ? [`${mode}`, `mode-${mode}`] // same for all themes
-      : [`${mode}-${modeSet}`, `mode-${mode}`];
+    return getIconProps(mode, false, modeSet);
   }
   if (item.selectedIconId) {
     iconId = item.selectedIconId;
@@ -154,16 +165,9 @@ function getIconProperties(item, modeSet, stopCode, modes) {
     } else if (modes.includes('BUS-EXPRESS')) {
       mode = 'BUS-EXPRESS';
     }
-    // select stop lollipop or mode/station icon
-    const stopDesc =
-      item.properties.layer === 'station' || (mode === 'FERRY' && stopCode)
-        ? ''
-        : '-stop';
-    // is the icon theme specific
-    const themePostfix = noTheme.includes(mode) ? '' : `-${modeSet}`;
-
-    const props = iconProps[`${mode}${stopDesc}${themePostfix}`];
-    return props || ['bus-stop-digitransit', 'mode-bus'];
+    const station =
+      item.properties.layer === 'station' || (mode === 'FERRY' && stopCode);
+    return getIconProps(mode, !station, modeSet);
   }
   return iconProps[iconId] || ['place'];
 }
