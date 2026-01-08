@@ -155,7 +155,7 @@ function NearYouContainer(
         case 'VehicleParking':
           return (
             <ParkNearYou
-              key={`${place.stationId}`}
+              key={`${place.vehicleParkingId}`}
               park={place}
               currentTime={currentTime}
               isParentTabActive={isParentTabActive}
@@ -194,15 +194,15 @@ function NearYouContainer(
         <FormattedMessage id={ariaRef.current} />
       </div>
       {loading === 1 && (
-        <div className="stops-near-you-spinner-container">
+        <div key="loading1" className="stops-near-you-spinner-container">
           <Loading />
         </div>
       )}
-      <div role="list" className="stops-near-you-container">
+      <div key="items" role="list" className="stops-near-you-container">
         {items}
       </div>
       {loading === 2 && (
-        <div className="stops-near-you-spinner-container">
+        <div key="loading2" className="stops-near-you-spinner-container">
           <Loading />
         </div>
       )}
