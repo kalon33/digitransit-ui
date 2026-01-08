@@ -59,21 +59,28 @@ export default function MapWrapper(
         `}
         variables={variables}
         environment={relayEnvironment}
-        render={({ props }) => (
-          <NearYouFavouritesMapContainer
-            mapLayers={mapLayers}
-            favouriteIds={
-              new Set([
-                ...favouriteStopIds,
-                ...favouriteStationIds,
-                ...favouriteVehicleStationIds,
-              ])
-            }
-            {...commonProps}
-            {...props}
-            {...rest}
-          />
-        )}
+        render={({ props }) => {
+          const mapProps = props || {
+            stops: null,
+            stations: null,
+            vehicleStations: null,
+          };
+          return (
+            <NearYouFavouritesMapContainer
+              mapLayers={mapLayers}
+              favouriteIds={
+                new Set([
+                  ...favouriteStopIds,
+                  ...favouriteStationIds,
+                  ...favouriteVehicleStationIds,
+                ])
+              }
+              {...commonProps}
+              {...mapProps}
+              {...rest}
+            />
+          );
+        }}
       />
     );
   }
@@ -139,16 +146,19 @@ export default function MapWrapper(
       `}
       variables={variables}
       environment={relayEnvironment}
-      render={({ props }) => (
-        <NearYouMapContainer
-          mapLayers={filteredMapLayers}
-          mapLayerOptions={mapLayerOptions}
-          favouriteIds={favouriteIds}
-          {...commonProps}
-          {...props}
-          {...rest}
-        />
-      )}
+      render={({ props }) => {
+        const mapProps = props || { stops: null, prioritizedStops: null };
+        return (
+          <NearYouMapContainer
+            mapLayers={filteredMapLayers}
+            mapLayerOptions={mapLayerOptions}
+            favouriteIds={favouriteIds}
+            {...commonProps}
+            {...mapProps}
+            {...rest}
+          />
+        );
+      }}
     />
   );
 }
