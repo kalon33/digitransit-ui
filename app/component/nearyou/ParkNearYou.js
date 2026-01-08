@@ -42,15 +42,15 @@ const ParkNearYou = ({ park, relay, currentTime, isParentTabActive, mode }) => {
               }}
               to={`/${prefix}/${park.vehicleParkingId}`}
             >
-              <h3 className="stop-near-you-name">{park.name}</h3>
+              <ParkAndRideContent
+                vehicleParking={park}
+                mode={mode}
+                showInfo={false}
+                backButton={false}
+              />
             </Link>
           </div>
         </div>
-        <ParkAndRideContent
-          vehicleParking={park}
-          mode={mode}
-          showInfo={false}
-        />
       </div>
     </span>
   );
