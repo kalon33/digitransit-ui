@@ -75,10 +75,19 @@ const containerComponent = createRefetchContainer(
     park: graphql`
       fragment ParkNearYou_park on VehicleParking {
         ...ParkContainer_vehicleParking
+        vehicleParkingId
         name
         lat
         lon
-        vehicleParkingId
+        availability {
+          bicycleSpaces
+          carSpaces
+        }
+        parkCapacity: capacity {
+          carSpaces
+        }
+        tags
+        realtime
       }
     `,
   },
