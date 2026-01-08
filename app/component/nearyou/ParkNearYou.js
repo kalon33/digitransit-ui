@@ -72,6 +72,8 @@ const containerComponent = createRefetchContainer(
       fragment ParkNearYou_park on VehicleParking {
         ...ParkContainer_vehicleParking
         name
+        lat
+        lon
         vehicleParkingId
       }
     `,
@@ -80,7 +82,6 @@ const containerComponent = createRefetchContainer(
     query ParkNearYouRefetchQuery($vehicleParkingId: String!) {
       vehicleParking(id: $vehicleParkingId) {
         ...ParkNearYou_park
-        name
       }
     }
   `,
