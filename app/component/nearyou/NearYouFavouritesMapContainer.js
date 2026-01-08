@@ -12,7 +12,11 @@ import {
 
 function NearYouFavouritesMapContainer(props) {
   const { stops, stations, vehicleStations, position } = props;
-  const favs = [...stops, ...stations, ...vehicleStations];
+  const favs = [
+    ...(stops || []),
+    ...(stations || []),
+    ...(vehicleStations || []),
+  ];
   const edges = favs
     .filter(s => s)
     .map(stop => {
@@ -29,10 +33,16 @@ function NearYouFavouritesMapContainer(props) {
 }
 
 NearYouFavouritesMapContainer.propTypes = {
-  stops: PropTypes.arrayOf(stopShape).isRequired,
-  stations: PropTypes.arrayOf(stationShape).isRequired,
-  vehicleStations: PropTypes.arrayOf(vehicleRentalStationShape).isRequired,
+  stops: PropTypes.arrayOf(stopShape),
+  stations: PropTypes.arrayOf(stationShape),
+  vehicleStations: PropTypes.arrayOf(vehicleRentalStationShape),
   position: locationShape.isRequired,
+};
+
+NearYouFavouritesMapContainer.defaultProps = {
+  stops: [],
+  stations: [],
+  vehicleStations: [],
 };
 
 const containerComponent = createFragmentContainer(
