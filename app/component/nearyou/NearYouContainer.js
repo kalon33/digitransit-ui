@@ -299,6 +299,7 @@ const refetchContainer = createPaginationContainer(
                 }
                 ... on VehicleParking {
                   ...ParkNearYou_park
+                  name
                   vehicleParkingId
                 }
                 ... on Stop {

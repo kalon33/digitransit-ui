@@ -71,6 +71,7 @@ const containerComponent = createRefetchContainer(
     park: graphql`
       fragment ParkNearYou_park on VehicleParking {
         ...ParkContainer_vehicleParking
+        name
         vehicleParkingId
       }
     `,
@@ -79,6 +80,7 @@ const containerComponent = createRefetchContainer(
     query ParkNearYouRefetchQuery($vehicleParkingId: String!) {
       vehicleParking(id: $vehicleParkingId) {
         ...ParkNearYou_park
+        name
       }
     }
   `,
