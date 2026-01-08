@@ -46,7 +46,11 @@ const ParkNearYou = ({ park, relay, currentTime, isParentTabActive, mode }) => {
             </Link>
           </div>
         </div>
-        <ParkAndRideContent vehicleParking={park} />
+        <ParkAndRideContent
+          vehicleParking={park}
+          mode={mode}
+          showInfo={false}
+        />
       </div>
     </span>
   );
