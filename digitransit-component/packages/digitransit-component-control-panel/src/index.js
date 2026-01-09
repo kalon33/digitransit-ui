@@ -92,6 +92,37 @@ function getIconName(mode, modeSet, horizontal) {
 
 const MAX_VISIBLE_MODES = 7;
 
+function horizontalButton(mode, modeSet, modeIconColors, withAlert, srMsg) {
+  let iconProps;
+
+  if (mode === 'favorite') {
+    iconProps = { img: 'star' };
+  } else if (mode === 'more') {
+    iconProps = { img: 'arrow' };
+  } else {
+    iconProps = {
+      img: getIconName(mode, modeSet, true),
+      color: modeIconColors[`mode-${mode}`],
+    };
+  }
+
+  return (
+    <>
+      <span className={styles['sr-only']}>{srMsg}</span>
+      <span className={styles['transport-mode-icon-container']}>
+        <span className={styles['transport-mode-icon-with-icon']}>
+          <Icon {...iconProps} />
+          {withAlert && (
+            <span className={styles['transport-mode-alert-icon']}>
+              <Icon img="caution" color="#dc0451" />
+            </span>
+          )}
+        </span>
+      </span>
+    </>
+  );
+}
+
 function NearStopsAndRoutes({
   horizontal,
   modeArray,
@@ -133,6 +164,7 @@ function NearStopsAndRoutes({
   let modes = modeArray.filter(mode => validNearYouModes.includes(mode));
   if (horizontal && modes.length > MAX_VISIBLE_MODES) {
     modes = modes.slice(0, MAX_VISIBLE_MODES - 1);
+    modes.push('more');
   }
 
   const buttons = modes.map(mode => {
@@ -145,24 +177,13 @@ function NearStopsAndRoutes({
     }
 
     const modeButton = horizontal ? (
-      <>
-        <span className={styles['sr-only']}>{t(mode, { lng: language })}</span>
-        <span className={styles['transport-mode-icon-container']}>
-          <span className={styles['transport-mode-icon-with-icon']}>
-            <Icon
-              img={
-                mode === 'favorite' ? 'star' : getIconName(mode, modeSet, true)
-              }
-              color={modeIconColors[`mode-${mode}`]}
-            />
-            {withAlert && (
-              <span className={styles['transport-mode-alert-icon']}>
-                <Icon img="caution" color="#dc0451" />
-              </span>
-            )}
-          </span>
-        </span>
-      </>
+      horizontalButton(
+        mode,
+        modeSet,
+        modeIconColors,
+        withAlert,
+        t(mode, { lng: language }),
+      )
     ) : (
       <span className={styles['transport-mode-icon-container']}>
         <span
@@ -184,6 +205,14 @@ function NearStopsAndRoutes({
         </span>
       </span>
     );
+
+    if (mode === 'more') {
+      return (
+        <div key={mode} role="link" tabIndex="0">
+          {modeButton}
+        </div>
+      );
+    }
 
     if (onClick) {
       return (
