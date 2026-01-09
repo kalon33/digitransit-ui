@@ -18,7 +18,7 @@ export const isKeyboardSelectionEvent = event => {
   return true;
 };
 
-export const isOriginDestinationOrViapoint = id =>
+export const isPOISearch = id =>
   id === 'origin' ||
   id === 'destination' ||
   id === 'via-point' ||

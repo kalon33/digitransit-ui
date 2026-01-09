@@ -10,7 +10,11 @@ import mobileStyles from './MobileSearch.scss';
 import mobileNoScrollStyles from './MobileNoScroll.scss';
 import { Suggestions } from './Suggestions';
 import { Input } from './Input';
-import { isKeyboardSelectionEvent, getSuggestionValue } from '../utils/utils';
+import {
+  isKeyboardSelectionEvent,
+  getSuggestionValue,
+  isPOISearch,
+} from '../utils/utils';
 
 /**
  * @typedef AutosuggestState
@@ -150,12 +154,6 @@ const MobileView = ({
   getInputProps({}, { suppressRefError: true });
   getItemProps({ index: -1 }, { suppressRefError: true });
 
-  const isOriginDestinationOrViapoint =
-    id === 'origin' ||
-    id === 'destination' ||
-    id === 'via-point' ||
-    id === 'origin-stop-near-you';
-
   const { ariaRequiredText, SearchBarId, ariaCurrentSuggestion } = ariaProps;
   const ariaLabel = ariaRequiredText
     .concat(' ')
@@ -208,7 +206,7 @@ const MobileView = ({
             </span>
             <Input
               placeholder={
-                isOriginDestinationOrViapoint
+                isPOISearch(id)
                   ? t('address-place-or-business', { lng })
                   : placeholder
               }
