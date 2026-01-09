@@ -90,6 +90,8 @@ function getIconName(mode, modeSet, horizontal) {
   return `${mode}${fill}${theme}`;
 }
 
+const MAX_VISIBLE_MODES = 7;
+
 function NearStopsAndRoutes({
   horizontal,
   modeArray,
@@ -127,92 +129,92 @@ function NearStopsAndRoutes({
     urlParts.splice(urlParts.length - 1, 0, language);
     urlStart = urlParts.join('/');
   }
-  const buttons = modeArray
-    .filter(mode => validNearYouModes.includes(mode))
-    .map(mode => {
-      const withAlert = modesWithAlerts.includes(mode.toUpperCase());
-      let url = `${urlStart}/${mode.toUpperCase()}/POS`;
-      if (origin.lat && origin.lon) {
-        url += `/${encodeURIComponent(origin.address)}::${origin.lat},${
-          origin.lon
-        }`;
-      }
 
-      const modeButton = horizontal ? (
-        <>
-          <span className={styles['sr-only']}>
-            {t(mode, { lng: language })}
-          </span>
-          <span className={styles['transport-mode-icon-container']}>
-            <span className={styles['transport-mode-icon-with-icon']}>
-              <Icon
-                img={
-                  mode === 'favorite'
-                    ? 'star'
-                    : getIconName(mode, modeSet, true)
-                }
-                color={modeIconColors[`mode-${mode}`]}
-              />
-              {withAlert && (
-                <span className={styles['transport-mode-alert-icon']}>
-                  <Icon img="caution" color="#dc0451" />
-                </span>
-              )}
-            </span>
-          </span>
-        </>
-      ) : (
+  let modes = modeArray.filter(mode => validNearYouModes.includes(mode));
+  if (horizontal && modes.length > MAX_VISIBLE_MODES) {
+    modes = modes.slice(0, MAX_VISIBLE_MODES - 1);
+  }
+
+  const buttons = modes.map(mode => {
+    const withAlert = modesWithAlerts.includes(mode.toUpperCase());
+    let url = `${urlStart}/${mode.toUpperCase()}/POS`;
+    if (origin.lat && origin.lon) {
+      url += `/${encodeURIComponent(origin.address)}::${origin.lat},${
+        origin.lon
+      }`;
+    }
+
+    const modeButton = horizontal ? (
+      <>
+        <span className={styles['sr-only']}>{t(mode, { lng: language })}</span>
         <span className={styles['transport-mode-icon-container']}>
-          <span
-            className={styles['transport-mode-icon-with-icon']}
-            style={{
-              '--bckColor': modeIconColors[`mode-${mode}`],
-              '--borderRadius': buttonStyle.borderRadius,
-            }}
-          >
-            <Icon img={getIconName(mode, modeSet, false)} />
+          <span className={styles['transport-mode-icon-with-icon']}>
+            <Icon
+              img={
+                mode === 'favorite' ? 'star' : getIconName(mode, modeSet, true)
+              }
+              color={modeIconColors[`mode-${mode}`]}
+            />
             {withAlert && (
               <span className={styles['transport-mode-alert-icon']}>
                 <Icon img="caution" color="#dc0451" />
               </span>
             )}
           </span>
-          <span className={styles['transport-mode-title']}>
-            {t(mode, { lng: language })}
-          </span>
         </span>
-      );
+      </>
+    ) : (
+      <span className={styles['transport-mode-icon-container']}>
+        <span
+          className={styles['transport-mode-icon-with-icon']}
+          style={{
+            '--bckColor': modeIconColors[`mode-${mode}`],
+            '--borderRadius': buttonStyle.borderRadius,
+          }}
+        >
+          <Icon img={getIconName(mode, modeSet, false)} />
+          {withAlert && (
+            <span className={styles['transport-mode-alert-icon']}>
+              <Icon img="caution" color="#dc0451" />
+            </span>
+          )}
+        </span>
+        <span className={styles['transport-mode-title']}>
+          {t(mode, { lng: language })}
+        </span>
+      </span>
+    );
 
-      if (onClick) {
-        return (
-          <div
-            key={mode}
-            role="link"
-            tabIndex="0"
-            onKeyDown={e => {
-              if (isKeyboardSelectionEvent(e)) {
-                onClick(url, e);
-              }
-            }}
-            onClick={() => onClick(url)}
-          >
-            {modeButton}
-          </div>
-        );
-      }
-      if (LinkComponent) {
-        return (
-          <LinkComponent to={url} key={mode}>
-            {modeButton}
-          </LinkComponent>
-        );
-      }
+    if (onClick) {
       return (
-        <a href={url} key={mode}>
+        <div
+          key={mode}
+          role="link"
+          tabIndex="0"
+          onKeyDown={e => {
+            if (isKeyboardSelectionEvent(e)) {
+              onClick(url, e);
+            }
+          }}
+          onClick={() => onClick(url)}
+        >
           {modeButton}
-        </a>
+        </div>
       );
-    });
+    }
+    if (LinkComponent) {
+      return (
+        <LinkComponent to={url} key={mode}>
+          {modeButton}
+        </LinkComponent>
+      );
+    }
+    return (
+      <a href={url} key={mode}>
+        {modeButton}
+      </a>
+    );
+  });
 
   return (
     <div
