@@ -98,7 +98,12 @@ function horizontalButton(mode, modeSet, iconColors, withAlert, srMsg) {
   if (mode === 'favorite') {
     iconProps = { img: 'star' };
   } else if (mode === 'more') {
-    iconProps = { img: 'arrow', color: iconColors['primary'] };
+    iconProps = {
+      img: 'arrow',
+      color: iconColors['primary'],
+      width: '1.2',
+      height: '1.2',
+    };
   } else {
     iconProps = {
       img: getIconName(mode, modeSet, true),
