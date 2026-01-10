@@ -286,12 +286,7 @@ class FavouriteBar extends React.Component {
     }
   };
 
-  renderSuggestion = (
-    item,
-    index,
-    ariaLabelSuffix = '',
-    className = undefined,
-  ) => {
+  renderSuggestion = (item, index, ariaLabelSuffix = '') => {
     const id = `favourite-suggestion-list--item-${index}`;
     return (
       <li key={`favourite-suggestion-item-${index}`}>
@@ -313,7 +308,6 @@ class FavouriteBar extends React.Component {
           <SuggestionItem
             item={item}
             color={this.props.color}
-            className={className}
             fontWeights={this.props.fontWeights}
           />
         </div>
@@ -441,7 +435,6 @@ class FavouriteBar extends React.Component {
                   item,
                   favourites.length + index,
                   undefined,
-                  'favouriteCustom',
                 ),
               )}
             </ul>

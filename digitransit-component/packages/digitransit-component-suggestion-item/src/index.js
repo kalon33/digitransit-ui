@@ -178,7 +178,6 @@ const SuggestionItem = memo(
     item,
     content,
     loading,
-    className,
     isMobile,
     ariaFavouriteString,
     color,
@@ -216,9 +215,7 @@ const SuggestionItem = memo(
     const [arrowClicked, setArrowClicked] = useState(false);
 
     const icon = (
-      <span
-        className={`${styles[iconId]} ${item.properties?.mode?.toLowerCase()}`}
-      >
+      <span className={styles[iconId]}>
         <Icon color={iconColor} img={iconId} />
       </span>
     );
@@ -276,10 +273,7 @@ const SuggestionItem = memo(
             item.selectedIconId !== 'favourite' &&
             iconId !== 'edit' && (
               <span>
-                <div
-                  aria-hidden="true"
-                  className={cx(styles['suggestion-name'], styles[className])}
-                >
+                <div aria-hidden="true" className={styles['suggestion-name']}>
                   {name}
                 </div>
                 <div className={styles['suggestion-label']}>
@@ -308,19 +302,13 @@ const SuggestionItem = memo(
             )}
           {(item.selectedIconId === 'favourite' || iconId === 'edit') && (
             <span>
-              <div className={cx(styles['suggestion-name'], styles[className])}>
-                {name}
-              </div>
+              <div className={styles['suggestion-name']}>{name}</div>
             </span>
           )}
           {iconId === 'future-route' && (
             <div>
               <div
-                className={cx(
-                  styles['suggestion-name'],
-                  styles.futureroute,
-                  styles[className],
-                )}
+                className={cx(styles['suggestion-name'], styles.futureroute)}
               >
                 {item.properties.origin.name}
                 <span
@@ -328,7 +316,6 @@ const SuggestionItem = memo(
                     styles['suggestion-name'],
                     styles.futureroute,
                     styles.normal,
-                    styles[className],
                   )}
                 >
                   {item.properties.origin.localadmin
@@ -337,11 +324,7 @@ const SuggestionItem = memo(
                 </span>
               </div>
               <div
-                className={cx(
-                  styles['suggestion-name'],
-                  styles.futureroute,
-                  styles[className],
-                )}
+                className={cx(styles['suggestion-name'], styles.futureroute)}
               >
                 {item.properties.destination.name}
                 <span
@@ -349,7 +332,6 @@ const SuggestionItem = memo(
                     styles['suggestion-name'],
                     styles.futureroute,
                     styles.normal,
-                    styles[className],
                   )}
                 >
                   {item.properties.destination.localadmin
@@ -459,7 +441,6 @@ SuggestionItem.propTypes = {
   }).isRequired,
   // eslint-disable-next-line
   content: PropTypes.array,
-  className: PropTypes.string,
   isMobile: PropTypes.bool,
   ariaFavouriteString: PropTypes.string,
   loading: PropTypes.bool,
@@ -478,7 +459,6 @@ SuggestionItem.defaultProps = {
   loading: false,
   ariaFavouriteString: '',
   fillInput: () => {},
-  className: undefined,
   isMobile: false,
   color: '#007ac9',
   accessiblePrimaryColor: '#0074be',
