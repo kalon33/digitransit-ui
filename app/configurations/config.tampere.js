@@ -24,11 +24,9 @@ export default configMerger(walttiConfig, {
 
   colors: {
     primary: '#1c57cf',
-    iconColors: {
-      'mode-bus': '#1A4A8F',
-      'mode-rail': '#0E7F3C',
-      'mode-tram': '#DA2128',
-    },
+    bus: '#1A4A8F',
+    rail: '#0E7F3C',
+    tram: '#DA2128',
   },
 
   socialMedia: {

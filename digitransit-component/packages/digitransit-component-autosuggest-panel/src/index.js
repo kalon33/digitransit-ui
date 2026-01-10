@@ -238,7 +238,7 @@ class DTAutosuggestPanel extends React.Component {
     destinationMobileLabel: PropTypes.string,
     refPoint: locationShape,
     modeSet: PropTypes.string,
-    modeIconColors: PropTypes.objectOf(PropTypes.string),
+    iconColors: PropTypes.objectOf(PropTypes.string),
     getAutoSuggestIcons: PropTypes.objectOf(PropTypes.func),
     fontWeights: PropTypes.shape({
       medium: PropTypes.number,
@@ -276,7 +276,7 @@ class DTAutosuggestPanel extends React.Component {
     originMobileLabel: null,
     destinationMobileLabel: null,
     modeSet: undefined,
-    modeIconColors: undefined,
+    iconColors: undefined,
     fontWeights: {
       medium: 500,
     },
@@ -474,7 +474,7 @@ class DTAutosuggestPanel extends React.Component {
             mobileLabel={originMobileLabel}
             fontWeights={this.props.fontWeights}
             modeSet={this.props.modeSet}
-            modeIconColors={this.props.modeIconColors}
+            iconColors={this.props.iconColors}
             showScroll={this.props.showScroll}
             isEmbedded={this.props.isEmbedded}
           />
@@ -567,7 +567,7 @@ class DTAutosuggestPanel extends React.Component {
                       hoverColor={this.props.hoverColor}
                       fontWeights={this.props.fontWeights}
                       modeSet={this.props.modeSet}
-                      modeIconColors={this.props.modeIconColors}
+                      iconColors={this.props.iconColors}
                       showScroll={this.props.showScroll}
                     />
                   </div>
@@ -676,7 +676,7 @@ class DTAutosuggestPanel extends React.Component {
             mobileLabel={destinationMobileLabel}
             fontWeights={this.props.fontWeights}
             modeSet={this.props.modeSet}
-            modeIconColors={this.props.modeIconColors}
+            iconColors={this.props.iconColors}
             showScroll={this.props.showScroll}
             isEmbedded={this.props.isEmbedded}
           />

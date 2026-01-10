@@ -52,7 +52,7 @@ SeparatorLine.defaultProps = {
  * @param {Number} props.alertsContext.currentTime - Time stamp with which the returned alerts are validated with
  * @param {Number} props.alertsContext.feedIds - feedIds for which the alerts are fetched for
  * @param {element} props.LinkComponent - React component for creating a link, default is undefined and normal anchor tags are used
- * @param {element} props.modeIconColors - object of mode icon colors used for transport mode icons
+ * @param {element} props.iconColors - object of mode icon colors used for transport mode icons
  *
  * @example
  * const alertsContext = {
@@ -92,17 +92,17 @@ function getIconName(mode, modeSet, horizontal) {
 
 const MAX_VISIBLE_MODES = 7;
 
-function horizontalButton(mode, modeSet, modeIconColors, withAlert, srMsg) {
+function horizontalButton(mode, modeSet, iconColors, withAlert, srMsg) {
   let iconProps;
 
   if (mode === 'favorite') {
     iconProps = { img: 'star' };
   } else if (mode === 'more') {
-    iconProps = { img: 'arrow' };
+    iconProps = { img: 'arrow', color: iconColors['primary'] };
   } else {
     iconProps = {
       img: getIconName(mode, modeSet, true),
-      color: modeIconColors[`mode-${mode}`],
+      color: iconColors[mode],
     };
   }
 
@@ -136,7 +136,7 @@ function NearStopsAndRoutes({
   onClick,
   buttonStyle,
   modeSet,
-  modeIconColors,
+  iconColors,
   fontWeights,
 }) {
   const [modesWithAlerts, setModesWithAlerts] = useState([]);
@@ -180,7 +180,7 @@ function NearStopsAndRoutes({
       horizontalButton(
         mode,
         modeSet,
-        modeIconColors,
+        iconColors,
         withAlert,
         t(mode, { lng: language }),
       )
@@ -189,7 +189,7 @@ function NearStopsAndRoutes({
         <span
           className={styles['transport-mode-icon-with-icon']}
           style={{
-            '--bckColor': modeIconColors[`mode-${mode}`],
+            '--bckColor': iconColors[mode],
             '--borderRadius': buttonStyle.borderRadius,
           }}
         >
@@ -286,7 +286,7 @@ NearStopsAndRoutes.propTypes = {
   omitLanguageUrl: PropTypes.bool,
   onClick: PropTypes.func,
   buttonStyle: PropTypes.objectOf(PropTypes.string),
-  modeIconColors: PropTypes.objectOf(PropTypes.string),
+  iconColors: PropTypes.objectOf(PropTypes.string),
   modeSet: PropTypes.string,
   fontWeights: PropTypes.shape({
     medium: PropTypes.number,
@@ -303,16 +303,17 @@ NearStopsAndRoutes.defaultProps = {
   alertsContext: undefined,
   onClick: undefined,
   title: undefined,
-  modeIconColors: {
-    'mode-airplane': '#0046ad',
-    'mode-bus': '#007ac9',
-    'mode-rail': '#8c4799',
-    'mode-tram': '#008151',
-    'mode-subway': '#ed8c00',
-    'mode-ferry': '#007A97',
-    'mode-citybike': '#F2B62D',
-    'mode-bikepark': '#f2b62d',
-    'mode-carpark': '#007ac9',
+  iconColors: {
+    primary: '#0074bf',
+    airplane: '#0046ad',
+    bus: '#007ac9',
+    rail: '#8c4799',
+    tram: '#008151',
+    subway: '#ed8c00',
+    ferry: '#007a97',
+    citybike: '#f2b62d',
+    bikepark: '#f2b62d',
+    carpark: '#007ac9',
   },
   modeSet: 'hsl',
   fontWeights: {

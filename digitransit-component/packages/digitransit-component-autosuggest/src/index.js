@@ -218,7 +218,7 @@ const getNewTargets = ({
  * @property {string} [hoverColor]
  * @property {string} [accessiblePrimaryColor]
  * @property {Object} [fontWeights]
- * @property {Object} [modeIconColors]
+ * @property {Object} [iconColors]
  * @property {string} [modeSet]
  * @property {boolean} [showScroll]
  * @property {boolean} [isEmbedded]
@@ -257,7 +257,7 @@ function DTAutosuggest({
   ariaLabel,
   accessiblePrimaryColor,
   fontWeights,
-  modeIconColors,
+  iconColors,
   modeSet,
   showScroll,
   isEmbedded,
@@ -548,7 +548,7 @@ function DTAutosuggest({
     accessiblePrimaryColor,
     fontWeights,
     getAutoSuggestIcons,
-    modeIconColors,
+    iconColors,
     modeSet,
   };
 
@@ -729,7 +729,7 @@ DTAutosuggest.propTypes = {
   fontWeights: PropTypes.shape({
     medium: PropTypes.number,
   }),
-  modeIconColors: PropTypes.objectOf(PropTypes.string),
+  iconColors: PropTypes.objectOf(PropTypes.string),
   getAutoSuggestIcons: PropTypes.objectOf(PropTypes.func),
   required: PropTypes.bool,
   modeSet: PropTypes.string,
@@ -767,7 +767,7 @@ DTAutosuggest.defaultProps = {
   fontWeights: {
     medium: 500,
   },
-  modeIconColors: undefined,
+  iconColors: undefined,
   required: false,
   modeSet: undefined,
   showScroll: false,

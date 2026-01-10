@@ -12,23 +12,24 @@ const extendedModes = {
   900: 'speedtram',
 };
 
-const iconColors = {
-  'mode-airplane': '#0046ad',
-  'mode-bus': '#007ac9',
-  'mode-bus-express': '#ca4000',
-  'mode-bus-local': '#007ac9',
-  'mode-replacement-bus': '#dc0451',
-  'mode-rail': '#8c4799',
-  'mode-tram': '#008151',
-  'mode-speedtram': '#007e79',
-  'mode-subway': '#ed8c00',
-  'mode-ferry': '#007a97',
-  'mode-ferry-external': '#666666',
-  'mode-funicular': '#ff00ff',
-  'mode-citybike': '#f2b62d',
-  'mode-citybike-secondary': '#333333',
-  'mode-bikepark': '#f2b62d',
-  'mode-carpark': '#007ac9',
+const defaultColors = {
+  primary: '#0074bf',
+  airplane: '#0046ad',
+  bus: '#007ac9',
+  'bus-express': '#ca4000',
+  'bus-local': '#007ac9',
+  'replacement-bus': '#dc0451',
+  rail: '#8c4799',
+  tram: '#008151',
+  speedtram: '#007e79',
+  subway: '#ed8c00',
+  ferry: '#007a97',
+  'ferry-external': '#666666',
+  funicular: '#ff00ff',
+  citybike: '#f2b62d',
+  'citybike-secondary': '#333333',
+  bikepark: '#f2b62d',
+  carpark: '#007ac9',
 };
 
 const getRouteMode = (props, set) => {
@@ -58,16 +59,16 @@ const iconProps = {
   futureRoute: ['future-route'],
 
   // map unusual transport modes
-  'subway-stop': ['subway', 'mode-subway'],
-  'bus-express-hsl': ['bus-hsl', 'mode-bus-express'],
-  'bus-express-stop-hsl': ['bus-stop-hsl', 'mode-bus-express'],
-  'bus-express-digitransit': ['bus-digitransit', 'mode-bus'],
-  'bus-express-stop-digitransit': ['bus-stop-digitransit', 'mode-bus'],
-  'speedtram-digitransit': ['mode-tram', 'mode-tram'],
-  'speedtram-stop-digitransit': ['tram-stop-digitransit', 'mode-tram'],
-  'ferry-stop-hsl': ['ferry-stop-hsl', 'mode-ferry-external'],
-  'ferry-stop-digitransit': ['ferry-stop-digitransit', 'mode-ferry-external'],
-  'bus-tram-stop-digitransit': ['bustram-stop-digitransit', 'mode-tram'],
+  'subway-stop': ['subway', 'subway'],
+  'bus-express-hsl': ['bus-hsl', 'bus-express'],
+  'bus-express-stop-hsl': ['bus-stop-hsl', 'bus-express'],
+  'bus-express-digitransit': ['bus-digitransit', 'bus'],
+  'bus-express-stop-digitransit': ['bus-stop-digitransit', 'bus'],
+  'speedtram-digitransit': ['tram', 'tram'],
+  'speedtram-stop-digitransit': ['tram-stop-digitransit', 'tram'],
+  'ferry-stop-hsl': ['ferry-stop-hsl', 'ferry-external'],
+  'ferry-stop-digitransit': ['ferry-stop-digitransit', 'ferry-external'],
+  'bus-tram-stop-digitransit': ['bustram-stop-digitransit', 'tram'],
 };
 
 function isFavourite(item) {
@@ -93,7 +94,7 @@ function getIconProps(mode, isStop, modeSet) {
   return (
     iconProps[`${mode}${stopDesc}${themePostfix}`] || [
       `${mode}${stopDesc}${themePostfix}`,
-      `mode-${mode}`,
+      mode,
     ]
   );
 }
@@ -117,10 +118,10 @@ function getIconProperties(item, modeSet, stopCode, modes) {
     iconId = item.selectedIconId;
   } else if (item.properties) {
     if (item.properties.layer === 'bikestation') {
-      return [`citybike-stop-${modeSet}`, 'mode-citybike'];
+      return [`citybike-stop-${modeSet}`, 'citybike'];
     }
     if (parkLayers.includes(item.properties.layer)) {
-      return [item.properties.layer, `mode-${item.properties.layer}`];
+      return [item.properties.layer, item.properties.layer];
     }
     if (
       item.properties.label?.split(',').length === 1 &&
@@ -184,7 +185,7 @@ const SuggestionItem = memo(
     accessiblePrimaryColor,
     fillInput,
     fontWeights,
-    modeIconColors,
+    iconColors,
     getAutoSuggestIcons,
     modeSet,
   }) => {
@@ -206,7 +207,7 @@ const SuggestionItem = memo(
       } else if (iconId === 'locate' || isFavourite(item)) {
         iconColor = color;
       } else {
-        iconColor = modeIconColors?.[colorId] || iconColors[colorId] || '#888';
+        iconColor = iconColors?.[colorId] || defaultColors[colorId] || '#888';
       }
     }
     // console.log(item, iconId, iconColor);
@@ -469,7 +470,7 @@ SuggestionItem.propTypes = {
     medium: PropTypes.number,
   }),
   getAutoSuggestIcons: PropTypes.objectOf(PropTypes.func),
-  modeIconColors: PropTypes.objectOf(PropTypes.string),
+  iconColors: PropTypes.objectOf(PropTypes.string),
   modeSet: PropTypes.string,
 };
 
@@ -484,14 +485,14 @@ SuggestionItem.defaultProps = {
   fontWeights: {
     medium: 500,
   },
-  modeIconColors: undefined,
+  iconColors: undefined,
   getAutoSuggestIcons: {
     citybikes: station => {
       const name =
         station.properties.source === 'citybikesvantaa'
           ? 'citybike-stop-hsl-secondary'
           : 'citybike-stop-hsl';
-      return [name, iconColors['mode-citybike']];
+      return [name, defaultColors.citybike];
     },
   },
   modeSet: 'hsl',

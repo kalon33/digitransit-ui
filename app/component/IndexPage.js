@@ -266,7 +266,7 @@ class IndexPage extends React.Component {
         origin={this.props.origin}
         omitLanguageUrl
         onClick={this.clickStopNearIcon}
-        modeIconColors={colors.iconColors}
+        iconColors={colors}
         fontWeights={fontWeights}
         {...directionProps}
       />
@@ -336,7 +336,7 @@ class IndexPage extends React.Component {
       onGeolocationStart: this.onSelectLocation,
       fromMap: this.props.fromMap,
       fontWeights,
-      modeIconColors: colors.iconColors,
+      iconColors: colors,
       modeSet: config.iconModeSet,
     };
 
@@ -356,7 +356,7 @@ class IndexPage extends React.Component {
       sources,
       targets: stopAndRouteSearchTargets,
       fontWeights,
-      modeIconColors: colors.iconColors,
+      iconColors: colors,
       modeSet: config.iconModeSet,
       geocodingSize: 25,
     };
