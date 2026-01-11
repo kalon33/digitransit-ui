@@ -14,6 +14,7 @@ const extendedModes = {
 
 const defaultColors = {
   primary: '#0074bf',
+  accessiblePrimary: '#0074be',
   airplane: '#0046ad',
   bus: '#007ac9',
   'bus-express': '#ca4000',
@@ -55,7 +56,7 @@ const iconProps = {
   'icon-icon_shopping': ['shopping'],
   selectFromMap: ['map'],
   ownLocations: ['star'],
-  back: ['arrow'],
+  back: ['arrow', 'accessiblePrimary'],
   futureRoute: ['future-route'],
 
   // map unusual transport modes
@@ -361,7 +362,7 @@ const SuggestionItem = memo(
                 [styles.mobile]: isMobile,
               })}
             >
-              <Icon img="arrow" color={iconColor} />
+              <Icon img="arrow" color={iconColors.accessiblePrimary} />
             </span>
           )}
         {iconId !== 'arrow' &&
@@ -386,7 +387,10 @@ const SuggestionItem = memo(
                 fillInput(item);
               }}
             >
-              <Icon img="search-street-name" color={iconColor} />
+              <Icon
+                img="search-street-name"
+                color={iconColors.accessiblePrimary}
+              />
             </span>
           )}
       </div>
