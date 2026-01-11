@@ -284,7 +284,7 @@ export default configMerger(walttiConfig, {
         capacity: BIKEAVL_WITHMAX,
         enabled: true,
         season: {
-          start: '15.4',
+          start: '1.1',
           end: '31.10',
         },
         icon: 'citybike',

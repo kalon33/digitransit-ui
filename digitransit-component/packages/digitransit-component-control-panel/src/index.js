@@ -198,7 +198,11 @@ function NearStopsAndRoutes({
             '--borderRadius': buttonStyle.borderRadius,
           }}
         >
-          <Icon img={getIconName(mode, modeSet, false)} />
+          <Icon
+            img={getIconName(mode, modeSet, false)}
+            width="1.4"
+            height="1.4"
+          />
           {withAlert && (
             <span className={styles['transport-mode-alert-icon']}>
               <Icon img="caution" color="#dc0451" />
