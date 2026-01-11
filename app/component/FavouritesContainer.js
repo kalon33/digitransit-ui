@@ -389,6 +389,7 @@ class FavouritesContainer extends React.Component {
               hoverColor={this.props.hoverColor}
               fontWeights={fontWeights}
               required
+              iconColors={config.colors}
               modeSet={config.iconModeSet}
               favouriteContext
             />
