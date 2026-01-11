@@ -60,6 +60,7 @@ const iconProps = {
 
   // map unusual transport modes
   'subway-stop': ['subway', 'subway'],
+  'airplane-stop': ['airplane', 'airplane'],
   'bus-express-hsl': ['bus-hsl', 'bus-express'],
   'bus-express-stop-hsl': ['bus-stop-hsl', 'bus-express'],
   'bus-express-digitransit': ['bus-digitransit', 'bus'],
