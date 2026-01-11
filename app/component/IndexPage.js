@@ -34,7 +34,6 @@ import { addAnalyticsEvent } from '../util/analyticsUtils';
 import withBreakpoint from '../util/withBreakpoint';
 import Geomover from './Geomover';
 import scrollTop from '../util/scroll';
-import { LightenDarkenColor } from '../util/colorUtils';
 import { getRefPoint } from '../util/apiUtils';
 import { filterObject } from '../util/filterUtils';
 import {
@@ -287,8 +286,8 @@ class IndexPage extends React.Component {
     const { intl, config } = this.context;
     const { trafficNowLink, colors, fontWeights } = config;
     const color = colors.primary;
-    const hoverColor = colors.hover || LightenDarkenColor(colors.primary, -20);
-    const accessiblePrimaryColor = colors.accessiblePrimary || colors.primary;
+    const hoverColor = colors.hover;
+    const accessiblePrimaryColor = colors.accessiblePrimary;
     const { breakpoint, lang } = this.props;
     const origin = this.pendingOrigin || this.props.origin;
     const destination = this.pendingDestination || this.props.destination;

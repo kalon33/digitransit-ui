@@ -20,7 +20,6 @@ import {
 } from '../action/FavouriteActions';
 import FavouriteStore from '../store/FavouriteStore';
 import { addAnalyticsEvent } from '../util/analyticsUtils';
-import { LightenDarkenColor } from '../util/colorUtils';
 
 const AutoSuggestWithSearchContext = withSearchContext(AutoSuggest);
 
@@ -435,9 +434,7 @@ const connectedComponent = connectToStores(
       context.config.allowLogin &&
       context.getStore('UserStore').getUser().sub !== undefined,
     color: context.config.colors.primary,
-    hoverColor:
-      context.config.colors.hover ||
-      LightenDarkenColor(context.config.colors.primary, -20),
+    hoverColor: context.config.colors.hover,
   }),
 );
 
