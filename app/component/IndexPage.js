@@ -265,7 +265,7 @@ class IndexPage extends React.Component {
         origin={this.props.origin}
         omitLanguageUrl
         onClick={this.clickStopNearIcon}
-        iconColors={colors}
+        colors={colors}
         fontWeights={fontWeights}
         {...directionProps}
       />
@@ -285,9 +285,6 @@ class IndexPage extends React.Component {
   render() {
     const { intl, config } = this.context;
     const { trafficNowLink, colors, fontWeights } = config;
-    const color = colors.primary;
-    const hoverColor = colors.hover;
-    const accessiblePrimaryColor = colors.accessiblePrimary;
     const { breakpoint, lang } = this.props;
     const origin = this.pendingOrigin || this.props.origin;
     const destination = this.pendingDestination || this.props.destination;
@@ -320,9 +317,6 @@ class IndexPage extends React.Component {
       lang,
       locationSources,
       targets,
-      color,
-      hoverColor,
-      accessiblePrimaryColor,
       refPoint,
       searchPanelText: intl.formatMessage({
         id: 'where',
@@ -335,7 +329,7 @@ class IndexPage extends React.Component {
       onGeolocationStart: this.onSelectLocation,
       fromMap: this.props.fromMap,
       fontWeights,
-      iconColors: colors,
+      colors,
       modeSet: config.iconModeSet,
     };
 
@@ -349,13 +343,10 @@ class IndexPage extends React.Component {
       getAutoSuggestIcons: config.getAutoSuggestIcons,
       value: '',
       lang,
-      color,
-      hoverColor,
-      accessiblePrimaryColor,
       sources,
       targets: stopAndRouteSearchTargets,
       fontWeights,
-      iconColors: colors,
+      colors,
       modeSet: config.iconModeSet,
       geocodingSize: 25,
     };
@@ -390,7 +381,11 @@ class IndexPage extends React.Component {
             </span>
             <LocationSearch {...locationSearchProps} />
             <div className="datetimepicker-container">
-              <DatetimepickerContainer realtime color={color} lang={lang} />
+              <DatetimepickerContainer
+                realtime
+                color={colors.primary}
+                lang={lang}
+              />
             </div>
             {!config.hideFavourites && (
               <>
@@ -440,7 +435,11 @@ class IndexPage extends React.Component {
               {...locationSearchProps}
             />
             <div className="datetimepicker-container">
-              <DatetimepickerContainer realtime color={color} lang={lang} />
+              <DatetimepickerContainer
+                realtime
+                color={colors.primary}
+                lang={lang}
+              />
             </div>
             <FavouritesContainer
               onClickFavourite={this.clickFavourite}

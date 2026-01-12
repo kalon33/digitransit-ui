@@ -19,7 +19,7 @@ function Search({ onMap, ...rest }, { config, intl, getStore }) {
       : undefined,
     mobileLabel: onMap ? intl.formatMessage({ id: 'position' }) : undefined,
     inputClassName: onMap ? 'origin-stop-near-you-selector' : undefined,
-    iconColors: config.colors,
+    colors: config.colors,
     modeSet: config.iconModeSet,
     getAutoSuggestIcons: config.getAutoSuggestIcons,
   };

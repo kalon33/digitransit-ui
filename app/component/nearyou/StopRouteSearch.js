@@ -50,7 +50,7 @@ function StopRouteSearch({ mode, ...rest }, { router, config }) {
         targets={targets}
         selectHandler={selectHandler} // prop for context handler
         getAutoSuggestIcons={config.getAutoSuggestIcons}
-        iconColors={config.colors}
+        colors={config.colors}
         modeSet={config.iconModeSet}
         {...rest}
       />
