@@ -163,10 +163,9 @@ const SuggestionItem = memo(
     loading,
     isMobile,
     ariaFavouriteString,
-    color,
     fillInput,
     fontWeights,
-    iconColors,
+    colors,
     getAutoSuggestIcons,
     modeSet,
   }) => {
@@ -186,13 +185,13 @@ const SuggestionItem = memo(
       if (item.properties?.color) {
         iconColor = `#${item.properties.color}`;
       } else if (iconId === 'locate' || isFavourite(item)) {
-        iconColor = color;
+        iconColor = colors.primary;
       } else {
-        iconColor = iconColors?.[colorId] || defaultColors[colorId] || '#888';
+        iconColor = colors?.[colorId] || defaultColors[colorId] || '#888';
       }
     }
     const accessiblePrimary =
-      iconColors?.accessiblePrimary || defaultColors.accessiblePrimary;
+      colors?.accessiblePrimary || defaultColors.accessiblePrimary;
     // console.log(item, iconId, iconColor);
     // Arrow clicked is for street. Instead of selecting item when a user clicks on arrow,
     // It fills the input field.
@@ -426,12 +425,11 @@ SuggestionItem.propTypes = {
   ariaFavouriteString: PropTypes.string,
   loading: PropTypes.bool,
   fillInput: PropTypes.func,
-  color: PropTypes.string,
   fontWeights: PropTypes.shape({
     medium: PropTypes.number,
   }),
   getAutoSuggestIcons: PropTypes.objectOf(PropTypes.func),
-  iconColors: PropTypes.objectOf(PropTypes.string),
+  colors: PropTypes.objectOf(PropTypes.string),
   modeSet: PropTypes.string,
 };
 
@@ -440,11 +438,10 @@ SuggestionItem.defaultProps = {
   ariaFavouriteString: '',
   fillInput: () => {},
   isMobile: false,
-  color: '#007ac9',
   fontWeights: {
     medium: 500,
   },
-  iconColors: undefined,
+  colors: undefined,
   getAutoSuggestIcons: {
     citybikes: station => {
       const name =

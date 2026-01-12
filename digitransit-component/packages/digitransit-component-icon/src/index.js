@@ -203,17 +203,17 @@ const Icon = ({ color, img, height, width, rotate }) => {
 };
 
 Icon.propTypes = {
-  color: PropTypes.string,
-  height: PropTypes.number,
   img: PropTypes.string.isRequired,
+  color: PropTypes.string,
   width: PropTypes.number,
+  height: PropTypes.number,
   rotate: PropTypes.string,
 };
 
 Icon.defaultProps = {
   color: undefined,
-  height: undefined,
   width: undefined,
+  height: undefined,
   rotate: undefined,
 };
 

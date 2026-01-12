@@ -54,7 +54,7 @@ SeparatorLine.defaultProps = {
  * @param {Number} props.alertsContext.currentTime - Time stamp with which the returned alerts are validated with
  * @param {Number} props.alertsContext.feedIds - feedIds for which the alerts are fetched for
  * @param {element} props.LinkComponent - React component for creating a link, default is undefined and normal anchor tags are used
- * @param {element} props.iconColors - object of mode icon colors used for transport mode icons
+ * @param {element} props.colors - theme color configuration
  *
  * @example
  * const alertsContext = {
@@ -94,7 +94,7 @@ function getIconName(mode, modeSet, horizontal) {
 
 const MAX_VISIBLE_MODES = 7;
 
-function horizontalButton(mode, modeSet, iconColors, withAlert, srMsg) {
+function horizontalButton(mode, modeSet, colors, withAlert, srMsg) {
   let iconProps;
 
   if (mode === 'favorite') {
@@ -102,14 +102,14 @@ function horizontalButton(mode, modeSet, iconColors, withAlert, srMsg) {
   } else if (mode === 'more') {
     iconProps = {
       img: 'arrow',
-      color: iconColors['primary'],
-      width: '1.2',
-      height: '1.2',
+      color: colors['primary'],
+      width: 1.2,
+      height: 1.2,
     };
   } else {
     iconProps = {
       img: getIconName(mode, modeSet, true),
-      color: iconColors[mode],
+      color: colors[mode],
     };
   }
 
@@ -121,7 +121,7 @@ function horizontalButton(mode, modeSet, iconColors, withAlert, srMsg) {
           <Icon {...iconProps} />
           {withAlert && (
             <span className={styles['transport-mode-alert-icon']}>
-              <Icon img="caution" color={iconColors['caution']} />
+              <Icon img="caution" color={colors['caution']} />
             </span>
           )}
         </span>
@@ -143,7 +143,7 @@ function NearStopsAndRoutes({
   onClick,
   buttonStyle,
   modeSet,
-  iconColors,
+  colors,
   fontWeights,
 }) {
   const [modesWithAlerts, setModesWithAlerts] = useState([]);
@@ -187,7 +187,7 @@ function NearStopsAndRoutes({
       horizontalButton(
         mode,
         modeSet,
-        iconColors,
+        colors,
         withAlert,
         t(mode, { lng: language }),
       )
@@ -196,18 +196,18 @@ function NearStopsAndRoutes({
         <span
           className={styles['transport-mode-icon-with-icon']}
           style={{
-            '--bckColor': iconColors[mode],
+            '--bckColor': colors[mode],
             '--borderRadius': buttonStyle.borderRadius,
           }}
         >
           <Icon
             img={getIconName(mode, modeSet, false)}
-            width="1.4"
-            height="1.4"
+            width={1.4}
+            height={1.4}
           />
           {withAlert && (
             <span className={styles['transport-mode-alert-icon']}>
-              <Icon img="caution" color="#dc0451" />
+              <Icon img="caution" color={colors['caution']} />
             </span>
           )}
         </span>
@@ -297,7 +297,7 @@ NearStopsAndRoutes.propTypes = {
   omitLanguageUrl: PropTypes.bool,
   onClick: PropTypes.func,
   buttonStyle: PropTypes.objectOf(PropTypes.string),
-  iconColors: PropTypes.objectOf(PropTypes.string),
+  colors: PropTypes.objectOf(PropTypes.string),
   modeSet: PropTypes.string,
   fontWeights: PropTypes.shape({
     medium: PropTypes.number,
@@ -314,7 +314,7 @@ NearStopsAndRoutes.defaultProps = {
   alertsContext: undefined,
   onClick: undefined,
   title: undefined,
-  iconColors: defaultColors,
+  colors: defaultColors,
   modeSet: 'hsl',
   fontWeights: {
     medium: 500,

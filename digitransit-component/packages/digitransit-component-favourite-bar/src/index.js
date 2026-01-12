@@ -11,7 +11,9 @@ import isEqual from 'lodash/isEqual';
 import isEmpty from 'lodash/isEmpty';
 import Shimmer from '@hsl-fi/shimmer';
 import SuggestionItem from '@digitransit-component/digitransit-component-suggestion-item';
-import Icon from '@digitransit-component/digitransit-component-icon';
+import Icon, {
+  defaultColors,
+} from '@digitransit-component/digitransit-component-icon';
 import { formatFavouritePlaceLabel } from '@digitransit-search-util/digitransit-search-util-uniq-by-label';
 import styles from './helpers/styles.scss';
 import i18n from './helpers/i18n';
@@ -139,8 +141,8 @@ class FavouriteBar extends React.Component {
     lang: PropTypes.string,
     /** Optional. Whether to show loading animation, true or false. */
     isLoading: PropTypes.bool,
-    /** Optional. Default value is '#007ac9'. */
-    color: PropTypes.string,
+    /** Optional color palette */
+    colors: PropTypes.objectOf(PropTypes.string),
     /** Optional. */
     fontWeights: PropTypes.shape({
       /** Default value is 500. */
@@ -158,7 +160,7 @@ class FavouriteBar extends React.Component {
     onAddWork: () => ({}),
     lang: 'fi',
     isLoading: false,
-    color: '#007ac9',
+    colors: defaultColors,
     fontWeights: {
       medium: 500,
     },
@@ -307,7 +309,7 @@ class FavouriteBar extends React.Component {
         >
           <SuggestionItem
             item={item}
-            color={this.props.color}
+            color={this.props.colors.primary}
             fontWeights={this.props.fontWeights}
           />
         </div>
@@ -336,6 +338,7 @@ class FavouriteBar extends React.Component {
 
   render() {
     const { onClickFavourite, isLoading, fontWeights } = this.props;
+    const { primary } = this.props.colors;
     const { listOpen, favourites, firstFavourite, secondFavourite } =
       this.state;
     const expandIcon = this.props.favourites.length === 0 ? 'plus' : 'arrow';
@@ -362,7 +365,7 @@ class FavouriteBar extends React.Component {
                 : 'home'
             }
             isLoading={isLoading}
-            color={this.props.color}
+            color={primary}
             lang={this.props.lang}
           />
           <FavouriteLocation
@@ -381,7 +384,7 @@ class FavouriteBar extends React.Component {
                 : 'work'
             }
             isLoading={isLoading}
-            color={this.props.color}
+            color={primary}
             lang={this.props.lang}
           />
           {/* eslint-disable jsx-a11y/role-supports-aria-props */}
@@ -398,7 +401,7 @@ class FavouriteBar extends React.Component {
             aria-label={this.translate('open-favourites')}
           >
             <Shimmer active={isLoading}>
-              <Icon img={expandIcon} color={this.props.color} />
+              <Icon img={expandIcon} color={primary} />
             </Shimmer>
           </button>
           {/* eslint-enable jsx-a11y/role-supports-aria-props */}
