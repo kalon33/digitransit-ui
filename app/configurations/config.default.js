@@ -373,6 +373,7 @@ export default {
 
   colors: {
     primary: '#000F94',
+    caution: '#dc0451',
     backgroundInfo: '#ebf6fd',
     airplane: '#0046ad',
     bus: '#007ac9',

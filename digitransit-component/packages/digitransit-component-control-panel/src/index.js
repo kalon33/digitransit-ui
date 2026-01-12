@@ -121,7 +121,7 @@ function horizontalButton(mode, modeSet, iconColors, withAlert, srMsg) {
           <Icon {...iconProps} />
           {withAlert && (
             <span className={styles['transport-mode-alert-icon']}>
-              <Icon img="caution" color="#dc0451" />
+              <Icon img="caution" color={iconColors['caution']} />
             </span>
           )}
         </span>

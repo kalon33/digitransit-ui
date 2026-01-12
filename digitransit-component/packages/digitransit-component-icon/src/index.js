@@ -75,6 +75,7 @@ export const defaultColors = {
   primary: '#0074bf',
   accessiblePrimary: '#0074be',
   hover: '#0062a1',
+  caution: '#dc0451',
   airplane: '#0046ad',
   bus: '#007ac9',
   'bus-express': '#ca4000',
