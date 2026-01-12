@@ -71,6 +71,28 @@ import TramFillDigitransit from './assets/tram-fill-digitransit.svg';
 import CarParkFill from './assets/carpark-fill.svg';
 import BikeParkFill from './assets/bikepark-fill.svg';
 
+export const defaultColors = {
+  primary: '#0074bf',
+  accessiblePrimary: '#0074be',
+  hover: '#0062a1',
+  airplane: '#0046ad',
+  bus: '#007ac9',
+  'bus-express': '#ca4000',
+  'bus-local': '#007ac9',
+  'replacement-bus': '#dc0451',
+  rail: '#8c4799',
+  tram: '#008151',
+  speedtram: '#007e79',
+  subway: '#ed8c00',
+  ferry: '#007a97',
+  'ferry-external': '#666666',
+  funicular: '#ff00ff',
+  citybike: '#f2b62d',
+  'citybike-secondary': '#333333',
+  bikepark: '#f2b62d',
+  carpark: '#007ac9',
+};
+
 const iconMap = {
   arrow: Arrow,
   caution: CautionWhite,

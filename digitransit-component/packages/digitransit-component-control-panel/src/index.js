@@ -4,7 +4,9 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useTranslation, I18nextProvider } from 'react-i18next';
-import Icon from '@digitransit-component/digitransit-component-icon';
+import Icon, {
+  defaultColors,
+} from '@digitransit-component/digitransit-component-icon';
 import styles from './helpers/styles.scss';
 import i18n from './helpers/i18n';
 
@@ -312,18 +314,7 @@ NearStopsAndRoutes.defaultProps = {
   alertsContext: undefined,
   onClick: undefined,
   title: undefined,
-  iconColors: {
-    primary: '#0074bf',
-    airplane: '#0046ad',
-    bus: '#007ac9',
-    rail: '#8c4799',
-    tram: '#008151',
-    subway: '#ed8c00',
-    ferry: '#007a97',
-    citybike: '#f2b62d',
-    bikepark: '#f2b62d',
-    carpark: '#007ac9',
-  },
+  iconColors: defaultColors,
   modeSet: 'hsl',
   fontWeights: {
     medium: 500,

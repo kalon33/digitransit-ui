@@ -2,7 +2,9 @@
 import PropTypes from 'prop-types';
 import React, { useState, memo } from 'react';
 import cx from 'classnames';
-import Icon from '@digitransit-component/digitransit-component-icon';
+import Icon, {
+  defaultColors,
+} from '@digitransit-component/digitransit-component-icon';
 import styles from './helpers/styles.scss';
 
 const extendedModes = {
@@ -10,27 +12,6 @@ const extendedModes = {
   704: 'bus-local',
   714: 'replacement-bus',
   900: 'speedtram',
-};
-
-const defaultColors = {
-  primary: '#0074bf',
-  accessiblePrimary: '#0074be',
-  airplane: '#0046ad',
-  bus: '#007ac9',
-  'bus-express': '#ca4000',
-  'bus-local': '#007ac9',
-  'replacement-bus': '#dc0451',
-  rail: '#8c4799',
-  tram: '#008151',
-  speedtram: '#007e79',
-  subway: '#ed8c00',
-  ferry: '#007a97',
-  'ferry-external': '#666666',
-  funicular: '#ff00ff',
-  citybike: '#f2b62d',
-  'citybike-secondary': '#333333',
-  bikepark: '#f2b62d',
-  carpark: '#007ac9',
 };
 
 const getRouteMode = (props, set) => {
@@ -183,7 +164,6 @@ const SuggestionItem = memo(
     isMobile,
     ariaFavouriteString,
     color,
-    accessiblePrimaryColor,
     fillInput,
     fontWeights,
     iconColors,
@@ -211,6 +191,8 @@ const SuggestionItem = memo(
         iconColor = iconColors?.[colorId] || defaultColors[colorId] || '#888';
       }
     }
+    const accessiblePrimary =
+      iconColors?.accessiblePrimary || defaultColors.accessiblePrimary;
     // console.log(item, iconId, iconColor);
     // Arrow clicked is for street. Instead of selecting item when a user clicks on arrow,
     // It fills the input field.
@@ -362,7 +344,7 @@ const SuggestionItem = memo(
                 [styles.mobile]: isMobile,
               })}
             >
-              <Icon img="arrow" color={iconColors.accessiblePrimary} />
+              <Icon img="arrow" color={accessiblePrimary} />
             </span>
           )}
         {iconId !== 'arrow' &&
@@ -387,10 +369,7 @@ const SuggestionItem = memo(
                 fillInput(item);
               }}
             >
-              <Icon
-                img="search-street-name"
-                color={iconColors.accessiblePrimary}
-              />
+              <Icon img="search-street-name" color={accessiblePrimary} />
             </span>
           )}
       </div>
@@ -407,10 +386,7 @@ const SuggestionItem = memo(
             [styles.futureroute]: isFutureRoute,
           },
         )}
-        style={{
-          '--font-weight-medium': fontWeights.medium,
-          '--accessible-primary-color': accessiblePrimaryColor,
-        }}
+        style={{ '--font-weight-medium': fontWeights.medium }}
       >
         {acri}
         {ri}
@@ -451,7 +427,6 @@ SuggestionItem.propTypes = {
   loading: PropTypes.bool,
   fillInput: PropTypes.func,
   color: PropTypes.string,
-  accessiblePrimaryColor: PropTypes.string,
   fontWeights: PropTypes.shape({
     medium: PropTypes.number,
   }),
@@ -466,7 +441,6 @@ SuggestionItem.defaultProps = {
   fillInput: () => {},
   isMobile: false,
   color: '#007ac9',
-  accessiblePrimaryColor: '#0074be',
   fontWeights: {
     medium: 500,
   },
