@@ -445,6 +445,7 @@ export function getPlanParams(
       break;
     case PLANTYPE.FLEXTRANSIT_INTERNAL:
       access = [...access, 'FLEX'];
+      egress = access;
       direct = access;
       filters = excludeAgencies(config.flex?.externalAgencies);
       minTransferTime = config.flex?.minTransferTime || minTransferTime;
