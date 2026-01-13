@@ -256,6 +256,7 @@ class IndexPage extends React.Component {
 
     return config.showNearYouButtons ? (
       <CtrlPanel.NearStopsAndRoutes
+        appElement="#app"
         modeArray={modeArray}
         modeSet={config.iconModeSet}
         urlPrefix={`/${PREFIX_NEARYOU}`}
@@ -268,6 +269,7 @@ class IndexPage extends React.Component {
         colors={colors}
         fontWeights={fontWeights}
         {...directionProps}
+        isMobile={this.props.breakpoint !== 'large'}
       />
     ) : (
       <div className="stops-near-you-text">

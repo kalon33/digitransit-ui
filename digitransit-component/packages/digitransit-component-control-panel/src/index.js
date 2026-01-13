@@ -4,6 +4,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useTranslation, I18nextProvider } from 'react-i18next';
+import Modal from '@hsl-fi/modal';
 import Icon, {
   defaultColors,
 } from '@digitransit-component/digitransit-component-icon';
@@ -131,6 +132,7 @@ function horizontalButton(mode, modeSet, colors, withAlert, srMsg) {
 }
 
 function NearStopsAndRoutes({
+  appElement,
   horizontal,
   modeArray,
   urlPrefix,
@@ -145,8 +147,10 @@ function NearStopsAndRoutes({
   modeSet,
   colors,
   fontWeights,
+  isMobile,
 }) {
   const [modesWithAlerts, setModesWithAlerts] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
   const [t] = useTranslation();
 
   useEffect(() => {
@@ -219,7 +223,17 @@ function NearStopsAndRoutes({
 
     if (mode === 'more') {
       return (
-        <div key={mode} role="link" tabIndex="0">
+        <div
+          key={mode}
+          role="link"
+          tabIndex="0"
+          onKeyDown={e => {
+            if (isKeyboardSelectionEvent(e)) {
+              setModalOpen(true);
+            }
+          }}
+          onClick={() => setModalOpen(true)}
+        >
           {modeButton}
         </div>
       );
@@ -256,11 +270,25 @@ function NearStopsAndRoutes({
     );
   });
 
+  const renderModal = () => (
+    <Modal
+      appElement={appElement}
+      contentLabel={(t('title'), { lng: language })}
+      closeButtonLabel={(t('close'), { lng: language })}
+      variant={isMobile ? 'large' : 'small'}
+      isOpen={modalOpen}
+      onCrossClick={() => setModalOpen(false)}
+    >
+      HELLO
+    </Modal>
+  );
+
   return (
     <div
       className={styles['near-you-container']}
       style={{ '--font-weight-medium': fontWeights.medium }}
     >
+      {renderModal()}
       <h2 className={styles['near-you-title']}>
         {title?.[language] || t('title', { lng: language })}
       </h2>
@@ -278,6 +306,7 @@ function NearStopsAndRoutes({
 }
 
 NearStopsAndRoutes.propTypes = {
+  appElement: PropTypes.string.isRequired,
   modeArray: PropTypes.arrayOf(PropTypes.string).isRequired,
   title: PropTypes.objectOf(PropTypes.string),
   urlPrefix: PropTypes.string.isRequired,
@@ -302,6 +331,7 @@ NearStopsAndRoutes.propTypes = {
   fontWeights: PropTypes.shape({
     medium: PropTypes.number,
   }),
+  isMobile: PropTypes.bool,
 };
 
 NearStopsAndRoutes.defaultProps = {
@@ -319,6 +349,7 @@ NearStopsAndRoutes.defaultProps = {
   fontWeights: {
     medium: 500,
   },
+  isMobile: false,
 };
 
 /**

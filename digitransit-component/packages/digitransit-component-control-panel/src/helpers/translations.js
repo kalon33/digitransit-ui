@@ -10,6 +10,7 @@ const translations = {
       subway: 'U-Bahn',
       tram: 'Straßenbahn',
       title: 'Haltestellen und Linien in der Nähe',
+      close: 'Schließen',
     },
   },
   en: {
@@ -26,6 +27,7 @@ const translations = {
       carpark: 'The closest car parks',
       more: 'Show more',
       title: 'Near you',
+      close: 'Close',
     },
   },
   fi: {
@@ -42,6 +44,7 @@ const translations = {
       carpark: 'Lähimmät liityntäpysäköinnit autoille',
       more: 'Näytä lisää',
       title: 'Lähelläsi',
+      close: 'Sulje',
     },
   },
   pl: {
@@ -55,6 +58,7 @@ const translations = {
       subway: 'Metro',
       tram: 'Tramwaj',
       title: 'Przystanki i trasy w pobliżu',
+      sulje: 'Zamknij',
     },
   },
   sv: {
@@ -71,6 +75,7 @@ const translations = {
       carpark: 'Närmaste anslutningsparkering för bilar',
       more: 'Visa flera',
       title: 'Nära dig',
+      close: 'Stäng',
     },
   },
 };
