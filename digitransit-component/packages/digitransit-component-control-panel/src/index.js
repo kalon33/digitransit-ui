@@ -8,6 +8,7 @@ import Modal from '@hsl-fi/modal';
 import Icon, {
   defaultColors,
 } from '@digitransit-component/digitransit-component-icon';
+import HorizontalButton from './helpers/HorizontalButton';
 import styles from './helpers/styles.scss';
 import i18n from './helpers/i18n';
 
@@ -95,42 +96,6 @@ function getIconName(mode, modeSet, horizontal) {
 
 const MAX_VISIBLE_MODES = 7;
 
-function horizontalButton(mode, modeSet, colors, withAlert, srMsg) {
-  let iconProps;
-
-  if (mode === 'favorite') {
-    iconProps = { img: 'star' };
-  } else if (mode === 'more') {
-    iconProps = {
-      img: 'arrow',
-      color: colors['primary'],
-      width: 1.2,
-      height: 1.2,
-    };
-  } else {
-    iconProps = {
-      img: getIconName(mode, modeSet, true),
-      color: colors[mode],
-    };
-  }
-
-  return (
-    <>
-      <span className={styles['sr-only']}>{srMsg}</span>
-      <span className={styles['transport-mode-icon-container']}>
-        <span className={styles['transport-mode-icon-with-icon']}>
-          <Icon {...iconProps} />
-          {withAlert && (
-            <span className={styles['transport-mode-alert-icon']}>
-              <Icon img="caution" color={colors['caution']} />
-            </span>
-          )}
-        </span>
-      </span>
-    </>
-  );
-}
-
 function NearStopsAndRoutes({
   appElement,
   horizontal,
@@ -188,13 +153,14 @@ function NearStopsAndRoutes({
     }
 
     const modeButton = horizontal ? (
-      horizontalButton(
-        mode,
-        modeSet,
-        colors,
-        withAlert,
-        t(mode, { lng: language }),
-      )
+      <HorizontalButton
+        mode={mode}
+        modeSet={modeSet}
+        colors={colors}
+        withAlert={withAlert}
+        srMsg={t(mode, { lng: language })}
+        getIconName={getIconName}
+      />
     ) : (
       <span className={styles['transport-mode-icon-container']}>
         <span
