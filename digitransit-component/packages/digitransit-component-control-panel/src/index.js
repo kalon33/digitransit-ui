@@ -4,11 +4,10 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useTranslation, I18nextProvider } from 'react-i18next';
-import Modal from '@hsl-fi/modal';
-import Icon, {
-  defaultColors,
-} from '@digitransit-component/digitransit-component-icon';
+import { defaultColors } from '@digitransit-component/digitransit-component-icon';
 import HorizontalButton from './helpers/HorizontalButton';
+import VerticalButton from './helpers/VerticalButton';
+import AllModesModal from './helpers/AllModesModal';
 import styles from './helpers/styles.scss';
 import i18n from './helpers/i18n';
 
@@ -108,7 +107,6 @@ function NearStopsAndRoutes({
   origin,
   omitLanguageUrl,
   onClick,
-  buttonStyle,
   modeSet,
   colors,
   fontWeights,
@@ -143,6 +141,7 @@ function NearStopsAndRoutes({
     modes.push('more');
   }
 
+  // const buttonContext = []; // buttons setup for modal
   const buttons = modes.map(mode => {
     const withAlert = modesWithAlerts.includes(mode.toUpperCase());
     let url = `${urlStart}/${mode.toUpperCase()}/POS`;
@@ -152,39 +151,18 @@ function NearStopsAndRoutes({
       }`;
     }
 
-    const modeButton = horizontal ? (
-      <HorizontalButton
-        mode={mode}
-        modeSet={modeSet}
-        colors={colors}
-        withAlert={withAlert}
-        srMsg={t(mode, { lng: language })}
-        getIconName={getIconName}
-      />
-    ) : (
-      <span className={styles['transport-mode-icon-container']}>
-        <span
-          className={styles['transport-mode-icon-with-icon']}
-          style={{
-            '--bckColor': colors[mode],
-            '--borderRadius': buttonStyle.borderRadius,
-          }}
-        >
-          <Icon
-            img={getIconName(mode, modeSet, false)}
-            width={1.4}
-            height={1.4}
-          />
-          {withAlert && (
-            <span className={styles['transport-mode-alert-icon']}>
-              <Icon img="caution" color={colors['caution']} />
-            </span>
-          )}
-        </span>
-        <span className={styles['transport-mode-title']}>
-          {t(mode, { lng: language })}
-        </span>
+    const modeTitle = (
+      <span className={styles['transport-mode-title']}>
+        {t(mode, { lng: language })}
       </span>
+    );
+
+    const buttonProps = { mode, modeSet, colors, withAlert, getIconName };
+
+    const modeButton = horizontal ? (
+      <HorizontalButton srMsg={t(mode, { lng: language })} {...buttonProps} />
+    ) : (
+      <VerticalButton title={modeTitle} {...buttonProps} />
     );
 
     if (mode === 'more') {
@@ -236,25 +214,20 @@ function NearStopsAndRoutes({
     );
   });
 
-  const renderModal = () => (
-    <Modal
-      appElement={appElement}
-      contentLabel={(t('title'), { lng: language })}
-      closeButtonLabel={(t('close'), { lng: language })}
-      variant={isMobile ? 'large' : 'small'}
-      isOpen={modalOpen}
-      onCrossClick={() => setModalOpen(false)}
-    >
-      HELLO
-    </Modal>
-  );
-
   return (
     <div
       className={styles['near-you-container']}
       style={{ '--font-weight-medium': fontWeights.medium }}
     >
-      {renderModal()}
+      <AllModesModal
+        appElement={appElement}
+        isMobile={isMobile}
+        language={language}
+        modalOpen={modalOpen}
+        closeModal={() => setModalOpen(false)}
+      >
+        HELLO
+      </AllModesModal>
       <h2 className={styles['near-you-title']}>
         {title?.[language] || t('title', { lng: language })}
       </h2>
@@ -291,7 +264,6 @@ NearStopsAndRoutes.propTypes = {
   }),
   omitLanguageUrl: PropTypes.bool,
   onClick: PropTypes.func,
-  buttonStyle: PropTypes.objectOf(PropTypes.string),
   colors: PropTypes.objectOf(PropTypes.string),
   modeSet: PropTypes.string,
   fontWeights: PropTypes.shape({
@@ -306,7 +278,6 @@ NearStopsAndRoutes.defaultProps = {
   LinkComponent: undefined,
   origin: undefined,
   omitLanguageUrl: undefined,
-  buttonStyle: undefined,
   alertsContext: undefined,
   onClick: undefined,
   title: undefined,

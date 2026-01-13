@@ -249,10 +249,7 @@ class IndexPage extends React.Component {
 
     const directionProps = config.narrowNearYouButtons
       ? {}
-      : {
-          buttonStyle: config.nearYouButton,
-          horizontal: false,
-        };
+      : { horizontal: false };
 
     return config.showNearYouButtons ? (
       <CtrlPanel.NearStopsAndRoutes
