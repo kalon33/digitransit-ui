@@ -40,7 +40,6 @@ export default configMerger(walttiConfig, {
     iconColors: {
       'mode-bus': colorPrimary,
       'mode-ferry': '#0064f0',
-      'mode-ferry-pier': '#666666',
     },
   },
 
@@ -192,4 +191,5 @@ export default configMerger(walttiConfig, {
   allowLogin: false,
   routeNotifications: [],
   analyticsScript: '',
+  GTMid: null,
 });

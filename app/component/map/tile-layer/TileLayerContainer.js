@@ -21,9 +21,8 @@ import PreferencesStore from '../../../store/PreferencesStore';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { getClientBreakpoint } from '../../../util/withBreakpoint';
 import {
+  stopPagePath,
   PREFIX_BIKESTATIONS,
-  PREFIX_STOPS,
-  PREFIX_TERMINALS,
   PREFIX_CARPARK,
   PREFIX_BIKEPARK,
   PREFIX_RENTALVEHICLES,
@@ -240,13 +239,11 @@ class TileLayerContainer extends GridLayer {
         selectableTargets.length === 1 &&
         selectableTargets[0].layer === 'stop'
       ) {
-        const prefix = selectableTargets[0].feature.properties.stops
-          ? PREFIX_TERMINALS
-          : PREFIX_STOPS;
         this.context.router.push(
-          `/${prefix}/${encodeURIComponent(
+          stopPagePath(
+            selectableTargets[0].feature.properties.stops,
             selectableTargets[0].feature.properties.gtfsId,
-          )}`,
+          ),
         );
         return;
       }
@@ -378,7 +375,6 @@ class TileLayerContainer extends GridLayer {
             <MarkerSelectPopup
               selectRow={this.selectRow}
               options={this.state.selectableTargets}
-              colors={this.context.config.colors}
             />
           );
         } else if (
@@ -428,7 +424,6 @@ class TileLayerContainer extends GridLayer {
             <MarkerSelectPopup
               selectRow={this.selectRow}
               options={this.state.selectableTargets}
-              colors={this.context.config.colors}
               zoom={this.state.zoom}
             />
           </Popup>

@@ -820,6 +820,7 @@ const translations = {
     'accessibility-limited': 'Wheelchair',
     'accessibility-nolimit': 'No limits',
     'accessibility-statement': 'Accessibility statement',
+    acknowledged: 'OK',
     'add-favourite-bikeStation-failed-heading':
       'Saving the citybike station failed',
     'add-favourite-place-failed-heading': 'Unable to save location',
@@ -1016,9 +1017,9 @@ const translations = {
     'delete-favourite-failed-heading': 'Unable to delete save',
     'departure-list-update.sr-instructions':
       'The list of upcoming departures and departure times will update in real time.',
-    'departure-page-sr': 'Trip {shortName} {destination} {time} information',
+    'departure-page-sr': 'Route {shortName} {destination}, departs at {time},',
     'departure-time-in-minutes': '{minutes} min',
-    'departure-time-sr': '{when} clock {time}. {realTime}',
+    'departure-time-sr': '{when} clock {time}, {realTime}',
     departures: 'Departures',
     'departures-by-hour': 'Departures by hour',
     'departures-by-hour-minutes-route': '(minutes/route)',
@@ -1150,7 +1151,7 @@ const translations = {
       'At {time} travel by scooter {distance} from {origin} to {destination}. Estimated time {duration}',
     'itinerary-details.transit-leg-part-1': 'At {time} {realtime} take',
     'itinerary-details.transit-leg-part-2':
-      'from stop {startStop} {startZoneInfo} {trackInfo} to stop {endStop} {endZoneInfo}. Estimated duration {duration}',
+      'from stop {startStop} {startZoneInfo} {trackInfo} to stop {endStop} {endZoneInfo}. Estimated duration {duration}. ',
     'itinerary-details.via-leg':
       '{arrivalTime} arrive to via point {viaPoint}. {leaveAction}',
     'itinerary-details.walk-leg':
@@ -1185,7 +1186,7 @@ const translations = {
     'itinerary-summary-row.description':
       'Itinerary departing at {departureDate} {departureTime} and arriving at {arrivalDate} {arrivalTime}. {firstDeparture} {transfers} Total time {totalTime}.',
     'itinerary-summary-row.first-departure':
-      '{vehicle} leaves at {departureTime} from stop {stopName}.',
+      '{vehicle} leaves at {departureTime} from stop {stopName} {platformOrTrack}.',
     'itinerary-summary-row.first-leg-start-time':
       'Leaves at {firstDepartureTime} from {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
     'itinerary-summary-row.first-leg-start-time-citybike':
@@ -1337,9 +1338,16 @@ const translations = {
     'navigation-mode-late': '{name} is late',
     'navigation-outro-dismiss': 'End guidance',
     'navigation-outro-header': "You've arrived!",
+    'navigation-platform-change': 'Platform changed',
+    'navigation-platform-change-details':
+      '{name} departs from platform {number}',
+    'navigation-platform-restored': 'Departs from original platform',
     'navigation-quit': 'Go back',
     'navigation-remember-ticket': 'Did you remember to buy a ticket?',
     'navigation-ticket': 'Ticket',
+    'navigation-track-change': 'Track changed',
+    'navigation-track-change-details': '{name} departs from track {number}',
+    'navigation-track-restored': 'Departs from original track',
     'navigation-transfer-problem': 'Transfer no longer possible',
     'navigation-transfer-problem-details':
       'The transfer time {transfer} is too short.',
@@ -1513,10 +1521,10 @@ const translations = {
     'replacement-bus': 'Replacement bus',
     'replacement-bus-with-route-number': 'Replacement bus {routeNumber}',
     'required-ticket': 'Ticket required for the journey',
-    'restore-default-settings':
-      'Restore default settings {changedSettingsIndicator}',
+    'restore-default-settings': 'Reset',
     'restore-default-settings-aria-label': 'Restore default settings.',
     'restore-default-settings-aria-label-done': 'Default settings are in use.',
+    'restore-default-settings-success': 'Default settings restored',
     'return-cycle-to': 'Return the bike:',
     'return-e-scooter-to': 'Leave the scooter in a safe location',
     'return-scooter-to': 'Return the kick scooter to {station} station',
@@ -1624,9 +1632,11 @@ const translations = {
       'The journey includes demand responsive transport service. Please check the payment methods and practices on ',
     'set-specific-settings': 'Set more specific settings',
     'set-stop-as-routes': "Set the stop as route's",
-    settings: 'Settings {changedSettingsIndicator}',
+    settings: 'Settings',
     'settings-alternative-name-rail': 'Train',
     'settings-change-itinerary-settings': 'Change settings',
+    'settings-changed': 'Settings changed',
+    'settings-changed-by-you': 'You have edited your settings',
     'settings-dropdown-close-label': 'Close options',
     'settings-dropdown-open-label': 'Open options',
     'settings-e-scooter':
@@ -1681,7 +1691,7 @@ const translations = {
     'stop-page.title-short': 'Stop',
     'stop-virtual-monitor': 'Stop display',
     stops: 'Stops',
-    'stops-near-you.description': 'Stop timetables and vehicles near your',
+    'stops-near-you.description': 'Stop timetables and vehicles near you',
     'stops-near-you.title': 'Near by stops timetables',
     'street-mode-bike-aria':
       'Show cycle route. Duration {duration}, distance {length}',
@@ -1757,6 +1767,10 @@ const translations = {
     'tracking-button-off': 'tracking off',
     'tracking-button-offline': 'tracking failed',
     'tracking-button-on': 'tracking on',
+    trafficnow: 'Traffic now',
+    'trafficnow-bread': 'Travelling',
+    'trafficnow-description':
+      'Up-to-date information on disruptions and exceptions',
     traficom: 'Traficom',
     tram: 'Tram',
     'tram-with-route-number': 'Tram {routeNumber} {headSign}',
@@ -2150,6 +2164,7 @@ const translations = {
     'accessibility-limited': 'Pyörätuoli',
     'accessibility-nolimit': 'Ei rajoitusta',
     'accessibility-statement': 'Saavutettavuusseloste',
+    acknowledged: 'Selvä',
     'add-favourite-bikeStation-failed-heading':
       'Kaupunkipyöräaseman tallentaminen ei onnistunut',
     'add-favourite-place-failed-heading': 'Paikan tallentaminen ei onnistunut',
@@ -2348,9 +2363,10 @@ const translations = {
     'delete-favourite-failed-heading': 'Tallennuksen poistaminen ei onnistunut',
     'departure-list-update.sr-instructions':
       'Tulevien lähtöjen lista ja lähtöajat päivittyvät reaaliajassa.',
-    'departure-page-sr': 'Lähdön {shortName} {destination} {time} tiedot',
+    'departure-page-sr':
+      'Lähtö {shortName} {destination}, lähtee kello {time},',
     'departure-time-in-minutes': '{minutes} min',
-    'departure-time-sr': '{when} kello {time}. {realTime}',
+    'departure-time-sr': '{when} kello {time}, {realTime}',
     departures: 'Lähdöt',
     'departures-by-hour': 'Lähdöt tunneittain',
     'departures-by-hour-minutes-route': '(minuutit/linja)',
@@ -2480,7 +2496,7 @@ const translations = {
       '{time} potkulautaile kohteesta {origin} {distance} {to} {destination}. Matka-aika {duration}',
     'itinerary-details.transit-leg-part-1': '{time} {realtime} ota',
     'itinerary-details.transit-leg-part-2':
-      'pysäkiltä {startStop} {startZoneInfo} {trackInfo} pysäkille {endStop} {endZoneInfo}. Arvioitu matka-aika {duration}',
+      'pysäkiltä {startStop} {startZoneInfo} {trackInfo} pysäkille {endStop} {endZoneInfo}. Arvioitu matka-aika {duration}. ',
     'itinerary-details.via-leg':
       '{arrivalTime} saavu välipisteeseen {viaPoint}. {leaveAction}',
     'itinerary-details.walk-leg':
@@ -2513,7 +2529,7 @@ const translations = {
     'itinerary-summary-row.description':
       'Lähtö {departureDate} kello {departureTime}. Perillä {arrivalDate} kello {arrivalTime}. {firstDeparture} {transfers} Matka-aika {totalTime}',
     'itinerary-summary-row.first-departure':
-      '{vehicle} lähtee asemalta {stopName} kello {departureTime}.',
+      '{vehicle} lähtee asemalta {stopName} kello {departureTime} {platformOrTrack}.',
     'itinerary-summary-row.first-leg-start-time':
       'Lähtee klo {firstDepartureTime} {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
     'itinerary-summary-row.first-leg-start-time-citybike':
@@ -2664,9 +2680,15 @@ const translations = {
     'navigation-mode-late': '{name} on myöhässä',
     'navigation-outro-dismiss': 'Poistu opastuksesta',
     'navigation-outro-header': 'Olet perillä!',
+    'navigation-platform-change': 'Laituri muuttunut',
+    'navigation-platform-change-details': '{name} lähtee laiturilta {number}',
+    'navigation-platform-restored': 'Laituri palautunut alkuperäiseen',
     'navigation-quit': 'Palaa',
     'navigation-remember-ticket': 'Muistithan ostaa lipun?',
     'navigation-ticket': 'Lippu',
+    'navigation-track-change': 'Raide muuttunut',
+    'navigation-track-change-details': '{name} lähtee raiteelta {number}',
+    'navigation-track-restored': 'Raide palautunut alkuperäiseen',
     'navigation-transfer-problem': 'Vaihto ei enää onnistu',
     'navigation-transfer-problem-details':
       'Vaihtoaika {transfer} on liian lyhyt.',
@@ -2840,10 +2862,10 @@ const translations = {
     'replacement-bus': 'Korvaava bussi',
     'replacement-bus-with-route-number': 'Korvaava bussi {routeNumber}',
     'required-ticket': 'Reitillä tarvittava lippu',
-    'restore-default-settings':
-      'Palauta oletusasetukset {changedSettingsIndicator}',
+    'restore-default-settings': 'Palauta',
     'restore-default-settings-aria-label': 'Palauta oletusasetukset.',
     'restore-default-settings-aria-label-done': 'Oletusasetukset käytössä.',
+    'restore-default-settings-success': 'Oletusasetukset palautettu',
     'return-cycle-to': 'Palauta kaupunkipyörä:',
     'return-e-scooter-to': 'Jätä potkulauta turvalliseen paikkaan',
     'return-scooter-to': 'Palauta potkulauta asemalle {station}',
@@ -2950,9 +2972,11 @@ const translations = {
       'Matka sisältää kutsuliikennettä. Voit tarkistaa maksutavat ja käytännöt ',
     'set-specific-settings': 'Aseta tarkemmat asetukset',
     'set-stop-as-routes': 'Aseta pysäkki reitin',
-    settings: 'Asetukset {changedSettingsIndicator}',
+    settings: 'Asetukset',
     'settings-alternative-name-rail': 'Juna',
     'settings-change-itinerary-settings': 'Muuta asetuksia',
+    'settings-changed': 'Asetuksia muokattu',
+    'settings-changed-by-you': 'Olet muokannut asetuksia',
     'settings-dropdown-close-label': 'Sulje vaihtoehdot',
     'settings-dropdown-open-label': 'Avaa vaihtoehdot',
     'settings-e-scooter':
@@ -3082,6 +3106,9 @@ const translations = {
     'tracking-button-off': 'paikannus pois päältä',
     'tracking-button-offline': 'paikannus epäonnistui',
     'tracking-button-on': 'paikannus päällä',
+    trafficnow: 'Liikenne nyt',
+    'trafficnow-bread': 'Matkustaminen',
+    'trafficnow-description': 'Ajantasaiset tiedot häiriöistä ja poikkeuksista',
     traficom: 'Traficom',
     tram: 'Raitiovaunu',
     'tram-with-route-number': 'Raitiovaunu {routeNumber} {headSign}',
@@ -3952,9 +3979,9 @@ const translations = {
     'departure-list-update.sr-instructions':
       'The list of upcoming departures and departure times will update in real time.',
     'departure-page-sr':
-      'Informacje o podróży {shortName} {destination} {time}',
+      'Informacje o podróży {shortName} {destination} {time}.',
     'departure-time-in-minutes': '{minutes} min.',
-    'departure-time-sr': '{when} clock {time}. {realTime}',
+    'departure-time-sr': '{when} clock {time}, {realTime}',
     departures: 'Odjazdy',
     'departures-by-hour': 'Odjazdy według godziny',
     'departures-by-hour-minutes-route': '(minuty/trasa)',
@@ -4071,7 +4098,7 @@ const translations = {
       'At {time} ride your kick scooter {distance} from {origin} to {destination}. Estimated time {duration}',
     'itinerary-details.transit-leg-part-1': 'At {time} {realtime} take',
     'itinerary-details.transit-leg-part-2':
-      'from stop {startStop} {startZoneInfo} {trackInfo} to stop {endStop} {endZoneInfo}. Estimated duration {duration}',
+      'from stop {startStop} {startZoneInfo} {trackInfo} to stop {endStop} {endZoneInfo}. Estimated duration {duration}. ',
     'itinerary-details.via-leg':
       '{arrivalTime} arrive to via point {viaPoint}. {leaveAction}',
     'itinerary-details.walk-leg':
@@ -5112,6 +5139,7 @@ const translations = {
     'accessibility-limited': 'Med rullstolen',
     'accessibility-nolimit': 'Ingen begränsning',
     'accessibility-statement': 'Tillgänglighetsförklaring',
+    acknowledged: 'Klart',
     'add-favourite-bikeStation-failed-heading':
       'Kunde inte spara stadscykelstationen',
     'add-favourite-place-failed-heading': 'Kunde inte spara platsen',
@@ -5302,9 +5330,10 @@ const translations = {
     'delete-favourite-failed-heading': 'Unable to delete save',
     'departure-list-update.sr-instructions':
       'Listan på avgångar och avgångstider uppdateras i realtid.',
-    'departure-page-sr': 'Visa avgång {shortName} {destination} {time}',
+    'departure-page-sr':
+      'Linjenumret {shortName} {destination}, avgår kl {time},',
     'departure-time-in-minutes': '{minutes} min',
-    'departure-time-sr': '{when} klockan {time}. {realTime}',
+    'departure-time-sr': '{when} klockan {time}, {realTime}',
     departures: 'Avgångar',
     'departures-by-hour': 'Avgångar per timme',
     'departures-by-hour-minutes-route': '(minuter/rad)',
@@ -5436,7 +5465,7 @@ const translations = {
       '{time} åk elsparkcykel {distance} från {origin} till destinationen {destination}. Restid {duration}',
     'itinerary-details.transit-leg-part-1': '{time} {realtime} ta',
     'itinerary-details.transit-leg-part-2':
-      'från hållplats {startStop} {startZoneInfo} {trackInfo} till hållplats {endStop} {endZoneInfo}. Beräknad restid {duration}',
+      'från hållplats {startStop} {startZoneInfo} {trackInfo} till hållplats {endStop} {endZoneInfo}. Beräknad restid {duration}. ',
     'itinerary-details.via-leg':
       '{arrivalTime} du anländer till mellanstopp {viaPoint}. {leaveAction}',
     'itinerary-details.walk-leg':
@@ -5470,7 +5499,7 @@ const translations = {
     'itinerary-summary-row.description':
       'Avgång {departureDate} klockan {departureTime}. Framme {arrivalDate} klockan {arrivalTime}. {firstDeparture} {transfers} Restid {totalTime}.',
     'itinerary-summary-row.first-departure':
-      '{vehicle} avgår från station {stopName} klockan {departureTime}.',
+      '{vehicle} avgår från station {stopName} klockan {departureTime} {platformOrTrack}.',
     'itinerary-summary-row.first-leg-start-time':
       'Avgår kl {firstDepartureTime} från {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
     'itinerary-summary-row.first-leg-start-time-citybike':
@@ -5620,11 +5649,18 @@ const translations = {
     'navigation-mode-late': '{name} har försenats',
     'navigation-outro-dismiss': 'Stäng guidning',
     'navigation-outro-header': 'Du är framme!',
+    'navigation-platform-change': 'Plattformsändring',
+    'navigation-platform-change-details':
+      '{name} avgår från plattform {number}',
+    'navigation-platform-restored': 'Avgår från sin ursprungliga plattform',
     'navigation-quit': 'Tillbaka',
     'navigation-remember-ticket': 'Kom du ihåg att köpa biljett?',
     'navigation-ticket': 'Biljett',
+    'navigation-track-change': 'Spårändring',
+    'navigation-track-change-details': '{name} avgår från spår {number}',
+    'navigation-track-restored': 'Avgår från sitt ursprungliga spår',
     'navigation-transfer-problem': 'Bytet är inte längre möjligt',
-    'navigation-transfer-problem-details': 'Bytestid {transfer] är för kort.',
+    'navigation-transfer-problem-details': 'Bytestid {transfer} är för kort.',
     'navileg-at-ferrypier': 'färjekajen',
     'navileg-at-station': 'stationen',
     'navileg-at-stop': 'hållplatsen',
@@ -5794,11 +5830,12 @@ const translations = {
     'replacement-bus': 'Ersättande buss',
     'replacement-bus-with-route-number': 'Ersättande buss {routeNumber}',
     'required-ticket': 'Biljett som behövs under resan',
-    'restore-default-settings':
-      'Återställ standardinställningar {changedSettingsIndicator}',
+    'restore-default-settings': 'Återställ',
     'restore-default-settings-aria-label': 'Återställ standardinställningar.',
     'restore-default-settings-aria-label-done':
       'Standardinställningar är aktiverade.',
+    'restore-default-settings-success':
+      'Standardinställningar har återställts.',
     'return-cycle-to': 'Returnera stadscykeln: ',
     'return-e-scooter-to': 'Lämna elsparkcykeln på ett säkert ställe',
     'return-scooter-to': 'Returnera sparkcykeln till stationen {station}',
@@ -5909,9 +5946,11 @@ const translations = {
       'I resan ingår anropsbusstrafiken. Bekanta dig med betalningsmetoder och praxis på ',
     'set-specific-settings': 'Ställa avancerade inställningar',
     'set-stop-as-routes': 'Ställa hållplats som rutter',
-    settings: 'Anpassa {changedSettingsIndicator}',
+    settings: 'Anpassa',
     'settings-alternative-name-rail': 'Tåg',
     'settings-change-itinerary-settings': 'Anpassa sökning',
+    'settings-changed': 'Ändrade inställningar',
+    'settings-changed-by-you': 'Du har ändrat inställningarna',
     'settings-dropdown-close-label': 'Stäng alternativen',
     'settings-dropdown-open-label': 'Öppna alternativen',
     'settings-e-scooter':
@@ -5966,8 +6005,8 @@ const translations = {
     'stop-page.title-short': 'Hållplats',
     'stop-virtual-monitor': 'Stoppdisplay',
     stops: 'Hållplatser',
-    'stops-near-you.description': 'Stop timetables and vehicles near your',
-    'stops-near-you.title': 'Near by stops timetables',
+    'stops-near-you.description': 'Tidtabeller hållplatser och fordon nära dig',
+    'stops-near-you.title': 'Tidtabeller för hållplatser nära dig',
     'street-mode-bike-aria': 'Visa cykelrutten. Tid {duration}, längd {length}',
     'street-mode-bikeandvehicle-aria':
       'Visa kombinationen av cykling och kollektivtrafik. Tid {duration}, längd {length}',
@@ -6044,6 +6083,9 @@ const translations = {
     'tracking-button-off': 'lokalisering av',
     'tracking-button-offline': 'lokalisering misslyckades',
     'tracking-button-on': 'lokalisering på',
+    trafficnow: 'Trafikläget nu',
+    'trafficnow-bread': 'Att resa med oss',
+    'trafficnow-description': 'Aktuell information om störningar och undantag',
     traficom: 'Traficom',
     tram: 'Spårvagn',
     'tram-with-route-number': 'Spårvagn {routeNumber} {headSign}',

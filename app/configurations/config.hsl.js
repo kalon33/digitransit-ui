@@ -1,4 +1,3 @@
-/* eslint-disable prefer-template */
 import { BIKEAVL_WITHMAX } from '../util/vehicleRentalUtils';
 import prUtils from '../util/ParkAndRideUtils';
 import ttConfig from './timetableConfigUtils';
@@ -27,6 +26,12 @@ const IS_DEV =
 const virtualMonitorBaseUrl = IS_DEV
   ? 'https://dev-hslmonitori.digitransit.fi'
   : 'https://omatnaytot.hsl.fi';
+
+const linkLabel = {
+  fi: 'Lisätietoja',
+  en: 'More information',
+  sv: 'Ytterligare information',
+};
 
 export default {
   CONFIG,
@@ -100,6 +105,7 @@ export default {
 
   feedIds: ['HSL', 'HSLlautta', 'Sipoo'],
   externalFeedIds: ['HSLlautta', '02Taksi'],
+  externalFerryByStopCode: true, // no stop code means external ferry
 
   allowLogin: true,
   allowFavouritesFromLocalstorage: !process.env.OIDC_CLIENT_ID,
@@ -114,6 +120,7 @@ export default {
   defaultSettings: {
     walkSpeed: 1.28,
     showBikeAndParkItineraries: true,
+    transferPenalty: 180,
   },
 
   /**
@@ -153,19 +160,9 @@ export default {
     accessiblePrimary: '#0074be',
     hover: '#0062a1',
     iconColors: {
-      'mode-bus': '#007ac9',
       'mode-bus-express': '#CA4000',
       'mode-bus-local': '#007ac9',
-      'mode-rail': '#8c4799',
-      'mode-tram': '#008151',
-      'mode-ferry': '#007A97',
-      'mode-ferry-pier': '#666666',
-      'mode-metro': '#CA4000',
-      'mode-subway': '#CA4000',
-      'mode-citybike': '#f2b62d',
-      'mode-citybike-secondary': '#333333',
       'mode-speedtram': '#007E79',
-      'mode-replacement-bus': '#DC0451',
     },
   },
   getAutoSuggestIcons: {
@@ -187,16 +184,16 @@ export default {
 
   nationalServiceLink: {
     fi: {
-      name: 'matka.fi',
-      href: 'https://opas.matka.fi/',
+      name: 'matka.fintraffic.fi',
+      href: 'https://matka.fintraffic.fi/',
     },
     sv: {
-      name: 'matka.fi',
-      href: 'https://opas.matka.fi/sv/',
+      name: 'matka.fintraffic.fi',
+      href: 'https://matka.fintraffic.fi/sv/',
     },
     en: {
-      name: 'matka.fi',
-      href: 'https://opas.matka.fi/en/',
+      name: 'matka.fintraffic.fi',
+      href: 'https://matka.fintraffic.fi/en/',
     },
   },
 
@@ -450,9 +447,6 @@ export default {
   ticketPurchaseLink: function purchaseTicketLink(fare) {
     return `https://open.app.hsl.fi/zoneTicketWizard/TICKET_TYPE_SINGLE_TICKET/${fare.ticketName}/adult/-`;
   },
-  ticketLink: {
-    fi: 'https://open.app.hsl.fi/tickets',
-  },
   ticketLinkOperatorCode: 'hsl',
   // mapping fareId from OTP fare identifiers to human readable form
   // in the new HSL zone model, just strip off the prefix 'HSL:'
@@ -463,7 +457,11 @@ export default {
   },
   ticketButtonTextId: 'open-app',
 
-  trafficNowLink: true,
+  trafficNowLink: {
+    fi: 'matkustaminen/liikenne',
+    en: 'travelling/services-now',
+    sv: 'att-resa/Trafiken-just-nu',
+  },
 
   vehicleRental: {
     minZoomStopsNearYou: 10,
@@ -562,8 +560,6 @@ export default {
 
   includeCarSuggestions: true,
   includeParkAndRideSuggestions: true,
-  // Park and ride and car suggestions separated into two switches
-  separatedParkAndRideSwitch: true,
 
   parkingAreaSources: ['liipi'],
 
@@ -633,6 +629,7 @@ export default {
         en: 'hsl.fi/matkustaminen/u-liikenne/',
         sv: 'hsl.fi/sv/att-resa/U-trafik/',
       },
+      linkLabel,
     },
     {
       showForRoute: route => route.type === 702,
@@ -644,16 +641,13 @@ export default {
       },
       content: {
         fi: [
-          'Pääset kyytiin myös keskiovista näyttämättä lippua kuljettajalle.',
-          'Linja käyttää valikoituja pysäkkejä eli ei pysähdy kaikilla pysäkeillä.',
+          'Pääset kyytiin myös bussin keskiovista. Varaudu näyttämään lippu pyydettäessä kuljettajalle tai tarkastajalle.',
         ],
         en: [
-          'Passengers can board the buses also through the middle doors.',
-          'The bus will not serve all stops along the route.',
+          'You can also board the bus through the middle doors. Please be ready to show your ticket to the driver or ticket inspector.',
         ],
         sv: [
-          'Man kan stiga på genom mittdörren och behöver inte visa upp sin biljett för föraren.',
-          'För att snabba upp trafiken stannar bussarna inte vid alla hållplatser.',
+          'Du kan också stiga på bussen genom mittdörren. Var beredd på att visa upp din biljett för föraren eller biljettkontrollanten om du blir ombedd.',
         ],
       },
       closeButtonLabel: {
@@ -666,6 +660,7 @@ export default {
         en: 'hsl.fi/en/hsl/trunk-route-network',
         sv: 'hsl.fi/sv/hrt/stomnatet',
       },
+      linkLabel,
     },
     {
       showForRoute: route => route.type === 704,
@@ -699,6 +694,7 @@ export default {
         en: 'hsl.fi/en/travelling/neighborhood-buses',
         sv: 'hsl.fi/sv/att-resa/narbussar',
       },
+      linkLabel,
     },
     {
       showForRoute: route => route.type === 900,
@@ -732,6 +728,7 @@ export default {
         en: 'hsl.fi/en/campaigns/light-rail',
         sv: 'hsl.fi/sv/kampanjer/snabbsparvag',
       },
+      linkLabel,
     },
   ],
 
@@ -761,6 +758,7 @@ export default {
     link: {
       fi: 'https://hsl.fi/korvaavabussi',
     },
+    linkLabel,
   },
 
   embeddedSearch: {
@@ -804,17 +802,6 @@ export default {
     allowFlexJourneys: false,
     allowDirectFlexJourneys: false,
   },
-
-  replacementBusRoutes: [
-    'HSL:1099V',
-    'HSL:6211U',
-    'HSL:6211E',
-    'HSL:6249Y',
-    'HSL:2213X',
-    'HSL:4699X',
-    'HSL:9969X',
-    'HSL:2015X',
-  ],
 
   showStopStatusMarkers: true,
 

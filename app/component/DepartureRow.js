@@ -1,23 +1,24 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
-import React from 'react';
-import PropTypes from 'prop-types';
 import cx from 'classnames';
-import { intlShape } from 'react-intl';
-import { v4 as uuid } from 'uuid';
 import { Link } from 'found';
-import { configShape, departureShape } from '../util/shapes';
-import { getHeadsignFromRouteLongName } from '../util/legUtils';
-import { epochToTime } from '../util/timeUtils';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { intlShape } from 'react-intl';
 import {
   alertSeverityCompare,
   getAlertsForObject,
   isAlertValid,
 } from '../util/alertUtils';
-import Icon from './Icon';
 import { addAnalyticsEvent } from '../util/analyticsUtils';
-import { PREFIX_ROUTES, PREFIX_STOPS } from '../util/path';
+import { getHeadsignFromRouteLongName } from '../util/legUtils';
 import { getRouteMode } from '../util/modeUtils';
 import { getCapacity } from '../util/occupancyUtil';
+import { routePagePath, PREFIX_STOPS } from '../util/path';
+import { configShape, departureShape } from '../util/shapes';
+import { epochToTime } from '../util/timeUtils';
+import Icon from './Icon';
+import PlatformNumber from './PlatformNumber';
+import IconBackground from './icon/IconBackground';
 
 const getMostSevereAlert = route => {
   const alerts = [...getAlertsForObject(route)];
@@ -31,6 +32,8 @@ export default function DepartureRow(
     showPlatformCode,
     canceled,
     onCapacityClick,
+    isParentTabActive,
+    platformUpdated,
     ...props
   },
   { config, intl },
@@ -44,7 +47,8 @@ export default function DepartureRow(
   );
   let icon;
   let iconColor;
-  let backgroundShape;
+  let background;
+  let backgroundClass;
   let sr;
   if (
     route?.alerts?.filter(alert => isAlertValid(alert, props.currentTime))
@@ -58,17 +62,19 @@ export default function DepartureRow(
         })}
       </span>
     );
-    icon =
-      alert.alertSeverityLevel !== 'INFO'
-        ? 'icon_caution-white-excl-stroke'
-        : 'icon_info';
-    iconColor = alert.alertSeverityLevel !== 'INFO' ? '#DC0451' : '#888';
-    backgroundShape =
-      alert.alertSeverityLevel !== 'INFO' ? undefined : 'circle';
+    if (alert.alertSeverityLevel === 'INFO') {
+      icon = 'icon_info';
+      iconColor = '#888';
+      background = <IconBackground backgroundShape="circle" />;
+      backgroundClass = 'circle';
+    } else {
+      icon = 'icon_caution-white-excl-stroke';
+      iconColor = '#DC0451';
+    }
   }
   const headsign =
     departure.headsign ||
-    departure.trip.tripHeadsign ||
+    trip.tripHeadsign ||
     getHeadsignFromRouteLongName(trip.route);
   let shownTime;
   if (timeDiffInMinutes <= 0) {
@@ -87,7 +93,7 @@ export default function DepartureRow(
       { minutes: timeDiffInMinutes },
     );
   }
-  const { shortName } = departure.trip.route;
+  const { shortName } = trip.route;
   const lowerCaseShortName = shortName?.toLowerCase();
   const nameOrIcon =
     shortName?.length > 6 || !shortName?.length ? (
@@ -96,143 +102,148 @@ export default function DepartureRow(
       shortName
     );
 
-  const renderWithLink = (node, first) => {
-    return (
-      <>
-        <Link
-          to={`/${PREFIX_ROUTES}/${encodeURIComponent(
-            departure.trip.pattern.route.gtfsId,
-          )}/${PREFIX_STOPS}/${encodeURIComponent(
-            departure.trip.pattern.code,
-          )}/${encodeURIComponent(departure.trip.gtfsId)}`}
-          onClick={() => {
-            addAnalyticsEvent({
-              category: 'Stop',
-              action: 'OpenRouteViewFromStop',
-              name: 'RightNowTab',
-            });
-          }}
-          tabIndex={first ? '0' : '-1'}
-          aria-hidden={!first}
-          aria-label={intl.formatMessage(
-            {
-              id: 'departure-page-sr',
-            },
-            {
-              shortName: lowerCaseShortName,
-              destination: headsign,
-              time,
-            },
-          )}
-        />
-        {node}
-      </>
-    );
-  };
-
   const capacity = getCapacity(
     config,
-    trip?.occupancy?.occupancyStatus,
+    trip.occupancy?.occupancyStatus,
     departureTimeMs,
   );
 
+  const handleCapacityClick = e => {
+    e.preventDefault();
+    onCapacityClick();
+  };
+
+  const ariaLabel = `${intl.formatMessage(
+    {
+      id: 'departure-page-sr',
+    },
+    {
+      shortName: lowerCaseShortName,
+      destination: headsign,
+      time,
+    },
+  )}${
+    departure.stop?.platformCode
+      ? intl.formatMessage(
+          {
+            id: 'platform-num',
+          },
+          {
+            platformCode: departure.stop?.platformCode,
+          },
+        )
+      : ''
+  }`;
+
   return (
-    <tr
+    <Link
+      as="tr"
+      tabIndex={isParentTabActive ? '0' : '-1'}
+      to={routePagePath(
+        trip.pattern.route.gtfsId,
+        PREFIX_STOPS,
+        trip.pattern.code,
+        trip.gtfsId,
+      )}
+      onClick={() => {
+        addAnalyticsEvent({
+          category: 'Stop',
+          action: 'OpenRouteViewFromStop',
+          name: 'RightNowTab',
+        });
+      }}
+      aria-label={ariaLabel}
       className={cx(
         'departure-row',
+        'clickable',
         mode,
         departure.bottomRow ? 'bottom' : '',
         props.className,
       )}
-      key={uuid()}
+      key={trip.gtfsId}
     >
       <td
         className={cx('route-number-container', {
           long: shortName && shortName.length <= 6 && shortName.length >= 5,
         })}
-        style={{ backgroundColor: `#${departure.trip.route.color}` }}
+        style={{ backgroundColor: `#${trip.route.color}` }}
       >
-        {renderWithLink(
+        <div aria-hidden="true" className="route-number">
+          {nameOrIcon}
+        </div>
+        {lowerCaseShortName && (
+          <span className="sr-only">{lowerCaseShortName}</span>
+        )}
+        {icon && (
           <>
-            <div aria-hidden="true" className="route-number">
-              {nameOrIcon}
-            </div>
-            <span className="sr-only">{lowerCaseShortName}</span>
-            {icon && (
-              <>
-                <Icon
-                  className={backgroundShape}
-                  img={icon}
-                  color={iconColor}
-                  backgroundShape={backgroundShape}
-                />
-                {sr}
-              </>
-            )}
-          </>,
-          true,
+            <Icon
+              className={backgroundClass}
+              img={icon}
+              color={iconColor}
+              background={background}
+            />
+            {sr}
+          </>
         )}
       </td>
       <td className={cx('route-headsign', departure.bottomRow ? 'bottom' : '')}>
-        {renderWithLink(
-          <div className="headsign">
-            {headsign} {departure.bottomRow && departure.bottomRow}
-          </div>,
-        )}
+        <div className="headsign">
+          {headsign} {departure.bottomRow && departure.bottomRow}
+        </div>
       </td>
       <td className="time-cell">
-        {renderWithLink(
-          <>
-            {shownTime && (
-              <span
-                className={cx('route-arrival', {
-                  realtime: departure.realtime,
-                  canceled,
-                })}
-                aria-hidden="true"
-              >
-                {shownTime}
-              </span>
-            )}
-            <span
-              className={cx('route-time', {
-                realtime: departure.realtime,
-                canceled,
-              })}
-              aria-hidden="true"
-            >
-              {time}
-            </span>
-            <span className="sr-only">
-              {intl.formatMessage(
-                {
-                  id: 'departure-time-sr',
-                },
-                {
-                  when: shownTime,
-                  time,
-                  realTime: departure.realtime
-                    ? intl.formatMessage({ id: 'realtime' })
-                    : '',
-                },
-              )}
-            </span>
-          </>,
+        {shownTime && (
+          <span
+            className={cx('route-arrival', {
+              realtime: departure.realtime,
+              canceled,
+            })}
+            aria-hidden="true"
+          >
+            {shownTime}
+          </span>
         )}
+        <span
+          className={cx('route-time', {
+            realtime: departure.realtime,
+            canceled,
+          })}
+          aria-hidden="true"
+        >
+          {time}
+        </span>
+        <span className="sr-only">
+          {intl.formatMessage(
+            {
+              id: 'departure-time-sr',
+            },
+            {
+              when: shownTime,
+              time,
+              realTime: departure.realtime
+                ? intl.formatMessage({ id: 'realtime' })
+                : '',
+            },
+          )}
+        </span>
       </td>
       {showPlatformCode && (
         <td className="platform-cell">
-          {renderWithLink(
-            <div
-              className={
-                !departure.stop?.platformCode
-                  ? 'platform-code empty'
-                  : 'platform-code'
-              }
-            >
-              {departure.stop?.platformCode}
-            </div>,
-          )}
+          <div
+            className={
+              !departure.stop?.platformCode
+                ? 'platform-code empty'
+                : 'platform-code'
+            }
+          >
+            <PlatformNumber
+              number={departure.stop?.platformCode}
+              short
+              isRailOrSubway={mode === 'RAIL' || mode === 'SUBWAY'}
+              withText={false}
+              updated={platformUpdated}
+            />
+          </div>
         </td>
       )}
       {capacity && (
@@ -243,7 +254,7 @@ export default function DepartureRow(
         >
           <span
             className="capacity-icon-container"
-            onClick={() => onCapacityClick()}
+            onClick={handleCapacityClick}
           >
             <Icon
               width={1.5}
@@ -254,7 +265,7 @@ export default function DepartureRow(
           </span>
         </td>
       )}
-    </tr>
+    </Link>
   );
 }
 
@@ -266,6 +277,8 @@ DepartureRow.propTypes = {
   canceled: PropTypes.bool,
   className: PropTypes.string,
   onCapacityClick: PropTypes.func,
+  isParentTabActive: PropTypes.bool,
+  platformUpdated: PropTypes.bool,
 };
 
 DepartureRow.defaultProps = {
@@ -273,6 +286,8 @@ DepartureRow.defaultProps = {
   canceled: false,
   className: '',
   onCapacityClick: undefined,
+  isParentTabActive: false,
+  platformUpdated: false,
 };
 
 DepartureRow.contextTypes = {
