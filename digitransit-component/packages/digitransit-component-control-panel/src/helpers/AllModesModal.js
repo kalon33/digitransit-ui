@@ -16,22 +16,20 @@ export default function AllModesModal({
   const [t] = useTranslation();
 
   return (
-    <div
-      className={styles['near-you-container']}
-      style={{ '--font-weight-medium': fontWeights.medium }}
+    <Modal
+      appElement={appElement}
+      closeButtonLabel={(t('close'), { lng: language })}
+      variant={isMobile ? 'large' : 'small'}
+      isOpen={modalOpen}
+      onCrossClick={closeModal}
     >
-      <Modal
-        appElement={appElement}
-        closeButtonLabel={(t('close'), { lng: language })}
-        variant={isMobile ? 'large' : 'small'}
-        isOpen={modalOpen}
-        onCrossClick={closeModal}
+      <div
+        className={styles['near-you-container']}
+        style={{ '--font-weight-medium': fontWeights.medium }}
       >
-        <div className={styles['near-you-buttons-container-wide']}>
-          {children}
-        </div>
-      </Modal>
-    </div>
+        {children}
+      </div>
+    </Modal>
   );
 }
 

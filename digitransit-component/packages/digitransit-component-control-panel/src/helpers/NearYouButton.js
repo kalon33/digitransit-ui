@@ -3,13 +3,15 @@ import React from 'react';
 import Icon from '@digitransit-component/digitransit-component-icon';
 import styles from './styles.scss';
 
-export default function HorizontalButton({
+export default function NearYouButton({
   mode,
   modeSet,
   colors,
-  withAlert,
-  srMsg,
   getIconName,
+  title,
+  srMsg,
+  withAlert,
+  boxed,
 }) {
   let iconProps;
 
@@ -24,16 +26,28 @@ export default function HorizontalButton({
     };
   } else {
     iconProps = {
-      img: getIconName(mode, modeSet, true),
+      img: getIconName(mode, modeSet, boxed),
       color: colors[mode],
     };
   }
 
+  if (!boxed) {
+    iconProps = {
+      ...iconProps,
+      width: 1.4,
+      height: 1.4,
+    };
+  }
   return (
     <>
-      <span className={styles['sr-only']}>{srMsg}</span>
+      {srMsg && <span className={styles['sr-only']}>{srMsg}</span>}
       <span className={styles['transport-mode-icon-container']}>
-        <span className={styles['transport-mode-icon-with-icon']}>
+        <span
+          className={styles['transport-mode-icon-with-icon']}
+          style={
+            boxed ? {} : { '--bckColor': colors[mode], '--borderRadius': '50%' }
+          }
+        >
           <Icon {...iconProps} />
           {withAlert && (
             <span className={styles['transport-mode-alert-icon']}>
@@ -42,21 +56,25 @@ export default function HorizontalButton({
           )}
         </span>
       </span>
+      {title}
     </>
   );
 }
 
-HorizontalButton.propTypes = {
+NearYouButton.propTypes = {
   mode: PropTypes.string.isRequired,
-  modeSet: PropTypes.string,
+  modeSet: PropTypes.string.isRequired,
   colors: PropTypes.objectOf(PropTypes.string).isRequired,
-  srMsg: PropTypes.string.isRequired,
+  getIconName: PropTypes.func.isRequired,
+  title: PropTypes.node,
+  srMsg: PropTypes.string,
   withAlert: PropTypes.bool,
-  getIconName: PropTypes.func,
+  boxed: PropTypes.bool,
 };
 
-HorizontalButton.defaultProps = {
-  modeSet: undefined,
+NearYouButton.defaultProps = {
+  title: '',
+  srMsg: undefined,
   withAlert: false,
-  getIconName: undefined,
+  boxed: false,
 };

@@ -5,8 +5,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useTranslation, I18nextProvider } from 'react-i18next';
 import { defaultColors } from '@digitransit-component/digitransit-component-icon';
-import HorizontalButton from './helpers/HorizontalButton';
-import VerticalButton from './helpers/VerticalButton';
+import NearYouButton from './helpers/NearYouButton';
 import AllModesModal from './helpers/AllModesModal';
 import styles from './helpers/styles.scss';
 import i18n from './helpers/i18n';
@@ -84,9 +83,9 @@ const validNearYouModes = [
 
 const noTheme = ['bikepark', 'carpark', 'subway', 'airplane']; // common icon in all themes
 
-function getIconName(mode, modeSet, horizontal) {
+function getIconName(mode, modeSet, boxed) {
   const theme = noTheme.includes(mode) ? '' : `-${modeSet}`;
-  const fill = horizontal ? '' : '-fill'; // do not render boxed icon for vertical
+  const fill = boxed ? '' : '-fill'; // do not render boxed icon for vertical
   return `${mode}${fill}${theme}`;
 }
 
@@ -142,19 +141,26 @@ function NearStopsAndRoutes({
   const renderButtons = (modes, forModal) =>
     modes.map(mode => {
       const withAlert = modesWithAlerts.includes(mode.toUpperCase());
-      const modeTitle = (
-        <span className={styles['transport-mode-title']}>
-          {t(mode, { lng: language })}
-        </span>
-      );
       const url = `${urlStart}/${mode.toUpperCase()}${urlPostfix}`;
-      const buttonProps = { mode, modeSet, colors, withAlert, getIconName };
-      const modeButton = horizontal ? (
-        <HorizontalButton srMsg={t(mode, { lng: language })} {...buttonProps} />
-      ) : (
-        <VerticalButton title={modeTitle} {...buttonProps} />
-      );
+      const boxed = forModal || horizontal; // squared icon or interior only
+      const buttonProps = {
+        mode,
+        modeSet,
+        colors,
+        withAlert,
+        boxed,
+        getIconName,
+      };
 
+      if (forModal || !horizontal) {
+        buttonProps.title = (
+          <span className={styles['transport-mode-title']}>
+            {t(mode, { lng: language })}
+          </span>
+        );
+      } else {
+        buttonProps.srMsg = t(mode, { lng: language });
+      }
       const clickProps =
         mode === 'more'
           ? {
@@ -174,18 +180,10 @@ function NearStopsAndRoutes({
               onClick: () => onClick(url),
             };
 
-      const linkedButton = (
+      return (
         <div key={mode} {...clickProps} {...linkedButtonProps}>
-          {modeButton}
+          <NearYouButton {...buttonProps} />
         </div>
-      );
-      return forModal ? (
-        <div key={mode} {...clickProps} {...linkedButtonProps}>
-          {linkedButton}
-          {modeTitle}
-        </div>
-      ) : (
-        linkedButton
       );
     });
 
