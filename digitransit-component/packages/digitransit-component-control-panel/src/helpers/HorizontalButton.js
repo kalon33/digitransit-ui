@@ -48,9 +48,15 @@ export default function HorizontalButton({
 
 HorizontalButton.propTypes = {
   mode: PropTypes.string.isRequired,
-  modeSet: PropTypes.string.isRequired,
+  modeSet: PropTypes.string,
   colors: PropTypes.objectOf(PropTypes.string).isRequired,
   srMsg: PropTypes.string.isRequired,
-  withAlert: PropTypes.bool.isRequired,
-  getIconName: PropTypes.func.isRequired,
+  withAlert: PropTypes.bool,
+  getIconName: PropTypes.func,
+};
+
+HorizontalButton.defaultProps = {
+  modeSet: undefined,
+  withAlert: false,
+  getIconName: undefined,
 };
