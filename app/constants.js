@@ -128,3 +128,9 @@ export const PlannerMessageType = Object.freeze({
   NoStopsInRange: 'NO_STOPS_IN_RANGE',
   SystemError: 'SYSTEM_ERROR',
 });
+
+export const OtpCornerNamingPattern = Object.freeze({
+  fi: /katujen .* ja .* kulma/,
+  sv: /hörnet av .* och .*/,
+  en: /corner of .* and .*/,
+});
