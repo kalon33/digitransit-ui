@@ -116,7 +116,7 @@ export default {
   defaultSettings: {
     walkSpeed: 1.28,
     showBikeAndParkItineraries: true,
-    transferPenalty: 120,
+    transferPenalty: 180,
   },
 
   /**
@@ -442,9 +442,6 @@ export default {
   useTicketIcons: true,
   ticketPurchaseLink: function purchaseTicketLink(fare) {
     return `https://open.app.hsl.fi/zoneTicketWizard/TICKET_TYPE_SINGLE_TICKET/${fare.ticketName}/adult/-`;
-  },
-  ticketLink: {
-    fi: 'https://open.app.hsl.fi/tickets',
   },
   ticketLinkOperatorCode: 'hsl',
   // mapping fareId from OTP fare identifiers to human readable form
