@@ -161,7 +161,10 @@ function NearStopsAndRoutes({
               : `${mode}_short`;
         }
         buttonProps.title = (
-          <span className={styles['transport-mode-title']}>
+          <span
+            className={styles['transport-mode-title']}
+            style={{ '--font-weight': forModal ? 325 : fontWeights.medium }}
+          >
             {t(key, { lng: language })}
           </span>
         );
@@ -209,7 +212,7 @@ function NearStopsAndRoutes({
   return (
     <div
       className={styles['near-you-container']}
-      style={{ '--font-weight-medium': fontWeights.medium }}
+      style={{ '--font-weight': fontWeights.medium }}
     >
       {useModal && (
         <AllModesModal
@@ -321,7 +324,7 @@ class CtrlPanel extends React.Component {
         <div
           key="main"
           className={className}
-          style={{ '--font-weight-medium': this.props.fontWeights.medium }}
+          style={{ '--font-weight': this.props.fontWeights.medium }}
         >
           {this.props.children}
         </div>

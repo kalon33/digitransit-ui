@@ -49,7 +49,13 @@ export default function NearYouButton({
         <span
           className={styles['transport-mode-icon-with-icon']}
           style={
-            boxed ? {} : { '--bckColor': colors[mode], '--borderRadius': '50%' }
+            boxed
+              ? {}
+              : {
+                  '--bckColor': colors[mode],
+                  '--borderRadius': '50%',
+                  '--offset': withBorder ? '17px' : 0,
+                }
           }
         >
           <Icon {...iconProps} />

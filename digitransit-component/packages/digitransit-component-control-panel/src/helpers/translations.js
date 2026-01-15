@@ -38,6 +38,8 @@ const translations = {
       carpark_short: 'Car parking',
       more: 'Show more',
       title: 'Near you',
+      description:
+        'The Near You view shows stops and lines near you at a glance',
       close: 'Close',
     },
   },
@@ -66,6 +68,8 @@ const translations = {
       carpark_short: 'Liityntäpysäköinti autoille',
       more: 'Näytä lisää',
       title: 'Lähelläsi',
+      description:
+        'Lähelläsi -näkymä näyttää yhdellä kertaa pysäkit ja linjat lähelläsi',
       close: 'Sulje',
     },
   },
@@ -90,7 +94,7 @@ const translations = {
       bus: 'Bussar och hållplatser på kartan',
       bus_short: 'Bus',
       citybike: 'Närmaste cykelstationer',
-      citybike_short: 'Ccykelstation',
+      citybike_short: 'Cykelstation',
       favorite: 'Hållplatser nära mig',
       favorite_short: 'Favoriter',
       ferry: 'Närmaste färjekajer',
@@ -108,6 +112,8 @@ const translations = {
       carpark_short: 'Anslutningsparkering för bilar',
       more: 'Visa flera',
       title: 'Nära dig',
+      description:
+        'Vyn Nära dig visar hållplatser och linjer nära dig i ett ögonkast',
       close: 'Stäng',
     },
   },

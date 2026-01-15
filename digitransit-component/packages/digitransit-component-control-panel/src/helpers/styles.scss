@@ -71,14 +71,14 @@
 .near-you-container {
   font-size: 16px;
 
-  .modal-button {
-    height: 30px;
+  .modal-desc {
+    font-weight: 325;
   }
 
   .near-you-title {
     font-family: 'Gotham Rounded A', 'Gotham Rounded B', Roboto, Arial, Georgia,
       serif;
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight);
     font-stretch: normal;
     font-style: normal;
     line-height: normal;
@@ -233,7 +233,7 @@
         cursor: pointer;
         display: flex;
         position: relative;
-        left: 17px;
+        left: var(--offset);
         border-radius: var(--borderRadius);
         background-color: var(--bckColor);
         height: 30px;
@@ -263,7 +263,7 @@
         cursor: pointer;
         position: relative;
         font-style: normal;
-        font-weight: var(--font-weight-medium);
+        font-weight: var(--font-weight);
         font-size: 15px;
         line-height: 18px;
         align-self: center;
