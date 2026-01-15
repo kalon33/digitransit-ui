@@ -12,6 +12,7 @@ export default function NearYouButton({
   srMsg,
   withAlert,
   boxed,
+  withBorder,
 }) {
   let iconProps;
 
@@ -41,7 +42,10 @@ export default function NearYouButton({
   return (
     <>
       {srMsg && <span className={styles['sr-only']}>{srMsg}</span>}
-      <span className={styles['transport-mode-icon-container']}>
+      <span
+        className={styles['transport-mode-icon-container']}
+        style={withBorder ? { '--border': 'solid 1px #d9d9d9' } : {}}
+      >
         <span
           className={styles['transport-mode-icon-with-icon']}
           style={
@@ -70,6 +74,7 @@ NearYouButton.propTypes = {
   srMsg: PropTypes.string,
   withAlert: PropTypes.bool,
   boxed: PropTypes.bool,
+  withBorder: PropTypes.bool,
 };
 
 NearYouButton.defaultProps = {
@@ -77,4 +82,5 @@ NearYouButton.defaultProps = {
   srMsg: undefined,
   withAlert: false,
   boxed: false,
+  withBorder: false,
 };

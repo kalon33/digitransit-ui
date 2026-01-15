@@ -168,6 +168,9 @@ function NearStopsAndRoutes({
       } else {
         buttonProps.srMsg = t(mode, { lng: language });
       }
+      if (!forModal) {
+        buttonProps.withBorder = true;
+      }
       const clickProps =
         mode === 'more'
           ? {
