@@ -102,6 +102,11 @@ export default configMerger(walttiConfig, {
     },
   },
 
+  defaultSettings: {
+    ...walttiConfig.defaultSettings,
+    minTransferTime: 5 * 60,
+  },
+
   transportModes: {
     bus: {
       color: '#e8aa27',
