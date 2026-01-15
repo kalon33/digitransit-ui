@@ -27,7 +27,12 @@ export default function AllModesModal({
         className={styles['near-you-container']}
         style={{ '--font-weight-medium': fontWeights.medium }}
       >
-        {children}
+        <h2 className={styles['near-you-title']}>
+          {t('title', { lng: language })}
+        </h2>
+        <div className={styles['near-you-buttons-container-wide']}>
+          {children}
+        </div>
       </div>
     </Modal>
   );

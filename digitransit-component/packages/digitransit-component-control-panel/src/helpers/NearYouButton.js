@@ -55,8 +55,8 @@ export default function NearYouButton({
             </span>
           )}
         </span>
+        {title}
       </span>
-      {title}
     </>
   );
 }
