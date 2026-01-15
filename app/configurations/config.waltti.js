@@ -165,11 +165,11 @@ export default {
     },
     sv: {
       name: 'matka.fintraffic.fi',
-      href: 'https://matka.fintraffic.fi/',
+      href: 'https://matka.fintraffic.fi/sv/',
     },
     en: {
       name: 'matka.fintraffic.fi',
-      href: 'https://matka.fintraffic.fi/',
+      href: 'https://matka.fintraffic.fi/en/',
     },
   },
 
