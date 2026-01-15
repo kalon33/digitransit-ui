@@ -153,9 +153,16 @@ function NearStopsAndRoutes({
       };
 
       if (forModal || !horizontal) {
+        let key = mode;
+        if (forModal) {
+          key =
+            modeSet === 'hsl' && mode === 'rail'
+              ? 'rail_local'
+              : `${mode}_short`;
+        }
         buttonProps.title = (
           <span className={styles['transport-mode-title']}>
-            {t(mode, { lng: language })}
+            {t(key, { lng: language })}
           </span>
         );
       } else {
