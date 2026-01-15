@@ -222,9 +222,8 @@ function NearStopsAndRoutes({
           modalOpen={modalOpen}
           fontWeights={fontWeights}
           closeModal={() => setModalOpen(false)}
-        >
-          {renderButtons(modes, true)}
-        </AllModesModal>
+          buttons={renderButtons(modes, true)}
+        />
       )}
       <h2 className={styles['near-you-title']}>
         {title?.[language] || t('title', { lng: language })}

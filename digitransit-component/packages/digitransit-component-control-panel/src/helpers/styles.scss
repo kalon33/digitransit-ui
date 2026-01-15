@@ -233,7 +233,7 @@
         cursor: pointer;
         display: flex;
         position: relative;
-        left: var(--offset);
+        margin-left: var(--offset);
         border-radius: var(--borderRadius);
         background-color: var(--bckColor);
         height: 30px;
@@ -266,8 +266,8 @@
         font-weight: var(--font-weight);
         font-size: 15px;
         line-height: 18px;
+        margin-left: 9px;
         align-self: center;
-        left: 26px;
         width: calc(100% - 58px);
         overflow: hidden;
         white-space: nowrap;
