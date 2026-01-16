@@ -13,6 +13,9 @@ export default function NearYouButton({
   withAlert,
   boxed,
   withBorder,
+  withArrow,
+  margin,
+  iconSize,
 }) {
   let iconProps;
 
@@ -39,25 +42,24 @@ export default function NearYouButton({
       height: 1.4,
     };
   }
+  const buttonStyle = { '--margin': margin };
+  if (withBorder) {
+    buttonStyle['--border'] = 'solid 1px #d9d9d9';
+  }
+  let iconContainerStyle = { '--iconSize': iconSize };
+  if (!boxed) {
+    iconContainerStyle = {
+      ...iconContainerStyle,
+      '--bckColor': colors[mode],
+      '--borderRadius': '50%',
+      '--offset': withBorder ? '17px' : '30px',
+    };
+  }
   return (
     <>
       {srMsg && <span className={styles['sr-only']}>{srMsg}</span>}
-      <span
-        className={styles['transport-mode-icon-container']}
-        style={withBorder ? { '--border': 'solid 1px #d9d9d9' } : {}}
-      >
-        <span
-          className={styles['transport-mode-icon-with-icon']}
-          style={
-            boxed
-              ? {}
-              : {
-                  '--bckColor': colors[mode],
-                  '--borderRadius': '50%',
-                  '--offset': withBorder ? '17px' : 0,
-                }
-          }
-        >
+      <span className={styles['near-you-button']} style={buttonStyle}>
+        <span className={styles['icon-container']} style={iconContainerStyle}>
           <Icon {...iconProps} />
           {withAlert && (
             <span className={styles['transport-mode-alert-icon']}>
@@ -66,6 +68,9 @@ export default function NearYouButton({
           )}
         </span>
         {title}
+        {withArrow && (
+          <Icon img="arrow" color={colors.primary} width={0.9} height={0.9} />
+        )}
       </span>
     </>
   );
@@ -81,6 +86,9 @@ NearYouButton.propTypes = {
   withAlert: PropTypes.bool,
   boxed: PropTypes.bool,
   withBorder: PropTypes.bool,
+  withArrow: PropTypes.bool,
+  margin: PropTypes.string,
+  iconSize: PropTypes.string,
 };
 
 NearYouButton.defaultProps = {
@@ -89,4 +97,7 @@ NearYouButton.defaultProps = {
   withAlert: false,
   boxed: false,
   withBorder: false,
+  withArrow: false,
+  margin: '8px',
+  iconSize: '30px',
 };

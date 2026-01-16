@@ -11,7 +11,7 @@ export default function AllModesModal({
   isMobile,
   language,
   fontWeights,
-  buttons,
+  children,
 }) {
   const [t] = useTranslation();
 
@@ -39,7 +39,7 @@ export default function AllModesModal({
         )}
         <div style={{ height: '20px' }} />
         <div className={styles['near-you-buttons-container-wide']}>
-          {buttons}
+          {children}
         </div>
       </div>
     </Modal>
@@ -53,5 +53,5 @@ AllModesModal.propTypes = {
   closeModal: PropTypes.func.isRequired,
   isMobile: PropTypes.bool.isRequired,
   fontWeights: PropTypes.shape({ medium: PropTypes.number }).isRequired,
-  buttons: PropTypes.arrayOf(PropTypes.node).isRequired,
+  children: PropTypes.arrayOf(PropTypes.node).isRequired,
 };

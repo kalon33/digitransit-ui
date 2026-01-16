@@ -173,6 +173,10 @@ function NearStopsAndRoutes({
       }
       if (!forModal) {
         buttonProps.withBorder = true;
+      } else {
+        buttonProps.withArrow = true;
+        buttonProps.margin = '0';
+        buttonProps.iconSize = '36px';
       }
       const clickProps =
         mode === 'more'
@@ -193,10 +197,20 @@ function NearStopsAndRoutes({
               onClick: () => onClick(url),
             };
 
-      return (
+      const button = (
         <div key={mode} {...clickProps} {...linkedButtonProps}>
           <NearYouButton {...buttonProps} />
         </div>
+      );
+
+      // add separator line into modal button array
+      return forModal && mode !== modes[modes.length - 1] ? (
+        <div key={mode}>
+          {button}
+          <div className={styles['separator']} />
+        </div>
+      ) : (
+        button
       );
     });
 
@@ -222,8 +236,9 @@ function NearStopsAndRoutes({
           modalOpen={modalOpen}
           fontWeights={fontWeights}
           closeModal={() => setModalOpen(false)}
-          buttons={renderButtons(modes, true)}
-        />
+        >
+          {renderButtons(modes, true)}
+        </AllModesModal>
       )}
       <h2 className={styles['near-you-title']}>
         {title?.[language] || t('title', { lng: language })}

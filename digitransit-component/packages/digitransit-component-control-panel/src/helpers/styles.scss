@@ -68,6 +68,15 @@
   }
 }
 
+.separator {
+  background-color: #ccc;
+  width: 110%;
+  margin-left: -5%;
+  margin-right: -5%;
+  display: block;
+  height: 1px;
+}
+
 .near-you-container {
   font-size: 16px;
 
@@ -136,7 +145,7 @@
     }
   }
 
-  .transport-mode-icon-container {
+  .near-you-button {
     border-radius: 5px;
     border: var(--border);
     cursor: pointer;
@@ -148,7 +157,7 @@
     max-width: 72px;
     height: 100%;
 
-    .transport-mode-icon-with-icon {
+    .icon-container {
       display: flex;
       position: relative;
     }
@@ -186,30 +195,6 @@
   }
 
   .near-you-buttons-container-wide {
-    & > a:not(:last-child),
-    & > div:not(:last-child) {
-      margin-right: 9px;
-
-      @include min-width(tablet) {
-        margin-right: 10px;
-      }
-    }
-
-    & > a:last-child,
-    & > div:last-child {
-      margin-bottom: 24px;
-    }
-
-    & > a,
-    & > div {
-      width: 100%;
-      height: 48px;
-
-      @include min-width(tablet) {
-        margin-bottom: 8px;
-      }
-    }
-
     .sr-only:not(:focus, :active) {
       clip: rect(0 0 0 0);
       clip-path: inset(50%);
@@ -220,24 +205,27 @@
       width: 1px;
     }
 
-    .transport-mode-icon-container {
+    .near-you-button {
+      margin-bottom: var(--margin);
+      margin-top: var(--margin);
+      padding-bottom: 8px;
+      padding-top: 8px;
       cursor: pointer;
       position: relative;
       display: flex;
       background-color: white;
       flex: 1;
       min-width: 100%;
-      height: 48px;
 
-      .transport-mode-icon-with-icon {
+      .icon-container {
         cursor: pointer;
         display: flex;
         position: relative;
         margin-left: var(--offset);
         border-radius: var(--borderRadius);
         background-color: var(--bckColor);
-        height: 30px;
-        width: 30px;
+        height: var(--iconSize);
+        width: var(--iconSize);
         align-items: center;
         align-self: center;
         justify-content: center;
