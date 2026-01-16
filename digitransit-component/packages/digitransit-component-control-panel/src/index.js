@@ -138,6 +138,16 @@ function NearStopsAndRoutes({
       : '/POS';
   const linkedButtonProps = { role: 'link', tabIndex: '0' };
 
+  // line between buttons
+  const separator = (
+    <div
+      className={styles['separator']}
+      style={{
+        '--margin': isMobile ? '0' : '-5%',
+        '--width': isMobile ? '100%' : '110%',
+      }}
+    />
+  );
   const renderButtons = (modes, forModal) =>
     modes.map(mode => {
       const withAlert = modesWithAlerts.includes(mode.toUpperCase());
@@ -207,7 +217,7 @@ function NearStopsAndRoutes({
       return forModal && mode !== modes[modes.length - 1] ? (
         <div key={mode}>
           {button}
-          <div className={styles['separator']} />
+          {separator}
         </div>
       ) : (
         button

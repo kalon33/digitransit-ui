@@ -41,6 +41,13 @@ export default function AllModesModal({
         <div className={styles['near-you-buttons-container-wide']}>
           {children}
         </div>
+        {!isMobile && (
+          <div
+            key=""
+            className={styles.separator}
+            style={{ '--margin': '-20%', '--width': '160%' }}
+          />
+        )}
       </div>
     </Modal>
   );

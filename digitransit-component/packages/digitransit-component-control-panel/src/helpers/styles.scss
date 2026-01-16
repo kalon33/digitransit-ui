@@ -70,9 +70,9 @@
 
 .separator {
   background-color: #ccc;
-  width: 110%;
-  margin-left: -5%;
-  margin-right: -5%;
+  width: var(--width);
+  margin-left: var(--margin);
+  margin-right: var(--margin);
   display: block;
   height: 1px;
 }
