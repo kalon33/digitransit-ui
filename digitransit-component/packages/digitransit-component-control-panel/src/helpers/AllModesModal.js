@@ -49,13 +49,7 @@ export default function AllModesModal({
             style={{ '--margin': '-12%', '--width': '124%' }}
           />
         )}
-        <div
-          className={
-            isMobile
-              ? styles['close-container-mobile']
-              : styles['close-container']
-          }
-        >
+        <div className={styles['close-container']}>
           <button
             type="button"
             onClick={closeModal}
