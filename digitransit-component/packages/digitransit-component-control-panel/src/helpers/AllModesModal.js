@@ -11,6 +11,7 @@ export default function AllModesModal({
   isMobile,
   language,
   fontWeights,
+  colors,
   children,
 }) {
   const [t] = useTranslation();
@@ -45,9 +46,25 @@ export default function AllModesModal({
           <div
             key=""
             className={styles.separator}
-            style={{ '--margin': '-20%', '--width': '160%' }}
+            style={{ '--margin': '-12%', '--width': '124%' }}
           />
         )}
+        <div
+          className={
+            isMobile
+              ? styles['close-container-mobile']
+              : styles['close-container']
+          }
+        >
+          <button
+            type="button"
+            onClick={closeModal}
+            className={isMobile ? styles['close-mobile'] : styles.close}
+            style={{ '--color': colors.primary }}
+          >
+            {t('close', { lng: language })}
+          </button>
+        </div>
       </div>
     </Modal>
   );
@@ -60,5 +77,6 @@ AllModesModal.propTypes = {
   closeModal: PropTypes.func.isRequired,
   isMobile: PropTypes.bool.isRequired,
   fontWeights: PropTypes.shape({ medium: PropTypes.number }).isRequired,
+  colors: PropTypes.objectOf(PropTypes.string).isRequired,
   children: PropTypes.arrayOf(PropTypes.node).isRequired,
 };

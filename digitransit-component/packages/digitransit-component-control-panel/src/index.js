@@ -186,7 +186,8 @@ function NearStopsAndRoutes({
       } else {
         buttonProps.withArrow = true;
         buttonProps.margin = '0';
-        buttonProps.iconSize = '36px';
+        buttonProps.iconSize = '35px';
+        buttonProps.padding = '6px';
       }
       const clickProps =
         mode === 'more'
@@ -246,6 +247,7 @@ function NearStopsAndRoutes({
           modalOpen={modalOpen}
           fontWeights={fontWeights}
           closeModal={() => setModalOpen(false)}
+          colors={colors}
         >
           {renderButtons(modes, true)}
         </AllModesModal>

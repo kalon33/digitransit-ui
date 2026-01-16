@@ -15,6 +15,7 @@ export default function NearYouButton({
   withBorder,
   withArrow,
   margin,
+  padding,
   iconSize,
 }) {
   let iconProps;
@@ -42,19 +43,20 @@ export default function NearYouButton({
       height: 1.4,
     };
   }
-  const buttonStyle = { '--margin': margin };
+  const buttonStyle = { '--margin': margin, '--padding': padding };
   if (withBorder) {
     buttonStyle['--border'] = 'solid 1px #d9d9d9';
   }
-  let iconContainerStyle = { '--iconSize': iconSize };
+  let iconContainerStyle = { '--iconSize': iconSize, '--iconMargin': padding };
   if (!boxed) {
     iconContainerStyle = {
       ...iconContainerStyle,
       '--bckColor': colors[mode],
       '--borderRadius': '50%',
-      '--offset': withBorder ? '17px' : '30px',
+      '--iconMargin': '17px',
     };
   }
+
   return (
     <>
       {srMsg && <span className={styles['sr-only']}>{srMsg}</span>}
@@ -88,6 +90,7 @@ NearYouButton.propTypes = {
   withBorder: PropTypes.bool,
   withArrow: PropTypes.bool,
   margin: PropTypes.string,
+  padding: PropTypes.string,
   iconSize: PropTypes.string,
 };
 
@@ -99,5 +102,6 @@ NearYouButton.defaultProps = {
   withBorder: false,
   withArrow: false,
   margin: '8px',
+  padding: '8px',
   iconSize: '30px',
 };
