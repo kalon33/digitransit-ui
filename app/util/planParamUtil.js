@@ -273,10 +273,9 @@ export function planQueryNeeded(
   }
 }
 
-function getLocation(str, planType) {
+function getLocation(str) {
   const loc = otpToLocation(str);
-  // direct car routing from/to a stop does not work
-  if (loc.gtfsId && planType !== PLANTYPE.CAR) {
+  if (loc.gtfsId) {
     return {
       location: {
         stopLocation: { stopLocationId: loc.gtfsId },
@@ -305,8 +304,8 @@ export function getPlanParams(
   planType,
   relaxSettings = false,
 ) {
-  const fromPlace = getLocation(from, planType);
-  const toPlace = getLocation(to, planType);
+  const fromPlace = getLocation(from);
+  const toPlace = getLocation(to);
   const useLatestArrival = arriveBy === 'true';
   // estimate distance for search iteration heuristics
   const fromLocation = otpToLocation(from);
