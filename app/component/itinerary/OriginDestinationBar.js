@@ -164,8 +164,7 @@ class OriginDestinationBar extends React.Component {
           disableAutoFocus={props.isMobile}
           isMobile={props.isMobile}
           itineraryParams={context.match.location.query}
-          color={config.colors.primary}
-          hoverColor={config.colors.hover}
+          colors={config.colors}
           modeSet={props.modeSet}
           onFocusChange={() => {}}
           showSwapControl
