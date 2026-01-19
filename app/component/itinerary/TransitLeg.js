@@ -40,6 +40,7 @@ import {
   isCallAgencyLeg,
   isPlatformChanged,
   getValidatedLegName,
+  isLocalCallAgency,
 } from '../../util/legUtils';
 import { shouldShowFareInfo } from '../../util/fareUtils';
 import { AlertEntityType, AlertSeverityLevelType } from '../../constants';
@@ -516,6 +517,7 @@ class TransitLeg extends React.Component {
             !this.state.showIntermediateStops ||
             (leg.intermediatePlaces.length === 0 && interliningLegs.length < 1)
           }
+          appendClass={isLocalCallAgency && 'call-local'}
         />
         <div
           style={{

@@ -28,6 +28,7 @@ import {
   LegMode,
   getZones,
   isCallAgencyLeg,
+  isLocalCallAgency,
 } from '../../util/legUtils';
 import { dateOrEmpty, isTomorrow, timeStr } from '../../util/timeUtils';
 import withBreakpoint from '../../util/withBreakpoint';
@@ -123,6 +124,7 @@ export function RouteLeg(
       occupancyStatus={getOccupancyStatus()}
       duration={Math.floor(leg.duration / 60)}
       shortenLongText={shortenLabels}
+      appendClass={isLocalCallAgency(leg, config) ? 'call-local' : ''}
     />
   );
   return (
@@ -190,6 +192,7 @@ export const ModeLeg = (
       vertical
       withBar
       icon={networkIcon || icon}
+      appendClass={isLocalCallAgency(leg, config) ? 'call-local' : ''}
       {...getLegBadgeProps(leg, config)}
     />
   );

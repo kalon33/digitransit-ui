@@ -140,6 +140,7 @@ export const planConnection = graphql`
               mode
               agency {
                 name
+                gtfsId
               }
             }
             trip {
