@@ -108,11 +108,6 @@ export default {
   loginAnalyticsEventName: 'user-hsl-id',
   loginAnalyticsKey: 'hsl-id',
 
-  nearbyRoutes: {
-    radius: 500,
-    bucketSize: 100,
-  },
-
   defaultSettings: {
     walkSpeed: 1.28,
     showBikeAndParkItineraries: true,
@@ -155,11 +150,9 @@ export default {
     primary: '#0074bf',
     accessiblePrimary: '#0074be',
     hover: '#0062a1',
-    iconColors: {
-      'mode-bus-express': '#CA4000',
-      'mode-bus-local': '#007ac9',
-      'mode-speedtram': '#007E79',
-    },
+    'bus-express': '#CA4000',
+    'bus-local': '#007ac9',
+    speedtram: '#007E79',
   },
   getAutoSuggestIcons: {
     citybikes: station => {
@@ -169,7 +162,7 @@ export default {
       return ['citybike-stop-default', '#f2b62d'];
     },
   },
-  iconModeSet: 'default',
+  iconModeSet: 'hsl',
   fontWeights: {
     medium: 500,
   },
@@ -333,20 +326,6 @@ export default {
     fi: 'HSL',
     sv: 'HRT',
     en: 'HSL',
-  },
-
-  maxNearbyStopDistance: {
-    favorite: 20000,
-    bus: 20000,
-    tram: 20000,
-    subway: 20000,
-    rail: 20000,
-    ferry: 20000,
-    citybike: 20000,
-  },
-
-  prioritizedStopsNearYou: {
-    ferry: ['HSL:1030701'],
   },
 
   showTicketSelector: false,
@@ -570,6 +549,22 @@ export default {
     'citybike',
   ],
   narrowNearYouButtons: true,
+  nearYouRoutes: {
+    radius: 500,
+    bucketSize: 100,
+  },
+  maxNearYouDistance: {
+    favorite: 20000,
+    bus: 20000,
+    tram: 20000,
+    subway: 20000,
+    rail: 20000,
+    ferry: 20000,
+    citybike: 20000,
+  },
+  prioritizedStopsNearYou: {
+    ferry: ['HSL:1030701'],
+  },
 
   hostnames: [
     // DEV hostnames
