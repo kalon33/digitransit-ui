@@ -940,7 +940,7 @@ export const isPlatformChanged = leg => {
  * @param {boolean} start - Whether this is the starting point.
  * @returns {string} - The validated or replaced leg name.
  */
-export function getValidatedLegName(name, intl, language, start) {
+export function getValidatedLegName(name, intl, start) {
   const terminusName = intl.formatMessage({
     id: 'terminus',
     defaultMessage: 'Terminus',
@@ -949,7 +949,7 @@ export function getValidatedLegName(name, intl, language, start) {
     id: 'origin',
     defaultMessage: 'Origin',
   });
-  if (OtpCornerNamingPattern[language].test(name)) {
+  if (OtpCornerNamingPattern[intl.locale].test(name)) {
     return start ? originName : terminusName;
   }
   return name;

@@ -306,18 +306,8 @@ class TransitLeg extends React.Component {
     const startMs = legTime(leg.start);
     const time = legTimeStr(leg.start);
     const modeClassName = mode.toLowerCase();
-    const validatedFromLegName = getValidatedLegName(
-      leg.from.name,
-      intl,
-      lang,
-      true,
-    );
-    const validatedToLegName = getValidatedLegName(
-      leg.to.name,
-      intl,
-      lang,
-      false,
-    );
+    const validatedFromLegName = getValidatedLegName(leg.from.name, intl, true);
+    const validatedToLegName = getValidatedLegName(leg.to.name, intl, false);
 
     const LegRouteName = leg.from.name.concat(' - ').concat(leg.to.name);
 
@@ -517,7 +507,7 @@ class TransitLeg extends React.Component {
             !this.state.showIntermediateStops ||
             (leg.intermediatePlaces.length === 0 && interliningLegs.length < 1)
           }
-          appendClass={isLocalCallAgency && 'call-local'}
+          appendClass={isLocalCallAgency(leg, config) ? 'call-local' : ''}
         />
         <div
           style={{
