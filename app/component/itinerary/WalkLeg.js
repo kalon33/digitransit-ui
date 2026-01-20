@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
 import Link from 'found/Link';
-import { legShape, configShape } from '../../util/shapes';
+import { legShape } from '../../util/shapes';
 import {
   legTime,
   legTimeStr,
@@ -41,10 +41,10 @@ function WalkLeg(
     nextLeg,
     useOriginAddress,
   },
-  { config, intl },
+  { intl },
 ) {
-
-  const { colors, emphasizeDistance } = useConfigContext();
+  const config = useConfigContext();
+  const { colors, emphasizeDistance } = config;
   const distance = displayDistance(
     parseInt(leg.mode !== 'WALK' ? 0 : leg.distance, 10),
     config,
@@ -338,7 +338,6 @@ WalkLeg.defaultProps = {
 };
 
 WalkLeg.contextTypes = {
-  config: configShape.isRequired,
   intl: intlShape.isRequired,
 };
 
