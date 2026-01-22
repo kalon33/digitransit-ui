@@ -70,14 +70,15 @@ const VehicleRentalStationContent = (
         </div>
       )}
       {networkConfig.type === TransportMode.Citybike.toLowerCase() && href && (
-        <Disclaimer
-          header={<FormattedMessage id="citybike-start-using" />}
-          text={vehicleRental.buyInstructions?.[language]}
-          href={
-            vehicleRental.buyUrl?.[language] || networkConfig?.url?.[language]
-          }
-          linkLabel={<FormattedMessage id={linkLabelId} />}
-        />
+        <>
+          <br />
+          <Disclaimer
+            header={<FormattedMessage id="citybike-start-using" />}
+            text={vehicleRental.buyInstructions?.[language]}
+            href={href}
+            linkLabel={<FormattedMessage id={linkLabelId} />}
+          />
+        </>
       )}
     </div>
   );
