@@ -446,7 +446,7 @@ export default {
         enabled: true,
         season: {
           preSeasonStart: '18.3',
-          start: '1.4',
+          start: '1.1',
           end: '31.10',
         },
         capacity: BIKEAVL_WITHMAX,
@@ -547,6 +547,8 @@ export default {
     'rail',
     'ferry',
     'citybike',
+    'bikepark',
+    'carpark',
   ],
   narrowNearYouButtons: true,
   nearYouRoutes: {
