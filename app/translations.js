@@ -913,9 +913,8 @@ const translations = {
     'bike-only': 'Cycling only',
     'bike-park': 'Park & Ride for bikes',
     'bike-park-disclaimer':
-      'You can conveniently combine cycling and public transport: leave your bike at a Park & Ride and continue by train, bus, metro or tram. Bike parking is free of charge and there are no time limits.',
+      'You can park your bike near the station or stop and continue your journey conveniently by public transport',
     'bike-park-disclaimer-header': 'Park your bike',
-    'bike-park-disclaimer-link': 'Read more about Park & Ride for bikes',
     'bike-station-disabled': 'The bike station is out of service.',
     'bikes-available': '{amount} bikes at the station ',
     'biketransport-citybike': "I'm using a citybike",
@@ -964,9 +963,8 @@ const translations = {
     'car-drive-to-transit-no-duration': 'Drive your car to the {transportMode}',
     'car-park': 'Park & ride',
     'car-park-disclaimer':
-      'You can conveniently combine car and public transport: leave your car at a Park & Ride and continue by train, bus, metro or tram. Car parking is free of charge and there are no time limits.',
+      'You can park your car near the station or stop and continue your journey conveniently by public transport',
     'car-park-disclaimer-header': 'Park your car',
-    'car-park-disclaimer-link': 'Read more about Park & Ride',
     cause: 'cause',
     'char-left': 'characters',
     'choose-freely': 'Optional',
@@ -1456,6 +1454,7 @@ const translations = {
     paid: 'Paid',
     'park-and-ride': 'Park and Ride',
     'park-and-ride-availability': 'Spaces available:',
+    'park-disclaimer-link': 'Read more about Park & Ride',
     'pay-attention': 'N.B.',
     'payment-info-e-scooter':
       'Please note that you need to use the app of the operator in question in order to use and pay for the scooters.',
@@ -2246,9 +2245,8 @@ const translations = {
     'bike-only': 'Vain pyöräily',
     'bike-park': 'Liityntäpysäköinti',
     'bike-park-disclaimer':
-      'Voit yhdistää kätevästi joukkoliikenteen ja pyöräilyn, kun jätät pyöräsi liityntäpysäköintiin ja jatkat matkaasi junalla, bussilla, metrolla tai ratikalla. Pyörän pysäköinti on maksutonta eikä siinä ole aikarajaa.',
+      'Voit jättää pyörän parkkiin aseman tai pysäkin tuntumaan ja jatkaa matkaasi kätevästi julkisilla',
     'bike-park-disclaimer-header': 'Jätä pyörä parkkiin',
-    'bike-park-disclaimer-link': 'Lue lisää liityntäpysäköinnistä',
     'bike-station-disabled': 'Pyöräasema ei ole käytössä.',
     'bikes-available': 'Pyöriä asemalla {amount}',
     'biketransport-citybike': 'Käytän kaupunkipyörää',
@@ -2295,9 +2293,8 @@ const translations = {
     'car-drive-to-transit-no-duration': 'Aja autosi {transportMode}',
     'car-park': 'Liityntäpysäköinti',
     'car-park-disclaimer':
-      'Voit yhdistää kätevästi joukkoliikenteen ja autoilun, kun jätät autosi liityntäpysäköintiin ja jatkat matkaasi junalla, bussilla, metrolla tai ratikalla. Auton pysäköinti on useissa paikoissa maksutonta eikä siinä ole aikarajaa.',
+      'Voit jättää auton parkkiin aseman tai pysäkin tuntumaan ja jatkaa matkaasi kätevästi julkisilla',
     'car-park-disclaimer-header': 'Jätä auto parkkiin',
-    'car-park-disclaimer-link': 'Lue lisää liityntäpysäköinnistä',
     cause: 'syy',
     'char-left': 'merkkiä',
     'choose-freely': 'Vapaasti valittavat',
@@ -2784,6 +2781,7 @@ const translations = {
     paid: 'Maksullinen',
     'park-and-ride': 'Liityntäpysäköinti',
     'park-and-ride-availability': 'Paikkoja vapaana:',
+    'park-disclaimer-link': 'Lue lisää liityntäpysäköinnistä',
     'pay-attention': 'Huom!',
     'payment-info-e-scooter':
       'Huomaathan, että potkulautojen käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
@@ -3854,10 +3852,8 @@ const translations = {
     'bike-only': 'Tylko rower',
     'bike-park': '„Parkuj i Jedź” dla rowerów',
     'bike-park-disclaimer':
-      'You can conveniently combine cycling and public transport: leave your bike at a Park & Ride and continue by train, bus, metro or tram. Bike parking is free of charge and there are no time limits.',
+      'You can park your bike near the station or stop and continue your journey conveniently by public transport',
     'bike-park-disclaimer-header': 'Zaparkuj rower',
-    'bike-park-disclaimer-link':
-      'Dowiedz się więcej o „Parkuj i Jedź” dla rowerów',
     'bike-station-disabled': 'The bike station is out of service.',
     'bikes-available': '{amount} rowery na stacji ',
     'biketransport-citybike': 'Korzystam z roweru miejskiego',
@@ -3898,9 +3894,8 @@ const translations = {
     'car-distance-no-duration': 'Jedź {distance}',
     'car-park': 'Parkuj i Jedź',
     'car-park-disclaimer':
-      'You can conveniently combine car and public transport: leave your car at a Park & Ride and continue by train, bus, metro or tram. Car parking is free of charge and there are no time limits.',
+      'You can park your car near the station or stop and continue your journey conveniently by public transport',
     'car-park-disclaimer-header': 'Zaparkuj swój samochód',
-    'car-park-disclaimer-link': 'Dowiedz się więcej o „Parkuj i Jedź”',
     cause: 'cause',
     'char-left': 'znaki',
     'choose-freely': 'Nieobowiązkowy',
@@ -4291,6 +4286,7 @@ const translations = {
     paid: 'Paid',
     'park-and-ride': 'Parkuj i Jedź',
     'park-and-ride-availability': 'Dostępne miejsca:',
+    'park-disclaimer-link': 'Dowiedz się więcej o „Parkuj i Jedź”',
     'pay-attention': 'N.B.',
     payment_at_gate: 'Payment at the gate ',
     'pick-icon': 'Wybierz ikonę',
@@ -5201,9 +5197,8 @@ const translations = {
     'bike-only': 'Endast cykling',
     'bike-park': 'Anslutningsparkering för cyklar',
     'bike-park-disclaimer':
-      'Du kan enkelt kombinera kollektivtrafiken med cykling, när du lämnar din cykel i anslutningsparkering och fortsätter din resa med tåg, buss, metro eller spårvagn. Cykelparkeringen är gratis och den har inte en begränsad parkeringstid.',
+      'Du kan parkera din cykel nära stationen eller hållplatsen och bekvämt fortsätta din resa med kollektivtrafik',
     'bike-park-disclaimer-header': 'Lämna din cykel i parkeringen',
-    'bike-park-disclaimer-link': 'Läs mer om anslutningsparkeringen för cyklar',
     'bike-station-disabled': 'Stadscykelstationen är ur bruk.',
     'bikes-available': '{amount} cyklar vid stationen',
     'biketransport-citybike': 'Jag använder en stadscykel',
@@ -5249,9 +5244,8 @@ const translations = {
     'car-drive-to-transit-no-duration': 'Kör din bil ombord på {transportMode}',
     'car-park': 'Infartsparkering',
     'car-park-disclaimer':
-      'Du kan enkelt kombinera kollektivtrafiken med bilkörning, när du lämnar din bil i anslutningsparkering och fortsätter din resa med tåg, buss, metro eller spårvagn. Parkeringen är gratis och den har inte en begränsad parkeringstid.',
+      'Du kan parkera din bil nära stationen eller hållplatsen och bekvämt fortsätta din resa med kollektivtrafik.',
     'car-park-disclaimer-header': 'Lämna din bil i parkeringen',
-    'car-park-disclaimer-link': 'Läs mer om anslutningsparkeringen',
     cause: 'Orsak',
     'char-left': 'tecken',
     'choose-freely': 'Valfria',
@@ -5739,6 +5733,7 @@ const translations = {
     paid: 'Avgiftsbelagd',
     'park-and-ride': 'Infartsparkering',
     'park-and-ride-availability': 'Lediga platser:',
+    'park-disclaimer-link': 'Läs mer om anslutningsparkeringen',
     'pay-attention': 'Obs!',
     'payment-info-e-scooter':
       'Vänligen observera att användning och betalning av elsparkcyklar görs via operatörernas egna appar.',
