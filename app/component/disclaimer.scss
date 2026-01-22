@@ -88,6 +88,11 @@
         vertical-align: middle;
       }
 
+      &:hover .arrow {
+        transform: translateX(4px);
+        transition: transform 0.1s;
+      }
+
       .icon-container {
         padding-left: 7px;
         margin-bottom: -3px;
