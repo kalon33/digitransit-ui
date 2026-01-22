@@ -213,7 +213,8 @@
     }
   }
 
-  .stop-near-you-container {
+  .stop-near-you-container,
+  .stop-near-you-container-with-hover {
     border: 1px solid #d9d9d9;
     border-radius: 10px;
     width: 100%;
@@ -332,6 +333,12 @@
       font-size: 16px;
       font-weight: $font-weight-medium;
       color: $primary-color;
+    }
+  }
+
+  .stop-near-you-container-with-hover {
+    &:hover {
+      border-color: #999;
     }
   }
 
