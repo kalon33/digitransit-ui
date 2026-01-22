@@ -2,13 +2,12 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { configShape } from '../../util/shapes';
-import { isKeyboardSelectionEvent } from '../../util/browser';
 import { getReadMessageIds, setReadMessageIds } from '../../store/localStorage';
 import {
   getRentalNetworkConfig,
   getRentalNetworkId,
 } from '../../util/vehicleRentalUtils';
-import Icon from '../Icon';
+import Disclaimer from '../Disclaimer';
 
 const CityBikeInfo = ({ lang }, { config }) => {
   const [showCityBikeTeaser, setShowCityBikeTeaser] = useState(
@@ -21,83 +20,36 @@ const CityBikeInfo = ({ lang }, { config }) => {
     setReadMessageIds(readMessageIds);
     setShowCityBikeTeaser(false);
   };
-
   const { vehicleRental } = config;
-  // Use buy instructions if available
-  const { buyUrl } = vehicleRental;
-  const buyInstructions = buyUrl && vehicleRental.buyInstructions?.[lang];
-
   // Use general information about using city bike, if one network config is available
-  const networkUrl =
+  const networkConfig =
     Object.keys(vehicleRental.networks).length === 1 &&
     getRentalNetworkConfig(
       getRentalNetworkId(Object.keys(vehicleRental.networks)),
       config,
-    ).url;
+    );
 
-  if (!showCityBikeTeaser || !(buyUrl || networkUrl)) {
+  const href = vehicleRental.buyUrl?.[lang] || networkConfig?.url?.[lang];
+
+  if (!showCityBikeTeaser || !href) {
     return null;
   }
+  const linkLabelId = vehicleRental.buyUrl?.[lang]
+    ? 'citybike-purchase-link'
+    : 'citybike-start-using-info';
+
   return (
-    <div className="citybike-use-disclaimer">
-      <div className="disclaimer-header">
-        <FormattedMessage id="citybike-start-using" />
-        <div
-          className="disclaimer-close"
-          aria-label="Sulje kaupunkipyöräoikeuden ostaminen"
-          tabIndex="0"
-          onKeyDown={e => {
-            if (
-              isKeyboardSelectionEvent(e) &&
-              (e.keyCode === 13 || e.keyCode === 32)
-            ) {
-              handleClose();
-            }
-          }}
-          onClick={handleClose}
-          role="button"
-        >
-          <Icon color={config.colors.primary} img="icon_close" />
-        </div>
-      </div>
-      <div className="disclaimer-content">
-        {buyInstructions || (
-          <a
-            className="external-link-citybike"
-            href={networkUrl[lang]}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <FormattedMessage id="citybike-start-using-info" />
-          </a>
-        )}
-        {buyUrl && (
-          <a
-            href={buyUrl[lang]}
-            target="_blank"
-            rel="noreferrer"
-            className="disclaimer-close-button-container"
-            tabIndex="0"
-            role="button"
-            onKeyDown={e => {
-              if (
-                isKeyboardSelectionEvent(e) &&
-                (e.keyCode === 13 || e.keyCode === 32)
-              ) {
-                window.location = buyUrl[lang];
-              }
-            }}
-          >
-            <div
-              aria-label="Siirry ostamaan kaupunkipyöräoikeutta."
-              className="disclaimer-close-button"
-            >
-              <FormattedMessage id="buy" />
-            </div>
-          </a>
-        )}
-      </div>
-    </div>
+    <>
+      <Disclaimer
+        header={<FormattedMessage id="citybike-start-using" />}
+        text={vehicleRental.buyInstructions?.[lang]}
+        href={href}
+        linkLabel={<FormattedMessage id={linkLabelId} />}
+        closable
+        onClose={handleClose}
+      />
+      <div style={{ height: '8px' }} />
+    </>
   );
 };
 
