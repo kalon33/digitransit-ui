@@ -29,6 +29,7 @@
     flex-direction: column;
     margin-left: 0.7em;
     color: $black;
+    width: 100%;
 
     .disclaimer-header {
       display: flex;
@@ -41,6 +42,11 @@
       .disclaimer-close {
         margin-right: 0;
         margin-left: auto;
+
+        &:hover {
+          transform: scale(1.1);
+          transition: transform 0.1s;
+        }
       }
     }
 
