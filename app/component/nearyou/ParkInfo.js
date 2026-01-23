@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { getReadMessageIds, setReadMessageIds } from '../../store/localStorage';
+import { useConfigContext } from '../../configurations/ConfigContext';
 import Disclaimer from '../Disclaimer';
 
 const ParkInfo = ({ mode }) => {
+  const { language, parkAndRide } = useConfigContext();
   const key = `${mode}_info`;
   const prefix = mode === 'CARPARK' ? 'car' : 'bike';
   const [showParkInfo, setShowParkInfo] = useState(
@@ -27,7 +29,7 @@ const ParkInfo = ({ mode }) => {
         headerId={`${prefix}-park-disclaimer-header`}
         textId={`${prefix}-park-disclaimer`}
         linkLabelId="park-disclaimer-link"
-        href=""
+        href={parkAndRide?.url?.[language]}
         closable
         onClose={handleClose}
       />
