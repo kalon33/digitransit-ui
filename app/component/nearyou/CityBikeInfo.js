@@ -1,14 +1,15 @@
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { configShape } from '../../util/shapes';
 import { getReadMessageIds, setReadMessageIds } from '../../store/localStorage';
+import { useConfigContext } from '../../configurations/ConfigContext';
 import {
   getRentalNetworkConfig,
   getRentalNetworkId,
 } from '../../util/vehicleRentalUtils';
 import Disclaimer from '../Disclaimer';
 
-const CityBikeInfo = ({ lang }, { config }) => {
+const CityBikeInfo = () => {
+  const config = useConfigContext();
+  const { vehicleRental, language } = config;
   const [showCityBikeTeaser, setShowCityBikeTeaser] = useState(
     !getReadMessageIds().includes('citybike_teaser'),
   );
@@ -19,7 +20,6 @@ const CityBikeInfo = ({ lang }, { config }) => {
     setReadMessageIds(readMessageIds);
     setShowCityBikeTeaser(false);
   };
-  const { vehicleRental } = config;
   // Use general information about using city bike, if one network config is available
   const networkConfig =
     Object.keys(vehicleRental.networks).length === 1 &&
@@ -28,12 +28,13 @@ const CityBikeInfo = ({ lang }, { config }) => {
       config,
     );
 
-  const href = vehicleRental.buyUrl?.[lang] || networkConfig?.url?.[lang];
+  const href =
+    vehicleRental.buyUrl?.[language] || networkConfig?.url?.[language];
 
   if (!showCityBikeTeaser || !href) {
     return null;
   }
-  const linkLabelId = vehicleRental.buyUrl?.[lang]
+  const linkLabelId = vehicleRental.buyUrl?.[language]
     ? 'citybike-purchase-link'
     : 'citybike-start-using-info';
 
@@ -41,7 +42,7 @@ const CityBikeInfo = ({ lang }, { config }) => {
     <>
       <Disclaimer
         headerId="citybike-start-using"
-        text={vehicleRental.buyInstructions?.[lang]}
+        text={vehicleRental.buyInstructions?.[language]}
         href={href}
         linkLabelId={linkLabelId}
         closable
@@ -51,9 +52,5 @@ const CityBikeInfo = ({ lang }, { config }) => {
     </>
   );
 };
-
-CityBikeInfo.propTypes = { lang: PropTypes.string.isRequired };
-
-CityBikeInfo.contextTypes = { config: configShape.isRequired };
 
 export default CityBikeInfo;
