@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { FormattedMessage } from 'react-intl';
 import { configShape } from '../../util/shapes';
 import { getReadMessageIds, setReadMessageIds } from '../../store/localStorage';
 import {
@@ -41,10 +40,10 @@ const CityBikeInfo = ({ lang }, { config }) => {
   return (
     <>
       <Disclaimer
-        header={<FormattedMessage id="citybike-start-using" />}
+        headerId="citybike-start-using"
         text={vehicleRental.buyInstructions?.[lang]}
         href={href}
-        linkLabel={<FormattedMessage id={linkLabelId} />}
+        linkLabelId={linkLabelId}
         closable
         onClose={handleClose}
       />

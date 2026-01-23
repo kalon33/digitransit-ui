@@ -8,11 +8,13 @@ import { useDeepLink } from '../util/vehicleRentalUtils';
 export default function Disclaimer(
   {
     header,
+    headerId,
     text,
     textId,
+    linkLabel,
+    linkLabelId,
     values,
     href,
-    linkLabel,
     useLinkButton,
     closable,
     onClose, // hook e.g. for remembering closing
@@ -37,12 +39,24 @@ export default function Disclaimer(
   if (!showCard) {
     return null;
   }
+  const hdr = headerId ? (
+    <FormattedMessage id={headerId} values={values} />
+  ) : (
+    header
+  );
+  const txt = textId ? <FormattedMessage id={textId} values={values} /> : text;
+  const label = linkLabelId ? (
+    <FormattedMessage id={linkLabelId} values={values} />
+  ) : (
+    linkLabel
+  );
+
   return (
     <div className="disclaimer-container">
       <Icon className="info" img="icon_info" />
       <div className="disclaimer">
         <div className="disclaimer-header">
-          {header && <h3 className="disclaimer-header-text">{header}</h3>}
+          {hdr && <h3 className="disclaimer-header-text">{hdr}</h3>}
           {closable && (
             <button
               className="disclaimer-close"
@@ -54,7 +68,7 @@ export default function Disclaimer(
             </button>
           )}
         </div>
-        {text || <FormattedMessage id={textId} values={values} />}
+        {txt}
         {href && useLinkButton && (
           <button
             type="button"
@@ -64,7 +78,7 @@ export default function Disclaimer(
               onClick(e);
             }}
           >
-            {linkLabel}
+            {label}
           </button>
         )}
         {href && !useLinkButton && (
@@ -74,7 +88,7 @@ export default function Disclaimer(
             target="_blank"
             rel="noreferrer"
           >
-            {linkLabel}
+            {label}
             <Icon className="arrow" img="icon_arrow-collapse--right" />
           </a>
         )}
@@ -85,23 +99,27 @@ export default function Disclaimer(
 
 Disclaimer.propTypes = {
   header: PropTypes.oneOf(PropTypes.string, PropTypes.node),
-  textId: PropTypes.string,
+  headerId: PropTypes.string,
   text: PropTypes.oneOf(PropTypes.string, PropTypes.node),
+  textId: PropTypes.string,
+  linkLabel: PropTypes.oneOf(PropTypes.string, PropTypes.node),
+  linkLabelId: PropTypes.string,
   values: PropTypes.objectOf(PropTypes.string),
   href: PropTypes.string,
-  linkLabel: PropTypes.oneOf(PropTypes.string, PropTypes.node),
   useLinkButton: PropTypes.bool,
   closable: PropTypes.bool,
   onClose: PropTypes.func,
 };
 
 Disclaimer.defaultProps = {
-  textId: null,
-  text: null,
-  values: {},
-  href: null,
-  linkLabel: null,
   header: null,
+  headerId: undefined,
+  text: null,
+  textId: undefined,
+  linkLabel: null,
+  linkLabelId: undefined,
+  values: {},
+  href: undefined,
   useLinkButton: false,
   closable: false,
   onClose: undefined,
