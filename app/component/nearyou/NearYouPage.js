@@ -17,6 +17,7 @@ import UpdateLocationButton from './UpdateLocationButton';
 import MapWrapper from './MapWrapper';
 import LocationModal from './LocationModal';
 import CityBikeInfo from './CityBikeInfo';
+import ParkInfo from './ParkInfo';
 import {
   checkPositioningPermission,
   startLocationWatch,
@@ -395,6 +396,9 @@ function NearYouPage(
                     />
                   )}
                   {tabMode === 'CITYBIKE' && <CityBikeInfo lang={lang} />}
+                  {(tabMode === 'CARPARK' || tabMode === 'BIKEPARK') && (
+                    <ParkInfo mode={tabMode} />
+                  )}
                   {centerOfMapChanged && (
                     <UpdateLocationButton
                       mode={tabMode}
