@@ -1,26 +1,27 @@
 import React, { useState } from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
-import { configShape } from '../util/shapes';
 import Icon from './Icon';
 import { useDeepLink } from '../util/vehicleRentalUtils';
+import { useConfigContext } from '../configurations/ConfigContext';
+import { useTranslationsContext } from '../util/useTranslationsContext';
 
-export default function Disclaimer(
-  {
-    header,
-    headerId,
-    text,
-    textId,
-    linkLabel,
-    linkLabelId,
-    values,
-    href,
-    useLinkButton,
-    closable,
-    onClose, // hook e.g. for remembering closing
-  },
-  { config, intl },
-) {
+export default function Disclaimer({
+  header,
+  headerId,
+  text,
+  textId,
+  linkLabel,
+  linkLabelId,
+  values,
+  href,
+  useLinkButton,
+  closable,
+  onClose, // hook e.g. for remembering closing
+}) {
+  const { colors } = useConfigContext();
+  const intl = useTranslationsContext();
+
   const [showCard, setShowCard] = useState(true);
 
   const handleClose = () => {
@@ -64,7 +65,7 @@ export default function Disclaimer(
               onClick={handleClose}
               type="button"
             >
-              <Icon color={config.colors.primary} img="icon_close" />
+              <Icon color={colors.primary} img="icon_close" />
             </button>
           )}
         </div>
@@ -123,9 +124,4 @@ Disclaimer.defaultProps = {
   useLinkButton: false,
   closable: false,
   onClose: undefined,
-};
-
-Disclaimer.contextTypes = {
-  config: configShape.isRequired,
-  intl: intlShape.isRequired,
 };
