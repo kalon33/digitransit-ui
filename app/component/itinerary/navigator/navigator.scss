@@ -491,7 +491,7 @@
             display: flex;
             color: $primary-color;
             font-weight: $font-weight-medium;
-            line-height: 1.2;
+            line-height: 1;
             flex: 1;
           }
 
@@ -542,6 +542,7 @@
 
               .icon-container {
                 margin-top: 0;
+                padding-right: 2px;
               }
             }
           }
