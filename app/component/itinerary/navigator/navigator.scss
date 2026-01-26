@@ -316,7 +316,7 @@
         .extension-divider {
           height: 1px;
           background: #ddd;
-          width: 95%;
+          width: 100%;
           margin-top: var(--space-s);
           margin-bottom: var(--space-s);
         }
@@ -562,6 +562,7 @@
               .navi-indoor-step-info {
                 display: flex;
                 font-size: 0.9375rem;
+                max-height: 37px;
 
                 .navi-indoor-step-icon {
                   width: 24px;
