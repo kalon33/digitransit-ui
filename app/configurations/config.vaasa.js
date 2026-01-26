@@ -5,10 +5,11 @@ const CONFIG = 'vaasa';
 const APP_TITLE = 'Vaasan reittiopas';
 const APP_DESCRIPTION = '';
 
-const minLat = 63.005;
-const maxLat = 63.152;
-const minLon = 21.527;
-const maxLon = 22.17;
+const minLat = 62.96;
+const maxLat = 63.19;
+const minLon = 21.42;
+const maxLon = 22.18;
+
 const IS_DEV =
   process.env.RUN_ENV === 'development' ||
   process.env.NODE_ENV !== 'production';
@@ -24,9 +25,7 @@ export default configMerger(walttiConfig, {
 
   colors: {
     primary: '#000a8c',
-    iconColors: {
-      'mode-bus': '#000a8c',
-    },
+    bus: '#000a8c',
   },
 
   socialMedia: {
@@ -130,10 +129,6 @@ export default configMerger(walttiConfig, {
       },
     ],
   },
-
-  vehicles: true,
-  showVehiclesOnStopPage: true,
-  showVehiclesOnItineraryPage: true,
 
   stopCard: {
     header: {

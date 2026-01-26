@@ -528,7 +528,11 @@ export function getTotalBikingDistance(itinerary) {
   return sumDistances(itinerary.legs.filter(isBikingLeg));
 }
 
-export function getTotalDrivingDistance(itinerary) {
+export function getTotalDrivingDistance(itinerary, config = {}) {
+  // Don't rely only driving legs when calculating the one way journey.
+  if (config.emphasizeOneWayJourney) {
+    return sumDistances(itinerary.legs);
+  }
   return sumDistances(itinerary.legs.filter(isDrivingLeg));
 }
 
@@ -551,7 +555,7 @@ export function getVehicleAvailabilityIndicatorColor(available, config) {
   return (
     // eslint-disable-next-line no-nested-ternary
     available === 0
-      ? '#DC0451'
+      ? config.colors.caution
       : available > config.vehicleRental.fewAvailableCount
         ? '#3B7F00'
         : '#FCBC19'
