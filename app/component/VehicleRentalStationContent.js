@@ -46,7 +46,7 @@ const VehicleRentalStationContent = (
     ? 'citybike-purchase-link'
     : 'citybike-start-using-info';
   return (
-    <div className="bike-station-page-container">
+    <div className="station-page-container">
       <ParkOrStationHeader
         parkOrStation={vehicleRentalStation}
         breakpoint={breakpoint}

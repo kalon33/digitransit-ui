@@ -179,7 +179,7 @@
       margin: 0 14px 4px;
     }
 
-    .stop-near-you-header-container:has(.bike-station-page-container) {
+    .stop-near-you-header-container:has(.station-page-container) {
       padding: unset;
     }
 
@@ -203,15 +203,15 @@
           color: #333;
         }
 
-        .bike-station {
-          &-code {
-            font-size: 0.813rem;
-            font-weight: normal;
-          }
+        .bike-station-code {
+          font-size: 0.813rem;
+          font-weight: normal;
+        }
 
+        .station {
           &-page-container {
             margin: 0;
-            padding: var(--space-s) var(--space-m);
+            padding: var(--space-s) var(--space-s);
           }
 
           &-header {

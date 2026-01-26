@@ -13,7 +13,7 @@ import { getIdWithoutFeed } from '../util/feedScopedIdUtils';
 import FavouriteVehicleRentalStationContainer from './FavouriteVehicleRentalStationContainer';
 
 const ParkOrBikeStationHeader = (
-  { parkOrStation, breakpoint, parkType, backButton },
+  { parkOrStation, breakpoint, parkType, backButton, withSeparator },
   { config },
 ) => {
   const [zoneId, setZoneId] = useState(undefined);
@@ -45,9 +45,9 @@ const ParkOrBikeStationHeader = (
   const { name, stationId } = parkOrStation;
   const parkHeaderId = parkType === 'bike' ? 'bike-park' : 'car-park';
   const isRentalStation = stationId;
-
+  const cn = withSeparator ? 'station-header-with-separator' : 'station-header';
   return (
-    <div className="bike-station-header">
+    <div className={cn}>
       {breakpoint === 'large' && backButton && (
         <BackButton
           icon="icon_arrow-collapse--left"
@@ -55,7 +55,7 @@ const ParkOrBikeStationHeader = (
         />
       )}
       <div className="header">
-        <h1>{name}</h1>
+        <h3>{name}</h3>
         <div className="bike-station-sub-header">
           <FormattedMessage
             id={isRentalStation ? 'citybike-station-no-id' : parkHeaderId}
@@ -89,11 +89,13 @@ ParkOrBikeStationHeader.propTypes = {
   }).isRequired,
   parkType: PropTypes.string,
   breakpoint: PropTypes.string.isRequired,
+  withSeparator: PropTypes.bool,
 };
 
 ParkOrBikeStationHeader.defaultProps = {
   parkType: undefined,
   backButton: true,
+  withSeparator: true,
 };
 
 ParkOrBikeStationHeader.contextTypes = {

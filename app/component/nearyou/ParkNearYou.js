@@ -47,6 +47,7 @@ const ParkNearYou = ({ park, relay, currentTime, isParentTabActive, mode }) => {
                 mode={mode}
                 showInfo={false}
                 backButton={false}
+                showDetails={false}
               />
             </Link>
           </div>

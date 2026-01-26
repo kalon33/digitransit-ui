@@ -12,7 +12,15 @@ import { PREFIX_BIKEPARK, PREFIX_CARPARK } from '../util/path';
 import { DATE_FORMAT } from '../constants';
 
 function ParkAndRideContent(
-  { vehicleParking, error, currentLanguage, mode, showInfo, backButton },
+  {
+    vehicleParking,
+    error,
+    currentLanguage,
+    mode,
+    showInfo,
+    showDetails,
+    backButton,
+  },
   { config, intl, router, match },
 ) {
   // throw error when relay query fails
@@ -145,14 +153,24 @@ function ParkAndRideContent(
   const showSpacesAvailable = !realtime && spacesAvailable;
 
   return (
-    <div className="bike-station-page-container">
-      <ParkOrStationHeader
-        parkOrStation={vehicleParking}
-        parkType={bikePark ? 'bike' : 'car'}
-        backButton={backButton}
-      />
+    <div className="station-page-container">
       <div className="park-content-container">
-        <Icon img={`icon_${prePostFix}`} height={2.4} width={2.4} />
+        {!showDetails && (
+          <div className="header-icon">
+            <Icon img={`icon_${prePostFix}`} height={2.45} width={2.45} />
+          </div>
+        )}
+        <ParkOrStationHeader
+          parkOrStation={vehicleParking}
+          parkType={bikePark ? 'bike' : 'car'}
+          backButton={backButton}
+          withSeparator={showDetails}
+        />
+      </div>
+      <div className="park-content-container">
+        {showDetails && (
+          <Icon img={`icon_${prePostFix}`} height={2.45} width={2.45} />
+        )}
         <div className="park-details">
           {showOpeningHours && (
             <div className="park-opening-hours">
@@ -227,6 +245,7 @@ ParkAndRideContent.propTypes = {
   currentLanguage: PropTypes.string.isRequired,
   mode: PropTypes.oneOf(['CARPARK', 'BIKEPARK']),
   showInfo: PropTypes.bool,
+  showDetails: PropTypes.bool,
   backButton: PropTypes.bool,
 };
 
@@ -235,6 +254,7 @@ ParkAndRideContent.defaultProps = {
   error: undefined,
   mode: undefined,
   showInfo: true,
+  showDetails: true,
   backButton: true,
 };
 

@@ -1,5 +1,5 @@
 .mobile {
-  .bike-station-page-container {
+  .station-page-container {
     height: calc(100% - 20rem);
     padding: 18px 1.563em 2em;
     position: relative;
@@ -17,7 +17,8 @@
       text-decoration: none;
     }
 
-    .bike-station-header {
+    .station-header,
+    .station-header-with-separator {
       padding: 0;
       border: none;
 
@@ -53,10 +54,14 @@
     .park-content-container {
       display: flex;
       flex-direction: row;
-      margin-top: 23px;
       font-weight: $font-weight-book;
       font-size: $font-size-normal;
       letter-spacing: -0.03em;
+      width: 100%;
+
+      .header-icon {
+        margin-right: 8px;
+      }
 
       .park-details {
         display: flex;
@@ -101,7 +106,7 @@
   }
 }
 
-.bike-station-page-container {
+.station-page-container {
   margin: 0 3.75em;
 
   .citybike-full-station-guide {
@@ -116,12 +121,14 @@
     text-decoration: none;
   }
 
-  .bike-station-header {
+  .station-header,
+  .station-header-with-separator {
+    width: 100%;
+
     .favourite-icon {
       padding: 8px 8px 0 0;
     }
 
-    border-bottom: 1px solid #ddd;
     padding-bottom: 15px;
     padding-top: 3em;
     display: flex;
@@ -147,7 +154,7 @@
 
     padding-top: 2px;
     position: absolute;
-    margin-left: 5px;
+    margin-left: 8px;
 
     svg {
       width: 14px;
@@ -186,10 +193,13 @@
   .park-content-container {
     display: flex;
     flex-direction: row;
-    margin-top: 23px;
     font-weight: $font-weight-book;
     font-size: $font-size-normal;
     letter-spacing: -0.03em;
+
+    .header-icon {
+      margin-right: 8px;
+    }
 
     .park-details {
       display: flex;
@@ -232,4 +242,8 @@
       }
     }
   }
+}
+
+.station-header-with-separator {
+  border-bottom: 1px solid #ddd;
 }
