@@ -9,7 +9,8 @@ import NaviCardExtension from './NaviCardExtension';
 import NaviInstructions from './NaviInstructions';
 import { LEGTYPE } from './NaviUtils';
 import usePrevious from './hooks/usePrevious';
-import { NaviCardType } from '../../../constants';
+import { IndoorLegType, NaviCardType } from '../../../constants';
+import { getIndoorLegType } from '../../../util/indoorUtils';
 
 const iconMap = {
   BICYCLE: 'icon_cyclist',
@@ -128,7 +129,12 @@ export default function NaviCard(
               time={time}
               position={position}
               tailLength={tailLength}
-              showDestinationInfo={currentCard === NaviCardType.Default}
+              showDestinationInfo={
+                currentCard === NaviCardType.Default ||
+                (currentCard === NaviCardType.Indoor &&
+                  getIndoorLegType(previousLeg, leg, nextLeg) ===
+                    IndoorLegType.StepsBeforeEntranceInside)
+              }
             />
           </div>
           <div type="button" className="navi-top-card-arrow">
