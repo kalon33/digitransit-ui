@@ -56,7 +56,7 @@ const ParkOrBikeStationHeader = (
       )}
       <div className="header">
         <h3>{name}</h3>
-        <div className="bike-station-sub-header">
+        <div className="station-sub-header">
           <FormattedMessage
             id={isRentalStation ? 'citybike-station-no-id' : parkHeaderId}
           />
@@ -64,7 +64,7 @@ const ParkOrBikeStationHeader = (
             <StopCode code={getIdWithoutFeed(stationId)} />
           )}
           {zoneId && (
-            <span className="bike-station-zone-icon">
+            <span className="station-zone-icon">
               <ZoneIcon zoneId={zoneId.toUpperCase()} />
             </span>
           )}

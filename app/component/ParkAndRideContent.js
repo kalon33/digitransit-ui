@@ -154,7 +154,7 @@ function ParkAndRideContent(
 
   return (
     <div className="station-page-container">
-      <div className="park-content-container">
+      <div className="park-header">
         {!showDetails && (
           <div className="header-icon">
             <Icon img={`icon_${prePostFix}`} height={2.45} width={2.45} />

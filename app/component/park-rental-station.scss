@@ -1,9 +1,11 @@
 .station-page-container {
+  font-weight: $font-weight-book;
+  font-size: $font-size-normal;
   margin: 0 3.75em;
 
   .separator {
     width: 100%;
-    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
     padding-bottom: 8px;
     padding-top: 8px;
   }
@@ -44,7 +46,7 @@
     }
   }
 
-  .bike-station-zone-icon {
+  .station-zone-icon {
     .zone-icon-container .circle {
       width: 16px;
       height: 16px;
@@ -61,7 +63,7 @@
     }
   }
 
-  .bike-station-sub-header {
+  .station-sub-header {
     font-size: 0.813rem;
     color: #666;
     font-weight: normal;
@@ -89,16 +91,19 @@
     }
   }
 
-  .park-content-container {
+  .park-header {
     display: flex;
-    flex-direction: column;
-    font-weight: $font-weight-book;
-    font-size: $font-size-normal;
-    letter-spacing: -0.03em;
+    flex-direction: row;
 
     .header-icon {
       margin-right: 8px;
     }
+  }
+
+  .park-content-container {
+    display: flex;
+    flex-direction: column;
+    letter-spacing: -0.03em;
 
     .park-details {
       display: flex;
@@ -146,4 +151,15 @@
 .station-header-with-separator {
   border-bottom: 1px solid #ddd;
   margin-bottom: 16px;
+}
+
+.mobile {
+  .station-page-container {
+    margin: 0 12px;
+  }
+
+  .station-header,
+  .station-header-with-separator {
+    padding-top: 1em;
+  }
 }
