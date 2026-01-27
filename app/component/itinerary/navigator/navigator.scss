@@ -260,8 +260,13 @@
     width: inherit;
     margin: var(--space-m) var(--space-m);
 
+    &.default-card-type {
+      animation: fadeInDefaultCard $slide-up-down-fade;
+    }
+
     &.indoor-card-type {
       margin-bottom: 0;
+      animation: fadeInIndoorCard $slide-up-down-fade;
     }
 
     .content {
