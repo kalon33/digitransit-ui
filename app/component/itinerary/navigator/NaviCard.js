@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
+import cx from 'classnames';
 import { isAnyLegPropertyIdentical, isRental } from '../../../util/legUtils';
 import { getRouteMode, transitIconName } from '../../../util/modeUtils';
 import { configShape, legShape } from '../../../util/shapes';
@@ -113,7 +114,9 @@ export default function NaviCard(
       aria-expanded={cardExpanded}
       aria-controls={`navi-card-content-${leg?.legId}`}
     >
-      <div className="main-card">
+      <div
+        className={cx('main-card', `${currentCard.toLowerCase()}-card-type`)}
+      >
         <div className="content">
           <Icon img={iconName} className="mode" color={iconColor} omitViewBox />
           <div className={`instructions ${cardExpanded ? 'expanded' : ''}`}>
