@@ -1,113 +1,12 @@
-.mobile {
-  .station-page-container {
-    height: calc(100% - 20rem);
-    padding: 18px 1.563em 2em;
-    position: relative;
-    margin: 0;
-
-    .citybike-full-station-guide {
-      display: grid;
-      margin-top: 22px;
-      font-weight: $font-weight-medium;
-      font-size: 15px;
-    }
-
-    .external-link-citybike {
-      color: $link-color;
-      text-decoration: none;
-    }
-
-    .station-header,
-    .station-header-with-separator {
-      padding: 0;
-      border: none;
-
-      .header {
-        h1 {
-          font-size: 1.25rem;
-          line-height: 1.2;
-          margin: 0;
-        }
-
-        .bike-station-sub-header {
-          font-size: 0.88rem;
-          padding: 0;
-        }
-      }
-
-      .favourite-icon {
-        padding-right: 0;
-      }
-    }
-
-    .citybike-content-container {
-      padding: 17px 0 0 0;
-
-      .icon-container {
-        .icon {
-          width: 36px;
-          height: 36px;
-        }
-      }
-    }
-
-    .park-content-container {
-      display: flex;
-      flex-direction: row;
-      font-weight: $font-weight-book;
-      font-size: $font-size-normal;
-      letter-spacing: -0.03em;
-      width: 100%;
-
-      .header-icon {
-        margin-right: 8px;
-      }
-
-      .park-details {
-        display: flex;
-        flex-direction: column;
-        margin-left: 15px;
-        line-height: 18px;
-
-        .park-opening-hours {
-          display: flex;
-          flex-direction: row;
-
-          span {
-            display: flex;
-            color: #666;
-            flex-direction: column;
-
-            p {
-              margin: 0;
-              font-weight: $font-weight-medium;
-              color: #333;
-            }
-          }
-        }
-
-        span {
-          display: inline-flex;
-          color: #666;
-          margin-top: 8px;
-
-          p {
-            margin: 0;
-            font-weight: $font-weight-medium;
-            color: #333;
-          }
-        }
-
-        span:first-child {
-          margin-top: 0;
-        }
-      }
-    }
-  }
-}
-
 .station-page-container {
   margin: 0 3.75em;
+
+  .separator {
+    width: 100%;
+    border-top: 1px solid #ddd;
+    padding-bottom: 8px;
+    padding-top: 8px;
+  }
 
   .citybike-full-station-guide {
     display: grid;
@@ -192,7 +91,7 @@
 
   .park-content-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     font-weight: $font-weight-book;
     font-size: $font-size-normal;
     letter-spacing: -0.03em;
@@ -246,4 +145,5 @@
 
 .station-header-with-separator {
   border-bottom: 1px solid #ddd;
+  margin-bottom: 16px;
 }

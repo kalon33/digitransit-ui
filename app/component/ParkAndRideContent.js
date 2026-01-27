@@ -169,8 +169,12 @@ function ParkAndRideContent(
       </div>
       <div className="park-content-container">
         {showDetails && (
-          <Icon img={`icon_${prePostFix}`} height={2.45} width={2.45} />
+          <div className="header-icon">
+            <Icon img={`icon_${prePostFix}`} height={2.45} width={2.45} />
+          </div>
         )}
+
+        <div className="separator" />
         <div className="park-details">
           {showOpeningHours && (
             <div className="park-opening-hours">
