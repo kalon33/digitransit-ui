@@ -787,6 +787,10 @@ export default {
       'Linja, pysäkki tai asema',
     'traffic-now_filters_validity-period': 'Näytä voimassaolon mukaan',
     'traffic-now_filters_vehicle-mode': 'Näytä liikennevälineen mukaan',
+    'traffic-now_filters_toggles--cancellations-only': 'Vain peruutukset',
+    'traffic-now_filters_toggles--favourites-only':
+      'Vain omat linjat ja pysäkit',
+    'traffic-now_filters_view-results': 'Näytä tulokset',
     'traffic-now_link': 'Liikennetilanne nyt',
     'traffic-now_link-description': 'Katso häiriöt ja poikkeukset',
     tram: 'Raitiovaunu',
