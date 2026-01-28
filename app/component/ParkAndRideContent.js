@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import cx from 'classnames';
 import { FormattedMessage, intlShape } from 'react-intl';
 import { matchShape, routerShape } from 'found';
 import { parkShape, configShape, errorShape } from '../util/shapes';
@@ -52,9 +53,10 @@ function ParkAndRideContent(
   }
   const realtime =
     vehicleParking.realtime &&
-    !Number.isNaN(available) &&
-    !Number.isNaN(capacity);
+    Number.isInteger(available) &&
+    Number.isInteger(capacity);
 
+  const detailClass = showDetails ? 'park-details' : 'park-details-row';
   return (
     <div className="station-page-container">
       <div className="park-header">
@@ -72,31 +74,31 @@ function ParkAndRideContent(
       </div>
       <div className="park-content-container">
         {showDetails && (
-          <div className="header-icon">
+          <div className={cx('header-icon', 'park-details')}>
             <Icon img={`icon_${prePostFix}`} height={2.45} width={2.45} />
           </div>
         )}
         {openingHours.length > 0 && (
-          <div className="park-details">
-            <FormattedMessage id="is-open" /> &#160;
-            <span>
+          <div className={detailClass}>
+            <FormattedMessage id="is-open" />
+            <div>
               {openingHours.map(text => (
                 // eslint-disable-next-line react/no-array-index-key
-                <p key={`opening-hour-${text}`}>{text}</p>
+                <span key={`opening-hour-${text}`}>{text}</span>
               ))}
-            </span>
+            </div>
           </div>
         )}
-        {(realtime || !Number.isNaN(available)) && (
+        {(realtime || Number.isInteger(available)) && (
           <>
             <div className="separator" />
-            <div className="park-details">
+            <div className={detailClass}>
               {realtime && (
                 <>
                   <FormattedMessage id="park-and-ride-availability" />
-                  <div>
+                  <span>
                     {available} / {capacity}
-                  </div>
+                  </span>
                 </>
               )}
               {!realtime && (
@@ -109,34 +111,40 @@ function ParkAndRideContent(
           </>
         )}
         {showDetails && (
-          <div className="park-details">
+          <div className={detailClass}>
             {(parkIsFree || parkIsPaid) && (
-              <span>
-                {parkIsFree && intl.formatMessage({ id: 'free-of-charge' })}
-                {parkIsPaid && intl.formatMessage({ id: 'paid' })}
-                {authenticationMethods.length > 0 &&
-                  `, ${intl.formatMessage({
-                    id: 'access_with',
-                  })} `}
-                {authenticationMethods.map(
-                  (method, i) =>
-                    `
+              <>
+                <div className="separator" />
+                <span>
+                  {parkIsFree && intl.formatMessage({ id: 'free-of-charge' })}
+                  {parkIsPaid && intl.formatMessage({ id: 'paid' })}
+                  {authenticationMethods.length > 0 &&
+                    `, ${intl.formatMessage({
+                      id: 'access_with',
+                    })} `}
+                  {authenticationMethods.map(
+                    (method, i) =>
+                      `
                 ${intl.formatMessage({ id: method })}
                 ${i < authenticationMethods.length - 1 ? ' | ' : ''}
               `,
-                )}
-              </span>
+                  )}
+                </span>
+              </>
             )}
             {services.length > 0 && (
-              <span>
-                {services.map(
-                  (service, i) =>
-                    `
+              <>
+                <div className="separator" />
+                <span>
+                  {services.map(
+                    (service, i) =>
+                      `
                 ${intl.formatMessage({ id: service })}
                 ${i < services.length - 1 ? ' | ' : ''}
               `,
-                )}
-              </span>
+                  )}
+                </span>
+              </>
             )}
           </div>
         )}

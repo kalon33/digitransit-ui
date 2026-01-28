@@ -6,8 +6,8 @@
   .separator {
     width: 100%;
     border-bottom: 1px solid #ddd;
-    padding-bottom: 8px;
-    padding-top: 8px;
+    margin-bottom: 8px;
+    margin-top: 8px;
   }
 
   .citybike-full-station-guide {
@@ -105,45 +105,15 @@
     flex-direction: column;
     letter-spacing: -0.03em;
 
-    .park-details {
+    .park-details,
+    .park-details-row {
       display: flex;
       flex-direction: column;
-      margin-left: 15px;
-      line-height: 18px;
+      margin: 8px;
+    }
 
-      span {
-        display: inline-flex;
-        color: #666;
-        margin-top: 8px;
-
-        p {
-          margin: 0;
-          font-weight: $font-weight-medium;
-          color: #333;
-        }
-      }
-
-      span:first-child {
-        margin-top: 0;
-      }
-
-      .park-opening-hours {
-        display: flex;
-        flex-direction: row;
-
-        > span {
-          display: flex;
-          color: #666;
-          flex-direction: column;
-          margin-top: 0;
-
-          p {
-            margin: 0;
-            font-weight: $font-weight-medium;
-            color: #333;
-          }
-        }
-      }
+    .park-details-row {
+      flex-direction: row;
     }
   }
 }

@@ -50,6 +50,9 @@ export default {
         if (osm === 'Mo-Fr 0:00-23:59; Sa 0:00-23:59; Su 0:00-23:59') {
           return ['24 h'];
         }
+        if (osm === '') {
+          return [];
+        }
         return osm.split(';').map(val => val.toLowerCase().trim());
       }
       return [];
