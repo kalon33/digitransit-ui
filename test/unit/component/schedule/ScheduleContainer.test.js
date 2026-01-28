@@ -5,11 +5,11 @@ import { DateTime } from 'luxon';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 
-import { Component as ScheduleContainer } from '../../../app/component/routepage/schedule/ScheduleContainer';
-import { mockContext } from '../helpers/mock-context';
-import { mockMatch, mockRouter } from '../helpers/mock-router';
-import * as useTranslationsContext from '../../../app/util/useTranslationsContext';
-import * as ConfigContext from '../../../app/configurations/ConfigContext';
+import { Component as ScheduleContainer } from '../../../../app/component/routepage/schedule/ScheduleContainer';
+import { mockContext } from '../../helpers/mock-context';
+import { mockMatch, mockRouter } from '../../helpers/mock-router';
+import * as useTranslationsContext from '../../../../app/util/useTranslationsContext';
+import * as ConfigContext from '../../../../app/configurations/ConfigContext';
 
 describe('<ScheduleContainer />', () => {
   let defaultProps;
@@ -694,6 +694,110 @@ describe('<ScheduleContainer />', () => {
       );
 
       expect(wrapper.exists()).to.equal(true);
+    });
+  });
+
+  describe('Constant operation routes', () => {
+    it('should render for constant operation routes', () => {
+      const constantOpConfig = {
+        ...mockConfig,
+        constantOperationRoutes: {
+          'HSL:1001': {
+            en: {
+              text: 'This route operates 24/7',
+              link: 'https://example.com/info',
+            },
+          },
+        },
+      };
+
+      useConfigContextStub.restore();
+      useConfigContextStub = sinon
+        .stub(ConfigContext, 'useConfigContext')
+        .returns(constantOpConfig);
+
+      const wrapper = shallow(
+        <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
+      );
+
+      expect(wrapper.exists()).to.equal(true);
+    });
+  });
+
+  describe('Sorting and filtering', () => {
+    it('should handle trips with empty stoptimes arrays', () => {
+      const tripsWithEmptyStoptimes = [
+        {
+          id: 'trip-empty',
+          stoptimes: [],
+        },
+        {
+          id: 'trip-valid',
+          stoptimes: [
+            {
+              realtimeState: 'SCHEDULED',
+              scheduledArrival: 28080,
+              scheduledDeparture: 28080,
+              serviceDay: 1547503200,
+            },
+            {
+              realtimeState: 'SCHEDULED',
+              scheduledArrival: 30060,
+              scheduledDeparture: 30060,
+              serviceDay: 1547503200,
+            },
+          ],
+        },
+      ];
+
+      const pattern = {
+        code: 'HSL:1001:0:01',
+        stops: defaultProps.pattern.stops,
+        trips: tripsWithEmptyStoptimes,
+      };
+
+      const propsWithEmptyStoptimes = {
+        ...defaultProps,
+        pattern,
+        route: {
+          ...defaultProps.route,
+          patterns: [pattern],
+        },
+      };
+
+      const wrapper = shallow(
+        <ScheduleContainer
+          {...propsWithEmptyStoptimes}
+          match={mockMatchWithRouter}
+        />,
+      );
+
+      expect(wrapper.exists()).to.equal(true);
+    });
+  });
+
+  describe('Testing mode', () => {
+    it('should handle test mode with test parameter', () => {
+      const matchWithTestParam = {
+        ...mockMatchWithRouter,
+        location: {
+          ...mockMatchWithRouter.location,
+          query: {
+            test: '1',
+          },
+        },
+      };
+
+      const originalEnv = process.env.ROUTEPAGETESTING;
+      process.env.ROUTEPAGETESTING = 'true';
+
+      const wrapper = shallow(
+        <ScheduleContainer {...defaultProps} match={matchWithTestParam} />,
+      );
+
+      expect(wrapper.exists()).to.equal(true);
+
+      process.env.ROUTEPAGETESTING = originalEnv;
     });
   });
 });
