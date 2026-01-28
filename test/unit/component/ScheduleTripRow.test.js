@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
 import { shallowWithIntl } from '../helpers/mock-intl-enzyme';
-import ScheduleTripRow from '../../../app/component/routepage/ScheduleTripRow';
+import ScheduleTripRow from '../../../app/component/routepage/schedule/ScheduleTripRow';
 
 describe('<ScheduleTripRow />', () => {
   it('should highlight a canceled departure', () => {

@@ -223,7 +223,7 @@ export default function routeRoutes(config) {
               path={`${PREFIX_TIMETABLE}/:patternId`}
               getComponent={() =>
                 import(
-                  /* webpackChunkName: "route" */ './component/routepage/ScheduleContainer'
+                  /* webpackChunkName: "route" */ './component/routepage/schedule/ScheduleContainer'
                 ).then(getDefault)
               }
               query={graphql`

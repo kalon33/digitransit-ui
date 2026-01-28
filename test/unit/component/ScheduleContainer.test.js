@@ -5,7 +5,7 @@ import { DateTime } from 'luxon';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 
-import { Component as ScheduleContainer } from '../../../app/component/routepage/ScheduleContainer';
+import { Component as ScheduleContainer } from '../../../app/component/routepage/schedule/ScheduleContainer';
 import { mockContext } from '../helpers/mock-context';
 import { mockMatch, mockRouter } from '../helpers/mock-router';
 import * as useTranslationsContext from '../../../app/util/useTranslationsContext';
@@ -26,6 +26,7 @@ describe('<ScheduleContainer />', () => {
       formatDate: sinon.stub().returns('formatted date'),
       formatTime: sinon.stub().returns('formatted time'),
       formatNumber: sinon.stub().returns('formatted number'),
+      locale: 'en',
     };
 
     // Create mock config object

@@ -1,0 +1,59 @@
+import PropTypes from 'prop-types';
+import React from 'react';
+import { matchShape } from 'found';
+import { routeShape } from '../../../util/shapes';
+import RouteControlPanel from '../RouteControlPanel';
+
+/**
+ * ScheduleConstantOperation - Display constant operation route message
+ * Shown for routes that operate 24/7 instead of showing schedule
+ */
+const ScheduleConstantOperation = ({
+  constantOperationInfo,
+  match,
+  route,
+  breakpoint,
+}) => {
+  return (
+    <div
+      className={`route-schedule-container ${
+        breakpoint !== 'large' ? 'mobile' : ''
+      }`}
+    >
+      <div style={{ paddingBottom: '28px' }}>
+        <RouteControlPanel
+          match={match}
+          route={route}
+          breakpoint={breakpoint}
+          noInitialServiceDay
+        />
+      </div>
+      <div className="stop-constant-operation-container bottom-padding">
+        <div style={{ width: '95%' }}>
+          <span>{constantOperationInfo.text}</span>
+          <span style={{ display: 'inline-block' }}>
+            <a
+              href={constantOperationInfo.link}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {constantOperationInfo.link}
+            </a>
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+ScheduleConstantOperation.propTypes = {
+  constantOperationInfo: PropTypes.shape({
+    text: PropTypes.string.isRequired,
+    link: PropTypes.string.isRequired,
+  }).isRequired,
+  match: matchShape.isRequired,
+  route: routeShape.isRequired,
+  breakpoint: PropTypes.string.isRequired,
+};
+
+export default ScheduleConstantOperation;

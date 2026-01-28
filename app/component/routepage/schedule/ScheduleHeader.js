@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Icon from '../Icon';
+import Icon from '../../Icon';
 import ScheduleDropdown from './ScheduleDropdown';
-import { stopShape } from '../../util/shapes';
+import { stopShape } from '../../../util/shapes';
 
 function ScheduleHeader({
   stops,

@@ -1,59 +1,44 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable no-param-reassign */
 import PropTypes from 'prop-types';
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import { createFragmentContainer, graphql } from 'react-relay';
 import { connectToStores } from 'fluxible-addons-react';
 import { matchShape, routerShape } from 'found';
 import { DateTime } from 'luxon';
-import sortBy from 'lodash/sortBy';
 import cx from 'classnames';
-import { dayRangePattern } from '@digitransit-util/digitransit-util';
-import { getTranslatedDayString } from '@digitransit-util/digitransit-util-route-pattern-option-text';
-import isEqual from 'lodash/isEqual';
-import { routeShape, patternShape } from '../../util/shapes';
+import { routeShape, patternShape } from '../../../util/shapes';
 import ScheduleHeader from './ScheduleHeader';
-import ScheduleTripRow from './ScheduleTripRow';
-import SecondaryButton from '../SecondaryButton';
-import Loading from '../Loading';
-import { DATE_FORMAT, RealtimeStateType } from '../../constants';
-import { addAnalyticsEvent } from '../../util/analyticsUtils';
-import withBreakpoint from '../../util/withBreakpoint';
-import hashCode from '../../util/hashUtil';
-import { getFormattedTimeDate } from '../../util/timeUtils';
+import ScheduleDayTabs from './ScheduleDayTabs';
+import ScheduleTripList from './ScheduleTripList';
+import ScheduleConstantOperation from './ScheduleConstantOperation';
+import SecondaryButton from '../../SecondaryButton';
+import Loading from '../../Loading';
+import { DATE_FORMAT } from '../../../constants';
+import { addAnalyticsEvent } from '../../../util/analyticsUtils';
+import withBreakpoint from '../../../util/withBreakpoint';
 import ScheduleDropdown from './ScheduleDropdown';
-import RouteControlPanel from './RouteControlPanel';
-import { routePagePath, PREFIX_TIMETABLE } from '../../util/path';
-import ScrollableWrapper from '../ScrollableWrapper';
+import RouteControlPanel from '../RouteControlPanel';
+import { routePagePath, PREFIX_TIMETABLE } from '../../../util/path';
+import ScrollableWrapper from '../../ScrollableWrapper';
 import getTestData from './ScheduleDebugData';
-import { useConfigContext } from '../../configurations/ConfigContext';
-import { useTranslationsContext } from '../../util/useTranslationsContext';
-
-const DATE_FORMAT_SCHEDULE = 'd.L.yyyy';
-
-const isTripCanceled = trip =>
-  trip.stoptimes &&
-  trip.stoptimes.length > 0 &&
-  trip.stoptimes.every(st => st.realtimeState === RealtimeStateType.Canceled);
-
-const getMostFrequent = arr => {
-  const hashmap = arr.reduce((acc, val) => {
-    acc[hashCode(val.map(v => v[0]).join())] =
-      (acc[hashCode(val.map(v => v[0]).join())] || 0) + 1;
-    return acc;
-  }, {});
-  const hash = Object.keys(hashmap).reduce((a, b) =>
-    hashmap[a] > hashmap[b] ? a : b,
-  );
-  let retValue;
-  arr.forEach(a => {
-    const tmpHash = hashCode(a.map(v => v[0]).join());
-    if (!retValue && Number(hash) === tmpHash) {
-      retValue = a;
-    }
-  });
-  return retValue;
-};
+import { useConfigContext } from '../../../configurations/ConfigContext';
+import { useTranslationsContext } from '../../../util/useTranslationsContext';
+import {
+  getMostFrequent,
+  modifyDepartures,
+  isEmptyWeek,
+  getFirstDepartureDate,
+  populateData,
+  DATA_INDEX,
+  RANGE_INDEX,
+} from '../../../util/scheduleDataUtils';
 
 const openRoutePDF = (e, routePDFUrl) => {
   e.stopPropagation();
@@ -65,261 +50,22 @@ const printRouteTimetable = e => {
   window.print();
 };
 
-const modifyDepartures = departures => {
-  if (departures) {
-    const departuresCount = Object.entries(departures).length;
-    const modifiedDepartures = [];
-    for (let z = 1; z <= departuresCount / 7; z++) {
-      let sortedData = [];
-      // eslint-disable-next-line no-restricted-syntax
-      for (const [key, value] of Object.entries(departures)) {
-        const lengthToCheck = `${z}`.length + 5;
-        if (key.length === lengthToCheck && key.indexOf(`wk${z}`) !== -1) {
-          sortedData = {
-            ...sortedData,
-            [key]: sortBy(value, 'departureStoptime.scheduledDeparture'),
-          };
-        }
-      }
-      const obj = Object.values(sortedData);
-      const result = Object.values(
-        obj.reduce((c, v, i) => {
-          const departure = obj[i]
-            .map(x => x.departureStoptime.scheduledDeparture)
-            .join(',');
-          const hash = hashCode(departure);
-          i += 1;
-          c[hash] = c[hash] || ['', hash, departure];
-          c[hash][0] += i;
-          return c;
-        }, {}),
-      );
-      modifiedDepartures.push(result.sort());
-    }
-    if (modifiedDepartures.length > 0) {
-      return modifiedDepartures;
-    }
-  }
-  return departures;
-};
-
-const isEmptyWeek = departures => {
-  return (
-    departures[0][0] === '1234567' &&
-    departures[0][1] === 0 &&
-    departures[0][2] === ''
-  );
-};
-
-/**
- * Returns the date of first departure
- * @param {*} departures
- * @param {DateTime} dateIn
- * @returns {DateTime|undefined}
- */
-const getFirstDepartureDate = (departures, dateIn) => {
-  if (departures.length > 0) {
-    const date = dateIn || DateTime.now();
-    const dayNo = date.weekday;
-    const idx = departures.findIndex(
-      departure => departure[0].indexOf(dayNo) !== -1,
-    );
-    if (idx > 0 && departures[idx][1] === 0 && departures[idx][2] === '') {
-      // get departure day on current week
-      if (departures[idx - 1][1] !== 0 && departures[idx - 1][2] !== '') {
-        const newDayNo = Number(departures[idx - 1][0].substring(0, 1));
-        return date.minus({ days: dayNo - newDayNo });
-      }
-    } else if (
-      idx === 0 &&
-      departures[idx][1] !== 0 &&
-      departures[idx][2] !== ''
-    ) {
-      if (!date.hasSame(DateTime.now(), 'week')) {
-        return date;
-      }
-      return DateTime.now();
-    }
-  }
-  return undefined;
-};
-/**
- *
- * @param {DateTime} wantedDayIn
- * @param {*} departures
- * @param {boolean} isMerged
- * @param {number} dataExistsDay
- * @returns
- */
-const populateData = (wantedDayIn, departures, isMerged, dataExistsDay) => {
-  const departureCount = departures.length;
-
-  const wantedDay = wantedDayIn || DateTime.now();
-  const startOfCurrentWeek = DateTime.now().startOf('week');
-  const today = DateTime.now();
-
-  const currentAndNextWeekAreSame =
-    departureCount >= 2 && isEqual(departures[0], departures[1]);
-
-  const weekStarts = [currentAndNextWeekAreSame ? startOfCurrentWeek : today];
-
-  let pastDate;
-  if (
-    !currentAndNextWeekAreSame &&
-    departures &&
-    departures.length > 0 &&
-    departures[0].length > 0
-  ) {
-    const minDayNo = Math.min(...departures[0][0][0].split('').map(Number));
-    pastDate = startOfCurrentWeek.plus({ days: minDayNo - 1 });
-    weekStarts[0] = pastDate;
-  }
-
-  const weekEnds = [startOfCurrentWeek.endOf('week')];
-  const days = [[]];
-  const indexToRemove = [];
-  const emptyWeek = [];
-  for (let x = 1; x < departures.length; x++) {
-    // check also first week
-    if (isEmptyWeek(departures[x - 1])) {
-      emptyWeek.push(
-        startOfCurrentWeek.plus({ weeks: x - 1 }).toFormat(DATE_FORMAT),
-      );
-    }
-    if (isEmptyWeek(departures[x])) {
-      emptyWeek.push(
-        startOfCurrentWeek.plus({ weeks: x }).toFormat(DATE_FORMAT),
-      );
-    }
-    weekStarts.push(startOfCurrentWeek.plus({ weeks: x }));
-    weekEnds.push(startOfCurrentWeek.endOf('week').plus({ weeks: x }));
-    days.push([]);
-  }
-
-  // find empty and populate days
-  let notEmptyWeekFound = false;
-  departures.forEach((d, idx) => {
-    if (d.length === 0) {
-      indexToRemove.push(idx);
-    } else {
-      if (d.length === 1) {
-        if (d[0][1] === 0) {
-          if (!notEmptyWeekFound) {
-            indexToRemove.push(idx);
-          }
-        } else {
-          notEmptyWeekFound = true;
-        }
-      } else {
-        notEmptyWeekFound = true;
-        // remove days with no departures otherwise showing later on tabs
-        d = d.filter(z => z[1] !== 0);
-      }
-      d.forEach(x => {
-        days[idx].push(x[0]);
-      });
-    }
-  });
-
-  // remove empty
-  indexToRemove
-    .sort((a, b) => b - a)
-    .forEach(i => {
-      weekStarts.splice(i, 1);
-      weekEnds.splice(i, 1);
-      days.splice(i, 1);
-      departures.splice(i, 1);
-    });
-
-  // clear indexToRemove
-  indexToRemove.splice(0, indexToRemove.length);
-
-  departures.forEach((d, idx) => {
-    if (idx > 0 && isEqual(departures[idx - 1], d)) {
-      indexToRemove.push(idx);
-    }
-  });
-
-  indexToRemove.sort((a, b) => b - a);
-
-  indexToRemove.forEach(i => {
-    days.splice(i, 1);
-    weekStarts.splice(i, 1);
-    weekEnds.splice(i - 1, 1);
-  });
-
-  let range = [
-    wantedDay.toFormat(DATE_FORMAT_SCHEDULE),
-    wantedDay,
-    wantedDay.weekday,
-    '',
-    wantedDay.startOf('week'),
-  ];
-  const options = weekStarts.map((w, idx) => {
-    const currentDayNo = DateTime.now().weekday;
-    const firstServiceDay = days[idx][0];
-    const isSameWeek = startOfCurrentWeek.hasSame(w, 'week');
-
-    const timeRangeStart =
-      w.weekday <= firstServiceDay[0] &&
-      departureCount === 1 &&
-      (isSameWeek || idx === 0)
-        ? w.plus({ days: firstServiceDay[0] - 1 })
-        : w;
-    const timeRange =
-      days.length === 1 && days[idx][0].length === 1 && wantedDayIn && !isMerged
-        ? wantedDay.toFormat(DATE_FORMAT_SCHEDULE)
-        : `${timeRangeStart.toFormat(DATE_FORMAT_SCHEDULE)} - ${weekEnds[
-            idx
-          ].toFormat(DATE_FORMAT_SCHEDULE)}`;
-    if (!(wantedDay >= w && wantedDay <= weekEnds[idx])) {
-      return {
-        label: `${timeRange}`,
-        value:
-          idx === 0 &&
-          days[idx].indexOf(currentDayNo.toString()) !== -1 &&
-          currentDayNo > Number(firstServiceDay)
-            ? w.plus({ days: currentDayNo - 1 }).toFormat(DATE_FORMAT)
-            : w.plus({ days: firstServiceDay[0] - 1 }).toFormat(DATE_FORMAT),
-      };
-    }
-    range = [
-      timeRange,
-      wantedDay,
-      wantedDay.weekday,
-      days[idx],
-      weekStarts[idx],
-    ];
-    return undefined;
-  });
-
-  if (!pastDate) {
-    pastDate = startOfCurrentWeek
-      .plus({ days: dataExistsDay - 1 })
-      .toFormat(DATE_FORMAT);
-  }
-
-  return [
-    weekStarts,
-    days,
-    range,
-    options.filter(o => o).filter(o => !emptyWeek.includes(o.value)),
-    currentAndNextWeekAreSame,
-    pastDate,
-  ];
-};
-
 const sortTrips = trips => {
-  if (trips == null) {
+  if (!trips) {
     return null;
   }
+
   return [...trips].sort((a, b) => {
-    if (!Array.isArray(b.stoptimes) || b.stoptimes.length === 0) {
+    const aHasStoptimes = Array.isArray(a.stoptimes) && a.stoptimes.length > 0;
+    const bHasStoptimes = Array.isArray(b.stoptimes) && b.stoptimes.length > 0;
+
+    if (!bHasStoptimes) {
       return -1;
     }
-    if (!Array.isArray(a.stoptimes) || a.stoptimes.length === 0) {
+    if (!aHasStoptimes) {
       return 1;
     }
+
     return (
       a.stoptimes[0].scheduledDeparture - b.stoptimes[0].scheduledDeparture
     );
@@ -375,8 +121,7 @@ const ScheduleContainer = ({
   }, []);
 
   const onToSelectChange = useCallback(selectTo => {
-    const toValue = Number(selectTo);
-    setTo(toValue);
+    setTo(Number(selectTo));
     addAnalyticsEvent({
       category: 'Route',
       action: 'ChangeTimetableEndPoint',
@@ -385,16 +130,8 @@ const ScheduleContainer = ({
   }, []);
 
   /**
-   *
-   * @param {*} patternIn
-   * @param {*} fromIdx
-   * @param {*} toIdx
-   * @param {DateTime} newServiceDay
-   * @param {DateTime} wantedDay
-   * @param {boolean} testing
-   * @param {string} testNum
-   * @param {string} testNoDataDay
-   * @returns
+   * Get and process trips for display
+   * @returns {Array|string|JSX} trips array, redirect path, or loading/error JSX
    */
   const getTrips = useCallback(
     (
@@ -418,7 +155,7 @@ const ScheduleContainer = ({
           trips: currentPattern.trips?.filter((s, i) => i < 2),
         };
         if (
-          wantedDay.isValid &&
+          wantedDay?.isValid &&
           DateTime.fromFormat(testNoDataDay, DATE_FORMAT).isValid &&
           wantedDay.toFormat(DATE_FORMAT) === testNoDataDay
         ) {
@@ -458,7 +195,7 @@ const ScheduleContainer = ({
           ? DateTime.fromFormat(
               match.location.query.serviceDay,
               DATE_FORMAT,
-            ).toFormat(DATE_FORMAT_SCHEDULE)
+            ).toFormat('d.L.yyyy')
           : '';
         return (
           <div className="text-center">
@@ -475,27 +212,7 @@ const ScheduleContainer = ({
         );
       }
 
-      return trips.map(trip => {
-        const fromSt = trip.stoptimes[fromIdx];
-        const toSt = trip.stoptimes[toIdx];
-        const departureTime = getFormattedTimeDate(
-          (fromSt.serviceDay + fromSt.scheduledDeparture) * 1000,
-          'HH:mm',
-        );
-        const arrivalTime = getFormattedTimeDate(
-          (toSt.serviceDay + toSt.scheduledArrival) * 1000,
-          'HH:mm',
-        );
-
-        return (
-          <ScheduleTripRow
-            key={`${trip.id}-${departureTime}`}
-            departureTime={departureTime}
-            arrivalTime={arrivalTime}
-            isCanceled={isTripCanceled(trip)}
-          />
-        );
-      });
+      return trips;
     },
     [hasLoaded, intl, match],
   );
@@ -524,145 +241,6 @@ const ScheduleContainer = ({
     [match, router],
   );
 
-  const renderDayTabs = useCallback(
-    data => {
-      const dayArray =
-        data && data.length >= 3 && data[2].length >= 4
-          ? data[2][3]
-          : undefined;
-      if (!dayArray || (dayArray.length === 1 && dayArray[0] === '1234567')) {
-        return null;
-      }
-
-      if (dayArray.length > 0) {
-        const singleDays = dayArray.filter(s => s.length === 1);
-        const multiDays = dayArray.filter(s => s.length !== 1);
-        let dayTabs = multiDays.map(m => {
-          const daySplitted = m.split('');
-          let idx = 0;
-          const tabs = daySplitted.reduce((r, n, i) => {
-            r[idx] = r[idx] || n;
-            if (i > 0 && i < m.length) {
-              if (Number(n) - Number(m[i - 1]) === 1) {
-                r[idx] += n;
-              } else {
-                idx += 1;
-                r[idx] = r[idx] || n;
-              }
-            }
-            return r;
-          }, []);
-          return tabs;
-        });
-
-        const separatedMultiDays = [];
-        dayTabs.forEach(d => {
-          d.forEach(x => {
-            separatedMultiDays.push(x);
-          });
-        });
-
-        dayTabs = singleDays
-          .concat(separatedMultiDays)
-          .filter(d => d)
-          .sort();
-
-        const count = dayTabs.length;
-        const weekStartDate = data[2][1].startOf('week');
-        const isSameWeek = weekStartDate.hasSame(DateTime.now(), 'week');
-        const firstDay = dayTabs[0][0];
-        let currentFocusedTab = focusedTab;
-        const tabs = dayTabs.map((tab, id) => {
-          const selected =
-            tab.indexOf(data[2][2]) !== -1 ||
-            (tab.indexOf(firstDay) !== -1 &&
-              !isSameWeek &&
-              dayTabs.indexOf(data[2][2]) === id) ||
-            count === 1;
-          // create refs and set focused tab needed for accessibilty here, not ideal but works
-          if (!tabRefs.current[tab]) {
-            tabRefs.current[tab] = React.createRef();
-          }
-          if (!currentFocusedTab && selected) {
-            currentFocusedTab = tab;
-          }
-
-          let tabDate = data[2][4];
-          if (data[4] && data[5] && tabDate.toFormat(DATE_FORMAT) !== data[5]) {
-            if (data[5] > tabDate.plus({ days: Number(tab[0]) - 1 })) {
-              tabDate = tabDate.plus({ days: Number(tab[0]) + 6 });
-            } else {
-              tabDate = tabDate.plus({ days: Number(tab[0]) - 1 });
-            }
-          } else {
-            tabDate = tabDate.plus({ days: Number(tab[0]) - 1 });
-          }
-
-          return (
-            <button
-              type="button"
-              disabled={dayArray.length === 1 && separatedMultiDays.length < 2}
-              key={tab}
-              className={cx({
-                'is-active': selected,
-              })}
-              onClick={() => {
-                changeDate(tabDate.toFormat(DATE_FORMAT));
-              }}
-              ref={tabRefs.current[tab]}
-              tabIndex={selected ? 0 : -1}
-              role="tab"
-              aria-selected={selected}
-              style={{
-                '--totalCount': `${count}`,
-              }}
-            >
-              {getTranslatedDayString(
-                intl.locale,
-                dayRangePattern(tab.split('')),
-                true,
-              )}
-            </button>
-          );
-        });
-
-        if (dayTabs.length > 0) {
-          /* eslint-disable jsx-a11y/interactive-supports-focus */
-          return (
-            <div
-              className="route-tabs days"
-              role="tablist"
-              onKeyDown={e => {
-                const tabCount = count;
-                const activeIndex = dayTabs.indexOf(currentFocusedTab);
-                let index;
-                switch (e.nativeEvent.code) {
-                  case 'ArrowLeft':
-                    index = (activeIndex - 1 + tabCount) % tabCount;
-                    tabRefs.current[dayTabs[index]].current.focus();
-                    setFocusedTab(dayTabs[index]);
-                    break;
-                  case 'ArrowRight':
-                    index = (activeIndex + 1) % tabCount;
-                    tabRefs.current[dayTabs[index]].current.focus();
-                    setFocusedTab(dayTabs[index]);
-                    break;
-                  default:
-                    break;
-                }
-              }}
-            >
-              {tabs}
-            </div>
-          );
-          /* eslint-enable jsx-a11y/interactive-supports-focus */
-        }
-      }
-      return '';
-    },
-    [focusedTab, intl, changeDate],
-  );
-
   const redirectWithServiceDay = useCallback(
     serviceDay => {
       const { location } = match;
@@ -683,36 +261,22 @@ const ScheduleContainer = ({
   const { constantOperationRoutes } = config;
   const { locale } = intl;
 
-  if (routeId && constantOperationRoutes?.[routeId]) {
+  // Memoize constant operation check
+  const constantOperationInfo = useMemo(() => {
+    if (routeId && constantOperationRoutes?.[routeId]) {
+      return constantOperationRoutes[routeId][locale];
+    }
+    return null;
+  }, [routeId, constantOperationRoutes, locale]);
+
+  if (constantOperationInfo) {
     return (
-      <div
-        className={`route-schedule-container ${
-          breakpoint !== 'large' ? 'mobile' : ''
-        }`}
-      >
-        <div style={{ paddingBottom: '28px' }}>
-          <RouteControlPanel
-            match={match}
-            route={route}
-            breakpoint={breakpoint}
-            noInitialServiceDay
-          />
-        </div>
-        <div className="stop-constant-operation-container bottom-padding">
-          <div style={{ width: '95%' }}>
-            <span>{constantOperationRoutes[routeId][locale].text}</span>
-            <span style={{ display: 'inline-block' }}>
-              <a
-                href={constantOperationRoutes[routeId][locale].link}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {constantOperationRoutes[routeId][locale].link}
-              </a>
-            </span>
-          </div>
-        </div>
-      </div>
+      <ScheduleConstantOperation
+        constantOperationInfo={constantOperationInfo}
+        match={match}
+        route={route}
+        breakpoint={breakpoint}
+      />
     );
   }
 
@@ -734,7 +298,8 @@ const ScheduleContainer = ({
 
   const newFromTo = [from, to];
 
-  const currentPattern = route.patterns.filter(p => p.code === pattern.code);
+  const currentPattern =
+    route?.patterns?.filter(p => p.code === pattern.code) || [];
 
   let dataToHandle;
 
@@ -748,44 +313,41 @@ const ScheduleContainer = ({
   // If we are missing data from the start of the week, see if we can merge it with next week
   if (
     !firstWeekEmpty &&
-    firstDepartures[0].length !== 0 &&
-    dataToHandle.wk1mon.length === 0
+    firstDepartures[0]?.length > 0 &&
+    dataToHandle.wk1mon?.length === 0
   ) {
     const [thisWeekData, normalWeekData] =
       Number(testNum) === 0
         ? firstDepartures
         : [firstDepartures[0], getMostFrequent(firstDepartures)];
-    const thisWeekHashes = [];
-    const nextWeekHashes = [];
 
-    for (let i = 0; i < thisWeekData.length; i++) {
-      thisWeekHashes.push(thisWeekData[i][1]);
-    }
-    for (let i = 0; i < normalWeekData.length; i++) {
-      nextWeekHashes.push(normalWeekData[i][1]);
-    }
+    // Extract hashes using map instead of for loops
+    const thisWeekHashes = thisWeekData.map(data => data[1]);
+    const nextWeekHashes = normalWeekData.map(data => data[1]);
 
-    // If this weeks data is a subset of normal weeks data, merge them
+    // If this week's data is a subset of normal week's data, merge them
     if (thisWeekHashes.every(hash => nextWeekHashes.includes(hash))) {
-      // eslint-disable-next-line prefer-destructuring
       firstDepartures[0] = normalWeekData;
       hasMergedDataRef.current = true;
     }
   }
 
+  // Find first day with data when data is merged
   if (hasMergedDataRef.current) {
-    if (dataToHandle.wk1tue.length !== 0) {
-      dataExistsDay = 2;
-    } else if (dataToHandle.wk1wed.length !== 0) {
-      dataExistsDay = 3;
-    } else if (dataToHandle.wk1thu.length !== 0) {
-      dataExistsDay = 4;
-    } else if (dataToHandle.wk1fri.length !== 0) {
-      dataExistsDay = 5;
-    } else if (dataToHandle.wk1sat.length !== 0) {
-      dataExistsDay = 6;
-    } else if (dataToHandle.wk1sun.length !== 0) {
-      dataExistsDay = 7;
+    const daysMap = [
+      { key: 'wk1tue', day: 2 },
+      { key: 'wk1wed', day: 3 },
+      { key: 'wk1thu', day: 4 },
+      { key: 'wk1fri', day: 5 },
+      { key: 'wk1sat', day: 6 },
+      { key: 'wk1sun', day: 7 },
+    ];
+
+    const firstDayWithData = daysMap.find(
+      ({ key }) => dataToHandle[key]?.length > 0,
+    );
+    if (firstDayWithData) {
+      dataExistsDay = firstDayWithData.day;
     }
   }
 
@@ -829,30 +391,52 @@ const ScheduleContainer = ({
     }
   }
 
-  const data = populateData(
-    wantedDay,
-    firstDepartures,
-    hasMergedDataRef.current,
-    dataExistsDay,
+  const data = useMemo(
+    () =>
+      populateData(
+        wantedDay,
+        firstDepartures,
+        hasMergedDataRef.current,
+        dataExistsDay,
+      ),
+    [wantedDay, firstDepartures, dataExistsDay],
   );
-  let newServiceDay;
+  const newServiceDay = useMemo(() => {
+    if (wantedDay || !data || data.length < 3) {
+      return undefined;
+    }
 
-  if (!wantedDay && data && data.length >= 3 && data[2].length >= 4) {
-    if (data[2][3] !== '') {
-      if (data[2][2] !== data[2][3][0].charAt(0)) {
-        newServiceDay = DateTime.now()
+    const range = data[DATA_INDEX.RANGE];
+    const dayArray = range?.[RANGE_INDEX.DAY_ARRAY];
+    const currentWeekday = range?.[RANGE_INDEX.WEEKDAY];
+    const wantedDayValue = range?.[RANGE_INDEX.WANTED_DAY];
+    const options = data[DATA_INDEX.OPTIONS];
+    const weekStarts = data[DATA_INDEX.WEEK_STARTS];
+
+    let serviceDay;
+
+    if (dayArray && dayArray !== '') {
+      if (currentWeekday !== dayArray[0]?.charAt(0)) {
+        serviceDay = DateTime.now()
           .startOf('week')
-          .plus({ days: Number(data[2][3][0].charAt(0)) - 1 });
+          .plus({ days: Number(dayArray[0]?.charAt(0)) - 1 });
       }
-    } else if (data[3] && data[3][0] && data[2][1] && data[2][1] < data[0][0]) {
-      newServiceDay = DateTime.fromFormat(data[3][0].value, DATE_FORMAT);
+    } else if (
+      options?.[0] &&
+      wantedDayValue &&
+      wantedDayValue < weekStarts?.[0]
+    ) {
+      serviceDay = DateTime.fromFormat(options[0].value, DATE_FORMAT);
     }
-    if (newServiceDay > firstDataDate) {
-      newServiceDay = firstDataDate;
-    }
-  }
 
-  const routeIdSplitted = routeId.split(':');
+    if (serviceDay && serviceDay > firstDataDate) {
+      return firstDataDate;
+    }
+
+    return serviceDay;
+  }, [wantedDay, data, firstDataDate]);
+
+  const routeIdSplitted = useMemo(() => routeId?.split(':'), [routeId]);
   const routeTimetableHandler = routeIdSplitted
     ? config.timetables && config.timetables[routeIdSplitted[0]]
     : undefined;
@@ -879,11 +463,15 @@ const ScheduleContainer = ({
     testNum,
     testNoDataDay,
   );
-  const tabs = renderDayTabs(data);
 
   if (showTrips && typeof showTrips === 'string') {
     match.router.replace(showTrips);
     return null;
+  }
+
+  // If showTrips is JSX (loading or error), return it
+  if (showTrips && !Array.isArray(showTrips)) {
+    return showTrips;
   }
 
   if (!hasLoaded) {
@@ -910,15 +498,17 @@ const ScheduleContainer = ({
           />
         )}
         <div className="route-schedule-ranges">
-          <span className="current-range">{data[2][0]}</span>
+          <span className="current-range">
+            {data[DATA_INDEX.RANGE][RANGE_INDEX.TIME_RANGE]}
+          </span>
           <div className="other-ranges-dropdown">
-            {data[3].length > 0 && (
+            {data[DATA_INDEX.OPTIONS].length > 0 && (
               <ScheduleDropdown
                 id="other-dates"
                 title={intl.formatMessage({
                   id: 'other-dates',
                 })}
-                list={data[3]}
+                list={data[DATA_INDEX.OPTIONS]}
                 alignRight
                 changeTitleOnChange={false}
                 onSelectChange={changeDate}
@@ -926,7 +516,14 @@ const ScheduleContainer = ({
             )}
           </div>
         </div>
-        {tabs}
+        <ScheduleDayTabs
+          data={data}
+          focusedTab={focusedTab}
+          tabRefs={tabRefs}
+          onTabClick={changeDate}
+          onTabFocus={setFocusedTab}
+          locale={locale}
+        />
         {pattern && (
           <div
             className={cx('route-schedule-list-wrapper', {
@@ -946,7 +543,13 @@ const ScheduleContainer = ({
               role="list"
               aria-live="off"
             >
-              {showTrips}
+              {Array.isArray(showTrips) && (
+                <ScheduleTripList
+                  trips={showTrips}
+                  fromIdx={newFromTo[0]}
+                  toIdx={newFromTo[1]}
+                />
+              )}
             </div>
           </div>
         )}
