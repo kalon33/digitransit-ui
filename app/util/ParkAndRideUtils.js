@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-const ParkAndRideUtils = {
-  HSL: {
+export default {
+  liipi: {
     getAuthenticationMethods: park => {
       const { tags } = park;
       if (Array.isArray(tags)) {
@@ -82,5 +82,3 @@ const ParkAndRideUtils = {
     },
   },
 };
-
-export default ParkAndRideUtils;

@@ -58,7 +58,7 @@ function ParkAndRideContent(
     isFree,
     isPaid,
     getOpeningHours,
-  } = config.parkAndRide.pageContent.default;
+  } = config.parkAndRide.resolver;
 
   useEffect(() => {
     setAuthenticationMethods(getAuthenticationMethods(vehicleParking));

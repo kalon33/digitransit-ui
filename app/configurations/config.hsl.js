@@ -1,9 +1,7 @@
 import { BIKEAVL_WITHMAX } from '../util/vehicleRentalUtils';
-import prUtils from '../util/ParkAndRideUtils';
 import ttConfig from './timetableConfigUtils';
 
 const HSLTimetables = ttConfig.HSL;
-const HSLParkAndRideUtils = prUtils.HSL;
 const CONFIG = 'hsl';
 const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
 const OTP_URL = process.env.OTP_URL || `${API_URL}/routing/v2/hsl/`;
@@ -130,14 +128,11 @@ export default {
 
   parkAndRide: {
     showParkAndRide: true,
-    parkAndRideMinZoom: 13,
+    showParkAndRideForBikes: false,
     url: {
       fi: 'https://www.hsl.fi/matkustaminen/liityntapysakointi',
       sv: 'https://www.hsl.fi/sv/att-resa/anslutningsparkering',
       en: 'https://www.hsl.fi/en/travelling/park--ride',
-    },
-    pageContent: {
-      default: HSLParkAndRideUtils,
     },
   },
 
@@ -535,8 +530,6 @@ export default {
 
   includeCarSuggestions: true,
   includeParkAndRideSuggestions: true,
-
-  parkingAreaSources: ['liipi'],
 
   showNearYouButtons: true,
   nearYouModes: [
