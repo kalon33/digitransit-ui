@@ -4,6 +4,7 @@ import { describe, it, beforeEach, afterEach } from 'mocha';
 import { DateTime } from 'luxon';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
+import * as ReactRelay from 'react-relay';
 
 import { Component as ScheduleContainer } from '../../../../app/component/routepage/schedule/ScheduleContainer';
 import { mockContext } from '../../helpers/mock-context';
@@ -18,6 +19,88 @@ describe('<ScheduleContainer />', () => {
   let mockConfig;
   let useTranslationsContextStub;
   let useConfigContextStub;
+  let useFragmentStub;
+
+  // Mock data - defined once and reused
+  const mockPattern = {
+    code: 'HSL:1001:0:01',
+    stops: [
+      {
+        id: 'stop1',
+        name: 'Koskela',
+      },
+      {
+        id: 'stop2',
+        name: 'Rautatientori',
+      },
+    ],
+  };
+
+  const mockRoute = {
+    gtfsId: 'HSL:1001',
+    patterns: [
+      {
+        code: 'HSL:1001:0:01',
+        trips: [
+          {
+            id: 'trip-1',
+            stoptimes: [
+              {
+                realtimeState: 'SCHEDULED',
+                scheduledArrival: 28080,
+                scheduledDeparture: 28080,
+                serviceDay: 1547503200,
+              },
+              {
+                realtimeState: 'SCHEDULED',
+                scheduledArrival: 30060,
+                scheduledDeparture: 30060,
+                serviceDay: 1547503200,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+
+  const mockFirstDepartures = {
+    wk1mon: [{ departureStoptime: { scheduledDeparture: 28080 } }],
+    wk1tue: [{ departureStoptime: { scheduledDeparture: 28080 } }],
+    wk1wed: [{ departureStoptime: { scheduledDeparture: 28080 } }],
+    wk1thu: [{ departureStoptime: { scheduledDeparture: 28080 } }],
+    wk1fri: [{ departureStoptime: { scheduledDeparture: 28080 } }],
+    wk1sat: [{ departureStoptime: { scheduledDeparture: 28080 } }],
+    wk1sun: [{ departureStoptime: { scheduledDeparture: 28080 } }],
+    wk2mon: [],
+    wk2tue: [],
+    wk2wed: [],
+    wk2thu: [],
+    wk2fri: [],
+    wk2sat: [],
+    wk2sun: [],
+    wk3mon: [],
+    wk3tue: [],
+    wk3wed: [],
+    wk3thu: [],
+    wk3fri: [],
+    wk3sat: [],
+    wk3sun: [],
+    wk4mon: [],
+    wk4tue: [],
+    wk4wed: [],
+    wk4thu: [],
+    wk4fri: [],
+    wk4sat: [],
+    wk4sun: [],
+    wk5mon: [],
+    wk5tue: [],
+    wk5wed: [],
+    wk5thu: [],
+    wk5fri: [],
+    wk5sat: [],
+    wk5sun: [],
+  };
 
   beforeEach(() => {
     // Create mock intl object
@@ -37,6 +120,12 @@ describe('<ScheduleContainer />', () => {
       constantOperationRoutes: {},
     };
 
+    // Stub useFragment to pass through the fragment reference as-is
+    // This allows useFragment to work like an identity function in tests
+    useFragmentStub = sinon
+      .stub(ReactRelay, 'useFragment')
+      .callsFake((fragment, ref) => ref);
+
     // Stub the context hooks and store references
     useTranslationsContextStub = sinon
       .stub(useTranslationsContext, 'useTranslationsContext')
@@ -45,57 +134,12 @@ describe('<ScheduleContainer />', () => {
       .stub(ConfigContext, 'useConfigContext')
       .returns(mockConfig);
 
-    // Setup default props
+    // Setup default props - pass actual mock data objects
+    // useFragment will pass them through as-is in tests
     defaultProps = {
-      pattern: {
-        code: 'HSL:1001:0:01',
-        stops: [
-          {
-            id: 'stop1',
-            name: 'Koskela',
-          },
-          {
-            id: 'stop2',
-            name: 'Rautatientori',
-          },
-        ],
-      },
-      route: {
-        gtfsId: 'HSL:1001',
-        patterns: [
-          {
-            code: 'HSL:1001:0:01',
-            trips: [
-              {
-                id: 'trip-1',
-                stoptimes: [
-                  {
-                    realtimeState: 'SCHEDULED',
-                    scheduledArrival: 28080,
-                    scheduledDeparture: 28080,
-                    serviceDay: 1547503200,
-                  },
-                  {
-                    realtimeState: 'SCHEDULED',
-                    scheduledArrival: 30060,
-                    scheduledDeparture: 30060,
-                    serviceDay: 1547503200,
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      firstDepartures: {
-        wk1mon: [],
-        wk1tue: [],
-        wk1wed: [],
-        wk1thu: [],
-        wk1fri: [],
-        wk1sat: [],
-        wk1sun: [],
-      },
+      pattern: mockPattern,
+      route: mockRoute,
+      firstDepartures: mockFirstDepartures,
       breakpoint: 'large',
       lang: 'en',
       router: mockRouter,
@@ -113,6 +157,9 @@ describe('<ScheduleContainer />', () => {
 
   afterEach(() => {
     // Restore the specific stubs
+    if (useFragmentStub) {
+      useFragmentStub.restore();
+    }
     if (useTranslationsContextStub) {
       useTranslationsContextStub.restore();
     }

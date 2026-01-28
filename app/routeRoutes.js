@@ -305,14 +305,14 @@ export default function routeRoutes(config) {
                   $wk10day7: String
                 ) {
                   pattern(id: $patternId) {
-                    ...ScheduleContainer_pattern
+                    ...SchedulePatternFragment
                   }
                   route(id: $routeId) {
-                    ...ScheduleContainer_route
+                    ...ScheduleRouteFragment
                       @arguments(date: $date, serviceDate: $serviceDate)
                   }
                   firstDepartures: pattern(id: $patternId) {
-                    ...ScheduleContainer_firstDepartures
+                    ...ScheduleFirstDeparturesFragment
                       @arguments(
                         showTenWeeks: $showTenWeeks
                         wk1day1: $wk1day1
