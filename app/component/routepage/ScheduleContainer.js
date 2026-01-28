@@ -1,18 +1,17 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable no-param-reassign */
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createFragmentContainer, graphql } from 'react-relay';
 import { connectToStores } from 'fluxible-addons-react';
 import { matchShape, routerShape } from 'found';
 import { DateTime } from 'luxon';
-import { intlShape } from 'react-intl';
 import sortBy from 'lodash/sortBy';
 import cx from 'classnames';
 import { dayRangePattern } from '@digitransit-util/digitransit-util';
 import { getTranslatedDayString } from '@digitransit-util/digitransit-util-route-pattern-option-text';
 import isEqual from 'lodash/isEqual';
-import { routeShape, patternShape, configShape } from '../../util/shapes';
+import { routeShape, patternShape } from '../../util/shapes';
 import ScheduleHeader from './ScheduleHeader';
 import ScheduleTripRow from './ScheduleTripRow';
 import SecondaryButton from '../SecondaryButton';
@@ -27,6 +26,8 @@ import RouteControlPanel from './RouteControlPanel';
 import { routePagePath, PREFIX_TIMETABLE } from '../../util/path';
 import ScrollableWrapper from '../ScrollableWrapper';
 import getTestData from './ScheduleDebugData';
+import { useConfigContext } from '../../configurations/ConfigContext';
+import { useTranslationsContext } from '../../util/useTranslationsContext';
 
 const DATE_FORMAT_SCHEDULE = 'd.L.yyyy';
 
@@ -302,72 +303,50 @@ const populateData = (wantedDayIn, departures, isMerged, dataExistsDay) => {
     weekStarts,
     days,
     range,
-    options
-      .filter(o => o)
-      .filter(o => {
-        return !emptyWeek.includes(o.value);
-      }),
+    options.filter(o => o).filter(o => !emptyWeek.includes(o.value)),
     currentAndNextWeekAreSame,
     pastDate,
   ];
 };
 
-class ScheduleContainer extends PureComponent {
-  static sortTrips(trips) {
-    if (trips == null) {
-      return null;
-    }
-    return [...trips].sort((a, b) => {
-      if (!Array.isArray(b.stoptimes) || b.stoptimes.length === 0) {
-        return -1;
-      }
-      if (!Array.isArray(a.stoptimes) || a.stoptimes.length === 0) {
-        return 1;
-      }
-      return (
-        a.stoptimes[0].scheduledDeparture - b.stoptimes[0].scheduledDeparture
-      );
-    });
+const sortTrips = trips => {
+  if (trips == null) {
+    return null;
   }
+  return [...trips].sort((a, b) => {
+    if (!Array.isArray(b.stoptimes) || b.stoptimes.length === 0) {
+      return -1;
+    }
+    if (!Array.isArray(a.stoptimes) || a.stoptimes.length === 0) {
+      return 1;
+    }
+    return (
+      a.stoptimes[0].scheduledDeparture - b.stoptimes[0].scheduledDeparture
+    );
+  });
+};
 
-  static propTypes = {
-    serviceDay: PropTypes.string,
-    // eslint-disable-next-line
-    firstDepartures: PropTypes.object.isRequired,
-    pattern: patternShape.isRequired,
-    match: matchShape.isRequired,
-    breakpoint: PropTypes.string.isRequired,
-    router: routerShape.isRequired,
-    route: routeShape.isRequired,
-    lang: PropTypes.string,
-  };
+const ScheduleContainer = ({
+  firstDepartures: firstDeparturesProp,
+  pattern,
+  match,
+  breakpoint,
+  router,
+  route,
+  lang = 'en',
+}) => {
+  const intl = useTranslationsContext();
+  const config = useConfigContext();
 
-  static defaultProps = {
-    serviceDay: undefined,
-    lang: 'en',
-  };
+  const [from, setFrom] = useState(0);
+  const [to, setTo] = useState(Math.max((pattern?.stops?.length || 1) - 1, 0));
+  const [hasLoaded, setHasLoaded] = useState(false);
+  const [focusedTab, setFocusedTab] = useState(null);
 
-  static contextTypes = {
-    intl: intlShape.isRequired,
-    config: configShape.isRequired,
-    match: matchShape.isRequired,
-    router: routerShape.isRequired,
-  };
+  const tabRefs = useRef({});
+  const hasMergedDataRef = useRef(false);
 
-  state = {
-    from: 0,
-    to:
-      (this.props.pattern && this.props.pattern.stops.length - 1) || undefined,
-    hasLoaded: false,
-    focusedTab: null,
-  };
-
-  tabRefs = {};
-
-  hasMergedData = false;
-
-  componentDidMount() {
-    const { match } = this.props;
+  useEffect(() => {
     const date = match.location.query.serviceDay
       ? DateTime.fromFormat(match.location.query.serviceDay, DATE_FORMAT)
       : DateTime.now();
@@ -375,629 +354,652 @@ class ScheduleContainer extends PureComponent {
     if (date && date.startOf('week') < DateTime.now().startOf('week')) {
       match.router.replace(decodeURIComponent(match.location.pathname));
     }
-  }
+  }, [match]);
 
-  onFromSelectChange = selectFrom => {
-    const from = Number(selectFrom);
-    this.setState(prevState => {
-      const to = prevState.to > from ? prevState.to : from + 1;
-      return { ...prevState.state, from, to };
-    });
+  useEffect(() => {
+    if (pattern?.code) {
+      setFrom(0);
+      setTo(pattern.stops.length - 1);
+    }
+  }, [pattern?.code, pattern?.stops?.length]);
+
+  const onFromSelectChange = useCallback(selectFrom => {
+    const fromValue = Number(selectFrom);
+    setFrom(fromValue);
+    setTo(prevTo => (prevTo > fromValue ? prevTo : fromValue + 1));
     addAnalyticsEvent({
       category: 'Route',
       action: 'ChangeTimetableStartPoint',
       name: null,
     });
-  };
+  }, []);
 
-  onToSelectChange = selectTo => {
-    const to = Number(selectTo);
-    this.setState(prevState => ({ ...prevState.state, to }));
+  const onToSelectChange = useCallback(selectTo => {
+    const toValue = Number(selectTo);
+    setTo(toValue);
     addAnalyticsEvent({
       category: 'Route',
       action: 'ChangeTimetableEndPoint',
       name: null,
     });
-  };
+  }, []);
 
   /**
    *
    * @param {*} patternIn
-   * @param {*} from
-   * @param {*} to
+   * @param {*} fromIdx
+   * @param {*} toIdx
    * @param {DateTime} newServiceDay
    * @param {DateTime} wantedDay
+   * @param {boolean} testing
+   * @param {string} testNum
+   * @param {string} testNoDataDay
    * @returns
    */
-  getTrips = (patternIn, from, to, newServiceDay, wantedDay) => {
-    let currentPattern = patternIn;
-    let queryParams = newServiceDay
-      ? `?serviceDay=${newServiceDay.toFormat(DATE_FORMAT)}`
-      : '';
+  const getTrips = useCallback(
+    (
+      patternIn,
+      fromIdx,
+      toIdx,
+      newServiceDay,
+      wantedDay,
+      testing,
+      testNum,
+      testNoDataDay,
+    ) => {
+      let currentPattern = patternIn;
+      let queryParams = newServiceDay
+        ? `?serviceDay=${newServiceDay.toFormat(DATE_FORMAT)}`
+        : '';
 
-    if (this.testing && this.testNum && currentPattern) {
-      currentPattern = {
-        ...currentPattern,
-        trips: currentPattern.trips?.filter((s, i) => i < 2),
-      };
-      if (
-        wantedDay.isValid &&
-        DateTime.fromFormat(this.testNoDataDay, DATE_FORMAT).isValid &&
-        wantedDay.toFormat(DATE_FORMAT) === this.testNoDataDay
-      ) {
+      if (testing && testNum && currentPattern) {
         currentPattern = {
           ...currentPattern,
-          trips: [],
+          trips: currentPattern.trips?.filter((s, i) => i < 2),
         };
+        if (
+          wantedDay.isValid &&
+          DateTime.fromFormat(testNoDataDay, DATE_FORMAT).isValid &&
+          wantedDay.toFormat(DATE_FORMAT) === testNoDataDay
+        ) {
+          currentPattern = {
+            ...currentPattern,
+            trips: [],
+          };
+        }
+        queryParams = queryParams.concat(`&test=${testNum}`);
       }
-      queryParams = queryParams.concat(`&test=${this.testNum}`);
-    }
 
-    const trips = ScheduleContainer.sortTrips(currentPattern.trips);
+      const trips = sortTrips(currentPattern.trips);
 
-    if (trips.length === 0 && newServiceDay) {
-      return routePagePath(
-        this.props.match.params.routeId,
-        PREFIX_TIMETABLE,
-        currentPattern.code,
-        null,
-        queryParams,
-      );
-    }
+      if (trips.length === 0 && newServiceDay) {
+        return routePagePath(
+          match.params.routeId,
+          PREFIX_TIMETABLE,
+          currentPattern.code,
+          null,
+          queryParams,
+        );
+      }
 
-    if (trips !== null && !this.state.hasLoaded) {
-      this.setState({
-        hasLoaded: true,
+      if (trips !== null && !hasLoaded) {
+        setHasLoaded(true);
+        return (
+          <div
+            className={cx('summary-list-spinner-container', 'route-schedule')}
+          >
+            <Loading />
+          </div>
+        );
+      }
+
+      if (trips.length === 0) {
+        const day = match.location.query?.serviceDay
+          ? DateTime.fromFormat(
+              match.location.query.serviceDay,
+              DATE_FORMAT,
+            ).toFormat(DATE_FORMAT_SCHEDULE)
+          : '';
+        return (
+          <div className="text-center">
+            {intl.formatMessage(
+              {
+                id: 'no-trips-found',
+                defaultMessage: `No journeys found for the selected date ${day}`,
+              },
+              {
+                selectedDate: day,
+              },
+            )}
+          </div>
+        );
+      }
+
+      return trips.map(trip => {
+        const fromSt = trip.stoptimes[fromIdx];
+        const toSt = trip.stoptimes[toIdx];
+        const departureTime = getFormattedTimeDate(
+          (fromSt.serviceDay + fromSt.scheduledDeparture) * 1000,
+          'HH:mm',
+        );
+        const arrivalTime = getFormattedTimeDate(
+          (toSt.serviceDay + toSt.scheduledArrival) * 1000,
+          'HH:mm',
+        );
+
+        return (
+          <ScheduleTripRow
+            key={`${trip.id}-${departureTime}`}
+            departureTime={departureTime}
+            arrivalTime={arrivalTime}
+            isCanceled={isTripCanceled(trip)}
+          />
+        );
       });
-      return (
-        <div className={cx('summary-list-spinner-container', 'route-schedule')}>
-          <Loading />
-        </div>
-      );
-    }
-
-    if (trips.length === 0) {
-      const day = this.context.match.location.query?.serviceDay
-        ? DateTime.fromFormat(
-            this.context.match.location.query.serviceDay,
-            DATE_FORMAT,
-          ).toFormat(DATE_FORMAT_SCHEDULE)
-        : '';
-      return (
-        <div className="text-center">
-          {this.context.intl.formatMessage(
-            {
-              id: 'no-trips-found',
-              defaultMessage: `No journeys found for the selected date ${day}`,
-            },
-            {
-              selectedDate: day,
-            },
-          )}
-        </div>
-      );
-    }
-
-    return trips.map(trip => {
-      const fromSt = trip.stoptimes[from];
-      const toSt = trip.stoptimes[to];
-      const departureTime = getFormattedTimeDate(
-        (fromSt.serviceDay + fromSt.scheduledDeparture) * 1000,
-        'HH:mm',
-      );
-      const arrivalTime = getFormattedTimeDate(
-        (toSt.serviceDay + toSt.scheduledArrival) * 1000,
-        'HH:mm',
-      );
-
-      return (
-        <ScheduleTripRow
-          key={`${trip.id}-${departureTime}`}
-          departureTime={departureTime}
-          arrivalTime={arrivalTime}
-          isCanceled={isTripCanceled(trip)}
-        />
-      );
-    });
-  };
+    },
+    [hasLoaded, intl, match],
+  );
 
   /**
    *
    * @param {string} newServiceDay new date in 'YYYYMMDD'
    */
-  changeDate = newServiceDay => {
-    const { location } = this.context.match;
-    addAnalyticsEvent({
-      category: 'Route',
-      action: 'ChangeTimetableDay',
-      name: null,
-    });
-    const newPath = {
-      ...location,
-      query: {
-        ...location.query,
-        serviceDay: newServiceDay,
-      },
-    };
-    this.context.router.replace(newPath);
-  };
-
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.pattern.code !== this.props.pattern.code) {
-      this.setState({
-        from: 0,
-        to: nextProps.pattern.stops.length - 1,
+  const changeDate = useCallback(
+    newServiceDay => {
+      const { location } = match;
+      addAnalyticsEvent({
+        category: 'Route',
+        action: 'ChangeTimetableDay',
+        name: null,
       });
-    }
-  }
+      const newPath = {
+        ...location,
+        query: {
+          ...location.query,
+          serviceDay: newServiceDay,
+        },
+      };
+      router.replace(newPath);
+    },
+    [match, router],
+  );
 
-  renderDayTabs = data => {
-    const dayArray =
-      data && data.length >= 3 && data[2].length >= 4 ? data[2][3] : undefined;
-    if (!dayArray || (dayArray.length === 1 && dayArray[0] === '1234567')) {
-      return null;
-    }
+  const renderDayTabs = useCallback(
+    data => {
+      const dayArray =
+        data && data.length >= 3 && data[2].length >= 4
+          ? data[2][3]
+          : undefined;
+      if (!dayArray || (dayArray.length === 1 && dayArray[0] === '1234567')) {
+        return null;
+      }
 
-    if (dayArray.length > 0) {
-      const singleDays = dayArray.filter(s => s.length === 1);
-      const multiDays = dayArray.filter(s => s.length !== 1);
-      let dayTabs = multiDays.map(m => {
-        const daySplitted = m.split('');
-        let idx = 0;
-        const tabs = daySplitted.reduce((r, n, i) => {
-          r[idx] = r[idx] || n;
-          if (i > 0 && i < m.length) {
-            if (Number(n) - Number(m[i - 1]) === 1) {
-              r[idx] += n;
-            } else {
-              idx += 1;
-              r[idx] = r[idx] || n;
+      if (dayArray.length > 0) {
+        const singleDays = dayArray.filter(s => s.length === 1);
+        const multiDays = dayArray.filter(s => s.length !== 1);
+        let dayTabs = multiDays.map(m => {
+          const daySplitted = m.split('');
+          let idx = 0;
+          const tabs = daySplitted.reduce((r, n, i) => {
+            r[idx] = r[idx] || n;
+            if (i > 0 && i < m.length) {
+              if (Number(n) - Number(m[i - 1]) === 1) {
+                r[idx] += n;
+              } else {
+                idx += 1;
+                r[idx] = r[idx] || n;
+              }
             }
-          }
-          return r;
-        }, []);
-        return tabs;
-      });
-
-      const separatedMultiDays = [];
-      dayTabs.forEach(d => {
-        d.forEach(x => {
-          separatedMultiDays.push(x);
+            return r;
+          }, []);
+          return tabs;
         });
-      });
 
-      dayTabs = singleDays
-        .concat(separatedMultiDays)
-        .filter(d => d)
-        .sort();
+        const separatedMultiDays = [];
+        dayTabs.forEach(d => {
+          d.forEach(x => {
+            separatedMultiDays.push(x);
+          });
+        });
 
-      const count = dayTabs.length;
-      const weekStartDate = data[2][1].startOf('week');
-      const isSameWeek = weekStartDate.hasSame(DateTime.now(), 'week');
-      const firstDay = dayTabs[0][0];
-      let { focusedTab } = this.state;
-      const tabs = dayTabs.map((tab, id) => {
-        const selected =
-          tab.indexOf(data[2][2]) !== -1 ||
-          (tab.indexOf(firstDay) !== -1 &&
-            !isSameWeek &&
-            dayTabs.indexOf(data[2][2]) === id) ||
-          count === 1;
-        // create refs and set focused tab needed for accessibilty here, not ideal but works
-        if (!this.tabRefs[tab]) {
-          this.tabRefs[tab] = React.createRef();
-        }
-        if (!focusedTab && selected) {
-          focusedTab = tab;
-        }
+        dayTabs = singleDays
+          .concat(separatedMultiDays)
+          .filter(d => d)
+          .sort();
 
-        let tabDate = data[2][4];
-        if (data[4] && data[5] && tabDate.toFormat(DATE_FORMAT) !== data[5]) {
-          if (data[5] > tabDate.plus({ days: Number(tab[0]) - 1 })) {
-            tabDate = tabDate.plus({ days: Number(tab[0]) + 6 });
+        const count = dayTabs.length;
+        const weekStartDate = data[2][1].startOf('week');
+        const isSameWeek = weekStartDate.hasSame(DateTime.now(), 'week');
+        const firstDay = dayTabs[0][0];
+        let currentFocusedTab = focusedTab;
+        const tabs = dayTabs.map((tab, id) => {
+          const selected =
+            tab.indexOf(data[2][2]) !== -1 ||
+            (tab.indexOf(firstDay) !== -1 &&
+              !isSameWeek &&
+              dayTabs.indexOf(data[2][2]) === id) ||
+            count === 1;
+          // create refs and set focused tab needed for accessibilty here, not ideal but works
+          if (!tabRefs.current[tab]) {
+            tabRefs.current[tab] = React.createRef();
+          }
+          if (!currentFocusedTab && selected) {
+            currentFocusedTab = tab;
+          }
+
+          let tabDate = data[2][4];
+          if (data[4] && data[5] && tabDate.toFormat(DATE_FORMAT) !== data[5]) {
+            if (data[5] > tabDate.plus({ days: Number(tab[0]) - 1 })) {
+              tabDate = tabDate.plus({ days: Number(tab[0]) + 6 });
+            } else {
+              tabDate = tabDate.plus({ days: Number(tab[0]) - 1 });
+            }
           } else {
             tabDate = tabDate.plus({ days: Number(tab[0]) - 1 });
           }
-        } else {
-          tabDate = tabDate.plus({ days: Number(tab[0]) - 1 });
-        }
 
-        return (
-          <button
-            type="button"
-            disabled={dayArray.length === 1 && separatedMultiDays.length < 2}
-            key={tab}
-            className={cx({
-              'is-active': selected,
-            })}
-            onClick={() => {
-              this.changeDate(tabDate.toFormat(DATE_FORMAT));
-            }}
-            ref={this.tabRefs[tab]}
-            tabIndex={selected ? 0 : -1}
-            role="tab"
-            aria-selected={selected}
-            style={{
-              '--totalCount': `${count}`,
-            }}
-          >
-            {getTranslatedDayString(
-              this.context.intl.locale,
-              dayRangePattern(tab.split('')),
-              true,
-            )}
-          </button>
-        );
-      });
+          return (
+            <button
+              type="button"
+              disabled={dayArray.length === 1 && separatedMultiDays.length < 2}
+              key={tab}
+              className={cx({
+                'is-active': selected,
+              })}
+              onClick={() => {
+                changeDate(tabDate.toFormat(DATE_FORMAT));
+              }}
+              ref={tabRefs.current[tab]}
+              tabIndex={selected ? 0 : -1}
+              role="tab"
+              aria-selected={selected}
+              style={{
+                '--totalCount': `${count}`,
+              }}
+            >
+              {getTranslatedDayString(
+                intl.locale,
+                dayRangePattern(tab.split('')),
+                true,
+              )}
+            </button>
+          );
+        });
 
-      if (dayTabs.length > 0) {
-        /* eslint-disable jsx-a11y/interactive-supports-focus */
-        return (
-          <div
-            className="route-tabs days"
-            role="tablist"
-            onKeyDown={e => {
-              const tabCount = count;
-              const activeIndex = dayTabs.indexOf(focusedTab);
-              let index;
-              switch (e.nativeEvent.code) {
-                case 'ArrowLeft':
-                  index = (activeIndex - 1 + tabCount) % tabCount;
-                  this.tabRefs[dayTabs[index]].current.focus();
-                  this.setState({ focusedTab: dayTabs[index] });
-                  break;
-                case 'ArrowRight':
-                  index = (activeIndex + 1) % tabCount;
-                  this.tabRefs[dayTabs[index]].current.focus();
-                  this.setState({ focusedTab: dayTabs[index] });
-                  break;
-                default:
-                  break;
-              }
-            }}
-          >
-            {tabs}
-          </div>
-        );
-        /* eslint-enable jsx-a11y/interactive-supports-focus */
-      }
-    }
-    return '';
-  };
-
-  redirectWithServiceDay = serviceDay => {
-    const { location } = this.context.match;
-    const newPath = {
-      ...location,
-      query: {
-        ...location.query,
-        serviceDay: serviceDay.toFormat(DATE_FORMAT),
-      },
-    };
-    this.props.match.router.replace(newPath);
-  };
-
-  render() {
-    // Check if route is constant operation first to avoid redundant calculation
-    const routeId = this.props.route?.gtfsId;
-    const { constantOperationRoutes } = this.context.config;
-    const { locale } = this.context.intl;
-    if (routeId && constantOperationRoutes[routeId]) {
-      return (
-        <div
-          className={`route-schedule-container ${
-            this.props.breakpoint !== 'large' ? 'mobile' : ''
-          }`}
-        >
-          <div style={{ paddingBottom: '28px' }}>
-            <RouteControlPanel
-              match={this.props.match}
-              route={this.props.route}
-              breakpoint={this.props.breakpoint}
-              noInitialServiceDay
-            />
-          </div>
-          <div className="stop-constant-operation-container bottom-padding">
-            <div style={{ width: '95%' }}>
-              <span>{constantOperationRoutes[routeId][locale].text}</span>
-              <span style={{ display: 'inline-block' }}>
-                <a
-                  href={constantOperationRoutes[routeId][locale].link}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {constantOperationRoutes[routeId][locale].link}
-                </a>
-              </span>
+        if (dayTabs.length > 0) {
+          /* eslint-disable jsx-a11y/interactive-supports-focus */
+          return (
+            <div
+              className="route-tabs days"
+              role="tablist"
+              onKeyDown={e => {
+                const tabCount = count;
+                const activeIndex = dayTabs.indexOf(currentFocusedTab);
+                let index;
+                switch (e.nativeEvent.code) {
+                  case 'ArrowLeft':
+                    index = (activeIndex - 1 + tabCount) % tabCount;
+                    tabRefs.current[dayTabs[index]].current.focus();
+                    setFocusedTab(dayTabs[index]);
+                    break;
+                  case 'ArrowRight':
+                    index = (activeIndex + 1) % tabCount;
+                    tabRefs.current[dayTabs[index]].current.focus();
+                    setFocusedTab(dayTabs[index]);
+                    break;
+                  default:
+                    break;
+                }
+              }}
+            >
+              {tabs}
             </div>
+          );
+          /* eslint-enable jsx-a11y/interactive-supports-focus */
+        }
+      }
+      return '';
+    },
+    [focusedTab, intl, changeDate],
+  );
+
+  const redirectWithServiceDay = useCallback(
+    serviceDay => {
+      const { location } = match;
+      const newPath = {
+        ...location,
+        query: {
+          ...location.query,
+          serviceDay: serviceDay.toFormat(DATE_FORMAT),
+        },
+      };
+      match.router.replace(newPath);
+    },
+    [match],
+  );
+
+  // Check if route is constant operation first to avoid redundant calculation
+  const routeId = route?.gtfsId;
+  const { constantOperationRoutes } = config;
+  const { locale } = intl;
+
+  if (routeId && constantOperationRoutes?.[routeId]) {
+    return (
+      <div
+        className={`route-schedule-container ${
+          breakpoint !== 'large' ? 'mobile' : ''
+        }`}
+      >
+        <div style={{ paddingBottom: '28px' }}>
+          <RouteControlPanel
+            match={match}
+            route={route}
+            breakpoint={breakpoint}
+            noInitialServiceDay
+          />
+        </div>
+        <div className="stop-constant-operation-container bottom-padding">
+          <div style={{ width: '95%' }}>
+            <span>{constantOperationRoutes[routeId][locale].text}</span>
+            <span style={{ display: 'inline-block' }}>
+              <a
+                href={constantOperationRoutes[routeId][locale].link}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {constantOperationRoutes[routeId][locale].link}
+              </a>
+            </span>
           </div>
         </div>
-      );
-    }
-
-    const { query } = this.props.match.location;
-    const { intl } = this.context;
-    this.hasMergedData = false;
-    this.dataExistsDay = 1; // 1 = monday
-    // USE FOR TESTING PURPOSE
-    this.testing = process.env.ROUTEPAGETESTING || false;
-    this.testNum = this.testing && query && query.test;
-    this.testNoDataDay = ''; // set to next week's Thursday
-
-    if (!this.props.pattern) {
-      if (routeId) {
-        // Redirect back to routes default pattern
-        // eslint-disable-next-line react/prop-types
-        this.props.router.replace(routePagePath(routeId, PREFIX_TIMETABLE));
-      }
-      return false;
-    }
-
-    const newFromTo = [this.state.from, this.state.to];
-
-    const currentPattern = this.props.route.patterns.filter(
-      p => p.code === this.props.pattern.code,
+      </div>
     );
+  }
 
-    let dataToHandle;
+  const { query } = match.location;
+  hasMergedDataRef.current = false;
+  let dataExistsDay = 1; // 1 = monday
+  // USE FOR TESTING PURPOSE
+  const testing = process.env.ROUTEPAGETESTING || false;
+  const testNum = testing && query && query.test;
+  const testNoDataDay = ''; // set to next week's Thursday
 
-    if (this.testing && this.testNum) {
-      dataToHandle = getTestData(this.testNum);
-    } else {
-      dataToHandle = this.props.firstDepartures;
+  if (!pattern) {
+    if (routeId) {
+      // Redirect back to routes default pattern
+      router.replace(routePagePath(routeId, PREFIX_TIMETABLE));
     }
-    const firstDepartures = modifyDepartures(dataToHandle);
-    const firstWeekEmpty = isEmptyWeek(firstDepartures[0]);
-    // If we are missing data from the start of the week, see if we can merge it with next week
-    if (
-      !firstWeekEmpty &&
-      firstDepartures[0].length !== 0 &&
-      dataToHandle.wk1mon.length === 0
-    ) {
-      const [thisWeekData, normalWeekData] =
-        Number(this.testNum) === 0
-          ? firstDepartures
-          : [firstDepartures[0], getMostFrequent(firstDepartures)];
-      const thisWeekHashes = [];
-      const nextWeekHashes = [];
+    return null;
+  }
 
-      for (let i = 0; i < thisWeekData.length; i++) {
-        thisWeekHashes.push(thisWeekData[i][1]);
-      }
-      for (let i = 0; i < normalWeekData.length; i++) {
-        nextWeekHashes.push(normalWeekData[i][1]);
-      }
+  const newFromTo = [from, to];
 
-      // If this weeks data is a subset of normal weeks data, merge them
-      if (thisWeekHashes.every(hash => nextWeekHashes.includes(hash))) {
-        // eslint-disable-next-line prefer-destructuring
-        firstDepartures[0] = normalWeekData;
-        this.hasMergedData = true;
-      }
+  const currentPattern = route.patterns.filter(p => p.code === pattern.code);
+
+  let dataToHandle;
+
+  if (testing && testNum) {
+    dataToHandle = getTestData(testNum);
+  } else {
+    dataToHandle = firstDeparturesProp;
+  }
+  const firstDepartures = modifyDepartures(dataToHandle);
+  const firstWeekEmpty = isEmptyWeek(firstDepartures[0]);
+  // If we are missing data from the start of the week, see if we can merge it with next week
+  if (
+    !firstWeekEmpty &&
+    firstDepartures[0].length !== 0 &&
+    dataToHandle.wk1mon.length === 0
+  ) {
+    const [thisWeekData, normalWeekData] =
+      Number(testNum) === 0
+        ? firstDepartures
+        : [firstDepartures[0], getMostFrequent(firstDepartures)];
+    const thisWeekHashes = [];
+    const nextWeekHashes = [];
+
+    for (let i = 0; i < thisWeekData.length; i++) {
+      thisWeekHashes.push(thisWeekData[i][1]);
     }
-
-    if (this.hasMergedData) {
-      if (dataToHandle.wk1tue.length !== 0) {
-        this.dataExistsDay = 2;
-      } else if (dataToHandle.wk1wed.length !== 0) {
-        this.dataExistsDay = 3;
-      } else if (dataToHandle.wk1thu.length !== 0) {
-        this.dataExistsDay = 4;
-      } else if (dataToHandle.wk1fri.length !== 0) {
-        this.dataExistsDay = 5;
-      } else if (dataToHandle.wk1sat.length !== 0) {
-        this.dataExistsDay = 6;
-      } else if (dataToHandle.wk1sun.length !== 0) {
-        this.dataExistsDay = 7;
-      }
+    for (let i = 0; i < normalWeekData.length; i++) {
+      nextWeekHashes.push(normalWeekData[i][1]);
     }
 
-    const wantedDay =
-      query && query.serviceDay
-        ? DateTime.fromFormat(query.serviceDay, DATE_FORMAT)
-        : undefined;
-
-    const firstDataDate = DateTime.now()
-      .startOf('week')
-      .plus({ days: this.dataExistsDay - 1 });
-
-    // check if first week is empty and redirect if is
-    const nextMonday = DateTime.now().startOf('week').plus({ weeks: 1 });
-
-    const firstDepartureDate = getFirstDepartureDate(
-      firstDepartures[0],
-      wantedDay,
-    );
-    const isBeforeNextWeek = wantedDay ? wantedDay < nextMonday : false;
-    const isSameOrAfterNextWeek = wantedDay ? wantedDay >= nextMonday : false;
-
-    // Checking is wanted day is before first available day when data is found
-    const isBeforeFirstDataDate = wantedDay ? wantedDay < firstDataDate : false;
-
-    if ((!this.testNum || this.testNum !== 0) && isBeforeFirstDataDate) {
-      this.redirectWithServiceDay(firstDataDate);
-    } else if ((isBeforeNextWeek && firstWeekEmpty) || firstDepartureDate) {
-      if (wantedDay && !isSameOrAfterNextWeek) {
-        if (
-          firstDepartureDate &&
-          !DateTime.now().hasSame(firstDepartureDate, 'day')
-        ) {
-          this.redirectWithServiceDay(firstDepartureDate);
-        } else if (
-          !firstDepartureDate ||
-          !DateTime.now().hasSame(firstDepartureDate, 'week')
-        ) {
-          this.redirectWithServiceDay(nextMonday);
-        }
-      }
+    // If this weeks data is a subset of normal weeks data, merge them
+    if (thisWeekHashes.every(hash => nextWeekHashes.includes(hash))) {
+      // eslint-disable-next-line prefer-destructuring
+      firstDepartures[0] = normalWeekData;
+      hasMergedDataRef.current = true;
     }
+  }
 
-    const data = populateData(
-      wantedDay,
-      firstDepartures,
-      this.hasMergedData,
-      this.dataExistsDay,
-    );
-    let newServiceDay;
-
-    if (!wantedDay && data && data.length >= 3 && data[2].length >= 4) {
-      if (data[2][3] !== '') {
-        if (data[2][2] !== data[2][3][0].charAt(0)) {
-          newServiceDay = DateTime.now()
-            .startOf('week')
-            .plus({ days: Number(data[2][3][0].charAt(0)) - 1 });
-        }
-      } else if (
-        data[3] &&
-        data[3][0] &&
-        data[2][1] &&
-        data[2][1] < data[0][0]
-      ) {
-        newServiceDay = DateTime.fromFormat(data[3][0].value, DATE_FORMAT);
-      }
-      if (newServiceDay > firstDataDate) {
-        newServiceDay = firstDataDate;
-      }
+  if (hasMergedDataRef.current) {
+    if (dataToHandle.wk1tue.length !== 0) {
+      dataExistsDay = 2;
+    } else if (dataToHandle.wk1wed.length !== 0) {
+      dataExistsDay = 3;
+    } else if (dataToHandle.wk1thu.length !== 0) {
+      dataExistsDay = 4;
+    } else if (dataToHandle.wk1fri.length !== 0) {
+      dataExistsDay = 5;
+    } else if (dataToHandle.wk1sat.length !== 0) {
+      dataExistsDay = 6;
+    } else if (dataToHandle.wk1sun.length !== 0) {
+      dataExistsDay = 7;
     }
+  }
 
-    const routeIdSplitted = routeId.split(':');
-    const routeTimetableHandler = routeIdSplitted
-      ? this.context.config.timetables &&
-        this.context.config.timetables[routeIdSplitted[0]]
+  const wantedDay =
+    query && query.serviceDay
+      ? DateTime.fromFormat(query.serviceDay, DATE_FORMAT)
       : undefined;
 
-    const timetableDay = wantedDay || newServiceDay;
-    const routeTimetableUrl =
-      routeTimetableHandler &&
-      timetableDay &&
-      this.context.config.URL.ROUTE_TIMETABLES[routeIdSplitted[0]] &&
-      routeTimetableHandler.routeTimetableUrlResolver(
-        this.context.config.URL.ROUTE_TIMETABLES[routeIdSplitted[0]],
-        this.props.route,
-        timetableDay.toFormat(DATE_FORMAT),
-        this.props.lang,
-      );
+  const firstDataDate = DateTime.now()
+    .startOf('week')
+    .plus({ days: dataExistsDay - 1 });
 
-    const showTrips = this.getTrips(
-      currentPattern[0],
-      newFromTo[0],
-      newFromTo[1],
-      newServiceDay,
-      wantedDay,
+  // check if first week is empty and redirect if is
+  const nextMonday = DateTime.now().startOf('week').plus({ weeks: 1 });
+
+  const firstDepartureDate = getFirstDepartureDate(
+    firstDepartures[0],
+    wantedDay,
+  );
+  const isBeforeNextWeek = wantedDay ? wantedDay < nextMonday : false;
+  const isSameOrAfterNextWeek = wantedDay ? wantedDay >= nextMonday : false;
+
+  // Checking is wanted day is before first available day when data is found
+  const isBeforeFirstDataDate = wantedDay ? wantedDay < firstDataDate : false;
+
+  if ((!testNum || testNum !== 0) && isBeforeFirstDataDate) {
+    redirectWithServiceDay(firstDataDate);
+  } else if ((isBeforeNextWeek && firstWeekEmpty) || firstDepartureDate) {
+    if (wantedDay && !isSameOrAfterNextWeek) {
+      if (
+        firstDepartureDate &&
+        !DateTime.now().hasSame(firstDepartureDate, 'day')
+      ) {
+        redirectWithServiceDay(firstDepartureDate);
+      } else if (
+        !firstDepartureDate ||
+        !DateTime.now().hasSame(firstDepartureDate, 'week')
+      ) {
+        redirectWithServiceDay(nextMonday);
+      }
+    }
+  }
+
+  const data = populateData(
+    wantedDay,
+    firstDepartures,
+    hasMergedDataRef.current,
+    dataExistsDay,
+  );
+  let newServiceDay;
+
+  if (!wantedDay && data && data.length >= 3 && data[2].length >= 4) {
+    if (data[2][3] !== '') {
+      if (data[2][2] !== data[2][3][0].charAt(0)) {
+        newServiceDay = DateTime.now()
+          .startOf('week')
+          .plus({ days: Number(data[2][3][0].charAt(0)) - 1 });
+      }
+    } else if (data[3] && data[3][0] && data[2][1] && data[2][1] < data[0][0]) {
+      newServiceDay = DateTime.fromFormat(data[3][0].value, DATE_FORMAT);
+    }
+    if (newServiceDay > firstDataDate) {
+      newServiceDay = firstDataDate;
+    }
+  }
+
+  const routeIdSplitted = routeId.split(':');
+  const routeTimetableHandler = routeIdSplitted
+    ? config.timetables && config.timetables[routeIdSplitted[0]]
+    : undefined;
+
+  const timetableDay = wantedDay || newServiceDay;
+  const routeTimetableUrl =
+    routeTimetableHandler &&
+    timetableDay &&
+    config.URL.ROUTE_TIMETABLES[routeIdSplitted[0]] &&
+    routeTimetableHandler.routeTimetableUrlResolver(
+      config.URL.ROUTE_TIMETABLES[routeIdSplitted[0]],
+      route,
+      timetableDay.toFormat(DATE_FORMAT),
+      lang,
     );
-    const tabs = this.renderDayTabs(data);
 
-    if (showTrips && typeof showTrips === 'string') {
-      this.props.match.router.replace(showTrips);
-      return false;
-    }
+  const showTrips = getTrips(
+    currentPattern[0],
+    newFromTo[0],
+    newFromTo[1],
+    newServiceDay,
+    wantedDay,
+    testing,
+    testNum,
+    testNoDataDay,
+  );
+  const tabs = renderDayTabs(data);
 
-    if (!this.state.hasLoaded) {
-      return (
-        <div className={cx('summary-list-spinner-container', 'route-schedule')}>
-          <Loading />
-        </div>
-      );
-    }
+  if (showTrips && typeof showTrips === 'string') {
+    match.router.replace(showTrips);
+    return null;
+  }
+
+  if (!hasLoaded) {
     return (
-      <>
-        <ScrollableWrapper
-          className={`route-schedule-container ${
-            this.props.breakpoint !== 'large' ? 'mobile' : ''
-          }`}
-        >
-          {this.props.route && this.props.route.patterns && (
-            <RouteControlPanel
-              match={this.props.match}
-              route={this.props.route}
-              breakpoint={this.props.breakpoint}
-              noInitialServiceDay
-            />
-          )}
-          <div className="route-schedule-ranges">
-            <span className="current-range">{data[2][0]}</span>
-            <div className="other-ranges-dropdown">
-              {data[3].length > 0 && (
-                <ScheduleDropdown
-                  id="other-dates"
-                  title={intl.formatMessage({
-                    id: 'other-dates',
-                  })}
-                  list={data[3]}
-                  alignRight
-                  changeTitleOnChange={false}
-                  onSelectChange={this.changeDate}
-                />
-              )}
-            </div>
-          </div>
-          {tabs}
-          {this.props.pattern && (
-            <div
-              className={cx('route-schedule-list-wrapper', {
-                'bp-large': this.props.breakpoint === 'large',
-              })}
-              aria-live="polite"
-            >
-              <ScheduleHeader
-                stops={this.props.pattern.stops}
-                from={newFromTo[0]}
-                to={newFromTo[1]}
-                onFromSelectChange={this.onFromSelectChange}
-                onToSelectChange={this.onToSelectChange}
-              />
-              <div
-                className="route-schedule-list momentum-scroll"
-                role="list"
-                aria-live="off"
-              >
-                {showTrips}
-              </div>
-            </div>
-          )}
-        </ScrollableWrapper>
-        {this.props.breakpoint === 'large' && (
-          <div className="after-scrollable-area" />
+      <div className={cx('summary-list-spinner-container', 'route-schedule')}>
+        <Loading />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <ScrollableWrapper
+        className={`route-schedule-container ${
+          breakpoint !== 'large' ? 'mobile' : ''
+        }`}
+      >
+        {route && route.patterns && (
+          <RouteControlPanel
+            match={match}
+            route={route}
+            breakpoint={breakpoint}
+            noInitialServiceDay
+          />
         )}
-        <div className="route-page-action-bar">
-          <div className="print-button-container">
-            {routeTimetableUrl && (
-              <SecondaryButton
-                ariaLabel="print-timetable"
-                buttonName="print-timetable"
-                buttonClickAction={e => {
-                  openRoutePDF(e, routeTimetableUrl);
-                  addAnalyticsEvent({
-                    category: 'Route',
-                    action: 'PrintWeeklyTimetable',
-                    name: null,
-                  });
-                }}
-                buttonIcon="icon_print"
-                smallSize
+        <div className="route-schedule-ranges">
+          <span className="current-range">{data[2][0]}</span>
+          <div className="other-ranges-dropdown">
+            {data[3].length > 0 && (
+              <ScheduleDropdown
+                id="other-dates"
+                title={intl.formatMessage({
+                  id: 'other-dates',
+                })}
+                list={data[3]}
+                alignRight
+                changeTitleOnChange={false}
+                onSelectChange={changeDate}
               />
             )}
+          </div>
+        </div>
+        {tabs}
+        {pattern && (
+          <div
+            className={cx('route-schedule-list-wrapper', {
+              'bp-large': breakpoint === 'large',
+            })}
+            aria-live="polite"
+          >
+            <ScheduleHeader
+              stops={pattern.stops}
+              from={newFromTo[0]}
+              to={newFromTo[1]}
+              onFromSelectChange={onFromSelectChange}
+              onToSelectChange={onToSelectChange}
+            />
+            <div
+              className="route-schedule-list momentum-scroll"
+              role="list"
+              aria-live="off"
+            >
+              {showTrips}
+            </div>
+          </div>
+        )}
+      </ScrollableWrapper>
+      {breakpoint === 'large' && <div className="after-scrollable-area" />}
+      <div className="route-page-action-bar">
+        <div className="print-button-container">
+          {routeTimetableUrl && (
             <SecondaryButton
-              ariaLabel="print"
-              buttonName="print"
+              ariaLabel="print-timetable"
+              buttonName="print-timetable"
               buttonClickAction={e => {
-                printRouteTimetable(e);
+                openRoutePDF(e, routeTimetableUrl);
                 addAnalyticsEvent({
                   category: 'Route',
-                  action: 'PrintTimetable',
+                  action: 'PrintWeeklyTimetable',
                   name: null,
                 });
               }}
               buttonIcon="icon_print"
               smallSize
             />
-          </div>
+          )}
+          <SecondaryButton
+            ariaLabel="print"
+            buttonName="print"
+            buttonClickAction={e => {
+              printRouteTimetable(e);
+              addAnalyticsEvent({
+                category: 'Route',
+                action: 'PrintTimetable',
+                name: null,
+              });
+            }}
+            buttonIcon="icon_print"
+            smallSize
+          />
         </div>
-      </>
-    );
-  }
-}
+      </div>
+    </>
+  );
+};
+
+ScheduleContainer.propTypes = {
+  // eslint-disable-next-line
+  firstDepartures: PropTypes.object.isRequired,
+  pattern: patternShape.isRequired,
+  match: matchShape.isRequired,
+  breakpoint: PropTypes.string.isRequired,
+  router: routerShape.isRequired,
+  route: routeShape.isRequired,
+  lang: PropTypes.string.isRequired,
+};
 
 const containerComponent = createFragmentContainer(
   connectToStores(
