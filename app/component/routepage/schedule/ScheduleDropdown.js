@@ -3,13 +3,20 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import Select from 'react-select';
 import Icon from '@digitransit-component/digitransit-component-icon';
-import { intlShape } from 'react-intl';
 import isEmpty from 'lodash/isEmpty';
-import { configShape } from '../../../util/shapes';
+import { useConfigContext } from '../../../configurations/ConfigContext';
+import { useTranslationsContext } from '../../../util/useTranslationsContext';
 
-export default function ScheduleDropdown(props, context) {
-  const { alignRight, id, labelId, list, onSelectChange, title } = props;
-  const { intl } = context;
+function ScheduleDropdown({
+  alignRight,
+  id,
+  labelId,
+  list,
+  onSelectChange,
+  title,
+}) {
+  const intl = useTranslationsContext();
+  const config = useConfigContext();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState([]);
@@ -132,7 +139,7 @@ export default function ScheduleDropdown(props, context) {
                 img="arrow-dropdown"
                 height={0.625}
                 width={0.625}
-                color={context.config.colors.primary}
+                color={config.colors.primary}
               />
             </>
           )
@@ -149,7 +156,7 @@ export default function ScheduleDropdown(props, context) {
                 img="arrow-dropdown"
                 height={0.625}
                 width={0.625}
-                color={context.config.colors.primary}
+                color={config.colors.primary}
               />
             </>
           )
@@ -158,11 +165,6 @@ export default function ScheduleDropdown(props, context) {
     </div>
   );
 }
-
-ScheduleDropdown.contextTypes = {
-  intl: intlShape.isRequired,
-  config: configShape.isRequired,
-};
 
 ScheduleDropdown.propTypes = {
   alignRight: PropTypes.bool,
@@ -183,3 +185,7 @@ ScheduleDropdown.defaultProps = {
   onSelectChange: undefined,
   title: 'No title',
 };
+
+ScheduleDropdown.displayName = 'ScheduleDropdown';
+
+export default ScheduleDropdown;
