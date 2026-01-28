@@ -5,11 +5,14 @@ const containerComponent = createFragmentContainer(ParkAndRideContent, {
   vehicleParking: graphql`
     fragment ParkContainer_vehicleParking on VehicleParking {
       availability {
-        bicycleSpaces
         carSpaces
       }
       parkCapacity: capacity {
+        bicycleSpaces
         carSpaces
+      }
+      openingHours {
+        osm
       }
       name
       lat

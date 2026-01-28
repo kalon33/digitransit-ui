@@ -1,26 +1,15 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { FormattedMessage, intlShape } from 'react-intl';
 import { matchShape, routerShape } from 'found';
-import { intlShape } from 'react-intl';
-import { DateTime } from 'luxon';
-import connectToStores from 'fluxible-addons-react/connectToStores';
 import { parkShape, configShape, errorShape } from '../util/shapes';
 import ParkOrStationHeader from './ParkOrStationHeader';
 import Icon from './Icon';
 import Disclaimer from './Disclaimer';
 import { PREFIX_BIKEPARK, PREFIX_CARPARK } from '../util/path';
-import { DATE_FORMAT } from '../constants';
 
 function ParkAndRideContent(
-  {
-    vehicleParking,
-    error,
-    currentLanguage,
-    mode,
-    showInfo,
-    showDetails,
-    backButton,
-  },
+  { vehicleParking, error, mode, showInfo, showDetails, backButton },
   { config, intl, router, match },
 ) {
   // throw error when relay query fails
@@ -36,20 +25,6 @@ function ParkAndRideContent(
     return null;
   }
   const prePostFix = bikePark ? 'bike-park' : 'car-park';
-  const [authenticationMethods, setAuthenticationMethods] = useState([]);
-  const [pricingMethods, setPricingMethods] = useState([]);
-  const [services, setServices] = useState([]);
-  const [openingHours, setOpeningHours] = useState(null);
-  const [lang, setLang] = useState('fi');
-
-  let spacesAvailable;
-  let maxCapacity;
-  if (bikePark) {
-    spacesAvailable = vehicleParking.availability?.bicycleSpaces;
-  } else {
-    spacesAvailable = vehicleParking.availability?.carSpaces;
-    maxCapacity = vehicleParking.parkCapacity?.carSpaces || 1;
-  }
 
   const {
     getAuthenticationMethods,
@@ -60,97 +35,25 @@ function ParkAndRideContent(
     getOpeningHours,
   } = config.parkAndRide.resolver;
 
-  useEffect(() => {
-    setAuthenticationMethods(getAuthenticationMethods(vehicleParking));
-    setPricingMethods(getPricingMethods(vehicleParking));
-    setServices(getServices(vehicleParking));
-    setOpeningHours(getOpeningHours(vehicleParking));
-  }, []);
-
-  useEffect(() => {
-    if (lang !== currentLanguage) {
-      setLang(currentLanguage);
-    }
-  }, [currentLanguage]);
-
-  const getOpeningHoursAsText = () => {
-    const openingHoursDates = openingHours?.dates;
-    if (openingHoursDates) {
-      const filteredOpeningHours = openingHoursDates.filter(o => o.timeSpans);
-      const sameOpeningHoursEveryday = filteredOpeningHours.every(
-        openingHour =>
-          openingHour?.timeSpans.from ===
-            filteredOpeningHours[0]?.timeSpans.from &&
-          openingHour?.timeSpans.to === filteredOpeningHours[0]?.timeSpans.to,
-      );
-      if (
-        sameOpeningHoursEveryday &&
-        filteredOpeningHours.length === openingHoursDates.length &&
-        filteredOpeningHours.length
-      ) {
-        const { to, from } = filteredOpeningHours[0].timeSpans;
-        if (to - from - 60 * 60 * 24 === 0) {
-          return [`24${intl.formatMessage({ id: 'hour-short' })}`];
-        }
-        const formattedFrom = DateTime.fromSeconds(from)
-          .toUTC()
-          .toFormat('HH:mm');
-        const formattedTo = DateTime.fromSeconds(to).toUTC().toFormat('HH:mm');
-        return [`${formattedFrom} - ${formattedTo}`];
-      }
-      let i = 0;
-      const hoursAsText = [];
-      const numberOfDays = filteredOpeningHours.length;
-      while (i < numberOfDays) {
-        const { date, timeSpans } = filteredOpeningHours[i];
-        let j = i + 1;
-        while (j < numberOfDays) {
-          if (
-            filteredOpeningHours[i].timeSpans.from !==
-              filteredOpeningHours[j].timeSpans.from ||
-            filteredOpeningHours[i].timeSpans.to !==
-              filteredOpeningHours[j].timeSpans.to
-          ) {
-            break;
-          }
-          j += 1;
-        }
-        const from = DateTime.fromSeconds(timeSpans.from)
-          .toUTC()
-          .toFormat('HH:mm');
-        const to = DateTime.fromSeconds(timeSpans.to).toUTC().toFormat('HH:mm');
-        const day = DateTime.fromFormat(date, DATE_FORMAT)
-          .setLocale(currentLanguage)
-          .toFormat('ccc');
-        if (i === j - 1) {
-          hoursAsText.push(
-            `${day.charAt(0).toUpperCase() + day.slice(1)} ${from}-${to}`,
-          );
-        } else {
-          const until = openingHoursDates[j - 1].date.toLocaleString(
-            currentLanguage,
-            {
-              weekday: 'short',
-            },
-          );
-          hoursAsText.push(
-            `${day.charAt(0).toUpperCase() + day.slice(1)}-${
-              until.charAt(0).toUpperCase() + until.slice(1)
-            } ${from}-${to}`,
-          );
-        }
-        i = j;
-      }
-      return hoursAsText;
-    }
-    return [];
-  };
+  const authenticationMethods = getAuthenticationMethods(vehicleParking);
+  const services = getServices(vehicleParking);
+  const openingHours = getOpeningHours(vehicleParking);
+  const pricingMethods = getPricingMethods(vehicleParking);
   const parkIsPaid = isPaid(pricingMethods);
   const parkIsFree = isFree(pricingMethods);
-  const { realtime } = vehicleParking;
-  const showOpeningHours =
-    Array.isArray(openingHours?.dates) && openingHours.dates.length > 0;
-  const showSpacesAvailable = !realtime && spacesAvailable;
+
+  let available;
+  let capacity;
+  if (bikePark) {
+    available = vehicleParking.parkCapacity?.bicycleSpaces;
+  } else {
+    available = vehicleParking.availability?.carSpaces;
+    capacity = vehicleParking.parkCapacity?.carSpaces;
+  }
+  const realtime =
+    vehicleParking.realtime &&
+    !Number.isNaN(available) &&
+    !Number.isNaN(capacity);
 
   return (
     <div className="station-page-container">
@@ -173,69 +76,76 @@ function ParkAndRideContent(
             <Icon img={`icon_${prePostFix}`} height={2.45} width={2.45} />
           </div>
         )}
-
-        <div className="separator" />
-        <div className="park-details">
-          {showOpeningHours && (
-            <div className="park-opening-hours">
-              <span>{intl.formatMessage({ id: 'is-open' })} &#160;</span>
-              <span>
-                {getOpeningHoursAsText().map((text, i) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <p key={`opening-hour-${text}-${i}`}>{text}</p>
-                ))}
-              </span>
+        {openingHours.length > 0 && (
+          <div className="park-details">
+            <FormattedMessage id="is-open" /> &#160;
+            <span>
+              {openingHours.map(text => (
+                // eslint-disable-next-line react/no-array-index-key
+                <p key={`opening-hour-${text}`}>{text}</p>
+              ))}
+            </span>
+          </div>
+        )}
+        {(realtime || !Number.isNaN(available)) && (
+          <>
+            <div className="separator" />
+            <div className="park-details">
+              {realtime && (
+                <>
+                  <FormattedMessage id="park-and-ride-availability" />
+                  <div>
+                    {available} / {capacity}
+                  </div>
+                </>
+              )}
+              {!realtime && (
+                <>
+                  <FormattedMessage id="number-of-spaces" />
+                  <div>{available}</div>
+                </>
+              )}
             </div>
-          )}
-          {realtime && (
-            <span>
-              {intl.formatMessage({ id: 'park-and-ride-availability' })} &#160;
-              <p>
-                {spacesAvailable} / {maxCapacity}
-              </p>
-            </span>
-          )}
-          {showSpacesAvailable && (
-            <span>
-              {intl.formatMessage({ id: 'number-of-spaces' })} &#160;
-              <p>{spacesAvailable}</p>
-            </span>
-          )}
-          {(parkIsFree || parkIsPaid) && (
-            <span>
-              {parkIsFree && intl.formatMessage({ id: 'free-of-charge' })}
-              {parkIsPaid && intl.formatMessage({ id: 'paid' })}
-              {authenticationMethods.length > 0 &&
-                `, ${intl.formatMessage({
-                  id: 'access_with',
-                })} `}
-              {authenticationMethods.map(
-                (method, i) =>
-                  `
+          </>
+        )}
+        {showDetails && (
+          <div className="park-details">
+            {(parkIsFree || parkIsPaid) && (
+              <span>
+                {parkIsFree && intl.formatMessage({ id: 'free-of-charge' })}
+                {parkIsPaid && intl.formatMessage({ id: 'paid' })}
+                {authenticationMethods.length > 0 &&
+                  `, ${intl.formatMessage({
+                    id: 'access_with',
+                  })} `}
+                {authenticationMethods.map(
+                  (method, i) =>
+                    `
                 ${intl.formatMessage({ id: method })}
                 ${i < authenticationMethods.length - 1 ? ' | ' : ''}
               `,
-              )}
-            </span>
-          )}
-          {services.length > 0 && (
-            <span>
-              {services.map(
-                (service, i) =>
-                  `
+                )}
+              </span>
+            )}
+            {services.length > 0 && (
+              <span>
+                {services.map(
+                  (service, i) =>
+                    `
                 ${intl.formatMessage({ id: service })}
                 ${i < services.length - 1 ? ' | ' : ''}
               `,
-              )}
-            </span>
-          )}
-        </div>
+                )}
+              </span>
+            )}
+          </div>
+        )}
       </div>
       {showInfo && (
         <Disclaimer
           headerId={`${prePostFix}-disclaimer-header`}
           textId={`${prePostFix}-disclaimer`}
-          href={config.parkAndRide?.url?.[lang]}
+          href={config.parkAndRide?.url?.[config.language]}
           linkLabelId="park-disclaimer-link"
         />
       )}
@@ -246,7 +156,6 @@ function ParkAndRideContent(
 ParkAndRideContent.propTypes = {
   vehicleParking: parkShape,
   error: errorShape,
-  currentLanguage: PropTypes.string.isRequired,
   mode: PropTypes.oneOf(['CARPARK', 'BIKEPARK']),
   showInfo: PropTypes.bool,
   showDetails: PropTypes.bool,
@@ -269,12 +178,4 @@ ParkAndRideContent.contextTypes = {
   match: matchShape.isRequired,
 };
 
-const connectedComponent = connectToStores(
-  ParkAndRideContent,
-  ['PreferencesStore'],
-  context => ({
-    currentLanguage: context.getStore('PreferencesStore').getLanguage(),
-  }),
-);
-
-export { connectedComponent as default, ParkAndRideContent as Component };
+export default ParkAndRideContent;
