@@ -81,7 +81,7 @@ function ParkAndRideContent(
         {openingHours.length > 0 && (
           <div className={detailClass}>
             <FormattedMessage id="is-open" />
-            <div>
+            <div className="opening-hours">
               {openingHours.map(text => (
                 // eslint-disable-next-line react/no-array-index-key
                 <span key={`opening-hour-${text}`}>{text}</span>

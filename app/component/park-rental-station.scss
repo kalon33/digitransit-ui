@@ -114,6 +114,20 @@
 
     .park-details-row {
       flex-direction: row;
+
+      span {
+        width: 100%;
+        text-align: right;
+      }
+
+      div {
+        text-align: right;
+      }
+    }
+
+    .opening-hours {
+      display: flex;
+      flex-direction: column;
     }
   }
 }
