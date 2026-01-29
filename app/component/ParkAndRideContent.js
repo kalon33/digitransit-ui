@@ -110,43 +110,45 @@ function ParkAndRideContent(
             </div>
           </>
         )}
-        {showDetails && (
-          <div className={detailClass}>
-            {(parkIsFree || parkIsPaid) && (
-              <>
-                <div className="separator" />
-                <span>
-                  {parkIsFree && intl.formatMessage({ id: 'free-of-charge' })}
-                  {parkIsPaid && intl.formatMessage({ id: 'paid' })}
-                  {authenticationMethods.length > 0 &&
-                    `, ${intl.formatMessage({
-                      id: 'access_with',
-                    })} `}
-                  {authenticationMethods.map(
-                    (method, i) =>
-                      `
-                ${intl.formatMessage({ id: method })}
-                ${i < authenticationMethods.length - 1 ? ' | ' : ''}
-              `,
-                  )}
-                </span>
-              </>
-            )}
-            {services.length > 0 && (
-              <>
-                <div className="separator" />
-                <span>
-                  {services.map(
-                    (service, i) =>
-                      `
-                ${intl.formatMessage({ id: service })}
-                ${i < services.length - 1 ? ' | ' : ''}
-              `,
-                  )}
-                </span>
-              </>
-            )}
-          </div>
+        {showDetails && (parkIsFree || parkIsPaid) && (
+          <>
+            <div className="separator" />
+            <div className={detailClass}>
+              <FormattedMessage id="price" />
+              <span>
+                {parkIsFree && intl.formatMessage({ id: 'free-of-charge' })}
+                {parkIsPaid && intl.formatMessage({ id: 'paid' })}
+                {authenticationMethods.length > 0 &&
+                  `, ${intl.formatMessage({
+                    id: 'access_with',
+                  })} `}
+                {authenticationMethods.map(
+                  (method, i) =>
+                    `
+                        ${intl.formatMessage({ id: method })}
+                        ${i < authenticationMethods.length - 1 ? ' | ' : ''}
+                      `,
+                )}
+              </span>
+            </div>
+          </>
+        )}
+        {showDetails && services.length > 0 && (
+          <>
+            <div className="separator" />
+            <div className={detailClass}>
+              <FormattedMessage id="services-and-features" />
+              <span>
+                {services.map(
+                  (service, i) =>
+                    `
+                        ${intl.formatMessage({ id: service })}
+                        ${i < services.length - 1 ? ' | ' : ''}
+                       `,
+                )}
+              </span>
+            </div>
+          </>
         )}
       </div>
       {showInfo && (
