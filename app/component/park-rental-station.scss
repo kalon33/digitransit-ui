@@ -36,13 +36,12 @@
 
     .header {
       flex: 1;
+    }
+  }
 
-      h1 {
-        color: #333;
-        font-size: 1.5rem;
-        line-height: 1.2;
-        margin: 0;
-      }
+  .large-header {
+    h3 {
+      font-size: 20px;
     }
   }
 

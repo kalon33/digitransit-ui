@@ -59,7 +59,7 @@ function ParkAndRideContent(
   const detailClass = showDetails ? 'park-details' : 'park-details-row';
   return (
     <div className="station-page-container">
-      <div className="park-header">
+      <div className={cx('park-header', { 'large-header': showDetails })}>
         {!showDetails && (
           <div className="header-icon">
             <Icon img={`icon_${prePostFix}`} height={2.45} width={2.45} />
