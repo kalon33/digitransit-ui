@@ -112,11 +112,11 @@
     }
 
     .park-details {
-      :first-child {
+      .park-label {
         font-weight: $font-weight-medium;
       }
 
-      :last-child {
+      .park-value {
         font-weight: $font-weight-book;
       }
     }
@@ -126,11 +126,11 @@
       width: 96%;
       white-space: nowrap;
 
-      :first-child {
+      .park-label {
         font-weight: $font-weight-book;
       }
 
-      :last-child {
+      .park-value {
         margin-left: auto;
         margin-right: 0;
         text-align: right;

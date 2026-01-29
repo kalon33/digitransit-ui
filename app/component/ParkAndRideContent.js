@@ -1,22 +1,38 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { matchShape, routerShape } from 'found';
-import { parkShape, configShape, errorShape } from '../util/shapes';
+import { parkShape, errorShape } from '../util/shapes';
 import ParkOrStationHeader from './ParkOrStationHeader';
 import Icon from './Icon';
 import Disclaimer from './Disclaimer';
 import { PREFIX_BIKEPARK, PREFIX_CARPARK } from '../util/path';
+import { useConfigContext } from '../configurations/ConfigContext';
 
-function ParkAndRideContent(
-  { vehicleParking, error, mode, showInfo, showDetails, backButton },
-  { config, intl, router, match },
-) {
+function parkLabel(id) {
+  return (
+    <div className="park-label">
+      <FormattedMessage id={id} />
+    </div>
+  );
+}
+
+function ParkAndRideContent({
+  vehicleParking,
+  error,
+  mode,
+  showInfo,
+  showDetails,
+  backButton,
+  router,
+  match,
+}) {
   // throw error when relay query fails
   if (error) {
     throw error.message;
   }
+  const { parkAndRide, language } = useConfigContext();
   const bikePark = mode
     ? mode === 'BIKEPARK'
     : match.location.pathname.includes(PREFIX_BIKEPARK);
@@ -34,7 +50,7 @@ function ParkAndRideContent(
     isFree,
     isPaid,
     getOpeningHours,
-  } = config.parkAndRide.resolver;
+  } = parkAndRide.resolver;
 
   const authenticationMethods = getAuthenticationMethods(vehicleParking);
   const services = getServices(vehicleParking);
@@ -57,6 +73,7 @@ function ParkAndRideContent(
     Number.isInteger(capacity);
 
   const detailClass = showDetails ? 'park-details' : 'park-details-row';
+
   return (
     <div className="station-page-container">
       <div className={cx('park-header', { 'large-header': showDetails })}>
@@ -80,8 +97,8 @@ function ParkAndRideContent(
         )}
         {openingHours.length > 0 && (
           <div className={detailClass}>
-            <FormattedMessage id="is-open" />
-            <div className="opening-hours">
+            {parkLabel('is-open')}
+            <div className={cx('opening-hours', 'park-value')}>
               {openingHours.map(text => (
                 // eslint-disable-next-line react/no-array-index-key
                 <span key={`opening-hour-${text}`}>{text}</span>
@@ -95,16 +112,16 @@ function ParkAndRideContent(
             <div className={detailClass}>
               {realtime && (
                 <>
-                  <FormattedMessage id="park-and-ride-availability" />
-                  <span>
+                  {parkLabel('park-and-ride-availability')}
+                  <span className="park-value">
                     {available} / {capacity}
                   </span>
                 </>
               )}
               {!realtime && (
                 <>
-                  <FormattedMessage id="number-of-spaces" />
-                  <div>{available}</div>
+                  {parkLabel('number-of-spaces')}
+                  <span className="park-value">{available}</span>
                 </>
               )}
             </div>
@@ -114,21 +131,22 @@ function ParkAndRideContent(
           <>
             <div className="separator" />
             <div className={detailClass}>
-              <FormattedMessage id="price" />
-              <span>
-                {parkIsFree && intl.formatMessage({ id: 'free-of-charge' })}
-                {parkIsPaid && intl.formatMessage({ id: 'paid' })}
-                {authenticationMethods.length > 0 &&
-                  `, ${intl.formatMessage({
-                    id: 'access_with',
-                  })} `}
-                {authenticationMethods.map(
-                  (method, i) =>
-                    `
-                        ${intl.formatMessage({ id: method })}
-                        ${i < authenticationMethods.length - 1 ? ' | ' : ''}
-                      `,
+              {parkLabel('price')}
+              <span className="park-value">
+                {parkIsFree && <FormattedMessage id="free-of-charge" />}
+                {parkIsPaid && <FormattedMessage id="paid" />}
+                {authenticationMethods.length > 0 && (
+                  <>
+                    {', '}
+                    <FormattedMessage id="access_with" />{' '}
+                  </>
                 )}
+                {authenticationMethods.map((method, i) => (
+                  <>
+                    <FormattedMessage id={method} />
+                    {i < authenticationMethods.length - 1 ? ' | ' : ''}{' '}
+                  </>
+                ))}
               </span>
             </div>
           </>
@@ -137,15 +155,14 @@ function ParkAndRideContent(
           <>
             <div className="separator" />
             <div className={detailClass}>
-              <FormattedMessage id="services-and-features" />
-              <span>
-                {services.map(
-                  (service, i) =>
-                    `
-                        ${intl.formatMessage({ id: service })}
-                        ${i < services.length - 1 ? ' | ' : ''}
-                       `,
-                )}
+              {parkLabel('services-and-features')}
+              <span className="park-value">
+                {services.map((service, i) => (
+                  <>
+                    <FormattedMessage id={service} />
+                    {i < services.length - 1 ? ' | ' : ''}
+                  </>
+                ))}
               </span>
             </div>
           </>
@@ -157,7 +174,7 @@ function ParkAndRideContent(
           <Disclaimer
             headerId={`${prePostFix}-disclaimer-header`}
             textId={`${prePostFix}-disclaimer`}
-            href={config.parkAndRide?.url?.[config.language]}
+            href={parkAndRide?.url?.[language]}
             linkLabelId="park-disclaimer-link"
           />
         </>
@@ -173,6 +190,8 @@ ParkAndRideContent.propTypes = {
   showInfo: PropTypes.bool,
   showDetails: PropTypes.bool,
   backButton: PropTypes.bool,
+  router: routerShape.isRequired,
+  match: matchShape.isRequired,
 };
 
 ParkAndRideContent.defaultProps = {
@@ -182,13 +201,6 @@ ParkAndRideContent.defaultProps = {
   showInfo: true,
   showDetails: true,
   backButton: true,
-};
-
-ParkAndRideContent.contextTypes = {
-  config: configShape.isRequired,
-  intl: intlShape.isRequired,
-  router: routerShape.isRequired,
-  match: matchShape.isRequired,
 };
 
 export default ParkAndRideContent;
