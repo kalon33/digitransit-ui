@@ -19,6 +19,7 @@ const containerComponent = createFragmentContainer(ParkAndRideContent, {
       lon
       tags
       realtime
+      wheelchairAccessibleCarPlaces
     }
   `,
 });

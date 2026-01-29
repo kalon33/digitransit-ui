@@ -37,9 +37,13 @@ export default {
           'liipi:SERVICE_ENGINE_IGNITION_AID',
           'liipi:SERVICE_BICYCLE_FRAME_LOCK',
         ];
-        return tags
+        const result = tags
           .filter(tag => allowedServices.includes(tag))
           .map(tag => tag.replace('liipi:SERVICE_', '').toLowerCase());
+        if (park.wheelchairAccessibleCarPlaces) {
+          result.push('accessible-car-places');
+        }
+        return result;
       }
       return [];
     },

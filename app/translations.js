@@ -1,5 +1,4 @@
 /* eslint sort-keys: "error" */
-
 const translations = {
   da: {
     'about-this-service': 'Om tjenesten',
@@ -820,6 +819,7 @@ const translations = {
     'accessibility-limited': 'Wheelchair',
     'accessibility-nolimit': 'No limits',
     'accessibility-statement': 'Accessibility statement',
+    'accessible-car-places': 'Wheelchair accessible',
     acknowledged: 'OK',
     'add-favourite-bikeStation-failed-heading':
       'Saving the citybike station failed',
@@ -2152,6 +2152,7 @@ const translations = {
     'accessibility-limited': 'Pyörätuoli',
     'accessibility-nolimit': 'Ei rajoitusta',
     'accessibility-statement': 'Saavutettavuusseloste',
+    'accessible-car-places': 'Pyörätuolilla saavutettava',
     acknowledged: 'Selvä',
     'add-favourite-bikeStation-failed-heading':
       'Kaupunkipyöräaseman tallentaminen ei onnistunut',
@@ -5112,6 +5113,7 @@ const translations = {
     'accessibility-limited': 'Med rullstolen',
     'accessibility-nolimit': 'Ingen begränsning',
     'accessibility-statement': 'Tillgänglighetsförklaring',
+    'accessible-car-places': 'Rullstolsanpassat',
     acknowledged: 'Klart',
     'add-favourite-bikeStation-failed-heading':
       'Kunde inte spara stadscykelstationen',
