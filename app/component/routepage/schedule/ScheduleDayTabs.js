@@ -120,7 +120,13 @@ const ScheduleDayTabs = ({
 };
 
 ScheduleDayTabs.propTypes = {
-  // Data is a tuple with fixed structure: [weekStarts, days, range, options, weeksAreSame, pastDate]
+  // Data is a tuple-like array with fixed structure from scheduleDataUtils:
+  // [0]: weekStarts (array of DateTime objects)
+  // [1]: days (array of day patterns)
+  // [2]: range (object with RANGE_INDEX constants: WANTED_DAY, WEEKDAY, DAY_ARRAY, etc.)
+  // [3]: options (array of dropdown options)
+  // [4]: weeksAreSame (boolean)
+  // [5]: pastDate (boolean)
   // eslint-disable-next-line react/forbid-prop-types
   data: PropTypes.array.isRequired,
   focusedTab: PropTypes.string,

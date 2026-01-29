@@ -246,6 +246,80 @@ const removeDuplicateWeeks = (departures, days, weekStarts, weekEnds) => {
 };
 
 /**
+ * Calculate time range start date for a week
+ * @param {DateTime} weekStart - Start of the week
+ * @param {string} firstServiceDay - First service day in the week
+ * @param {number} departureCount - Number of departure weeks
+ * @param {boolean} isSameWeek - Is this the current week
+ * @param {number} idx - Week index
+ * @returns {DateTime}
+ */
+const calculateTimeRangeStart = (
+  weekStart,
+  firstServiceDay,
+  departureCount,
+  isSameWeek,
+  idx,
+) => {
+  const shouldAdjustStart =
+    weekStart.weekday <= firstServiceDay[0] &&
+    departureCount === 1 &&
+    (isSameWeek || idx === 0);
+
+  return shouldAdjustStart
+    ? weekStart.plus({ days: firstServiceDay[0] - 1 })
+    : weekStart;
+};
+
+/**
+ * Format time range string for a week
+ * @param {DateTime} timeRangeStart - Start of time range
+ * @param {DateTime} weekEnd - End of the week
+ * @param {Array} days - Days array
+ * @param {number} idx - Week index
+ * @param {DateTime} wantedDay - Wanted day
+ * @param {boolean} isMerged - Whether data is merged
+ * @returns {string}
+ */
+const formatTimeRange = (
+  timeRangeStart,
+  weekEnd,
+  days,
+  idx,
+  wantedDay,
+  isMerged,
+) => {
+  const isSingleDay =
+    days.length === 1 && days[idx][0]?.length === 1 && wantedDay && !isMerged;
+
+  return isSingleDay
+    ? wantedDay.toFormat(DATE_FORMAT_SCHEDULE)
+    : `${timeRangeStart.toFormat(DATE_FORMAT_SCHEDULE)} - ${weekEnd.toFormat(
+        DATE_FORMAT_SCHEDULE,
+      )}`;
+};
+
+/**
+ * Calculate option value date for a week
+ * @param {DateTime} weekStart - Start of the week
+ * @param {Array} days - Days array
+ * @param {number} idx - Week index
+ * @param {string} firstServiceDay - First service day
+ * @returns {string}
+ */
+const calculateOptionValue = (weekStart, days, idx, firstServiceDay) => {
+  const currentDayNo = DateTime.now().weekday;
+  const isCurrentDayOption =
+    idx === 0 &&
+    days[idx].indexOf(currentDayNo.toString()) !== -1 &&
+    currentDayNo > Number(firstServiceDay);
+
+  return isCurrentDayOption
+    ? weekStart.plus({ days: currentDayNo - 1 }).toFormat(DATE_FORMAT)
+    : weekStart.plus({ days: firstServiceDay[0] - 1 }).toFormat(DATE_FORMAT);
+};
+
+/**
  * Create dropdown options for other available date ranges
  */
 const createDateRangeOptions = (
@@ -257,8 +331,6 @@ const createDateRangeOptions = (
   departureCount,
   isMerged,
 ) => {
-  const currentDayNo = DateTime.now().weekday;
-
   return weekStarts
     .map((weekStart, idx) => {
       const firstServiceDay = days[idx]?.[0];
@@ -276,40 +348,133 @@ const createDateRangeOptions = (
       }
 
       // Calculate time range start
-      const shouldAdjustStart =
-        weekStart.weekday <= firstServiceDay[0] &&
-        departureCount === 1 &&
-        (isSameWeek || idx === 0);
-      const timeRangeStart = shouldAdjustStart
-        ? weekStart.plus({ days: firstServiceDay[0] - 1 })
-        : weekStart;
+      const timeRangeStart = calculateTimeRangeStart(
+        weekStart,
+        firstServiceDay,
+        departureCount,
+        isSameWeek,
+        idx,
+      );
 
       // Format time range
-      const isSingleDay =
-        days.length === 1 &&
-        days[idx][0]?.length === 1 &&
-        wantedDay &&
-        !isMerged;
-      const timeRange = isSingleDay
-        ? wantedDay.toFormat(DATE_FORMAT_SCHEDULE)
-        : `${timeRangeStart.toFormat(DATE_FORMAT_SCHEDULE)} - ${weekEnds[
-            idx
-          ].toFormat(DATE_FORMAT_SCHEDULE)}`;
+      const timeRange = formatTimeRange(
+        timeRangeStart,
+        weekEnds[idx],
+        days,
+        idx,
+        wantedDay,
+        isMerged,
+      );
 
       // Calculate value for this option
-      const isCurrentDayOption =
-        idx === 0 &&
-        days[idx].indexOf(currentDayNo.toString()) !== -1 &&
-        currentDayNo > Number(firstServiceDay);
-      const value = isCurrentDayOption
-        ? weekStart.plus({ days: currentDayNo - 1 }).toFormat(DATE_FORMAT)
-        : weekStart
-            .plus({ days: firstServiceDay[0] - 1 })
-            .toFormat(DATE_FORMAT);
+      const value = calculateOptionValue(weekStart, days, idx, firstServiceDay);
 
       return { label: timeRange, value };
     })
     .filter(option => option !== null);
+};
+
+/**
+ * Calculate the current range information for the wanted day
+ * @param {DateTime} wantedDay - The wanted day
+ * @param {Array} weekStarts - Array of week start dates
+ * @param {Array} weekEnds - Array of week end dates
+ * @param {Array} days - Array of days arrays
+ * @param {DateTime} startOfCurrentWeek - Start of current week
+ * @param {number} departureCount - Number of departure weeks
+ * @param {boolean} isMerged - Whether data is merged
+ * @returns {Array} Range information [timeRange, wantedDay, weekday, dayArray, weekStart]
+ */
+const calculateCurrentRange = (
+  wantedDay,
+  weekStarts,
+  weekEnds,
+  days,
+  startOfCurrentWeek,
+  departureCount,
+  isMerged,
+) => {
+  // Default range
+  let range = [
+    wantedDay.toFormat(DATE_FORMAT_SCHEDULE),
+    wantedDay,
+    wantedDay.weekday,
+    '',
+    wantedDay.startOf('week'),
+  ];
+
+  // Update range if the wanted day falls within a week
+  weekStarts.forEach((weekStart, idx) => {
+    if (wantedDay >= weekStart && wantedDay <= weekEnds[idx]) {
+      const firstServiceDay = days[idx]?.[0];
+
+      // Only update range if we have valid service days
+      if (!firstServiceDay) {
+        return;
+      }
+
+      const isSameWeek = startOfCurrentWeek.hasSame(weekStart, 'week');
+      const timeRangeStart = calculateTimeRangeStart(
+        weekStart,
+        firstServiceDay,
+        departureCount,
+        isSameWeek,
+        idx,
+      );
+
+      const timeRange = formatTimeRange(
+        timeRangeStart,
+        weekEnds[idx],
+        days,
+        idx,
+        wantedDay,
+        isMerged,
+      );
+
+      range = [
+        timeRange,
+        wantedDay,
+        wantedDay.weekday,
+        days[idx],
+        weekStarts[idx],
+      ];
+    }
+  });
+
+  return range;
+};
+
+/**
+ * Initialize and adjust first week start date
+ * @param {DateTime} startOfCurrentWeek - Start of current week
+ * @param {DateTime} today - Today's date
+ * @param {Array} departures - Departures array
+ * @param {boolean} currentAndNextWeekAreSame - Whether weeks are same
+ * @returns {Object} { firstWeekStart: DateTime, pastDate: string }
+ */
+const calculateFirstWeekStart = (
+  startOfCurrentWeek,
+  today,
+  departures,
+  currentAndNextWeekAreSame,
+) => {
+  let pastDate;
+  let firstWeekStart = currentAndNextWeekAreSame ? startOfCurrentWeek : today;
+
+  if (
+    !currentAndNextWeekAreSame &&
+    departures.length > 0 &&
+    departures[0].length > 0 &&
+    departures[0][0]
+  ) {
+    const minDayNo = Math.min(...departures[0][0][0].split('').map(Number));
+    pastDate = startOfCurrentWeek.plus({ days: minDayNo - 1 });
+    if (!currentAndNextWeekAreSame) {
+      firstWeekStart = pastDate;
+    }
+  }
+
+  return { firstWeekStart, pastDate };
 };
 
 /**
@@ -342,22 +507,14 @@ export const populateData = (
   );
 
   // Adjust first week start if needed
-  let pastDate;
-  if (
-    !currentAndNextWeekAreSame &&
-    departures.length > 0 &&
-    departures[0].length > 0 &&
-    departures[0][0]
-  ) {
-    const minDayNo = Math.min(...departures[0][0][0].split('').map(Number));
-    pastDate = startOfCurrentWeek.plus({ days: minDayNo - 1 });
-    weekStarts[0] = currentAndNextWeekAreSame ? startOfCurrentWeek : today;
-    if (!currentAndNextWeekAreSame) {
-      weekStarts[0] = pastDate;
-    }
-  } else {
-    weekStarts[0] = currentAndNextWeekAreSame ? startOfCurrentWeek : today;
-  }
+  const { firstWeekStart, pastDate: calculatedPastDate } =
+    calculateFirstWeekStart(
+      startOfCurrentWeek,
+      today,
+      departures,
+      currentAndNextWeekAreSame,
+    );
+  weekStarts[0] = firstWeekStart;
 
   // Process empty departures and collect indices to remove
   const emptyIndices = processEmptyDepartures(departures, days);
@@ -365,15 +522,6 @@ export const populateData = (
 
   // Remove duplicate consecutive weeks
   removeDuplicateWeeks(departures, days, weekStarts, weekEnds);
-
-  // Create the current range information
-  let range = [
-    wantedDay.toFormat(DATE_FORMAT_SCHEDULE),
-    wantedDay,
-    wantedDay.weekday,
-    '',
-    wantedDay.startOf('week'),
-  ];
 
   // Create options for other date ranges
   const options = createDateRangeOptions(
@@ -386,53 +534,21 @@ export const populateData = (
     isMerged,
   );
 
-  // Update range if the wanted day falls within a week
-  weekStarts.forEach((weekStart, idx) => {
-    if (wantedDay >= weekStart && wantedDay <= weekEnds[idx]) {
-      const firstServiceDay = days[idx]?.[0];
-
-      // Only update range if we have valid service days
-      if (!firstServiceDay) {
-        return;
-      }
-
-      const isSameWeek = startOfCurrentWeek.hasSame(weekStart, 'week');
-
-      const shouldAdjustStart =
-        weekStart.weekday <= firstServiceDay[0] &&
-        departureCount === 1 &&
-        (isSameWeek || idx === 0);
-      const timeRangeStart = shouldAdjustStart
-        ? weekStart.plus({ days: firstServiceDay[0] - 1 })
-        : weekStart;
-
-      const isSingleDay =
-        days.length === 1 &&
-        days[idx][0]?.length === 1 &&
-        wantedDayIn &&
-        !isMerged;
-      const timeRange = isSingleDay
-        ? wantedDay.toFormat(DATE_FORMAT_SCHEDULE)
-        : `${timeRangeStart.toFormat(DATE_FORMAT_SCHEDULE)} - ${weekEnds[
-            idx
-          ].toFormat(DATE_FORMAT_SCHEDULE)}`;
-
-      range = [
-        timeRange,
-        wantedDay,
-        wantedDay.weekday,
-        days[idx],
-        weekStarts[idx],
-      ];
-    }
-  });
+  // Calculate the current range information
+  const range = calculateCurrentRange(
+    wantedDay,
+    weekStarts,
+    weekEnds,
+    days,
+    startOfCurrentWeek,
+    departureCount,
+    isMerged,
+  );
 
   // Set pastDate if not already set
-  if (!pastDate) {
-    pastDate = startOfCurrentWeek
-      .plus({ days: dataExistsDay - 1 })
-      .toFormat(DATE_FORMAT);
-  }
+  const pastDate =
+    calculatedPastDate ||
+    startOfCurrentWeek.plus({ days: dataExistsDay - 1 }).toFormat(DATE_FORMAT);
 
   return [
     weekStarts,
@@ -442,4 +558,48 @@ export const populateData = (
     currentAndNextWeekAreSame,
     pastDate,
   ];
+};
+
+/**
+ * Calculate the appropriate service day for display
+ * @param {DateTime} wantedDay - The requested service day
+ * @param {Array} data - The populated schedule data array
+ * @param {DateTime} firstDataDate - First date with available data
+ * @returns {DateTime|undefined} Calculated service day or undefined
+ */
+export const calculateServiceDay = (wantedDay, data, firstDataDate) => {
+  if (wantedDay || !data || data.length < 3) {
+    return undefined;
+  }
+
+  const range = data[DATA_INDEX.RANGE];
+  const dayArray = range?.[RANGE_INDEX.DAY_ARRAY];
+  const currentWeekday = range?.[RANGE_INDEX.WEEKDAY];
+  const wantedDayValue = range?.[RANGE_INDEX.WANTED_DAY];
+  const options = data[DATA_INDEX.OPTIONS];
+  const weekStarts = data[DATA_INDEX.WEEK_STARTS];
+
+  let serviceDay;
+
+  // Check if current weekday doesn't match first day in array
+  if (dayArray && dayArray !== '') {
+    if (currentWeekday !== dayArray[0]?.charAt(0)) {
+      serviceDay = DateTime.now()
+        .startOf('week')
+        .plus({ days: Number(dayArray[0]?.charAt(0)) - 1 });
+    }
+  } else if (
+    options?.[0] &&
+    wantedDayValue &&
+    wantedDayValue < weekStarts?.[0]
+  ) {
+    serviceDay = DateTime.fromFormat(options[0].value, DATE_FORMAT);
+  }
+
+  // Don't redirect to a date later than first available data
+  if (serviceDay && serviceDay > firstDataDate) {
+    return firstDataDate;
+  }
+
+  return serviceDay;
 };

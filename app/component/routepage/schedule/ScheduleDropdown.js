@@ -6,6 +6,7 @@ import Icon from '@digitransit-component/digitransit-component-icon';
 import isEmpty from 'lodash/isEmpty';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 import { useTranslationsContext } from '../../../util/useTranslationsContext';
+import { truncateLabel } from '../../../util/stringUtils';
 
 function ScheduleDropdown({
   alignRight,
@@ -42,10 +43,7 @@ function ScheduleDropdown({
   const optionList = !id
     ? list
     : list.map(option => {
-        const titleLabel =
-          option.label.length <= 17
-            ? option.label
-            : `${option.label.substring(0, 15)}...`;
+        const titleLabel = truncateLabel(option.label);
         return {
           value: option.value,
           fullLabel: option.label,
@@ -92,7 +90,7 @@ function ScheduleDropdown({
       <Select
         aria-labelledby={`aria-label-${id}`}
         ariaLiveMessages={{
-          guidance: () => '.', // this can't be empty for some reason
+          guidance: () => '.', // react-select requires non-empty string for aria-live regions
           onChange: ({ value }) =>
             `${intl.formatMessage({ id: 'route-page.pattern-chosen' })} ${
               value.fullLabel
@@ -132,9 +130,7 @@ function ScheduleDropdown({
         placeholder={
           title && (
             <>
-              <span>
-                {title.length <= 17 ? title : `${title.substring(0, 15)}...`}
-              </span>
+              <span>{truncateLabel(title)}</span>
               <Icon
                 img="arrow-dropdown"
                 height={0.625}
@@ -147,11 +143,7 @@ function ScheduleDropdown({
         value={
           !title && (
             <>
-              <span>
-                {selectedValue.length <= 17
-                  ? selectedValue
-                  : `${selectedValue.substring(0, 15)}...`}
-              </span>
+              <span>{truncateLabel(selectedValue)}</span>
               <Icon
                 img="arrow-dropdown"
                 height={0.625}

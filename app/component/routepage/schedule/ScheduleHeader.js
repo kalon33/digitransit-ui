@@ -11,21 +11,20 @@ function ScheduleHeader({
   onFromSelectChange,
   onToSelectChange,
 }) {
-  const options = stops.map((stop, index) => {
-    const option = {
-      label: stop.name,
-      value: index,
-    };
-    return option;
-  });
+  const options = stops.map((stop, index) => ({
+    label: stop.name,
+    value: index,
+  }));
 
-  const maxOptions = Object.keys(options).length;
-  const fromOptions = options.slice(0, to > maxOptions ? maxOptions : to);
+  const stopCount = options.length;
+  const fromOptions = options.slice(0, to > stopCount ? stopCount : to);
   const toOptions = options.slice(from + 1);
-  const fromDisplayName = fromOptions.filter(o => o.value === from)[0].label;
-  const toDisplayName = toOptions.filter(
-    o => o.value === (to > maxOptions ? maxOptions : to),
-  )[0].label;
+  const fromOption = fromOptions.find(o => o.value === from);
+  const toOption = toOptions.find(
+    o => o.value === (to > stopCount ? stopCount : to),
+  );
+  const fromDisplayName = fromOption?.label || '';
+  const toDisplayName = toOption?.label || '';
 
   const stopHeadersForPrinting = (
     <div className="printable-stop-header">
