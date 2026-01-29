@@ -3,6 +3,7 @@ import React from 'react';
 import cx from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { matchShape, routerShape } from 'found';
+import { Info } from 'luxon';
 import { parkShape, errorShape } from '../util/shapes';
 import ParkOrStationHeader from './ParkOrStationHeader';
 import Icon from './Icon';
@@ -17,6 +18,16 @@ function parkLabel(id) {
       <FormattedMessage id={id} />
     </div>
   );
+}
+
+const osmDays = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
+
+function translateOpeningHours(s) {
+  let translated = s;
+  osmDays.forEach((d, i) => {
+    translated = translated.replaceAll(d, Info.weekdays('short')[i]);
+  });
+  return translated;
 }
 
 function ParkAndRideContent({
@@ -104,7 +115,9 @@ function ParkAndRideContent({
             <div className={cx('opening-hours', 'park-value')}>
               {openingHours.map(text => (
                 // eslint-disable-next-line react/no-array-index-key
-                <span key={`opening-hour-${text}`}>{text}</span>
+                <span key={`opening-hour-${text}`}>
+                  {translateOpeningHours(text)}
+                </span>
               ))}
             </div>
           </div>
