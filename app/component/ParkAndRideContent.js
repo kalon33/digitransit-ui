@@ -152,12 +152,15 @@ function ParkAndRideContent(
         )}
       </div>
       {showInfo && (
-        <Disclaimer
-          headerId={`${prePostFix}-disclaimer-header`}
-          textId={`${prePostFix}-disclaimer`}
-          href={config.parkAndRide?.url?.[config.language]}
-          linkLabelId="park-disclaimer-link"
-        />
+        <>
+          <br />
+          <Disclaimer
+            headerId={`${prePostFix}-disclaimer-header`}
+            textId={`${prePostFix}-disclaimer`}
+            href={config.parkAndRide?.url?.[config.language]}
+            linkLabelId="park-disclaimer-link"
+          />
+        </>
       )}
     </div>
   );

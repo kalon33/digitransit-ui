@@ -112,16 +112,30 @@
       margin: 8px;
     }
 
-    .park-details-row {
-      flex-direction: row;
-
-      span {
-        width: 100%;
-        text-align: right;
+    .park-details {
+      :first-child {
+        font-weight: $font-weight-medium;
       }
 
-      div {
+      :last-child {
+        font-weight: $font-weight-book;
+      }
+    }
+
+    .park-details-row {
+      flex-direction: row;
+      width: 96%;
+      white-space: nowrap;
+
+      :first-child {
+        font-weight: $font-weight-book;
+      }
+
+      :last-child {
+        margin-left: auto;
+        margin-right: 0;
         text-align: right;
+        font-weight: $font-weight-medium;
       }
     }
 

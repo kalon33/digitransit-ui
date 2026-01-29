@@ -206,7 +206,7 @@
         .station {
           &-page-container {
             margin: 0;
-            padding: var(--space-m) var(--space-m);
+            padding: var(--space-m) var(--space-m) var(--space-s);
           }
 
           &-header {
