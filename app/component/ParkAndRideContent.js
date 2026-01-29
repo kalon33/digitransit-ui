@@ -9,6 +9,7 @@ import Icon from './Icon';
 import Disclaimer from './Disclaimer';
 import { PREFIX_BIKEPARK, PREFIX_CARPARK } from '../util/path';
 import { useConfigContext } from '../configurations/ConfigContext';
+import { useBreakpoint } from '../util/withBreakpoint';
 
 function parkLabel(id) {
   return (
@@ -33,6 +34,8 @@ function ParkAndRideContent({
     throw error.message;
   }
   const { parkAndRide, language } = useConfigContext();
+  const breakpoint = useBreakpoint();
+
   const bikePark = mode
     ? mode === 'BIKEPARK'
     : match.location.pathname.includes(PREFIX_BIKEPARK);
@@ -86,7 +89,7 @@ function ParkAndRideContent({
           parkOrStation={vehicleParking}
           parkType={bikePark ? 'bike' : 'car'}
           backButton={backButton}
-          withSeparator={showDetails}
+          withSeparator={showDetails && breakpoint === 'large'}
         />
       </div>
       <div className="park-content-container">
