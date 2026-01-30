@@ -82,7 +82,7 @@ function ParkAndRideContent({
     Number.isInteger(capacity);
 
   const detailClass = showDetails ? 'park-details' : 'park-details-row';
-
+  const separator = showDetails ? 'separator' : 'low-separator';
   return (
     <div className="station-page-container">
       <div className={cx('park-header', { 'large-header': showDetails })}>
@@ -119,7 +119,7 @@ function ParkAndRideContent({
         )}
         {(realtime || Number.isInteger(available)) && (
           <>
-            <div className="separator" />
+            <div className={separator} />
             <div className={detailClass}>
               {realtime && (
                 <>
@@ -140,7 +140,7 @@ function ParkAndRideContent({
         )}
         {showDetails && (parkIsFree || parkIsPaid) && (
           <>
-            <div className="separator" />
+            <div className={separator} />
             <div className={detailClass}>
               {parkLabel('price')}
               <span className="park-value">
@@ -164,7 +164,7 @@ function ParkAndRideContent({
         )}
         {showDetails && services.length > 0 && (
           <>
-            <div className="separator" />
+            <div className={separator} />
             <div className={detailClass}>
               {parkLabel('services-and-features')}
               <span className="park-value">
