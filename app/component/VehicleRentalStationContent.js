@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import cx from 'classnames';
 import { createFragmentContainer, graphql } from 'react-relay';
 import { FormattedMessage } from 'react-intl';
 import { routerShape } from 'found';
@@ -45,7 +46,7 @@ const VehicleRentalStationContent = ({
     ? 'citybike-purchase-link'
     : 'citybike-start-using-info';
   return (
-    <div className="station-page-container">
+    <div className={cx('station-page-container', 'large-header')}>
       <ParkOrStationHeader
         parkOrStation={vehicleRentalStation}
         breakpoint={breakpoint}

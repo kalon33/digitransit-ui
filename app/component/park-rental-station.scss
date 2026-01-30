@@ -3,6 +3,12 @@
   font-size: $font-size-normal;
   margin: 0 3.75em;
 
+  .large-header {
+    h3 {
+      font-size: 20px;
+    }
+  }
+
   .separator {
     width: 100%;
     border-bottom: 1px solid #ddd;
@@ -36,12 +42,6 @@
 
     .header {
       flex: 1;
-    }
-  }
-
-  .large-header {
-    h3 {
-      font-size: 20px;
     }
   }
 
