@@ -3,20 +3,27 @@ import React, { memo } from 'react';
 import { routerShape } from 'found';
 import DTAutoSuggest from '@digitransit-component/digitransit-component-autosuggest';
 import { filterSearchResultsByMode } from '@digitransit-search-util/digitransit-search-util-query-utils';
-import { configShape } from '../../util/shapes';
 import { withSearchContext } from '../WithSearchContext';
 import { getStopRoutePath } from '../../util/path';
+import { useConfigContext } from '../../configurations/ConfigContext';
 
 const DTAutoSuggestWithSearchContext = withSearchContext(DTAutoSuggest);
 const searchSources = ['Favourite', 'History', 'Datasource'];
 
-function StopRouteSearch({ mode, ...rest }, { router, config }) {
+function StopRouteSearch({ mode, ...rest }, { router }) {
   const transportMode = `route-${mode}`;
+  const {
+    getAutoSuggestIcons,
+    colors,
+    iconModeSet,
+    language,
+    stopSearchFilter,
+  } = useConfigContext();
 
-  const filter = config.stopSearchFilter
+  const filter = stopSearchFilter
     ? (results, transportmode, type) =>
         filterSearchResultsByMode(results, transportmode, type).filter(
-          config.stopSearchFilter,
+          stopSearchFilter,
         )
     : filterSearchResultsByMode;
   const selectHandler = item => {
@@ -49,9 +56,10 @@ function StopRouteSearch({ mode, ...rest }, { router, config }) {
         sources={searchSources}
         targets={targets}
         selectHandler={selectHandler} // prop for context handler
-        getAutoSuggestIcons={config.getAutoSuggestIcons}
-        colors={config.colors}
-        modeSet={config.iconModeSet}
+        getAutoSuggestIcons={getAutoSuggestIcons}
+        colors={colors}
+        modeSet={iconModeSet}
+        lang={language}
         {...rest}
       />
     </div>
@@ -59,10 +67,6 @@ function StopRouteSearch({ mode, ...rest }, { router, config }) {
 }
 
 StopRouteSearch.propTypes = { mode: PropTypes.string.isRequired };
-
-StopRouteSearch.contextTypes = {
-  router: routerShape.isRequired,
-  config: configShape.isRequired,
-};
+StopRouteSearch.contextTypes = { router: routerShape.isRequired };
 
 export default memo(StopRouteSearch);

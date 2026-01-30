@@ -67,7 +67,6 @@ function NearYouPage(
     breakpoint,
     relayEnvironment,
     position,
-    lang,
     match,
     favouriteStopIds,
     favouriteStationIds,
@@ -391,11 +390,10 @@ function NearYouPage(
                     <StopRouteSearch
                       mode={tabMode}
                       isMobile={breakpoint !== 'large'}
-                      lang={lang}
                       refPoint={searchPosition}
                     />
                   )}
-                  {tabMode === 'CITYBIKE' && <CityBikeInfo lang={lang} />}
+                  {tabMode === 'CITYBIKE' && <CityBikeInfo />}
                   {(tabMode === 'CARPARK' || tabMode === 'BIKEPARK') && (
                     <ParkInfo mode={tabMode} />
                   )}
@@ -522,7 +520,6 @@ function NearYouPage(
   const search = onMap => (
     <Search
       onMap={onMap}
-      lang={lang}
       selectHandler={selectHandler}
       isMobile={breakpoint !== 'large'}
       refPoint={searchPosition}
@@ -605,7 +602,6 @@ NearYouPage.propTypes = {
   breakpoint: PropTypes.string.isRequired,
   relayEnvironment: relayShape.isRequired,
   position: locationShape.isRequired,
-  lang: PropTypes.string.isRequired,
   match: matchShape.isRequired,
   favouriteStopIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   favouriteStationIds: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -629,13 +625,7 @@ const NearYouPageWithBreakpoint = withBreakpoint(props => (
 
 const PositioningWrapper = connectToStores(
   NearYouPageWithBreakpoint,
-  [
-    'PositionStore',
-    'PreferencesStore',
-    'FavouriteStore',
-    'MapLayerStore',
-    'TimeStore',
-  ],
+  ['PositionStore', 'FavouriteStore', 'MapLayerStore', 'TimeStore'],
   (context, props) => {
     const favStore = context.getStore('FavouriteStore');
     const favouriteStopIds = favStore
@@ -657,7 +647,6 @@ const PositioningWrapper = connectToStores(
       ...props,
       currentTime: context.getStore('TimeStore').getCurrentTime(),
       position: context.getStore('PositionStore').getLocationState(),
-      lang: context.getStore('PreferencesStore').getLanguage(),
       mapLayers: context
         .getStore('MapLayerStore')
         .getMapLayers({ notThese: ['vehicles', 'scooter'] }),
