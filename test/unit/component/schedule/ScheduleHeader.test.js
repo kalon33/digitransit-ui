@@ -6,7 +6,7 @@ import sinon from 'sinon';
 
 import ScheduleHeader from '../../../../app/component/routepage/schedule/ScheduleHeader';
 import ScheduleDropdown from '../../../../app/component/routepage/schedule/ScheduleDropdown';
-import Icon from '../../../../app/component/Icon';
+import StopHeaderDisplay from '../../../../app/component/routepage/schedule/StopHeaderDisplay';
 
 describe('<ScheduleHeader />', () => {
   const defaultStops = [
@@ -96,31 +96,21 @@ describe('<ScheduleHeader />', () => {
     expect(toOptions).to.have.lengthOf(2); // stops 2-3
   });
 
-  it('should render printable stop headers with correct icons', () => {
+  it('should render StopHeaderDisplay component', () => {
     const wrapper = shallow(<ScheduleHeader {...defaultProps} />);
-    const printableHeader = wrapper.find('.printable-stop-header');
+    const stopHeaderDisplay = wrapper.find(StopHeaderDisplay);
 
-    expect(printableHeader.exists()).to.equal(true);
-
-    const icons = printableHeader.find(Icon);
-    expect(icons).to.have.lengthOf(2);
-    expect(icons.at(0).prop('img')).to.equal('icon_mapMarker');
-    expect(icons.at(1).prop('img')).to.equal('icon_mapMarker');
+    expect(stopHeaderDisplay.exists()).to.equal(true);
+    expect(stopHeaderDisplay.prop('fromDisplayName')).to.equal('First Stop');
+    expect(stopHeaderDisplay.prop('toDisplayName')).to.equal('Fourth Stop');
   });
 
   it('should display correct stop names in printable headers', () => {
     const wrapper = shallow(<ScheduleHeader {...defaultProps} />);
-    const printableHeader = wrapper.find('.printable-stop-header');
+    const stopHeaderDisplay = wrapper.find(StopHeaderDisplay);
 
-    const fromText = printableHeader
-      .find('.printable-stop-header_from span')
-      .text();
-    const toText = printableHeader
-      .find('.printable-stop-header_to span')
-      .text();
-
-    expect(fromText).to.equal('First Stop');
-    expect(toText).to.equal('Fourth Stop');
+    expect(stopHeaderDisplay.prop('fromDisplayName')).to.equal('First Stop');
+    expect(stopHeaderDisplay.prop('toDisplayName')).to.equal('Fourth Stop');
   });
 
   it('should update stop names when from changes', () => {
@@ -215,7 +205,7 @@ describe('<ScheduleHeader />', () => {
 
     expect(wrapper.find('.route-schedule-header').exists()).to.equal(true);
     expect(wrapper.find('.route-schedule-dropdowns').exists()).to.equal(true);
-    expect(wrapper.find('.printable-stop-header').exists()).to.equal(true);
+    expect(wrapper.find(StopHeaderDisplay).exists()).to.equal(true);
   });
 
   it('should maintain stop order in options', () => {

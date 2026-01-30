@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import cx from 'classnames';
 import dayRangePattern from '@digitransit-util/digitransit-util-day-range-pattern';
 import { getTranslatedDayString } from '@digitransit-util/digitransit-util-route-pattern-option-text';
@@ -7,9 +7,16 @@ import { DateTime } from 'luxon';
 import {
   processDayTabs,
   calculateTabDate,
+  calculateFocusedTab,
 } from '../../../util/scheduleDayTabUtils';
 import { DATA_INDEX, RANGE_INDEX } from '../../../util/scheduleDataUtils';
 import { DATE_FORMAT } from '../../../constants';
+
+// Keyboard navigation mapping
+const KEYBOARD_ACTIONS = {
+  ArrowLeft: (index, count) => (index - 1 + count) % count,
+  ArrowRight: (index, count) => (index + 1) % count,
+};
 
 /**
  * ScheduleDayTabs - Renders day tabs for schedule navigation
@@ -43,7 +50,31 @@ const ScheduleDayTabs = ({
   const isMerged = data[DATA_INDEX.WEEKS_ARE_SAME];
   const pastDate = data[DATA_INDEX.PAST_DATE];
 
-  let currentFocusedTab = focusedTab;
+  // Determine which tab should be focused initially
+  const currentFocusedTab = useMemo(
+    () =>
+      calculateFocusedTab(
+        focusedTab,
+        dayTabs,
+        currentWeekday,
+        firstDay,
+        isSameWeek,
+        count,
+      ),
+    [focusedTab, dayTabs, currentWeekday, firstDay, isSameWeek, count],
+  );
+
+  // Callback to safely create/assign refs without mutation during render
+  const getTabRef = useCallback(
+    tab => {
+      if (!tabRefs.current[tab]) {
+        // eslint-disable-next-line no-param-reassign
+        tabRefs.current[tab] = React.createRef();
+      }
+      return tabRefs.current[tab];
+    },
+    [tabRefs],
+  );
 
   const tabs = dayTabs.map((tab, id) => {
     const isSelectedByDay = tab.indexOf(currentWeekday) !== -1;
@@ -52,15 +83,6 @@ const ScheduleDayTabs = ({
       !isSameWeek &&
       dayTabs.indexOf(currentWeekday) === id;
     const selected = isSelectedByDay || isFirstDayFallback || count === 1;
-
-    // Create refs for accessibility
-    if (!tabRefs.current[tab]) {
-      // eslint-disable-next-line no-param-reassign
-      tabRefs.current[tab] = React.createRef();
-    }
-    if (!currentFocusedTab && selected) {
-      currentFocusedTab = tab;
-    }
 
     const tabDate = calculateTabDate(
       range[RANGE_INDEX.WEEK_START],
@@ -76,7 +98,7 @@ const ScheduleDayTabs = ({
         key={tab}
         className={cx({ 'is-active': selected })}
         onClick={() => onTabClick(tabDate.toFormat(DATE_FORMAT))}
-        ref={tabRefs.current[tab]}
+        ref={getTabRef(tab)}
         tabIndex={selected ? 0 : -1}
         role="tab"
         aria-selected={selected}
@@ -88,23 +110,18 @@ const ScheduleDayTabs = ({
   });
 
   const handleKeyNavigation = e => {
-    const activeIndex = dayTabs.indexOf(currentFocusedTab);
-    let index;
+    const { code } = e.nativeEvent;
+    const getNextIndex = KEYBOARD_ACTIONS[code];
 
-    switch (e.nativeEvent.code) {
-      case 'ArrowLeft':
-        index = (activeIndex - 1 + count) % count;
-        tabRefs.current[dayTabs[index]].current.focus();
-        onTabFocus(dayTabs[index]);
-        break;
-      case 'ArrowRight':
-        index = (activeIndex + 1) % count;
-        tabRefs.current[dayTabs[index]].current.focus();
-        onTabFocus(dayTabs[index]);
-        break;
-      default:
-        break;
+    if (!getNextIndex) {
+      return;
     }
+
+    const activeIndex = dayTabs.indexOf(currentFocusedTab);
+    const nextIndex = getNextIndex(activeIndex, count);
+
+    tabRefs.current[dayTabs[nextIndex]].current.focus();
+    onTabFocus(dayTabs[nextIndex]);
   };
 
   return (

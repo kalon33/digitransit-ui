@@ -1,15 +1,21 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Select from 'react-select';
 import Icon from '@digitransit-component/digitransit-component-icon';
 import isEmpty from 'lodash/isEmpty';
-import { useConfigContext } from '../../../configurations/ConfigContext';
 import { useTranslationsContext } from '../../../util/useTranslationsContext';
 import { truncateLabel } from '../../../util/stringUtils';
+import DropdownIcon from './DropdownIcon';
+import { getAriaMessages, getClassNamePrefix } from './scheduleDropdownUtils';
 
+/**
+ * ScheduleDropdown - Generic dropdown component for schedule page
+ * Used for stop selection (origin/destination) and date range selection
+ */
 function ScheduleDropdown({
   alignRight,
+  changeTitleOnChange,
   id,
   labelId,
   list,
@@ -17,7 +23,6 @@ function ScheduleDropdown({
   title,
 }) {
   const intl = useTranslationsContext();
-  const config = useConfigContext();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState([]);
@@ -26,43 +31,49 @@ function ScheduleDropdown({
   const onMenuClose = () => setIsMenuOpen(false);
 
   const handleChange = selectedOption => {
-    if (!id) {
-      setSelectedValue(title);
-    } else {
+    if (changeTitleOnChange) {
       const option = {
         ...selectedOption,
         label: selectedOption.titleLabel,
       };
       setSelectedValue(option);
+    } else {
+      setSelectedValue(title);
     }
     if (onSelectChange) {
       onSelectChange(selectedOption.value);
     }
   };
 
-  const optionList = !id
-    ? list
-    : list.map(option => {
-        const titleLabel = truncateLabel(option.label);
-        return {
-          value: option.value,
-          fullLabel: option.label,
-          label: (
-            <>
-              <span>{option.label}</span>
-              {option.label === title && (
-                <Icon img="check" height={1.1525} width={0.904375} />
-              )}
-            </>
-          ),
-          titleLabel,
-        };
-      });
+  // Memoize option list transformation
+  const optionList = useMemo(() => {
+    if (!changeTitleOnChange) {
+      return list;
+    }
 
-  let classNamePrefix = 'dd';
-  if (alignRight) {
-    classNamePrefix = id !== 'other-dates' ? 'dd-right' : 'dd-timerange';
-  }
+    return list.map(option => {
+      const titleLabel = truncateLabel(option.label);
+      return {
+        value: option.value,
+        fullLabel: option.label,
+        label: (
+          <>
+            <span>{option.label}</span>
+            {option.label === title && (
+              <Icon img="check" height={1.1525} width={0.904375} />
+            )}
+          </>
+        ),
+        titleLabel,
+      };
+    });
+  }, [list, title, changeTitleOnChange]);
+
+  // Memoize aria messages
+  const ariaMessages = useMemo(() => getAriaMessages(intl), [intl]);
+
+  // Calculate class name prefix
+  const classNamePrefix = getClassNamePrefix(alignRight, id);
 
   return (
     <div
@@ -80,7 +91,7 @@ function ScheduleDropdown({
       )}
       {!labelId && (
         <label
-          style={{ display: 'none' }}
+          className="dd-header-title sr-only"
           id={`aria-label-${id}`}
           htmlFor={`aria-input-${id}`}
         >
@@ -89,20 +100,7 @@ function ScheduleDropdown({
       )}
       <Select
         aria-labelledby={`aria-label-${id}`}
-        ariaLiveMessages={{
-          guidance: () => '.', // react-select requires non-empty string for aria-live regions
-          onChange: ({ value }) =>
-            `${intl.formatMessage({ id: 'route-page.pattern-chosen' })} ${
-              value.fullLabel
-            }`,
-          onFilter: () => '',
-          onFocus: ({ context: itemContext, focused }) => {
-            if (itemContext === 'menu') {
-              return focused.fullLabel;
-            }
-            return '';
-          },
-        }}
+        ariaLiveMessages={ariaMessages}
         className="dd-select"
         classNamePrefix={classNamePrefix}
         components={{
@@ -127,32 +125,8 @@ function ScheduleDropdown({
         onMenuOpen={onMenuOpen}
         onMenuClose={onMenuClose}
         options={optionList}
-        placeholder={
-          title && (
-            <>
-              <span>{truncateLabel(title)}</span>
-              <Icon
-                img="arrow-dropdown"
-                height={0.625}
-                width={0.625}
-                color={config.colors.primary}
-              />
-            </>
-          )
-        }
-        value={
-          !title && (
-            <>
-              <span>{truncateLabel(selectedValue)}</span>
-              <Icon
-                img="arrow-dropdown"
-                height={0.625}
-                width={0.625}
-                color={config.colors.primary}
-              />
-            </>
-          )
-        }
+        placeholder={title && <DropdownIcon text={title} />}
+        value={!title && <DropdownIcon text={selectedValue} />}
       />
     </div>
   );
@@ -160,11 +134,13 @@ function ScheduleDropdown({
 
 ScheduleDropdown.propTypes = {
   alignRight: PropTypes.bool,
+  changeTitleOnChange: PropTypes.bool,
   id: PropTypes.string.isRequired,
   labelId: PropTypes.string,
   list: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string,
+      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     }),
   ).isRequired,
   onSelectChange: PropTypes.func,
@@ -173,6 +149,7 @@ ScheduleDropdown.propTypes = {
 
 ScheduleDropdown.defaultProps = {
   alignRight: false,
+  changeTitleOnChange: true,
   labelId: undefined,
   onSelectChange: undefined,
   title: 'No title',

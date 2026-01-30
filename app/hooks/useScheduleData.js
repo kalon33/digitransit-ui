@@ -7,27 +7,45 @@ import { DateTime } from 'luxon';
 import {
   modifyDepartures,
   isEmptyWeek,
-  getMostFrequent,
   populateData,
 } from '../util/scheduleDataUtils';
+import { getMostFrequent } from '../util/scheduleWeekProcessing';
+import getTestData from '../component/routepage/schedule/ScheduleDebugData';
+
+// Day mapping for finding first day with data
+const WEEK_DAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].map(
+  (day, index) => ({
+    key: `wk1${day}`,
+    day: index + 2, // Tuesday = 2, Wednesday = 3, etc.
+  }),
+);
+
+/**
+ * Check if week data should be merged with next week
+ * @param {Array} thisWeekHashes - Hash array for current week
+ * @param {Array} nextWeekHashes - Hash array for typical week
+ * @returns {boolean} True if this week is a subset of next week
+ */
+const shouldMergeWeekData = (thisWeekHashes, nextWeekHashes) => {
+  return thisWeekHashes.every(hash => nextWeekHashes.includes(hash));
+};
 
 /**
  * Process and merge schedule data
+ * Handles testing mode internally by checking query params
  * @param {Object} firstDeparturesProp - Raw first departures data
- * @param {Object} testData - Test data (if testing mode)
- * @param {boolean} testing - Testing mode flag
- * @param {string|number} testNum - Test number
- * @returns {Object} { firstDepartures, hasMergedData, dataExistsDay }
+ * @param {Object} match - Router match object for accessing query params
+ * @returns {Object} { firstDepartures, hasMergedData, dataExistsDay, firstWeekEmpty }
  */
-export const useScheduleData = ({
-  firstDeparturesProp,
-  testData = null,
-  testing = false,
-  testNum = null,
-}) => {
+export const useScheduleData = ({ firstDeparturesProp, match }) => {
   const hasMergedDataRef = useRef(false);
 
   const processedData = useMemo(() => {
+    // Handle testing mode internally
+    const testing = process.env.ROUTEPAGETESTING || false;
+    const testNum = testing && match?.location?.query?.test;
+    const testData = testing && testNum ? getTestData(testNum) : null;
+
     let dataToHandle;
 
     if (testing && testNum) {
@@ -49,17 +67,19 @@ export const useScheduleData = ({
       firstDepartures[0]?.length > 0 &&
       dataToHandle.wk1mon?.length === 0
     ) {
-      const [thisWeekData, normalWeekData] =
-        Number(testNum) === 0
-          ? firstDepartures
-          : [firstDepartures[0], getMostFrequent(firstDepartures)];
+      // Get typical week pattern for comparison
+      const thisWeekData = firstDepartures[0];
+      const normalWeekData =
+        testNum && testNum !== '0'
+          ? getMostFrequent(firstDepartures)
+          : firstDepartures[1] || firstDepartures[0];
 
       // Extract hashes using map instead of for loops
       const thisWeekHashes = thisWeekData.map(data => data[1]);
       const nextWeekHashes = normalWeekData.map(data => data[1]);
 
       // If this week's data is a subset of normal week's data, merge them
-      if (thisWeekHashes.every(hash => nextWeekHashes.includes(hash))) {
+      if (shouldMergeWeekData(thisWeekHashes, nextWeekHashes)) {
         firstDepartures[0] = normalWeekData;
         hasMergedDataRef.current = true;
       }
@@ -67,16 +87,7 @@ export const useScheduleData = ({
 
     // Find first day with data when data is merged
     if (hasMergedDataRef.current) {
-      const daysMap = [
-        { key: 'wk1tue', day: 2 },
-        { key: 'wk1wed', day: 3 },
-        { key: 'wk1thu', day: 4 },
-        { key: 'wk1fri', day: 5 },
-        { key: 'wk1sat', day: 6 },
-        { key: 'wk1sun', day: 7 },
-      ];
-
-      const firstDayWithData = daysMap.find(
+      const firstDayWithData = WEEK_DAYS.find(
         ({ key }) => dataToHandle[key]?.length > 0,
       );
       if (firstDayWithData) {
@@ -90,7 +101,7 @@ export const useScheduleData = ({
       dataExistsDay,
       firstWeekEmpty,
     };
-  }, [firstDeparturesProp, testData, testing, testNum]);
+  }, [firstDeparturesProp, match]);
 
   return processedData;
 };

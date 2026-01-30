@@ -26,7 +26,6 @@ import ScheduleDropdown from './ScheduleDropdown';
 import RouteControlPanel from '../RouteControlPanel';
 import { routePagePath, PREFIX_TIMETABLE } from '../../../util/path';
 import ScrollableWrapper from '../../ScrollableWrapper';
-import getTestData from './ScheduleDebugData';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 import { useTranslationsContext } from '../../../util/useTranslationsContext';
 import { getTripsList } from '../../../util/scheduleTripsUtils';
@@ -38,7 +37,11 @@ import {
   useFirstDataDate,
 } from '../../../hooks/useScheduleData';
 import { useScheduleRedirects } from '../../../hooks/useScheduleRedirects';
-import { DATA_INDEX, RANGE_INDEX } from '../../../util/scheduleDataUtils';
+import { DATA_INDEX } from '../../../util/scheduleDataUtils';
+import {
+  validateScheduleData,
+  getScheduleRange,
+} from '../../../util/scheduleValidation';
 
 const openRoutePDF = (e, routePDFUrl) => {
   e.stopPropagation();
@@ -76,23 +79,15 @@ const ScheduleContainer = ({
 
   const tabRefs = useRef({});
 
-  // Get query params and testing flags
-  const { query } = match.location;
-  const testing = process.env.ROUTEPAGETESTING || false;
-  const testNum = testing && query && query.test;
-
-  const testData = testing && testNum ? getTestData(testNum) : null;
-
   // Process schedule data using custom hook
   const { firstDepartures, hasMergedData, dataExistsDay, firstWeekEmpty } =
     useScheduleData({
       firstDeparturesProp,
-      testData,
-      testing,
-      testNum,
+      match,
     });
 
   // Calculate wanted day and first data date
+  const { query } = match.location;
   const wantedDay =
     query && query.serviceDay
       ? DateTime.fromFormat(query.serviceDay, DATE_FORMAT)
@@ -108,7 +103,6 @@ const ScheduleContainer = ({
     wantedDay,
     firstDataDate,
     firstWeekEmpty,
-    testNum,
   });
 
   // Populate display data
@@ -118,6 +112,10 @@ const ScheduleContainer = ({
     hasMergedData,
     dataExistsDay,
   );
+
+  // Destructure schedule data for easier access
+  const scheduleRange = getScheduleRange(data);
+  const optionsData = data[DATA_INDEX.OPTIONS] || [];
 
   // Calculate new service day if needed
   const newServiceDay = useMemo(
@@ -172,7 +170,6 @@ const ScheduleContainer = ({
     [match, router],
   );
 
-  // Check if route is constant operation first to avoid redundant calculation
   const routeId = route?.gtfsId;
   const { constantOperationRoutes } = config;
   const { locale } = intl;
@@ -185,7 +182,15 @@ const ScheduleContainer = ({
     return null;
   }, [routeId, constantOperationRoutes, locale]);
 
-  if (constantOperationInfo) {
+  // Validate schedule data and handle special cases
+  const validation = validateScheduleData({
+    pattern,
+    route,
+    constantOperationInfo,
+  });
+
+  // Handle special rendering cases
+  if (validation.reason === 'constant-operation') {
     return (
       <ScheduleConstantOperation
         constantOperationInfo={constantOperationInfo}
@@ -196,31 +201,32 @@ const ScheduleContainer = ({
     );
   }
 
-  if (!pattern) {
-    if (routeId) {
-      // Redirect back to routes default pattern
+  if (!validation.shouldRender) {
+    if (validation.redirect === 'route-default' && routeId) {
       router.replace(routePagePath(routeId, PREFIX_TIMETABLE));
     }
     return null;
   }
 
+  // Main schedule rendering flow starts here
+
   const currentPattern = route?.patterns?.find(p => p.code === pattern.code);
 
-  // Calculate route timetable URL before using it
-  const routeIdSplitted = useMemo(() => routeId?.split(':'), [routeId]);
-  const routeTimetableHandler = routeIdSplitted
-    ? config.timetables && config.timetables[routeIdSplitted[0]]
+  // Calculate route timetable URL
+  const routeIdParts = useMemo(() => routeId?.split(':'), [routeId]);
+  const routeTimetableHandler = routeIdParts
+    ? config.timetables && config.timetables[routeIdParts[0]]
     : undefined;
 
-  const timetableDay = wantedDay || newServiceDay;
+  const selectedServiceDay = wantedDay || newServiceDay;
   const routeTimetableUrl =
     routeTimetableHandler &&
-    timetableDay &&
-    config.URL.ROUTE_TIMETABLES[routeIdSplitted[0]] &&
+    selectedServiceDay &&
+    config.URL.ROUTE_TIMETABLES[routeIdParts[0]] &&
     routeTimetableHandler.routeTimetableUrlResolver(
-      config.URL.ROUTE_TIMETABLES[routeIdSplitted[0]],
+      config.URL.ROUTE_TIMETABLES[routeIdParts[0]],
       route,
-      timetableDay.toFormat(DATE_FORMAT),
+      selectedServiceDay.toFormat(DATE_FORMAT),
       lang,
     );
 
@@ -230,8 +236,6 @@ const ScheduleContainer = ({
     newServiceDay,
     match,
     intl,
-    testing,
-    testNum,
   });
 
   // Handle redirect if needed
@@ -285,17 +289,15 @@ const ScheduleContainer = ({
           />
         )}
         <div className="route-schedule-ranges">
-          <span className="current-range">
-            {data[DATA_INDEX.RANGE][RANGE_INDEX.TIME_RANGE]}
-          </span>
+          <span className="current-range">{scheduleRange.timeRange}</span>
           <div className="other-ranges-dropdown">
-            {data[DATA_INDEX.OPTIONS].length > 0 && (
+            {optionsData.length > 0 && (
               <ScheduleDropdown
                 id="other-dates"
                 title={intl.formatMessage({
                   id: 'other-dates',
                 })}
-                list={data[DATA_INDEX.OPTIONS]}
+                list={optionsData}
                 alignRight
                 changeTitleOnChange={false}
                 onSelectChange={changeDate}
@@ -373,6 +375,8 @@ ScheduleContainer.propTypes = {
   router: routerShape.isRequired,
   lang: PropTypes.string.isRequired,
 };
+
+ScheduleContainer.displayName = 'ScheduleContainer';
 
 const containerComponent = connectToStores(
   withBreakpoint(ScheduleContainer),

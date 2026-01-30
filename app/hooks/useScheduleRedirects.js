@@ -17,7 +17,6 @@ import { DATE_FORMAT } from '../constants';
  * @param {DateTime} params.wantedDay - Wanted service day
  * @param {DateTime} params.firstDataDate - First date with available data
  * @param {boolean} params.firstWeekEmpty - Whether first week is empty
- * @param {string|number} params.testNum - Test number (for testing mode)
  */
 export const useScheduleRedirects = ({
   match,
@@ -26,9 +25,12 @@ export const useScheduleRedirects = ({
   wantedDay,
   firstDataDate,
   firstWeekEmpty,
-  testNum,
 }) => {
   useEffect(() => {
+    // Handle testing mode internally
+    const testing = process.env.ROUTEPAGETESTING || false;
+    const testNum = testing && match?.location?.query?.test;
+
     // Check if past date and redirect to current path
     const { serviceDay } = match.location.query;
     if (serviceDay) {
@@ -72,6 +74,5 @@ export const useScheduleRedirects = ({
     wantedDay,
     firstDataDate,
     firstWeekEmpty,
-    testNum,
   ]);
 };

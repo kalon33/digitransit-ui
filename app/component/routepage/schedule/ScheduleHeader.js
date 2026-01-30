@@ -1,9 +1,13 @@
 import PropTypes from 'prop-types';
-import React from 'react';
-import Icon from '../../Icon';
+import React, { useMemo } from 'react';
 import ScheduleDropdown from './ScheduleDropdown';
+import StopHeaderDisplay from './StopHeaderDisplay';
 import { stopShape } from '../../../util/shapes';
 
+/**
+ * ScheduleHeader - Header component for route schedule with stop selection
+ * Displays origin and destination dropdowns with printable headers
+ */
 function ScheduleHeader({
   stops,
   from,
@@ -11,41 +15,31 @@ function ScheduleHeader({
   onFromSelectChange,
   onToSelectChange,
 }) {
-  const options = stops.map((stop, index) => ({
-    label: stop.name,
-    value: index,
-  }));
+  const options = useMemo(
+    () =>
+      stops.map((stop, index) => ({
+        label: stop.name,
+        value: index,
+      })),
+    [stops],
+  );
 
   const stopCount = options.length;
-  const fromOptions = options.slice(0, to > stopCount ? stopCount : to);
+  const safeToIndex = Math.min(to, stopCount);
+
+  const fromOptions = options.slice(0, safeToIndex);
   const toOptions = options.slice(from + 1);
   const fromOption = fromOptions.find(o => o.value === from);
-  const toOption = toOptions.find(
-    o => o.value === (to > stopCount ? stopCount : to),
-  );
+  const toOption = toOptions.find(o => o.value === safeToIndex);
   const fromDisplayName = fromOption?.label || '';
   const toDisplayName = toOption?.label || '';
 
-  const stopHeadersForPrinting = (
-    <div className="printable-stop-header">
-      <div className="printable-stop-header_icon-from">
-        <Icon img="icon_mapMarker" />
-      </div>
-      <div className="printable-stop-header_from">
-        <span>{fromDisplayName}</span>
-      </div>
-      <div className="printable-stop-header_icon-to">
-        <Icon img="icon_mapMarker" />
-      </div>
-      <div className="printable-stop-header_to">
-        <span>{toDisplayName}</span>
-      </div>
-    </div>
-  );
-
   return (
     <div className="route-schedule-header row">
-      {stopHeadersForPrinting}
+      <StopHeaderDisplay
+        fromDisplayName={fromDisplayName}
+        toDisplayName={toDisplayName}
+      />
       <div className="route-schedule-dropdowns">
         <ScheduleDropdown
           id="origin"

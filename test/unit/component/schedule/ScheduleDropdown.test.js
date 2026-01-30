@@ -114,15 +114,15 @@ describe('<ScheduleDropdown />', () => {
   it('should not render visible label when labelId is not provided', () => {
     const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
 
-    const visibleLabel = wrapper.find('label.dd-header-title');
+    const visibleLabel = wrapper.find('label.dd-header-title').not('.sr-only');
     expect(visibleLabel).to.have.lengthOf(0);
   });
 
   it('should render hidden label for accessibility when no labelId', () => {
     const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
 
-    const hiddenLabel = wrapper.find('label[style]');
-    expect(hiddenLabel.prop('style')).to.deep.equal({ display: 'none' });
+    const hiddenLabel = wrapper.find('label.sr-only');
+    expect(hiddenLabel).to.have.lengthOf(1);
   });
 
   it('should set isSearchable to false', () => {

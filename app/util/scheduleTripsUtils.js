@@ -36,23 +36,19 @@ export const sortTrips = trips => {
 
 /**
  * Get and process trips for display
+ * Handles testing mode internally by checking query params
  * @param {Object} params - Trip processing parameters
  * @param {Object} params.pattern - Pattern object with trips
  * @param {DateTime} params.newServiceDay - New service day for redirect
  * @param {Object} params.match - Router match object
  * @param {Object} params.intl - Internationalization object
- * @param {boolean} params.testing - Testing mode flag
- * @param {string|number} params.testNum - Test number
  * @returns {Object} { trips: Array|null, redirectPath: string|null, noTripsMessage: JSX|null }
  */
-export const getTripsList = ({
-  pattern,
-  newServiceDay,
-  match,
-  intl,
-  testing = false,
-  testNum = null,
-}) => {
+export const getTripsList = ({ pattern, newServiceDay, match, intl }) => {
+  // Handle testing mode internally
+  const testing = process.env.ROUTEPAGETESTING || false;
+  const testNum = testing && match?.location?.query?.test;
+
   let currentPattern = pattern;
   let queryParams = newServiceDay
     ? `?serviceDay=${newServiceDay.toFormat(DATE_FORMAT)}`

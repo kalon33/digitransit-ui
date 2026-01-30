@@ -166,27 +166,23 @@ describe('<ScheduleConstantOperation />', () => {
     expect(text.text()).to.include('&');
   });
 
-  it('should render link as inline-block', () => {
+  it('should render link with constant-operation-link class', () => {
     const wrapper = shallow(<ScheduleConstantOperation {...defaultProps} />);
-    const linkContainer = wrapper.find('span').at(1);
+    const linkContainer = wrapper.find('.constant-operation-link');
 
-    expect(linkContainer.prop('style')).to.deep.equal({
-      display: 'inline-block',
-    });
+    expect(linkContainer).to.have.lengthOf(1);
   });
 
-  it('should set width to 95% on content container', () => {
+  it('should render content with constant-operation-content class', () => {
     const wrapper = shallow(<ScheduleConstantOperation {...defaultProps} />);
-    const contentDiv = wrapper.find('.stop-constant-operation-container div');
+    const contentDiv = wrapper.find('.constant-operation-content');
 
-    expect(contentDiv.prop('style')).to.deep.equal({ width: '95%' });
+    expect(contentDiv).to.have.lengthOf(1);
   });
 
-  it('should have padding bottom on control panel wrapper', () => {
+  it('should have constant-operation-panel class on control panel wrapper', () => {
     const wrapper = shallow(<ScheduleConstantOperation {...defaultProps} />);
-    const controlPanelWrapper = wrapper
-      .find('div')
-      .filterWhere(div => div.prop('style')?.paddingBottom === '28px');
+    const controlPanelWrapper = wrapper.find('.constant-operation-panel');
 
     expect(controlPanelWrapper).to.have.lengthOf(1);
   });

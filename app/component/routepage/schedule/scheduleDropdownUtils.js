@@ -1,0 +1,37 @@
+/**
+ * Aria message configuration for schedule dropdowns
+ * Extracted for reusability and maintainability
+ */
+
+/**
+ * Generate aria-live messages for react-select dropdowns
+ * @param {Function} intl - Internationalization function
+ * @returns {Object} Aria message configuration object
+ */
+export const getAriaMessages = intl => ({
+  guidance: () => '.', // react-select requires non-empty string for aria-live regions
+  onChange: ({ value }) =>
+    `${intl.formatMessage({ id: 'route-page.pattern-chosen' })} ${
+      value.fullLabel || value.label
+    }`,
+  onFilter: () => '',
+  onFocus: ({ context: itemContext, focused }) => {
+    if (itemContext === 'menu') {
+      return focused.fullLabel || focused.label;
+    }
+    return '';
+  },
+});
+
+/**
+ * Calculate class name prefix based on alignment and id
+ * @param {boolean} alignRight - Whether to align right
+ * @param {string} id - Component id
+ * @returns {string} Class name prefix for react-select
+ */
+export const getClassNamePrefix = (alignRight, id) => {
+  if (!alignRight) {
+    return 'dd';
+  }
+  return id === 'other-dates' ? 'dd-timerange' : 'dd-right';
+};

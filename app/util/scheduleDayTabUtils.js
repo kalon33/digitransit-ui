@@ -71,3 +71,38 @@ export const calculateTabDate = (baseDate, tab, isMerged, pastDate) => {
 
   return tabDate;
 };
+
+/**
+ * Calculate which tab should be initially focused
+ * @param {string|null} focusedTab - Currently focused tab if any
+ * @param {Array<string>} dayTabs - Array of day tabs
+ * @param {string} currentWeekday - Current weekday pattern
+ * @param {string} firstDay - First day in the week
+ * @param {boolean} isSameWeek - Whether it's the same week as today
+ * @param {number} count - Total number of tabs
+ * @returns {string} The tab that should be focused
+ */
+export const calculateFocusedTab = (
+  focusedTab,
+  dayTabs,
+  currentWeekday,
+  firstDay,
+  isSameWeek,
+  count,
+) => {
+  if (focusedTab) {
+    return focusedTab;
+  }
+
+  // Find the selected tab
+  const selectedTab = dayTabs.find((tab, id) => {
+    const isSelectedByDay = tab.indexOf(currentWeekday) !== -1;
+    const isFirstDayFallback =
+      tab.indexOf(firstDay) !== -1 &&
+      !isSameWeek &&
+      dayTabs.indexOf(currentWeekday) === id;
+    return isSelectedByDay || isFirstDayFallback || count === 1;
+  });
+
+  return selectedTab || dayTabs[0];
+};

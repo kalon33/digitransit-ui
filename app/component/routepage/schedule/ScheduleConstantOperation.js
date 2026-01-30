@@ -20,7 +20,7 @@ const ScheduleConstantOperation = ({
         breakpoint !== 'large' ? 'mobile' : ''
       }`}
     >
-      <div style={{ paddingBottom: '28px' }}>
+      <div className="constant-operation-panel">
         <RouteControlPanel
           match={match}
           route={route}
@@ -29,9 +29,9 @@ const ScheduleConstantOperation = ({
         />
       </div>
       <div className="stop-constant-operation-container bottom-padding">
-        <div style={{ width: '95%' }}>
+        <div className="constant-operation-content">
           <span>{constantOperationInfo.text}</span>
-          <span style={{ display: 'inline-block' }}>
+          <span className="constant-operation-link">
             <a
               href={constantOperationInfo.link}
               target="_blank"
