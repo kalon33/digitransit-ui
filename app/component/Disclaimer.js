@@ -99,11 +99,11 @@ export default function Disclaimer({
 }
 
 Disclaimer.propTypes = {
-  header: PropTypes.oneOf(PropTypes.string, PropTypes.node),
+  header: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   headerId: PropTypes.string,
-  text: PropTypes.oneOf(PropTypes.string, PropTypes.node),
+  text: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   textId: PropTypes.string,
-  linkLabel: PropTypes.oneOf(PropTypes.string, PropTypes.node),
+  linkLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   linkLabelId: PropTypes.string,
   values: PropTypes.objectOf(PropTypes.string),
   href: PropTypes.string,

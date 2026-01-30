@@ -2,13 +2,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
 import { FormattedMessage } from 'react-intl';
-import { matchShape, routerShape } from 'found';
 import { Info } from 'luxon';
 import { parkShape, errorShape } from '../util/shapes';
 import ParkOrStationHeader from './ParkOrStationHeader';
 import Icon from './Icon';
 import Disclaimer from './Disclaimer';
-import { PREFIX_BIKEPARK, PREFIX_CARPARK } from '../util/path';
+import { PREFIX_BIKEPARK } from '../util/path';
 import { useConfigContext } from '../configurations/ConfigContext';
 import { useBreakpoint } from '../util/withBreakpoint';
 
@@ -37,8 +36,6 @@ function ParkAndRideContent({
   showInfo,
   showDetails,
   backButton,
-  router,
-  match,
 }) {
   // throw error when relay query fails
   if (error) {
@@ -49,10 +46,8 @@ function ParkAndRideContent({
 
   const bikePark = mode
     ? mode === 'BIKEPARK'
-    : match.location.pathname.includes(PREFIX_BIKEPARK);
+    : window.location.href.includes(PREFIX_BIKEPARK);
   if (!vehicleParking) {
-    const path = bikePark ? PREFIX_BIKEPARK : PREFIX_CARPARK;
-    router.replace(`/${path}`);
     return null;
   }
   const prePostFix = bikePark ? 'bike-park' : 'car-park';
@@ -158,10 +153,10 @@ function ParkAndRideContent({
                   </>
                 )}
                 {authenticationMethods.map((method, i) => (
-                  <>
+                  <span key={`auth-${method}`}>
                     <FormattedMessage id={method} />
                     {i < authenticationMethods.length - 1 ? ' | ' : ''}{' '}
-                  </>
+                  </span>
                 ))}
               </span>
             </div>
@@ -174,10 +169,10 @@ function ParkAndRideContent({
               {parkLabel('services-and-features')}
               <span className="park-value">
                 {services.map((service, i) => (
-                  <>
+                  <span key={`services-${service}`}>
                     <FormattedMessage id={service} />
                     {i < services.length - 1 ? ' | ' : ''}
-                  </>
+                  </span>
                 ))}
               </span>
             </div>
@@ -206,8 +201,6 @@ ParkAndRideContent.propTypes = {
   showInfo: PropTypes.bool,
   showDetails: PropTypes.bool,
   backButton: PropTypes.bool,
-  router: routerShape.isRequired,
-  match: matchShape.isRequired,
 };
 
 ParkAndRideContent.defaultProps = {
