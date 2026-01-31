@@ -21,11 +21,23 @@ function parkLabel(id) {
 
 const osmDays = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
 
-function translateOpeningHours(s) {
+function renderOpeningHours(s, dotted) {
   let translated = s;
   osmDays.forEach((d, i) => {
     translated = translated.replaceAll(d, Info.weekdays('short')[i]);
   });
+  if (dotted) {
+    const parts = translated.split(' ');
+    if (parts.length === 2) {
+      return (
+        <span className="formatted-hour">
+          <span>{parts[0]} </span>
+          <span className="dot-line" />
+          <span> {parts[1]}</span>
+        </span>
+      );
+    }
+  }
   return translated;
 }
 
@@ -81,6 +93,7 @@ function ParkAndRideContent({
     Number.isInteger(available) &&
     Number.isInteger(capacity);
 
+  const dotted = showDetails && openingHours.length > 1;
   const detailClass = showDetails ? 'park-details' : 'park-details-row';
   const separator = showDetails ? 'separator' : 'low-separator';
   return (
@@ -111,7 +124,7 @@ function ParkAndRideContent({
               {openingHours.map(text => (
                 // eslint-disable-next-line react/no-array-index-key
                 <span key={`opening-hour-${text}`}>
-                  {translateOpeningHours(text)}
+                  {renderOpeningHours(text, dotted)}
                 </span>
               ))}
             </div>
