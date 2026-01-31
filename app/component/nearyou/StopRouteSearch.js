@@ -10,6 +10,10 @@ import { useConfigContext } from '../../configurations/ConfigContext';
 const DTAutoSuggestWithSearchContext = withSearchContext(DTAutoSuggest);
 const searchSources = ['Favourite', 'History', 'Datasource'];
 
+function parkFilter(parks, mode) {
+  return parks.filter(p => p.properties?.layer === mode.toLowerCase());
+}
+
 function StopRouteSearch({ mode, router, ...rest }) {
   const transportMode = `route-${mode}`;
   const {
@@ -20,7 +24,7 @@ function StopRouteSearch({ mode, router, ...rest }) {
     stopSearchFilter,
   } = useConfigContext();
 
-  const filter = stopSearchFilter
+  let filter = stopSearchFilter
     ? (results, transportmode, type) =>
         filterSearchResultsByMode(results, transportmode, type).filter(
           stopSearchFilter,
@@ -29,6 +33,7 @@ function StopRouteSearch({ mode, router, ...rest }) {
   const selectHandler = item => {
     router.push(getStopRoutePath(item));
   };
+
   let targets;
   switch (mode) {
     case 'CITYBIKE':
@@ -37,6 +42,7 @@ function StopRouteSearch({ mode, router, ...rest }) {
     case 'BIKEPARK':
     case 'CARPARK':
       targets = ['ParkingAreas'];
+      filter = parkFilter;
       break;
     default:
       targets = ['Stops', 'Stations', 'Routes'];
