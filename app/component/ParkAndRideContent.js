@@ -3,11 +3,12 @@ import React from 'react';
 import cx from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Info } from 'luxon';
+import { routerShape } from 'found';
 import { parkShape, errorShape } from '../util/shapes';
 import ParkOrStationHeader from './ParkOrStationHeader';
 import Icon from './Icon';
 import Disclaimer from './Disclaimer';
-import { PREFIX_BIKEPARK } from '../util/path';
+import { PREFIX_BIKEPARK, PREFIX_CARPARK } from '../util/path';
 import { useConfigContext } from '../configurations/ConfigContext';
 import { useBreakpoint } from '../util/withBreakpoint';
 
@@ -48,6 +49,7 @@ function ParkAndRideContent({
   showInfo,
   showDetails,
   backButton,
+  router,
 }) {
   // throw error when relay query fails
   if (error) {
@@ -60,6 +62,8 @@ function ParkAndRideContent({
     ? mode === 'BIKEPARK'
     : window.location.href.includes(PREFIX_BIKEPARK);
   if (!vehicleParking) {
+    const path = bikePark ? PREFIX_BIKEPARK : PREFIX_CARPARK;
+    router?.replace(`/${path}`);
     return null;
   }
   const prePostFix = bikePark ? 'bike-park' : 'car-park';
@@ -214,6 +218,7 @@ ParkAndRideContent.propTypes = {
   showInfo: PropTypes.bool,
   showDetails: PropTypes.bool,
   backButton: PropTypes.bool,
+  router: routerShape,
 };
 
 ParkAndRideContent.defaultProps = {
@@ -223,6 +228,7 @@ ParkAndRideContent.defaultProps = {
   showInfo: true,
   showDetails: true,
   backButton: true,
+  router: undefined,
 };
 
 export default ParkAndRideContent;
