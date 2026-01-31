@@ -10,7 +10,7 @@ import { useConfigContext } from '../../configurations/ConfigContext';
 const DTAutoSuggestWithSearchContext = withSearchContext(DTAutoSuggest);
 const searchSources = ['Favourite', 'History', 'Datasource'];
 
-function StopRouteSearch({ mode, ...rest }, { router }) {
+function StopRouteSearch({ mode, router, ...rest }) {
   const transportMode = `route-${mode}`;
   const {
     getAutoSuggestIcons,
@@ -66,7 +66,9 @@ function StopRouteSearch({ mode, ...rest }, { router }) {
   );
 }
 
-StopRouteSearch.propTypes = { mode: PropTypes.string.isRequired };
-StopRouteSearch.contextTypes = { router: routerShape.isRequired };
+StopRouteSearch.propTypes = {
+  mode: PropTypes.string.isRequired,
+  router: routerShape.isRequired,
+};
 
 export default memo(StopRouteSearch);
