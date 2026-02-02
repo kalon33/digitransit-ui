@@ -145,16 +145,24 @@ const ScheduleContainer = ({
     }
   }, [pattern?.code, pattern?.stops?.length]);
 
-  const onFromSelectChange = useCallback(selectFrom => {
-    const fromValue = Number(selectFrom);
-    setFrom(fromValue);
-    setTo(prevTo => (prevTo > fromValue ? prevTo : fromValue + 1));
-    addAnalyticsEvent({
-      category: 'Route',
-      action: 'ChangeTimetableStartPoint',
-      name: null,
-    });
-  }, []);
+  const onFromSelectChange = useCallback(
+    selectFrom => {
+      const fromValue = Number(selectFrom);
+      setFrom(fromValue);
+      setTo(prevTo => {
+        if (prevTo > fromValue) {
+          return prevTo;
+        }
+        return Math.min(fromValue + 1, pattern.stops.length - 1);
+      });
+      addAnalyticsEvent({
+        category: 'Route',
+        action: 'ChangeTimetableStartPoint',
+        name: null,
+      });
+    },
+    [pattern?.stops?.length],
+  );
 
   const onToSelectChange = useCallback(selectTo => {
     setTo(Number(selectTo));

@@ -119,10 +119,17 @@ const ScheduleDayTabs = ({
       }
 
       const activeIndex = dayTabs.indexOf(currentFocusedTab);
-      const nextIndex = getNextIndex(activeIndex, count);
+      if (activeIndex === -1) {
+        return;
+      }
 
-      tabRefs.current[dayTabs[nextIndex]].current.focus();
-      onTabFocus(dayTabs[nextIndex]);
+      const nextIndex = getNextIndex(activeIndex, count);
+      const nextRef = tabRefs.current[dayTabs[nextIndex]];
+
+      if (nextRef?.current) {
+        nextRef.current.focus();
+        onTabFocus(dayTabs[nextIndex]);
+      }
     },
     [currentFocusedTab, dayTabs, count, tabRefs, onTabFocus],
   );

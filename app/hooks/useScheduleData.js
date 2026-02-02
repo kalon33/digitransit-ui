@@ -2,7 +2,7 @@
  * Custom hook for processing schedule data
  * Handles data transformation, merging, and population logic
  */
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import { DateTime } from 'luxon';
 import {
   modifyDepartures,
@@ -38,8 +38,6 @@ const shouldMergeWeekData = (thisWeekHashes, nextWeekHashes) => {
  * @returns {Object} { firstDepartures, hasMergedData, dataExistsDay, firstWeekEmpty }
  */
 export const useScheduleData = ({ firstDeparturesProp, match }) => {
-  const hasMergedDataRef = useRef(false);
-
   const processedData = useMemo(() => {
     // Handle testing mode internally
     const testing = process.env.ROUTEPAGETESTING || false;
@@ -57,8 +55,7 @@ export const useScheduleData = ({ firstDeparturesProp, match }) => {
     const firstDepartures = modifyDepartures(dataToHandle);
     const firstWeekEmpty = isEmptyWeek(firstDepartures[0]);
 
-    // Reset merged flag
-    hasMergedDataRef.current = false;
+    let hasMergedData = false;
     let dataExistsDay = 1; // 1 = monday
 
     // If we are missing data from the start of the week, see if we can merge it with next week
@@ -81,12 +78,12 @@ export const useScheduleData = ({ firstDeparturesProp, match }) => {
       // If this week's data is a subset of normal week's data, merge them
       if (shouldMergeWeekData(thisWeekHashes, nextWeekHashes)) {
         firstDepartures[0] = normalWeekData;
-        hasMergedDataRef.current = true;
+        hasMergedData = true;
       }
     }
 
     // Find first day with data when data is merged
-    if (hasMergedDataRef.current) {
+    if (hasMergedData) {
       const firstDayWithData = WEEK_DAYS.find(
         ({ key }) => dataToHandle[key]?.length > 0,
       );
@@ -97,7 +94,7 @@ export const useScheduleData = ({ firstDeparturesProp, match }) => {
 
     return {
       firstDepartures,
-      hasMergedData: hasMergedDataRef.current,
+      hasMergedData,
       dataExistsDay,
       firstWeekEmpty,
     };

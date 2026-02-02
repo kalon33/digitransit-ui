@@ -17,32 +17,32 @@ const ScheduleTripList = ({ trips, fromIdx, toIdx }) => {
     return null;
   }
 
-  return trips.map(trip => {
-    // Ensure stoptimes exist and have required indices
-    if (!trip.stoptimes || !trip.stoptimes[fromIdx] || !trip.stoptimes[toIdx]) {
-      return null;
-    }
+  return trips
+    .filter(
+      trip =>
+        trip.stoptimes && trip.stoptimes[fromIdx] && trip.stoptimes[toIdx],
+    )
+    .map(trip => {
+      const fromSt = trip.stoptimes[fromIdx];
+      const toSt = trip.stoptimes[toIdx];
+      const departureTime = getFormattedTimeDate(
+        (fromSt.serviceDay + fromSt.scheduledDeparture) * 1000,
+        'HH:mm',
+      );
+      const arrivalTime = getFormattedTimeDate(
+        (toSt.serviceDay + toSt.scheduledArrival) * 1000,
+        'HH:mm',
+      );
 
-    const fromSt = trip.stoptimes[fromIdx];
-    const toSt = trip.stoptimes[toIdx];
-    const departureTime = getFormattedTimeDate(
-      (fromSt.serviceDay + fromSt.scheduledDeparture) * 1000,
-      'HH:mm',
-    );
-    const arrivalTime = getFormattedTimeDate(
-      (toSt.serviceDay + toSt.scheduledArrival) * 1000,
-      'HH:mm',
-    );
-
-    return (
-      <ScheduleTripRow
-        key={`${trip.id}-${departureTime}`}
-        departureTime={departureTime}
-        arrivalTime={arrivalTime}
-        isCanceled={isTripCanceled(trip)}
-      />
-    );
-  });
+      return (
+        <ScheduleTripRow
+          key={`${trip.id}-${departureTime}`}
+          departureTime={departureTime}
+          arrivalTime={arrivalTime}
+          isCanceled={isTripCanceled(trip)}
+        />
+      );
+    });
 };
 
 ScheduleTripList.propTypes = {
