@@ -25,14 +25,21 @@ function ScheduleHeader({
   );
 
   const stopCount = options.length;
-  const safeToIndex = Math.min(to, stopCount);
+  const safeToIndex = Math.min(to, stopCount - 1);
 
-  const fromOptions = options.slice(0, safeToIndex);
-  const toOptions = options.slice(from + 1);
-  const fromOption = fromOptions.find(o => o.value === from);
-  const toOption = toOptions.find(o => o.value === safeToIndex);
-  const fromDisplayName = fromOption?.label || '';
-  const toDisplayName = toOption?.label || '';
+  const { fromDisplayName, toDisplayName, fromOptions, toOptions } =
+    useMemo(() => {
+      const fromOptionsSlice = options.slice(0, safeToIndex);
+      const toOptionsSlice = options.slice(from + 1);
+      const fromOption = fromOptionsSlice.find(o => o.value === from);
+      const toOption = toOptionsSlice.find(o => o.value === to);
+      return {
+        fromDisplayName: fromOption?.label || '',
+        toDisplayName: toOption?.label || '',
+        fromOptions: fromOptionsSlice,
+        toOptions: toOptionsSlice,
+      };
+    }, [options, from, to, safeToIndex]);
 
   return (
     <div className="route-schedule-header row">

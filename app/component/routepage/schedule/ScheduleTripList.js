@@ -18,6 +18,11 @@ const ScheduleTripList = ({ trips, fromIdx, toIdx }) => {
   }
 
   return trips.map(trip => {
+    // Ensure stoptimes exist and have required indices
+    if (!trip.stoptimes || !trip.stoptimes[fromIdx] || !trip.stoptimes[toIdx]) {
+      return null;
+    }
+
     const fromSt = trip.stoptimes[fromIdx];
     const toSt = trip.stoptimes[toIdx];
     const departureTime = getFormattedTimeDate(

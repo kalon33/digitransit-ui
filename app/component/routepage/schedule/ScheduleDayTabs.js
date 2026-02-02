@@ -109,20 +109,23 @@ const ScheduleDayTabs = ({
     );
   });
 
-  const handleKeyNavigation = e => {
-    const { code } = e.nativeEvent;
-    const getNextIndex = KEYBOARD_ACTIONS[code];
+  const handleKeyNavigation = useCallback(
+    e => {
+      const { code } = e.nativeEvent;
+      const getNextIndex = KEYBOARD_ACTIONS[code];
 
-    if (!getNextIndex) {
-      return;
-    }
+      if (!getNextIndex) {
+        return;
+      }
 
-    const activeIndex = dayTabs.indexOf(currentFocusedTab);
-    const nextIndex = getNextIndex(activeIndex, count);
+      const activeIndex = dayTabs.indexOf(currentFocusedTab);
+      const nextIndex = getNextIndex(activeIndex, count);
 
-    tabRefs.current[dayTabs[nextIndex]].current.focus();
-    onTabFocus(dayTabs[nextIndex]);
-  };
+      tabRefs.current[dayTabs[nextIndex]].current.focus();
+      onTabFocus(dayTabs[nextIndex]);
+    },
+    [currentFocusedTab, dayTabs, count, tabRefs, onTabFocus],
+  );
 
   return (
     <div

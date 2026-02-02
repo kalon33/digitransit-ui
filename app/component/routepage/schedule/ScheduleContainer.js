@@ -43,6 +43,10 @@ import {
   getScheduleRange,
 } from '../../../util/scheduleValidation';
 
+// Constants
+const MINIMUM_STOP_INDEX = 0;
+const MINIMUM_STOPS_FOR_RANGE = 1;
+
 const openRoutePDF = (e, routePDFUrl) => {
   e.stopPropagation();
   window.open(routePDFUrl.href);
@@ -73,8 +77,13 @@ const ScheduleContainer = ({
   const intl = useTranslationsContext();
   const config = useConfigContext();
 
-  const [from, setFrom] = useState(0);
-  const [to, setTo] = useState(Math.max((pattern?.stops?.length || 1) - 1, 0));
+  const [from, setFrom] = useState(MINIMUM_STOP_INDEX);
+  const [to, setTo] = useState(
+    Math.max(
+      (pattern?.stops?.length || MINIMUM_STOPS_FOR_RANGE) - 1,
+      MINIMUM_STOP_INDEX,
+    ),
+  );
   const [focusedTab, setFocusedTab] = useState(null);
 
   const tabRefs = useRef({});
@@ -113,9 +122,15 @@ const ScheduleContainer = ({
     dataExistsDay,
   );
 
-  // Destructure schedule data for easier access
-  const scheduleRange = getScheduleRange(data);
-  const optionsData = data[DATA_INDEX.OPTIONS] || [];
+  // Destructure schedule data for easier access (memoized to avoid recalculation)
+  const { scheduleRange, optionsData } = useMemo(() => {
+    const range = getScheduleRange(data);
+    const options = data[DATA_INDEX.OPTIONS] || [];
+    return {
+      scheduleRange: range,
+      optionsData: options,
+    };
+  }, [data]);
 
   // Calculate new service day if needed
   const newServiceDay = useMemo(
@@ -125,7 +140,7 @@ const ScheduleContainer = ({
 
   useEffect(() => {
     if (pattern?.code) {
-      setFrom(0);
+      setFrom(MINIMUM_STOP_INDEX);
       setTo(pattern.stops.length - 1);
     }
   }, [pattern?.code, pattern?.stops?.length]);
