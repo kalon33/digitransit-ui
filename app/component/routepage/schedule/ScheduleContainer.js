@@ -37,7 +37,6 @@ import {
   useFirstDataDate,
 } from '../../../hooks/useScheduleData';
 import { useScheduleRedirects } from '../../../hooks/useScheduleRedirects';
-import { DATA_INDEX } from '../../../util/scheduleDataUtils';
 import {
   validateScheduleData,
   getScheduleRange,
@@ -113,7 +112,7 @@ const ScheduleContainer = ({
 
   const { scheduleRange, optionsData } = useMemo(() => {
     const range = getScheduleRange(data);
-    const options = data[DATA_INDEX.OPTIONS] || [];
+    const options = data?.options || [];
     return {
       scheduleRange: range,
       optionsData: options,

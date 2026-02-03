@@ -1,3 +1,5 @@
+import { getScheduleRangeData } from './scheduleDataUtils';
+
 /**
  * Validation utilities for ScheduleContainer
  * Centralized validation logic for schedule data
@@ -64,27 +66,7 @@ export const validateScheduleData = ({
 
 /**
  * Extract and structure schedule data for easier access
- * @param {Array} data - Schedule data array from usePopulatedScheduleData
+ * @param {Object} data - Schedule data object from usePopulatedScheduleData
  * @returns {ScheduleRangeData} Destructured schedule data object
  */
-export const getScheduleRange = data => {
-  if (!data || data.length < 3) {
-    return {
-      timeRange: '',
-      wantedDay: null,
-      weekday: null,
-      dayArray: [],
-      weekStart: null,
-    };
-  }
-
-  const range = data[2]; // DATA_INDEX.RANGE = 2
-
-  return {
-    timeRange: range[0], // RANGE_INDEX.TIME_RANGE = 0
-    wantedDay: range[1], // RANGE_INDEX.WANTED_DAY = 1
-    weekday: range[2], // RANGE_INDEX.WEEKDAY = 2
-    dayArray: range[3], // RANGE_INDEX.DAY_ARRAY = 3
-    weekStart: range[4], // RANGE_INDEX.WEEK_START = 4
-  };
-};
+export const getScheduleRange = data => getScheduleRangeData(data);

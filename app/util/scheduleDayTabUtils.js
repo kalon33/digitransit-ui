@@ -50,23 +50,32 @@ export const processDayTabs = dayArray => {
  * Calculate the date for a specific tab
  * @param {DateTime} baseDate - The base date to calculate from
  * @param {string} tab - The tab day pattern (e.g., '1', '12345')
- * @param {boolean} isMerged - Whether data has been merged
- * @param {string} pastDate - Past date in DATE_FORMAT
+ * @param {boolean} weeksAreSame - Whether current and next weeks are identical
+ * @param {DateTime} firstServiceDay - First service day in the first week
  * @returns {DateTime} Calculated date for the tab
  */
-export const calculateTabDate = (baseDate, tab, isMerged, pastDate) => {
+export const calculateTabDate = (
+  baseDate,
+  tab,
+  weeksAreSame,
+  firstServiceDay,
+) => {
   let tabDate = baseDate;
   const firstDayOfTab = Number(tab[0]);
+  const calculatedDate = tabDate.plus({ days: firstDayOfTab - 1 });
 
-  if (isMerged && pastDate && tabDate.toFormat('yyyyMMdd') !== pastDate) {
-    const calculatedDate = tabDate.plus({ days: firstDayOfTab - 1 });
-    if (pastDate > calculatedDate.toFormat('yyyyMMdd')) {
+  if (
+    weeksAreSame &&
+    firstServiceDay &&
+    !tabDate.hasSame(firstServiceDay, 'day')
+  ) {
+    if (firstServiceDay > calculatedDate) {
       tabDate = tabDate.plus({ days: firstDayOfTab + 6 });
     } else {
       tabDate = calculatedDate;
     }
   } else {
-    tabDate = tabDate.plus({ days: firstDayOfTab - 1 });
+    tabDate = calculatedDate;
   }
 
   return tabDate;

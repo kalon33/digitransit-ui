@@ -2,16 +2,15 @@
  * Week processing utilities for schedule data
  * Handles departure data grouping, sorting, and week-level operations
  *
- * @typedef {[string, number, string]} DepartureTuple
- * Departure pattern tuple structure:
- * [0] dayPattern: string - Days when pattern applies (e.g., '12345' for Mon-Fri)
- * [1] hash: number - Hash code for the departure pattern
- * [2] departurePattern: string - Comma-separated departure times
+ * @typedef {Object} DeparturePattern
+ * @property {string} dayPattern - Days when pattern applies (e.g., '12345' for Mon-Fri)
+ * @property {number} hash - Hash code for the departure pattern
+ * @property {Array<number>} times - Scheduled departure times (seconds from midnight)
  *
  * @typedef {Object} WeekStructures
  * @property {Array<DateTime>} weekStarts - Start dates for each week
  * @property {Array<DateTime>} weekEnds - End dates for each week
- * @property {Array<Array<string>>} days - Day patterns for each week
+ * @property {Array<{patterns: Array<string>}>} days - Day patterns for each week
  * @property {Array<string>} emptyWeek - Dates of empty weeks
  */
 import sortBy from 'lodash/sortBy';
@@ -20,22 +19,25 @@ import hashCode from './hashUtil';
 
 const DAYS_IN_WEEK = 7;
 
-// Tuple structure: [dayPattern: string, count: number, departurePattern: string]
-// Example: ['1234567', 0, ''] means "all days of week, 0 departures, no departure times"
-const EMPTY_WEEK_PATTERN = ['1234567', 0, ''];
+// Empty week pattern: all days of week, no departure times
+const EMPTY_WEEK_PATTERN = {
+  dayPattern: '1234567',
+  hash: 0,
+  times: [],
+};
 
 /**
  * Find the most frequent pattern in an array of departures
  * Used to identify "normal" week pattern for data merging
- * @param {Array<Array>} arr - Array of departure patterns
- * @returns {Array} Most frequent departure pattern
+ * @param {Array<Array<DeparturePattern>>} arr - Array of departure patterns
+ * @returns {Array<DeparturePattern>} Most frequent departure pattern
  */
 export const getMostFrequent = arr => {
   const frequencyMap = new Map();
 
   // Count frequency of each pattern
   arr.forEach(val => {
-    const hash = hashCode(val.map(v => v[0]).join());
+    const hash = hashCode(val.map(v => v.dayPattern).join());
     frequencyMap.set(hash, (frequencyMap.get(hash) || 0) + 1);
   });
 
@@ -51,7 +53,7 @@ export const getMostFrequent = arr => {
 
   // Return the first value matching the most frequent hash
   return arr.find(item => {
-    const hash = hashCode(item.map(v => v[0]).join());
+    const hash = hashCode(item.map(v => v.dayPattern).join());
     return hash === mostFrequentHash;
   });
 };
@@ -60,7 +62,7 @@ export const getMostFrequent = arr => {
  * Modify departures data by grouping and sorting by week
  * Converts raw departure data into structured weekly patterns
  * @param {Object} departures - Raw departures object with keys like 'wk1mon', 'wk1tue', etc.
- * @returns {Array<Array<DepartureTuple>>} Array of weekly departure patterns
+ * @returns {Array<Array<DeparturePattern>>} Array of weekly departure patterns
  */
 export const modifyDepartures = departures => {
   if (!departures) {
@@ -86,18 +88,23 @@ export const modifyDepartures = departures => {
     // Group by departure pattern hash
     const groupedByPattern = {};
     Object.values(weekData).forEach((dayDepartures, dayIndex) => {
-      const departurePattern = dayDepartures
-        .map(x => x.departureStoptime.scheduledDeparture)
-        .join(',');
-      const hash = hashCode(departurePattern);
+      const times = dayDepartures.map(
+        x => x.departureStoptime.scheduledDeparture,
+      );
+      const timesKey = times.join(',');
+      const hash = hashCode(timesKey);
 
       if (!groupedByPattern[hash]) {
-        groupedByPattern[hash] = ['', hash, departurePattern];
+        groupedByPattern[hash] = { dayPattern: '', hash, times };
       }
-      groupedByPattern[hash][0] += dayIndex + 1;
+      groupedByPattern[hash].dayPattern += dayIndex + 1;
     });
 
-    modifiedDepartures.push(Object.values(groupedByPattern).sort());
+    modifiedDepartures.push(
+      Object.values(groupedByPattern).sort((a, b) =>
+        a.dayPattern.localeCompare(b.dayPattern),
+      ),
+    );
   }
 
   return modifiedDepartures.length > 0 ? modifiedDepartures : departures;
@@ -105,24 +112,24 @@ export const modifyDepartures = departures => {
 
 /**
  * Check if a week has no departures
- * @param {Array<DepartureTuple>} departures - Week departure data
+ * @param {Array<DeparturePattern>} departures - Week departure data
  * @returns {boolean} True if week is empty
  */
 export const isEmptyWeek = departures => {
   if (!departures || departures.length === 0 || !departures[0]) {
     return false;
   }
-  const [days, count, pattern] = departures[0];
+  const { dayPattern, hash, times } = departures[0];
   return (
-    days === EMPTY_WEEK_PATTERN[0] &&
-    count === EMPTY_WEEK_PATTERN[1] &&
-    pattern === EMPTY_WEEK_PATTERN[2]
+    dayPattern === EMPTY_WEEK_PATTERN.dayPattern &&
+    hash === EMPTY_WEEK_PATTERN.hash &&
+    times.length === EMPTY_WEEK_PATTERN.times.length
   );
 };
 
 /**
  * Initialize week structures for the given departure data
- * @param {Array<Array<DepartureTuple>>} departures - Departure data array
+ * @param {Array<Array<DeparturePattern>>} departures - Departure data array
  * @param {DateTime} startOfCurrentWeek - Start of current week
  * @returns {WeekStructures} Week structures object
  */
@@ -135,7 +142,7 @@ export const initializeWeekStructures = (departures, startOfCurrentWeek) => {
   for (let weekIdx = 0; weekIdx < departures.length; weekIdx++) {
     weekStarts.push(startOfCurrentWeek.plus({ weeks: weekIdx }));
     weekEnds.push(startOfCurrentWeek.endOf('week').plus({ weeks: weekIdx }));
-    days.push([]);
+    days.push({ patterns: [] });
 
     if (isEmptyWeek(departures[weekIdx])) {
       emptyWeek.push(
@@ -149,7 +156,7 @@ export const initializeWeekStructures = (departures, startOfCurrentWeek) => {
 
 /**
  * Filter out empty departures and populate day data
- * @param {Array} departures - Departure data array
+ * @param {Array<Array<DeparturePattern>>} departures - Departure data array
  * @param {Array} days - Days array to populate
  * @returns {Array<number>} Indices to remove
  */
@@ -164,7 +171,9 @@ export const processEmptyDepartures = (departures, days) => {
     }
 
     const hasSingleEmptyEntry =
-      weekDepartures.length === 1 && weekDepartures[0][1] === 0;
+      weekDepartures.length === 1 &&
+      weekDepartures[0].hash === 0 &&
+      weekDepartures[0].times.length === 0;
 
     if (hasSingleEmptyEntry && !notEmptyWeekFound) {
       indexToRemove.push(idx);
@@ -174,9 +183,11 @@ export const processEmptyDepartures = (departures, days) => {
       }
 
       // Filter out days with no departures and collect day numbers
-      const daysWithDepartures = weekDepartures.filter(day => day[1] !== 0);
+      const daysWithDepartures = weekDepartures.filter(
+        day => day.times.length > 0,
+      );
       daysWithDepartures.forEach(day => {
-        days[idx].push(day[0]);
+        days[idx].patterns.push(day.dayPattern);
       });
     }
   });

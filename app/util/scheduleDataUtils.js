@@ -14,33 +14,8 @@ import {
 } from './scheduleDateRanges';
 
 /**
- * Data structure index constants for schedule data array
- * The populateData function returns a tuple-like array with these indices
- */
-export const DATA_INDEX = {
-  WEEK_STARTS: 0, // Array of DateTime objects for week start dates
-  DAYS: 1, // Array of day pattern arrays
-  RANGE: 2, // Current range object (see RANGE_INDEX)
-  OPTIONS: 3, // Dropdown options for other date ranges
-  WEEKS_ARE_SAME: 4, // Boolean indicating if current and next week are identical
-  PAST_DATE: 5, // String date in DATE_FORMAT
-};
-
-/**
- * Range object index constants
- * The range object in DATA_INDEX.RANGE is a tuple-like array with these indices
- */
-export const RANGE_INDEX = {
-  TIME_RANGE: 0, // Formatted time range string (e.g., "1.2.2024 - 7.2.2024")
-  WANTED_DAY: 1, // DateTime object for the wanted day
-  WEEKDAY: 2, // Weekday number (1-7)
-  DAY_ARRAY: 3, // Array of day patterns with data
-  WEEK_START: 4, // DateTime object for week start
-};
-
-/**
  * Returns the first date with departures from the given departures data
- * @param {Array} departures - Array of departure data
+ * @param {Array} departures - Array of departure pattern data
  * @param {DateTime} dateIn - Optional date to check
  * @returns {DateTime|undefined}
  */
@@ -54,24 +29,23 @@ export const getFirstDepartureDate = (departures, dateIn) => {
   // Find the day entry that includes the current weekday. If the entry has
   // no departures, fall back to the previous day (if it has departures).
 
-  const dayIndex = departures.findIndex(
-    departure => departure[0].indexOf(dayNo) !== -1,
+  const dayIndex = departures.findIndex(departure =>
+    departure.dayPattern.includes(dayNo),
   );
 
   if (dayIndex === -1) {
     return undefined;
   }
 
-  const hasNoDepartures = departures[dayIndex][1] === 0 && departures[dayIndex][2] === '';
+  const hasNoDepartures = departures[dayIndex].times.length === 0;
 
   // Check if we need to look at previous day
   if (dayIndex > 0 && hasNoDepartures) {
     const previousDeparture = departures[dayIndex - 1];
-    const hasPreviousDepartures =
-      previousDeparture[1] !== 0 && previousDeparture[2] !== '';
+    const hasPreviousDepartures = previousDeparture.times.length > 0;
 
     if (hasPreviousDepartures) {
-      const newDayNo = Number(previousDeparture[0][0]);
+      const newDayNo = Number(previousDeparture.dayPattern[0]);
       return date.minus({ days: dayNo - newDayNo });
     }
   }
@@ -86,12 +60,19 @@ export const getFirstDepartureDate = (departures, dateIn) => {
 
 /**
  * Populate and process departure data for display
- * This is the main function that orchestrates all data processing for schedule display
+ * This is the main function that orchestrates all data processing for
+ * schedule display
  * @param {DateTime} wantedDayIn - The date to display schedule for
  * @param {Array} departures - Array of departure data by week
  * @param {boolean} isMerged - Whether data has been merged
  * @param {number} dataExistsDay - First day of week with data (1-7)
- * @returns {Array} Tuple: [weekStarts, days, range, options, currentAndNextWeekAreSame, pastDate]
+ * @returns {Object} {
+ *   version: number,
+ *   weeks: { starts: Array<DateTime>, ends: Array<DateTime>, days: Array<Array<string>> },
+ *   range: { timeRange: string, wantedDay: DateTime, weekday: number, dayArray: Array<string>, weekStart: DateTime },
+ *   options: Array,
+ *   meta: { weeksAreSame: boolean, firstServiceDay: DateTime }
+ * }
  */
 export const populateData = (
   wantedDayIn,
@@ -152,44 +133,58 @@ export const populateData = (
     isMerged,
   );
 
-  // Set pastDate if not already set
-  const pastDate =
+  // Set firstServiceDay if not already set
+  const firstServiceDay =
     calculatedFirstServiceDay ||
-    startOfCurrentWeek.plus({ days: dataExistsDay - 1 }).toFormat(DATE_FORMAT);
+    startOfCurrentWeek.plus({ days: dataExistsDay - 1 });
 
-  return [
-    weekStarts,
-    days,
+  const optionsWithDates = options
+    .filter(o => !emptyWeek.includes(o.value))
+    .map(option => ({
+      ...option,
+      date: option.date || DateTime.fromFormat(option.value, DATE_FORMAT),
+    }));
+
+  return {
+    version: 1,
+    weeks: {
+      starts: weekStarts,
+      ends: weekEnds,
+      days,
+    },
     range,
-    options.filter(o => !emptyWeek.includes(o.value)),
-    currentAndNextWeekAreSame,
-    pastDate,
-  ];
+    options: optionsWithDates,
+    meta: {
+      weeksAreSame: currentAndNextWeekAreSame,
+      firstServiceDay,
+    },
+  };
 };
 
 /**
  * Calculate the appropriate service day for display
  * @param {DateTime} wantedDay - The requested service day
- * @param {Array} data - The populated schedule data array
+ * @param {Object} data - The populated schedule data object
  * @param {DateTime} firstDataDate - First date with available data
  * @returns {DateTime|undefined} Calculated service day or undefined
  */
 export const calculateServiceDay = (wantedDay, data, firstDataDate) => {
-  if (wantedDay || !data || data.length < 3) {
+  if (wantedDay || !data || !data.range) {
     return undefined;
   }
 
-  const range = data[DATA_INDEX.RANGE];
-  const dayArray = range?.[RANGE_INDEX.DAY_ARRAY];
-  const currentWeekday = range?.[RANGE_INDEX.WEEKDAY];
-  const wantedDayValue = range?.[RANGE_INDEX.WANTED_DAY];
-  const options = data[DATA_INDEX.OPTIONS];
-  const weekStarts = data[DATA_INDEX.WEEK_STARTS];
+  const { range, options, weeks } = data;
+  const weekStarts = weeks?.starts;
+  const {
+    dayArray,
+    weekday: currentWeekday,
+    wantedDay: wantedDayValue,
+  } = range || {};
 
   let serviceDay;
 
   // Check if current weekday doesn't match first day in array
-  if (dayArray && dayArray !== '') {
+  if (Array.isArray(dayArray) && dayArray.length > 0) {
     if (currentWeekday !== dayArray[0]?.charAt(0)) {
       serviceDay = DateTime.now()
         .startOf('week')
@@ -200,7 +195,8 @@ export const calculateServiceDay = (wantedDay, data, firstDataDate) => {
     wantedDayValue &&
     wantedDayValue < weekStarts?.[0]
   ) {
-    serviceDay = DateTime.fromFormat(options[0].value, DATE_FORMAT);
+    serviceDay =
+      options[0].date || DateTime.fromFormat(options[0].value, DATE_FORMAT);
   }
 
   // Don't redirect to a date later than first available data
@@ -210,3 +206,24 @@ export const calculateServiceDay = (wantedDay, data, firstDataDate) => {
 
   return serviceDay;
 };
+
+/**
+ * Helper accessors for schedule data
+ * Centralize default shapes for safer access
+ */
+export const getScheduleRangeData = data =>
+  data?.range || {
+    timeRange: '',
+    wantedDay: null,
+    weekday: null,
+    dayArray: [],
+    weekStart: null,
+  };
+
+export const getScheduleOptions = data => data?.options || [];
+
+export const getScheduleMeta = data =>
+  data?.meta || { weeksAreSame: false, firstServiceDay: undefined };
+
+export const getScheduleWeeks = data =>
+  data?.weeks || { starts: [], ends: [], days: [] };

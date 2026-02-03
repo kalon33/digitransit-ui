@@ -9,7 +9,6 @@ import {
   calculateTabDate,
   calculateFocusedTab,
 } from '../../../util/scheduleDayTabUtils';
-import { DATA_INDEX, RANGE_INDEX } from '../../../util/scheduleDataUtils';
 import { DATE_FORMAT } from '../../../constants';
 
 // Keyboard navigation mapping
@@ -30,12 +29,13 @@ const ScheduleDayTabs = ({
   onTabFocus,
   locale,
 }) => {
-  if (!data || data.length < 3) {
+  if (!data || !data.range) {
     return null;
   }
 
-  const range = data[DATA_INDEX.RANGE];
-  const dayArray = range?.[RANGE_INDEX.DAY_ARRAY];
+  const { range, meta } = data;
+  const { weeksAreSame, firstServiceDay } = meta || {};
+  const { dayArray, wantedDay, weekday: currentWeekday } = range;
 
   const dayTabs = processDayTabs(dayArray);
   if (!dayTabs || dayTabs.length === 0) {
@@ -43,12 +43,10 @@ const ScheduleDayTabs = ({
   }
 
   const count = dayTabs.length;
-  const weekStartDate = range[RANGE_INDEX.WANTED_DAY].startOf('week');
+  const weekStartDate = wantedDay.startOf('week');
   const isSameWeek = weekStartDate.hasSame(DateTime.now(), 'week');
   const firstDay = dayTabs[0][0];
-  const currentWeekday = range[RANGE_INDEX.WEEKDAY];
-  const isMerged = data[DATA_INDEX.WEEKS_ARE_SAME];
-  const pastDate = data[DATA_INDEX.PAST_DATE];
+  const isMerged = weeksAreSame;
 
   // Determine which tab should be focused initially
   const currentFocusedTab = useMemo(
@@ -85,10 +83,10 @@ const ScheduleDayTabs = ({
     const selected = isSelectedByDay || isFirstDayFallback || count === 1;
 
     const tabDate = calculateTabDate(
-      range[RANGE_INDEX.WEEK_START],
+      range.weekStart,
       tab,
       isMerged,
-      pastDate,
+      firstServiceDay,
     );
 
     return (
@@ -147,15 +145,37 @@ const ScheduleDayTabs = ({
 };
 
 ScheduleDayTabs.propTypes = {
-  // Data is a tuple-like array with fixed structure from scheduleDataUtils:
-  // [0]: weekStarts (array of DateTime objects)
-  // [1]: days (array of day patterns)
-  // [2]: range (object with RANGE_INDEX constants: WANTED_DAY, WEEKDAY, DAY_ARRAY, etc.)
-  // [3]: options (array of dropdown options)
-  // [4]: weeksAreSame (boolean)
-  // [5]: pastDate (boolean)
-  // eslint-disable-next-line react/forbid-prop-types
-  data: PropTypes.array.isRequired,
+  // Data is a structured object from scheduleDataUtils with named fields
+  data: PropTypes.shape({
+    version: PropTypes.number,
+    weeks: PropTypes.shape({
+      starts: PropTypes.arrayOf(PropTypes.instanceOf(DateTime)),
+      ends: PropTypes.arrayOf(PropTypes.instanceOf(DateTime)),
+      days: PropTypes.arrayOf(
+        PropTypes.shape({
+          patterns: PropTypes.arrayOf(PropTypes.string),
+        }),
+      ),
+    }),
+    range: PropTypes.shape({
+      timeRange: PropTypes.string,
+      wantedDay: PropTypes.instanceOf(DateTime),
+      weekday: PropTypes.number,
+      dayArray: PropTypes.arrayOf(PropTypes.string),
+      weekStart: PropTypes.instanceOf(DateTime),
+    }),
+    options: PropTypes.arrayOf(
+      PropTypes.shape({
+        label: PropTypes.string,
+        value: PropTypes.string,
+        date: PropTypes.instanceOf(DateTime),
+      }),
+    ),
+    meta: PropTypes.shape({
+      weeksAreSame: PropTypes.bool,
+      firstServiceDay: PropTypes.instanceOf(DateTime),
+    }),
+  }).isRequired,
   focusedTab: PropTypes.string,
   tabRefs: PropTypes.shape({
     current: PropTypes.objectOf(

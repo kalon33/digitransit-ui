@@ -10,25 +10,50 @@ import ScheduleDayTabs from '../../../../app/component/routepage/schedule/Schedu
 describe('<ScheduleDayTabs />', () => {
   let defaultData;
   let defaultProps;
+  let buildData;
 
   beforeEach(() => {
     const wantedDay = DateTime.fromISO('2024-01-15'); // Monday
     const weekStart = wantedDay.startOf('week');
+    const timeRange = '15.1.2024 - 21.1.2024';
 
-    defaultData = [
-      [weekStart], // weekStarts
-      [['1234567']], // days
-      [
-        '15.1.2024 - 21.1.2024', // timeRange
-        wantedDay, // wantedDay
-        1, // weekday (Monday)
-        ['1234567'], // dayArray
-        weekStart, // weekStart
-      ], // range
-      [], // options
-      false, // weeksAreSame
-      '20240115', // pastDate
-    ];
+    buildData = ({
+      dayArray,
+      weekday,
+      wantedDayOverride,
+      weekStartOverride,
+      timeRangeOverride,
+      weeksAreSame = false,
+      firstServiceDayOverride,
+    }) => {
+      const resolvedWantedDay = wantedDayOverride || wantedDay;
+      const resolvedWeekStart = weekStartOverride || weekStart;
+      return {
+        version: 1,
+        weeks: {
+          starts: [resolvedWeekStart],
+          ends: [resolvedWeekStart.endOf('week')],
+          days: [{ patterns: dayArray }],
+        },
+        range: {
+          timeRange: timeRangeOverride || timeRange,
+          wantedDay: resolvedWantedDay,
+          weekday,
+          dayArray,
+          weekStart: resolvedWeekStart,
+        },
+        options: [],
+        meta: {
+          weeksAreSame,
+          firstServiceDay: firstServiceDayOverride || resolvedWantedDay,
+        },
+      };
+    };
+
+    defaultData = buildData({
+      dayArray: ['1234567'],
+      weekday: 1,
+    });
 
     defaultProps = {
       data: defaultData,
@@ -40,8 +65,8 @@ describe('<ScheduleDayTabs />', () => {
     };
   });
 
-  it('should render null when data has less than 3 elements', () => {
-    const props = { ...defaultProps, data: [[], []] };
+  it('should render null when range is missing', () => {
+    const props = { ...defaultProps, data: {} };
     const wrapper = shallow(<ScheduleDayTabs {...props} />);
     expect(wrapper.type()).to.equal(null);
   });
@@ -55,14 +80,10 @@ describe('<ScheduleDayTabs />', () => {
     const wantedDay = DateTime.fromISO('2024-01-15');
     const weekStart = wantedDay.startOf('week');
 
-    const data = [
-      [weekStart],
-      [['12345', '67']], // Weekdays and weekend
-      ['15.1.2024 - 21.1.2024', wantedDay, 1, ['12345', '67'], weekStart],
-      [],
-      false,
-      '20240115',
-    ];
+    const data = buildData({
+      dayArray: ['12345', '67'],
+      weekday: 1,
+    });
 
     const props = { ...defaultProps, data };
     const wrapper = shallow(<ScheduleDayTabs {...props} />);
@@ -75,14 +96,10 @@ describe('<ScheduleDayTabs />', () => {
     const wantedDay = DateTime.fromISO('2024-01-15');
     const weekStart = wantedDay.startOf('week');
 
-    const data = [
-      [weekStart],
-      [['1', '3', '5']], // Mon, Wed, Fri
-      ['15.1.2024 - 21.1.2024', wantedDay, 1, ['1', '3', '5'], weekStart],
-      [],
-      false,
-      '20240115',
-    ];
+    const data = buildData({
+      dayArray: ['1', '3', '5'],
+      weekday: 1,
+    });
 
     const props = { ...defaultProps, data };
     const wrapper = shallow(<ScheduleDayTabs {...props} />);
@@ -94,14 +111,12 @@ describe('<ScheduleDayTabs />', () => {
     const wantedDay = DateTime.fromISO('2024-01-17'); // Wednesday
     const weekStart = wantedDay.startOf('week');
 
-    const data = [
-      [weekStart],
-      [['1', '3', '5']],
-      ['15.1.2024 - 21.1.2024', wantedDay, 3, ['1', '3', '5'], weekStart],
-      [],
-      false,
-      '20240115',
-    ];
+    const data = buildData({
+      dayArray: ['1', '3', '5'],
+      weekday: 3,
+      wantedDayOverride: wantedDay,
+      weekStartOverride: weekStart,
+    });
 
     const props = { ...defaultProps, data };
     const wrapper = shallow(<ScheduleDayTabs {...props} />);
@@ -119,14 +134,10 @@ describe('<ScheduleDayTabs />', () => {
     const wantedDay = DateTime.fromISO('2024-01-15');
     const weekStart = wantedDay.startOf('week');
 
-    const data = [
-      [weekStart],
-      [['1', '3', '5']],
-      ['15.1.2024 - 21.1.2024', wantedDay, 1, ['1', '3', '5'], weekStart],
-      [],
-      false,
-      '20240115',
-    ];
+    const data = buildData({
+      dayArray: ['1', '3', '5'],
+      weekday: 1,
+    });
 
     const props = { ...defaultProps, data };
     const wrapper = shallow(<ScheduleDayTabs {...props} />);
@@ -141,14 +152,10 @@ describe('<ScheduleDayTabs />', () => {
     const wantedDay = DateTime.fromISO('2024-01-15');
     const weekStart = wantedDay.startOf('week');
 
-    const data = [
-      [weekStart],
-      [['1', '3', '5']],
-      ['15.1.2024 - 21.1.2024', wantedDay, 1, ['1', '3', '5'], weekStart],
-      [],
-      false,
-      '20240115',
-    ];
+    const data = buildData({
+      dayArray: ['1', '3', '5'],
+      weekday: 1,
+    });
 
     const props = { ...defaultProps, data };
     const wrapper = shallow(<ScheduleDayTabs {...props} />);
@@ -164,14 +171,10 @@ describe('<ScheduleDayTabs />', () => {
     const wantedDay = DateTime.fromISO('2024-01-15');
     const weekStart = wantedDay.startOf('week');
 
-    const data = [
-      [weekStart],
-      [['1', '3']],
-      ['15.1.2024 - 21.1.2024', wantedDay, 1, ['1', '3'], weekStart],
-      [],
-      false,
-      '20240115',
-    ];
+    const data = buildData({
+      dayArray: ['1', '3'],
+      weekday: 1,
+    });
 
     const props = { ...defaultProps, data };
     const wrapper = shallow(<ScheduleDayTabs {...props} />);
@@ -184,14 +187,10 @@ describe('<ScheduleDayTabs />', () => {
     const wantedDay = DateTime.fromISO('2024-01-15');
     const weekStart = wantedDay.startOf('week');
 
-    const data = [
-      [weekStart],
-      [['1', '3', '5']],
-      ['15.1.2024 - 21.1.2024', wantedDay, 1, ['1', '3', '5'], weekStart],
-      [],
-      false,
-      '20240115',
-    ];
+    const data = buildData({
+      dayArray: ['1', '3', '5'],
+      weekday: 1,
+    });
 
     const props = { ...defaultProps, data };
     const wrapper = shallow(<ScheduleDayTabs {...props} />);
@@ -211,14 +210,11 @@ describe('<ScheduleDayTabs />', () => {
     const wantedDay = DateTime.fromISO('2024-01-15');
     const weekStart = wantedDay.startOf('week');
 
-    const data = [
-      [weekStart],
-      [['1', '3', '5']],
-      ['15.1.2024 - 21.1.2024', wantedDay, 1, ['1', '3', '5'], weekStart],
-      [],
-      true, // weeksAreSame = true (merged)
-      '20240115',
-    ];
+    const data = buildData({
+      dayArray: ['1', '3', '5'],
+      weekday: 1,
+      weeksAreSame: true,
+    });
 
     const props = { ...defaultProps, data };
     const wrapper = shallow(<ScheduleDayTabs {...props} />);
@@ -230,14 +226,11 @@ describe('<ScheduleDayTabs />', () => {
     const wantedDay = DateTime.fromISO('2024-01-15');
     const weekStart = wantedDay.startOf('week');
 
-    const data = [
-      [weekStart],
-      [['1']], // Only one day
-      ['15.1.2024', wantedDay, 1, ['1'], weekStart],
-      [],
-      false,
-      '20240115',
-    ];
+    const data = buildData({
+      dayArray: ['1'],
+      weekday: 1,
+      timeRangeOverride: '15.1.2024',
+    });
 
     const props = { ...defaultProps, data };
     const wrapper = shallow(<ScheduleDayTabs {...props} />);
@@ -250,14 +243,10 @@ describe('<ScheduleDayTabs />', () => {
     const wantedDay = DateTime.fromISO('2024-01-15');
     const weekStart = wantedDay.startOf('week');
 
-    const data = [
-      [weekStart],
-      [['1', '3']],
-      ['15.1.2024 - 21.1.2024', wantedDay, 1, ['1', '3'], weekStart],
-      [],
-      false,
-      '20240115',
-    ];
+    const data = buildData({
+      dayArray: ['1', '3'],
+      weekday: 1,
+    });
 
     const props = { ...defaultProps, data };
     const wrapper = shallow(<ScheduleDayTabs {...props} />);
@@ -272,14 +261,10 @@ describe('<ScheduleDayTabs />', () => {
     const wantedDay = DateTime.fromISO('2024-01-15');
     const weekStart = wantedDay.startOf('week');
 
-    const data = [
-      [weekStart],
-      [['1', '3', '5']],
-      ['15.1.2024 - 21.1.2024', wantedDay, 1, ['1', '3', '5'], weekStart],
-      [],
-      false,
-      '20240115',
-    ];
+    const data = buildData({
+      dayArray: ['1', '3', '5'],
+      weekday: 1,
+    });
 
     const tabRefs = { current: {} };
     const props = { ...defaultProps, data, tabRefs };
@@ -293,14 +278,13 @@ describe('<ScheduleDayTabs />', () => {
     const wantedDay = DateTime.fromISO('2024-01-20'); // Saturday
     const weekStart = wantedDay.startOf('week');
 
-    const data = [
-      [weekStart],
-      [['67']], // Weekend only
-      ['20.1.2024 - 21.1.2024', wantedDay, 6, ['67'], weekStart],
-      [],
-      false,
-      '20240120',
-    ];
+    const data = buildData({
+      dayArray: ['67'],
+      weekday: 6,
+      wantedDayOverride: wantedDay,
+      weekStartOverride: weekStart,
+      timeRangeOverride: '20.1.2024 - 21.1.2024',
+    });
 
     const props = { ...defaultProps, data };
     const wrapper = shallow(<ScheduleDayTabs {...props} />);
@@ -312,14 +296,11 @@ describe('<ScheduleDayTabs />', () => {
     const wantedDay = DateTime.fromISO('2024-01-15');
     const weekStart = wantedDay.startOf('week');
 
-    const data = [
-      [weekStart],
-      [['12345']], // Weekdays only
-      ['15.1.2024 - 19.1.2024', wantedDay, 1, ['12345'], weekStart],
-      [],
-      false,
-      '20240115',
-    ];
+    const data = buildData({
+      dayArray: ['12345'],
+      weekday: 1,
+      timeRangeOverride: '15.1.2024 - 19.1.2024',
+    });
 
     const props = { ...defaultProps, data };
     const wrapper = shallow(<ScheduleDayTabs {...props} />);
@@ -331,14 +312,10 @@ describe('<ScheduleDayTabs />', () => {
     const wantedDay = DateTime.fromISO('2024-01-15');
     const weekStart = wantedDay.startOf('week');
 
-    const data = [
-      [weekStart],
-      [['12', '4', '67']], // Mon-Tue, Thu, Sat-Sun
-      ['15.1.2024 - 21.1.2024', wantedDay, 1, ['12', '4', '67'], weekStart],
-      [],
-      false,
-      '20240115',
-    ];
+    const data = buildData({
+      dayArray: ['12', '4', '67'],
+      weekday: 1,
+    });
 
     const props = { ...defaultProps, data };
     const wrapper = shallow(<ScheduleDayTabs {...props} />);
@@ -350,14 +327,10 @@ describe('<ScheduleDayTabs />', () => {
     const wantedDay = DateTime.fromISO('2024-01-15');
     const weekStart = wantedDay.startOf('week');
 
-    const data = [
-      [weekStart],
-      [['1', '3']],
-      ['15.1.2024 - 21.1.2024', wantedDay, 1, ['1', '3'], weekStart],
-      [],
-      false,
-      '20240115',
-    ];
+    const data = buildData({
+      dayArray: ['1', '3'],
+      weekday: 1,
+    });
 
     const props = { ...defaultProps, data, locale: 'fi' };
     const wrapper = shallow(<ScheduleDayTabs {...props} />);
@@ -369,14 +342,14 @@ describe('<ScheduleDayTabs />', () => {
     const futureWeek = DateTime.now().plus({ weeks: 2 });
     const weekStart = futureWeek.startOf('week');
 
-    const data = [
-      [weekStart],
-      [['1', '3', '5']],
-      ['Future date', futureWeek, 1, ['1', '3', '5'], weekStart],
-      [],
-      false,
-      futureWeek.toFormat('yyyyMMdd'),
-    ];
+    const data = buildData({
+      dayArray: ['1', '3', '5'],
+      weekday: 1,
+      wantedDayOverride: futureWeek,
+      weekStartOverride: weekStart,
+      timeRangeOverride: 'Future date',
+      firstServiceDayOverride: futureWeek,
+    });
 
     const props = { ...defaultProps, data };
     const wrapper = shallow(<ScheduleDayTabs {...props} />);
@@ -388,14 +361,10 @@ describe('<ScheduleDayTabs />', () => {
     const wantedDay = DateTime.fromISO('2024-01-15');
     const weekStart = wantedDay.startOf('week');
 
-    const data = [
-      [weekStart],
-      [['1', '3', '5']],
-      ['15.1.2024 - 21.1.2024', wantedDay, 1, ['1', '3', '5'], weekStart],
-      [],
-      false,
-      '20240115',
-    ];
+    const data = buildData({
+      dayArray: ['1', '3', '5'],
+      weekday: 1,
+    });
 
     const props = { ...defaultProps, data, focusedTab: '3' };
     const wrapper = shallow(<ScheduleDayTabs {...props} />);
@@ -407,14 +376,10 @@ describe('<ScheduleDayTabs />', () => {
     const wantedDay = DateTime.fromISO('2024-01-15');
     const weekStart = wantedDay.startOf('week');
 
-    const data = [
-      [weekStart],
-      [['1', '3', '5']],
-      ['15.1.2024 - 21.1.2024', wantedDay, 1, ['1', '3', '5'], weekStart],
-      [],
-      false,
-      '20240115',
-    ];
+    const data = buildData({
+      dayArray: ['1', '3', '5'],
+      weekday: 1,
+    });
 
     const props = { ...defaultProps, data };
     const wrapper = shallow(<ScheduleDayTabs {...props} />);

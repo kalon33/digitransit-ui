@@ -170,36 +170,36 @@ describe('scheduleDayTabUtils', () => {
       expect(result.toFormat('yyyy-MM-dd')).to.equal('2024-01-14');
     });
 
-    it('should handle merged data with pastDate', () => {
+    it('should handle merged data with firstServiceDay', () => {
       const baseDate = DateTime.fromISO('2024-01-08'); // Monday
-      const pastDate = '20240110'; // Wednesday
-      const result = calculateTabDate(baseDate, '1', true, pastDate);
+      const firstServiceDay = DateTime.fromISO('2024-01-10'); // Wednesday
+      const result = calculateTabDate(baseDate, '1', true, firstServiceDay);
 
       expect(result).to.be.instanceOf(DateTime);
     });
 
-    it('should add a week when merged and past date is after calculated date', () => {
+    it('should add a week when merged and firstServiceDay is after calculated date', () => {
       const baseDate = DateTime.fromISO('2024-01-08'); // Monday
-      const pastDate = '20240110'; // Wednesday (day 3)
-      const result = calculateTabDate(baseDate, '1', true, pastDate);
+      const firstServiceDay = DateTime.fromISO('2024-01-10'); // Wednesday (day 3)
+      const result = calculateTabDate(baseDate, '1', true, firstServiceDay);
 
-      // Since pastDate (Wed) > calculated (Mon), should add 7 days
+      // Since firstServiceDay (Wed) > calculated (Mon), should add 7 days
       expect(result.weekday).to.equal(1); // Still Monday
       expect(result > baseDate).to.equal(true);
     });
 
-    it('should not add a week when merged and past date is before calculated date', () => {
+    it('should not add a week when merged and firstServiceDay is before calculated date', () => {
       const baseDate = DateTime.fromISO('2024-01-08'); // Monday
-      const pastDate = '20240105'; // Previous Friday
-      const result = calculateTabDate(baseDate, '5', true, pastDate);
+      const firstServiceDay = DateTime.fromISO('2024-01-05'); // Previous Friday
+      const result = calculateTabDate(baseDate, '5', true, firstServiceDay);
 
       expect(result.weekday).to.equal(5); // Friday
     });
 
-    it('should handle non-merged data regardless of pastDate', () => {
+    it('should handle non-merged data regardless of firstServiceDay', () => {
       const baseDate = DateTime.fromISO('2024-01-08'); // Monday
-      const pastDate = '20240110';
-      const result = calculateTabDate(baseDate, '3', false, pastDate);
+      const firstServiceDay = DateTime.fromISO('2024-01-10');
+      const result = calculateTabDate(baseDate, '3', false, firstServiceDay);
 
       expect(result.weekday).to.equal(3); // Wednesday
       expect(result.toFormat('yyyy-MM-dd')).to.equal('2024-01-10');
@@ -212,10 +212,10 @@ describe('scheduleDayTabUtils', () => {
       expect(result.weekday).to.equal(1); // Uses first day (Monday)
     });
 
-    it('should handle when baseDate matches pastDate in merged mode', () => {
+    it('should handle when baseDate matches firstServiceDay in merged mode', () => {
       const baseDate = DateTime.fromISO('2024-01-08'); // Monday
-      const pastDate = '20240108'; // Same day
-      const result = calculateTabDate(baseDate, '1', true, pastDate);
+      const firstServiceDay = DateTime.fromISO('2024-01-08'); // Same day
+      const result = calculateTabDate(baseDate, '1', true, firstServiceDay);
 
       expect(result.weekday).to.equal(1);
     });
@@ -247,14 +247,14 @@ describe('scheduleDayTabUtils', () => {
       expect(result2.month).to.equal(2);
     });
 
-    it('should handle merged data without pastDate', () => {
+    it('should handle merged data without firstServiceDay', () => {
       const baseDate = DateTime.fromISO('2024-01-08');
       const result = calculateTabDate(baseDate, '3', true, null);
 
       expect(result.weekday).to.equal(3);
     });
 
-    it('should handle merged data with undefined pastDate', () => {
+    it('should handle merged data with undefined firstServiceDay', () => {
       const baseDate = DateTime.fromISO('2024-01-08');
       const result = calculateTabDate(baseDate, '3', true, undefined);
 

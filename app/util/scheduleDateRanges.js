@@ -6,13 +6,13 @@
  * @property {string} label - Formatted date range string for display
  * @property {string} value - Date value in DATE_FORMAT
  *
- * @typedef {[string, DateTime, number, Array<string>, DateTime]} RangeTuple
- * Range information tuple structure:
- * [0] timeRange: string - Formatted time range (e.g., '1.2.2024 - 7.2.2024')
- * [1] wantedDay: DateTime - The target day
- * [2] weekday: number - Weekday number (1-7)
- * [3] dayArray: Array<string> - Day patterns with data
- * [4] weekStart: DateTime - Week start date
+ * @typedef {Object} RangeData
+ * Range information object structure:
+ * timeRange: string - Formatted time range (e.g., '1.2.2024 - 7.2.2024')
+ * wantedDay: DateTime - The target day
+ * weekday: number - Weekday number (1-7)
+ * dayArray: Array<string> - Day patterns with data
+ * weekStart: DateTime - Week start date
  */
 import { DateTime } from 'luxon';
 import { DATE_FORMAT } from '../constants';
@@ -49,7 +49,7 @@ export const calculateTimeRangeStart = (
  * Format time range string for a week
  * @param {DateTime} timeRangeStart - Start of time range
  * @param {DateTime} weekEnd - End of the week
- * @param {Array} days - Days array
+ * @param {Array<{patterns: Array<string>}>} days - Days array
  * @param {number} idx - Week index
  * @param {DateTime} wantedDay - Wanted day
  * @param {boolean} isMerged - Whether data is merged
@@ -64,7 +64,10 @@ export const formatTimeRange = (
   isMerged,
 ) => {
   const isSingleDay =
-    days.length === 1 && days[idx][0]?.length === 1 && wantedDay && !isMerged;
+    days.length === 1 &&
+    days[idx]?.patterns?.[0]?.length === 1 &&
+    wantedDay &&
+    !isMerged;
 
   return isSingleDay
     ? wantedDay.toFormat(DATE_FORMAT_SCHEDULE)
@@ -76,7 +79,7 @@ export const formatTimeRange = (
 /**
  * Calculate option value date for a week
  * @param {DateTime} weekStart - Start of the week
- * @param {Array} days - Days array
+ * @param {Array<{patterns: Array<string>}>} days - Days array
  * @param {number} idx - Week index
  * @param {string} firstServiceDay - First service day
  * @returns {string} Formatted date value
@@ -85,7 +88,7 @@ export const calculateOptionValue = (weekStart, days, idx, firstServiceDay) => {
   const currentDayNo = DateTime.now().weekday;
   const isCurrentDayOption =
     idx === 0 &&
-    days[idx].indexOf(currentDayNo.toString()) !== -1 &&
+    days[idx]?.patterns?.indexOf(currentDayNo.toString()) !== -1 &&
     currentDayNo > Number(firstServiceDay);
 
   return isCurrentDayOption
@@ -97,7 +100,7 @@ export const calculateOptionValue = (weekStart, days, idx, firstServiceDay) => {
  * Create dropdown options for other available date ranges
  * @param {Array<DateTime>} weekStarts - Week start dates
  * @param {Array<DateTime>} weekEnds - Week end dates
- * @param {Array<Array<string>>} days - Days arrays
+ * @param {Array<{patterns: Array<string>}>} days - Days arrays
  * @param {DateTime} wantedDay - Current wanted day
  * @param {DateTime} startOfCurrentWeek - Start of current week
  * @param {number} departureCount - Number of departure weeks
@@ -115,7 +118,7 @@ export const createDateRangeOptions = (
 ) => {
   return weekStarts
     .map((weekStart, idx) => {
-      const firstServiceDay = days[idx]?.[0];
+      const firstServiceDay = days[idx]?.patterns?.[0];
 
       // Skip if no service days available
       if (!firstServiceDay) {
@@ -161,11 +164,11 @@ export const createDateRangeOptions = (
  * @param {DateTime} wantedDay - The wanted day
  * @param {Array<DateTime>} weekStarts - Array of week start dates
  * @param {Array<DateTime>} weekEnds - Array of week end dates
- * @param {Array<Array<string>>} days - Array of days arrays
+ * @param {Array<{patterns: Array<string>}>} days - Array of day pattern objects
  * @param {DateTime} startOfCurrentWeek - Start of current week
  * @param {number} departureCount - Number of departure weeks
  * @param {boolean} isMerged - Whether data is merged
- * @returns {RangeTuple} Range information tuple
+ * @returns {Object} Range information object
  */
 export const calculateCurrentRange = (
   wantedDay,
@@ -177,18 +180,18 @@ export const calculateCurrentRange = (
   isMerged,
 ) => {
   // Default range
-  let range = [
-    wantedDay.toFormat(DATE_FORMAT_SCHEDULE),
+  let range = {
+    timeRange: wantedDay.toFormat(DATE_FORMAT_SCHEDULE),
     wantedDay,
-    wantedDay.weekday,
-    '',
-    wantedDay.startOf('week'),
-  ];
+    weekday: wantedDay.weekday,
+    dayArray: [],
+    weekStart: wantedDay.startOf('week'),
+  };
 
   // Update range if the wanted day falls within a week
   weekStarts.forEach((weekStart, idx) => {
     if (wantedDay >= weekStart && wantedDay <= weekEnds[idx]) {
-      const firstServiceDay = days[idx]?.[0];
+      const firstServiceDay = days[idx]?.patterns?.[0];
 
       // Only update range if we have valid service days
       if (!firstServiceDay) {
@@ -213,13 +216,13 @@ export const calculateCurrentRange = (
         isMerged,
       );
 
-      range = [
+      range = {
         timeRange,
         wantedDay,
-        wantedDay.weekday,
-        days[idx],
-        weekStarts[idx],
-      ];
+        weekday: wantedDay.weekday,
+        dayArray: days[idx]?.patterns || [],
+        weekStart: weekStarts[idx],
+      };
     }
   });
 
@@ -249,7 +252,7 @@ export const calculateFirstWeekStart = (
 
   let firstWeekStart = today;
   let firstServiceDay;
-  const dayPattern = departures?.[0]?.[0]?.[0];
+  const dayPattern = departures?.[0]?.[0]?.dayPattern;
 
   if (dayPattern) {
     const firstServiceDayNo = Math.min(...dayPattern.split('').map(Number));

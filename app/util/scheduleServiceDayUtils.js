@@ -4,32 +4,32 @@
  */
 import { DateTime } from 'luxon';
 import { DATE_FORMAT } from '../constants';
-import { DATA_INDEX, RANGE_INDEX } from './scheduleDataUtils';
 
 /**
  * Calculate the appropriate new service day for display
  * @param {DateTime} wantedDay - The requested service day (undefined if not specified)
- * @param {Array} data - The populated schedule data array
+ * @param {Object} data - The populated schedule data object
  * @param {DateTime} firstDataDate - First date with available data
  * @returns {DateTime|undefined} Calculated service day or undefined
  */
 export const calculateNewServiceDay = (wantedDay, data, firstDataDate) => {
   // Only calculate if no wanted day is specified and we have valid data
-  if (wantedDay || !data || data.length < 3) {
+  if (wantedDay || !data || !data.range) {
     return undefined;
   }
 
-  const range = data[DATA_INDEX.RANGE];
-  const dayArray = range?.[RANGE_INDEX.DAY_ARRAY];
-  const currentWeekday = range?.[RANGE_INDEX.WEEKDAY];
-  const wantedDayValue = range?.[RANGE_INDEX.WANTED_DAY];
-  const options = data[DATA_INDEX.OPTIONS];
-  const weekStarts = data[DATA_INDEX.WEEK_STARTS];
+  const { range, options, weeks } = data;
+  const weekStarts = weeks?.starts;
+  const {
+    dayArray,
+    weekday: currentWeekday,
+    wantedDay: wantedDayValue,
+  } = range || {};
 
   let serviceDay;
 
   // Check if current weekday doesn't match first day in array
-  if (dayArray && dayArray !== '') {
+  if (Array.isArray(dayArray) && dayArray.length > 0) {
     const firstDayInArray = dayArray[0]?.charAt(0);
     if (currentWeekday !== firstDayInArray) {
       serviceDay = DateTime.now()
@@ -42,7 +42,8 @@ export const calculateNewServiceDay = (wantedDay, data, firstDataDate) => {
     wantedDayValue < weekStarts?.[0]
   ) {
     // Use first option if wanted day is before first week start
-    serviceDay = DateTime.fromFormat(options[0].value, DATE_FORMAT);
+    serviceDay =
+      options[0].date || DateTime.fromFormat(options[0].value, DATE_FORMAT);
   }
 
   // Don't redirect to a date later than first available data
