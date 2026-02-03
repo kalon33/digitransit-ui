@@ -67,7 +67,6 @@ export const getFirstDepartureDate = (departures, dateIn) => {
  * @param {boolean} isMerged - Whether data has been merged
  * @param {number} dataExistsDay - First day of week with data (1-7)
  * @returns {Object} {
- *   version: number,
  *   weeks: { starts: Array<DateTime>, ends: Array<DateTime>, days: Array<Array<string>> },
  *   range: { timeRange: string, wantedDay: DateTime, weekday: number, dayArray: Array<string>, weekStart: DateTime },
  *   options: Array,
@@ -146,7 +145,6 @@ export const populateData = (
     }));
 
   return {
-    version: 1,
     weeks: {
       starts: weekStarts,
       ends: weekEnds,

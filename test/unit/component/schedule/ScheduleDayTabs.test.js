@@ -29,7 +29,6 @@ describe('<ScheduleDayTabs />', () => {
       const resolvedWantedDay = wantedDayOverride || wantedDay;
       const resolvedWeekStart = weekStartOverride || weekStart;
       return {
-        version: 1,
         weeks: {
           starts: [resolvedWeekStart],
           ends: [resolvedWeekStart.endOf('week')],
@@ -77,9 +76,6 @@ describe('<ScheduleDayTabs />', () => {
   });
 
   it('should render tabs for partial week', () => {
-    const wantedDay = DateTime.fromISO('2024-01-15');
-    const weekStart = wantedDay.startOf('week');
-
     const data = buildData({
       dayArray: ['12345', '67'],
       weekday: 1,
@@ -93,9 +89,6 @@ describe('<ScheduleDayTabs />', () => {
   });
 
   it('should render tabs for individual days', () => {
-    const wantedDay = DateTime.fromISO('2024-01-15');
-    const weekStart = wantedDay.startOf('week');
-
     const data = buildData({
       dayArray: ['1', '3', '5'],
       weekday: 1,
@@ -131,9 +124,6 @@ describe('<ScheduleDayTabs />', () => {
   });
 
   it('should call onTabClick when tab is clicked', () => {
-    const wantedDay = DateTime.fromISO('2024-01-15');
-    const weekStart = wantedDay.startOf('week');
-
     const data = buildData({
       dayArray: ['1', '3', '5'],
       weekday: 1,
@@ -149,9 +139,6 @@ describe('<ScheduleDayTabs />', () => {
   });
 
   it('should set aria-selected on active tab', () => {
-    const wantedDay = DateTime.fromISO('2024-01-15');
-    const weekStart = wantedDay.startOf('week');
-
     const data = buildData({
       dayArray: ['1', '3', '5'],
       weekday: 1,
@@ -168,9 +155,6 @@ describe('<ScheduleDayTabs />', () => {
   });
 
   it('should have correct role attributes', () => {
-    const wantedDay = DateTime.fromISO('2024-01-15');
-    const weekStart = wantedDay.startOf('week');
-
     const data = buildData({
       dayArray: ['1', '3'],
       weekday: 1,
@@ -184,9 +168,6 @@ describe('<ScheduleDayTabs />', () => {
   });
 
   it('should set tabIndex to 0 for active tab and -1 for others', () => {
-    const wantedDay = DateTime.fromISO('2024-01-15');
-    const weekStart = wantedDay.startOf('week');
-
     const data = buildData({
       dayArray: ['1', '3', '5'],
       weekday: 1,
@@ -207,9 +188,6 @@ describe('<ScheduleDayTabs />', () => {
   });
 
   it('should handle merged data', () => {
-    const wantedDay = DateTime.fromISO('2024-01-15');
-    const weekStart = wantedDay.startOf('week');
-
     const data = buildData({
       dayArray: ['1', '3', '5'],
       weekday: 1,
@@ -223,9 +201,6 @@ describe('<ScheduleDayTabs />', () => {
   });
 
   it('should handle single day with count < 2 (disabled state)', () => {
-    const wantedDay = DateTime.fromISO('2024-01-15');
-    const weekStart = wantedDay.startOf('week');
-
     const data = buildData({
       dayArray: ['1'],
       weekday: 1,
@@ -240,9 +215,6 @@ describe('<ScheduleDayTabs />', () => {
   });
 
   it('should not disable tabs when multiple days available', () => {
-    const wantedDay = DateTime.fromISO('2024-01-15');
-    const weekStart = wantedDay.startOf('week');
-
     const data = buildData({
       dayArray: ['1', '3'],
       weekday: 1,
@@ -258,9 +230,6 @@ describe('<ScheduleDayTabs />', () => {
   });
 
   it('should create refs for each tab', () => {
-    const wantedDay = DateTime.fromISO('2024-01-15');
-    const weekStart = wantedDay.startOf('week');
-
     const data = buildData({
       dayArray: ['1', '3', '5'],
       weekday: 1,
@@ -293,9 +262,6 @@ describe('<ScheduleDayTabs />', () => {
   });
 
   it('should handle weekday-only schedule', () => {
-    const wantedDay = DateTime.fromISO('2024-01-15');
-    const weekStart = wantedDay.startOf('week');
-
     const data = buildData({
       dayArray: ['12345'],
       weekday: 1,
@@ -309,9 +275,6 @@ describe('<ScheduleDayTabs />', () => {
   });
 
   it('should handle mixed consecutive and non-consecutive days', () => {
-    const wantedDay = DateTime.fromISO('2024-01-15');
-    const weekStart = wantedDay.startOf('week');
-
     const data = buildData({
       dayArray: ['12', '4', '67'],
       weekday: 1,
@@ -324,9 +287,6 @@ describe('<ScheduleDayTabs />', () => {
   });
 
   it('should pass correct locale to day string formatter', () => {
-    const wantedDay = DateTime.fromISO('2024-01-15');
-    const weekStart = wantedDay.startOf('week');
-
     const data = buildData({
       dayArray: ['1', '3'],
       weekday: 1,
@@ -358,9 +318,6 @@ describe('<ScheduleDayTabs />', () => {
   });
 
   it('should use focusedTab prop when provided', () => {
-    const wantedDay = DateTime.fromISO('2024-01-15');
-    const weekStart = wantedDay.startOf('week');
-
     const data = buildData({
       dayArray: ['1', '3', '5'],
       weekday: 1,
@@ -373,9 +330,6 @@ describe('<ScheduleDayTabs />', () => {
   });
 
   it('should apply CSS variables for tab count', () => {
-    const wantedDay = DateTime.fromISO('2024-01-15');
-    const weekStart = wantedDay.startOf('week');
-
     const data = buildData({
       dayArray: ['1', '3', '5'],
       weekday: 1,

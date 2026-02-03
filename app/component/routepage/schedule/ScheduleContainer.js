@@ -110,14 +110,8 @@ const ScheduleContainer = ({
     dataExistsDay,
   );
 
-  const { scheduleRange, optionsData } = useMemo(() => {
-    const range = getScheduleRange(data);
-    const options = data?.options || [];
-    return {
-      scheduleRange: range,
-      optionsData: options,
-    };
-  }, [data]);
+  const scheduleRange = useMemo(() => getScheduleRange(data), [data]);
+  const optionsData = data?.options || [];
 
   const fallbackServiceDay = useMemo(
     () => calculateNewServiceDay(wantedDay, data, firstDataDate),
@@ -190,7 +184,7 @@ const ScheduleContainer = ({
       return constantOperationRoutes[routeId][locale];
     }
     return null;
-  }, [routeId, locale]);
+  }, [routeId, locale, constantOperationRoutes]);
 
   const validation = validateScheduleData({
     pattern,
@@ -216,24 +210,33 @@ const ScheduleContainer = ({
     return null;
   }
 
-  const currentPattern = route?.patterns?.find(p => p.code === pattern.code);
+  const selectedServiceDay = wantedDay || fallbackServiceDay;
+  const currentPattern = useMemo(
+    () => route?.patterns?.find(p => p.code === pattern.code),
+    [route?.patterns, pattern?.code],
+  );
 
   // Calculate route timetable URL
-  const routeIdParts = useMemo(() => routeId?.split(':'), [routeId]);
-  const routeTimetableHandler = routeIdParts
-    ? config.timetables && config.timetables[routeIdParts[0]]
-    : undefined;
-  const selectedServiceDay = wantedDay || fallbackServiceDay;
-  const routeTimetableUrl =
-    routeTimetableHandler &&
-    selectedServiceDay &&
-    config.URL.ROUTE_TIMETABLES[routeIdParts[0]] &&
-    routeTimetableHandler.routeTimetableUrlResolver(
-      config.URL.ROUTE_TIMETABLES[routeIdParts[0]],
+  const routeTimetableUrl = useMemo(() => {
+    if (!routeId || !selectedServiceDay) {
+      return undefined;
+    }
+
+    const [agencyId] = routeId.split(':');
+    const routeTimetableHandler = config.timetables?.[agencyId];
+    const baseUrl = config.URL.ROUTE_TIMETABLES[agencyId];
+
+    if (!routeTimetableHandler || !baseUrl) {
+      return undefined;
+    }
+
+    return routeTimetableHandler.routeTimetableUrlResolver(
+      baseUrl,
       route,
       selectedServiceDay.toFormat(DATE_FORMAT),
       lang,
     );
+  }, [routeId, selectedServiceDay, config, route, lang]);
 
   const tripsResult = getTripsList({
     pattern: currentPattern,

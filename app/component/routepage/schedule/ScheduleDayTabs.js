@@ -74,14 +74,8 @@ const ScheduleDayTabs = ({
     [tabRefs],
   );
 
-  const tabs = dayTabs.map((tab, id) => {
-    const isSelectedByDay = tab.indexOf(currentWeekday) !== -1;
-    const isFirstDayFallback =
-      tab.indexOf(firstDay) !== -1 &&
-      !isSameWeek &&
-      dayTabs.indexOf(currentWeekday) === id;
-    const selected = isSelectedByDay || isFirstDayFallback || count === 1;
-
+  const tabs = dayTabs.map(tab => {
+    const selected = tab === currentFocusedTab;
     const tabDate = calculateTabDate(
       range.weekStart,
       tab,
@@ -147,7 +141,6 @@ const ScheduleDayTabs = ({
 ScheduleDayTabs.propTypes = {
   // Data is a structured object from scheduleDataUtils with named fields
   data: PropTypes.shape({
-    version: PropTypes.number,
     weeks: PropTypes.shape({
       starts: PropTypes.arrayOf(PropTypes.instanceOf(DateTime)),
       ends: PropTypes.arrayOf(PropTypes.instanceOf(DateTime)),

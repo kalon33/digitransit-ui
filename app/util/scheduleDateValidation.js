@@ -76,10 +76,10 @@ export const calculateRedirectDecision = ({
 
   // Check if should redirect due to empty week or first departure date
   const isBeforeNext = isBeforeNextWeek(wantedDay);
-  const isSameOrAfterNext = isSameOrAfterNextWeek(wantedDay);
+  const isNextWeekOrAfter = isSameOrAfterNextWeek(wantedDay);
 
   if ((isBeforeNext && firstWeekEmpty) || firstDepartureDate) {
-    if (wantedDay && !isSameOrAfterNext) {
+    if (wantedDay && !isNextWeekOrAfter) {
       // Check if first departure date is different from current day
       if (
         firstDepartureDate &&
