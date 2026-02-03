@@ -2,14 +2,16 @@ import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { DateTime } from 'luxon';
 import {
-  getMostFrequent,
-  modifyDepartures,
-  isEmptyWeek,
   getFirstDepartureDate,
   populateData,
   DATA_INDEX,
   RANGE_INDEX,
 } from '../../../app/util/scheduleDataUtils';
+import {
+  modifyDepartures,
+  isEmptyWeek,
+  getMostFrequent,
+} from '../../../app/util/scheduleWeekProcessing';
 
 describe('scheduleDataUtils', () => {
   describe('getMostFrequent', () => {

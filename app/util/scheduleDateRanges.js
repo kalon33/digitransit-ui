@@ -227,12 +227,15 @@ export const calculateCurrentRange = (
 };
 
 /**
- * Initialize and adjust first week start date
+ * Calculate the first week start for schedule display.
+ * If the current and next weeks are identical, anchor to the current week start.
+ * Otherwise, use today's date unless the first week has service starting later,
+ * in which case start from the first service day in the current week.
  * @param {DateTime} startOfCurrentWeek - Start of current week
  * @param {DateTime} today - Today's date
  * @param {Array} departures - Departures array
  * @param {boolean} currentAndNextWeekAreSame - Whether weeks are same
- * @returns {Object} { firstWeekStart: DateTime, pastDate: string }
+ * @returns {Object} { firstWeekStart: DateTime, firstServiceDay: DateTime|undefined }
  */
 export const calculateFirstWeekStart = (
   startOfCurrentWeek,
@@ -240,21 +243,19 @@ export const calculateFirstWeekStart = (
   departures,
   currentAndNextWeekAreSame,
 ) => {
-  let pastDate;
-  let firstWeekStart = currentAndNextWeekAreSame ? startOfCurrentWeek : today;
-
-  if (
-    !currentAndNextWeekAreSame &&
-    departures.length > 0 &&
-    departures[0].length > 0 &&
-    departures[0][0]
-  ) {
-    const minDayNo = Math.min(...departures[0][0][0].split('').map(Number));
-    pastDate = startOfCurrentWeek.plus({ days: minDayNo - 1 });
-    if (!currentAndNextWeekAreSame) {
-      firstWeekStart = pastDate;
-    }
+  if (currentAndNextWeekAreSame) {
+    return { firstWeekStart: startOfCurrentWeek, firstServiceDay: undefined };
   }
 
-  return { firstWeekStart, pastDate };
+  let firstWeekStart = today;
+  let firstServiceDay;
+  const dayPattern = departures?.[0]?.[0]?.[0];
+
+  if (dayPattern) {
+    const firstServiceDayNo = Math.min(...dayPattern.split('').map(Number));
+    firstServiceDay = startOfCurrentWeek.plus({ days: firstServiceDayNo - 1 });
+    firstWeekStart = firstServiceDay;
+  }
+
+  return { firstWeekStart, firstServiceDay };
 };

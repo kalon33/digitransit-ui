@@ -7,16 +7,16 @@ import { DateTime } from 'luxon';
 import {
   modifyDepartures,
   isEmptyWeek,
-  populateData,
-} from '../util/scheduleDataUtils';
-import { getMostFrequent } from '../util/scheduleWeekProcessing';
+  getMostFrequent,
+} from '../util/scheduleWeekProcessing';
+import { populateData } from '../util/scheduleDataUtils';
 import getTestData from '../component/routepage/schedule/ScheduleDebugData';
 
 // Day mapping for finding first day with data
 const WEEK_DAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].map(
   (day, index) => ({
     key: `wk1${day}`,
-    day: index + 2, // Tuesday = 2, Wednesday = 3, etc.
+    day: index + 1, // Monday = 1, Tuesday = 2, Wednesday = 3, etc.
   }),
 );
 

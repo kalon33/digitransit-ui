@@ -38,15 +38,8 @@ export const RANGE_INDEX = {
   WEEK_START: 4, // DateTime object for week start
 };
 
-// Re-export functions from sub-modules for backwards compatibility
-export {
-  modifyDepartures,
-  isEmptyWeek,
-  getMostFrequent,
-} from './scheduleWeekProcessing';
-
 /**
- * Returns the date of first departure
+ * Returns the first date with departures from the given departures data
  * @param {Array} departures - Array of departure data
  * @param {DateTime} dateIn - Optional date to check
  * @returns {DateTime|undefined}
@@ -58,19 +51,22 @@ export const getFirstDepartureDate = (departures, dateIn) => {
 
   const date = dateIn || DateTime.now();
   const dayNo = date.weekday;
-  const idx = departures.findIndex(
+  // Find the day entry that includes the current weekday. If the entry has
+  // no departures, fall back to the previous day (if it has departures).
+
+  const dayIndex = departures.findIndex(
     departure => departure[0].indexOf(dayNo) !== -1,
   );
 
-  if (idx === -1) {
+  if (dayIndex === -1) {
     return undefined;
   }
 
-  const hasNoDepartures = departures[idx][1] === 0 && departures[idx][2] === '';
+  const hasNoDepartures = departures[dayIndex][1] === 0 && departures[dayIndex][2] === '';
 
   // Check if we need to look at previous day
-  if (idx > 0 && hasNoDepartures) {
-    const previousDeparture = departures[idx - 1];
+  if (dayIndex > 0 && hasNoDepartures) {
+    const previousDeparture = departures[dayIndex - 1];
     const hasPreviousDepartures =
       previousDeparture[1] !== 0 && previousDeparture[2] !== '';
 
@@ -81,7 +77,7 @@ export const getFirstDepartureDate = (departures, dateIn) => {
   }
 
   // First day with departures
-  if (idx === 0 && !hasNoDepartures) {
+  if (dayIndex === 0 && !hasNoDepartures) {
     return date.hasSame(DateTime.now(), 'week') ? DateTime.now() : date;
   }
 
@@ -112,14 +108,13 @@ export const populateData = (
   const currentAndNextWeekAreSame =
     departureCount >= 2 && isEqual(departures[0], departures[1]);
 
-  // Initialize week structures
   const { weekStarts, weekEnds, days, emptyWeek } = initializeWeekStructures(
     departures,
     startOfCurrentWeek,
   );
 
   // Adjust first week start if needed
-  const { firstWeekStart, pastDate: calculatedPastDate } =
+  const { firstWeekStart, firstServiceDay: calculatedFirstServiceDay } =
     calculateFirstWeekStart(
       startOfCurrentWeek,
       today,
@@ -159,7 +154,7 @@ export const populateData = (
 
   // Set pastDate if not already set
   const pastDate =
-    calculatedPastDate ||
+    calculatedFirstServiceDay ||
     startOfCurrentWeek.plus({ days: dataExistsDay - 1 }).toFormat(DATE_FORMAT);
 
   return [

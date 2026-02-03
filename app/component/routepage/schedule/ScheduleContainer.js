@@ -43,9 +43,7 @@ import {
   getScheduleRange,
 } from '../../../util/scheduleValidation';
 
-// Constants
 const MINIMUM_STOP_INDEX = 0;
-const MINIMUM_STOPS_FOR_RANGE = 1;
 
 const openRoutePDF = (e, routePDFUrl) => {
   e.stopPropagation();
@@ -66,7 +64,6 @@ const ScheduleContainer = ({
   router,
   lang = 'en',
 }) => {
-  // Unwrap fragment references
   const pattern = useFragment(SchedulePatternFragment, patternRef);
   const route = useFragment(ScheduleRouteFragment, routeRef);
   const firstDeparturesProp = useFragment(
@@ -79,32 +76,25 @@ const ScheduleContainer = ({
 
   const [from, setFrom] = useState(MINIMUM_STOP_INDEX);
   const [to, setTo] = useState(
-    Math.max(
-      (pattern?.stops?.length || MINIMUM_STOPS_FOR_RANGE) - 1,
-      MINIMUM_STOP_INDEX,
-    ),
+    Math.max((pattern?.stops?.length || 1) - 1, MINIMUM_STOP_INDEX),
   );
   const [focusedTab, setFocusedTab] = useState(null);
 
   const tabRefs = useRef({});
 
-  // Process schedule data using custom hook
   const { firstDepartures, hasMergedData, dataExistsDay, firstWeekEmpty } =
     useScheduleData({
       firstDeparturesProp,
       match,
     });
 
-  // Calculate wanted day and first data date
   const { query } = match.location;
-  const wantedDay =
-    query && query.serviceDay
-      ? DateTime.fromFormat(query.serviceDay, DATE_FORMAT)
-      : undefined;
+  const wantedDay = query?.serviceDay
+    ? DateTime.fromFormat(query.serviceDay, DATE_FORMAT)
+    : undefined;
 
   const firstDataDate = useFirstDataDate(hasMergedData, dataExistsDay);
 
-  // Handle redirects
   useScheduleRedirects({
     match,
     router,
@@ -114,7 +104,6 @@ const ScheduleContainer = ({
     firstWeekEmpty,
   });
 
-  // Populate display data
   const data = usePopulatedScheduleData(
     wantedDay,
     firstDepartures,
@@ -122,7 +111,6 @@ const ScheduleContainer = ({
     dataExistsDay,
   );
 
-  // Destructure schedule data for easier access (memoized to avoid recalculation)
   const { scheduleRange, optionsData } = useMemo(() => {
     const range = getScheduleRange(data);
     const options = data[DATA_INDEX.OPTIONS] || [];
@@ -132,8 +120,7 @@ const ScheduleContainer = ({
     };
   }, [data]);
 
-  // Calculate new service day if needed
-  const newServiceDay = useMemo(
+  const fallbackServiceDay = useMemo(
     () => calculateNewServiceDay(wantedDay, data, firstDataDate),
     [wantedDay, data, firstDataDate],
   );
@@ -145,6 +132,7 @@ const ScheduleContainer = ({
     }
   }, [pattern?.code, pattern?.stops?.length]);
 
+  // Handler for timetable stop selection
   const onFromSelectChange = useCallback(
     selectFrom => {
       const fromValue = Number(selectFrom);
@@ -164,6 +152,7 @@ const ScheduleContainer = ({
     [pattern?.stops?.length],
   );
 
+  // Handler for timetable end stop selection
   const onToSelectChange = useCallback(selectTo => {
     setTo(Number(selectTo));
     addAnalyticsEvent({
@@ -197,22 +186,19 @@ const ScheduleContainer = ({
   const { constantOperationRoutes } = config;
   const { locale } = intl;
 
-  // Memoize constant operation check
   const constantOperationInfo = useMemo(() => {
     if (routeId && constantOperationRoutes?.[routeId]) {
       return constantOperationRoutes[routeId][locale];
     }
     return null;
-  }, [routeId, constantOperationRoutes, locale]);
+  }, [routeId, locale]);
 
-  // Validate schedule data and handle special cases
   const validation = validateScheduleData({
     pattern,
     route,
     constantOperationInfo,
   });
 
-  // Handle special rendering cases
   if (validation.reason === 'constant-operation') {
     return (
       <ScheduleConstantOperation
@@ -231,8 +217,6 @@ const ScheduleContainer = ({
     return null;
   }
 
-  // Main schedule rendering flow starts here
-
   const currentPattern = route?.patterns?.find(p => p.code === pattern.code);
 
   // Calculate route timetable URL
@@ -240,8 +224,7 @@ const ScheduleContainer = ({
   const routeTimetableHandler = routeIdParts
     ? config.timetables && config.timetables[routeIdParts[0]]
     : undefined;
-
-  const selectedServiceDay = wantedDay || newServiceDay;
+  const selectedServiceDay = wantedDay || fallbackServiceDay;
   const routeTimetableUrl =
     routeTimetableHandler &&
     selectedServiceDay &&
@@ -253,28 +236,24 @@ const ScheduleContainer = ({
       lang,
     );
 
-  // Get trips using the new utility function
   const tripsResult = getTripsList({
     pattern: currentPattern,
-    newServiceDay,
+    newServiceDay: fallbackServiceDay,
     match,
     intl,
   });
 
-  // Handle redirect if needed
   if (tripsResult.redirectPath) {
     match.router.replace(tripsResult.redirectPath);
     return null;
   }
 
-  // Show no trips message
   if (tripsResult.noTripsMessage) {
     return tripsResult.noTripsMessage;
   }
 
   const showTrips = tripsResult.trips;
 
-  // Memoize print handlers after routeTimetableUrl is defined
   const handlePrintPDF = useCallback(
     e => {
       openRoutePDF(e, routeTimetableUrl);

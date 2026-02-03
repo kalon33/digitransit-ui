@@ -1,6 +1,5 @@
 /**
  * Custom hook for handling schedule redirects
- * Centralizes redirect decision logic
  */
 import { useEffect } from 'react';
 import { DateTime } from 'luxon';
