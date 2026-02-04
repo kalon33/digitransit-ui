@@ -136,7 +136,7 @@ function NearStopsAndRoutes({
           origin.lon
         }`
       : '/POS';
-  const linkedButtonProps = { role: 'link', tabindex: '0' };
+  const linkedButtonProps = { role: 'link', tabIndex: '0' };
 
   // line between buttons
   const separator = (
