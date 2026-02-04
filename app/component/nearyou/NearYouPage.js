@@ -52,9 +52,9 @@ const PH_USEMAPCENTER = 'usemapcenter';
 const PH_SHOWSEARCH = [PH_SEARCH, PH_SEARCH_GEOLOCATION]; // show modal
 const PH_READY = [PH_USEDEFAULTPOS, PH_USEGEOLOCATION, PH_USEMAPCENTER]; // render the actual page
 
-function getModes(config) {
+function getModes(config, favourites) {
   const transportModes = getTransportModes(config);
-  const nearYouModes = getNearYouModes(config);
+  const nearYouModes = getNearYouModes(config, favourites);
   const modes = nearYouModes.length
     ? nearYouModes
     : Object.keys(transportModes).filter(
@@ -69,6 +69,7 @@ function NearYouPage(
     relayEnvironment,
     position,
     match,
+    favourites,
     favouriteStopIds,
     favouriteStationIds,
     favouriteVehicleStationIds,
@@ -81,7 +82,7 @@ function NearYouPage(
 ) {
   const config = useConfigContext();
   const MWTRef = useRef();
-  const modes = useRef(getModes(config));
+  const modes = useRef(getModes(config, favourites));
   const centerOfMap = useRef({});
   const [phase, setPhase] = useState(PH_START);
   const [centerOfMapChanged, setCenterOfMapChanged] = useState(false);
@@ -606,6 +607,7 @@ NearYouPage.propTypes = {
   favouriteStopIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   favouriteStationIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   favouriteVehicleStationIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  favourites: PropTypes.array, // eslint-disable-line
   mapLayers: mapLayerShape.isRequired,
   favouritesFetched: PropTypes.bool,
   currentTime: PropTypes.number.isRequired,
@@ -654,6 +656,7 @@ const PositioningWrapper = connectToStores(
       favouriteStopIds,
       favouriteVehicleStationIds,
       favouriteStationIds,
+      favourites: favStore.getFavourites(),
       favouritesFetched:
         favStore.getStatus() !== FavouriteStore.STATUS_FETCHING_OR_UPDATING,
     };
