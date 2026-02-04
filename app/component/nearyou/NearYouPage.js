@@ -82,7 +82,6 @@ function NearYouPage(
 ) {
   const config = useConfigContext();
   const MWTRef = useRef();
-  const timeRef = useRef(currentTime);
   const modes = useRef(getModes(config, favourites));
   const centerOfMap = useRef({});
   const [phase, setPhase] = useState(PH_START);
@@ -94,7 +93,6 @@ function NearYouPage(
 
   const { mode } = match.params;
   const allModes = modes.current;
-  const time = Math.max(currentTime, timeRef.current);
 
   const updateMapLayerOptions = () => {
     if (config.map.showLayerSelector) {
@@ -174,7 +172,6 @@ function NearYouPage(
     // this fixes a bug where swipeable tabs were not keeping focusable elements up to date after receving stop data
     // and keyboard focus could be lost to hidden elements.
     // eslint-disable-next-line react/no-unused-state
-    timeRef.current += 1;
     setResultsLoaded(true);
   };
 
@@ -326,7 +323,7 @@ function NearYouPage(
                 searchPosition={searchPosition}
                 noFavourites={noFavs}
                 isParentTabActive={isActive}
-                currentTime={time}
+                currentTime={currentTime}
               />
             ) : (
               <Loading />
@@ -440,7 +437,7 @@ function NearYouPage(
                           <StopNearYouContainer
                             stop={stop}
                             key={stop.gtfsId}
-                            currentTime={time}
+                            currentTime={currentTime}
                             isParentTabActive={isActive}
                           />
                         ))
@@ -458,7 +455,7 @@ function NearYouPage(
                       withSeparator={!renderStopRouteSearch}
                       mode={tabMode}
                       isParentTabActive={isActive}
-                      currentTime={time}
+                      currentTime={currentTime}
                       favouriteIds={favIds}
                     />
                   ) : (
