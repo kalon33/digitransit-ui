@@ -547,50 +547,48 @@ function NearYouPage(
       </LocationModal>
     );
   }
+
+  const desktop = () => (
+    <DesktopView
+      title={
+        mode === 'FAVORITE' ? (
+          <FormattedMessage id="nearest-favourites" />
+        ) : (
+          <FormattedMessage
+            id="nearest"
+            defaultMessage="Stops near you"
+            values={{
+              mode: (
+                <FormattedMessage id={`nearest-stops-${mode.toLowerCase()}`} />
+              ),
+            }}
+          />
+        )
+      }
+      bckBtnFallback="back"
+      content={renderContent()}
+      scrollable={allModes.length === 1}
+      map={
+        <>
+          {mapSearch()}
+          {renderMap()}
+        </>
+      }
+    />
+  );
+
+  const mobile = () => (
+    <MobileView
+      content={renderContent()}
+      map={renderMap()}
+      searchBox={mapSearch()}
+      mapRef={MWTRef.current}
+      match={match}
+    />
+  );
+
   if (PH_READY.includes(phase)) {
-    return (
-      <DesktopOrMobile
-        desktop={() => (
-          <DesktopView
-            title={
-              mode === 'FAVORITE' ? (
-                <FormattedMessage id="nearest-favourites" />
-              ) : (
-                <FormattedMessage
-                  id="nearest"
-                  defaultMessage="Stops near you"
-                  values={{
-                    mode: (
-                      <FormattedMessage
-                        id={`nearest-stops-${mode.toLowerCase()}`}
-                      />
-                    ),
-                  }}
-                />
-              )
-            }
-            bckBtnFallback="back"
-            content={renderContent()}
-            scrollable={allModes.length === 1}
-            map={
-              <>
-                {mapSearch()}
-                {renderMap()}
-              </>
-            }
-          />
-        )}
-        mobile={() => (
-          <MobileView
-            content={renderContent()}
-            map={renderMap()}
-            searchBox={mapSearch()}
-            mapRef={MWTRef.current}
-            match={match}
-          />
-        )}
-      />
-    );
+    return <DesktopOrMobile desktop={desktop} mobile={mobile} />;
   }
   return <Loading />;
 }
