@@ -13,6 +13,10 @@
  * @property {number|null} weekday - Weekday number (1-7)
  */
 
+import { DateTime } from 'luxon';
+import { routePagePath, PREFIX_TIMETABLE } from './path';
+import { DATE_FORMAT } from '../constants';
+
 /**
  * Validate schedule data and determine if component should render
  * @param {Object} params - Validation parameters
@@ -32,7 +36,6 @@ export const validateScheduleData = ({
     return {
       shouldRender: false,
       reason: 'constant-operation',
-      redirect: null,
     };
   }
 
@@ -43,20 +46,17 @@ export const validateScheduleData = ({
       return {
         shouldRender: false,
         reason: 'no-pattern',
-        redirect: 'route-default',
       };
     }
     return {
       shouldRender: false,
       reason: 'no-pattern-no-route',
-      redirect: null,
     };
   }
 
   return {
     shouldRender: true,
     reason: 'valid',
-    redirect: null,
   };
 };
 
@@ -69,23 +69,76 @@ export const validateScheduleData = ({
  * @returns {Object} { shouldRedirect: boolean, redirectDate: DateTime|null, reason: string }
  */
 export const calculateRedirectDecision = ({
+  match,
   wantedDay,
   firstDataDate,
-  testNum,
+  noTrips,
+  pattern,
+  routeId,
+  fallbackServiceDay,
+  serviceDay,
 }) => {
+  const testNum =
+    !!process.env.ROUTEPAGETESTING && match?.location?.query?.test;
+
   // Skip redirect for test mode with testNum=0
   if (testNum === '0' || testNum === 0) {
-    return { shouldRedirect: false, redirectDate: null, reason: 'test-mode' };
+    return {
+      shouldRedirect: false,
+      redirectDate: null,
+      redirectPath: null,
+      reason: 'test-mode',
+    };
   }
 
-  // Check if wanted day is before first available data
+  //  Redirect if past date (before today) and redirect to current path
+  if (serviceDay) {
+    const date = DateTime.fromFormat(serviceDay, DATE_FORMAT);
+    const today = DateTime.now().startOf('day');
+    if (date && date.startOf('day') < today) {
+      return {
+        shouldRedirect: true,
+        redirectDate: today,
+        redirectPath: null,
+        reason: 'past-date',
+      };
+    }
+  }
+
+  // Redirect if wanted day is before first available data
   if (wantedDay && firstDataDate && wantedDay < firstDataDate) {
     return {
       shouldRedirect: true,
       redirectDate: firstDataDate,
+      redirectPath: null,
       reason: 'before-first-data',
     };
   }
 
-  return { shouldRedirect: false, redirectDate: null, reason: 'no-redirect' };
+  // Redirect if no trips and new service day is specified
+  if (noTrips && fallbackServiceDay) {
+    return {
+      shouldRedirect: true,
+      redirectDate: fallbackServiceDay.toFormat(DATE_FORMAT),
+      redirectPath: routePagePath(routeId, PREFIX_TIMETABLE, pattern.code),
+      reason: 'no-trips',
+    };
+  }
+
+  // Redirect if no pattern but routeId exists
+  if (!pattern && routeId) {
+    return {
+      shouldRedirect: true,
+      redirectDate: null,
+      redirectPath: routePagePath(routeId, PREFIX_TIMETABLE),
+      reason: 'no-pattern',
+    };
+  }
+
+  return {
+    shouldRedirect: false,
+    redirectDate: null,
+    redirectPath: null,
+    reason: 'no-redirect',
+  };
 };

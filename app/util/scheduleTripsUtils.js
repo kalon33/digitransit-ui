@@ -5,7 +5,6 @@
 import React from 'react';
 import { DateTime } from 'luxon';
 import { DATE_FORMAT } from '../constants';
-import { routePagePath, PREFIX_TIMETABLE } from './path';
 
 /**
  * Sort trips by scheduled departure time
@@ -50,9 +49,6 @@ export const getTripsList = ({ pattern, fallbackServiceDay, match, intl }) => {
   const testNum = testing && match?.location?.query?.test;
 
   let currentPattern = pattern;
-  let queryParams = fallbackServiceDay
-    ? `?serviceDay=${fallbackServiceDay.toFormat(DATE_FORMAT)}`
-    : '';
 
   // Apply test mode filtering if enabled
   if (testing && testNum && currentPattern) {
@@ -60,28 +56,19 @@ export const getTripsList = ({ pattern, fallbackServiceDay, match, intl }) => {
       ...currentPattern,
       trips: currentPattern.trips?.filter((s, i) => i < 2),
     };
-    queryParams = queryParams.concat(`&test=${testNum}`);
   }
 
   const trips = sortTrips(currentPattern?.trips);
 
-  // Redirect if no trips and new service day is specified
-  if (trips && trips.length === 0 && fallbackServiceDay) {
-    return {
-      trips: null,
-      redirectPath: routePagePath(
-        match.params.routeId,
-        PREFIX_TIMETABLE,
-        currentPattern.code,
-        null,
-        queryParams,
-      ),
-      noTripsMessage: null,
-    };
-  }
-
-  // Show no trips message
   if (trips && trips.length === 0) {
+    // Return null with no message if a new service day is available
+    if (fallbackServiceDay) {
+      return {
+        trips: null,
+        noTripsMessage: null,
+      };
+    }
+    // Show no trips message
     const day = match.location.query?.serviceDay
       ? DateTime.fromFormat(
           match.location.query.serviceDay,
@@ -90,7 +77,6 @@ export const getTripsList = ({ pattern, fallbackServiceDay, match, intl }) => {
       : '';
     return {
       trips: null,
-      redirectPath: null,
       noTripsMessage: (
         <div className="text-center">
           {intl.formatMessage(
@@ -109,7 +95,6 @@ export const getTripsList = ({ pattern, fallbackServiceDay, match, intl }) => {
 
   return {
     trips,
-    redirectPath: null,
     noTripsMessage: null,
   };
 };

@@ -17,7 +17,6 @@ import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import withBreakpoint from '../../../util/withBreakpoint';
 import ScheduleDropdown from './ScheduleDropdown';
 import RouteControlPanel from '../RouteControlPanel';
-import { routePagePath, PREFIX_TIMETABLE } from '../../../util/path';
 import ScrollableWrapper from '../../ScrollableWrapper';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 import { useTranslationsContext } from '../../../util/useTranslationsContext';
@@ -25,7 +24,10 @@ import { getTripsList } from '../../../util/scheduleTripsUtils';
 import { routeShape, patternShape } from '../../../util/shapes';
 import { useScheduleData } from '../../../hooks/useScheduleData';
 import { useScheduleRedirects } from '../../../hooks/useScheduleRedirects';
-import { validateScheduleData } from '../../../util/scheduleValidation';
+import {
+  validateScheduleData,
+  calculateRedirectDecision,
+} from '../../../util/scheduleValidation';
 import { populateData } from '../../../util/scheduleDataUtils';
 
 const openRoutePDF = (e, routePDFUrl) => {
@@ -73,11 +75,63 @@ const ScheduleContainer = ({
   const data = populateData(wantedDay, firstDepartures);
   const firstDataDate = data?.dates?.[0];
 
+  const fallbackServiceDay = !wantedDay ? firstDataDate : undefined;
+  const selectedServiceDay = wantedDay || fallbackServiceDay;
+  const currentPattern = useMemo(
+    () => route?.patterns?.find(p => p.code === pattern?.code),
+    [route?.patterns, pattern?.code],
+  );
+  const tripsResult = getTripsList({
+    pattern: currentPattern,
+    fallbackServiceDay,
+    match,
+    intl,
+  });
+
+  const routeId = route?.gtfsId;
+  const { constantOperationRoutes } = config;
+  const { locale } = intl;
+
+  const constantOperationInfo = useMemo(() => {
+    if (routeId && constantOperationRoutes?.[routeId]) {
+      return constantOperationRoutes[routeId][locale];
+    }
+    return null;
+  }, [routeId, locale, constantOperationRoutes]);
+
+  const validation = validateScheduleData({
+    pattern,
+    route,
+    constantOperationInfo,
+  });
+
+  const redirectDecision = useMemo(
+    () =>
+      calculateRedirectDecision({
+        match,
+        wantedDay,
+        firstDataDate,
+        noTrips: !tripsResult.trips,
+        pattern,
+        routeId,
+        fallbackServiceDay,
+        serviceDay: match.location.query?.serviceDay,
+      }),
+    [
+      match,
+      wantedDay,
+      firstDataDate,
+      tripsResult.trips,
+      pattern,
+      routeId,
+      fallbackServiceDay,
+    ],
+  );
+
   useScheduleRedirects({
     match,
     router,
-    wantedDay,
-    firstDataDate,
+    redirectDecision,
   });
 
   const scheduleRange = data?.range || {
@@ -87,8 +141,6 @@ const ScheduleContainer = ({
   };
 
   const optionsData = data?.options || [];
-
-  const fallbackServiceDay = !wantedDay ? firstDataDate : undefined;
 
   useEffect(() => {
     if (pattern?.code) {
@@ -128,7 +180,7 @@ const ScheduleContainer = ({
   }, []);
 
   const changeDate = useCallback(
-    selectedServiceDay => {
+    newServiceDay => {
       const { location } = match;
       addAnalyticsEvent({
         category: 'Route',
@@ -139,53 +191,12 @@ const ScheduleContainer = ({
         ...location,
         query: {
           ...location.query,
-          serviceDay: selectedServiceDay,
+          serviceDay: newServiceDay,
         },
       };
       router.replace(newPath);
     },
     [match, router],
-  );
-
-  const routeId = route?.gtfsId;
-  const { constantOperationRoutes } = config;
-  const { locale } = intl;
-
-  const constantOperationInfo = useMemo(() => {
-    if (routeId && constantOperationRoutes?.[routeId]) {
-      return constantOperationRoutes[routeId][locale];
-    }
-    return null;
-  }, [routeId, locale, constantOperationRoutes]);
-
-  const validation = validateScheduleData({
-    pattern,
-    route,
-    constantOperationInfo,
-  });
-
-  if (validation.reason === 'constant-operation') {
-    return (
-      <ScheduleConstantOperation
-        constantOperationInfo={constantOperationInfo}
-        match={match}
-        route={route}
-        breakpoint={breakpoint}
-      />
-    );
-  }
-
-  if (!validation.shouldRender) {
-    if (validation.redirect === 'route-default' && routeId) {
-      router.replace(routePagePath(routeId, PREFIX_TIMETABLE));
-    }
-    return null;
-  }
-
-  const selectedServiceDay = wantedDay || fallbackServiceDay;
-  const currentPattern = useMemo(
-    () => route?.patterns?.find(p => p.code === pattern.code),
-    [route?.patterns, pattern?.code],
   );
 
   // Calculate route timetable URL
@@ -210,24 +221,6 @@ const ScheduleContainer = ({
     );
   }, [routeId, selectedServiceDay, config, route, lang]);
 
-  const tripsResult = getTripsList({
-    pattern: currentPattern,
-    fallbackServiceDay,
-    match,
-    intl,
-  });
-
-  if (tripsResult.redirectPath) {
-    match.router.replace(tripsResult.redirectPath);
-    return null;
-  }
-
-  if (tripsResult.noTripsMessage) {
-    return tripsResult.noTripsMessage;
-  }
-
-  const showTrips = tripsResult.trips;
-
   const handlePrintPDF = useCallback(
     e => {
       openRoutePDF(e, routeTimetableUrl);
@@ -248,6 +241,27 @@ const ScheduleContainer = ({
       name: null,
     });
   }, []);
+
+  if (!validation.shouldRender || redirectDecision.shouldRedirect) {
+    return null;
+  }
+
+  if (validation.reason === 'constant-operation') {
+    return (
+      <ScheduleConstantOperation
+        constantOperationInfo={constantOperationInfo}
+        match={match}
+        route={route}
+        breakpoint={breakpoint}
+      />
+    );
+  }
+
+  if (tripsResult.noTripsMessage) {
+    return tripsResult.noTripsMessage;
+  }
+
+  const showTrips = tripsResult.trips;
 
   return (
     <>
