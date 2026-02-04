@@ -115,7 +115,6 @@ const ScheduleContainer = ({
         pattern,
         routeId,
         fallbackServiceDay,
-        serviceDay: match.location.query?.serviceDay,
       }),
     [
       match,

@@ -2,20 +2,10 @@
  * Validation utilities for ScheduleContainer
  * Centralized validation logic for schedule data
  *
- * @typedef {Object} ValidationResult
- * @property {boolean} shouldRender - Whether the component should render
- * @property {string} reason - Reason for validation result ('valid', 'constant-operation', 'no-pattern', etc.)
- * @property {string|null} redirect - Redirect type if applicable ('route-default' or null)
- *
- * @typedef {Object} ScheduleRangeData
- * @property {string} timeRange - Formatted time range string
- * @property {DateTime|null} wantedDay - The wanted day DateTime object
- * @property {number|null} weekday - Weekday number (1-7)
  */
 
 import { DateTime } from 'luxon';
 import { routePagePath, PREFIX_TIMETABLE } from './path';
-import { DATE_FORMAT } from '../constants';
 
 /**
  * Validate schedule data and determine if component should render
@@ -63,8 +53,8 @@ export const validateScheduleData = ({
 /**
  * Determine if should redirect based on date conditions
  * @param {Object} params - Validation parameters
- * @param {DateTime} params.wantedDay - The requested service day
- * @param {DateTime} params.firstDataDate - First date with available data
+ * @param {DateTime|string} params.wantedDay - The requested service day
+ * @param {DateTime|string} params.firstDataDate - First date with available data
  * @param {string|number} params.testNum - Test number (for testing mode)
  * @returns {Object} { shouldRedirect: boolean, redirectDate: DateTime|null, reason: string }
  */
@@ -76,7 +66,6 @@ export const calculateRedirectDecision = ({
   pattern,
   routeId,
   fallbackServiceDay,
-  serviceDay,
 }) => {
   const testNum =
     !!process.env.ROUTEPAGETESTING && match?.location?.query?.test;
@@ -91,11 +80,10 @@ export const calculateRedirectDecision = ({
     };
   }
 
-  //  Redirect if past date (before today) and redirect to current path
-  if (serviceDay) {
-    const date = DateTime.fromFormat(serviceDay, DATE_FORMAT);
+  if (wantedDay) {
     const today = DateTime.now().startOf('day');
-    if (date && date.startOf('day') < today) {
+    //  Redirect if past date (before today)
+    if (wantedDay < today) {
       return {
         shouldRedirect: true,
         redirectDate: today,
@@ -103,23 +91,22 @@ export const calculateRedirectDecision = ({
         reason: 'past-date',
       };
     }
-  }
-
-  // Redirect if wanted day is before first available data
-  if (wantedDay && firstDataDate && wantedDay < firstDataDate) {
-    return {
-      shouldRedirect: true,
-      redirectDate: firstDataDate,
-      redirectPath: null,
-      reason: 'before-first-data',
-    };
+    // Redirect if wanted day is before first available data
+    if (firstDataDate && wantedDay < firstDataDate) {
+      return {
+        shouldRedirect: true,
+        redirectDate: firstDataDate,
+        redirectPath: null,
+        reason: 'before-first-data',
+      };
+    }
   }
 
   // Redirect if no trips and new service day is specified
   if (noTrips && fallbackServiceDay) {
     return {
       shouldRedirect: true,
-      redirectDate: fallbackServiceDay.toFormat(DATE_FORMAT),
+      redirectDate: fallbackServiceDay,
       redirectPath: routePagePath(routeId, PREFIX_TIMETABLE, pattern.code),
       reason: 'no-trips',
     };
