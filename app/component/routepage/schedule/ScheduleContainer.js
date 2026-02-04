@@ -1,11 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { connectToStores } from 'fluxible-addons-react';
 import { matchShape, routerShape } from 'found';
@@ -15,7 +9,6 @@ import { SchedulePatternFragment } from './queries/SchedulePatternFragment';
 import { ScheduleRouteFragment } from './queries/ScheduleRouteFragment';
 import { ScheduleFirstDeparturesFragment } from './queries/ScheduleFirstDeparturesFragment';
 import ScheduleHeader from './ScheduleHeader';
-import ScheduleDayTabs from './ScheduleDayTabs';
 import ScheduleTripList from './ScheduleTripList';
 import ScheduleConstantOperation from './ScheduleConstantOperation';
 import SecondaryButton from '../../SecondaryButton';
@@ -30,19 +23,10 @@ import { useConfigContext } from '../../../configurations/ConfigContext';
 import { useTranslationsContext } from '../../../util/useTranslationsContext';
 import { getTripsList } from '../../../util/scheduleTripsUtils';
 import { routeShape, patternShape } from '../../../util/shapes';
-import { calculateNewServiceDay } from '../../../util/scheduleServiceDayUtils';
-import {
-  useScheduleData,
-  usePopulatedScheduleData,
-  useFirstDataDate,
-} from '../../../hooks/useScheduleData';
+import { useScheduleData } from '../../../hooks/useScheduleData';
 import { useScheduleRedirects } from '../../../hooks/useScheduleRedirects';
-import {
-  validateScheduleData,
-  getScheduleRange,
-} from '../../../util/scheduleValidation';
-
-const MINIMUM_STOP_INDEX = 0;
+import { validateScheduleData } from '../../../util/scheduleValidation';
+import { populateData } from '../../../util/scheduleDataUtils';
 
 const openRoutePDF = (e, routePDFUrl) => {
   e.stopPropagation();
@@ -61,7 +45,7 @@ const ScheduleContainer = ({
   match,
   breakpoint,
   router,
-  lang = 'en',
+  lang,
 }) => {
   const pattern = useFragment(SchedulePatternFragment, patternRef);
   const route = useFragment(ScheduleRouteFragment, routeRef);
@@ -73,54 +57,42 @@ const ScheduleContainer = ({
   const intl = useTranslationsContext();
   const config = useConfigContext();
 
-  const [from, setFrom] = useState(MINIMUM_STOP_INDEX);
-  const [to, setTo] = useState(
-    Math.max((pattern?.stops?.length || 1) - 1, MINIMUM_STOP_INDEX),
-  );
-  const [focusedTab, setFocusedTab] = useState(null);
+  const [from, setFrom] = useState(0);
+  const [to, setTo] = useState(Math.max((pattern?.stops?.length || 1) - 1, 0));
 
-  const tabRefs = useRef({});
-
-  const { firstDepartures, hasMergedData, dataExistsDay, firstWeekEmpty } =
-    useScheduleData({
-      firstDeparturesProp,
-      match,
-    });
+  const { firstDepartures } = useScheduleData({
+    firstDeparturesProp,
+    match,
+  });
 
   const { query } = match.location;
   const wantedDay = query?.serviceDay
     ? DateTime.fromFormat(query.serviceDay, DATE_FORMAT)
     : undefined;
 
-  const firstDataDate = useFirstDataDate(hasMergedData, dataExistsDay);
+  const data = populateData(wantedDay, firstDepartures);
+  const firstDataDate = data?.dates?.[0];
 
   useScheduleRedirects({
     match,
     router,
-    firstDepartures,
     wantedDay,
     firstDataDate,
-    firstWeekEmpty,
   });
 
-  const data = usePopulatedScheduleData(
-    wantedDay,
-    firstDepartures,
-    hasMergedData,
-    dataExistsDay,
-  );
+  const scheduleRange = data?.range || {
+    timeRange: '',
+    wantedDay: null,
+    weekday: null,
+  };
 
-  const scheduleRange = useMemo(() => getScheduleRange(data), [data]);
   const optionsData = data?.options || [];
 
-  const fallbackServiceDay = useMemo(
-    () => calculateNewServiceDay(wantedDay, data, firstDataDate),
-    [wantedDay, data, firstDataDate],
-  );
+  const fallbackServiceDay = !wantedDay ? firstDataDate : undefined;
 
   useEffect(() => {
     if (pattern?.code) {
-      setFrom(MINIMUM_STOP_INDEX);
+      setFrom(0);
       setTo(pattern.stops.length - 1);
     }
   }, [pattern?.code, pattern?.stops?.length]);
@@ -240,7 +212,7 @@ const ScheduleContainer = ({
 
   const tripsResult = getTripsList({
     pattern: currentPattern,
-    newServiceDay: fallbackServiceDay,
+    fallbackServiceDay,
     match,
     intl,
   });
@@ -309,14 +281,6 @@ const ScheduleContainer = ({
             )}
           </div>
         </div>
-        <ScheduleDayTabs
-          data={data}
-          focusedTab={focusedTab}
-          tabRefs={tabRefs}
-          onTabClick={changeDate}
-          onTabFocus={setFocusedTab}
-          locale={locale}
-        />
         {pattern && (
           <div
             className={cx('route-schedule-list-wrapper', {

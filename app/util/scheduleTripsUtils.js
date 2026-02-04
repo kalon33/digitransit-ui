@@ -35,23 +35,23 @@ export const sortTrips = trips => {
 };
 
 /**
- * Get and process trips for display
+ * Get and process trips for display. Returns trips from current pattern, or handles redirects and no-trips messages.
  * Handles testing mode internally by checking query params
  * @param {Object} params - Trip processing parameters
  * @param {Object} params.pattern - Pattern object with trips
- * @param {DateTime} params.newServiceDay - New service day for redirect
+ * @param {DateTime} params.fallbackServiceDay - New service day for redirect
  * @param {Object} params.match - Router match object
  * @param {Object} params.intl - Internationalization object
  * @returns {Object} { trips: Array|null, redirectPath: string|null, noTripsMessage: JSX|null }
  */
-export const getTripsList = ({ pattern, newServiceDay, match, intl }) => {
+export const getTripsList = ({ pattern, fallbackServiceDay, match, intl }) => {
   // Handle testing mode internally
   const testing = process.env.ROUTEPAGETESTING || false;
   const testNum = testing && match?.location?.query?.test;
 
   let currentPattern = pattern;
-  let queryParams = newServiceDay
-    ? `?serviceDay=${newServiceDay.toFormat(DATE_FORMAT)}`
+  let queryParams = fallbackServiceDay
+    ? `?serviceDay=${fallbackServiceDay.toFormat(DATE_FORMAT)}`
     : '';
 
   // Apply test mode filtering if enabled
@@ -66,7 +66,7 @@ export const getTripsList = ({ pattern, newServiceDay, match, intl }) => {
   const trips = sortTrips(currentPattern?.trips);
 
   // Redirect if no trips and new service day is specified
-  if (trips && trips.length === 0 && newServiceDay) {
+  if (trips && trips.length === 0 && fallbackServiceDay) {
     return {
       trips: null,
       redirectPath: routePagePath(

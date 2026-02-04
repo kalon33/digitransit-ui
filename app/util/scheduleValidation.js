@@ -1,5 +1,3 @@
-import { getScheduleRangeData } from './scheduleDataUtils';
-
 /**
  * Validation utilities for ScheduleContainer
  * Centralized validation logic for schedule data
@@ -13,8 +11,6 @@ import { getScheduleRangeData } from './scheduleDataUtils';
  * @property {string} timeRange - Formatted time range string
  * @property {DateTime|null} wantedDay - The wanted day DateTime object
  * @property {number|null} weekday - Weekday number (1-7)
- * @property {Array<string>} dayArray - Array of day patterns
- * @property {DateTime|null} weekStart - Week start DateTime object
  */
 
 /**
@@ -65,8 +61,31 @@ export const validateScheduleData = ({
 };
 
 /**
- * Extract and structure schedule data for easier access
- * @param {Object} data - Schedule data object from usePopulatedScheduleData
- * @returns {ScheduleRangeData} Destructured schedule data object
+ * Determine if should redirect based on date conditions
+ * @param {Object} params - Validation parameters
+ * @param {DateTime} params.wantedDay - The requested service day
+ * @param {DateTime} params.firstDataDate - First date with available data
+ * @param {string|number} params.testNum - Test number (for testing mode)
+ * @returns {Object} { shouldRedirect: boolean, redirectDate: DateTime|null, reason: string }
  */
-export const getScheduleRange = data => getScheduleRangeData(data);
+export const calculateRedirectDecision = ({
+  wantedDay,
+  firstDataDate,
+  testNum,
+}) => {
+  // Skip redirect for test mode with testNum=0
+  if (testNum === '0' || testNum === 0) {
+    return { shouldRedirect: false, redirectDate: null, reason: 'test-mode' };
+  }
+
+  // Check if wanted day is before first available data
+  if (wantedDay && firstDataDate && wantedDay < firstDataDate) {
+    return {
+      shouldRedirect: true,
+      redirectDate: firstDataDate,
+      reason: 'before-first-data',
+    };
+  }
+
+  return { shouldRedirect: false, redirectDate: null, reason: 'no-redirect' };
+};
