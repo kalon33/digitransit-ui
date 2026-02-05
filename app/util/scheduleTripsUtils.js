@@ -38,12 +38,12 @@ export const sortTrips = trips => {
  * Handles testing mode internally by checking query params
  * @param {Object} params - Trip processing parameters
  * @param {Object} params.pattern - Pattern object with trips
- * @param {DateTime} params.fallbackServiceDay - New service day for redirect
+ * @param {DateTime} params.firstDataDate - First date with available data
  * @param {Object} params.match - Router match object
  * @param {Object} params.intl - Internationalization object
  * @returns {Object} { trips: Array|null, redirectPath: string|null, noTripsMessage: JSX|null }
  */
-export const getTripsList = ({ pattern, fallbackServiceDay, match, intl }) => {
+export const getTripsList = ({ pattern, firstDataDate, match, intl }) => {
   // Handle testing mode internally
   const testing = process.env.ROUTEPAGETESTING || false;
   const testNum = testing && match?.location?.query?.test;
@@ -61,8 +61,8 @@ export const getTripsList = ({ pattern, fallbackServiceDay, match, intl }) => {
   const trips = sortTrips(currentPattern?.trips);
 
   if (trips && trips.length === 0) {
-    // Return null with no message if a new service day is available
-    if (fallbackServiceDay) {
+    // Return null with no message if another service day is available
+    if (firstDataDate) {
       return {
         trips: null,
         noTripsMessage: null,

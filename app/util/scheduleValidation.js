@@ -65,7 +65,6 @@ export const calculateRedirectDecision = ({
   noTrips,
   pattern,
   routeId,
-  fallbackServiceDay,
 }) => {
   const testNum =
     !!process.env.ROUTEPAGETESTING && match?.location?.query?.test;
@@ -82,7 +81,6 @@ export const calculateRedirectDecision = ({
 
   if (wantedDay) {
     const today = DateTime.now().startOf('day');
-    //  Redirect if past date (before today)
     if (wantedDay < today) {
       return {
         shouldRedirect: true,
@@ -91,7 +89,6 @@ export const calculateRedirectDecision = ({
         reason: 'past-date',
       };
     }
-    // Redirect if wanted day is before first available data
     if (firstDataDate && wantedDay < firstDataDate) {
       return {
         shouldRedirect: true,
@@ -102,17 +99,15 @@ export const calculateRedirectDecision = ({
     }
   }
 
-  // Redirect if no trips and new service day is specified
-  if (noTrips && fallbackServiceDay) {
+  if (noTrips && firstDataDate) {
     return {
       shouldRedirect: true,
-      redirectDate: fallbackServiceDay,
+      redirectDate: firstDataDate,
       redirectPath: routePagePath(routeId, PREFIX_TIMETABLE, pattern.code),
       reason: 'no-trips',
     };
   }
 
-  // Redirect if no pattern but routeId exists
   if (!pattern && routeId) {
     return {
       shouldRedirect: true,

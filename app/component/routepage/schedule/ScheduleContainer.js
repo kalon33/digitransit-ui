@@ -74,16 +74,12 @@ const ScheduleContainer = ({
 
   const data = populateData(wantedDay, firstDepartures);
   const firstDataDate = data?.dates?.[0];
-
-  const fallbackServiceDay = !wantedDay ? firstDataDate : undefined;
-  const selectedServiceDay = wantedDay || fallbackServiceDay;
   const currentPattern = useMemo(
     () => route?.patterns?.find(p => p.code === pattern?.code),
     [route?.patterns, pattern?.code],
   );
   const tripsResult = getTripsList({
     pattern: currentPattern,
-    fallbackServiceDay,
     match,
     intl,
   });
@@ -105,27 +101,14 @@ const ScheduleContainer = ({
     constantOperationInfo,
   });
 
-  const redirectDecision = useMemo(
-    () =>
-      calculateRedirectDecision({
-        match,
-        wantedDay,
-        firstDataDate,
-        noTrips: !tripsResult.trips,
-        pattern,
-        routeId,
-        fallbackServiceDay,
-      }),
-    [
-      match,
-      wantedDay,
-      firstDataDate,
-      tripsResult.trips,
-      pattern,
-      routeId,
-      fallbackServiceDay,
-    ],
-  );
+  const redirectDecision = calculateRedirectDecision({
+    match,
+    wantedDay,
+    firstDataDate,
+    noTrips: !tripsResult.trips,
+    pattern,
+    routeId,
+  });
 
   useScheduleRedirects({
     match,
@@ -198,9 +181,15 @@ const ScheduleContainer = ({
     [match, router],
   );
 
+  
+  const selectedServiceDay = wantedDay || firstDataDate;
+  const formattedServiceDate = selectedServiceDay
+    ? selectedServiceDay.toFormat(DATE_FORMAT)
+    : null;
+
   // Calculate route timetable URL
   const routeTimetableUrl = useMemo(() => {
-    if (!routeId || !selectedServiceDay) {
+    if (!routeId || !formattedServiceDate) {
       return undefined;
     }
 
@@ -215,10 +204,10 @@ const ScheduleContainer = ({
     return routeTimetableHandler.routeTimetableUrlResolver(
       baseUrl,
       route,
-      selectedServiceDay.toFormat(DATE_FORMAT),
+      formattedServiceDate,
       lang,
     );
-  }, [routeId, selectedServiceDay, config, route, lang]);
+  }, [routeId, formattedServiceDate, config, route, lang]);
 
   const handlePrintPDF = useCallback(
     e => {
