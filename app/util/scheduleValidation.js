@@ -53,24 +53,26 @@ export const validateScheduleData = ({
 /**
  * Determine if should redirect based on date conditions
  * @param {Object} params - Validation parameters
+ * @param {string|number} params.testNum - Test number (for testing mode)
  * @param {DateTime|string} params.wantedDay - The requested service day
  * @param {DateTime|string} params.firstDataDate - First date with available data
- * @param {string|number} params.testNum - Test number (for testing mode)
+ * @param {boolean} params.noTrips - Whether there are no trips for the wanted day
+ * @param {string|null} params.patternCode - Current pattern code
+ * @param {string|null} params.routeId - Current route ID
  * @returns {Object} { shouldRedirect: boolean, redirectDate: DateTime|null, reason: string }
  */
 export const calculateRedirectDecision = ({
-  match,
+  testNum,
   wantedDay,
   firstDataDate,
   noTrips,
-  pattern,
+  patternCode,
   routeId,
 }) => {
-  const testNum =
-    !!process.env.ROUTEPAGETESTING && match?.location?.query?.test;
+  const resolvedTestNum = !!process.env.ROUTEPAGETESTING && testNum;
 
   // Skip redirect for test mode with testNum=0
-  if (testNum === '0' || testNum === 0) {
+  if (resolvedTestNum === '0' || resolvedTestNum === 0) {
     return {
       shouldRedirect: false,
       redirectDate: null,
@@ -103,12 +105,12 @@ export const calculateRedirectDecision = ({
     return {
       shouldRedirect: true,
       redirectDate: firstDataDate,
-      redirectPath: routePagePath(routeId, PREFIX_TIMETABLE, pattern.code),
+      redirectPath: routePagePath(routeId, PREFIX_TIMETABLE, patternCode),
       reason: 'no-trips',
     };
   }
 
-  if (!pattern && routeId) {
+  if (!patternCode && routeId) {
     return {
       shouldRedirect: true,
       redirectDate: null,

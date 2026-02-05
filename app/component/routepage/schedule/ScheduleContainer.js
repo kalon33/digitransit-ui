@@ -72,8 +72,15 @@ const ScheduleContainer = ({
     ? DateTime.fromFormat(query.serviceDay, DATE_FORMAT)
     : undefined;
 
-  const data = populateData(wantedDay, firstDepartures);
+  const data = useMemo(
+    () => populateData(wantedDay, firstDepartures),
+    [query?.serviceDay, firstDepartures],
+  );
+
   const firstDataDate = data?.dates?.[0];
+  const firstDataDateStr = firstDataDate
+    ? firstDataDate.toFormat(DATE_FORMAT)
+    : null;
   const currentPattern = useMemo(
     () => route?.patterns?.find(p => p.code === pattern?.code),
     [route?.patterns, pattern?.code],
@@ -101,14 +108,26 @@ const ScheduleContainer = ({
     constantOperationInfo,
   });
 
-  const redirectDecision = calculateRedirectDecision({
-    match,
-    wantedDay,
-    firstDataDate,
-    noTrips: !tripsResult.trips,
-    pattern,
-    routeId,
-  });
+  const testNum = match?.location?.query?.test;
+  const redirectDecision = useMemo(
+    () =>
+      calculateRedirectDecision({
+        testNum,
+        wantedDay,
+        firstDataDate,
+        noTrips: !tripsResult.trips,
+        patternCode: pattern?.code,
+        routeId,
+      }),
+    [
+      testNum,
+      query?.serviceDay,
+      firstDataDateStr,
+      !tripsResult.trips,
+      pattern?.code,
+      routeId,
+    ],
+  );
 
   useScheduleRedirects({
     match,
@@ -181,7 +200,6 @@ const ScheduleContainer = ({
     [match, router],
   );
 
-  
   const selectedServiceDay = wantedDay || firstDataDate;
   const formattedServiceDate = selectedServiceDay
     ? selectedServiceDay.toFormat(DATE_FORMAT)
