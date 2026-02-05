@@ -1,10 +1,22 @@
 import { expect } from 'chai';
-import { describe, it } from 'mocha';
-import { DateTime } from 'luxon';
+import { afterEach, beforeEach, describe, it } from 'mocha';
+import { DateTime, Settings } from 'luxon';
 import { populateData } from '../../../app/util/scheduleDataUtils';
+
+const DATE_FORMAT_SCHEDULE = 'd.L.yyyy';
 
 describe('scheduleDataUtils', () => {
   describe('populateData', () => {
+    const fixedNow = DateTime.fromISO('2024-01-15T10:00:00');
+
+    beforeEach(() => {
+      Settings.now = () => fixedNow.toMillis();
+    });
+
+    afterEach(() => {
+      Settings.now = () => Date.now();
+    });
+
     it('should populate data with proper structure', () => {
       const wantedDay = DateTime.fromISO('2024-01-15');
       const departures = {
@@ -16,9 +28,8 @@ describe('scheduleDataUtils', () => {
 
       expect(result).to.be.an('object');
       expect(result.dates).to.be.an('array');
-      expect(result.range).to.be.an('object');
       expect(result.options).to.be.an('array');
-      expect(result.meta.firstServiceDay).to.not.equal(undefined);
+      expect(result.selectedDate).to.be.an('object');
     });
 
     it('should handle single week of departures', () => {
@@ -60,6 +71,7 @@ describe('scheduleDataUtils', () => {
       const result = populateData(wantedDay, departures);
 
       expect(result.dates).to.be.an('array');
+      expect(result.dates).to.have.lengthOf(4);
     });
 
     it('should filter out empty weeks', () => {
@@ -75,18 +87,19 @@ describe('scheduleDataUtils', () => {
       expect(result.dates).to.have.lengthOf(1);
     });
 
-    it('should create proper date range in range data', () => {
+    it('should create proper date data in response', () => {
       const wantedDay = DateTime.fromISO('2024-01-15');
       const departures = {
         wk1mon: [{ departureStoptime: { scheduledDeparture: 28800 } }],
       };
 
       const result = populateData(wantedDay, departures);
-      const { range } = result;
+      const { selectedDate } = result;
 
-      expect(range.timeRange).to.be.a('string');
-      expect(range.wantedDay).to.deep.equal(wantedDay);
-      expect(range.weekday).to.equal(wantedDay.weekday);
+      expect(selectedDate.date).to.equal(
+        wantedDay.toFormat(DATE_FORMAT_SCHEDULE),
+      );
+      expect(selectedDate.weekday).to.equal(wantedDay.weekday);
     });
 
     it('should create options for other dates', () => {
@@ -111,16 +124,10 @@ describe('scheduleDataUtils', () => {
       const result = populateData(undefined, departures);
 
       expect(result).to.not.equal(undefined);
-      const { range } = result;
       const today = DateTime.now();
-      const firstAvailable = result.dates[0];
-      if (firstAvailable && firstAvailable.hasSame(today, 'day')) {
-        expect(range.wantedDay.hasSame(today, 'day')).to.equal(true);
-      } else if (firstAvailable) {
-        expect(range.wantedDay.hasSame(firstAvailable, 'day')).to.equal(true);
-      } else {
-        expect(range.wantedDay.hasSame(today, 'day')).to.equal(true);
-      }
+      expect(result.selectedDate.date).to.equal(
+        today.toFormat(DATE_FORMAT_SCHEDULE),
+      );
     });
 
     it('should handle empty departure arrays', () => {
@@ -134,6 +141,8 @@ describe('scheduleDataUtils', () => {
 
       expect(result).to.not.equal(undefined);
       expect(result.dates).to.be.an('array');
+      expect(result.dates).to.have.lengthOf(0);
+      expect(result.options).to.have.lengthOf(0);
     });
   });
 });

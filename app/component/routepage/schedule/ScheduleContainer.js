@@ -135,9 +135,8 @@ const ScheduleContainer = ({
     redirectDecision,
   });
 
-  const scheduleRange = data?.range || {
-    timeRange: '',
-    wantedDay: null,
+  const selectedDate = data?.selectedDate || {
+    date: '',
     weekday: null,
   };
 
@@ -285,7 +284,7 @@ const ScheduleContainer = ({
           />
         )}
         <div className="route-schedule-ranges">
-          <span className="current-range">{scheduleRange.timeRange}</span>
+          <span className="current-range">{selectedDate.date}</span>
           <div className="other-ranges-dropdown">
             {optionsData.length > 0 && (
               <ScheduleDropdown

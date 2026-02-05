@@ -61,7 +61,11 @@ const buildDateOptions = (availableDates, selectedDay) => {
   const selectedKey = selectedDay?.toFormat(DATE_FORMAT);
 
   return availableDates
-    .filter(date => date.toFormat(DATE_FORMAT) !== selectedKey)
+    .filter(
+      date =>
+        date.toFormat(DATE_FORMAT) !== selectedKey &&
+        date >= DateTime.now().startOf('day'),
+    )
     .map(date => ({
       label: date.toFormat(DATE_FORMAT_SCHEDULE),
       value: date.toFormat(DATE_FORMAT),
@@ -75,40 +79,39 @@ const buildDateOptions = (availableDates, selectedDay) => {
  * @param {Object} departures - Departures object keyed by wk{n}{day}
  * @returns {Object} {
  *   dates: Array<DateTime>,
- *   range: { timeRange: string, wantedDay: DateTime, weekday: number },
+ *   selectedDate: { date: string, weekday: number },
  *   options: Array,
- *   meta: { firstServiceDay: DateTime }
  * }
  */
 export const populateData = (wantedDayIn, departures) => {
-  const wantedDay =
-    wantedDayIn && wantedDayIn.isValid ? wantedDayIn : DateTime.now();
+  // Current week anchor for translating wk{n}{day} keys into dates.
   const startOfCurrentWeek = DateTime.now().startOf('week');
 
+  // All unique dates that have departures.
   const availableDates = buildAvailableDates(departures, startOfCurrentWeek);
 
+  const today = DateTime.now().startOf('day');
+
+  // Prefer wanted day
+  // Fallback to today if data is available,
+  // otherwise use the first available date.
+  // Select today if nothing else is available.
   const selectedDay =
-    (wantedDayIn && wantedDayIn.isValid && wantedDayIn) ||
-    availableDates.find(date => date.hasSame(wantedDay, 'day')) ||
+    (wantedDayIn?.isValid && wantedDayIn) ||
+    availableDates.find(date => date.hasSame(today, 'day')) ||
     availableDates[0] ||
-    wantedDay;
+    today;
 
   const optionsWithDates = buildDateOptions(availableDates, selectedDay);
 
-  const range = {
-    timeRange: selectedDay.toFormat(DATE_FORMAT_SCHEDULE),
-    wantedDay: selectedDay,
+  const selectedDate = {
+    date: selectedDay.toFormat(DATE_FORMAT_SCHEDULE),
     weekday: selectedDay.weekday,
   };
 
-  const firstServiceDay = availableDates[0] || selectedDay;
-
   return {
     dates: availableDates,
-    range,
+    selectedDate,
     options: optionsWithDates,
-    meta: {
-      firstServiceDay,
-    },
   };
 };
