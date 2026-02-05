@@ -8,7 +8,7 @@ import TabBalls from './TabBalls';
 import { useTranslationsContext } from '../util/useTranslationsContext';
 import { isKeyboardSelectionEvent } from '../util/browser';
 
-const setFocusables = () => {
+export function setFocusables() {
   // Set inactive tab focusables to unfocusable and for active tab set previously made unfocusable elements to focusable
   const focusableTags =
     'a, button, input, textarea, select, details, [tabindex="0"]';
@@ -19,9 +19,7 @@ const setFocusables = () => {
     const focusables = swipeableTabs[i].querySelectorAll(focusableTags);
     const unFocusables = swipeableTabs[i].querySelectorAll(unFocusableTags);
     if (swipeableTabs[i].classList.contains('inactive')) {
-      // console.log('fixing elements:', focusables.length, 'inactive tab', i);
       focusables.forEach(focusable => {
-        // if (focusable.tabIndex?.toString() !== '-2') console.log('wrong tabindex', focusable.tabIndex, focusable.nodeName);
         // eslint-disable-next-line no-param-reassign
         focusable.tabIndex = '-2';
       });
@@ -32,7 +30,7 @@ const setFocusables = () => {
       });
     }
   }
-};
+}
 
 export default function SwipeableTabs({
   tabIndex,
