@@ -157,7 +157,8 @@ function NearYouPage(
   useEffect(() => {
     // rendering of hidden sub components of inactive tabs
     // sets tabIndex=0 to hidden elements
-    // we must fix this when user shifts focus with the tab key    window.addEventListener('keydown', tabHandler);
+    // we must fix this when user shifts focus with the tab key
+    window.addEventListener('keydown', tabHandler);
     return () => window.removeEventListener('keydown', tabHandler);
   }, []);
 
