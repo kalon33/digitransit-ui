@@ -24,7 +24,7 @@ export const validateScheduleData = ({
   // Check constant operation first (doesn't need pattern)
   if (constantOperationInfo) {
     return {
-      shouldRender: false,
+      shouldRender: true,
       reason: 'constant-operation',
     };
   }

@@ -7,10 +7,12 @@ import { shallow } from 'enzyme';
 import * as ReactRelay from 'react-relay';
 
 import { Component as ScheduleContainer } from '../../../../app/component/routepage/schedule/ScheduleContainer';
+import { DATE_FORMAT } from '../../../../app/constants';
 import { mockContext } from '../../helpers/mock-context';
 import { mockMatch, mockRouter } from '../../helpers/mock-router';
 import * as useTranslationsContext from '../../../../app/util/useTranslationsContext';
 import * as ConfigContext from '../../../../app/configurations/ConfigContext';
+import * as scheduleValidation from '../../../../app/util/scheduleValidation';
 
 describe('<ScheduleContainer />', () => {
   let defaultProps;
@@ -20,6 +22,8 @@ describe('<ScheduleContainer />', () => {
   let useTranslationsContextStub;
   let useConfigContextStub;
   let useFragmentStub;
+  let validateScheduleDataStub;
+  let calculateRedirectDecisionStub;
 
   // Mock data - defined once and reused
   const mockPattern = {
@@ -134,6 +138,18 @@ describe('<ScheduleContainer />', () => {
       .stub(ConfigContext, 'useConfigContext')
       .returns(mockConfig);
 
+    validateScheduleDataStub = sinon
+      .stub(scheduleValidation, 'validateScheduleData')
+      .returns({ shouldRender: true, reason: 'valid' });
+    calculateRedirectDecisionStub = sinon
+      .stub(scheduleValidation, 'calculateRedirectDecision')
+      .returns({
+        shouldRedirect: false,
+        reason: 'no-redirect',
+        redirectDate: null,
+        redirectPath: null,
+      });
+
     // Setup default props - pass actual mock data objects
     // useFragment will pass them through as-is in tests
     defaultProps = {
@@ -166,6 +182,12 @@ describe('<ScheduleContainer />', () => {
     if (useConfigContextStub) {
       useConfigContextStub.restore();
     }
+    if (validateScheduleDataStub) {
+      validateScheduleDataStub.restore();
+    }
+    if (calculateRedirectDecisionStub) {
+      calculateRedirectDecisionStub.restore();
+    }
   });
 
   describe('Initialization and hooks', () => {
@@ -177,6 +199,40 @@ describe('<ScheduleContainer />', () => {
       // Verify the context hooks were called
       expect(useTranslationsContextStub.called).to.equal(true);
       expect(useConfigContextStub.called).to.equal(true);
+    });
+
+    it('should call schedule validation helpers with expected inputs', () => {
+      const matchWithServiceDay = {
+        ...mockMatchWithRouter,
+        location: {
+          ...mockMatchWithRouter.location,
+          query: {
+            serviceDay: DateTime.now().toFormat(DATE_FORMAT),
+            test: '1',
+          },
+        },
+      };
+
+      shallow(
+        <ScheduleContainer {...defaultProps} match={matchWithServiceDay} />,
+      );
+
+      expect(validateScheduleDataStub.calledOnce).to.equal(true);
+      expect(
+        validateScheduleDataStub.calledWithMatch({
+          pattern: defaultProps.pattern,
+          route: defaultProps.route,
+        }),
+      ).to.equal(true);
+
+      expect(calculateRedirectDecisionStub.calledOnce).to.equal(true);
+      expect(
+        calculateRedirectDecisionStub.calledWithMatch({
+          testNum: '1',
+          patternCode: defaultProps.pattern.code,
+          routeId: defaultProps.route.gtfsId,
+        }),
+      ).to.equal(true);
     });
 
     it('should initialize with from and to stops from pattern', () => {
@@ -292,66 +348,6 @@ describe('<ScheduleContainer />', () => {
       };
 
       wrapper.setProps(newProps);
-      expect(wrapper.exists()).to.equal(true);
-    });
-  });
-
-  describe('Date validation', () => {
-    it('should redirect when serviceDay is in the past', () => {
-      const pastDate = DateTime.now().minus({ weeks: 2 });
-      const matchWithPastDate = {
-        ...mockMatchWithRouter,
-        location: {
-          ...mockMatchWithRouter.location,
-          query: {
-            serviceDay: pastDate.toFormat('yyyy-MM-dd'),
-          },
-        },
-      };
-
-      const wrapper = shallow(
-        <ScheduleContainer {...defaultProps} match={matchWithPastDate} />,
-      );
-
-      // Component should attempt to redirect
-      expect(wrapper.exists()).to.equal(true);
-    });
-
-    it('should accept current week dates', () => {
-      const currentDate = DateTime.now();
-      const matchWithCurrentDate = {
-        ...mockMatchWithRouter,
-        location: {
-          ...mockMatchWithRouter.location,
-          query: {
-            serviceDay: currentDate.toFormat('yyyy-MM-dd'),
-          },
-        },
-      };
-
-      const wrapper = shallow(
-        <ScheduleContainer {...defaultProps} match={matchWithCurrentDate} />,
-      );
-
-      expect(wrapper.exists()).to.equal(true);
-    });
-
-    it('should accept future dates', () => {
-      const futureDate = DateTime.now().plus({ weeks: 2 });
-      const matchWithFutureDate = {
-        ...mockMatchWithRouter,
-        location: {
-          ...mockMatchWithRouter.location,
-          query: {
-            serviceDay: futureDate.toFormat('yyyy-MM-dd'),
-          },
-        },
-      };
-
-      const wrapper = shallow(
-        <ScheduleContainer {...defaultProps} match={matchWithFutureDate} />,
-      );
-
       expect(wrapper.exists()).to.equal(true);
     });
   });
@@ -744,33 +740,6 @@ describe('<ScheduleContainer />', () => {
     });
   });
 
-  describe('Constant operation routes', () => {
-    it('should render for constant operation routes', () => {
-      const constantOpConfig = {
-        ...mockConfig,
-        constantOperationRoutes: {
-          'HSL:1001': {
-            en: {
-              text: 'This route operates 24/7',
-              link: 'https://example.com/info',
-            },
-          },
-        },
-      };
-
-      useConfigContextStub.restore();
-      useConfigContextStub = sinon
-        .stub(ConfigContext, 'useConfigContext')
-        .returns(constantOpConfig);
-
-      const wrapper = shallow(
-        <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
-      );
-
-      expect(wrapper.exists()).to.equal(true);
-    });
-  });
-
   describe('Sorting and filtering', () => {
     it('should handle trips with empty stoptimes arrays', () => {
       const tripsWithEmptyStoptimes = [
@@ -824,7 +793,7 @@ describe('<ScheduleContainer />', () => {
   });
 
   describe('Testing mode', () => {
-    it('should handle test mode with test parameter', () => {
+    it('should pass test param into redirect decision', () => {
       const matchWithTestParam = {
         ...mockMatchWithRouter,
         location: {
@@ -835,16 +804,13 @@ describe('<ScheduleContainer />', () => {
         },
       };
 
-      const originalEnv = process.env.ROUTEPAGETESTING;
-      process.env.ROUTEPAGETESTING = 'true';
-
-      const wrapper = shallow(
+      shallow(
         <ScheduleContainer {...defaultProps} match={matchWithTestParam} />,
       );
 
-      expect(wrapper.exists()).to.equal(true);
-
-      process.env.ROUTEPAGETESTING = originalEnv;
+      expect(
+        calculateRedirectDecisionStub.calledWithMatch({ testNum: '1' }),
+      ).to.equal(true);
     });
   });
 });
