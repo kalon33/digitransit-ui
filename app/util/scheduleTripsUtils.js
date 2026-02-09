@@ -34,14 +34,14 @@ export const sortTrips = trips => {
 };
 
 /**
- * Get and process trips for display. Returns trips from current pattern, or handles redirects and no-trips messages.
- * Handles testing mode internally by checking query params
+ * Get and process trips for display.
+ * Handles testing mode internally by checking query params.
  * @param {Object} params - Trip processing parameters
  * @param {Object} params.pattern - Pattern object with trips
- * @param {DateTime} params.firstDataDate - First date with available data
+ * @param {DateTime} params.firstDataDate - First date with available data (optional)
  * @param {Object} params.match - Router match object
  * @param {Object} params.intl - Internationalization object
- * @returns {Object} { trips: Array|null, redirectPath: string|null, noTripsMessage: JSX|null }
+ * @returns {Object} { trips: Array|null, noTripsMessage: JSX|null }
  */
 export const getTripsList = ({ pattern, firstDataDate, match, intl }) => {
   // Handle testing mode internally

@@ -30,16 +30,31 @@ import {
 } from '../../../util/scheduleValidation';
 import { populateData } from '../../../util/scheduleDataUtils';
 
+/**
+ * Open a route timetable PDF in a new window.
+ * @param {SyntheticEvent} e
+ * @param {{ href: string }} routePDFUrl
+ */
 const openRoutePDF = (e, routePDFUrl) => {
   e.stopPropagation();
   window.open(routePDFUrl.href);
 };
 
+/**
+ * Trigger browser print for the current timetable view.
+ * @param {SyntheticEvent} e
+ */
 const printRouteTimetable = e => {
   e.stopPropagation();
   window.print();
 };
 
+/**
+ * ScheduleContainer
+ * - Unwraps schedule fragments with `useFragment`
+ * - Orchestrates routing, analytics, and view composition
+ * - Handles timetable date selection + stop range selection
+ */
 const ScheduleContainer = ({
   pattern: patternRef,
   route: routeRef,
@@ -149,7 +164,7 @@ const ScheduleContainer = ({
     }
   }, [pattern?.code, pattern?.stops?.length]);
 
-  // Handler for timetable stop selection
+  // Handler for timetable origin stop selection
   const onFromSelectChange = useCallback(
     selectFrom => {
       const fromValue = Number(selectFrom);
@@ -169,7 +184,7 @@ const ScheduleContainer = ({
     [pattern?.stops?.length],
   );
 
-  // Handler for timetable end stop selection
+  // Handler for timetable destination stop selection
   const onToSelectChange = useCallback(selectTo => {
     setTo(Number(selectTo));
     addAnalyticsEvent({
@@ -204,7 +219,6 @@ const ScheduleContainer = ({
     ? selectedServiceDay.toFormat(DATE_FORMAT)
     : null;
 
-  // Calculate route timetable URL
   const routeTimetableUrl = useMemo(() => {
     if (!routeId || !formattedServiceDate) {
       return undefined;

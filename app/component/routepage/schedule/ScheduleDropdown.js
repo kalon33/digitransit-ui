@@ -10,8 +10,8 @@ import DropdownIcon from './DropdownIcon';
 import { getAriaMessages, getClassNamePrefix } from './scheduleDropdownUtils';
 
 /**
- * ScheduleDropdown - Generic dropdown component for schedule page
- * Used for stop selection (origin/destination) and date range selection
+ * ScheduleDropdown
+ * Generic dropdown used on the schedule page for stop and date selection.
  */
 function ScheduleDropdown({
   alignRight,
@@ -45,7 +45,6 @@ function ScheduleDropdown({
     }
   };
 
-  // Memoize option list transformation
   const optionList = useMemo(() => {
     if (!changeTitleOnChange) {
       return list;
@@ -69,10 +68,8 @@ function ScheduleDropdown({
     });
   }, [list, title, changeTitleOnChange]);
 
-  // Memoize aria messages
   const ariaMessages = useMemo(() => getAriaMessages(intl), [intl]);
 
-  // Calculate class name prefix
   const classNamePrefix = getClassNamePrefix(alignRight, id);
 
   return (

@@ -9,8 +9,9 @@ const isTripCanceled = trip =>
   trip.stoptimes.every(st => st.realtimeState === 'CANCELED');
 
 /**
- * ScheduleTripList - Renders a list of schedule trip rows
- * Pure presentational component for displaying trip departures
+ * ScheduleTripList
+ * Pure presentational component that returns a list of trip rows.
+ * Filters out trips missing the selected from/to stoptimes.
  */
 const ScheduleTripList = ({ trips, fromIdx, toIdx }) => {
   if (!trips || trips.length === 0) {

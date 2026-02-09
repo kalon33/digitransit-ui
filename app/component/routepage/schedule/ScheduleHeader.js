@@ -5,8 +5,9 @@ import StopHeaderDisplay from './StopHeaderDisplay';
 import { stopShape } from '../../../util/shapes';
 
 /**
- * ScheduleHeader - Header component for route schedule with stop selection
- * Displays origin and destination dropdowns with printable headers
+ * ScheduleHeader
+ * Header component for route schedules with origin/destination selection.
+ * Includes printable stop headers for the print view.
  */
 function ScheduleHeader({
   stops,
@@ -25,11 +26,11 @@ function ScheduleHeader({
   );
 
   const stopCount = options.length;
-  const safeToIndex = Math.min(to, stopCount - 1);
+  const safeDestinationIndex = Math.min(to, stopCount - 1);
 
   const { fromDisplayName, toDisplayName, fromOptions, toOptions } =
     useMemo(() => {
-      const fromOptionsSlice = options.slice(0, safeToIndex);
+      const fromOptionsSlice = options.slice(0, safeDestinationIndex);
       const toOptionsSlice = options.slice(from + 1);
       const fromOption = fromOptionsSlice.find(o => o.value === from);
       const toOption = toOptionsSlice.find(o => o.value === to);
@@ -39,7 +40,7 @@ function ScheduleHeader({
         fromOptions: fromOptionsSlice,
         toOptions: toOptionsSlice,
       };
-    }, [options, from, to, safeToIndex]);
+    }, [options, from, to, safeDestinationIndex]);
 
   return (
     <div className="route-schedule-header row">

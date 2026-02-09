@@ -13,7 +13,6 @@ import { routePagePath, PREFIX_TIMETABLE } from './path';
  * @param {Object} params.pattern - Pattern object
  * @param {Object} params.route - Route object
  * @param {Object|null} params.constantOperationInfo - Constant operation info
- * @param {Object} params.router - Router object for redirects
  * @returns {ValidationResult} Validation result object
  */
 export const validateScheduleData = ({
@@ -29,7 +28,6 @@ export const validateScheduleData = ({
     };
   }
 
-  // Check if pattern exists
   if (!pattern) {
     const routeId = route?.gtfsId;
     if (routeId) {
@@ -59,7 +57,7 @@ export const validateScheduleData = ({
  * @param {boolean} params.noTrips - Whether there are no trips for the wanted day
  * @param {string|null} params.patternCode - Current pattern code
  * @param {string|null} params.routeId - Current route ID
- * @returns {Object} { shouldRedirect: boolean, redirectDate: DateTime|null, reason: string }
+ * @returns {Object} { shouldRedirect: boolean, redirectDate: DateTime|null, redirectPath: string|null, reason: string }
  */
 export const calculateRedirectDecision = ({
   testNum,

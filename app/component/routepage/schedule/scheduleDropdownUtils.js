@@ -4,8 +4,8 @@
  */
 
 /**
- * Generate aria-live messages for react-select dropdowns
- * @param {Function} intl - Internationalization function
+ * Generate aria-live messages for react-select dropdowns.
+ * @param {Object} intl - Internationalization object (react-intl v2)
  * @returns {Object} Aria message configuration object
  */
 export const getAriaMessages = intl => ({

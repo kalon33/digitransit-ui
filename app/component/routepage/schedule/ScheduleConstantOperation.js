@@ -5,8 +5,8 @@ import { routeShape } from '../../../util/shapes';
 import RouteControlPanel from '../RouteControlPanel';
 
 /**
- * ScheduleConstantOperation - Display constant operation route message
- * Shown for routes that operate 24/7 instead of showing schedule
+ * ScheduleConstantOperation
+ * Shown for routes that operate 24/7 instead of a timetable list.
  */
 const ScheduleConstantOperation = ({
   constantOperationInfo,
