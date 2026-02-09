@@ -7,12 +7,22 @@ import { shallow } from 'enzyme';
 import * as ReactRelay from 'react-relay';
 
 import { Component as ScheduleContainer } from '../../../../app/component/routepage/schedule/ScheduleContainer';
+import ScheduleHeader from '../../../../app/component/routepage/schedule/ScheduleHeader';
+import ScheduleTripList from '../../../../app/component/routepage/schedule/ScheduleTripList';
+import ScheduleDropdown from '../../../../app/component/routepage/schedule/ScheduleDropdown';
+import ScheduleConstantOperation from '../../../../app/component/routepage/schedule/ScheduleConstantOperation';
+import RouteControlPanel from '../../../../app/component/routepage/RouteControlPanel';
+import SecondaryButton from '../../../../app/component/SecondaryButton';
 import { DATE_FORMAT } from '../../../../app/constants';
 import { mockContext } from '../../helpers/mock-context';
 import { mockMatch, mockRouter } from '../../helpers/mock-router';
 import * as useTranslationsContext from '../../../../app/util/useTranslationsContext';
 import * as ConfigContext from '../../../../app/configurations/ConfigContext';
 import * as scheduleValidation from '../../../../app/util/scheduleValidation';
+import * as scheduleDataUtils from '../../../../app/util/scheduleDataUtils';
+import * as scheduleTripsUtils from '../../../../app/util/scheduleTripsUtils';
+import * as scheduleDataHook from '../../../../app/hooks/useScheduleData';
+import * as scheduleRedirectHook from '../../../../app/hooks/useScheduleRedirects';
 
 describe('<ScheduleContainer />', () => {
   let defaultProps;
@@ -24,6 +34,11 @@ describe('<ScheduleContainer />', () => {
   let useFragmentStub;
   let validateScheduleDataStub;
   let calculateRedirectDecisionStub;
+  let populateDataStub;
+  let getTripsListStub;
+  let useScheduleDataStub;
+  let useScheduleRedirectsStub;
+  let routerReplaceSpy;
 
   // Mock data - defined once and reused
   const mockPattern = {
@@ -150,6 +165,27 @@ describe('<ScheduleContainer />', () => {
         redirectPath: null,
       });
 
+    populateDataStub = sinon.stub(scheduleDataUtils, 'populateData').returns({
+      selectedDate: { date: '1.1.2024', weekday: 1 },
+      options: [{ value: '20240102', label: '2.1.2024' }],
+      dates: [DateTime.fromISO('2024-01-01')],
+    });
+
+    getTripsListStub = sinon.stub(scheduleTripsUtils, 'getTripsList').returns({
+      trips: [{ id: 'trip-1', stoptimes: [] }],
+      noTripsMessage: null,
+    });
+
+    useScheduleDataStub = sinon
+      .stub(scheduleDataHook, 'useScheduleData')
+      .returns({ firstDepartures: mockFirstDepartures });
+
+    useScheduleRedirectsStub = sinon
+      .stub(scheduleRedirectHook, 'useScheduleRedirects')
+      .returns(undefined);
+
+    routerReplaceSpy = sinon.spy(mockRouter, 'replace');
+
     // Setup default props - pass actual mock data objects
     // useFragment will pass them through as-is in tests
     defaultProps = {
@@ -187,6 +223,21 @@ describe('<ScheduleContainer />', () => {
     }
     if (calculateRedirectDecisionStub) {
       calculateRedirectDecisionStub.restore();
+    }
+    if (populateDataStub) {
+      populateDataStub.restore();
+    }
+    if (getTripsListStub) {
+      getTripsListStub.restore();
+    }
+    if (useScheduleDataStub) {
+      useScheduleDataStub.restore();
+    }
+    if (useScheduleRedirectsStub) {
+      useScheduleRedirectsStub.restore();
+    }
+    if (routerReplaceSpy) {
+      routerReplaceSpy.restore();
     }
   });
 
@@ -240,555 +291,182 @@ describe('<ScheduleContainer />', () => {
         <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
       );
 
-      // Check that component renders
-      expect(wrapper.exists()).to.equal(true);
+      const header = wrapper.find(ScheduleHeader);
+      expect(header).to.have.lengthOf(1);
+      expect(header.prop('stops')).to.equal(defaultProps.pattern.stops);
+      expect(header.prop('from')).to.equal(0);
+      expect(header.prop('to')).to.equal(defaultProps.pattern.stops.length - 1);
+
+      const tripList = wrapper.find(ScheduleTripList);
+      expect(tripList).to.have.lengthOf(1);
+      expect(tripList.prop('trips')).to.deep.equal(
+        getTripsListStub.getCall(0).returnValue.trips,
+      );
+      expect(tripList.prop('fromIdx')).to.equal(0);
+      expect(tripList.prop('toIdx')).to.equal(
+        defaultProps.pattern.stops.length - 1,
+      );
     });
   });
 
-  describe('Responsive layout', () => {
-    it('should pass breakpoint prop correctly', () => {
-      const props = {
-        ...defaultProps,
-        breakpoint: 'small',
-      };
-
+  describe('Layout and interactions', () => {
+    it('should render route controls and dropdown with options', () => {
       const wrapper = shallow(
-        <ScheduleContainer {...props} match={mockMatchWithRouter} />,
+        <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
       );
 
-      // Check that component renders with correct props
-      expect(wrapper.exists()).to.equal(true);
-    });
-  });
+      const controlPanel = wrapper.find(RouteControlPanel);
+      expect(controlPanel).to.have.lengthOf(1);
+      expect(controlPanel.prop('route')).to.equal(defaultProps.route);
+      expect(controlPanel.prop('breakpoint')).to.equal(defaultProps.breakpoint);
 
-  describe('State management', () => {
-    it('should initialize with from=0 and to=last stop when pattern changes', () => {
-      const pattern = {
-        code: 'HSL:1001:0:01',
+      const dropdown = wrapper.find(ScheduleDropdown);
+      expect(dropdown).to.have.lengthOf(1);
+      expect(dropdown.prop('list')).to.deep.equal(
+        populateDataStub.firstCall.returnValue.options,
+      );
+    });
+
+    it('should update trip list bounds when header changes', () => {
+      const patternWithMoreStops = {
+        ...defaultProps.pattern,
         stops: [
           { id: 'stop1', name: 'Stop 1' },
           { id: 'stop2', name: 'Stop 2' },
           { id: 'stop3', name: 'Stop 3' },
           { id: 'stop4', name: 'Stop 4' },
         ],
-        trips: [
-          {
-            id: 'trip-1',
-            stoptimes: [
-              {
-                realtimeState: 'SCHEDULED',
-                scheduledArrival: 28080,
-                scheduledDeparture: 28080,
-                serviceDay: 1547503200,
-              },
-              {
-                realtimeState: 'SCHEDULED',
-                scheduledArrival: 29080,
-                scheduledDeparture: 29080,
-                serviceDay: 1547503200,
-              },
-              {
-                realtimeState: 'SCHEDULED',
-                scheduledArrival: 30080,
-                scheduledDeparture: 30080,
-                serviceDay: 1547503200,
-              },
-              {
-                realtimeState: 'SCHEDULED',
-                scheduledArrival: 31080,
-                scheduledDeparture: 31080,
-                serviceDay: 1547503200,
-              },
-            ],
-          },
-        ],
       };
-
-      const propsWithMultipleStops = {
+      const props = {
         ...defaultProps,
-        pattern,
+        pattern: patternWithMoreStops,
         route: {
           ...defaultProps.route,
-          patterns: [pattern],
+          patterns: [
+            { ...defaultProps.route.patterns[0], ...patternWithMoreStops },
+          ],
         },
       };
 
       const wrapper = shallow(
-        <ScheduleContainer
-          {...propsWithMultipleStops}
-          match={mockMatchWithRouter}
-        />,
+        <ScheduleContainer {...props} match={mockMatchWithRouter} />,
       );
 
-      expect(wrapper.exists()).to.equal(true);
+      wrapper.find(ScheduleHeader).prop('onFromSelectChange')(2);
+      wrapper.update();
+
+      const tripList = wrapper.find(ScheduleTripList);
+      expect(tripList.prop('fromIdx')).to.equal(2);
+      expect(tripList.prop('toIdx')).to.equal(3);
+
+      wrapper.find(ScheduleHeader).prop('onToSelectChange')(2);
+      wrapper.update();
+      expect(wrapper.find(ScheduleTripList).prop('toIdx')).to.equal(2);
     });
 
-    it('should update when pattern code changes', () => {
+    it('should trigger router replace when other dates selection changes', () => {
       const wrapper = shallow(
         <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
       );
 
-      const newPattern = {
-        code: 'HSL:1001:0:02',
-        stops: [
-          { id: 'stop1', name: 'Stop 1' },
-          { id: 'stop2', name: 'Stop 2' },
-          { id: 'stop3', name: 'Stop 3' },
-        ],
-        trips: defaultProps.route.patterns[0].trips,
-      };
+      wrapper.find(ScheduleDropdown).prop('onSelectChange')('20240102');
 
-      const newProps = {
-        ...defaultProps,
-        pattern: newPattern,
-        route: {
-          ...defaultProps.route,
-          patterns: [newPattern],
-        },
-      };
-
-      wrapper.setProps(newProps);
-      expect(wrapper.exists()).to.equal(true);
-    });
-  });
-
-  describe('Trip data processing', () => {
-    it('should handle empty trips array', () => {
-      const propsWithNoTrips = {
-        ...defaultProps,
-        route: {
-          ...defaultProps.route,
-          patterns: [
-            {
-              code: 'HSL:1001:0:01',
-              trips: [],
-            },
-          ],
-        },
-      };
-
-      const wrapper = shallow(
-        <ScheduleContainer {...propsWithNoTrips} match={mockMatchWithRouter} />,
-      );
-
-      expect(wrapper.exists()).to.equal(true);
+      expect(routerReplaceSpy.calledOnce).to.equal(true);
+      expect(
+        routerReplaceSpy.calledWithMatch({
+          query: { serviceDay: '20240102' },
+        }),
+      ).to.equal(true);
     });
 
-    it('should handle multiple trips', () => {
-      const trips = [
-        {
-          id: 'trip-1',
-          stoptimes: [
-            {
-              realtimeState: 'SCHEDULED',
-              scheduledArrival: 28080,
-              scheduledDeparture: 28080,
-              serviceDay: 1547503200,
-            },
-            {
-              realtimeState: 'SCHEDULED',
-              scheduledArrival: 30060,
-              scheduledDeparture: 30060,
-              serviceDay: 1547503200,
-            },
-          ],
-        },
-        {
-          id: 'trip-2',
-          stoptimes: [
-            {
-              realtimeState: 'SCHEDULED',
-              scheduledArrival: 29080,
-              scheduledDeparture: 29080,
-              serviceDay: 1547503200,
-            },
-            {
-              realtimeState: 'SCHEDULED',
-              scheduledArrival: 31060,
-              scheduledDeparture: 31060,
-              serviceDay: 1547503200,
-            },
-          ],
-        },
-        {
-          id: 'trip-3',
-          stoptimes: [
-            {
-              realtimeState: 'SCHEDULED',
-              scheduledArrival: 30080,
-              scheduledDeparture: 30080,
-              serviceDay: 1547503200,
-            },
-            {
-              realtimeState: 'SCHEDULED',
-              scheduledArrival: 32060,
-              scheduledDeparture: 32060,
-              serviceDay: 1547503200,
-            },
-          ],
-        },
-      ];
-
-      const pattern = {
-        code: 'HSL:1001:0:01',
-        stops: defaultProps.pattern.stops,
-        trips,
-      };
-
-      const propsWithMultipleTrips = {
-        ...defaultProps,
-        pattern,
-        route: {
-          ...defaultProps.route,
-          patterns: [pattern],
-        },
-      };
-
-      const wrapper = shallow(
-        <ScheduleContainer
-          {...propsWithMultipleTrips}
-          match={mockMatchWithRouter}
-        />,
-      );
-
-      expect(wrapper.exists()).to.equal(true);
-    });
-
-    it('should handle trips with canceled stoptimes', () => {
-      const trips = [
-        {
-          id: 'trip-canceled',
-          stoptimes: [
-            {
-              realtimeState: 'CANCELED',
-              scheduledArrival: 28080,
-              scheduledDeparture: 28080,
-              serviceDay: 1547503200,
-            },
-            {
-              realtimeState: 'CANCELED',
-              scheduledArrival: 30060,
-              scheduledDeparture: 30060,
-              serviceDay: 1547503200,
-            },
-          ],
-        },
-        {
-          id: 'trip-scheduled',
-          stoptimes: [
-            {
-              realtimeState: 'SCHEDULED',
-              scheduledArrival: 31080,
-              scheduledDeparture: 31080,
-              serviceDay: 1547503200,
-            },
-            {
-              realtimeState: 'SCHEDULED',
-              scheduledArrival: 33060,
-              scheduledDeparture: 33060,
-              serviceDay: 1547503200,
-            },
-          ],
-        },
-      ];
-
-      const pattern = {
-        code: 'HSL:1001:0:01',
-        stops: defaultProps.pattern.stops,
-        trips,
-      };
-
-      const propsWithCanceledTrips = {
-        ...defaultProps,
-        pattern,
-        route: {
-          ...defaultProps.route,
-          patterns: [pattern],
-        },
-      };
-
-      const wrapper = shallow(
-        <ScheduleContainer
-          {...propsWithCanceledTrips}
-          match={mockMatchWithRouter}
-        />,
-      );
-
-      expect(wrapper.exists()).to.equal(true);
-    });
-  });
-
-  describe('Multiple patterns', () => {
-    it('should handle route with multiple patterns', () => {
-      const pattern1 = {
-        code: 'HSL:1001:0:01',
-        stops: defaultProps.pattern.stops,
-        trips: [
-          {
-            id: 'trip-1',
-            stoptimes: [
-              {
-                realtimeState: 'SCHEDULED',
-                scheduledArrival: 28080,
-                scheduledDeparture: 28080,
-                serviceDay: 1547503200,
-              },
-              {
-                realtimeState: 'SCHEDULED',
-                scheduledArrival: 30060,
-                scheduledDeparture: 30060,
-                serviceDay: 1547503200,
-              },
-            ],
-          },
-        ],
-      };
-
-      const pattern2 = {
-        code: 'HSL:1001:0:02',
-        stops: defaultProps.pattern.stops,
-        trips: [
-          {
-            id: 'trip-2',
-            stoptimes: [
-              {
-                realtimeState: 'SCHEDULED',
-                scheduledArrival: 29080,
-                scheduledDeparture: 29080,
-                serviceDay: 1547503200,
-              },
-              {
-                realtimeState: 'SCHEDULED',
-                scheduledArrival: 31060,
-                scheduledDeparture: 31060,
-                serviceDay: 1547503200,
-              },
-            ],
-          },
-        ],
-      };
-
-      const propsWithMultiplePatterns = {
-        ...defaultProps,
-        pattern: pattern1,
-        route: {
-          ...defaultProps.route,
-          patterns: [pattern1, pattern2],
-        },
-      };
-
-      const wrapper = shallow(
-        <ScheduleContainer
-          {...propsWithMultiplePatterns}
-          match={mockMatchWithRouter}
-        />,
-      );
-
-      expect(wrapper.exists()).to.equal(true);
-    });
-  });
-
-  describe('First departures data', () => {
-    it('should handle firstDepartures with data', () => {
-      const propsWithFirstDepartures = {
-        ...defaultProps,
-        firstDepartures: {
-          wk1mon: [
-            {
-              departureStoptime: {
-                scheduledDeparture: 25200,
-              },
-            },
-          ],
-          wk1tue: [
-            {
-              departureStoptime: {
-                scheduledDeparture: 25200,
-              },
-            },
-          ],
-          wk1wed: [],
-          wk1thu: [],
-          wk1fri: [],
-          wk1sat: [],
-          wk1sun: [],
-        },
-      };
-
-      const wrapper = shallow(
-        <ScheduleContainer
-          {...propsWithFirstDepartures}
-          match={mockMatchWithRouter}
-        />,
-      );
-
-      expect(wrapper.exists()).to.equal(true);
-    });
-
-    it('should handle all empty firstDepartures', () => {
-      const propsWithEmptyFirstDepartures = {
-        ...defaultProps,
-        firstDepartures: {
-          wk1mon: [],
-          wk1tue: [],
-          wk1wed: [],
-          wk1thu: [],
-          wk1fri: [],
-          wk1sat: [],
-          wk1sun: [],
-        },
-      };
-
-      const wrapper = shallow(
-        <ScheduleContainer
-          {...propsWithEmptyFirstDepartures}
-          match={mockMatchWithRouter}
-        />,
-      );
-
-      expect(wrapper.exists()).to.equal(true);
-    });
-  });
-
-  describe('Props variations', () => {
-    it('should handle different breakpoint values', () => {
-      const breakpoints = ['small', 'medium', 'large'];
-
-      breakpoints.forEach(breakpoint => {
-        const props = { ...defaultProps, breakpoint };
-        const wrapper = shallow(
-          <ScheduleContainer {...props} match={mockMatchWithRouter} />,
-        );
-        expect(wrapper.exists()).to.equal(true);
+    it('should not render dropdown when no options are available', () => {
+      populateDataStub.returns({
+        selectedDate: { date: '1.1.2024', weekday: 1 },
+        options: [],
+        dates: [DateTime.fromISO('2024-01-01')],
       });
+
+      const wrapper = shallow(
+        <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
+      );
+
+      expect(wrapper.find(ScheduleDropdown)).to.have.lengthOf(0);
     });
+  });
 
-    it('should handle different language props', () => {
-      const languages = ['en', 'fi', 'sv'];
-
-      languages.forEach(lang => {
-        const props = { ...defaultProps, lang };
-        const wrapper = shallow(
-          <ScheduleContainer {...props} match={mockMatchWithRouter} />,
-        );
-        expect(wrapper.exists()).to.equal(true);
+  describe('Conditional rendering', () => {
+    it('should render constant operation view when validation says so', () => {
+      mockConfig.constantOperationRoutes = {
+        'HSL:1001': {
+          en: { text: 'Always on', link: 'https://example.com' },
+        },
+      };
+      validateScheduleDataStub.returns({
+        shouldRender: true,
+        reason: 'constant-operation',
       });
+
+      const wrapper = shallow(
+        <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
+      );
+
+      const constantOp = wrapper.find(ScheduleConstantOperation);
+      expect(constantOp).to.have.lengthOf(1);
+      expect(constantOp.prop('match')).to.equal(mockMatchWithRouter);
+      expect(constantOp.prop('route')).to.equal(defaultProps.route);
     });
 
-    it('should handle route with different gtfsId', () => {
-      const propsWithDifferentGtfsId = {
-        ...defaultProps,
-        route: {
-          ...defaultProps.route,
-          gtfsId: 'HSL:2132',
+    it('should return null when redirect decision requires redirect', () => {
+      calculateRedirectDecisionStub.returns({
+        shouldRedirect: true,
+        reason: 'no-redirect',
+        redirectDate: null,
+        redirectPath: null,
+      });
+
+      const wrapper = shallow(
+        <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
+      );
+
+      expect(wrapper.isEmptyRender()).to.equal(true);
+      expect(useScheduleRedirectsStub.calledOnce).to.equal(true);
+      expect(
+        useScheduleRedirectsStub.firstCall.args[0].redirectDecision
+          .shouldRedirect,
+      ).to.equal(true);
+    });
+
+    it('should render no-trips message when provided', () => {
+      getTripsListStub.returns({
+        trips: null,
+        noTripsMessage: <div className="text-center">No trips</div>,
+      });
+
+      const wrapper = shallow(
+        <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
+      );
+
+      expect(wrapper.find('.text-center')).to.have.lengthOf(1);
+    });
+
+    it('should render timetable print button when route PDF exists', () => {
+      mockConfig.URL.ROUTE_TIMETABLES = { HSL: 'https://example.com' };
+      mockConfig.timetables = {
+        HSL: {
+          routeTimetableUrlResolver: sinon
+            .stub()
+            .returns({ href: 'https://example.com/timetable.pdf' }),
         },
       };
 
       const wrapper = shallow(
-        <ScheduleContainer
-          {...propsWithDifferentGtfsId}
-          match={mockMatchWithRouter}
-        />,
+        <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
       );
 
-      expect(wrapper.exists()).to.equal(true);
-    });
-  });
-
-  describe('Edge cases', () => {
-    it('should handle pattern with single stop', () => {
-      const propsWithSingleStop = {
-        ...defaultProps,
-        pattern: {
-          code: 'HSL:1001:0:01',
-          stops: [{ id: 'stop1', name: 'Only Stop' }],
-          trips: defaultProps.route.patterns[0].trips,
-        },
-      };
-
-      const wrapper = shallow(
-        <ScheduleContainer
-          {...propsWithSingleStop}
-          match={mockMatchWithRouter}
-        />,
-      );
-
-      expect(wrapper.exists()).to.equal(true);
-    });
-
-    it('should handle pattern with minimal valid data', () => {
-      const propsWithMinimalData = {
-        ...defaultProps,
-        pattern: {
-          code: 'HSL:1001:0:01',
-          stops: [
-            { id: 'stop1', name: 'Stop 1' },
-            { id: 'stop2', name: 'Stop 2' },
-          ],
-          trips: [],
-        },
-      };
-
-      const wrapper = shallow(
-        <ScheduleContainer
-          {...propsWithMinimalData}
-          match={mockMatchWithRouter}
-        />,
-      );
-
-      expect(wrapper.exists()).to.equal(true);
-    });
-  });
-
-  describe('Sorting and filtering', () => {
-    it('should handle trips with empty stoptimes arrays', () => {
-      const tripsWithEmptyStoptimes = [
-        {
-          id: 'trip-empty',
-          stoptimes: [],
-        },
-        {
-          id: 'trip-valid',
-          stoptimes: [
-            {
-              realtimeState: 'SCHEDULED',
-              scheduledArrival: 28080,
-              scheduledDeparture: 28080,
-              serviceDay: 1547503200,
-            },
-            {
-              realtimeState: 'SCHEDULED',
-              scheduledArrival: 30060,
-              scheduledDeparture: 30060,
-              serviceDay: 1547503200,
-            },
-          ],
-        },
-      ];
-
-      const pattern = {
-        code: 'HSL:1001:0:01',
-        stops: defaultProps.pattern.stops,
-        trips: tripsWithEmptyStoptimes,
-      };
-
-      const propsWithEmptyStoptimes = {
-        ...defaultProps,
-        pattern,
-        route: {
-          ...defaultProps.route,
-          patterns: [pattern],
-        },
-      };
-
-      const wrapper = shallow(
-        <ScheduleContainer
-          {...propsWithEmptyStoptimes}
-          match={mockMatchWithRouter}
-        />,
-      );
-
-      expect(wrapper.exists()).to.equal(true);
+      const printButton = wrapper
+        .find(SecondaryButton)
+        .filterWhere(button => button.prop('buttonName') === 'print-timetable');
+      expect(printButton).to.have.lengthOf(1);
     });
   });
 
