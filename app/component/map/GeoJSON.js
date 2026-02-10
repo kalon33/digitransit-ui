@@ -159,11 +159,10 @@ function GeoJSON({ bounds, data, geoJsonZoomLevel, ...rest }, { config }) {
   };
 
   // cache dynamic icons to allow references by id without data duplication
-  // eslint-disable-next-line camelcase
   useEffect(() => {
     const { features } = data;
     setIcons(getIcons(features));
-  }, []);
+  }, [data]);
 
   if (!icons || !data?.features) {
     return null;
@@ -210,8 +209,7 @@ function GeoJSON({ bounds, data, geoJsonZoomLevel, ...rest }, { config }) {
 }
 
 GeoJSON.propTypes = {
-  // eslint-disable-next-line
-  bounds: PropTypes.object,
+  bounds: PropTypes.shape({ contains: PropTypes.func.isRequired }),
   data: PropTypes.shape({
     features: PropTypes.arrayOf(geoJsonFeatureShape),
   }).isRequired,
