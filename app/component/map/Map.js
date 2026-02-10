@@ -27,7 +27,6 @@ import { mapLayerShape } from '../../store/MapLayerStore';
 const zoomOutText = `<svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon_minus"/></svg>`;
 const zoomInText = `<svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon_plus"/></svg>`;
 const EXTRA_PADDING = 100;
-/* foo-eslint-disable react/sort-comp */
 
 const startClient = context => {
   const { realTime } = context.config;
