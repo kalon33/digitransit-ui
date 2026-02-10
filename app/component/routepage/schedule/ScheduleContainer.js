@@ -100,11 +100,24 @@ const ScheduleContainer = ({
     () => route?.patterns?.find(p => p.code === pattern?.code),
     [route?.patterns, pattern?.code],
   );
-  const tripsResult = getTripsList({
-    pattern: currentPattern,
-    match,
-    intl,
-  });
+  const testNum = match?.location?.query?.test;
+  const tripsResult = useMemo(
+    () =>
+      getTripsList({
+        pattern: currentPattern,
+        firstDataDate,
+        intl,
+        testNum,
+        serviceDay: query?.serviceDay,
+      }),
+    [
+      currentPattern,
+      firstDataDateStr,
+      intl,
+      match?.location?.query?.test,
+      query?.serviceDay,
+    ],
+  );
 
   const routeId = route?.gtfsId;
   const { constantOperationRoutes } = config;
@@ -123,7 +136,6 @@ const ScheduleContainer = ({
     constantOperationInfo,
   });
 
-  const testNum = match?.location?.query?.test;
   const redirectDecision = useMemo(
     () =>
       calculateRedirectDecision({

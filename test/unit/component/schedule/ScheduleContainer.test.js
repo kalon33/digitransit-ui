@@ -436,6 +436,37 @@ describe('<ScheduleContainer />', () => {
       ).to.equal(true);
     });
 
+    it('should redirect when getTripsList returns no trips and first data date exists', () => {
+      calculateRedirectDecisionStub.restore();
+      calculateRedirectDecisionStub = null;
+      getTripsListStub.restore();
+      getTripsListStub = null;
+
+      const routeWithNoTrips = {
+        ...defaultProps.route,
+        patterns: [
+          {
+            code: defaultProps.pattern.code,
+            trips: [],
+          },
+        ],
+      };
+
+      const wrapper = shallow(
+        <ScheduleContainer
+          {...defaultProps}
+          route={routeWithNoTrips}
+          match={mockMatchWithRouter}
+        />,
+      );
+
+      expect(wrapper.isEmptyRender()).to.equal(true);
+      expect(useScheduleRedirectsStub.calledOnce).to.equal(true);
+      expect(
+        useScheduleRedirectsStub.firstCall.args[0].redirectDecision.reason,
+      ).to.equal('no-trips');
+    });
+
     it('should render no-trips message when provided', () => {
       getTripsListStub.returns({
         trips: null,

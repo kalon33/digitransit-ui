@@ -1,9 +1,4 @@
 /**
- * Aria message configuration for schedule dropdowns
- * Extracted for reusability and maintainability
- */
-
-/**
  * Generate aria-live messages for react-select dropdowns.
  * @param {Object} intl - Internationalization object (react-intl v2)
  * @returns {Object} Aria message configuration object

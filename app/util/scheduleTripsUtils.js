@@ -35,22 +35,24 @@ export const sortTrips = trips => {
 
 /**
  * Get and process trips for display.
- * Handles testing mode internally by checking query params.
- * @param {Object} params - Trip processing parameters
  * @param {Object} params.pattern - Pattern object with trips
  * @param {DateTime} params.firstDataDate - First date with available data (optional)
- * @param {Object} params.match - Router match object
  * @param {Object} params.intl - Internationalization object
+ * @param {string|number} params.testNum - Test number for filtering trips in testing mode (optional)
+ * @param {string} params.serviceDay - Service day for no trips message formatting (optional)
  * @returns {Object} { trips: Array|null, noTripsMessage: JSX|null }
  */
-export const getTripsList = ({ pattern, firstDataDate, match, intl }) => {
-  // Handle testing mode internally
+export const getTripsList = ({
+  pattern,
+  firstDataDate,
+  intl,
+  testNum,
+  serviceDay,
+}) => {
   const testing = process.env.ROUTEPAGETESTING || false;
-  const testNum = testing && match?.location?.query?.test;
 
   let currentPattern = pattern;
 
-  // Apply test mode filtering if enabled
   if (testing && testNum && currentPattern) {
     currentPattern = {
       ...currentPattern,
@@ -69,11 +71,8 @@ export const getTripsList = ({ pattern, firstDataDate, match, intl }) => {
       };
     }
     // Show no trips message
-    const day = match.location.query?.serviceDay
-      ? DateTime.fromFormat(
-          match.location.query.serviceDay,
-          DATE_FORMAT,
-        ).toFormat('d.L.yyyy')
+    const day = serviceDay
+      ? DateTime.fromFormat(serviceDay, DATE_FORMAT).toFormat('d.L.yyyy')
       : '';
     return {
       trips: null,
