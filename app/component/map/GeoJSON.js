@@ -97,7 +97,7 @@ const haloArray = [
 ];
 
 function GeoJSON({ bounds, data, geoJsonZoomLevel, ...rest }, { config }) {
-  const { colors, geoJsonSvgSize } = config;
+  const { colors, geoJsonSvgSize, language } = config;
   // cache dynamic icons to allow references by id without data duplication
   const icons = useRef(getIcons(data?.features));
 
@@ -197,6 +197,7 @@ function GeoJSON({ bounds, data, geoJsonZoomLevel, ...rest }, { config }) {
             icons={icons.current}
             key={feature.id}
             size={geoJsonSvgSize}
+            language={language}
             {...rest}
           />
         ))}
