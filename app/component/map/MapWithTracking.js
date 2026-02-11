@@ -103,7 +103,7 @@ class MapWithTrackingStateHandler extends React.Component {
     onEndNavigation: undefined,
     onMapTracking: undefined,
     renderCustomButtons: undefined,
-    locationPopup: 'reversegeocoding',
+    locationPopup: undefined,
     onSelectLocation: () => null,
     leafletEvents: {},
     mapLayerOptions: null,
