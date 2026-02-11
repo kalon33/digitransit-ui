@@ -1,6 +1,6 @@
 import L from 'leaflet';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useRef } from 'react';
 import uniqBy from 'lodash/uniqBy';
 import { default as Geojson } from 'react-leaflet/es/GeoJSON';
 import PointFeatureMarker from './PointFeatureMarker';
@@ -98,10 +98,12 @@ const haloArray = [
 
 function GeoJSON({ bounds, data, geoJsonZoomLevel, ...rest }, { config }) {
   const { colors, geoJsonSvgSize } = config;
-  const [icons, setIcons] = useState(null);
+  // cache dynamic icons to allow references by id without data duplication
+  const icons = useRef(getIcons(data?.features));
 
   // add some custom rendering control by feature props
-  const pointToLayer = (feature, latlng) => getMarker(feature, latlng, icons);
+  const pointToLayer = (feature, latlng) =>
+    getMarker(feature, latlng, icons.current);
 
   const styler = feature => {
     const defaultLineStyle = {
@@ -158,13 +160,7 @@ function GeoJSON({ bounds, data, geoJsonZoomLevel, ...rest }, { config }) {
       : defaultLineStyle;
   };
 
-  // cache dynamic icons to allow references by id without data duplication
-  useEffect(() => {
-    const { features } = data;
-    setIcons(getIcons(features));
-  }, [data]);
-
-  if (!icons || !data?.features) {
+  if (!icons.current || !data?.features) {
     return null;
   }
 
@@ -198,7 +194,7 @@ function GeoJSON({ bounds, data, geoJsonZoomLevel, ...rest }, { config }) {
         .map(feature => (
           <PointFeatureMarker
             feature={feature}
-            icons={icons}
+            icons={icons.current}
             key={feature.id}
             size={geoJsonSvgSize}
             {...rest}
