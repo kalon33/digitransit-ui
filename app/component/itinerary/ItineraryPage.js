@@ -1602,7 +1602,6 @@ export default function ItineraryPage(props, context) {
       content={content}
       settingsDrawer={settingsDrawer}
       map={map}
-      mapRef={mwtRef.current}
       ref={mobileRef}
       match={match}
       enableBottomScroll={!naviMode}
