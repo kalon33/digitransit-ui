@@ -73,7 +73,7 @@ class TileLayerContainer extends GridLayer {
     highlightedStops: undefined,
     stopsToShow: undefined,
     vehicles: undefined,
-    mergeStops: false,
+    mergeStops: true,
   };
 
   static contextTypes = {
