@@ -127,8 +127,6 @@ export default {
   omitNonPickups: true,
 
   parkAndRide: {
-    showParkAndRide: true,
-    showParkAndRideForBikes: false,
     url: {
       fi: 'https://www.hsl.fi/matkustaminen/liityntapysakointi',
       sv: 'https://www.hsl.fi/sv/att-resa/anslutningsparkering',
