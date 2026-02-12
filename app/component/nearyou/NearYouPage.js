@@ -83,7 +83,6 @@ function NearYouPage(
   },
   { config, executeAction, router },
 ) {
-  const MWTRef = useRef();
   const modes = useRef(getModes(config));
   const centerOfMap = useRef({});
   const [phase, setPhase] = useState(PH_START);
@@ -256,11 +255,6 @@ function NearYouPage(
     if (changed !== centerOfMapChanged) {
       setCenterOfMapChanged(changed);
     }
-  };
-
-  // store ref to map
-  const setMWTRef = ref => {
-    MWTRef.current = ref;
   };
 
   const updateLocation = () => {
@@ -507,7 +501,6 @@ function NearYouPage(
       mapLayers={mapLayers}
       mapLayerOptions={mapLayerOptions}
       breakpoint={breakpoint}
-      setMWTRef={setMWTRef}
       variables={getQueryVariables(mode)}
     />
   );
@@ -595,7 +588,6 @@ function NearYouPage(
             content={renderContent()}
             map={renderMap()}
             searchBox={mapSearch()}
-            mapRef={MWTRef.current}
             match={match}
           />
         )}
