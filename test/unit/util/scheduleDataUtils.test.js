@@ -28,8 +28,7 @@ describe('scheduleDataUtils', () => {
 
       expect(result).to.be.an('object');
       expect(result.dates).to.be.an('array');
-      expect(result.options).to.be.an('array');
-      expect(result.selectedDate).to.be.an('object');
+      expect(result.selectedDay).to.be.an('object');
     });
 
     it('should handle single week of departures', () => {
@@ -94,12 +93,12 @@ describe('scheduleDataUtils', () => {
       };
 
       const result = populateData(wantedDay, departures);
-      const { selectedDate } = result;
+      const { selectedDay } = result;
 
-      expect(selectedDate.date).to.equal(
+      expect(selectedDay.toFormat(DATE_FORMAT_SCHEDULE)).to.equal(
         wantedDay.toFormat(DATE_FORMAT_SCHEDULE),
       );
-      expect(selectedDate.weekday).to.equal(wantedDay.weekday);
+      expect(selectedDay.weekday).to.equal(wantedDay.weekday);
     });
 
     it('should create options for other dates', () => {
@@ -112,8 +111,8 @@ describe('scheduleDataUtils', () => {
 
       const result = populateData(wantedDay, departures);
 
-      expect(result.options).to.be.an('array');
-      expect(result.options).to.have.lengthOf(2);
+      expect(result.dates).to.be.an('array');
+      expect(result.dates).to.have.lengthOf(3);
     });
 
     it('should use current date when wantedDay is not provided', () => {
@@ -125,7 +124,7 @@ describe('scheduleDataUtils', () => {
 
       expect(result).to.not.equal(undefined);
       const today = DateTime.now();
-      expect(result.selectedDate.date).to.equal(
+      expect(result.selectedDay.toFormat(DATE_FORMAT_SCHEDULE)).to.equal(
         today.toFormat(DATE_FORMAT_SCHEDULE),
       );
     });
@@ -142,7 +141,7 @@ describe('scheduleDataUtils', () => {
       expect(result).to.not.equal(undefined);
       expect(result.dates).to.be.an('array');
       expect(result.dates).to.have.lengthOf(0);
-      expect(result.options).to.have.lengthOf(0);
+      expect(result.selectedDay).to.be.an('object');
     });
   });
 });

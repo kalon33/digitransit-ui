@@ -9,7 +9,7 @@ import * as ReactRelay from 'react-relay';
 import { Component as ScheduleContainer } from '../../../../app/component/routepage/schedule/ScheduleContainer';
 import ScheduleHeader from '../../../../app/component/routepage/schedule/ScheduleHeader';
 import ScheduleTripList from '../../../../app/component/routepage/schedule/ScheduleTripList';
-import DateSelect from '../../../../app/component/stop/DateSelect';
+import DateSelectGrouped from '../../../../app/component/stop/DateSelectGrouped';
 import ScheduleConstantOperation from '../../../../app/component/routepage/schedule/ScheduleConstantOperation';
 import RouteControlPanel from '../../../../app/component/routepage/RouteControlPanel';
 import SecondaryButton from '../../../../app/component/SecondaryButton';
@@ -166,9 +166,8 @@ describe('<ScheduleContainer />', () => {
       });
 
     populateDataStub = sinon.stub(scheduleDataUtils, 'populateData').returns({
-      selectedDate: { date: '1.1.2024', weekday: 1 },
-      options: [{ value: '20240102', label: '2.1.2024' }],
-      dates: [DateTime.fromISO('2024-01-01')],
+      selectedDay: DateTime.fromISO('2024-01-01'),
+      dates: [DateTime.fromISO('2024-01-01'), DateTime.fromISO('2024-01-02')],
     });
 
     getTripsListStub = sinon.stub(scheduleTripsUtils, 'getTripsList').returns({
@@ -320,7 +319,7 @@ describe('<ScheduleContainer />', () => {
       expect(controlPanel.prop('route')).to.equal(defaultProps.route);
       expect(controlPanel.prop('breakpoint')).to.equal(defaultProps.breakpoint);
 
-      const dateSelect = wrapper.find(DateSelect);
+      const dateSelect = wrapper.find(DateSelectGrouped);
       expect(dateSelect).to.have.lengthOf(1);
       expect(dateSelect.prop('dateFormat')).to.equal(DATE_FORMAT);
     });
@@ -367,7 +366,7 @@ describe('<ScheduleContainer />', () => {
         <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
       );
 
-      wrapper.find(DateSelect).prop('onDateChange')('20240102');
+      wrapper.find(DateSelectGrouped).prop('onDateChange')('20240102');
 
       expect(routerReplaceSpy.calledOnce).to.equal(true);
       expect(
@@ -379,8 +378,7 @@ describe('<ScheduleContainer />', () => {
 
     it('should still render date select when no options are available', () => {
       populateDataStub.returns({
-        selectedDate: { date: '1.1.2024', weekday: 1 },
-        options: [],
+        selectedDay: DateTime.fromISO('2024-01-01'),
         dates: [DateTime.fromISO('2024-01-01')],
       });
 
@@ -388,7 +386,7 @@ describe('<ScheduleContainer />', () => {
         <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
       );
 
-      expect(wrapper.find(DateSelect)).to.have.lengthOf(1);
+      expect(wrapper.find(DateSelectGrouped)).to.have.lengthOf(1);
     });
   });
 

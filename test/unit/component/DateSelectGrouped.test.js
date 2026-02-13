@@ -1,18 +1,25 @@
 import { expect } from 'chai';
 import { describe, it, beforeEach } from 'mocha';
 import React from 'react';
-import { Settings } from 'luxon';
+import { DateTime, Settings } from 'luxon';
 import Select from 'react-select';
 
 import { mountWithIntl } from '../helpers/mock-intl-enzyme';
-import DateSelect from '../../../app/component/stop/DateSelect';
+import DateSelectGrouped from '../../../app/component/stop/DateSelectGrouped';
 
 describe('<DateSelect />', () => {
+  const dateFormat = 'yyyyLLdd';
+  const selectedDay = DateTime.fromISO('2019-01-02', { zone: 'UTC' });
+  const dates = Array.from({ length: 60 }, (_, i) =>
+    DateTime.fromISO('2019-01-01', { zone: 'UTC' }).plus({ days: i }),
+  );
+
   const defaultProps = {
     startDate: '20190101',
-    selectedDate: '20190102',
-    dateFormat: 'yyyyLLdd',
-    onDateChange: event => event.target.value,
+    selectedDay,
+    dateFormat,
+    dates,
+    onDateChange: value => value,
   };
 
   beforeEach(() => {
@@ -27,7 +34,7 @@ describe('<DateSelect />', () => {
   });
 
   it('should render 60 options', () => {
-    const wrapper = mountWithIntl(<DateSelect {...defaultProps} />);
+    const wrapper = mountWithIntl(<DateSelectGrouped {...defaultProps} />);
     const { options } = wrapper.find(Select).props();
     const totalOptions = options.reduce(
       (count, group) => count + group.options.length,
@@ -37,7 +44,7 @@ describe('<DateSelect />', () => {
   });
 
   it('should render today and tomorrow as text, others as weekday abbreviation with date', () => {
-    const wrapper = mountWithIntl(<DateSelect {...defaultProps} />);
+    const wrapper = mountWithIntl(<DateSelectGrouped {...defaultProps} />);
     const { options } = wrapper.find(Select).props();
     const flatOptions = options.reduce(
       (acc, group) => acc.concat(group.options),
@@ -53,7 +60,11 @@ describe('<DateSelect />', () => {
   it('should use correct locale for weekday abbreviation', () => {
     Settings.defaultLocale = 'fi';
     Settings.defaultZone = 'Europe/Helsinki';
-    const wrapper = mountWithIntl(<DateSelect {...defaultProps} />, {}, 'fi');
+    const wrapper = mountWithIntl(
+      <DateSelectGrouped {...defaultProps} />,
+      {},
+      'fi',
+    );
     const { options } = wrapper.find(Select).props();
     const flatOptions = options.reduce(
       (acc, group) => acc.concat(group.options),
@@ -64,7 +75,7 @@ describe('<DateSelect />', () => {
   });
 
   it('should have selectedDate selected', () => {
-    const wrapper = mountWithIntl(<DateSelect {...defaultProps} />);
+    const wrapper = mountWithIntl(<DateSelectGrouped {...defaultProps} />);
     const selectValue = wrapper.find(Select).props().value;
     expect(selectValue.value).to.equal('20190102');
   });
