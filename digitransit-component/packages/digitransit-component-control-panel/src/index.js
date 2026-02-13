@@ -181,7 +181,6 @@ function NearStopsAndRoutes({
           </span>
         );
       }
-
       if (!forModal) {
         buttonProps.withBorder = true;
       } else {
