@@ -9,7 +9,7 @@ import * as ReactRelay from 'react-relay';
 import { Component as ScheduleContainer } from '../../../../app/component/routepage/schedule/ScheduleContainer';
 import ScheduleHeader from '../../../../app/component/routepage/schedule/ScheduleHeader';
 import ScheduleTripList from '../../../../app/component/routepage/schedule/ScheduleTripList';
-import ScheduleDropdown from '../../../../app/component/routepage/schedule/ScheduleDropdown';
+import DateSelect from '../../../../app/component/stop/DateSelect';
 import ScheduleConstantOperation from '../../../../app/component/routepage/schedule/ScheduleConstantOperation';
 import RouteControlPanel from '../../../../app/component/routepage/RouteControlPanel';
 import SecondaryButton from '../../../../app/component/SecondaryButton';
@@ -310,7 +310,7 @@ describe('<ScheduleContainer />', () => {
   });
 
   describe('Layout and interactions', () => {
-    it('should render route controls and dropdown with options', () => {
+    it('should render route controls and date select', () => {
       const wrapper = shallow(
         <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
       );
@@ -320,11 +320,9 @@ describe('<ScheduleContainer />', () => {
       expect(controlPanel.prop('route')).to.equal(defaultProps.route);
       expect(controlPanel.prop('breakpoint')).to.equal(defaultProps.breakpoint);
 
-      const dropdown = wrapper.find(ScheduleDropdown);
-      expect(dropdown).to.have.lengthOf(1);
-      expect(dropdown.prop('list')).to.deep.equal(
-        populateDataStub.firstCall.returnValue.options,
-      );
+      const dateSelect = wrapper.find(DateSelect);
+      expect(dateSelect).to.have.lengthOf(1);
+      expect(dateSelect.prop('dateFormat')).to.equal(DATE_FORMAT);
     });
 
     it('should update trip list bounds when header changes', () => {
@@ -369,7 +367,7 @@ describe('<ScheduleContainer />', () => {
         <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
       );
 
-      wrapper.find(ScheduleDropdown).prop('onSelectChange')('20240102');
+      wrapper.find(DateSelect).prop('onDateChange')('20240102');
 
       expect(routerReplaceSpy.calledOnce).to.equal(true);
       expect(
@@ -379,7 +377,7 @@ describe('<ScheduleContainer />', () => {
       ).to.equal(true);
     });
 
-    it('should not render dropdown when no options are available', () => {
+    it('should still render date select when no options are available', () => {
       populateDataStub.returns({
         selectedDate: { date: '1.1.2024', weekday: 1 },
         options: [],
@@ -390,7 +388,7 @@ describe('<ScheduleContainer />', () => {
         <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
       );
 
-      expect(wrapper.find(ScheduleDropdown)).to.have.lengthOf(0);
+      expect(wrapper.find(DateSelect)).to.have.lengthOf(1);
     });
   });
 

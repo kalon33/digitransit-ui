@@ -15,7 +15,7 @@ import SecondaryButton from '../../SecondaryButton';
 import { DATE_FORMAT } from '../../../constants';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import withBreakpoint from '../../../util/withBreakpoint';
-import ScheduleDropdown from './ScheduleDropdown';
+import DateSelectGrouped from '../../stop/DateSelectGrouped';
 import RouteControlPanel from '../RouteControlPanel';
 import ScrollableWrapper from '../../ScrollableWrapper';
 import { useConfigContext } from '../../../configurations/ConfigContext';
@@ -83,24 +83,32 @@ const ScheduleContainer = ({
   });
 
   const { query } = match.location;
-  const wantedDay = query?.serviceDay
-    ? DateTime.fromFormat(query.serviceDay, DATE_FORMAT)
-    : undefined;
+  const serviceDayString = query?.serviceDay;
+  const wantedDay = useMemo(
+    () =>
+      serviceDayString
+        ? DateTime.fromFormat(serviceDayString, DATE_FORMAT)
+        : undefined,
+    [serviceDayString],
+  );
 
   const data = useMemo(
     () => populateData(wantedDay, firstDepartures),
-    [query?.serviceDay, firstDepartures],
+    [wantedDay, firstDepartures],
   );
 
   const firstDataDate = data?.dates?.[0];
   const firstDataDateStr = firstDataDate
     ? firstDataDate.toFormat(DATE_FORMAT)
     : null;
+
   const currentPattern = useMemo(
     () => route?.patterns?.find(p => p.code === pattern?.code),
     [route?.patterns, pattern?.code],
   );
+
   const testNum = match?.location?.query?.test;
+
   const tripsResult = useMemo(
     () =>
       getTripsList({
@@ -108,15 +116,9 @@ const ScheduleContainer = ({
         firstDataDate,
         intl,
         testNum,
-        serviceDay: query?.serviceDay,
+        serviceDay: serviceDayString,
       }),
-    [
-      currentPattern,
-      firstDataDateStr,
-      intl,
-      match?.location?.query?.test,
-      query?.serviceDay,
-    ],
+    [currentPattern, firstDataDateStr, intl, testNum, serviceDayString],
   );
 
   const routeId = route?.gtfsId;
@@ -148,7 +150,7 @@ const ScheduleContainer = ({
       }),
     [
       testNum,
-      query?.serviceDay,
+      serviceDayString,
       firstDataDateStr,
       !tripsResult.trips,
       pattern?.code,
@@ -162,12 +164,7 @@ const ScheduleContainer = ({
     redirectDecision,
   });
 
-  const selectedDate = data?.selectedDate || {
-    date: '',
-    weekday: null,
-  };
-
-  const optionsData = data?.options || [];
+  const datesList = data?.dates || [];
 
   useEffect(() => {
     if (pattern?.code) {
@@ -230,6 +227,12 @@ const ScheduleContainer = ({
   const formattedServiceDate = selectedServiceDay
     ? selectedServiceDay.toFormat(DATE_FORMAT)
     : null;
+
+  // Memoize today's date string (changes only when date changes, not on every render)
+  const todayDateStr = useMemo(
+    () => DateTime.local().toFormat(DATE_FORMAT),
+    [],
+  );
 
   const routeTimetableUrl = useMemo(() => {
     if (!routeId || !formattedServiceDate) {
@@ -310,20 +313,14 @@ const ScheduleContainer = ({
           />
         )}
         <div className="route-schedule-ranges">
-          <span className="current-range">{selectedDate.date}</span>
-          <div className="other-ranges-dropdown">
-            {optionsData.length > 0 && (
-              <ScheduleDropdown
-                id="other-dates"
-                title={intl.formatMessage({
-                  id: 'other-dates',
-                })}
-                list={optionsData}
-                alignRight
-                changeTitleOnChange={false}
-                onSelectChange={changeDate}
-              />
-            )}
+          <div style={{ width: '100%' }}>
+            <DateSelectGrouped
+              startDate={todayDateStr}
+              dateFormat={DATE_FORMAT}
+              selectedDay={wantedDay || data?.selectedDay}
+              dates={datesList}
+              onDateChange={changeDate}
+            />
           </div>
         </div>
         {pattern && (

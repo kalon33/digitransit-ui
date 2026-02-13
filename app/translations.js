@@ -856,6 +856,7 @@ const translations = {
     'as-viapoint': 'Viapoint',
     back: 'Back',
     'buy-in-app': 'Buy in App',
+    'next-week': 'Next week',
     'search-autosuggest-label': 'Venue, place and stopsearch.',
     'search-autosuggest-label-move-to-destination':
       'After selecting the starting location you are automatically moved to the destination field.',
@@ -873,6 +874,7 @@ const translations = {
     'set-time-now-button-label': 'Set travel time to current',
     'station-entrance': 'Entrance',
     'station-exit': 'Exit',
+    'this-week': 'This week',
     'time-navigation-buttons': 'Time navigation buttons',
     'time-selector-form': 'Edit time',
     // eslint-disable-next-line sort-keys
@@ -1841,6 +1843,7 @@ const translations = {
     'weather-icon-83': 'Heavy sleet',
     'weather-icon-91': 'Mist',
     'weather-icon-92': 'Fog',
+    'week-number': 'Week {number}',
     where: 'Where to?',
     yesterday: 'Yesterday',
     zone: 'Zone',
@@ -2196,6 +2199,7 @@ const translations = {
       'Avaa välipisteen {index} pysähdyksen kesto valitsin',
     'add-via-duration-button-label-open':
       'Sulje välipisteen {index} pysähdyksen kesto valitsin',
+    'next-week': 'Ensi viikolla',
     'select-date': 'Valitse päivä',
     'select-from-map-destination': 'Valitse määränpää',
     'select-from-map-favourite': 'Valitse kartalta',
@@ -2207,6 +2211,7 @@ const translations = {
     'set-time-now-button-label': 'Aseta matkustusajankohdaksi nyt',
     'station-entrance': 'Sisäänkäynti',
     'station-exit': 'Uloskäynti',
+    'this-week': 'Tällä viikolla',
     'time-navigation-buttons': 'Matkustusajankohdan muokkausnapit',
     'time-selector-form': 'Muokkaa Matkustusajankohtaa',
     // eslint-disable-next-line sort-keys
@@ -3167,6 +3172,7 @@ const translations = {
     'weather-icon-83': 'Voimakasta räntäsadetta',
     'weather-icon-91': 'Utua',
     'weather-icon-92': 'Sumua',
+    'week-number': 'vko {number}',
     where: 'Minne mennään?',
     yesterday: 'Eilen',
     zone: 'Vyöhyke',
@@ -5152,6 +5158,7 @@ const translations = {
     'book-a-lift':
       'Tilaa kyyti sovelluksella ja jää odottamaan sen saapumista:',
     'buy-in-app': 'Köp i appen',
+    'next-week': 'Nästa vecka',
     'search-autosuggest-label': 'Plats, linje och hållplatssökning.',
     'search-autosuggest-label-move-to-destination':
       'Efter att du valt avgångsplatsen tas du direkt till Destination-fältet.',
@@ -5163,6 +5170,7 @@ const translations = {
     'set-time-now-button-label': 'Ställ in restid till nu',
     'station-entrance': 'Ingång',
     'station-exit': 'Utgång',
+    'this-week': 'Denna vecka',
     'time-navigation-buttons': 'Tidsnavigeringsknappar',
     'time-selector-form': 'Redigera tid',
     // eslint-disable-next-line sort-keys
@@ -6132,6 +6140,7 @@ const translations = {
     'weather-icon-83': 'Lätt snöblandat regn',
     'weather-icon-91': 'Dis',
     'weather-icon-92': 'Dimma',
+    'week-number': 'vecka {number}',
     where: 'Vart vill du åka?',
     yesterday: 'I går',
     zone: 'Zon',
