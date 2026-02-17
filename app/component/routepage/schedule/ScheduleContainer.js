@@ -228,7 +228,6 @@ const ScheduleContainer = ({
     ? selectedServiceDay.toFormat(DATE_FORMAT)
     : null;
 
-  // Memoize today's date string (changes only when date changes, not on every render)
   const todayDateStr = useMemo(
     () => DateTime.local().toFormat(DATE_FORMAT),
     [],
@@ -312,7 +311,7 @@ const ScheduleContainer = ({
             noInitialServiceDay
           />
         )}
-        <div className="route-schedule-ranges">
+        <div className="route-schedule-date-select">
           <div style={{ width: '100%' }}>
             <DateSelectGrouped
               startDate={todayDateStr}

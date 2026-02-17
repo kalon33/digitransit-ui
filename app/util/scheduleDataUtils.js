@@ -55,8 +55,7 @@ const buildAvailableDates = (departures, startOfCurrentWeek) => {
   );
 };
 /**
- * Populate and return only the list of available dates and the chosen date.
- * The consumer (UI) is responsible for formatting, grouping and labeling.
+ * Populate and return the list of available dates and the chosen date.
  * @param {DateTime} wantedDayIn - Preferred date to select (may be invalid)
  * @param {Object} departures - Departures object keyed by wk{n}{day}
  * @returns {Object} { dates: Array<DateTime>, selectedDay: DateTime }

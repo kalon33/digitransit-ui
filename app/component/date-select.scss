@@ -101,19 +101,17 @@
 
   margin-right: $padding-medium;
   background-color: $white;
-  border: 1px solid $gray;
+  border: 1px solid $control-border-color;
   display: flex;
   align-items: center;
   border-radius: var(--space-xs);
   height: auto;
   min-height: 44px;
-  padding: 0; // inner spacing handled by react-select placeholder layout
   justify-content: space-between;
   max-width: 200px;
   flex-basis: 200px;
 
-  // when used in route schedule ranges, make full width
-  .route-schedule-ranges & {
+  .route-schedule-date-select & {
     max-width: none;
     flex-basis: auto;
     margin-right: 0;
@@ -124,19 +122,8 @@
     width: 100%;
     height: 100%;
     background: none !important;
-
-    // reserve 1px for the focus border to avoid layout shift when color changes
-    border: 1px solid transparent !important;
-    box-sizing: border-box;
-    margin: 0;
-
-    // match route-pattern-toggle padding horizontally, use 16px both sides
+    border-color: transparent !important;
     padding: 13px 16px;
-
-    &:hover {
-      background: none !important;
-      border: 1px solid transparent !important;
-    }
 
     .route-schedule__value-container {
       overflow: visible;

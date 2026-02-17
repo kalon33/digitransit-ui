@@ -3,6 +3,7 @@ import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { DateTime } from 'luxon';
 
 import Select, { components as RSComponents } from 'react-select';
+import { FormattedMessage } from 'react-intl';
 import Icon from '../Icon';
 import { useTranslationsContext } from '../../util/useTranslationsContext';
 
@@ -96,7 +97,6 @@ function DateSelectGrouped(props) {
     setIsMenuOpen(false);
   }, []);
 
-  // Memoize date calculations - use stable string values for deps
   const { grouped } = useMemo(() => {
     // If the caller provided a list of DateTime `dates` (from scheduleDataUtils),
     // use those and compute labels/grouping here.
@@ -200,7 +200,6 @@ function DateSelectGrouped(props) {
     return { flatDates: dates, grouped: groupedOptions };
   }, [props.startDate, props.dateFormat, intl, props.dates]);
 
-  // Memoize selected option lookup
   const selectedOption = useMemo(() => {
     const allOptions = grouped.flatMap(g => g.options);
     const selectedValue = extractSelectedValue(
@@ -210,7 +209,6 @@ function DateSelectGrouped(props) {
     return allOptions.find(o => o.value === selectedValue) || allOptions[0];
   }, [grouped, props.selectedDay, props.dateFormat]);
 
-  // Memoized change handler
   const handleChange = useCallback(
     option => {
       props.onDateChange(option.value);
@@ -283,6 +281,12 @@ function DateSelectGrouped(props) {
         isMenuOpen ? ' date-select-wrapper--menu-open' : ''
       }`}
     >
+      <h3 className="route-schedule-date-select-heading">
+        <FormattedMessage
+          id="route-page.select-time"
+          defaultMessage="Select time"
+        />
+      </h3>
       <Select
         aria-labelledby={`aria-label-${id}`}
         aria-label={selectAriaLabel}
@@ -351,8 +355,13 @@ DateSelectGrouped.propTypes = {
   startDate: PropTypes.string.isRequired,
   selectedDay: PropTypes.instanceOf(DateTime),
   dateFormat: PropTypes.string.isRequired,
-  dates: PropTypes.array,
+  dates: PropTypes.arrayOf(PropTypes.instanceOf(DateTime)),
   onDateChange: PropTypes.func.isRequired,
+};
+
+DateSelectGrouped.defaultProps = {
+  selectedDay: undefined,
+  dates: undefined,
 };
 
 DateSelectGrouped.displayName = 'DateSelectGrouped';
