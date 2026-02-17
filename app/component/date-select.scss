@@ -193,15 +193,6 @@
     border-radius: var(--space-xs);
   }
 
-  // Remove the default browser focus ring when the control is focused
-  // but the menu is not open — keep visible focus only when menu is open.
-  .route-schedule__control:focus:not(.route-schedule__control--menu-is-open) {
-    outline: none;
-    box-shadow: none !important;
-    border-color: transparent !important;
-  }
-
-  // Also cover react-select modifier classes and inner input focus states
   .route-schedule__control--is-focused:not(
       .route-schedule__control--menu-is-open
     ),
@@ -210,9 +201,8 @@
     )
     .route-schedule__input,
   .route-schedule__control :focus:not(.route-schedule__control--menu-is-open) {
-    outline: none !important;
-    box-shadow: none !important;
-    border-color: transparent !important;
+    border-radius: var(--space-xs);
+    box-shadow: 0 0 3px 0 $secondary-color;
   }
 
   // Dropdown arrow styling (stays nested as it's in the control, not the portal)
@@ -298,6 +288,7 @@
   background: $white;
   border: 1px solid $light-gray;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  max-height: unquote('min(400px, 60vh)');
 }
 
 .route-schedule__menu-list {
@@ -305,6 +296,8 @@
   padding: 0;
   border-radius: inherit;
   position: relative;
+  max-height: inherit;
+  overflow-y: auto;
 }
 
 .route-schedule__group-heading {
