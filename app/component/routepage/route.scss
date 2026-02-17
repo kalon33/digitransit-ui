@@ -864,6 +864,10 @@ $margin-left-right: 21.3px;
     margin: 0 0 var(--space-xs) 0;
   }
 
+  .route-schedule-date-select-wrapper {
+    width: 100%;
+  }
+
   .current-range {
     flex: 1;
     white-space: nowrap;

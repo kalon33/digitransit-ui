@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
-import { connectToStores } from 'fluxible-addons-react';
 import { matchShape, routerShape } from 'found';
 import { DateTime } from 'luxon';
 import cx from 'classnames';
@@ -14,7 +13,7 @@ import ScheduleConstantOperation from './ScheduleConstantOperation';
 import SecondaryButton from '../../SecondaryButton';
 import { DATE_FORMAT } from '../../../constants';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
-import withBreakpoint from '../../../util/withBreakpoint';
+import { useBreakpoint } from '../../../util/withBreakpoint';
 import DateSelectGrouped from '../../stop/DateSelectGrouped';
 import RouteControlPanel from '../RouteControlPanel';
 import ScrollableWrapper from '../../ScrollableWrapper';
@@ -60,10 +59,9 @@ const ScheduleContainer = ({
   route: routeRef,
   firstDepartures: firstDeparturesRef,
   match,
-  breakpoint,
   router,
-  lang,
 }) => {
+  const breakpoint = useBreakpoint();
   const pattern = useFragment(SchedulePatternFragment, patternRef);
   const route = useFragment(ScheduleRouteFragment, routeRef);
   const firstDeparturesProp = useFragment(
@@ -73,6 +71,7 @@ const ScheduleContainer = ({
 
   const intl = useTranslationsContext();
   const config = useConfigContext();
+  const lang = intl.locale;
 
   const [from, setFrom] = useState(0);
   const [to, setTo] = useState(Math.max((pattern?.stops?.length || 1) - 1, 0));
@@ -98,9 +97,6 @@ const ScheduleContainer = ({
   );
 
   const firstDataDate = data?.dates?.[0];
-  const firstDataDateStr = firstDataDate
-    ? firstDataDate.toFormat(DATE_FORMAT)
-    : null;
 
   const currentPattern = useMemo(
     () => route?.patterns?.find(p => p.code === pattern?.code),
@@ -118,7 +114,7 @@ const ScheduleContainer = ({
         testNum,
         serviceDay: serviceDayString,
       }),
-    [currentPattern, firstDataDateStr, intl, testNum, serviceDayString],
+    [currentPattern, firstDataDate, intl, testNum, serviceDayString],
   );
 
   const routeId = route?.gtfsId;
@@ -150,9 +146,9 @@ const ScheduleContainer = ({
       }),
     [
       testNum,
-      serviceDayString,
-      firstDataDateStr,
-      !tripsResult.trips,
+      wantedDay,
+      firstDataDate,
+      tripsResult.trips,
       pattern?.code,
       routeId,
     ],
@@ -299,9 +295,9 @@ const ScheduleContainer = ({
   return (
     <>
       <ScrollableWrapper
-        className={`route-schedule-container ${
-          breakpoint !== 'large' ? 'mobile' : ''
-        }`}
+        className={cx('route-schedule-container', {
+          mobile: breakpoint !== 'large',
+        })}
       >
         {route && route.patterns && (
           <RouteControlPanel
@@ -312,7 +308,7 @@ const ScheduleContainer = ({
           />
         )}
         <div className="route-schedule-date-select">
-          <div style={{ width: '100%' }}>
+          <div className="route-schedule-date-select-wrapper">
             <DateSelectGrouped
               startDate={todayDateStr}
               dateFormat={DATE_FORMAT}
@@ -380,19 +376,10 @@ ScheduleContainer.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   firstDepartures: PropTypes.object.isRequired,
   match: matchShape.isRequired,
-  breakpoint: PropTypes.string.isRequired,
   router: routerShape.isRequired,
-  lang: PropTypes.string.isRequired,
 };
 
 ScheduleContainer.displayName = 'ScheduleContainer';
 
-const containerComponent = connectToStores(
-  withBreakpoint(ScheduleContainer),
-  ['PreferencesStore'],
-  context => ({
-    lang: context.getStore('PreferencesStore').getLanguage(),
-  }),
-);
-
-export { containerComponent as default, ScheduleContainer as Component };
+export { ScheduleContainer as Component };
+export default ScheduleContainer;
