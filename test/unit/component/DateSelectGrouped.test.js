@@ -1,13 +1,14 @@
 import { expect } from 'chai';
-import { describe, it, beforeEach } from 'mocha';
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import React from 'react';
 import { DateTime, Settings } from 'luxon';
 import Select from 'react-select';
+import sinon from 'sinon';
 
 import { mountWithIntl } from '../helpers/mock-intl-enzyme';
 import DateSelectGrouped from '../../../app/component/stop/DateSelectGrouped';
 
-describe('<DateSelect />', () => {
+describe('<DateSelectGrouped />', () => {
   const dateFormat = 'yyyyLLdd';
   const selectedDay = DateTime.fromISO('2019-01-02', { zone: 'UTC' });
   const dates = Array.from({ length: 60 }, (_, i) =>
@@ -27,7 +28,7 @@ describe('<DateSelect />', () => {
     Settings.defaultZone = 'UTC';
   });
 
-  after(() => {
+  afterEach(() => {
     Settings.defaultLocale = 'en';
     Settings.defaultZone = 'system';
     Settings.now = () => Date.now();
@@ -53,8 +54,6 @@ describe('<DateSelect />', () => {
 
     expect(flatOptions[0].textLabel).to.equal('Today');
     expect(flatOptions[1].textLabel).to.equal('Tomorrow');
-    // expect(options[2].textLabel).to.equal('Th 3.1.');
-    // expect(options[29].textLabel).to.equal('We 30.1.');
   });
 
   it('should use correct locale for weekday abbreviation', () => {
@@ -78,5 +77,206 @@ describe('<DateSelect />', () => {
     const wrapper = mountWithIntl(<DateSelectGrouped {...defaultProps} />);
     const selectValue = wrapper.find(Select).props().value;
     expect(selectValue.value).to.equal('20190102');
+  });
+
+  it('should call onDateChange when a date is selected', () => {
+    const onDateChange = sinon.spy();
+    const wrapper = mountWithIntl(
+      <DateSelectGrouped {...defaultProps} onDateChange={onDateChange} />,
+    );
+
+    const newDate = '20190103';
+    const selectComponent = wrapper.find(Select);
+    selectComponent.props().onChange({ value: newDate });
+
+    expect(onDateChange.calledOnce).to.equal(true);
+    expect(onDateChange.calledWith(newDate)).to.equal(true);
+  });
+
+  it('should generate 60 days when no dates provided', () => {
+    const propsWithoutDates = {
+      startDate: '20190101',
+      selectedDay,
+      dateFormat,
+      onDateChange: value => value,
+    };
+
+    const wrapper = mountWithIntl(<DateSelectGrouped {...propsWithoutDates} />);
+    const { options } = wrapper.find(Select).props();
+    const totalOptions = options.reduce(
+      (count, group) => count + group.options.length,
+      0,
+    );
+
+    expect(totalOptions).to.equal(60);
+  });
+
+  it('should generate dates from startDate when no dates provided', () => {
+    const propsWithoutDates = {
+      startDate: '20190105',
+      selectedDay: DateTime.fromISO('2019-01-05', { zone: 'UTC' }),
+      dateFormat,
+      onDateChange: value => value,
+    };
+
+    const wrapper = mountWithIntl(<DateSelectGrouped {...propsWithoutDates} />);
+    const { options } = wrapper.find(Select).props();
+    const flatOptions = options.reduce(
+      (acc, group) => acc.concat(group.options),
+      [],
+    );
+
+    expect(flatOptions[0].value).to.equal('20190105');
+  });
+
+  it('should handle empty dates array by generating fallback range', () => {
+    const propsWithEmptyDates = {
+      ...defaultProps,
+      dates: [],
+    };
+
+    const wrapper = mountWithIntl(
+      <DateSelectGrouped {...propsWithEmptyDates} />,
+    );
+    const { options } = wrapper.find(Select).props();
+    const totalOptions = options.reduce(
+      (count, group) => count + group.options.length,
+      0,
+    );
+
+    expect(totalOptions).to.equal(60);
+  });
+
+  it('should select first option when selectedDay is undefined', () => {
+    const propsWithoutSelected = {
+      ...defaultProps,
+      selectedDay: undefined,
+    };
+
+    const wrapper = mountWithIntl(
+      <DateSelectGrouped {...propsWithoutSelected} />,
+    );
+    const selectValue = wrapper.find(Select).props().value;
+
+    expect(selectValue).to.not.equal(undefined);
+    expect(selectValue.value).to.equal('20190101');
+  });
+
+  it('should select first option when selectedDay is invalid', () => {
+    const propsWithInvalidSelected = {
+      ...defaultProps,
+      selectedDay: DateTime.invalid('invalid'),
+    };
+
+    const wrapper = mountWithIntl(
+      <DateSelectGrouped {...propsWithInvalidSelected} />,
+    );
+    const selectValue = wrapper.find(Select).props().value;
+
+    expect(selectValue.value).to.equal('20190101');
+  });
+
+  it('should group dates by week', () => {
+    const wrapper = mountWithIntl(<DateSelectGrouped {...defaultProps} />);
+    const { options } = wrapper.find(Select).props();
+
+    expect(options.length).to.be.greaterThan(1);
+    expect(options[0]).to.have.property('label');
+    expect(options[0]).to.have.property('options');
+    expect(options[0].options).to.be.an('array');
+  });
+
+  it('should have "This week" as first group label', () => {
+    const wrapper = mountWithIntl(<DateSelectGrouped {...defaultProps} />);
+    const { options } = wrapper.find(Select).props();
+
+    expect(options[0].label).to.equal('This week');
+  });
+
+  it('should include accessibility labels in options', () => {
+    const wrapper = mountWithIntl(<DateSelectGrouped {...defaultProps} />);
+    const { options } = wrapper.find(Select).props();
+    const firstOption = options[0].options[0];
+
+    expect(firstOption).to.have.property('ariaLabel');
+    expect(firstOption.ariaLabel).to.be.a('string');
+  });
+
+  it('should pass closeMenuOnSelect prop to Select', () => {
+    const wrapper = mountWithIntl(<DateSelectGrouped {...defaultProps} />);
+    const selectProps = wrapper.find(Select).props();
+
+    expect(selectProps.closeMenuOnSelect).to.equal(true);
+  });
+
+  it('should set isSearchable to false', () => {
+    const wrapper = mountWithIntl(<DateSelectGrouped {...defaultProps} />);
+    const selectProps = wrapper.find(Select).props();
+
+    expect(selectProps.isSearchable).to.equal(false);
+  });
+
+  it('should filter out dates before today', () => {
+    Settings.now = () => new Date('2019-01-10T00:00:00Z').getTime();
+
+    const wrapper = mountWithIntl(<DateSelectGrouped {...defaultProps} />);
+    const { options } = wrapper.find(Select).props();
+    const flatOptions = options.reduce(
+      (acc, group) => acc.concat(group.options),
+      [],
+    );
+
+    // All dates should be >= 2019-01-10
+    const allDatesValid = flatOptions.every(opt => {
+      const dateValue = parseInt(opt.value, 10);
+      return dateValue >= 20190110;
+    });
+
+    expect(allDatesValid).to.equal(true);
+  });
+
+  it('should handle dates with invalid entries', () => {
+    const datesWithInvalid = [
+      DateTime.fromISO('2019-01-01', { zone: 'UTC' }),
+      null,
+      DateTime.fromISO('2019-01-02', { zone: 'UTC' }),
+      undefined,
+      DateTime.invalid('invalid'),
+      DateTime.fromISO('2019-01-03', { zone: 'UTC' }),
+    ];
+
+    const propsWithInvalidDates = {
+      ...defaultProps,
+      dates: datesWithInvalid,
+    };
+
+    const wrapper = mountWithIntl(
+      <DateSelectGrouped {...propsWithInvalidDates} />,
+    );
+    const { options } = wrapper.find(Select).props();
+    const totalOptions = options.reduce(
+      (count, group) => count + group.options.length,
+      0,
+    );
+
+    // Should only have 3 valid dates
+    expect(totalOptions).to.equal(3);
+  });
+
+  it('should render with Swedish locale', () => {
+    Settings.defaultLocale = 'sv';
+    const wrapper = mountWithIntl(
+      <DateSelectGrouped {...defaultProps} />,
+      {},
+      'sv',
+    );
+    const { options } = wrapper.find(Select).props();
+    const flatOptions = options.reduce(
+      (acc, group) => acc.concat(group.options),
+      [],
+    );
+
+    // Swedish weekday abbreviation for Thursday (3rd)
+    expect(flatOptions[2].textLabel).to.equal('tors 3.1.');
   });
 });

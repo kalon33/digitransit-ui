@@ -81,13 +81,12 @@ export function groupDatesByWeek(processedDates, currentWeek, intl) {
   }, {});
 
   const groupedOptions = [];
-  Object.keys(byWeek)
-    .map(Number)
-    .sort((a, b) => a - b)
-    .forEach(weekNum => {
-      const groupLabel = formatWeekLabel(weekNum, currentWeek, intl);
+  Object.entries(byWeek)
+    .sort(([a], [b]) => Number(a) - Number(b))
+    .forEach(([weekNum, weekItems]) => {
+      const groupLabel = formatWeekLabel(Number(weekNum), currentWeek, intl);
 
-      const options = byWeek[weekNum].map(item => ({
+      const options = weekItems.map(item => ({
         value: item.value,
         textLabel: item.textLabel,
         // accessibility label with full weekday
@@ -111,8 +110,10 @@ export function groupDatesByWeek(processedDates, currentWeek, intl) {
  * @returns {Array<DateTime>} Array of Luxon DateTime objects
  */
 export function generateDateRange(startDate, numberOfDays, today, locale) {
+  const normalizedStart = startDate.setLocale(locale).startOf('day');
+
   return Array.from({ length: numberOfDays }, (_, i) =>
-    startDate.plus({ days: i }).setLocale(locale).startOf('day'),
+    normalizedStart.plus({ days: i }),
   ).filter(d => d >= today);
 }
 
@@ -125,9 +126,13 @@ export function generateDateRange(startDate, numberOfDays, today, locale) {
  * @returns {Array<DateTime>} Filtered and sorted array of DateTime objects
  */
 export function prepareDates(dates, today, locale) {
+  if (!Array.isArray(dates)) {
+    return [];
+  }
+
   return dates
-    .map(d => (d.setLocale ? d.setLocale(locale) : d))
-    .filter(d => d && d.isValid)
+    .filter(d => d && d.isValid && d instanceof DateTime)
+    .map(d => d.setLocale(locale).startOf('day'))
     .sort((a, b) => a.toMillis() - b.toMillis())
     .filter(d => d >= today);
 }
@@ -140,7 +145,7 @@ export function prepareDates(dates, today, locale) {
  * @returns {string|undefined} Formatted date string or undefined
  */
 export function extractSelectedValue(selectedDay, dateFormat) {
-  if (selectedDay instanceof DateTime) {
+  if (selectedDay && selectedDay instanceof DateTime && selectedDay.isValid) {
     return selectedDay.toFormat(dateFormat);
   }
   return undefined;
@@ -155,7 +160,11 @@ export function extractSelectedValue(selectedDay, dateFormat) {
  * @returns {DateTime} Parsed date or today
  */
 export function parseStartDate(startDateString, dateFormat, today) {
-  const parsed = DateTime.fromFormat(startDateString || '', dateFormat);
+  if (!startDateString || typeof startDateString !== 'string') {
+    return today;
+  }
+
+  const parsed = DateTime.fromFormat(startDateString, dateFormat);
   if (parsed && parsed.isValid) {
     return parsed;
   }

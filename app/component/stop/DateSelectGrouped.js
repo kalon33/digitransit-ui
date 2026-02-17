@@ -15,8 +15,16 @@ import {
   parseStartDate,
 } from '../../util/dateSelectUtils';
 
-function DateSelectGrouped(props) {
+function DateSelectGrouped({
+  startDate,
+  selectedDay,
+  dateFormat,
+  dates,
+  onDateChange,
+}) {
   const intl = useTranslationsContext();
+  const { locale } = intl;
+  const { formatMessage } = intl;
 
   const GENERATED_DAYS = 60; // Fallback range when no dates provided
 
@@ -32,24 +40,20 @@ function DateSelectGrouped(props) {
 
   // Generate grouped date options from provided dates or fallback range
   const { grouped } = useMemo(() => {
-    const today = DateTime.local().setLocale(intl.locale).startOf('day');
+    const today = DateTime.local().setLocale(locale).startOf('day');
     const tomorrow = today.plus({ days: 1 });
 
     // Determine source dates: use provided dates or generate fallback range
     let sourceDates;
-    if (Array.isArray(props.dates) && props.dates.length > 0) {
-      sourceDates = prepareDates(props.dates, today, intl.locale);
+    if (Array.isArray(dates) && dates.length > 0) {
+      sourceDates = prepareDates(dates, today, locale);
     } else {
-      const startDate = parseStartDate(
-        props.startDate,
-        props.dateFormat,
-        today,
-      );
+      const parsedStartDate = parseStartDate(startDate, dateFormat, today);
       sourceDates = generateDateRange(
-        startDate,
+        parsedStartDate,
         GENERATED_DAYS,
         today,
-        intl.locale,
+        locale,
       );
     }
 
@@ -58,7 +62,7 @@ function DateSelectGrouped(props) {
       sourceDates,
       today,
       tomorrow,
-      props.dateFormat,
+      dateFormat,
       intl,
     );
 
@@ -69,23 +73,20 @@ function DateSelectGrouped(props) {
     );
 
     return { grouped: groupedOptions };
-  }, [props.startDate, props.dateFormat, intl, props.dates]);
+  }, [startDate, dateFormat, dates, intl]);
 
   const selectedOption = useMemo(() => {
     const allOptions = grouped.flatMap(g => g.options);
-    const selectedValue = extractSelectedValue(
-      props.selectedDay,
-      props.dateFormat,
-    );
+    const selectedValue = extractSelectedValue(selectedDay, dateFormat);
     return allOptions.find(o => o.value === selectedValue) || allOptions[0];
-  }, [grouped, props.selectedDay, props.dateFormat]);
+  }, [grouped, selectedDay, dateFormat]);
 
   const handleChange = useCallback(
     option => {
-      props.onDateChange(option.value);
+      onDateChange(option.value);
       onMenuClose();
     },
-    [props.onDateChange, onMenuClose],
+    [onDateChange, onMenuClose],
   );
 
   // Custom Option component with proper label rendering
@@ -139,7 +140,7 @@ function DateSelectGrouped(props) {
   const id = 'route-schedule-datepicker';
   const classNamePrefix = 'route-schedule';
 
-  const selectAriaLabel = intl.formatMessage({
+  const selectAriaLabel = formatMessage({
     id: 'select-date',
     defaultMessage: 'Select date',
   });
@@ -162,7 +163,7 @@ function DateSelectGrouped(props) {
         ariaLiveMessages={{
           guidance: () => '.',
           onChange: ({ label, raw }) => {
-            const msg = intl.formatMessage({ id: 'route-page.pattern-chosen' });
+            const msg = formatMessage({ id: 'route-page.pattern-chosen' });
             const dateLabel = raw?.textLabel || label;
             return `${msg} ${dateLabel}`;
           },
@@ -195,7 +196,7 @@ function DateSelectGrouped(props) {
           <>
             <span className="left-column">
               <span className="combobox-label">
-                {intl.formatMessage({ id: 'day', defaultMessage: 'day' })}
+                {formatMessage({ id: 'day', defaultMessage: 'day' })}
               </span>
               <span className="selected-value">
                 {selectedOption ? selectedOption.textLabel : ''}
