@@ -8,6 +8,7 @@ import FareZoneSelector from './FareZoneSelector';
 import StreetModeSelectorPanel from './StreetModeSelectorPanel';
 import TransportModesSection from './TransportModesSection';
 import WalkingOptionsSection from './WalkingOptionsSection';
+import Personalisation from './Personalisation';
 import MinTransferTimeSection from './MinTransferTimeSection';
 import AccessibilityOptionSection from './AccessibilityOptionSection';
 import TransferOptionsSection from './TransferOptionsSection';
@@ -108,6 +109,9 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
             currentSettings={currentSettings}
             defaultSettings={defaultSettings}
           />
+        </div>
+        <div className="settings-section compact-settings-section">
+          <Personalisation currentSettings={currentSettings} />
         </div>
         <div className="settings-section">
           {showModeSettings(config) && (

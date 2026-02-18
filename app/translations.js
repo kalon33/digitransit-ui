@@ -1463,6 +1463,7 @@ const translations = {
     'payment-info-taxi':
       'Please note that you need to use the app of the operator in question in order to use and pay for the taxis.',
     payment_at_gate: 'Payment at the gate ',
+    personalisation: 'Personalisation',
     'pick-icon': 'Select icon',
     'pick-mode': 'Transport modes',
     'pick-mode-airplane-disabled': 'Flight not selected',
@@ -2793,6 +2794,7 @@ const translations = {
     'payment-info-taxi':
       'Huomaathan, että taksien ja kyytipalveluiden käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
     payment_at_gate: 'Maksu portilla',
+    personalisation: 'Personointi',
     'pick-icon': 'Valitse kuvake',
     'pick-mode': 'Liikennevälineet',
     'pick-mode-airplane-disabled': 'Lentokone ei valittu',
@@ -5748,6 +5750,7 @@ const translations = {
     'payment-info-taxi':
       'Vänligen observera att användning och betalning av taxi görs via operatörernas egna appar.',
     payment_at_gate: 'Betalning vid porten',
+    personalisation: 'Personalisering',
     'pick-icon': 'Välj en ikon',
     'pick-mode': 'Trafikslag',
     'pick-mode-airplane-disabled': 'Flyg inte vald',
@@ -5755,7 +5758,7 @@ const translations = {
     'pick-mode-bus-disabled': 'Buss inte vald',
     'pick-mode-bus-enabled': 'Buss valt',
     'pick-mode-citybike-disabled': 'Stadscykel inte vald',
-    'pick-mode-citybike-enabled': 'Stadscykel valt',
+    'pick-mode-citybike-enabled': 'StadOBscykel valt',
     'pick-mode-ferry-disabled': 'Färja inte vald',
     'pick-mode-ferry-enabled': 'Färja valt',
     'pick-mode-rail-disabled': 'Tåg inte vald',
