@@ -263,13 +263,13 @@ class SearchSettingsDropdown extends React.Component {
                     })}`
                   : currentSelection.title}
             </p>
-            <span className="sr-only">
-              {intl.formatMessage({
+            <span
+              aria-label={intl.formatMessage({
                 id: showDropdown
                   ? 'settings-dropdown-close-label'
                   : 'settings-dropdown-open-label',
               })}
-            </span>
+            />
             <Icon
               className={
                 this.state.showDropdown
