@@ -146,7 +146,7 @@
     .close-offcanvas {
       top: 1.5em;
       left: 0.9375em;
-      border: solid 1px #ddd;
+      border: solid 1px $light-gray;
       height: 40px;
       width: 40px;
       border-radius: 50%;
@@ -189,7 +189,7 @@
 }
 
 .customize-search > .settings-option-container {
-  border-bottom: 1px solid #e3e3e3;
+  border-bottom: 1px solid $light-gray;
 }
 
 .desktop {
@@ -269,7 +269,7 @@
     }
 
     .settings-dropdown-wrapper {
-      border-bottom: 1px solid #e3e3e3;
+      border-bottom: 1px solid $light-gray;
     }
 
     label.toggle-label {
@@ -348,7 +348,7 @@
   }
 
   .settings-option-container:not(:last-child) {
-    border-bottom: 1px solid #e3e3e3;
+    border-bottom: 1px solid $light-gray;
   }
 
   &.compact-settings-section {
@@ -401,7 +401,7 @@
 }
 
 .mode-option-container {
-  border-bottom: 1px solid #e3e3e3;
+  border-bottom: 1px solid $light-gray;
   font-size: $font-size-small;
   flex-wrap: wrap;
 
@@ -579,7 +579,7 @@
 
 .street-modes-container {
   > div {
-    border-bottom: 1px solid #e3e3e3;
+    border-bottom: 1px solid $light-gray;
   }
 
   :last-child {
@@ -597,7 +597,7 @@
 
 .settings-mode-option-container {
   min-height: 51px;
-  border-bottom: 1px solid #e3e3e3;
+  border-bottom: 1px solid $light-gray;
   margin-left: 3.2em;
 
   .settings-mode-option-label {
