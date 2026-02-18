@@ -2,33 +2,36 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
 import connectToStores from 'fluxible-addons-react/connectToStores';
-import { settingsShape, configShape } from '../../util/shapes';
-import Icon from '../Icon';
-import FareZoneSelector from './customizesearch/FareZoneSelector';
-import StreetModeSelectorPanel from './customizesearch/StreetModeSelectorPanel';
-import TransportModesSection from './customizesearch/TransportModesSection';
-import WalkingOptionsSection from './customizesearch/WalkingOptionsSection';
-import MinTransferTimeSection from './customizesearch/MinTransferTimeSection';
-import AccessibilityOptionSection from './customizesearch/AccessibilityOptionSection';
-import TransferOptionsSection from './customizesearch/TransferOptionsSection';
-import RentalNetworkSelector from './customizesearch/RentalNetworkSelector';
-import ScooterNetworkSelector from './customizesearch/ScooterNetworkSelector';
-import TaxiOptionsSection from './customizesearch/TaxiOptionsSection';
-import RestoreDefaultSettingSection from './customizesearch/RestoreDefaultSettingSection';
-import { getReadMessageIds, setReadMessageIds } from '../../store/localStorage';
-import { isKeyboardSelectionEvent } from '../../util/browser';
+import { settingsShape, configShape } from '../../../util/shapes';
+import Icon from '../../Icon';
+import FareZoneSelector from './FareZoneSelector';
+import StreetModeSelectorPanel from './StreetModeSelectorPanel';
+import TransportModesSection from './TransportModesSection';
+import WalkingOptionsSection from './WalkingOptionsSection';
+import MinTransferTimeSection from './MinTransferTimeSection';
+import AccessibilityOptionSection from './AccessibilityOptionSection';
+import TransferOptionsSection from './TransferOptionsSection';
+import RentalNetworkSelector from './RentalNetworkSelector';
+import ScooterNetworkSelector from './ScooterNetworkSelector';
+import TaxiOptionsSection from './TaxiOptionsSection';
+import RestoreDefaultSettingSection from './RestoreDefaultSettingSection';
+import {
+  getReadMessageIds,
+  setReadMessageIds,
+} from '../../../store/localStorage';
+import { isKeyboardSelectionEvent } from '../../../util/browser';
 import {
   showModeSettings,
   useCitybikes,
   useScooters,
-} from '../../util/modeUtils';
-import ScrollableWrapper from '../ScrollableWrapper';
-import { getDefaultSettings } from '../../util/planParamUtil';
+} from '../../../util/modeUtils';
+import ScrollableWrapper from '../../ScrollableWrapper';
+import { getDefaultSettings } from '../../../util/planParamUtil';
 import {
   getCitybikeNetworks,
   getScooterNetworks,
   RentalNetworkType,
-} from '../../util/vehicleRentalUtils';
+} from '../../../util/vehicleRentalUtils';
 
 class CustomizeSearch extends React.Component {
   static contextTypes = {
