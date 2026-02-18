@@ -17,7 +17,7 @@ import TaxiOptionsSection from './TaxiOptionsSection';
 import RestoreDefaultSettingSection from './RestoreDefaultSettingSection';
 import {
   getReadMessageIds,
-  setReadMessageIds,
+  setReadMessageId,
 } from '../../../store/localStorage';
 import { isKeyboardSelectionEvent } from '../../../util/browser';
 import {
@@ -45,9 +45,7 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
   );
 
   const handleEScooterDisclaimerClose = () => {
-    const readMessageIds = getReadMessageIds() || [];
-    readMessageIds.push('e_scooter_settings_disclaimer');
-    setReadMessageIds(readMessageIds);
+    setReadMessageId('e_scooter_settings_disclaimer');
     setShowEScooterDisclaimer(false);
   };
 
