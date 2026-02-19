@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
-import Toggle from '../../Toggle';
+import SettingsToggle from './SettingsToggle';
 import { saveRoutingSettings } from '../../../action/SearchSettingsActions';
 import Icon from '../../Icon';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
@@ -25,27 +24,13 @@ export default function Personalisation(
   };
 
   return (
-    <fieldset>
-      <legend className="settings-header">
-        <FormattedMessage id="personalisation" />
-      </legend>
-      <div className="mode-option-container toggle-container">
-        <label
-          htmlFor="settings-toggle-personalisation"
-          className="toggle-label"
-        >
-          <Icon img="icon_star-with-circle" height={2} width={2} />
-          <span className="personalisation-label">
-            <FormattedMessage id="personalisation" />
-          </span>
-          <Toggle
-            id="settings-toggle-personalisation"
-            toggled={!!currentSettings.personalisation}
-            onToggle={() => onToggle()}
-          />
-        </label>
-      </div>
-    </fieldset>
+    <SettingsToggle
+      labelId="personalisation"
+      id="settings-toggle-personalisation"
+      icon={<Icon img="icon_star-with-circle" height={2} width={2} />}
+      toggled={!!currentSettings.personalisation}
+      onToggle={onToggle}
+    />
   );
 }
 
