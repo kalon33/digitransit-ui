@@ -14,7 +14,7 @@ const MinTransferTimeSection = (
     option => option.value === currentSettings.minTransferTime,
   ),
 ) => (
-  <div className="walk-options-container">
+  <div className="settings-option-container">
     <SearchSettingsDropdown
       currentSelection={currentSelection}
       defaultValue={defaultSettings.minTransferTime}

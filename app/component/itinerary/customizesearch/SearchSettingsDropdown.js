@@ -241,10 +241,7 @@ class SearchSettingsDropdown extends React.Component {
       : options;
 
     return (
-      <div
-        className="settings-dropdown-wrapper walk-option-inner"
-        ref={this.labelRef}
-      >
+      <div className="settings-dropdown-wrapper" ref={this.labelRef}>
         <button
           type="button"
           className="settings-dropdown-label"

@@ -10,7 +10,7 @@ import TransportModesSection from './TransportModesSection';
 import WalkingOptionsSection from './WalkingOptionsSection';
 import Personalisation from './Personalisation';
 import MinTransferTimeSection from './MinTransferTimeSection';
-import AccessibilityOptionSection from './AccessibilityOptionSection';
+import AccessibilityOptions from './AccessibilityOptions';
 import TransferOptionsSection from './TransferOptionsSection';
 import RentalNetworkSelector from './RentalNetworkSelector';
 import ScooterNetworkSelector from './ScooterNetworkSelector';
@@ -28,11 +28,7 @@ import {
 } from '../../../util/modeUtils';
 import ScrollableWrapper from '../../ScrollableWrapper';
 import { getDefaultSettings } from '../../../util/planParamUtil';
-import {
-  getCitybikeNetworks,
-  getScooterNetworks,
-  RentalNetworkType,
-} from '../../../util/vehicleRentalUtils';
+import { getScooterNetworks } from '../../../util/vehicleRentalUtils';
 import { useTranslationsContext } from '../../../util/useTranslationsContext';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 
@@ -102,15 +98,13 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
         </h2>
       </div>
       <ScrollableWrapper>
-        <div className="settings-section compact-settings-section">
+        <div className="settings-section">
           <WalkingOptionsSection
-            walkSpeedOptions={config.defaultOptions.walkSpeed}
-            walkReluctanceOptions={config.defaultOptions.walkReluctance}
             currentSettings={currentSettings}
             defaultSettings={defaultSettings}
           />
         </div>
-        <div className="settings-section compact-settings-section">
+        <div className="settings-section">
           <Personalisation currentSettings={currentSettings} />
         </div>
         <div className="settings-section">
@@ -130,31 +124,12 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
             <TransferOptionsSection
               defaultSettings={defaultSettings}
               currentSettings={currentSettings}
-              transferPenaltyHigh={config.transferPenaltyHigh}
             />
           </div>
         </div>
         {useCitybikes(config.vehicleRental?.networks, config) && (
           <div className="settings-section">
-            <div className="settings-option-container">
-              <fieldset>
-                <legend className="settings-header transport-mode-subheader">
-                  <FormattedMessage
-                    id="citybike-network-headers"
-                    defaultMessage={intl.formatMessage({
-                      id: 'citybike-network-headers',
-                      defaultMessage: 'Citybikes and scooters',
-                    })}
-                  />
-                </legend>
-                <div className="transport-modes-container">
-                  <RentalNetworkSelector
-                    currentOptions={getCitybikeNetworks(config) || []}
-                    type={RentalNetworkType.CityBike}
-                  />
-                </div>
-              </fieldset>
-            </div>
+            <RentalNetworkSelector />
           </div>
         )}
         <div className="settings-section">
@@ -166,9 +141,7 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
           </div>
         </div>
         <div className="settings-section">
-          <div className="settings-option-container">
-            <AccessibilityOptionSection currentSettings={currentSettings} />
-          </div>
+          <AccessibilityOptions currentSettings={currentSettings} />
         </div>
         {config.showTicketSelector && (
           <div className="settings-section">
@@ -248,7 +221,6 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
                   )}
                   <ScooterNetworkSelector
                     currentOptions={getScooterNetworks(config) || []}
-                    type={RentalNetworkType.Scooter}
                   />
                 </div>
               </fieldset>

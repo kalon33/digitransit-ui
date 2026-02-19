@@ -11,7 +11,7 @@ export default function SettingsToggle({
   icon,
 }) {
   return (
-    <div className="toggle-container">
+    <div className="toggle-container settings-option-container">
       <label htmlFor={id} className="settings-header">
         {icon}
         <FormattedMessage id={labelId} />

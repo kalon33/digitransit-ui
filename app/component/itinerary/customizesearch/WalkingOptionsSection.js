@@ -5,7 +5,7 @@ import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import SearchSettingsDropdown, {
   getFiveStepOptions,
 } from './SearchSettingsDropdown';
-import Toggle from '../../Toggle';
+import SettingsToggle from './SettingsToggle';
 import { findNearestOption } from '../../../util/planParamUtil';
 import { settingsShape } from '../../../util/shapes';
 import { useTranslationsContext } from '../../../util/useTranslationsContext';
@@ -17,7 +17,7 @@ export default function WalkingOptionsSection(
 ) {
   const intl = useTranslationsContext();
   const { defaultOptions } = useConfigContext();
-  const walkReluctanceOptions = defaultOptions.walkReluctance;
+  const reluctanceOptions = defaultOptions.walkReluctance;
   const options = getFiveStepOptions(defaultOptions.walkSpeed);
   const currentWalkSelection =
     options.find(option => option.value === currentSettings.walkSpeed) ||
@@ -26,6 +26,20 @@ export default function WalkingOptionsSection(
         option.value ===
         findNearestOption(currentSettings.walkSpeed, defaultOptions.walkSpeed),
     );
+  const onToggle = () => {
+    const avoid = currentSettings.walkReluctance !== reluctanceOptions.least;
+    executeAction(saveRoutingSettings, {
+      walkReluctance: avoid
+        ? reluctanceOptions.least
+        : defaultSettings.walkReluctance,
+    });
+    addAnalyticsEvent({
+      category: 'ItinerarySettings',
+      action: 'ChangeAmountOfWalking',
+      name: avoid ? 'avoid' : 'default',
+    });
+  };
+
   return (
     <>
       <div className="settings-option-container">
@@ -49,39 +63,14 @@ export default function WalkingOptionsSection(
           name="walkspeed"
         />
       </div>
+      <div className="separator" />
       <div className="settings-option-container">
-        <div className="toggle-container">
-          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-          <label
-            htmlFor="settings-toggle-avoid-walking"
-            className="settings-header toggle-label"
-          >
-            <div className="toggle-label-text">
-              {intl.formatMessage({ id: 'avoid-walking' })}
-            </div>
-            <Toggle
-              id="settings-toggle-avoid-walking"
-              toggled={
-                currentSettings.walkReluctance === walkReluctanceOptions.least
-              }
-              onToggle={() => {
-                const avoid =
-                  currentSettings.walkReluctance !==
-                  walkReluctanceOptions.least;
-                executeAction(saveRoutingSettings, {
-                  walkReluctance: avoid
-                    ? walkReluctanceOptions.least
-                    : defaultSettings.walkReluctance,
-                });
-                addAnalyticsEvent({
-                  category: 'ItinerarySettings',
-                  action: 'ChangeAmountOfWalking',
-                  name: avoid ? 'avoid' : 'default',
-                });
-              }}
-            />
-          </label>
-        </div>
+        <SettingsToggle
+          id="settings-toggle-avoid-walking"
+          labelId="avoid-walking"
+          toggled={currentSettings.walkReluctance === reluctanceOptions.least}
+          onToggle={onToggle}
+        />
       </div>
     </>
   );

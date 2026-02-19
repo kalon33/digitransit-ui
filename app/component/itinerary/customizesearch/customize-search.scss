@@ -101,42 +101,8 @@
   background: $background-color-lighter;
 
   .settings-option-container {
-    padding: 8px 16px 0 16px;
-
     h2 {
       text-align: center;
-      padding: 24px 12px 24px 12px;
-      font-size: $font-size-large;
-    }
-
-    .mode-option-container {
-      .mode-icon {
-        margin-left: 0;
-      }
-    }
-
-    .settings-dropdown-wrapper {
-      .settings-dropdown-label {
-        padding: 0;
-      }
-    }
-
-    .settings-header {
-      padding-left: 0;
-    }
-
-    .avoid-transfers-container {
-      padding: 0;
-      height: 3.5em;
-    }
-
-    .accessibility-container {
-      padding: 0;
-      height: 3.5em;
-    }
-
-    .settings-mode-option-label {
-      padding: 0;
     }
   }
 
@@ -159,17 +125,7 @@
       }
     }
 
-    .toggle-container {
-      .settings-header {
-        padding-top: 0.5em;
-      }
-
-      span {
-        padding-top: 0.5em;
-      }
-    }
-
-    .restore-settings-section {
+    .restore-settings {
       width: calc(100% - 32px);
       left: 16px;
     }
@@ -186,10 +142,6 @@
   .fake-select-arrow {
     height: 0.5em;
   }
-}
-
-.customize-search > .settings-option-container {
-  border-bottom: 1px solid $light-gray;
 }
 
 .desktop {
@@ -215,10 +167,8 @@
   flex-direction: column;
   background: #fff;
   color: $black;
-  line-height: 35px;
   position: relative;
   box-shadow: inset 5px 0 5px 0 $background-color-lighter;
-  margin: unset;
 
   fieldset {
     border: unset;
@@ -239,19 +189,11 @@
     padding: 0;
   }
 
-  .react-autosuggest__suggestions-container--open {
-    position: absolute;
-    width: 100%;
-    top: 4rem;
-    z-index: index($zindex, autosuggest-suggestion-container);
-  }
-
   .toggle-container {
     .settings-header {
       display: flex;
       width: 100%;
       justify-content: space-between;
-      padding-top: 0.5em;
     }
 
     .icon-container {
@@ -260,29 +202,7 @@
     }
   }
 
-  .walk-options-container {
-    font-weight: $font-weight-medium;
-
-    .walk-option-inner {
-      min-height: 51px;
-      padding: 0 16px 0 16px;
-    }
-
-    .settings-dropdown-wrapper {
-      border-bottom: 1px solid $light-gray;
-    }
-
-    label.toggle-label {
-      display: flex;
-      justify-content: space-between;
-
-      .toggle-label-text {
-        padding-top: 5px;
-      }
-    }
-  }
-
-  .restore-settings-section {
+  .restore-settings {
     display: flex;
     padding: var(--fixed-space-s, 16px) 0 var(--fixed-space-s, 16px)
       var(--fixed-space-m, 24px);
@@ -336,8 +256,8 @@
 
 .settings-section {
   border-bottom: 10px solid $background-color-lighter;
-  background: #fff;
-  padding-bottom: 0.5em;
+  padding: 0 16px 10px 16px;
+  background: white;
 
   .settings-option-container:last-child {
     border-bottom: 0;
@@ -347,21 +267,19 @@
     }
   }
 
-  .settings-option-container:not(:last-child) {
+  .separator {
+    width: auto;
+    margin-left: 16px;
+    margin-right: 16px;
     border-bottom: 1px solid $light-gray;
-  }
-
-  &.compact-settings-section {
-    padding-bottom: 0;
-  }
-
-  &.background {
-    background: $background-color-lighter;
   }
 }
 
 .settings-option-container {
-  padding: 8px 16px 0 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 6px 0 6px 0;
   font-weight: $font-weight-medium;
 
   h2 {
@@ -372,10 +290,6 @@
     font-family: $heading-font-family;
     padding: 36px 12px 12px 12px;
     margin: 0;
-  }
-
-  .option-checkbox-container > span {
-    margin-top: -0.4em;
   }
 
   .mode-option-container:last-child {
@@ -397,7 +311,6 @@
   font-size: $font-size-normal;
   color: $gray;
   font-weight: normal;
-  padding: 0 0 0 1em;
 }
 
 .mode-option-container {
@@ -518,34 +431,6 @@
       &:hover {
         border: solid 1px #007ac9;
       }
-    }
-  }
-}
-
-.avoid-transfers-container {
-  padding: 0 0 0 1em;
-  height: 3.5em;
-  display: flex;
-  justify-content: space-between;
-
-  .settings-header {
-    padding-left: 0;
-    line-height: inherit;
-  }
-}
-
-.accessibility-container {
-  padding: 0 0 0 1em;
-  height: 3.5em;
-
-  label.toggle-label {
-    display: flex;
-    justify-content: space-between;
-    line-height: 35px;
-    color: #333;
-
-    .accessibility-label {
-      flex-grow: 1;
     }
   }
 }

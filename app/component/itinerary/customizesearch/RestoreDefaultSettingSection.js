@@ -144,7 +144,7 @@ const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
       </div>
       {userHasCustomizedSettings || slideOutRestoreSettingsButton ? (
         <div
-          className={cx('restore-settings-section', {
+          className={cx('restore-settings', {
             hide:
               userHasCustomizedSettings === false &&
               !slideOutRestoreSettingsButton,
