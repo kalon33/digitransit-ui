@@ -19,8 +19,10 @@ export default function RentalNetworkSelector({}, { executeAction }) {
   const config = useConfigContext();
   const currentOptions = getCitybikeNetworks(config);
   return (
-    <div className="settings-option-container">
-      <FormattedMessage id="citybike-network-headers" />
+    <>
+      <div className="section-header">
+        <FormattedMessage id="citybike-network-headers" />
+      </div>
       {mapDefaultNetworkProperties(config)
         .filter(
           network => network.type === TransportMode.Citybike.toLowerCase(),
@@ -33,12 +35,12 @@ export default function RentalNetworkSelector({}, { executeAction }) {
             )}
             key={`settings-toggle-bike-${network.networkName}`}
             id={`settings-toggle-bike-${network.networkName}`}
-            icon={
+            leftElement={
               <Icon
                 className={`${network.icon}-icon`}
                 img={`icon_${network.icon}`}
-                height={1}
-                width={1}
+                height={2}
+                width={2}
               />
             }
             toggled={
@@ -61,7 +63,7 @@ export default function RentalNetworkSelector({}, { executeAction }) {
             }}
           />
         ))}
-    </div>
+    </>
   );
 }
 
