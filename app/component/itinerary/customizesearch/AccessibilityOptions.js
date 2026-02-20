@@ -22,9 +22,9 @@ const AccessibilityOptions = ({ currentSettings }, { executeAction }) => {
 
   return (
     <SettingsToggle
-      labelId="accessibility"
       id="settings-toggle-accessibility"
-      icon={<Icon img="icon_wheelchair" height={2} width={2} />}
+      labelId="accessibility"
+      leftElement={<Icon img="icon_wheelchair" height={2} width={2} />}
       toggled={!!currentSettings.accessibilityOption}
       onToggle={onToggle}
     />
