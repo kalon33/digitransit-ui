@@ -6,7 +6,7 @@ import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { settingsShape } from '../../../util/shapes';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 
-export default function TransferOptionsSection(
+export default function TransferOptions(
   { defaultSettings, currentSettings },
   { executeAction },
 ) {
@@ -29,19 +29,19 @@ export default function TransferOptionsSection(
 
   return (
     <SettingsToggle
-      labelId="avoid-transfers"
       id="settings-toggle-transfers"
+      labelId="avoid-transfers"
       toggled={avoidTransfers}
       onToggle={onToggle}
     />
   );
 }
 
-TransferOptionsSection.propTypes = {
+TransferOptions.propTypes = {
   defaultSettings: settingsShape.isRequired,
   currentSettings: settingsShape.isRequired,
 };
 
-TransferOptionsSection.contextTypes = {
+TransferOptions.contextTypes = {
   executeAction: PropTypes.func.isRequired,
 };
