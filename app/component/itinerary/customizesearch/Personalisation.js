@@ -25,9 +25,9 @@ export default function Personalisation(
 
   return (
     <SettingsToggle
-      labelId="personalisation"
       id="settings-toggle-personalisation"
-      icon={<Icon img="icon_star-with-circle" height={2} width={2} />}
+      labelId="personalisation"
+      leftElement={<Icon img="icon_star-with-circle" height={2} width={2} />}
       toggled={!!currentSettings.personalisation}
       onToggle={onToggle}
     />
