@@ -170,16 +170,6 @@
   position: relative;
   box-shadow: inset 5px 0 5px 0 $background-color-lighter;
 
-  fieldset {
-    border: unset;
-    padding: unset;
-    margin: unset;
-
-    legend {
-      margin: unset;
-    }
-  }
-
   .close-offcanvas {
     position: absolute;
     background-color: transparent;
@@ -189,16 +179,28 @@
     padding: 0;
   }
 
-  .toggle-container {
-    .settings-header {
-      display: flex;
-      width: 100%;
-      justify-content: space-between;
-    }
+  .mode-label {
+    font-size: $font-size-normal;
+    font-weight: $font-weight-medium;
+    color: $black;
+  }
 
-    .icon-container {
-      width: auto;
-      margin: 0 1em 0 0;
+  .toggle-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    min-height: 3.2em;
+    justify-content: space-between;
+
+    .toggle-left {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .icon-container {
+        width: 4em;
+      }
     }
   }
 
@@ -258,6 +260,9 @@
   border-bottom: 10px solid $background-color-lighter;
   padding: 0 16px 10px 16px;
   background: white;
+  font-size: $font-size-normal;
+  font-weight: normal;
+  color: $gray;
 
   .settings-option-container:last-child {
     border-bottom: 0;
@@ -305,12 +310,6 @@
     font-weight: $font-weight-medium;
     font-family: $heading-font-family;
   }
-}
-
-.settings-header {
-  font-size: $font-size-normal;
-  color: $gray;
-  font-weight: normal;
 }
 
 .mode-option-container {

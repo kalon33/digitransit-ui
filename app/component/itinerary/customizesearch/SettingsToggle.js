@@ -5,28 +5,40 @@ import Toggle from '../../Toggle';
 
 export default function SettingsToggle({
   id,
+  label,
   labelId,
+  labelStyle,
   toggled,
   onToggle,
-  icon,
+  leftElement, // e.g. icon
 }) {
   return (
-    <div className="toggle-container settings-option-container">
-      <label htmlFor={id} className="settings-header">
-        {icon}
-        <FormattedMessage id={labelId} />
-        <Toggle id={id} toggled={toggled} onToggle={onToggle} />
-      </label>
+    <div className="toggle-container">
+      <div className="toggle-left">
+        {leftElement}
+        <span className={labelStyle}>
+          {labelId && <FormattedMessage id={labelId} />}
+          {label}
+        </span>
+      </div>
+      <Toggle id={id} toggled={toggled} onToggle={onToggle} />
     </div>
   );
 }
 
 SettingsToggle.propTypes = {
   id: PropTypes.string.isRequired,
-  labelId: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  labelId: PropTypes.string,
+  labelStyle: PropTypes.string,
   toggled: PropTypes.bool.isRequired,
   onToggle: PropTypes.func.isRequired,
-  icon: PropTypes.node,
+  leftElement: PropTypes.node,
 };
 
-SettingsToggle.defaultProps = { icon: undefined };
+SettingsToggle.defaultProps = {
+  leftElement: undefined,
+  label: '',
+  labelId: undefined,
+  labelStyle: '',
+};
