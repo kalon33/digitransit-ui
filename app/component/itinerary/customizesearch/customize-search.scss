@@ -100,28 +100,29 @@
   height: 100%;
   background: $background-color-lighter;
 
-  .settings-option-container {
-    h2 {
-      text-align: center;
-    }
-  }
-
   .customize-search {
     box-shadow: none;
 
-    .close-offcanvas {
-      top: 1.5em;
-      left: 0.9375em;
-      border: solid 1px $light-gray;
-      height: 40px;
-      width: 40px;
-      border-radius: 50%;
-      padding-top: 4px;
-      padding-right: 2px;
+    .settings-header {
+      height: 60px;
 
-      .close-icon {
-        width: 1.3em;
-        height: 1.3em;
+      h1 {
+        text-align: center;
+      }
+
+      .close-offcanvas {
+        left: 16px;
+        border: solid 1px $light-gray;
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        padding-top: 4px;
+        padding-right: 2px;
+
+        .close-icon {
+          width: 1.3em;
+          height: 1.3em;
+        }
       }
     }
 
@@ -258,11 +259,15 @@
 
 .settings-section {
   border-bottom: 10px solid $background-color-lighter;
-  padding: 0 16px 10px 16px;
+  padding: 0 16px 0 16px;
   background: white;
   font-size: $font-size-normal;
   font-weight: normal;
   color: $gray;
+
+  .section-header {
+    padding-top: 8px;
+  }
 
   .settings-option-container:last-child {
     border-bottom: 0;

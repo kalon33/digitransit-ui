@@ -7,11 +7,11 @@ import Icon from '../../Icon';
 import FareZoneSelector from './FareZoneSelector';
 import StreetModeSelectorPanel from './StreetModeSelectorPanel';
 import TransportModesSection from './TransportModesSection';
-import WalkingOptionsSection from './WalkingOptionsSection';
+import WalkingOptions from './WalkingOptions';
 import Personalisation from './Personalisation';
 import MinTransferTimeSection from './MinTransferTimeSection';
 import AccessibilityOptions from './AccessibilityOptions';
-import TransferOptionsSection from './TransferOptionsSection';
+import TransferOptions from './TransferOptions';
 import RentalNetworkSelector from './RentalNetworkSelector';
 import ScooterNetworkSelector from './ScooterNetworkSelector';
 import TaxiOptionsSection from './TaxiOptionsSection';
@@ -67,39 +67,40 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
     <Icon className="close-icon" img="icon_close" />
   );
   return (
-    <form className="customize-search">
-      <button
-        aria-label={intl.formatMessage({
-          id: 'close-settings',
-        })}
-        type="button"
-        className="close-offcanvas"
-        onClick={() => {
-          // Move focus back to the button that opened settings window
-          const openSettingsButton = document.querySelector(
-            '.open-advanced-settings-window-button',
-          );
-          if (openSettingsButton) {
-            openSettingsButton.focus();
-          }
-          onToggleClick();
-        }}
-        // eslint-disable-next-line jsx-a11y/no-autofocus
-        autoFocus
-      >
-        {backIcon}
-      </button>
-      <div className="settings-option-container">
-        <h2>
-          {intl.formatMessage({
-            id: 'settings',
-            defaultMessage: 'Settings',
-          })}
-        </h2>
+    <div className="customize-search">
+      <div className="settings-section">
+        <div className="settings-header">
+          <button
+            aria-label={intl.formatMessage({
+              id: 'close-settings',
+            })}
+            type="button"
+            className="close-offcanvas"
+            onClick={() => {
+              // Move focus back to the button that opened settings window
+              const openSettingsButton = document.querySelector(
+                '.open-advanced-settings-window-button',
+              );
+              if (openSettingsButton) {
+                openSettingsButton.focus();
+              }
+              onToggleClick();
+            }}
+            // eslint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus
+          >
+            {backIcon}
+          </button>
+          <h1>{intl.formatMessage({ id: 'settings' })}</h1>
+        </div>
+        <div
+          className="separator"
+          style={{ 'margin-left': '-16px', width: 'calc(100% + 32px' }}
+        />
       </div>
       <ScrollableWrapper>
         <div className="settings-section">
-          <WalkingOptionsSection
+          <WalkingOptions
             currentSettings={currentSettings}
             defaultSettings={defaultSettings}
           />
@@ -109,9 +110,7 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
         </div>
         <div className="settings-section">
           {showModeSettings(config) && (
-            <div className="settings-option-container">
-              <TransportModesSection config={config} />
-            </div>
+            <TransportModesSection config={config} />
           )}
           {config.minTransferTimeSelection && (
             <MinTransferTimeSection
@@ -120,12 +119,10 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
               defaultSettings={defaultSettings}
             />
           )}
-          <div className="settings-option-container">
-            <TransferOptionsSection
-              defaultSettings={defaultSettings}
-              currentSettings={currentSettings}
-            />
-          </div>
+          <TransferOptions
+            defaultSettings={defaultSettings}
+            currentSettings={currentSettings}
+          />
         </div>
         {useCitybikes(config.vehicleRental?.networks, config) && (
           <div className="settings-section">
@@ -133,12 +130,10 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
           </div>
         )}
         <div className="settings-section">
-          <div className="settings-option-container">
-            <StreetModeSelectorPanel
-              currentSettings={currentSettings}
-              defaultSettings={defaultSettings}
-            />
-          </div>
+          <StreetModeSelectorPanel
+            currentSettings={currentSettings}
+            defaultSettings={defaultSettings}
+          />
         </div>
         <div className="settings-section">
           <AccessibilityOptions currentSettings={currentSettings} />
@@ -230,21 +225,19 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
         {config.experimental?.allowFlexJourneys &&
           config.transportModes.taxi.availableForSelection && (
             <div className="settings-section">
-              <div className="settings-option-container">
-                <TaxiOptionsSection
-                  defaultSettings={defaultSettings}
-                  currentSettings={currentSettings}
-                />
-              </div>
+              <TaxiOptionsSection
+                defaultSettings={defaultSettings}
+                currentSettings={currentSettings}
+              />
             </div>
           )}
         <div className="settings-section background">
-          <div className="settings-option-container restore-settings-container">
+          <div className="restore-settings-container">
             <RestoreDefaultSettingSection config={config} />
           </div>
         </div>
       </ScrollableWrapper>
-    </form>
+    </div>
   );
 }
 
