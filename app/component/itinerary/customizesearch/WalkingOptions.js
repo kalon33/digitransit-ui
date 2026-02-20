@@ -11,7 +11,7 @@ import { settingsShape } from '../../../util/shapes';
 import { useTranslationsContext } from '../../../util/useTranslationsContext';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 
-export default function WalkingOptionsSection(
+export default function WalkingOptions(
   { currentSettings, defaultSettings },
   { executeAction },
 ) {
@@ -42,45 +42,41 @@ export default function WalkingOptionsSection(
 
   return (
     <>
-      <div className="settings-option-container">
-        <SearchSettingsDropdown
-          currentSelection={currentWalkSelection}
-          defaultValue={defaultSettings.walkSpeed}
-          onOptionSelected={value => {
-            executeAction(saveRoutingSettings, {
-              walkSpeed: value,
-            });
-            addAnalyticsEvent({
-              category: 'ItinerarySettings',
-              action: 'ChangeWalkingSpeed',
-              name: value,
-            });
-          }}
-          options={options}
-          labelText={intl.formatMessage({ id: 'walking-speed' })}
-          highlightDefaulValue
-          formatOptions
-          name="walkspeed"
-        />
-      </div>
+      <SearchSettingsDropdown
+        currentSelection={currentWalkSelection}
+        defaultValue={defaultSettings.walkSpeed}
+        onOptionSelected={value => {
+          executeAction(saveRoutingSettings, {
+            walkSpeed: value,
+          });
+          addAnalyticsEvent({
+            category: 'ItinerarySettings',
+            action: 'ChangeWalkingSpeed',
+            name: value,
+          });
+        }}
+        options={options}
+        labelText={intl.formatMessage({ id: 'walking-speed' })}
+        highlightDefaulValue
+        formatOptions
+        name="walkspeed"
+      />
       <div className="separator" />
-      <div className="settings-option-container">
-        <SettingsToggle
-          id="settings-toggle-avoid-walking"
-          labelId="avoid-walking"
-          toggled={currentSettings.walkReluctance === reluctanceOptions.least}
-          onToggle={onToggle}
-        />
-      </div>
+      <SettingsToggle
+        id="settings-toggle-avoid-walking"
+        labelId="avoid-walking"
+        toggled={currentSettings.walkReluctance === reluctanceOptions.least}
+        onToggle={onToggle}
+      />
     </>
   );
 }
 
-WalkingOptionsSection.propTypes = {
+WalkingOptions.propTypes = {
   defaultSettings: settingsShape.isRequired,
   currentSettings: settingsShape.isRequired,
 };
 
-WalkingOptionsSection.contextTypes = {
+WalkingOptions.contextTypes = {
   executeAction: PropTypes.func.isRequired,
 };
