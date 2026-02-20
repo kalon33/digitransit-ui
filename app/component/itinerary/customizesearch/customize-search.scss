@@ -273,42 +273,8 @@
   }
 
   .separator {
-    width: auto;
-    margin-left: 16px;
-    margin-right: 16px;
+    width: 100%;
     border-bottom: 1px solid $light-gray;
-  }
-}
-
-.settings-option-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 6px 0 6px 0;
-  font-weight: $font-weight-medium;
-
-  h2 {
-    text-transform: none;
-    font-size: $font-size-xlarge;
-    letter-spacing: -0.6pt;
-    font-weight: $font-weight-medium;
-    font-family: $heading-font-family;
-    padding: 36px 12px 12px 12px;
-    margin: 0;
-  }
-
-  .mode-option-container:last-child {
-    border: none;
-  }
-}
-
-.transport-mode-header {
-  h1 {
-    text-transform: uppercase;
-    letter-spacing: -0.6pt;
-    font-size: $font-size-normal;
-    font-weight: $font-weight-medium;
-    font-family: $heading-font-family;
   }
 }
 

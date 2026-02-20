@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events, no-sequences */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import PropTypes from 'prop-types';
-import React from 'react';
-import { intlShape } from 'react-intl';
+import React, { useEffect, useState, useRef } from 'react';
 import Icon from '../../Icon';
+import { useTranslationsContext } from '../../../util/useTranslationsContext';
 
 const roundToOneDecimal = number => {
   const rounded = Math.round(number * 10) / 10;
@@ -66,74 +66,49 @@ export const valueShape = PropTypes.oneOfType([
   PropTypes.object,
 ]);
 
-class SearchSettingsDropdown extends React.Component {
-  static propTypes = {
-    labelText: PropTypes.string.isRequired,
-    options: PropTypes.arrayOf(valueShape).isRequired,
-    displayValueFormatter: PropTypes.func,
-    currentSelection: PropTypes.shape({
-      title: PropTypes.string,
-      value: valueShape,
-    }).isRequired,
-    highlightDefaultValue: PropTypes.bool,
-    defaultValue: valueShape,
-    displayPattern: PropTypes.string,
-    onOptionSelected: PropTypes.func.isRequired,
-    formatOptions: PropTypes.bool,
-    name: PropTypes.string.isRequired,
-    translateLabels: PropTypes.bool,
-    // eslint-disable-next-line
-    overrideStyle: PropTypes.object,
-  };
+function SearchSettingsDropdown(props) {
+  const {
+    labelText,
+    currentSelection,
+    options,
+    displayValueFormatter,
+    highlightDefaultValue,
+    defaultValue,
+    formatOptions,
+    translateLabels,
+    overrideStyle,
+  } = props;
 
-  static defaultProps = {
-    displayValueFormatter: undefined,
-    highlightDefaultValue: false,
-    displayPattern: undefined,
-    defaultValue: undefined,
-    formatOptions: false,
-    translateLabels: true,
-    overrideStyle: {},
-  };
+  const intl = useTranslationsContext();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const labelRef = useRef(null);
 
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = { showDropdown: false };
-    this.labelRef = React.createRef();
-  }
-
-  componentDidUpdate() {
-    if (this.state.showDropdown) {
-      this.labelRef.current.scrollIntoView({ block: 'nearest' });
+  useEffect(() => {
+    if (showDropdown && labelRef.current) {
+      labelRef.current.scrollIntoView({ block: 'nearest' });
     }
-  }
+  }, [showDropdown]);
 
-  toggleDropdown = prevState => {
-    this.setState({
-      showDropdown: !prevState,
-    });
+  const toggleDropdown = prevState => {
+    setShowDropdown(!prevState);
   };
 
-  handleDropdownClick = prevState => {
-    this.toggleDropdown(prevState);
+  const handleDropdownClick = prevState => {
+    toggleDropdown(prevState);
   };
 
-  handleChangeOnly = value => {
-    this.props.onOptionSelected(value);
+  const handleChangeOnly = value => {
+    props.onOptionSelected(value);
   };
 
-  getOptionTags = (dropdownOptions, prevState) => {
+  const getOptionTags = (dropdownOptions, prevState) => {
     return dropdownOptions.map(option => (
       <li key={option.displayName + option.value}>
         <label
           className={`settings-dropdown-choice ${
-            option.value === this.props.currentSelection.value ? 'selected' : ''
+            option.value === currentSelection.value ? 'selected' : ''
           }`}
-          htmlFor={`dropdown-${this.props.name}-${option.value}`}
+          htmlFor={`dropdown-${props.name}-${option.value}`}
         >
           <span>
             {option.displayNameObject
@@ -144,7 +119,7 @@ class SearchSettingsDropdown extends React.Component {
             <span className="kmh-value">{option.kmhValue}</span>
             <span className="checkmark">
               &nbsp;
-              {option.value === this.props.currentSelection.value && (
+              {option.value === currentSelection.value && (
                 <Icon
                   className="selected-checkmark"
                   img="icon_check"
@@ -153,16 +128,16 @@ class SearchSettingsDropdown extends React.Component {
               )}
             </span>
             <input
-              id={`dropdown-${this.props.name}-${option.value}`}
+              id={`dropdown-${props.name}-${option.value}`}
               type="radio"
-              name={this.props.name}
-              checked={option.value === this.props.currentSelection.value}
+              name={props.name}
+              checked={option.value === currentSelection.value}
               value={option.value}
               onChange={e => {
-                this.handleChangeOnly(option.value);
+                handleChangeOnly(option.value);
                 // try to detect if event is from an actual click or keyboard navigation
                 if (e.nativeEvent.clientX || e.nativeEvent.clientY) {
-                  this.handleDropdownClick(prevState);
+                  handleDropdownClick(prevState);
                 }
               }}
             />
@@ -172,119 +147,129 @@ class SearchSettingsDropdown extends React.Component {
     ));
   };
 
-  render() {
-    const {
-      labelText,
-      currentSelection,
-      options,
-      displayValueFormatter,
-      highlightDefaultValue,
-      defaultValue,
-      formatOptions,
-      translateLabels,
-      overrideStyle,
-    } = this.props;
-    const { intl } = this.context;
-    const { showDropdown } = this.state || {};
+  const applyDefaultValueIdentifier = (value, str) =>
+    highlightDefaultValue && value === defaultValue
+      ? `${intl.formatMessage({
+          id: 'option-default',
+        })} (${str})`
+      : str;
 
-    function applyDefaultValueIdentifier(value, str) {
-      return highlightDefaultValue && value === defaultValue
-        ? `${intl.formatMessage({
-            id: 'option-default',
-          })} (${str})`
-        : str;
-    }
+  const getFormattedValue = value =>
+    displayValueFormatter ? displayValueFormatter(value) : value;
 
-    function getFormattedValue(value) {
-      return displayValueFormatter ? displayValueFormatter(value) : value;
-    }
-    const selectOptions = formatOptions
-      ? options.map(o =>
-          o.title && o.value
-            ? {
-                displayName: `${o.title}_${o.value}`,
-                displayNameObject: applyDefaultValueIdentifier(
-                  o.value,
-                  translateLabels
-                    ? this.context.intl.formatMessage(
-                        { id: o.title },
+  const selectOptions = formatOptions
+    ? options.map(o =>
+        o.title && o.value
+          ? {
+              displayName: `${o.title}_${o.value}`,
+              displayNameObject: applyDefaultValueIdentifier(
+                o.value,
+                translateLabels
+                  ? intl.formatMessage(
+                      { id: o.title },
+                      {
+                        title: o.title,
+                      },
+                    )
+                  : o.title,
+              ),
+              value: o.value,
+              kmhValue: o.kmhValue || undefined,
+            }
+          : {
+              displayName: `${props.displayPattern}_${o}`,
+              displayNameObject: applyDefaultValueIdentifier(
+                o,
+                // eslint-disable-next-line no-nested-ternary
+                props.displayPattern
+                  ? translateLabels
+                    ? intl.formatMessage(
+                        { id: props.displayPattern },
                         {
-                          title: o.title,
+                          number: getFormattedValue(o),
                         },
                       )
-                    : o.title,
-                ),
-                value: o.value,
-                kmhValue: o.kmhValue || undefined,
-              }
-            : {
-                displayName: `${this.props.displayPattern}_${o}`,
-                displayNameObject: applyDefaultValueIdentifier(
-                  o,
-                  // eslint-disable-next-line no-nested-ternary
-                  this.props.displayPattern
-                    ? translateLabels
-                      ? this.context.intl.formatMessage(
-                          { id: this.props.displayPattern },
-                          {
-                            number: getFormattedValue(o),
-                          },
-                        )
-                      : ({ id: this.props.displayPattern },
-                        { number: getFormattedValue(o) })
-                    : getFormattedValue(o),
-                ),
-                value: o,
-                kmhValue: o.kmhValue || undefined,
-              },
-        )
-      : options;
+                    : ({ id: props.displayPattern },
+                      { number: getFormattedValue(o) })
+                  : getFormattedValue(o),
+              ),
+              value: o,
+              kmhValue: o.kmhValue || undefined,
+            },
+      )
+    : options;
 
-    return (
-      <div className="settings-dropdown-wrapper" ref={this.labelRef}>
-        <button
-          type="button"
-          className="settings-dropdown-label"
-          style={overrideStyle}
-          onClick={() => this.toggleDropdown(this.state.showDropdown)}
-        >
-          <p className="settings-dropdown-label-text">{labelText}</p>
-          <span className="settings-dropdown-text-container">
-            <p className="settings-dropdown-label-value">
-              {/* eslint-disable-next-line no-nested-ternary */}
-              {displayValueFormatter
-                ? displayValueFormatter(currentSelection.title)
-                : translateLabels
-                  ? `${intl.formatMessage({
-                      id: currentSelection.title,
-                    })}`
-                  : currentSelection.title}
-            </p>
-            <span
-              aria-label={intl.formatMessage({
-                id: showDropdown
-                  ? 'settings-dropdown-close-label'
-                  : 'settings-dropdown-open-label',
-              })}
-            />
-            <Icon
-              className={
-                this.state.showDropdown
-                  ? 'fake-select-arrow inverted'
-                  : 'fake-select-arrow'
-              }
-              img="icon_arrow-dropdown"
-            />
-          </span>
-        </button>
-        {showDropdown && (
-          <ul role="radiogroup" className="settings-dropdown">
-            {this.getOptionTags(selectOptions, this.state.showDropdown)}
-          </ul>
-        )}
-      </div>
-    );
-  }
+  return (
+    <div className="settings-dropdown-wrapper" ref={labelRef}>
+      <button
+        type="button"
+        className="settings-dropdown-label"
+        style={overrideStyle}
+        onClick={() => toggleDropdown(showDropdown)}
+      >
+        <p className="settings-dropdown-label-text">{labelText}</p>
+        <span className="settings-dropdown-text-container">
+          <p className="settings-dropdown-label-value">
+            {/* eslint-disable-next-line no-nested-ternary */}
+            {displayValueFormatter
+              ? displayValueFormatter(currentSelection.title)
+              : translateLabels
+                ? `${intl.formatMessage({
+                    id: currentSelection.title,
+                  })}`
+                : currentSelection.title}
+          </p>
+          <span
+            aria-label={intl.formatMessage({
+              id: showDropdown
+                ? 'settings-dropdown-close-label'
+                : 'settings-dropdown-open-label',
+            })}
+          />
+          <Icon
+            className={
+              showDropdown ? 'fake-select-arrow inverted' : 'fake-select-arrow'
+            }
+            img="icon_arrow-dropdown"
+          />
+        </span>
+      </button>
+      {showDropdown && (
+        <ul role="radiogroup" className="settings-dropdown">
+          {getOptionTags(selectOptions, showDropdown)}
+        </ul>
+      )}
+    </div>
+  );
 }
+
+SearchSettingsDropdown.propTypes = {
+  labelText: PropTypes.string.isRequired,
+  options: PropTypes.arrayOf(valueShape).isRequired,
+  displayValueFormatter: PropTypes.func,
+  currentSelection: PropTypes.shape({
+    title: PropTypes.string,
+    value: valueShape,
+  }).isRequired,
+  highlightDefaultValue: PropTypes.bool,
+  defaultValue: valueShape,
+  displayPattern: PropTypes.string,
+  onOptionSelected: PropTypes.func.isRequired,
+  formatOptions: PropTypes.bool,
+  name: PropTypes.string.isRequired,
+  translateLabels: PropTypes.bool,
+  // eslint-disable-next-line
+  overrideStyle: PropTypes.object,
+};
+
+SearchSettingsDropdown.defaultProps = {
+  displayValueFormatter: undefined,
+  highlightDefaultValue: false,
+  displayPattern: undefined,
+  defaultValue: undefined,
+  formatOptions: false,
+  translateLabels: true,
+  overrideStyle: {},
+};
 
 export default SearchSettingsDropdown;
