@@ -13,7 +13,7 @@ export default function SettingsToggle({
   leftElement, // e.g. icon
 }) {
   return (
-    <div className="toggle-container">
+    <label htmlFor={id} className="toggle-container">
       <div className="toggle-left">
         {leftElement}
         <span className={labelStyle}>
@@ -22,7 +22,7 @@ export default function SettingsToggle({
         </span>
       </div>
       <Toggle id={id} toggled={toggled} onToggle={onToggle} />
-    </div>
+    </label>
   );
 }
 
