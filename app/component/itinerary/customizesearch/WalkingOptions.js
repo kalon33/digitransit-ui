@@ -8,14 +8,12 @@ import SearchSettingsDropdown, {
 import SettingsToggle from './SettingsToggle';
 import { findNearestOption } from '../../../util/planParamUtil';
 import { settingsShape } from '../../../util/shapes';
-import { useTranslationsContext } from '../../../util/useTranslationsContext';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 
 export default function WalkingOptions(
   { currentSettings, defaultSettings },
   { executeAction },
 ) {
-  const intl = useTranslationsContext();
   const { defaultOptions } = useConfigContext();
   const reluctanceOptions = defaultOptions.walkReluctance;
   const options = getFiveStepOptions(defaultOptions.walkSpeed);
@@ -56,7 +54,7 @@ export default function WalkingOptions(
           });
         }}
         options={options}
-        labelText={intl.formatMessage({ id: 'walking-speed' })}
+        labelId="walking-speed"
         highlightDefaulValue
         formatOptions
         name="walkspeed"
