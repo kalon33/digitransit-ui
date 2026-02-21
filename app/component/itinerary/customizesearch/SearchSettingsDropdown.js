@@ -2,6 +2,7 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import PropTypes from 'prop-types';
 import React, { useEffect, useState, useRef } from 'react';
+import { FormattedMessage } from 'react-intl';
 import Icon from '../../Icon';
 import { useTranslationsContext } from '../../../util/useTranslationsContext';
 
@@ -66,19 +67,19 @@ export const valueShape = PropTypes.oneOfType([
   PropTypes.object,
 ]);
 
-function SearchSettingsDropdown(props) {
-  const {
-    labelText,
-    currentSelection,
-    options,
-    displayValueFormatter,
-    highlightDefaultValue,
-    defaultValue,
-    formatOptions,
-    translateLabels,
-    overrideStyle,
-  } = props;
-
+export default function SearchSettingsDropdown({
+  labelId,
+  options,
+  displayValueFormatter,
+  currentSelection,
+  highlightDefaultValue,
+  defaultValue,
+  displayPattern,
+  onOptionSelected,
+  formatOptions,
+  name,
+  translateLabels,
+}) {
   const intl = useTranslationsContext();
   const [showDropdown, setShowDropdown] = useState(false);
   const labelRef = useRef(null);
@@ -98,7 +99,7 @@ function SearchSettingsDropdown(props) {
   };
 
   const handleChangeOnly = value => {
-    props.onOptionSelected(value);
+    onOptionSelected(value);
   };
 
   const getOptionTags = (dropdownOptions, prevState) => {
@@ -108,7 +109,7 @@ function SearchSettingsDropdown(props) {
           className={`settings-dropdown-choice ${
             option.value === currentSelection.value ? 'selected' : ''
           }`}
-          htmlFor={`dropdown-${props.name}-${option.value}`}
+          htmlFor={`dropdown-${name}-${option.value}`}
         >
           <span>
             {option.displayNameObject
@@ -128,9 +129,9 @@ function SearchSettingsDropdown(props) {
               )}
             </span>
             <input
-              id={`dropdown-${props.name}-${option.value}`}
+              id={`dropdown-${name}-${option.value}`}
               type="radio"
-              name={props.name}
+              name={name}
               checked={option.value === currentSelection.value}
               value={option.value}
               onChange={e => {
@@ -177,20 +178,19 @@ function SearchSettingsDropdown(props) {
               kmhValue: o.kmhValue || undefined,
             }
           : {
-              displayName: `${props.displayPattern}_${o}`,
+              displayName: `${displayPattern}_${o}`,
               displayNameObject: applyDefaultValueIdentifier(
                 o,
                 // eslint-disable-next-line no-nested-ternary
-                props.displayPattern
+                displayPattern
                   ? translateLabels
                     ? intl.formatMessage(
-                        { id: props.displayPattern },
+                        { id: displayPattern },
                         {
                           number: getFormattedValue(o),
                         },
                       )
-                    : ({ id: props.displayPattern },
-                      { number: getFormattedValue(o) })
+                    : ({ id: displayPattern }, { number: getFormattedValue(o) })
                   : getFormattedValue(o),
               ),
               value: o,
@@ -204,10 +204,9 @@ function SearchSettingsDropdown(props) {
       <button
         type="button"
         className="settings-dropdown-label"
-        style={overrideStyle}
         onClick={() => toggleDropdown(showDropdown)}
       >
-        <p className="settings-dropdown-label-text">{labelText}</p>
+        <FormattedMessage id={labelId} />
         <span className="settings-dropdown-text-container">
           <p className="settings-dropdown-label-value">
             {/* eslint-disable-next-line no-nested-ternary */}
@@ -244,7 +243,7 @@ function SearchSettingsDropdown(props) {
 }
 
 SearchSettingsDropdown.propTypes = {
-  labelText: PropTypes.string.isRequired,
+  labelId: PropTypes.string.isRequired,
   options: PropTypes.arrayOf(valueShape).isRequired,
   displayValueFormatter: PropTypes.func,
   currentSelection: PropTypes.shape({
@@ -258,8 +257,6 @@ SearchSettingsDropdown.propTypes = {
   formatOptions: PropTypes.bool,
   name: PropTypes.string.isRequired,
   translateLabels: PropTypes.bool,
-  // eslint-disable-next-line
-  overrideStyle: PropTypes.object,
 };
 
 SearchSettingsDropdown.defaultProps = {
@@ -269,7 +266,4 @@ SearchSettingsDropdown.defaultProps = {
   defaultValue: undefined,
   formatOptions: false,
   translateLabels: true,
-  overrideStyle: {},
 };
-
-export default SearchSettingsDropdown;
