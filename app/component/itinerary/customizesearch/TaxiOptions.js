@@ -1,72 +1,58 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import Toggle from '../../Toggle';
+import SettingsToggle from './SettingsToggle';
 import { saveRoutingSettings } from '../../../action/SearchSettingsActions';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { settingsShape } from '../../../util/shapes';
 import Icon from '../../Icon';
+import { useConfigContext } from '../../../configurations/ConfigContext';
 
-const TaxiOptionsSection = (
-  { defaultSettings, currentSettings },
-  { executeAction },
-) => {
-  const taxiRouting =
-    currentSettings.includeTaxiSuggestions ||
-    defaultSettings.includeTaxiSuggestions;
-  const taxiRoutingState = taxiRouting ? 'Disable' : 'Enable';
+const TaxiOptions = ({ currentSettings }, { executeAction }) => {
+  const { colors } = useConfigContext();
+  const taxiRoutingState = currentSettings.includeTaxiSuggestions
+    ? 'Disable'
+    : 'Enable';
+  const onToggle = () => {
+    executeAction(saveRoutingSettings, {
+      includeTaxiSuggestions: !currentSettings.includeTaxiSuggestions,
+    });
+    addAnalyticsEvent({
+      category: 'ItinerarySettings',
+      action: `Settings${taxiRoutingState}Taxis`,
+      name: 'includeTaxiSuggestions',
+    });
+  };
+
   return (
-    <div className="mode-option-container">
-      <div className="settings-header">
-        <FormattedMessage
-          id="taxis-and-ride-hailing"
-          defaultMessage="Taxis and ride-hailing"
-        />
+    <>
+      <div className="section-header">
+        <FormattedMessage id="taxis-and-ride-hailing" />
       </div>
-      <div className="mode-option-container">
-        <div className="mode-option-block">
-          <div className="mode-icon">
-            <Icon
-              className="taxi-icon"
-              img="icon_taxi-external"
-              viewBox="0 0 32 32"
-            />
-          </div>
-          <label htmlFor="settings-toggle-taxis" className="mode-name">
-            <FormattedMessage
-              className="mode-name"
-              id="taxis-and-ride-hailing"
-              defaultMessage="Taxis and ride-hailing"
-            />
-            <Toggle
-              id="settings-toggle-taxis"
-              toggled={taxiRouting}
-              onToggle={() => {
-                executeAction(saveRoutingSettings, {
-                  includeTaxiSuggestions: !taxiRouting,
-                });
-                addAnalyticsEvent({
-                  category: 'ItinerarySettings',
-                  action: `Settings${taxiRoutingState}Taxis`,
-                  name: 'includeTaxiSuggestions',
-                });
-              }}
-              title="taxis"
-            />
-          </label>
-        </div>
-      </div>
-    </div>
+      <SettingsToggle
+        id="settings-toggle-taxi"
+        labelId="taxis-and-ride-hailing"
+        leftElement={
+          <Icon
+            img="icon_taxi-external"
+            color={colors.taxi}
+            height={2}
+            width={2}
+          />
+        }
+        toggled={!!currentSettings.includeTaxiSuggestions}
+        onToggle={onToggle}
+      />
+    </>
   );
 };
 
-TaxiOptionsSection.propTypes = {
-  defaultSettings: settingsShape.isRequired,
+TaxiOptions.propTypes = {
   currentSettings: settingsShape.isRequired,
 };
 
-TaxiOptionsSection.contextTypes = {
+TaxiOptions.contextTypes = {
   executeAction: PropTypes.func.isRequired,
 };
 
-export default TaxiOptionsSection;
+export default TaxiOptions;
