@@ -4,7 +4,6 @@ import { FormattedMessage } from 'react-intl';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import { settingsShape } from '../../../util/shapes';
 import Icon from '../../Icon';
-import FareZoneSelector from './FareZoneSelector';
 import StreetModeSelectorPanel from './StreetModeSelectorPanel';
 import TransportModesSection from './TransportModesSection';
 import WalkingOptions from './WalkingOptions';
@@ -14,7 +13,7 @@ import AccessibilityOptions from './AccessibilityOptions';
 import TransferOptions from './TransferOptions';
 import RentalNetworkSelector from './RentalNetworkSelector';
 import ScooterNetworkSelector from './ScooterNetworkSelector';
-import TaxiOptionsSection from './TaxiOptionsSection';
+import TaxiOptions from './TaxiOptions';
 import RestoreDefaultSettingSection from './RestoreDefaultSettingSection';
 import {
   getReadMessageIds,
@@ -138,14 +137,6 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
         <div className="settings-section">
           <AccessibilityOptions currentSettings={currentSettings} />
         </div>
-        {config.showTicketSelector && (
-          <div className="settings-section">
-            <FareZoneSelector
-              options={ticketOptions}
-              currentOption={currentSettings.ticketTypes}
-            />
-          </div>
-        )}
         {useScooters(config) && (
           <div className="settings-section">
             <div className="settings-option-container">
@@ -222,15 +213,12 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
             </div>
           </div>
         )}
-        {config.experimental?.allowFlexJourneys &&
-          config.transportModes.taxi.availableForSelection && (
-            <div className="settings-section">
-              <TaxiOptionsSection
-                defaultSettings={defaultSettings}
-                currentSettings={currentSettings}
-              />
-            </div>
-          )}
+        {true /* || config.experimental?.allowFlexJourneys &&
+		config.transportModes.taxi.availableForSelection */ && (
+          <div className="settings-section">
+            <TaxiOptions currentSettings={currentSettings} />
+          </div>
+        )}
         <div className="settings-section background">
           <div className="restore-settings-container">
             <RestoreDefaultSettingSection config={config} />
