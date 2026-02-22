@@ -11,9 +11,10 @@ export default function SettingsToggle({
   toggled,
   onToggle,
   leftElement, // e.g. icon
+  borderStyle,
 }) {
   return (
-    <label htmlFor={id} className="toggle-container">
+    <label htmlFor={id} className={`toggle-container ${borderStyle}`}>
       <div className="toggle-left">
         {leftElement}
         <span className={labelStyle}>
@@ -34,6 +35,7 @@ SettingsToggle.propTypes = {
   toggled: PropTypes.bool.isRequired,
   onToggle: PropTypes.func.isRequired,
   leftElement: PropTypes.node,
+  borderStyle: PropTypes.string,
 };
 
 SettingsToggle.defaultProps = {
@@ -41,4 +43,5 @@ SettingsToggle.defaultProps = {
   label: '',
   labelId: undefined,
   labelStyle: '',
+  borderStyle: '',
 };
