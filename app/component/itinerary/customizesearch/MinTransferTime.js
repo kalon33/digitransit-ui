@@ -5,7 +5,7 @@ import { settingsShape, minTransferTimeShape } from '../../../util/shapes';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import SearchSettingsDropdown from './SearchSettingsDropdown';
 
-const MinTransferTimeSection = (
+const MinTransferTime = (
   { currentSettings, defaultSettings, minTransferTimeOptions },
   { executeAction },
   options = minTransferTimeOptions,
@@ -35,14 +35,14 @@ const MinTransferTimeSection = (
   />
 );
 
-MinTransferTimeSection.propTypes = {
+MinTransferTime.propTypes = {
   defaultSettings: settingsShape.isRequired,
   minTransferTimeOptions: minTransferTimeShape.isRequired,
   currentSettings: settingsShape.isRequired,
 };
 
-MinTransferTimeSection.contextTypes = {
+MinTransferTime.contextTypes = {
   executeAction: PropTypes.func.isRequired,
 };
 
-export default MinTransferTimeSection;
+export default MinTransferTime;
