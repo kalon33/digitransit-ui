@@ -35,7 +35,7 @@ export default function BikingSpeed(
         });
       }}
       options={options}
-      formatSpeed
+      formatOptions
       labelId="biking-speed"
       translateLabels={false}
     />
