@@ -1,25 +1,19 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import React from 'react';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import { settingsShape } from '../../../util/shapes';
 import Icon from '../../Icon';
-import StreetModeSelectorPanel from './StreetModeSelectorPanel';
-import TransportModesSection from './TransportModesSection';
+import StreetModeSelector from './StreetModeSelector';
+import TransportModes from './TransportModes';
 import WalkingOptions from './WalkingOptions';
 import Personalisation from './Personalisation';
-import MinTransferTimeSection from './MinTransferTimeSection';
+import MinTransferTime from './MinTransferTime';
 import AccessibilityOptions from './AccessibilityOptions';
 import TransferOptions from './TransferOptions';
-import RentalNetworkSelector from './RentalNetworkSelector';
-import ScooterNetworkSelector from './ScooterNetworkSelector';
+import CityBikes from './CityBikes';
+import Scooters from './Scooters';
 import TaxiOptions from './TaxiOptions';
-import RestoreDefaultSettingSection from './RestoreDefaultSettingSection';
-import {
-  getReadMessageIds,
-  setReadMessageId,
-} from '../../../store/localStorage';
-import { isKeyboardSelectionEvent } from '../../../util/browser';
+import RestoreDefaultSettings from './RestoreDefaultSettings';
 import {
   showModeSettings,
   useCitybikes,
@@ -27,7 +21,6 @@ import {
 } from '../../../util/modeUtils';
 import ScrollableWrapper from '../../ScrollableWrapper';
 import { getDefaultSettings } from '../../../util/planParamUtil';
-import { getScooterNetworks } from '../../../util/vehicleRentalUtils';
 import { useTranslationsContext } from '../../../util/useTranslationsContext';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 
@@ -35,15 +28,6 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
   const config = useConfigContext();
   const intl = useTranslationsContext();
   const defaultSettings = getDefaultSettings(config);
-
-  const [showEScooterDisclaimer, setShowEScooterDisclaimer] = useState(
-    !getReadMessageIds().includes('e_scooter_settings_disclaimer'),
-  );
-
-  const handleEScooterDisclaimerClose = () => {
-    setReadMessageId('e_scooter_settings_disclaimer');
-    setShowEScooterDisclaimer(false);
-  };
 
   // Merge default and customized settings
   const currentSettings = { ...defaultSettings, ...settings };
@@ -108,11 +92,9 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
           <Personalisation currentSettings={currentSettings} />
         </div>
         <div className="settings-section">
-          {showModeSettings(config) && (
-            <TransportModesSection config={config} />
-          )}
+          {showModeSettings(config) && <TransportModes />}
           {config.minTransferTimeSelection && (
-            <MinTransferTimeSection
+            <MinTransferTime
               minTransferTimeOptions={config.minTransferTimeSelection}
               currentSettings={currentSettings}
               defaultSettings={defaultSettings}
@@ -125,11 +107,11 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
         </div>
         {useCitybikes(config.vehicleRental?.networks, config) && (
           <div className="settings-section">
-            <RentalNetworkSelector />
+            <CityBikes />
           </div>
         )}
         <div className="settings-section">
-          <StreetModeSelectorPanel
+          <StreetModeSelector
             currentSettings={currentSettings}
             defaultSettings={defaultSettings}
           />
@@ -139,78 +121,7 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
         </div>
         {useScooters(config) && (
           <div className="settings-section">
-            <div className="settings-option-container">
-              <fieldset>
-                <legend className="settings-header transport-mode-subheader">
-                  <FormattedMessage
-                    id="e-scooters"
-                    defaultMessage={intl.formatMessage({
-                      id: 'e-scooters',
-                      defaultMessage: 'Scooters',
-                    })}
-                  />
-                </legend>
-                <div className="transport-modes-container">
-                  {showEScooterDisclaimer && (
-                    <div className="e-scooter-disclaimer">
-                      <div className="disclaimer-header">
-                        <FormattedMessage id="settings-e-scooter-routes" />
-                        <div
-                          className="disclaimer-close"
-                          aria-label={intl.formatMessage({
-                            id: 'e-scooter-disclaimer-close',
-                            defaultMessage: 'close',
-                          })}
-                          tabIndex="0"
-                          onKeyDown={e => {
-                            if (
-                              isKeyboardSelectionEvent(e) &&
-                              (e.keyCode === 13 || e.keyCode === 32)
-                            ) {
-                              handleEScooterDisclaimerClose();
-                            }
-                          }}
-                          onClick={handleEScooterDisclaimerClose}
-                          role="button"
-                        >
-                          <Icon color="#333" img="icon_close" />
-                        </div>
-                      </div>
-                      <div className="disclaimer-content">
-                        <FormattedMessage
-                          id="settings-e-scooter"
-                          values={{
-                            paymentInfo: (
-                              <FormattedMessage id="payment-info-e-scooter" />
-                            ),
-                          }}
-                        />
-                      </div>
-                      {config.vehicleRental.scooterInfoLink && (
-                        <a
-                          onClick={e => {
-                            e.stopPropagation();
-                          }}
-                          className="external-link"
-                          href={
-                            config.vehicleRental.scooterInfoLink[intl.locale]
-                              .url
-                          }
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          <FormattedMessage id="read-more" />
-                          <Icon img="icon_external-link-box" />
-                        </a>
-                      )}
-                    </div>
-                  )}
-                  <ScooterNetworkSelector
-                    currentOptions={getScooterNetworks(config) || []}
-                  />
-                </div>
-              </fieldset>
-            </div>
+            <Scooters />
           </div>
         )}
         {true /* || config.experimental?.allowFlexJourneys &&
@@ -219,10 +130,8 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
             <TaxiOptions currentSettings={currentSettings} />
           </div>
         )}
-        <div className="settings-section background">
-          <div className="restore-settings-container">
-            <RestoreDefaultSettingSection config={config} />
-          </div>
+        <div className="settings-section">
+          <RestoreDefaultSettings config={config} />
         </div>
       </ScrollableWrapper>
     </div>
