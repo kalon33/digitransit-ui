@@ -59,12 +59,12 @@ export default function WalkingOptions(
         formatOptions
         name="walkspeed"
       />
-      <div className="separator" />
       <SettingsToggle
         id="settings-toggle-avoid-walking"
         labelId="avoid-walking"
         toggled={currentSettings.walkReluctance === reluctanceOptions.least}
         onToggle={onToggle}
+        borderStyle="top-border"
       />
     </>
   );
