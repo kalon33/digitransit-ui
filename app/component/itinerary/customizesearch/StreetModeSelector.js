@@ -54,7 +54,7 @@ export default function StreetModeSelector(
         <SettingsToggle
           id="settings-toggle-bikeAndPark"
           labelId="park-and-ride"
-          leftElement={<span style={{ width: '3.2em' }} />}
+          leftElement={<span style={{ width: '3em' }} />}
           toggled={currentSettings.showBikeAndParkItineraries}
           onToggle={() => onToggle('showBikeAndParkItineraries', 'BikeAndPark')}
         />
@@ -77,7 +77,7 @@ export default function StreetModeSelector(
         <SettingsToggle
           id="settings-toggle-parkAndRide"
           labelId="park-and-ride"
-          leftElement={<span style={{ width: '3.2em' }} />}
+          leftElement={<span style={{ width: '3em' }} />}
           toggled={currentSettings.includeParkAndRideSuggestions}
           onToggle={() =>
             onToggle('includeParkAndRideSuggestions', 'ParkAndRide')
