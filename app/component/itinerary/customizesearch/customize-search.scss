@@ -286,12 +286,8 @@
     border-top: 1px solid $light-gray;
   }
 
-  .settings-option-container:last-child {
-    border-bottom: 0;
-
-    &.restore-settings-container {
-      padding-bottom: 40px;
-    }
+  .restore-settings-container {
+    padding-bottom: 60px;
   }
 
   .separator {

@@ -101,7 +101,7 @@ const RestoreDefaultSettings = ({}, { executeAction }) => {
   );
 
   return (
-    <>
+    <div className="restore-settings-container">
       <div
         className={cx('restore-settings-success-snackbar', {
           hide: showSnackbar === null,
@@ -183,7 +183,7 @@ const RestoreDefaultSettings = ({}, { executeAction }) => {
       ) : (
         noChangesSRContainer
       )}
-    </>
+    </div>
   );
 };
 
