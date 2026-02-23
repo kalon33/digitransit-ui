@@ -104,8 +104,6 @@
     box-shadow: none;
 
     .settings-header {
-      height: 60px;
-
       h1 {
         text-align: center;
       }
@@ -134,12 +132,6 @@
 }
 
 .settings-dropdown-wrapper {
-  line-height: 1em;
-
-  .settings-dropdown li {
-    line-height: 2em;
-  }
-
   .fake-select-arrow {
     height: 0.5em;
   }
@@ -148,6 +140,8 @@
 .desktop {
   .customize-search {
     height: 100%;
+    padding-left: 4px;
+    box-shadow: inset 4px 0 4px 0 $background-color-lighter;
 
     .scrollable-content-wrapper {
       overflow-y: auto;
@@ -169,8 +163,12 @@
   background: #fff;
   color: $black;
   position: relative;
-  box-shadow: inset 5px 0 5px 0 $background-color-lighter;
   font-size: $font-size-normal;
+
+  .settings-header {
+    padding-top: 12px;
+    height: 80px;
+  }
 
   .close-offcanvas {
     position: absolute;
@@ -190,7 +188,7 @@
   .indent-setting {
     display: flex;
     flex-direction: row;
-    margin-left: 4em;
+    margin-left: 3.2em;
   }
 
   .toggle-container {
@@ -198,7 +196,7 @@
     flex-direction: row;
     align-items: center;
     width: 100%;
-    min-height: 3.2em;
+    min-height: 3.5em;
     justify-content: space-between;
     font-size: $font-size-normal;
 
@@ -208,7 +206,10 @@
       align-items: center;
 
       .icon-container {
-        width: 4em;
+        display: flex;
+        flex-direction: row;
+        width: 3.2em;
+        align-items: center;
       }
     }
   }
@@ -299,71 +300,6 @@
   }
 }
 
-.mode-option-container {
-  border-bottom: 1px solid $light-gray;
-  font-size: $font-size-small;
-  flex-wrap: wrap;
-
-  .icon-container {
-    width: auto;
-  }
-
-  .car-icon {
-    width: 0.8em;
-    height: 0.8em;
-  }
-
-  .option-checkbox {
-    margin-top: 1em;
-  }
-
-  label.toggle-label {
-    font-size: 0.92rem;
-    font-weight: $font-weight-medium;
-    align-items: center;
-  }
-
-  .taxi-icon {
-    color: $external-feed-color;
-  }
-
-  .scooter-icon {
-    color: #333;
-  }
-
-  .mode-icon {
-    margin-left: 14.72px;
-    margin-right: 14.72px;
-
-    .subicon-caution .icon {
-      width: 16px;
-      height: 16px;
-      margin-left: 0.1em;
-      margin-top: -0.8em;
-    }
-  }
-
-  label.mode-name {
-    display: flex;
-    justify-content: space-between;
-    font-weight: $font-weight-medium;
-    font-size: $font-size-small;
-  }
-
-  .mode-name {
-    width: 100%;
-
-    > span {
-      line-height: 1.1em;
-      margin-top: 1.2em;
-    }
-
-    .span-bike-not-allowed {
-      font-size: $font-size-xxsmall;
-    }
-  }
-}
-
 .option-container {
   h1 {
     text-transform: none;
@@ -406,7 +342,7 @@
 
 .streetmodes {
   .settings-dropdown-wrapper {
-    margin-left: 4em;
+    margin-left: 3.2em;
     border-bottom: solid 1px $light-gray;
   }
 }
