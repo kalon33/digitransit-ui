@@ -17,7 +17,7 @@ import { useConfigContext } from '../../../configurations/ConfigContext';
 export default function NetworkSelector({ type }, { executeAction }) {
   const config = useConfigContext();
   const networks = mapDefaultNetworkProperties(config).filter(
-    network => network.type === type,
+    network => network.type === type.toLowerCase(),
   );
   const last = networks.length ? networks[networks.length - 1] : undefined;
   const selected =
