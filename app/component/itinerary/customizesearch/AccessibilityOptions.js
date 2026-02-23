@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import SettingsToggle from '../../Toggle';
+import { FormattedMessage } from 'react-intl';
+import SettingsToggle from './SettingsToggle';
 import { saveRoutingSettings } from '../../../action/SearchSettingsActions';
 import Icon from '../../Icon';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
@@ -21,13 +22,19 @@ const AccessibilityOptions = ({ currentSettings }, { executeAction }) => {
   };
 
   return (
-    <SettingsToggle
-      id="settings-toggle-accessibility"
-      labelId="accessibility"
-      leftElement={<Icon img="icon_wheelchair" height={2} width={2} />}
-      toggled={!!currentSettings.accessibilityOption}
-      onToggle={onToggle}
-    />
+    <>
+      <div className="section-header">
+        <FormattedMessage id="accessibility" />
+      </div>
+      <SettingsToggle
+        id="settings-toggle-accessibility"
+        labelId="accessibility-limited"
+        labelStyle="mode-label"
+        leftElement={<Icon img="icon_wheelchair" height={2} width={2} />}
+        toggled={!!currentSettings.accessibilityOption}
+        onToggle={onToggle}
+      />
+    </>
   );
 };
 
