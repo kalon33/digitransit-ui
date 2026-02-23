@@ -265,6 +265,12 @@
     }
   }
 
+  .restore-settings-container {
+    padding-bottom: 80px;
+    padding-left: 12px;
+    background: $background-color-lighter;
+  }
+
   .settings-section {
     border-bottom: 10px solid $background-color-lighter;
     padding: 0 16px 0 16px;
@@ -283,10 +289,6 @@
 
     .top-border {
       border-top: 1px solid $light-gray;
-    }
-
-    .restore-settings-container {
-      padding-bottom: 60px;
     }
 
     .separator {

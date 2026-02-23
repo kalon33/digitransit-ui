@@ -128,9 +128,7 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
               <TaxiOptions currentSettings={currentSettings} />
             </div>
           )}
-        <div className="settings-section">
-          <RestoreDefaultSettings config={config} />
-        </div>
+        <RestoreDefaultSettings config={config} />
       </ScrollableWrapper>
     </div>
   );
