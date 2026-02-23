@@ -26,7 +26,7 @@ import StopRouteSearch from './StopRouteSearch';
 import { getGeolocationState } from '../../store/localStorage';
 import { PREFIX_NEARYOU } from '../../util/path';
 import NearYouContainer from './NearYouContainer';
-import SwipeableTabs from '../SwipeableTabs';
+import SwipeableTabs, { setFocusables } from '../SwipeableTabs';
 import NearYouFavourites from './NearYouFavourites';
 import { mapLayerShape } from '../../store/MapLayerStore';
 import { getDefaultNetworks } from '../../util/vehicleRentalUtils';
@@ -61,6 +61,12 @@ function getModes(config) {
   return modes.map(nearYouMode => nearYouMode.toUpperCase());
 }
 
+function tabHandler(e) {
+  if (e.key === 'Tab') {
+    setFocusables();
+  }
+}
+
 function NearYouPage(
   {
     breakpoint,
@@ -77,7 +83,6 @@ function NearYouPage(
   },
   { config, executeAction, router },
 ) {
-  const MWTRef = useRef();
   const modes = useRef(getModes(config));
   const centerOfMap = useRef({});
   const [phase, setPhase] = useState(PH_START);
@@ -146,6 +151,14 @@ function NearYouPage(
       setSearchPosition(newSearchPosition);
       setPhase(newPhase);
     });
+  }, []);
+
+  useEffect(() => {
+    // rendering of hidden sub components of inactive tabs
+    // sets tabIndex=0 to hidden elements
+    // we must fix this when user shifts focus with the tab key
+    window.addEventListener('keydown', tabHandler);
+    return () => window.removeEventListener('keydown', tabHandler);
   }, []);
 
   useEffect(() => {
@@ -242,11 +255,6 @@ function NearYouPage(
     if (changed !== centerOfMapChanged) {
       setCenterOfMapChanged(changed);
     }
-  };
-
-  // store ref to map
-  const setMWTRef = ref => {
-    MWTRef.current = ref;
   };
 
   const updateLocation = () => {
@@ -493,7 +501,6 @@ function NearYouPage(
       mapLayers={mapLayers}
       mapLayerOptions={mapLayerOptions}
       breakpoint={breakpoint}
-      setMWTRef={setMWTRef}
       variables={getQueryVariables(mode)}
     />
   );
@@ -581,7 +588,6 @@ function NearYouPage(
             content={renderContent()}
             map={renderMap()}
             searchBox={mapSearch()}
-            mapRef={MWTRef.current}
             match={match}
           />
         )}
