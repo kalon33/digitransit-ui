@@ -98,10 +98,7 @@ const ScheduleContainer = ({
 
   const firstDataDate = data?.dates?.[0];
 
-  const currentPattern = useMemo(
-    () => route?.patterns?.find(p => p.code === pattern?.code),
-    [route?.patterns, pattern?.code],
-  );
+  const currentPattern = route?.patterns?.find(p => p.code === pattern?.code);
 
   const testNum = match?.location?.query?.test;
 
@@ -121,12 +118,10 @@ const ScheduleContainer = ({
   const { constantOperationRoutes } = config;
   const { locale } = intl;
 
-  const constantOperationInfo = useMemo(() => {
-    if (routeId && constantOperationRoutes?.[routeId]) {
-      return constantOperationRoutes[routeId][locale];
-    }
-    return null;
-  }, [routeId, locale, constantOperationRoutes]);
+  const constantOperationInfo =
+    routeId && constantOperationRoutes?.[routeId]
+      ? constantOperationRoutes[routeId][locale]
+      : null;
 
   const validation = validateScheduleData({
     pattern,

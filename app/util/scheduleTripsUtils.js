@@ -49,11 +49,9 @@ export const getTripsList = ({
   testNum,
   serviceDay,
 }) => {
-  const testing = process.env.ROUTEPAGETESTING || false;
-
   let currentPattern = pattern;
 
-  if (testing && testNum && currentPattern) {
+  if (process.env.ROUTEPAGETESTING && testNum && currentPattern) {
     currentPattern = {
       ...currentPattern,
       trips: currentPattern.trips?.filter((s, i) => i < 2),
