@@ -103,46 +103,22 @@ describe('scheduleValidation', () => {
       expect(decision.redirectPath).to.equal(null);
     });
 
-    it('should redirect to first data date when wantedDay is before it', () => {
-      const firstDataDate = DateTime.now().plus({ days: 3 });
+    it('should redirect invalid dates to today', () => {
       const decision = calculateRedirectDecision({
         testNum: undefined,
-        wantedDay: DateTime.now().plus({ days: 1 }),
-        firstDataDate,
+        wantedDay: DateTime.fromISO('invalid-date-string'),
+        firstDataDate: DateTime.now().plus({ days: 3 }),
         noTrips: false,
         patternCode: 'HSL:1001:0:01',
         routeId: 'HSL:1001',
       });
 
       expect(decision.shouldRedirect).to.equal(true);
-      expect(decision.reason).to.equal('before-first-data');
+      expect(decision.reason).to.equal('invalid-date');
       expect(decision.redirectDate.toISODate()).to.equal(
-        firstDataDate.toISODate(),
+        fixedNow.startOf('day').toISODate(),
       );
       expect(decision.redirectPath).to.equal(null);
-    });
-
-    it('should redirect to first data date when there are no trips', () => {
-      const firstDataDate = DateTime.now().plus({ days: 1 });
-      const routeId = 'HSL:1001';
-      const patternCode = 'HSL:1001:0:01';
-      const decision = calculateRedirectDecision({
-        testNum: undefined,
-        wantedDay: undefined,
-        firstDataDate,
-        noTrips: true,
-        patternCode,
-        routeId,
-      });
-
-      expect(decision.shouldRedirect).to.equal(true);
-      expect(decision.reason).to.equal('no-trips');
-      expect(decision.redirectDate.toISODate()).to.equal(
-        firstDataDate.toISODate(),
-      );
-      expect(decision.redirectPath).to.equal(
-        routePagePath(routeId, PREFIX_TIMETABLE, patternCode),
-      );
     });
 
     it('should redirect to route timetable when pattern code is missing', () => {

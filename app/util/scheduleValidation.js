@@ -85,6 +85,15 @@ export const calculateRedirectDecision = ({
     };
   }
 
+  if (wantedDay && !DateTime.fromISO(wantedDay).isValid) {
+    return {
+      shouldRedirect: true,
+      redirectDate: today,
+      redirectPath: null,
+      reason: 'invalid-date',
+    };
+  }
+
   if (!patternCode && routeId) {
     return {
       shouldRedirect: true,
