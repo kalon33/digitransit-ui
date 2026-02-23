@@ -42,11 +42,6 @@
           overflow: visible;
           text-overflow: ellipsis;
           white-space: nowrap;
-
-          // start text at the very left (control has 16px padding)
-          width: calc(100% - 43px);
-          padding-left: 0;
-          padding-right: 0;
           display: flex;
           flex-direction: column;
           border-right: 1px solid $gray;
@@ -80,7 +75,6 @@
     }
   }
 
-  // focus style to match .route-pattern-toggle, only when menu is open
   .route-schedule-grouped__control--menu-is-open {
     outline: none;
     border-color: $primary-color;

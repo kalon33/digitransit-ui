@@ -6,12 +6,12 @@ import Icon from '@digitransit-component/digitransit-component-icon';
 import isEmpty from 'lodash/isEmpty';
 import { useTranslationsContext } from '../../../util/useTranslationsContext';
 import { truncateLabel } from '../../../util/stringUtils';
-import DropdownIcon from './DropdownIcon';
+import { useConfigContext } from '../../../configurations/ConfigContext';
 import { getAriaMessages, getClassNamePrefix } from './scheduleDropdownUtils';
 
 /**
  * ScheduleDropdown
- * Generic dropdown used on the schedule page for stop and date selection.
+ * Generic dropdown used on the schedule page for stop selection.
  */
 function ScheduleDropdown({
   alignRight,
@@ -23,6 +23,7 @@ function ScheduleDropdown({
   title,
 }) {
   const intl = useTranslationsContext();
+  const config = useConfigContext();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState([]);
@@ -72,14 +73,23 @@ function ScheduleDropdown({
 
   const classNamePrefix = getClassNamePrefix(alignRight, id);
 
+  const renderDropdownContent = label => (
+    <>
+      <span>{truncateLabel(label)}</span>
+      <Icon
+        img="arrow-dropdown"
+        height={0.625}
+        width={0.625}
+        color={config.colors.primary}
+      />
+    </>
+  );
+
   return (
-    <div
-      className={cx('dd-container', labelId ? 'withLabel' : '')}
-      aria-live="off"
-    >
+    <div className={cx('dd-container', { withLabel: labelId })} aria-live="off">
       {labelId && (
         <label
-          className={cx('dd-header-title', alignRight ? 'alignRight' : '')}
+          className={cx('dd-header-title', { alignRight })}
           id={`aria-label-${id}`}
           htmlFor={`aria-input-${id}`}
         >
@@ -122,8 +132,8 @@ function ScheduleDropdown({
         onMenuOpen={onMenuOpen}
         onMenuClose={onMenuClose}
         options={optionList}
-        placeholder={title && <DropdownIcon text={title} />}
-        value={!title && <DropdownIcon text={selectedValue} />}
+        placeholder={title && renderDropdownContent(title)}
+        value={!title && renderDropdownContent(selectedValue)}
       />
     </div>
   );

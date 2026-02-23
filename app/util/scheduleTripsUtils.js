@@ -3,8 +3,6 @@
  * Handles trip sorting, filtering, and display logic
  */
 import React from 'react';
-import { DateTime } from 'luxon';
-import { DATE_FORMAT } from '../constants';
 
 /**
  * Sort trips by scheduled departure time
@@ -36,19 +34,12 @@ export const sortTrips = trips => {
 /**
  * Get and process trips for display.
  * @param {Object} params.pattern - Pattern object with trips
- * @param {DateTime} params.firstDataDate - First date with available data (optional)
  * @param {Object} params.intl - Internationalization object
  * @param {string|number} params.testNum - Test number for filtering trips in testing mode (optional)
  * @param {string} params.serviceDay - Service day for no trips message formatting (optional)
  * @returns {Object} { trips: Array|null, noTripsMessage: JSX|null }
  */
-export const getTripsList = ({
-  pattern,
-  firstDataDate,
-  intl,
-  testNum,
-  serviceDay,
-}) => {
+export const getTripsList = ({ pattern, intl, testNum, wantedDay }) => {
   let currentPattern = pattern;
 
   if (process.env.ROUTEPAGETESTING && testNum && currentPattern) {
@@ -61,17 +52,6 @@ export const getTripsList = ({
   const trips = sortTrips(currentPattern?.trips);
 
   if (trips && trips.length === 0) {
-    // Return null with no message if another service day is available
-    if (firstDataDate) {
-      return {
-        trips: null,
-        noTripsMessage: null,
-      };
-    }
-    // Show no trips message
-    const day = serviceDay
-      ? DateTime.fromFormat(serviceDay, DATE_FORMAT).toFormat('d.L.yyyy')
-      : '';
     return {
       trips: null,
       noTripsMessage: (
@@ -79,10 +59,10 @@ export const getTripsList = ({
           {intl.formatMessage(
             {
               id: 'no-trips-found',
-              defaultMessage: `No journeys found for the selected date ${day}`,
+              defaultMessage: `No journeys found for the selected date ${wantedDay}`,
             },
             {
-              selectedDate: day,
+              selectedDate: wantedDay,
             },
           )}
         </div>

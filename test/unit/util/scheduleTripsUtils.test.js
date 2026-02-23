@@ -137,24 +137,22 @@ describe('scheduleTripsUtils', () => {
       };
     });
 
-    it('should return null message when firstDataDate is provided (indicating other dates available)', () => {
+    it('should return message when no trips are found for wantedDay', () => {
       const pattern = {
         code: 'HSL:1001:0:01',
         trips: [],
       };
-      const serviceDay = '20240116';
-      const firstDataDate = DateTime.fromFormat('20240116', DATE_FORMAT);
+      const wantedDay = DateTime.fromFormat('20240116', DATE_FORMAT);
 
       const result = getTripsList({
         pattern,
-        firstDataDate,
+        wantedDay,
         intl: mockIntl,
-        serviceDay,
       });
 
       expect(result.trips).to.equal(null);
-      expect(result.noTripsMessage).to.equal(null);
-      expect(mockIntl.formatMessage.called).to.equal(false);
+      expect(result.noTripsMessage).to.not.equal(null);
+      expect(mockIntl.formatMessage.called).to.equal(true);
     });
 
     it('should return sorted trips when trips are available', () => {
@@ -201,52 +199,17 @@ describe('scheduleTripsUtils', () => {
       expect(result.trips).to.equal(null);
     });
 
-    it('should return no trips message when no trips and no firstDataDate', () => {
+    it('should format wantedDay correctly in message', () => {
       const pattern = {
         code: 'HSL:1001:0:01',
         trips: [],
       };
-      const serviceDay = '20240115';
-
-      const result = getTripsList({
-        pattern,
-        intl: mockIntl,
-        serviceDay,
-      });
-
-      expect(result.trips).to.equal(null);
-      expect(result.noTripsMessage).to.not.equal(null);
-      expect(mockIntl.formatMessage.called).to.equal(true);
-    });
-
-    it('should return null message when no trips but firstDataDate is provided', () => {
-      const pattern = {
-        code: 'HSL:1001:0:01',
-        trips: [],
-      };
-
-      const result = getTripsList({
-        pattern,
-        firstDataDate: DateTime.fromISO('2024-01-16'),
-        intl: mockIntl,
-      });
-
-      expect(result.trips).to.equal(null);
-      expect(result.noTripsMessage).to.equal(null);
-      expect(mockIntl.formatMessage.called).to.equal(false);
-    });
-
-    it('should format service day correctly in message', () => {
-      const pattern = {
-        code: 'HSL:1001:0:01',
-        trips: [],
-      };
-      const serviceDay = '20240115';
+      const wantedDay = DateTime.fromFormat('20240115', DATE_FORMAT);
 
       getTripsList({
         pattern,
         intl: mockIntl,
-        serviceDay,
+        wantedDay,
       });
 
       expect(mockIntl.formatMessage.called).to.equal(true);
@@ -422,7 +385,7 @@ describe('scheduleTripsUtils', () => {
         expect(result.trips[2].id).to.equal('trip-empty');
       });
 
-      it('should handle empty serviceDay string', () => {
+      it('should handle undefined wantedDay', () => {
         const pattern = {
           code: 'HSL:1001:0:01',
           trips: [],
@@ -431,7 +394,7 @@ describe('scheduleTripsUtils', () => {
         const result = getTripsList({
           pattern,
           intl: mockIntl,
-          serviceDay: '',
+          wantedDay: undefined,
         });
 
         expect(result.trips).to.equal(null);

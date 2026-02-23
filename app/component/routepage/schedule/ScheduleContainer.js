@@ -27,7 +27,7 @@ import {
   validateScheduleData,
   calculateRedirectDecision,
 } from '../../../util/scheduleValidation';
-import { populateData } from '../../../util/scheduleDataUtils';
+import { buildAvailableDates } from '../../../util/scheduleDataUtils';
 
 /**
  * Open a route timetable PDF in a new window.
@@ -87,16 +87,14 @@ const ScheduleContainer = ({
     () =>
       serviceDayString
         ? DateTime.fromFormat(serviceDayString, DATE_FORMAT)
-        : undefined,
+        : DateTime.local(),
     [serviceDayString],
   );
 
-  const data = useMemo(
-    () => populateData(wantedDay, firstDepartures),
+  const availableDates = useMemo(
+    () => buildAvailableDates(firstDepartures),
     [wantedDay, firstDepartures],
   );
-
-  const firstDataDate = data?.dates?.[0];
 
   const currentPattern = route?.patterns?.find(p => p.code === pattern?.code);
 
@@ -106,12 +104,11 @@ const ScheduleContainer = ({
     () =>
       getTripsList({
         pattern: currentPattern,
-        firstDataDate,
         intl,
         testNum,
-        serviceDay: serviceDayString,
+        wantedDay,
       }),
-    [currentPattern, firstDataDate, intl, testNum, serviceDayString],
+    [currentPattern, intl, testNum, wantedDay],
   );
 
   const routeId = route?.gtfsId;
@@ -145,8 +142,6 @@ const ScheduleContainer = ({
     router,
     redirectDecision,
   });
-
-  const datesList = data?.dates || [];
 
   useEffect(() => {
     if (pattern?.code) {
@@ -205,10 +200,7 @@ const ScheduleContainer = ({
     [match, router],
   );
 
-  const selectedServiceDay = wantedDay || firstDataDate;
-  const formattedServiceDate = selectedServiceDay
-    ? selectedServiceDay.toFormat(DATE_FORMAT)
-    : null;
+  const formattedServiceDate = wantedDay && wantedDay.toFormat(DATE_FORMAT);
 
   const todayDateStr = useMemo(
     () => DateTime.local().toFormat(DATE_FORMAT),
@@ -298,8 +290,8 @@ const ScheduleContainer = ({
             <DateSelectGrouped
               startDate={todayDateStr}
               dateFormat={DATE_FORMAT}
-              selectedDay={wantedDay || data?.selectedDay}
-              dates={datesList}
+              selectedDay={wantedDay}
+              dates={availableDates}
               onDateChange={changeDate}
             />
           </div>

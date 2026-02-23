@@ -34,7 +34,7 @@ describe('<ScheduleContainer />', () => {
   let useFragmentStub;
   let validateScheduleDataStub;
   let calculateRedirectDecisionStub;
-  let populateDataStub;
+  let buildAvailableDatesStub;
   let getTripsListStub;
   let useScheduleDataStub;
   let useScheduleRedirectsStub;
@@ -165,10 +165,12 @@ describe('<ScheduleContainer />', () => {
         redirectPath: null,
       });
 
-    populateDataStub = sinon.stub(scheduleDataUtils, 'populateData').returns({
-      selectedDay: DateTime.fromISO('2024-01-01'),
-      dates: [DateTime.fromISO('2024-01-01'), DateTime.fromISO('2024-01-02')],
-    });
+    buildAvailableDatesStub = sinon
+      .stub(scheduleDataUtils, 'buildAvailableDates')
+      .returns([
+        DateTime.fromISO('2024-01-01'),
+        DateTime.fromISO('2024-01-02'),
+      ]);
 
     getTripsListStub = sinon.stub(scheduleTripsUtils, 'getTripsList').returns({
       trips: [{ id: 'trip-1', stoptimes: [] }],
@@ -223,8 +225,8 @@ describe('<ScheduleContainer />', () => {
     if (calculateRedirectDecisionStub) {
       calculateRedirectDecisionStub.restore();
     }
-    if (populateDataStub) {
-      populateDataStub.restore();
+    if (buildAvailableDatesStub) {
+      buildAvailableDatesStub.restore();
     }
     if (getTripsListStub) {
       getTripsListStub.restore();
@@ -377,10 +379,7 @@ describe('<ScheduleContainer />', () => {
     });
 
     it('should still render date select when no options are available', () => {
-      populateDataStub.returns({
-        selectedDay: DateTime.fromISO('2024-01-01'),
-        dates: [DateTime.fromISO('2024-01-01')],
-      });
+      buildAvailableDatesStub.returns([DateTime.fromISO('2024-01-01')]);
 
       const wrapper = shallow(
         <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,

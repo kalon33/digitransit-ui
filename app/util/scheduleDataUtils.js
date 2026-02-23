@@ -23,7 +23,16 @@ const parseScheduleKey = key => {
   };
 };
 
-const buildAvailableDates = (departures, startOfCurrentWeek) => {
+/**
+ * Populate and return the list of available dates.
+ * @param {DateTime} wantedDayIn - Preferred date to select (may be invalid)
+ * @param {Object} departures - Departures object keyed by wk{n}{day}
+ * @returns {Array<DateTime>} Array of available dates
+ */
+export const buildAvailableDates = departures => {
+  // Current week anchor for translating wk{n}{day} keys into dates.
+  const startOfCurrentWeek = DateTime.now().startOf('week');
+
   const dateMap = new Map();
 
   if (!departures) {
@@ -53,34 +62,4 @@ const buildAvailableDates = (departures, startOfCurrentWeek) => {
   return Array.from(dateMap.values()).sort(
     (a, b) => a.toMillis() - b.toMillis(),
   );
-};
-/**
- * Populate and return the list of available dates and the chosen date.
- * @param {DateTime} wantedDayIn - Preferred date to select (may be invalid)
- * @param {Object} departures - Departures object keyed by wk{n}{day}
- * @returns {Object} { dates: Array<DateTime>, selectedDay: DateTime }
- */
-export const populateData = (wantedDayIn, departures) => {
-  // Current week anchor for translating wk{n}{day} keys into dates.
-  const startOfCurrentWeek = DateTime.now().startOf('week');
-
-  // All unique dates that have departures.
-  const availableDates = buildAvailableDates(departures, startOfCurrentWeek);
-
-  const today = DateTime.now().startOf('day');
-
-  // Prefer wanted day
-  // Fallback to today if data is available,
-  // otherwise use the first available date.
-  // Select today if nothing else is available.
-  const selectedDay =
-    (wantedDayIn?.isValid && wantedDayIn) ||
-    availableDates.find(date => date.hasSame(today, 'day')) ||
-    availableDates[0] ||
-    today;
-
-  return {
-    dates: availableDates,
-    selectedDay,
-  };
 };
