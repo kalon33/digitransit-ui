@@ -109,7 +109,7 @@ const RestoreDefaultSettings = ({}, { executeAction }) => {
         })}
         aria-hidden="true"
       >
-        <Icon img="icon_checkmark-circled" omitViewBox />
+        <Icon img="icon_checkmark-circled" />
         <span className="snackbar-text">
           <FormattedMessage
             id="restore-default-settings-success"
@@ -126,7 +126,11 @@ const RestoreDefaultSettings = ({}, { executeAction }) => {
           onClick={() => setShowSnackbar(false)}
           tabIndex="-1"
         >
-          <Icon id="close-icon" img="notification-close" omitViewBox />
+          <Icon
+            id="close-icon"
+            img="notification-close"
+            color={config.colors.primary}
+          />
         </button>
       </div>
       <div
@@ -155,7 +159,7 @@ const RestoreDefaultSettings = ({}, { executeAction }) => {
             'slide-out': slideOutRestoreSettingsButton,
           })}
         >
-          <Icon img="icon_checkmark" omitViewBox />
+          <Icon img="icon_checkmark" />
           <FormattedMessage
             id="settings-changed-by-you"
             defaultMessage="Settings changed"
