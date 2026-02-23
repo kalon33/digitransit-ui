@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events, no-sequences */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import PropTypes from 'prop-types';
 import React, { useEffect, useState, useRef } from 'react';
 import { FormattedMessage } from 'react-intl';

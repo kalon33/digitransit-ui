@@ -54,9 +54,7 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
       <div className="settings-section">
         <div className="settings-header">
           <button
-            aria-label={intl.formatMessage({
-              id: 'close-settings',
-            })}
+            aria-label={intl.formatMessage({ id: 'close-settings' })}
             type="button"
             className="close-offcanvas"
             onClick={() => {
@@ -78,7 +76,7 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
         </div>
         <div
           className="separator"
-          style={{ 'margin-left': '-16px', width: 'calc(100% + 32px' }}
+          style={{ marginLeft: '-16px', width: 'calc(100% + 32px' }}
         />
       </div>
       <ScrollableWrapper>
@@ -124,12 +122,12 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
             <Scooters />
           </div>
         )}
-        {true /* || config.experimental?.allowFlexJourneys &&
-		config.transportModes.taxi.availableForSelection */ && (
-          <div className="settings-section">
-            <TaxiOptions currentSettings={currentSettings} />
-          </div>
-        )}
+        {config.experimental?.allowFlexJourneys &&
+          config.transportModes.taxi.availableForSelection && (
+            <div className="settings-section">
+              <TaxiOptions currentSettings={currentSettings} />
+            </div>
+          )}
         <div className="settings-section">
           <RestoreDefaultSettings config={config} />
         </div>

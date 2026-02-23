@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import PropTypes from 'prop-types';
 import React, { useState, useEffect, useRef } from 'react';
 import cx from 'classnames';
