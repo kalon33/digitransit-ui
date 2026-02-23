@@ -137,8 +137,8 @@ function DateSelectGrouped({
     );
   }, []);
 
-  const id = 'route-schedule-datepicker';
-  const classNamePrefix = 'route-schedule';
+  const id = 'route-schedule-grouped-datepicker';
+  const classNamePrefix = 'route-schedule-grouped';
 
   const selectAriaLabel = formatMessage({
     id: 'select-date',
@@ -151,7 +151,7 @@ function DateSelectGrouped({
         isMenuOpen ? ' date-select-wrapper--menu-open' : ''
       }`}
     >
-      <h3 className="route-schedule-date-select-heading">
+      <h3 className="route-schedule-grouped-date-select-heading">
         <FormattedMessage
           id="route-page.select-time"
           defaultMessage="Select time"
@@ -203,7 +203,7 @@ function DateSelectGrouped({
               </span>
             </span>
             <div>
-              <Icon id="route-schedule-date-icon" img="icon_calendar" />
+              <Icon id="route-schedule-grouped-date-icon" img="icon_calendar" />
             </div>
           </>
         }

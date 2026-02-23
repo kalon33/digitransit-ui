@@ -293,8 +293,8 @@ const ScheduleContainer = ({
             noInitialServiceDay
           />
         )}
-        <div className="route-schedule-date-select">
-          <div className="route-schedule-date-select-wrapper">
+        <div className="route-schedule-grouped-date-select">
+          <div className="route-schedule-grouped-date-select-wrapper">
             <DateSelectGrouped
               startDate={todayDateStr}
               dateFormat={DATE_FORMAT}
