@@ -10,7 +10,7 @@ export default function TransferOptions(
   { defaultSettings, currentSettings },
   { executeAction },
 ) {
-  const { transferPenaltyHigh } = useConfigContext();
+  const { transferPenaltyHigh, minTransferTimeSelection } = useConfigContext();
   const avoidTransfers =
     currentSettings.transferPenalty !== defaultSettings.transferPenalty;
 
@@ -33,6 +33,7 @@ export default function TransferOptions(
       labelId="avoid-transfers"
       toggled={avoidTransfers}
       onToggle={onToggle}
+      borderStyle={minTransferTimeSelection ? 'border-top' : ''}
     />
   );
 }
