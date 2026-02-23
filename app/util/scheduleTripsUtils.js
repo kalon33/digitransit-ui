@@ -77,7 +77,7 @@ export const getTripsList = ({
     return {
       trips: null,
       noTripsMessage: (
-        <div className="text-center">
+        <div className="no-trips-message" role="alert">
           {intl.formatMessage(
             {
               id: 'no-trips-found',

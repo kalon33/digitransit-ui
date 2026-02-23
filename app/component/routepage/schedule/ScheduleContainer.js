@@ -139,19 +139,10 @@ const ScheduleContainer = ({
       calculateRedirectDecision({
         testNum,
         wantedDay,
-        firstDataDate,
-        noTrips: !tripsResult.trips,
         patternCode: pattern?.code,
         routeId,
       }),
-    [
-      testNum,
-      wantedDay,
-      firstDataDate,
-      tripsResult.trips,
-      pattern?.code,
-      routeId,
-    ],
+    [testNum, wantedDay, pattern?.code, routeId],
   );
 
   useScheduleRedirects({
@@ -318,6 +309,7 @@ const ScheduleContainer = ({
             />
           </div>
         </div>
+        {tripsResult.noTripsMessage}
         {pattern && (
           <div
             className={cx('route-schedule-list-wrapper', {
