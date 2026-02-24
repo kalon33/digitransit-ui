@@ -59,6 +59,8 @@ export function processDates(dates, today, tomorrow, dateFormat, intl) {
     dateObj: d,
     value: d.toFormat(dateFormat),
     textLabel: formatDateLabel(d, today, tomorrow, intl),
+    // accessibility label with full weekday
+    ariaLabel: d.toFormat('EEEE d.L.'),
     weekNumber: d.weekNumber,
   }));
 }
@@ -86,15 +88,7 @@ export function groupDatesByWeek(processedDates, currentWeek, intl) {
     .forEach(([weekNum, weekItems]) => {
       const groupLabel = formatWeekLabel(Number(weekNum), currentWeek, intl);
 
-      const options = weekItems.map(item => ({
-        value: item.value,
-        textLabel: item.textLabel,
-        // accessibility label with full weekday
-        ariaLabel: item.dateObj.toFormat('EEEE d.L.'),
-        raw: item,
-      }));
-
-      groupedOptions.push({ label: groupLabel, options });
+      groupedOptions.push({ label: groupLabel, options: weekItems });
     });
 
   return groupedOptions;

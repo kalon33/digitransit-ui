@@ -281,8 +281,7 @@ describe('<DateSelectGrouped />', () => {
   });
 
   it('should not recompute when startDate is recreated with same date value', () => {
-    // This test verifies optimization: useMemo uses stable primitive value,
-    // so recreating DateTime with same date doesn't trigger recomputation
+    // This test verifies optimization.
     const startDate1 = DateTime.fromISO('2019-01-05', { zone: 'UTC' });
     const propsWithStartDate = {
       startDate: startDate1,

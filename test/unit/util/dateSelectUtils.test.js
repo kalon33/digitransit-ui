@@ -140,18 +140,21 @@ describe('dateSelectUtils', () => {
         {
           value: '20240115',
           textLabel: 'Mon 15.1.',
+          ariaLabel: 'Monday 15.1.',
           weekNumber: 3,
           dateObj: DateTime.fromISO('2024-01-15'),
         },
         {
           value: '20240116',
           textLabel: 'Tue 16.1.',
+          ariaLabel: 'Tuesday 16.1.',
           weekNumber: 3,
           dateObj: DateTime.fromISO('2024-01-16'),
         },
         {
           value: '20240122',
           textLabel: 'Mon 22.1.',
+          ariaLabel: 'Monday 22.1.',
           weekNumber: 4,
           dateObj: DateTime.fromISO('2024-01-22'),
         },
@@ -171,6 +174,7 @@ describe('dateSelectUtils', () => {
         {
           value: '20240115',
           textLabel: 'Mon 15.1.',
+          ariaLabel: 'Monday 15.1.',
           weekNumber: 3,
           dateObj: DateTime.fromISO('2024-01-15', { zone: 'UTC' }),
         },
@@ -187,18 +191,21 @@ describe('dateSelectUtils', () => {
         {
           value: '20240129',
           textLabel: 'Mon 29.1.',
+          ariaLabel: 'Monday 29.1.',
           weekNumber: 5,
           dateObj: DateTime.fromISO('2024-01-29'),
         },
         {
           value: '20240115',
           textLabel: 'Mon 15.1.',
+          ariaLabel: 'Monday 15.1.',
           weekNumber: 3,
           dateObj: DateTime.fromISO('2024-01-15'),
         },
         {
           value: '20240122',
           textLabel: 'Mon 22.1.',
+          ariaLabel: 'Monday 22.1.',
           weekNumber: 4,
           dateObj: DateTime.fromISO('2024-01-22'),
         },

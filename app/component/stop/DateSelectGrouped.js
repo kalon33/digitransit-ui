@@ -22,8 +22,7 @@ function DateSelectGrouped({
   onDateChange,
 }) {
   const intl = useTranslationsContext();
-  const { locale } = intl;
-  const { formatMessage } = intl;
+  const { locale, formatMessage } = intl;
 
   const GENERATED_DAYS = 60; // Fallback range when no dates provided
 
@@ -38,8 +37,8 @@ function DateSelectGrouped({
   }, []);
 
   // Generate grouped date options from provided dates or fallback range
-  const { grouped } = useMemo(() => {
-    const today = DateTime.local().setLocale(locale).startOf('day');
+  const { grouped, processedDates } = useMemo(() => {
+    const today = DateTime.local().startOf('day');
     const tomorrow = today.plus({ days: 1 });
 
     let sourceDates;
@@ -51,7 +50,7 @@ function DateSelectGrouped({
     }
 
     // Option objects with labels
-    const processedDates = processDates(
+    const processed = processDates(
       sourceDates,
       today,
       tomorrow,
@@ -59,20 +58,17 @@ function DateSelectGrouped({
       intl,
     );
 
-    const groupedOptions = groupDatesByWeek(
-      processedDates,
-      today.weekNumber,
-      intl,
-    );
+    const groupedOptions = groupDatesByWeek(processed, today.weekNumber, intl);
 
-    return { grouped: groupedOptions };
+    return { grouped: groupedOptions, processedDates: processed };
   }, [dateFormat, dates, startDate?.toISODate(), locale]);
 
   const selectedOption = useMemo(() => {
-    const allOptions = grouped.flatMap(g => g.options);
     const selectedValue = extractSelectedValue(selectedDay, dateFormat);
-    return allOptions.find(o => o.value === selectedValue) || allOptions[0];
-  }, [grouped, selectedDay, dateFormat]);
+    return (
+      processedDates.find(o => o.value === selectedValue) || processedDates[0]
+    );
+  }, [processedDates, selectedDay, dateFormat]);
 
   const handleChange = useCallback(
     option => {
@@ -155,9 +151,9 @@ function DateSelectGrouped({
         aria-label={selectAriaLabel}
         ariaLiveMessages={{
           guidance: () => '.',
-          onChange: ({ label, raw }) => {
+          onChange: ({ label, dateObj }) => {
             const msg = formatMessage({ id: 'route-page.pattern-chosen' });
-            const dateLabel = raw?.textLabel || label;
+            const dateLabel = dateObj?.textLabel || label;
             return `${msg} ${dateLabel}`;
           },
           onFilter: () => '',
