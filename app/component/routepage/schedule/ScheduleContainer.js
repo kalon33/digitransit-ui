@@ -21,13 +21,15 @@ import { useConfigContext } from '../../../configurations/ConfigContext';
 import { useTranslationsContext } from '../../../util/useTranslationsContext';
 import { getTripsList } from '../../../util/scheduleTripsUtils';
 import { routeShape, patternShape } from '../../../util/shapes';
-import { useScheduleData } from '../../../hooks/useScheduleData';
 import { useScheduleRedirects } from '../../../hooks/useScheduleRedirects';
 import {
   validateScheduleData,
   calculateRedirectDecision,
 } from '../../../util/scheduleValidation';
-import { buildAvailableDates } from '../../../util/scheduleDataUtils';
+import {
+  buildAvailableDates,
+  selectScheduleData,
+} from '../../../util/scheduleDataUtils';
 
 /**
  * Open a route timetable PDF in a new window.
@@ -76,10 +78,7 @@ const ScheduleContainer = ({
   const [from, setFrom] = useState(0);
   const [to, setTo] = useState(Math.max((pattern?.stops?.length || 1) - 1, 0));
 
-  const { firstDepartures } = useScheduleData({
-    firstDeparturesProp,
-    match,
-  });
+  const firstDepartures = selectScheduleData(firstDeparturesProp, match);
 
   const { query } = match.location;
   const serviceDayString = query?.serviceDay;

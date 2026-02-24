@@ -21,7 +21,6 @@ import * as ConfigContext from '../../../../app/configurations/ConfigContext';
 import * as scheduleValidation from '../../../../app/util/scheduleValidation';
 import * as scheduleDataUtils from '../../../../app/util/scheduleDataUtils';
 import * as scheduleTripsUtils from '../../../../app/util/scheduleTripsUtils';
-import * as scheduleDataHook from '../../../../app/hooks/useScheduleData';
 import * as scheduleRedirectHook from '../../../../app/hooks/useScheduleRedirects';
 
 describe('<ScheduleContainer />', () => {
@@ -36,7 +35,7 @@ describe('<ScheduleContainer />', () => {
   let calculateRedirectDecisionStub;
   let buildAvailableDatesStub;
   let getTripsListStub;
-  let useScheduleDataStub;
+  let selectScheduleDataStub;
   let useScheduleRedirectsStub;
   let routerReplaceSpy;
 
@@ -177,9 +176,9 @@ describe('<ScheduleContainer />', () => {
       noTripsMessage: null,
     });
 
-    useScheduleDataStub = sinon
-      .stub(scheduleDataHook, 'useScheduleData')
-      .returns({ firstDepartures: mockFirstDepartures });
+    selectScheduleDataStub = sinon
+      .stub(scheduleDataUtils, 'selectScheduleData')
+      .returns(mockFirstDepartures);
 
     useScheduleRedirectsStub = sinon
       .stub(scheduleRedirectHook, 'useScheduleRedirects')
@@ -231,8 +230,8 @@ describe('<ScheduleContainer />', () => {
     if (getTripsListStub) {
       getTripsListStub.restore();
     }
-    if (useScheduleDataStub) {
-      useScheduleDataStub.restore();
+    if (selectScheduleDataStub) {
+      selectScheduleDataStub.restore();
     }
     if (useScheduleRedirectsStub) {
       useScheduleRedirectsStub.restore();

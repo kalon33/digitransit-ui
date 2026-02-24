@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon';
 import { DATE_FORMAT } from '../constants';
+import getTestData from '../component/routepage/schedule/ScheduleDebugData';
 
 const WEEKDAY_MAP = {
   mon: 1,
@@ -62,4 +63,21 @@ export const buildAvailableDates = departures => {
   return Array.from(dateMap.values()).sort(
     (a, b) => a.toMillis() - b.toMillis(),
   );
+};
+
+/**
+ * Select schedule data, with optional test data override.
+ * @param {Object} firstDeparturesProp - Raw first departures data
+ * @param {Object} match - Router match object for accessing query params
+ * @returns {Object} First departures data (test data if in testing mode, otherwise real data)
+ */
+export const selectScheduleData = (firstDeparturesProp, match) => {
+  const testing = process.env.ROUTEPAGETESTING || false;
+  const testNum = testing && match?.location?.query?.test;
+
+  if (testing && testNum) {
+    return getTestData(testNum);
+  }
+
+  return firstDeparturesProp;
 };
