@@ -4,10 +4,10 @@ import { DateTime } from 'luxon';
 import { renderHook } from '@testing-library/react-hooks/dom';
 import sinon from 'sinon';
 
-import { useScheduleRedirects } from '../../../app/hooks/useScheduleRedirects';
+import { useRouterRedirect } from '../../../app/hooks/useRouterRedirect';
 import { DATE_FORMAT } from '../../../app/constants';
 
-describe('useScheduleRedirects', () => {
+describe('useRouterRedirect', () => {
   let mockRouter;
   let mockMatch;
   let routerReplaceSpy;
@@ -32,38 +32,26 @@ describe('useScheduleRedirects', () => {
   });
 
   it('should not redirect when shouldRedirect is false', () => {
-    const redirectDecision = {
-      shouldRedirect: false,
-      redirectDate: null,
-      redirectPath: null,
-      reason: 'no-redirect',
-    };
-
     renderHook(() =>
-      useScheduleRedirects({
+      useRouterRedirect({
         match: mockMatch,
         router: mockRouter,
-        redirectDecision,
+        shouldRedirect: false,
       }),
     );
 
     expect(routerReplaceSpy.called).to.equal(false);
   });
 
-  it('should redirect with date when redirectDate is provided', () => {
+  it('should redirect with query params when provided', () => {
     const redirectDate = DateTime.fromISO('2024-01-15');
-    const redirectDecision = {
-      shouldRedirect: true,
-      redirectDate,
-      redirectPath: null,
-      reason: 'past-date',
-    };
 
     renderHook(() =>
-      useScheduleRedirects({
+      useRouterRedirect({
         match: mockMatch,
         router: mockRouter,
-        redirectDecision,
+        shouldRedirect: true,
+        query: { serviceDay: redirectDate.toFormat(DATE_FORMAT) },
       }),
     );
 
@@ -75,20 +63,15 @@ describe('useScheduleRedirects', () => {
     );
   });
 
-  it('should redirect with path when redirectPath is provided', () => {
+  it('should redirect with path when pathname is provided', () => {
     const redirectPath = '/route/HSL:1001/timetable';
-    const redirectDecision = {
-      shouldRedirect: true,
-      redirectDate: null,
-      redirectPath,
-      reason: 'no-pattern',
-    };
 
     renderHook(() =>
-      useScheduleRedirects({
+      useRouterRedirect({
         match: mockMatch,
         router: mockRouter,
-        redirectDecision,
+        shouldRedirect: true,
+        pathname: redirectPath,
       }),
     );
 
@@ -98,21 +81,17 @@ describe('useScheduleRedirects', () => {
     expect(callArg.query.serviceDay).to.equal(undefined);
   });
 
-  it('should redirect with both path and date when both are provided', () => {
+  it('should redirect with both path and query when both are provided', () => {
     const redirectDate = DateTime.fromISO('2024-01-15');
     const redirectPath = '/route/HSL:1001/timetable';
-    const redirectDecision = {
-      shouldRedirect: true,
-      redirectDate,
-      redirectPath,
-      reason: 'complex-redirect',
-    };
 
     renderHook(() =>
-      useScheduleRedirects({
+      useRouterRedirect({
         match: mockMatch,
         router: mockRouter,
-        redirectDecision,
+        shouldRedirect: true,
+        pathname: redirectPath,
+        query: { serviceDay: redirectDate.toFormat(DATE_FORMAT) },
       }),
     );
 
@@ -124,15 +103,9 @@ describe('useScheduleRedirects', () => {
     );
   });
 
-  it('should preserve test param in testing mode', () => {
+  it('should preserve test param from existing query', () => {
     process.env.ROUTEPAGETESTING = 'true';
     const redirectDate = DateTime.fromISO('2024-01-15');
-    const redirectDecision = {
-      shouldRedirect: true,
-      redirectDate,
-      redirectPath: null,
-      reason: 'past-date',
-    };
 
     const matchWithTest = {
       ...mockMatch,
@@ -143,10 +116,11 @@ describe('useScheduleRedirects', () => {
     };
 
     renderHook(() =>
-      useScheduleRedirects({
+      useRouterRedirect({
         match: matchWithTest,
         router: mockRouter,
-        redirectDecision,
+        shouldRedirect: true,
+        query: { serviceDay: redirectDate.toFormat(DATE_FORMAT) },
       }),
     );
 
@@ -160,12 +134,6 @@ describe('useScheduleRedirects', () => {
 
   it('should preserve existing query params', () => {
     const redirectDate = DateTime.fromISO('2024-01-15');
-    const redirectDecision = {
-      shouldRedirect: true,
-      redirectDate,
-      redirectPath: null,
-      reason: 'past-date',
-    };
 
     const matchWithQuery = {
       ...mockMatch,
@@ -176,10 +144,11 @@ describe('useScheduleRedirects', () => {
     };
 
     renderHook(() =>
-      useScheduleRedirects({
+      useRouterRedirect({
         match: matchWithQuery,
         router: mockRouter,
-        redirectDecision,
+        shouldRedirect: true,
+        query: { serviceDay: redirectDate.toFormat(DATE_FORMAT) },
       }),
     );
 
@@ -191,36 +160,28 @@ describe('useScheduleRedirects', () => {
     );
   });
 
-  it('should redirect when redirectDecision changes', () => {
-    const initialDecision = {
-      shouldRedirect: false,
-      redirectDate: null,
-      redirectPath: null,
-      reason: 'no-redirect',
-    };
-
+  it('should redirect when shouldRedirect changes', () => {
     const { rerender } = renderHook(
-      ({ redirectDecision }) =>
-        useScheduleRedirects({
+      ({ shouldRedirect, query }) =>
+        useRouterRedirect({
           match: mockMatch,
           router: mockRouter,
-          redirectDecision,
+          shouldRedirect,
+          query,
         }),
       {
-        initialProps: { redirectDecision: initialDecision },
+        initialProps: { shouldRedirect: false, query: {} },
       },
     );
 
     expect(routerReplaceSpy.called).to.equal(false);
 
-    const newDecision = {
+    rerender({
       shouldRedirect: true,
-      redirectDate: DateTime.fromISO('2024-01-15'),
-      redirectPath: null,
-      reason: 'past-date',
-    };
-
-    rerender({ redirectDecision: newDecision });
+      query: {
+        serviceDay: DateTime.fromISO('2024-01-15').toFormat(DATE_FORMAT),
+      },
+    });
 
     expect(routerReplaceSpy.calledOnce).to.equal(true);
   });

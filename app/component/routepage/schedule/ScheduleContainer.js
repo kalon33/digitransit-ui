@@ -21,7 +21,7 @@ import { useConfigContext } from '../../../configurations/ConfigContext';
 import { useTranslationsContext } from '../../../util/useTranslationsContext';
 import { getTripsList } from '../../../util/scheduleTripsUtils';
 import { routeShape, patternShape } from '../../../util/shapes';
-import { useScheduleRedirects } from '../../../hooks/useScheduleRedirects';
+import { useRouterRedirect } from '../../../hooks/useRouterRedirect';
 import {
   validateScheduleData,
   calculateRedirectDecision,
@@ -136,10 +136,12 @@ const ScheduleContainer = ({
     [testNum, wantedDay, pattern?.code, routeId],
   );
 
-  useScheduleRedirects({
+  useRouterRedirect({
     match,
     router,
-    redirectDecision,
+    shouldRedirect: redirectDecision.shouldRedirect,
+    pathname: redirectDecision.redirectPath,
+    query: redirectDecision.query,
   });
 
   useEffect(() => {

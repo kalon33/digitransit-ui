@@ -21,7 +21,7 @@ import * as ConfigContext from '../../../../app/configurations/ConfigContext';
 import * as scheduleValidation from '../../../../app/util/scheduleValidation';
 import * as scheduleDataUtils from '../../../../app/util/scheduleDataUtils';
 import * as scheduleTripsUtils from '../../../../app/util/scheduleTripsUtils';
-import * as scheduleRedirectHook from '../../../../app/hooks/useScheduleRedirects';
+import * as scheduleRedirectHook from '../../../../app/hooks/useRouterRedirect';
 
 describe('<ScheduleContainer />', () => {
   let defaultProps;
@@ -36,7 +36,7 @@ describe('<ScheduleContainer />', () => {
   let buildAvailableDatesStub;
   let getTripsListStub;
   let selectScheduleDataStub;
-  let useScheduleRedirectsStub;
+  let useRouterRedirectStub;
   let routerReplaceSpy;
 
   // Mock data - defined once and reused
@@ -180,8 +180,8 @@ describe('<ScheduleContainer />', () => {
       .stub(scheduleDataUtils, 'selectScheduleData')
       .returns(mockFirstDepartures);
 
-    useScheduleRedirectsStub = sinon
-      .stub(scheduleRedirectHook, 'useScheduleRedirects')
+    useRouterRedirectStub = sinon
+      .stub(scheduleRedirectHook, 'useRouterRedirect')
       .returns(undefined);
 
     routerReplaceSpy = sinon.spy(mockRouter, 'replace');
@@ -233,8 +233,8 @@ describe('<ScheduleContainer />', () => {
     if (selectScheduleDataStub) {
       selectScheduleDataStub.restore();
     }
-    if (useScheduleRedirectsStub) {
-      useScheduleRedirectsStub.restore();
+    if (useRouterRedirectStub) {
+      useRouterRedirectStub.restore();
     }
     if (routerReplaceSpy) {
       routerReplaceSpy.restore();
@@ -423,11 +423,10 @@ describe('<ScheduleContainer />', () => {
       );
 
       expect(wrapper.isEmptyRender()).to.equal(true);
-      expect(useScheduleRedirectsStub.calledOnce).to.equal(true);
-      expect(
-        useScheduleRedirectsStub.firstCall.args[0].redirectDecision
-          .shouldRedirect,
-      ).to.equal(true);
+      expect(useRouterRedirectStub.calledOnce).to.equal(true);
+      expect(useRouterRedirectStub.firstCall.args[0].shouldRedirect).to.equal(
+        true,
+      );
     });
 
     it('should render no-trips message when provided', () => {
