@@ -9,7 +9,6 @@ import {
   generateDateRange,
   prepareDates,
   extractSelectedValue,
-  parseStartDate,
 } from '../../../app/util/dateSelectUtils';
 
 describe('dateSelectUtils', () => {
@@ -217,32 +216,20 @@ describe('dateSelectUtils', () => {
   describe('generateDateRange', () => {
     it('should generate specified number of days from start date', () => {
       const startDate = DateTime.fromISO('2024-01-15', { zone: 'UTC' });
-      const today = DateTime.fromISO('2024-01-15', { zone: 'UTC' });
       const numberOfDays = 7;
 
-      const result = generateDateRange(startDate, numberOfDays, today, 'en');
+      const result = generateDateRange(startDate, numberOfDays, 'en');
 
       expect(result).to.have.lengthOf(7);
       expect(result[0].toISODate()).to.equal('2024-01-15');
       expect(result[6].toISODate()).to.equal('2024-01-21');
     });
 
-    it('should filter out dates before today', () => {
-      const startDate = DateTime.fromISO('2024-01-10', { zone: 'UTC' });
-      const today = DateTime.fromISO('2024-01-15', { zone: 'UTC' });
-      const numberOfDays = 10;
-
-      const result = generateDateRange(startDate, numberOfDays, today, 'en');
-
-      expect(result.every(d => d >= today)).to.equal(true);
-    });
-
     it('should set correct locale', () => {
       const startDate = DateTime.fromISO('2024-01-15', { zone: 'UTC' });
-      const today = DateTime.fromISO('2024-01-15', { zone: 'UTC' });
       const numberOfDays = 3;
 
-      const result = generateDateRange(startDate, numberOfDays, today, 'fi');
+      const result = generateDateRange(startDate, numberOfDays, 'fi');
 
       expect(result[0].locale).to.equal('fi');
     });
@@ -251,10 +238,9 @@ describe('dateSelectUtils', () => {
       const startDate = DateTime.fromISO('2024-01-15T15:30:00', {
         zone: 'UTC',
       });
-      const today = DateTime.fromISO('2024-01-15', { zone: 'UTC' });
       const numberOfDays = 2;
 
-      const result = generateDateRange(startDate, numberOfDays, today, 'en');
+      const result = generateDateRange(startDate, numberOfDays, 'en');
 
       expect(result[0].hour).to.equal(0);
       expect(result[0].minute).to.equal(0);
@@ -363,58 +349,6 @@ describe('dateSelectUtils', () => {
       const result = extractSelectedValue('2024-01-15', dateFormat);
 
       expect(result).to.equal(undefined);
-    });
-  });
-
-  describe('parseStartDate', () => {
-    it('should parse valid date string', () => {
-      const today = DateTime.fromISO('2024-01-15', { zone: 'UTC' });
-      const startDateString = '20240120';
-
-      const result = parseStartDate(startDateString, dateFormat, today);
-
-      expect(result.toISODate()).to.equal('2024-01-20');
-    });
-
-    it('should return today for invalid date string', () => {
-      const today = DateTime.fromISO('2024-01-15', { zone: 'UTC' });
-      const startDateString = 'invalid-date';
-
-      const result = parseStartDate(startDateString, dateFormat, today);
-
-      expect(result.toISODate()).to.equal(today.toISODate());
-    });
-
-    it('should return today for empty string', () => {
-      const today = DateTime.fromISO('2024-01-15', { zone: 'UTC' });
-
-      const result = parseStartDate('', dateFormat, today);
-
-      expect(result.toISODate()).to.equal(today.toISODate());
-    });
-
-    it('should return today for null', () => {
-      const today = DateTime.fromISO('2024-01-15', { zone: 'UTC' });
-
-      const result = parseStartDate(null, dateFormat, today);
-
-      expect(result.toISODate()).to.equal(today.toISODate());
-    });
-
-    it('should return today for undefined', () => {
-      const today = DateTime.fromISO('2024-01-15', { zone: 'UTC' });
-
-      const result = parseStartDate(undefined, dateFormat, today);
-
-      expect(result.toISODate()).to.equal(today.toISODate());
-    });
-
-    it('should return today for non-string input', () => {
-      const today = DateTime.fromISO('2024-01-15', { zone: 'UTC' });
-
-      const result = parseStartDate(12345, dateFormat, today);
-
-      expect(result.toISODate()).to.equal(today.toISODate());
     });
   });
 });

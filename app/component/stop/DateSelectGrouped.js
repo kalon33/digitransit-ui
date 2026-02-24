@@ -12,7 +12,6 @@ import {
   processDates,
   groupDatesByWeek,
   generateDateRange,
-  parseStartDate,
 } from '../../util/dateSelectUtils';
 
 function DateSelectGrouped({
@@ -43,18 +42,12 @@ function DateSelectGrouped({
     const today = DateTime.local().setLocale(locale).startOf('day');
     const tomorrow = today.plus({ days: 1 });
 
-    // Determine source dates: use provided dates or generate fallback range
     let sourceDates;
-    if (Array.isArray(dates) && dates.length > 0) {
+    if (dates && Array.isArray(dates)) {
       sourceDates = prepareDates(dates, today, locale);
     } else {
-      const parsedStartDate = parseStartDate(startDate, dateFormat, today);
-      sourceDates = generateDateRange(
-        parsedStartDate,
-        GENERATED_DAYS,
-        today,
-        locale,
-      );
+      const validStartDate = startDate?.isValid ? startDate : today;
+      sourceDates = generateDateRange(validStartDate, GENERATED_DAYS, locale);
     }
 
     // Option objects with labels
@@ -73,7 +66,7 @@ function DateSelectGrouped({
     );
 
     return { grouped: groupedOptions };
-  }, [startDate, dateFormat, dates, intl]);
+  }, [dateFormat, dates, startDate?.toISODate(), locale]);
 
   const selectedOption = useMemo(() => {
     const allOptions = grouped.flatMap(g => g.options);
@@ -221,7 +214,7 @@ function DateSelectGrouped({
 }
 
 DateSelectGrouped.propTypes = {
-  startDate: PropTypes.string.isRequired,
+  startDate: PropTypes.instanceOf(DateTime),
   selectedDay: PropTypes.instanceOf(DateTime),
   dateFormat: PropTypes.string.isRequired,
   dates: PropTypes.arrayOf(PropTypes.instanceOf(DateTime)),
@@ -229,6 +222,7 @@ DateSelectGrouped.propTypes = {
 };
 
 DateSelectGrouped.defaultProps = {
+  startDate: undefined,
   selectedDay: undefined,
   dates: undefined,
 };

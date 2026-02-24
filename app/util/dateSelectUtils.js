@@ -105,16 +105,15 @@ export function groupDatesByWeek(processedDates, currentWeek, intl) {
  *
  * @param {DateTime} startDate - Starting date (must be valid Luxon DateTime)
  * @param {number} numberOfDays - Number of days to generate
- * @param {DateTime} today - Today's date for filtering
  * @param {string} locale - Locale string for date formatting
  * @returns {Array<DateTime>} Array of Luxon DateTime objects
  */
-export function generateDateRange(startDate, numberOfDays, today, locale) {
+export function generateDateRange(startDate, numberOfDays, locale) {
   const normalizedStart = startDate.setLocale(locale).startOf('day');
 
   return Array.from({ length: numberOfDays }, (_, i) =>
     normalizedStart.plus({ days: i }),
-  ).filter(d => d >= today);
+  );
 }
 
 /**
@@ -149,24 +148,4 @@ export function extractSelectedValue(selectedDay, dateFormat) {
     return selectedDay.toFormat(dateFormat);
   }
   return undefined;
-}
-
-/**
- * Parse start date string into a valid DateTime object, falling back to today.
- *
- * @param {string} startDateString - Date string to parse
- * @param {string} dateFormat - Format string for parsing
- * @param {DateTime} today - Today's date as fallback
- * @returns {DateTime} Parsed date or today
- */
-export function parseStartDate(startDateString, dateFormat, today) {
-  if (!startDateString || typeof startDateString !== 'string') {
-    return today;
-  }
-
-  const parsed = DateTime.fromFormat(startDateString, dateFormat);
-  if (parsed && parsed.isValid) {
-    return parsed;
-  }
-  return today;
 }

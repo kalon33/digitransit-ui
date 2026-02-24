@@ -16,7 +16,7 @@ describe('<DateSelectGrouped />', () => {
   );
 
   const defaultProps = {
-    startDate: '20190101',
+    startDate: DateTime.fromISO('2019-01-01', { zone: 'UTC' }),
     selectedDay,
     dateFormat,
     dates,
@@ -95,7 +95,7 @@ describe('<DateSelectGrouped />', () => {
 
   it('should generate 60 days when no dates provided', () => {
     const propsWithoutDates = {
-      startDate: '20190101',
+      startDate: DateTime.fromISO('2019-01-01', { zone: 'UTC' }),
       selectedDay,
       dateFormat,
       onDateChange: value => value,
@@ -113,7 +113,7 @@ describe('<DateSelectGrouped />', () => {
 
   it('should generate dates from startDate when no dates provided', () => {
     const propsWithoutDates = {
-      startDate: '20190105',
+      startDate: DateTime.fromISO('2019-01-05', { zone: 'UTC' }),
       selectedDay: DateTime.fromISO('2019-01-05', { zone: 'UTC' }),
       dateFormat,
       onDateChange: value => value,
@@ -129,7 +129,7 @@ describe('<DateSelectGrouped />', () => {
     expect(flatOptions[0].value).to.equal('20190105');
   });
 
-  it('should handle empty dates array by generating fallback range', () => {
+  it('should return no options when dates array is empty', () => {
     const propsWithEmptyDates = {
       ...defaultProps,
       dates: [],
@@ -144,7 +144,7 @@ describe('<DateSelectGrouped />', () => {
       0,
     );
 
-    expect(totalOptions).to.equal(60);
+    expect(totalOptions).to.equal(0);
   });
 
   it('should select first option when selectedDay is undefined', () => {
@@ -278,5 +278,38 @@ describe('<DateSelectGrouped />', () => {
 
     // Swedish weekday abbreviation for Thursday (3rd)
     expect(flatOptions[2].textLabel).to.equal('tors 3.1.');
+  });
+
+  it('should not recompute when startDate is recreated with same date value', () => {
+    // This test verifies optimization: useMemo uses stable primitive value,
+    // so recreating DateTime with same date doesn't trigger recomputation
+    const startDate1 = DateTime.fromISO('2019-01-05', { zone: 'UTC' });
+    const propsWithStartDate = {
+      startDate: startDate1,
+      selectedDay: DateTime.fromISO('2019-01-05', { zone: 'UTC' }),
+      dateFormat,
+      onDateChange: value => value,
+    };
+
+    const wrapper = mountWithIntl(
+      <DateSelectGrouped {...propsWithStartDate} />,
+    );
+    const { options: options1 } = wrapper.find(Select).props();
+    const firstOptionBefore = options1[0].options[0].value;
+
+    // Create new DateTime with same date (different reference)
+    const startDate2 = DateTime.fromISO('2019-01-05', { zone: 'UTC' });
+    wrapper.setProps({ startDate: startDate2 });
+    wrapper.update();
+
+    const { options: options2 } = wrapper.find(Select).props();
+    const firstOptionAfter = options2[0].options[0].value;
+
+    // Values should be the same
+    expect(firstOptionBefore).to.equal(firstOptionAfter);
+    expect(firstOptionBefore).to.equal('20190105');
+
+    // References should be the same (no recomputation due to stable primitive dependency)
+    expect(options1).to.equal(options2);
   });
 });

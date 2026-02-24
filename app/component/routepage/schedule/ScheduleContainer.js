@@ -202,11 +202,6 @@ const ScheduleContainer = ({
 
   const formattedServiceDate = wantedDay && wantedDay.toFormat(DATE_FORMAT);
 
-  const todayDateStr = useMemo(
-    () => DateTime.local().toFormat(DATE_FORMAT),
-    [],
-  );
-
   const routeTimetableUrl = useMemo(() => {
     if (!routeId || !formattedServiceDate) {
       return undefined;
@@ -288,7 +283,6 @@ const ScheduleContainer = ({
         <div className="route-schedule-grouped-date-select">
           <div className="route-schedule-grouped-date-select-wrapper">
             <DateSelectGrouped
-              startDate={todayDateStr}
               dateFormat={DATE_FORMAT}
               selectedDay={wantedDay}
               dates={availableDates}
