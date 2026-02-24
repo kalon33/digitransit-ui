@@ -86,7 +86,7 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
             defaultSettings={defaultSettings}
           />
         </div>
-        {config.personalisationtion && (
+        {config.personalisation && (
           <div className="settings-section">
             <Personalisation currentSettings={currentSettings} />
           </div>
