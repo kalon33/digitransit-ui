@@ -866,4 +866,5 @@ export default {
   allowedFlexRouteTypes: [1501],
   showRouteDescNotification: false,
   showStopStatusMarkers: false,
+  personalisation: false,
 };
