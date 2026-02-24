@@ -1465,8 +1465,19 @@ const translations = {
     payment_at_gate: 'Payment at the gate ',
     'personal-itineraries': 'Personal itineraries',
     personalisation: 'Personalisation',
+    'personalisation-beta':
+      'Personalization is still in the testing phase, meaning we are trying out the service. We would love to hear about your experience. The survey will open in a new tab.',
     'personalisation-info':
       'Find your favorite routes and travel according to your habits',
+    'personalisation-modal-feedback': 'We learn from your feedback',
+    'personalisation-modal-feedback-details':
+      'We use your feedback in itinerary recommendations. Tell us what you think about the recommendations and we will take your preferences into account in the future.',
+    'personalisation-modal-header': 'How route recommendations work',
+    'personalisation-modal-highlight': 'We highlight your favorites',
+    'personalisation-modal-highlight-details':
+      'We emphasize your favorite routes in personalization. So add the routes you use as favorites.',
+    'personalisation-modal-link': 'Add or edit your favorites',
+    'personalisation-open-info': 'Read how recommendations work',
     'pick-icon': 'Select icon',
     'pick-mode': 'Transport modes',
     'pick-mode-airplane-disabled': 'Flight not selected',
@@ -2799,8 +2810,19 @@ const translations = {
     payment_at_gate: 'Maksu portilla',
     'personal-itineraries': 'Yksilölliset reittiehdotukset',
     personalisation: 'Personointi',
+    'personalisation-beta':
+      'Personointi on vielä testausvaiheessa, eli kokeilemme palvelua. Haluaisimme kuulla kokemuksestasi. Kysely avautuu uuteen välilehteen.',
     'personalisation-info':
       'Löydä mieleiset reitit ja matkusta tottumustesi mukaan.',
+    'personalisation-modal-feedback': 'Opimme palautteestasi',
+    'personalisation-modal-feedback-details':
+      'Hyödynnämme reittisuosituksissa palautettasi. Kerro mielipiteesi suosituksista, niin huomioimme mieltymyksesi jatkossa.',
+    'personalisation-modal-header': 'Näin reittisuositukset toimivat',
+    'personalisation-modal-highlight': 'Korostamme suosikkejasi',
+    'personalisation-modal-highlight-details':
+      'Painotamme personoinnissa suosikkilinjojasi. Lisää siis käyttämäsi linjat suosikeiksi.',
+    'personalisation-modal-link': 'Lisää tai muokkaa suosikkejasi',
+    'personalisation-open-info': 'Lue, miten suositukset toimivat',
     'pick-icon': 'Valitse kuvake',
     'pick-mode': 'Liikennevälineet',
     'pick-mode-airplane-disabled': 'Lentokone ei valittu',
@@ -5758,8 +5780,19 @@ const translations = {
     payment_at_gate: 'Betalning vid porten',
     'personal-itineraries': 'Individuella ruttförslag',
     personalisation: 'Personalisering',
+    'personalisation-beta':
+      'Personaliseringen är fortfarande i testfasen, vilket innebär att vi testar tjänsten. Vi vill gärna höra om din upplevelse. Undersökningen öppnas i en ny flik.',
     'personalisation-info':
       'Hitta dina favoritrutter och res utifrån dina vanor.',
+    'personalisation-modal-feedback': 'Vi lär oss av er feedback',
+    'personalisation-modal-feedback-details':
+      'Vi använder din feedback i våra ruttrekommendationer. Berätta vad du tycker om rekommendationerna så tar vi hänsyn till dina preferenser i framtiden.',
+    'personalisation-modal-header': 'Hur ruttrekommendationer fungerar',
+    'personalisation-modal-highlight': 'Vi lyfter fram dina favoriter',
+    'personalisation-modal-highlight-details':
+      'Vi betonar dina favoritlinjer i personaliseringen. Så lägg till de linjer du använder som favoriter.',
+    'personalisation-modal-link': 'Lägg till eller redigera dina favoriter',
+    'personalisation-open-info': 'Läs hur rekommendationer fungerar',
     'pick-icon': 'Välj en ikon',
     'pick-mode': 'Trafikslag',
     'pick-mode-airplane-disabled': 'Flyg inte vald',
