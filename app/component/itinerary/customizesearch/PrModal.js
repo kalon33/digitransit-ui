@@ -41,7 +41,15 @@ export default function PrModal({ closeModal }) {
             )}
           </div>
         </div>
-        <div className="pr-info-content" />
+        <div className="pr-info-content">
+          <Icon img="icon_thumb" color="#666" height={2} width={2} />
+          <div className="pr-info-text-area">
+            <h3>
+              <FormattedMessage id="personalisation-modal-feedback" />
+            </h3>
+            <FormattedMessage id="personalisation-modal-feedback-details" />
+          </div>
+        </div>
         <div className="pr-beta">
           <Icon
             img="personalization"
