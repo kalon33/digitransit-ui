@@ -2,20 +2,19 @@ import React from 'react';
 import { expect } from 'chai';
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import { shallow } from 'enzyme';
-import sinon from 'sinon';
 import Select from 'react-select';
 
 import ScheduleDropdown from '../../../../app/component/routepage/schedule/ScheduleDropdown';
-import { mockContext } from '../../helpers/mock-context';
-import * as useTranslationsContext from '../../../../app/util/useTranslationsContext';
-import * as ConfigContext from '../../../../app/configurations/ConfigContext';
+import { createSimpleTestContext } from '../../helpers/mock-schedule-context';
 
 describe('<ScheduleDropdown />', () => {
+  let sandbox;
   let defaultProps;
-  let useTranslationsContextStub;
-  let useConfigContextStub;
 
   beforeEach(() => {
+    const testContext = createSimpleTestContext();
+    sandbox = testContext.sandbox;
+
     defaultProps = {
       id: 'test-dropdown',
       title: 'Test Title',
@@ -24,31 +23,14 @@ describe('<ScheduleDropdown />', () => {
         { label: 'Option 2', value: 'opt2' },
         { label: 'Option 3', value: 'opt3' },
       ],
-      onSelectChange: sinon.spy(),
+      onSelectChange: sandbox.spy(),
       alignRight: false,
       labelId: undefined,
     };
-
-    // Mock hooks
-    useTranslationsContextStub = sinon
-      .stub(useTranslationsContext, 'useTranslationsContext')
-      .returns({
-        formatMessage: sinon.stub().returns('translated text'),
-        locale: 'en',
-      });
-
-    useConfigContextStub = sinon
-      .stub(ConfigContext, 'useConfigContext')
-      .returns(mockContext.config);
   });
 
   afterEach(() => {
-    if (useTranslationsContextStub) {
-      useTranslationsContextStub.restore();
-    }
-    if (useConfigContextStub) {
-      useConfigContextStub.restore();
-    }
+    sandbox.restore();
   });
 
   it('should render without crashing', () => {

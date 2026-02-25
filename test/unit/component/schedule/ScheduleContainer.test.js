@@ -2,9 +2,7 @@ import React from 'react';
 import { expect } from 'chai';
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import { DateTime } from 'luxon';
-import sinon from 'sinon';
 import { shallow } from 'enzyme';
-import * as ReactRelay from 'react-relay';
 
 import { Component as ScheduleContainer } from '../../../../app/component/routepage/schedule/ScheduleContainer';
 import ScheduleHeader from '../../../../app/component/routepage/schedule/ScheduleHeader';
@@ -14,28 +12,15 @@ import ScheduleConstantOperation from '../../../../app/component/routepage/sched
 import RouteControlPanel from '../../../../app/component/routepage/RouteControlPanel';
 import SecondaryButton from '../../../../app/component/SecondaryButton';
 import { DATE_FORMAT } from '../../../../app/constants';
-import { mockContext } from '../../helpers/mock-context';
 import { mockMatch, mockRouter } from '../../helpers/mock-router';
-import * as useTranslationsContext from '../../../../app/util/useTranslationsContext';
-import * as ConfigContext from '../../../../app/configurations/ConfigContext';
-import * as scheduleValidation from '../../../../app/util/scheduleValidation';
-import * as scheduleDataUtils from '../../../../app/util/scheduleDataUtils';
-import * as scheduleTripsUtils from '../../../../app/util/scheduleTripsUtils';
-import * as scheduleRedirectHook from '../../../../app/hooks/useRouterRedirect';
+import { createScheduleTestContext } from '../../helpers/mock-schedule-context';
 
 describe('<ScheduleContainer />', () => {
+  let sandbox;
+  let stubs;
+  let mocks;
   let defaultProps;
   let mockMatchWithRouter;
-  let mockIntl;
-  let mockConfig;
-  let useTranslationsContextStub;
-  let useConfigContextStub;
-  let useFragmentStub;
-  let calculateRedirectDecisionStub;
-  let buildAvailableDatesStub;
-  let getTripsListStub;
-  let selectScheduleDataStub;
-  let useRouterRedirectStub;
   let routerReplaceSpy;
 
   // Mock data - defined once and reused
@@ -120,66 +105,20 @@ describe('<ScheduleContainer />', () => {
   };
 
   beforeEach(() => {
-    // Create mock intl object
-    mockIntl = {
-      formatMessage: sinon.stub().returns('translated text'),
-      formatDate: sinon.stub().returns('formatted date'),
-      formatTime: sinon.stub().returns('formatted time'),
-      formatNumber: sinon.stub().returns('formatted number'),
-      locale: 'en',
-    };
-
-    // Create mock config object
-    mockConfig = {
-      ...mockContext.config,
-      URL: { ROUTE_TIMETABLES: {} },
-      timetables: {},
-      constantOperationRoutes: {},
-    };
-
-    // Stub useFragment to pass through the fragment reference as-is
-    // This allows useFragment to work like an identity function in tests
-    useFragmentStub = sinon
-      .stub(ReactRelay, 'useFragment')
-      .callsFake((fragment, ref) => ref);
-
-    // Stub the context hooks and store references
-    useTranslationsContextStub = sinon
-      .stub(useTranslationsContext, 'useTranslationsContext')
-      .returns(mockIntl);
-    useConfigContextStub = sinon
-      .stub(ConfigContext, 'useConfigContext')
-      .returns(mockConfig);
-
-    calculateRedirectDecisionStub = sinon
-      .stub(scheduleValidation, 'calculateRedirectDecision')
-      .returns({
-        shouldRedirect: false,
-        redirectPath: null,
-        query: {},
-      });
-
-    buildAvailableDatesStub = sinon
-      .stub(scheduleDataUtils, 'buildAvailableDates')
-      .returns([
+    // Create test context with sandbox and all stubs
+    const testContext = createScheduleTestContext({
+      availableDates: [
         DateTime.fromISO('2024-01-01'),
         DateTime.fromISO('2024-01-02'),
-      ]);
-
-    getTripsListStub = sinon.stub(scheduleTripsUtils, 'getTripsList').returns({
-      trips: [{ id: 'trip-1', stoptimes: [] }],
-      noTripsMessage: null,
+      ],
+      scheduleData: mockFirstDepartures,
     });
 
-    selectScheduleDataStub = sinon
-      .stub(scheduleDataUtils, 'selectScheduleData')
-      .returns(mockFirstDepartures);
+    sandbox = testContext.sandbox;
+    mocks = testContext.mocks;
+    stubs = testContext.stubs;
 
-    useRouterRedirectStub = sinon
-      .stub(scheduleRedirectHook, 'useRouterRedirect')
-      .returns(undefined);
-
-    routerReplaceSpy = sinon.spy(mockRouter, 'replace');
+    routerReplaceSpy = sandbox.spy(mockRouter, 'replace');
 
     // Setup default props - pass actual mock data objects
     // useFragment will pass them through as-is in tests
@@ -203,34 +142,7 @@ describe('<ScheduleContainer />', () => {
   });
 
   afterEach(() => {
-    // Restore the specific stubs
-    if (useFragmentStub) {
-      useFragmentStub.restore();
-    }
-    if (useTranslationsContextStub) {
-      useTranslationsContextStub.restore();
-    }
-    if (useConfigContextStub) {
-      useConfigContextStub.restore();
-    }
-    if (calculateRedirectDecisionStub) {
-      calculateRedirectDecisionStub.restore();
-    }
-    if (buildAvailableDatesStub) {
-      buildAvailableDatesStub.restore();
-    }
-    if (getTripsListStub) {
-      getTripsListStub.restore();
-    }
-    if (selectScheduleDataStub) {
-      selectScheduleDataStub.restore();
-    }
-    if (useRouterRedirectStub) {
-      useRouterRedirectStub.restore();
-    }
-    if (routerReplaceSpy) {
-      routerReplaceSpy.restore();
-    }
+    sandbox.restore();
   });
 
   describe('Initialization and hooks', () => {
@@ -240,8 +152,8 @@ describe('<ScheduleContainer />', () => {
       );
 
       // Verify the context hooks were called
-      expect(useTranslationsContextStub.called).to.equal(true);
-      expect(useConfigContextStub.called).to.equal(true);
+      expect(stubs.useTranslationsContext.called).to.equal(true);
+      expect(stubs.useConfigContext.called).to.equal(true);
     });
 
     it('should call schedule validation helpers with expected inputs', () => {
@@ -260,9 +172,9 @@ describe('<ScheduleContainer />', () => {
         <ScheduleContainer {...defaultProps} match={matchWithServiceDay} />,
       );
 
-      expect(calculateRedirectDecisionStub.calledOnce).to.equal(true);
+      expect(stubs.calculateRedirectDecision.calledOnce).to.equal(true);
       expect(
-        calculateRedirectDecisionStub.calledWithMatch({
+        stubs.calculateRedirectDecision.calledWithMatch({
           testNum: '1',
           routeId: defaultProps.route.gtfsId,
         }),
@@ -283,7 +195,7 @@ describe('<ScheduleContainer />', () => {
       const tripList = wrapper.find(ScheduleTripList);
       expect(tripList).to.have.lengthOf(1);
       expect(tripList.prop('trips')).to.deep.equal(
-        getTripsListStub.getCall(0).returnValue.trips,
+        stubs.getTripsList.getCall(0).returnValue.trips,
       );
       expect(tripList.prop('fromIdx')).to.equal(0);
       expect(tripList.prop('toIdx')).to.equal(
@@ -361,7 +273,7 @@ describe('<ScheduleContainer />', () => {
     });
 
     it('should still render date select when no options are available', () => {
-      buildAvailableDatesStub.returns([DateTime.fromISO('2024-01-01')]);
+      stubs.buildAvailableDates.returns([DateTime.fromISO('2024-01-01')]);
 
       const wrapper = shallow(
         <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
@@ -373,7 +285,7 @@ describe('<ScheduleContainer />', () => {
 
   describe('Conditional rendering', () => {
     it('should render constant operation view when constantOperationInfo exists', () => {
-      mockConfig.constantOperationRoutes = {
+      mocks.config.constantOperationRoutes = {
         'HSL:1001': {
           en: { text: 'Always on', link: 'https://example.com' },
         },
@@ -390,7 +302,7 @@ describe('<ScheduleContainer />', () => {
     });
 
     it('should return null when redirect decision requires redirect', () => {
-      calculateRedirectDecisionStub.returns({
+      stubs.calculateRedirectDecision.returns({
         shouldRedirect: true,
         redirectPath: null,
         query: {},
@@ -401,14 +313,14 @@ describe('<ScheduleContainer />', () => {
       );
 
       expect(wrapper.isEmptyRender()).to.equal(true);
-      expect(useRouterRedirectStub.calledOnce).to.equal(true);
-      expect(useRouterRedirectStub.firstCall.args[0].shouldRedirect).to.equal(
+      expect(stubs.useRouterRedirect.calledOnce).to.equal(true);
+      expect(stubs.useRouterRedirect.firstCall.args[0].shouldRedirect).to.equal(
         true,
       );
     });
 
     it('should render no-trips message when provided', () => {
-      getTripsListStub.returns({
+      stubs.getTripsList.returns({
         trips: null,
         noTripsMessage: <div className="text-center">No trips</div>,
       });
@@ -421,10 +333,10 @@ describe('<ScheduleContainer />', () => {
     });
 
     it('should render timetable print button when route PDF exists', () => {
-      mockConfig.URL.ROUTE_TIMETABLES = { HSL: 'https://example.com' };
-      mockConfig.timetables = {
+      mocks.config.URL.ROUTE_TIMETABLES = { HSL: 'https://example.com' };
+      mocks.config.timetables = {
         HSL: {
-          routeTimetableUrlResolver: sinon
+          routeTimetableUrlResolver: sandbox
             .stub()
             .returns({ href: 'https://example.com/timetable.pdf' }),
         },
@@ -458,7 +370,7 @@ describe('<ScheduleContainer />', () => {
       );
 
       expect(
-        calculateRedirectDecisionStub.calledWithMatch({ testNum: '1' }),
+        stubs.calculateRedirectDecision.calledWithMatch({ testNum: '1' }),
       ).to.equal(true);
     });
   });
