@@ -155,9 +155,8 @@ describe('<ScheduleContainer />', () => {
       .stub(scheduleValidation, 'calculateRedirectDecision')
       .returns({
         shouldRedirect: false,
-        reason: 'no-redirect',
-        redirectDate: null,
         redirectPath: null,
+        query: {},
       });
 
     buildAvailableDatesStub = sinon
@@ -393,9 +392,8 @@ describe('<ScheduleContainer />', () => {
     it('should return null when redirect decision requires redirect', () => {
       calculateRedirectDecisionStub.returns({
         shouldRedirect: true,
-        reason: 'no-redirect',
-        redirectDate: null,
         redirectPath: null,
+        query: {},
       });
 
       const wrapper = shallow(

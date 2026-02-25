@@ -25,12 +25,10 @@ describe('scheduleValidation', () => {
       const decision = calculateRedirectDecision({
         testNum: '0',
         wantedDay: DateTime.now().minus({ days: 1 }),
-        validationReason: 'valid',
         routeId: 'HSL:1001',
       });
 
       expect(decision.shouldRedirect).to.equal(false);
-      expect(decision.reason).to.equal('test-mode');
       expect(decision.query).to.deep.equal({});
       expect(decision.redirectPath).to.equal(null);
     });
@@ -39,12 +37,10 @@ describe('scheduleValidation', () => {
       const decision = calculateRedirectDecision({
         testNum: undefined,
         wantedDay: DateTime.now().minus({ days: 2 }),
-        validationReason: 'valid',
         routeId: 'HSL:1001',
       });
 
       expect(decision.shouldRedirect).to.equal(true);
-      expect(decision.reason).to.equal('past-date');
       expect(decision.query.serviceDay).to.equal(
         fixedNow.startOf('day').toFormat(DATE_FORMAT),
       );
@@ -55,12 +51,10 @@ describe('scheduleValidation', () => {
       const decision = calculateRedirectDecision({
         testNum: undefined,
         wantedDay: DateTime.fromISO('invalid-date-string'),
-        validationReason: 'valid',
         routeId: 'HSL:1001',
       });
 
       expect(decision.shouldRedirect).to.equal(true);
-      expect(decision.reason).to.equal('invalid-date');
       expect(decision.query.serviceDay).to.equal(
         fixedNow.startOf('day').toFormat(DATE_FORMAT),
       );
@@ -72,12 +66,10 @@ describe('scheduleValidation', () => {
       const decision = calculateRedirectDecision({
         testNum: undefined,
         wantedDay: undefined,
-        validationReason: 'no-pattern',
         routeId,
       });
 
       expect(decision.shouldRedirect).to.equal(true);
-      expect(decision.reason).to.equal('no-pattern');
       expect(decision.query).to.deep.equal({});
       expect(decision.redirectPath).to.equal(
         routePagePath(routeId, PREFIX_TIMETABLE),
@@ -93,7 +85,6 @@ describe('scheduleValidation', () => {
       });
 
       expect(decision.shouldRedirect).to.equal(false);
-      expect(decision.reason).to.equal('no-redirect');
       expect(decision.query).to.deep.equal({});
       expect(decision.redirectPath).to.equal(null);
     });
@@ -103,12 +94,10 @@ describe('scheduleValidation', () => {
       const decision = calculateRedirectDecision({
         testNum: '1',
         wantedDay: DateTime.now().minus({ days: 1 }),
-        validationReason: 'valid',
         routeId: 'HSL:1001',
       });
 
       expect(decision.shouldRedirect).to.equal(true);
-      expect(decision.reason).to.equal('past-date');
       expect(decision.query.test).to.equal('1');
       expect(decision.query.serviceDay).to.equal(
         fixedNow.startOf('day').toFormat(DATE_FORMAT),

@@ -9,13 +9,14 @@ import { routePagePath, PREFIX_TIMETABLE } from './path';
 import { DATE_FORMAT } from '../constants';
 
 /**
- * Determine if should redirect based on date conditions
+ * Determine if should redirect. Handles test mode, dates, and missing pattern code.
+ * Common causes include old or incorrect URLs.
  * @param {Object} params - Validation parameters
  * @param {string|number} params.testNum - Test number (for testing mode)
  * @param {DateTime|string} params.wantedDay - The requested service day
  * @param {string|null} params.patternCode - Current pattern code
  * @param {string|null} params.routeId - Current route ID
- * @returns {Object} { shouldRedirect: boolean, redirectPath: string|null, query: Object, reason: string }
+ * @returns {Object} { shouldRedirect: boolean, redirectPath: string|null, query: Object }
  */
 export const calculateRedirectDecision = ({
   testNum,
@@ -38,30 +39,17 @@ export const calculateRedirectDecision = ({
       shouldRedirect: false,
       redirectPath: null,
       query: {},
-      reason: 'test-mode',
     };
   }
 
   const today = DateTime.now().startOf('day');
-  if (wantedDay && wantedDay < today) {
+  if (wantedDay && (!wantedDay.isValid || wantedDay < today)) {
     return {
       shouldRedirect: true,
       redirectPath: null,
       query: buildQuery({
         serviceDay: today.toFormat(DATE_FORMAT),
       }),
-      reason: 'past-date',
-    };
-  }
-
-  if (wantedDay && !DateTime.fromISO(wantedDay).isValid) {
-    return {
-      shouldRedirect: true,
-      redirectPath: null,
-      query: buildQuery({
-        serviceDay: today.toFormat(DATE_FORMAT),
-      }),
-      reason: 'invalid-date',
     };
   }
 
@@ -70,7 +58,6 @@ export const calculateRedirectDecision = ({
       shouldRedirect: true,
       redirectPath: routePagePath(routeId, PREFIX_TIMETABLE),
       query: buildQuery({}),
-      reason: 'no-pattern',
     };
   }
 
@@ -78,6 +65,5 @@ export const calculateRedirectDecision = ({
     shouldRedirect: false,
     redirectPath: null,
     query: {},
-    reason: 'no-redirect',
   };
 };
