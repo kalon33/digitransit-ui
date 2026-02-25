@@ -164,6 +164,10 @@
   position: relative;
   font-size: $font-size-normal;
 
+  .selected-fav {
+    color: $attention-color;
+  }
+
   .settings-header {
     padding-top: 12px;
     height: 80px;
@@ -218,11 +222,65 @@
     }
   }
 
+  .external-link {
+    padding-top: 4px;
+    color: $link-color;
+    text-decoration: none;
+    font-weight: $font-weight-medium;
+
+    .arrow {
+      vertical-align: middle;
+    }
+
+    &:hover .arrow {
+      transform: translateX(4px);
+      transition: transform 0.1s;
+    }
+
+    .icon-container {
+      padding-left: 7px;
+      margin-bottom: -3px;
+    }
+  }
+
   .toggle-info {
+    display: flex;
+    flex-direction: column;
     margin-left: 3em;
     margin-top: -18px;
     width: 80%;
     padding-bottom: 8px;
+
+    button {
+      margin-top: 4px;
+      text-align: left;
+      justify-content: left;
+
+      .arrow {
+        vertical-align: middle;
+      }
+
+      &:hover .arrow {
+        transform: translateX(4px);
+        transition: transform 0.1s;
+      }
+
+      .icon-container {
+        padding-left: 4px;
+
+        .icon {
+          width: 0.6em;
+          height: 0.6em;
+          vertical-align: middle;
+        }
+      }
+
+      span {
+        font-size: $font-size-small;
+        font-weight: $font-weight-medium;
+        color: $primary-color;
+      }
+    }
   }
 
   .restore-settings {
@@ -312,6 +370,47 @@
         margin-left: 3em;
         border-bottom: solid 1px $light-gray;
       }
+    }
+  }
+}
+
+.pr-info-modal {
+  padding: 24px;
+
+  h2 {
+    font-size: $font-size-large;
+  }
+
+  .pr-info-content {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+
+    .pr-info-text-area {
+      h3 {
+        color: $black;
+        font-size: $font-size-medium-large;
+        font-weight: $font-weight-medium;
+      }
+
+      max-width: 460px;
+      font-size: $font-size-small;
+      font-weight: $font-weight-book;
+      color: $gray;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+  }
+
+  .external-link-container {
+    border: 0;
+    padding: 0;
+
+    a {
+      font-size: $font-size-small;
+      font-weight: $font-weight-medium;
+      color: $link-color;
     }
   }
 }
