@@ -51,12 +51,27 @@ export default function PrModal({ closeModal }) {
           </div>
         </div>
         <div className="pr-beta">
-          <Icon
-            img="personalization"
-            color={config.colors.primary}
-            height={5}
-            width={5}
-          />
+          <div className="icon-area">
+            <Icon
+              img="personalization"
+              color={config.colors.primary}
+              height={5}
+              width={5}
+            />
+          </div>
+          <div className="beta-desc">
+            <span className="beta-label">Beta</span>
+            <span>
+              <FormattedMessage id="personalisation-beta" />
+            </span>
+            <button
+              type="button"
+              className="beta-feedback-button"
+              onClick={() => {}}
+            >
+              <FormattedMessage id="personalisation-feedback" />
+            </button>
+          </div>
         </div>
       </div>
     </Modal>

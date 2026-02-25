@@ -83,7 +83,6 @@ const translations = {
     'in-addition': 'Og',
     inquiry: 'Send tilbagemelding',
     instructions: 'Instruktioner',
-    'itinerary-feedback-button': 'Send feedback',
     'itinerary-feedback-message': 'Fandt du ikke det du ledte efter?',
     'itinerary-feedback-placeholder': 'Beskrivelse (valgfrit)',
     'itinerary-hide-stops': 'Skjul stop',
@@ -143,6 +142,7 @@ const translations = {
     'park-and-ride-availability': 'Tilgjængelighed',
     'park-and-ride-unknown': 'Ukendt kapacitet',
     'pay-attention': 'Obs!',
+    'personalisation-feedback': 'Send feedback',
     'pick-icon': 'Vælg et ikon',
     'place-route-or-keyword': 'Adresse eller stoppested',
     'platform-num': 'Platform {platformCode}',
@@ -418,7 +418,6 @@ const translations = {
       'von {startStop} {trackInfo} nach {endStop}. Geschätzte Dauer: {duration}',
     'itinerary-details.walk-leg':
       'Um {time} {distance} zu Fuß von {origin} nach {destination} laufen. Geschätzte Dauer: {duration}',
-    'itinerary-feedback-button': 'Feedback senden',
     'itinerary-feedback-message': 'Nichts gefunden?',
     'itinerary-feedback-placeholder': 'Beschreibung (optional)',
     'itinerary-hide-stops': 'Zwischenstopps ausblenden',
@@ -579,6 +578,7 @@ const translations = {
     'park-and-ride-availability': 'Plätze verfügbar',
     'park-and-ride-unknown': 'Unbekannte Kapazität',
     'pay-attention': 'Achtung',
+    'personalisation-feedback': 'Feedback senden',
     'pick-icon': 'Icon auswählen',
     'pick-mode': 'Verkehrsmittel auswählen',
     'pick-mode-airplane-disabled': 'Flug nicht ausgewählt',
@@ -1151,7 +1151,6 @@ const translations = {
       '{arrivalTime} arrive to via point {viaPoint}. {leaveAction}',
     'itinerary-details.walk-leg':
       'At {time} walk {distance} from {origin} to {to} {destination}. Estimated time {duration}',
-    'itinerary-feedback-button': 'Send feedback',
     'itinerary-feedback-message': "Couldn't find what you were looking for?",
     'itinerary-feedback-placeholder': 'Description (optional)',
     'itinerary-hide-alternative-legs': 'Hide alternatives',
@@ -1467,6 +1466,7 @@ const translations = {
     personalisation: 'Personalisation',
     'personalisation-beta':
       'Personalization is still in the testing phase, meaning we are trying out the service. We would love to hear about your experience. The survey will open in a new tab.',
+    'personalisation-feedback': 'Give feedback',
     'personalisation-info':
       'Find your favorite routes and travel according to your habits',
     'personalisation-modal-feedback': 'We learn from your feedback',
@@ -1968,7 +1968,6 @@ const translations = {
     'in-addition': 'Como añadido',
     inquiry: '¿Qué le ha parecido el nuevo ruteador? ¡Cuéntenos!',
     instructions: 'Instrucciones',
-    'itinerary-feedback-button': 'Enviar comentarios',
     'itinerary-feedback-message': '¿No encuentra lo que estaba buscando?',
     'itinerary-feedback-placeholder': 'Descripción (opcional)',
     'itinerary-hide-stops': 'Ocultar paradas',
@@ -2038,6 +2037,7 @@ const translations = {
     'park-and-ride': 'Park and Ride',
     'park-and-ride-availability': 'Espacios disponibles',
     'pay-attention': 'N.B.',
+    'personalisation-feedback': 'Enviar comentarios',
     'pick-icon': 'Seleccione icono',
     'place-route-or-keyword': 'Destino, ruta o parada',
     'platform-num': 'Platforma {platformCode}',
@@ -2499,7 +2499,6 @@ const translations = {
       '{arrivalTime} saavu välipisteeseen {viaPoint}. {leaveAction}',
     'itinerary-details.walk-leg':
       '{time} kävele kohteesta {origin} {to} {destination}. Matka-aika {duration}',
-    'itinerary-feedback-button': 'Lähetä palautetta',
     'itinerary-feedback-message': 'Etkö löytänyt mitä etsit?',
     'itinerary-feedback-placeholder': 'Kuvaus (valinnainen)',
     'itinerary-hide-alternative-legs': 'Piilota vaihtoehdot',
@@ -2812,6 +2811,7 @@ const translations = {
     personalisation: 'Personointi',
     'personalisation-beta':
       'Personointi on vielä testausvaiheessa, eli kokeilemme palvelua. Haluaisimme kuulla kokemuksestasi. Kysely avautuu uuteen välilehteen.',
+    'personalisation-feedback': 'Anna palautetta',
     'personalisation-info':
       'Löydä mieleiset reitit ja matkusta tottumustesi mukaan.',
     'personalisation-modal-feedback': 'Opimme palautteestasi',
@@ -3321,7 +3321,6 @@ const translations = {
     'in-addition': 'En plus',
     inquiry: 'Répondre aux questions pour développer le service',
     instructions: 'Instructions',
-    'itinerary-feedback-button': 'Envoyez votre avis',
     'itinerary-feedback-message': 'Avez-vous trouvé ce que vous cherchiez ?',
     'itinerary-feedback-placeholder': 'Description (optionnel)',
     'itinerary-hide-stops': 'Cacher les arrêts',
@@ -3404,6 +3403,7 @@ const translations = {
     'park-and-ride-availability': 'Parc Relais disponible',
     'park-and-ride-unknown': 'Capacité inconnue',
     'pay-attention': 'Attention !',
+    'personalisation-feedback': 'Envoyez votre avis',
     'pick-icon': 'Sélectionner une icône',
     'pick-mode': 'Sélectionner un mode de transport',
     'place-route-or-keyword': 'Lieu, ligne ou mot-clé',
@@ -3621,7 +3621,6 @@ const translations = {
     'in-addition': 'Og',
     inquiry: 'Send tilbakemelding',
     instructions: 'Instruksjoner',
-    'itinerary-feedback-button': 'Send tilbakemelding',
     'itinerary-feedback-message': 'Fant du ikke det du lette etter?',
     'itinerary-feedback-placeholder': 'Beskrivelse (valgfritt)',
     'itinerary-hide-stops': 'Skjul stopp',
@@ -3682,6 +3681,7 @@ const translations = {
     'park-and-ride-availability': 'Tilgjengelighet',
     'park-and-ride-unknown': 'Ukjent kapasitet',
     'pay-attention': 'Obs!',
+    'personalisation-feedback': 'Send tilbakemelding',
     'pick-icon': 'Velg et ikon',
     'place-route-or-keyword': 'Adresse eller stoppested',
     'platform-num': 'Plattform {platformCode}',
@@ -4106,7 +4106,6 @@ const translations = {
       '{arrivalTime} arrive to via point {viaPoint}. {leaveAction}',
     'itinerary-details.walk-leg':
       'At {time} walk {distance} from {origin} to {to} {destination}. Estimated time {duration}',
-    'itinerary-feedback-button': 'Podziel się opinią',
     'itinerary-feedback-message': "Couldn't find what you were looking for?",
     'itinerary-feedback-placeholder': 'Opis (nieobowiązkowy)',
     'itinerary-hide-alternative-legs': 'Ukryj alternatywy',
@@ -4324,6 +4323,7 @@ const translations = {
     'park-disclaimer-link': 'Dowiedz się więcej o „Parkuj i Jedź”',
     'pay-attention': 'N.B.',
     payment_at_gate: 'Payment at the gate ',
+    'personalisation-feedback': 'Podziel się opinią',
     'pick-icon': 'Wybierz ikonę',
     'pick-mode': 'Rodzaje transportu',
     'pick-mode-airplane-disabled': 'Nie wybrano lotu',
@@ -4828,7 +4828,6 @@ const translations = {
       'de la stația {startStop} {trackInfo} până la stația {endStop}. Va dura aproximativ {duration}',
     'itinerary-details.walk-leg':
       'At {time} mergeți pe jos {distance} de la {origin} la {destination}. Va dura aproximativ {duration}',
-    'itinerary-feedback-button': 'Sugestii și reclamații',
     'itinerary-feedback-message': 'Nu ați găsit ce căutați?',
     'itinerary-feedback-placeholder': 'Descriere (opțional)',
     'itinerary-hide-stops': 'Ascunde stațiile',
@@ -4946,6 +4945,7 @@ const translations = {
     'park-and-ride': 'Parcare Park and Ride',
     'park-and-ride-availability': 'Locuri disponibile',
     'pay-attention': 'Atenție!',
+    'personalisation-feedback': 'Sugestii și reclamații',
     'pick-icon': 'Selectați o pictogramă',
     'pick-mode': 'Selectați modul de transport',
     'pick-mode-airplane-disabled': 'Avion ne-selectat',
@@ -5470,7 +5470,6 @@ const translations = {
       '{arrivalTime} du anländer till mellanstopp {viaPoint}. {leaveAction}',
     'itinerary-details.walk-leg':
       '{time} promenera {distance} från {origin} till {to} {destination}. Restid {duration}',
-    'itinerary-feedback-button': 'Skicka respons',
     'itinerary-feedback-message': 'Hittade du inte vad du sökte?',
     'itinerary-feedback-placeholder': 'Beskrivning (valfri)',
     'itinerary-hide-alternative-legs': 'Dölj alternativen',
@@ -5782,6 +5781,7 @@ const translations = {
     personalisation: 'Personalisering',
     'personalisation-beta':
       'Personaliseringen är fortfarande i testfasen, vilket innebär att vi testar tjänsten. Vi vill gärna höra om din upplevelse. Undersökningen öppnas i en ny flik.',
+    'personalisation-feedback': 'Ge feedback',
     'personalisation-info':
       'Hitta dina favoritrutter och res utifrån dina vanor.',
     'personalisation-modal-feedback': 'Vi lär oss av er feedback',
