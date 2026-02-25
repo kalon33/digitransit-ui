@@ -168,7 +168,8 @@ describe('<ScheduleTripList />', () => {
     const wrapper = shallow(<ScheduleTripList {...props} />);
 
     const row = wrapper.find(ScheduleTripRow).first();
-    expect(row.prop('departureTime')).to.be.a('string');
+    expect(row.prop('departureTime')).to.match(/^0[0-2]:[0-5][0-9]$/); // Validate HH:MM format
+    expect(row.prop('arrivalTime')).to.match(/^0[0-1]:[0-5][0-9]$/);
   });
 
   it('should handle trips after midnight (next day)', () => {
@@ -177,7 +178,9 @@ describe('<ScheduleTripList />', () => {
     const wrapper = shallow(<ScheduleTripList {...props} />);
 
     const row = wrapper.find(ScheduleTripRow).first();
-    expect(row.prop('departureTime')).to.be.a('string');
+    // Times wrap around at midnight in standard 24h format (00:00-23:59)
+    expect(row.prop('departureTime')).to.match(/^[0-2][0-9]:[0-5][0-9]$/);
+    expect(row.prop('arrivalTime')).to.match(/^[0-2][0-9]:[0-5][0-9]$/);
   });
 
   it('should handle trips with very short duration', () => {
@@ -186,8 +189,9 @@ describe('<ScheduleTripList />', () => {
     const wrapper = shallow(<ScheduleTripList {...props} />);
 
     const row = wrapper.find(ScheduleTripRow).first();
-    expect(row.prop('departureTime')).to.be.a('string');
-    expect(row.prop('arrivalTime')).to.be.a('string');
+    expect(row.prop('departureTime')).to.match(/^\d{1,2}:[0-5][0-9]$/);
+    expect(row.prop('arrivalTime')).to.match(/^\d{1,2}:[0-5][0-9]$/);
+    expect(row.prop('departureTime')).to.not.equal(row.prop('arrivalTime'));
   });
 
   it('should handle trips with long duration', () => {
@@ -196,8 +200,9 @@ describe('<ScheduleTripList />', () => {
     const wrapper = shallow(<ScheduleTripList {...props} />);
 
     const row = wrapper.find(ScheduleTripRow).first();
-    expect(row.prop('departureTime')).to.be.a('string');
-    expect(row.prop('arrivalTime')).to.be.a('string');
+    expect(row.prop('departureTime')).to.match(/^\d{1,2}:[0-5][0-9]$/);
+    expect(row.prop('arrivalTime')).to.match(/^\d{1,2}:[0-5][0-9]$/);
+    expect(row.prop('departureTime')).to.not.equal(row.prop('arrivalTime'));
   });
 
   it('should handle trips with UPDATED realtimeState', () => {

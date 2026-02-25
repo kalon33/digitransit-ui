@@ -22,10 +22,7 @@ import { useTranslationsContext } from '../../../util/useTranslationsContext';
 import { getTripsList } from '../../../util/scheduleTripsUtils';
 import { routeShape, patternShape } from '../../../util/shapes';
 import { useRouterRedirect } from '../../../hooks/useRouterRedirect';
-import {
-  validateScheduleData,
-  calculateRedirectDecision,
-} from '../../../util/scheduleValidation';
+import { calculateRedirectDecision } from '../../../util/scheduleValidation';
 import {
   buildAvailableDates,
   selectScheduleData,
@@ -95,19 +92,19 @@ const ScheduleContainer = ({
     [wantedDay, firstDepartures],
   );
 
-  const currentPattern = route?.patterns?.find(p => p.code === pattern?.code);
-
-  const testNum = match?.location?.query?.test;
+  const patternCode = pattern?.code;
+  const patternWithTrips = route?.patterns?.find(p => p.code === patternCode);
+  const testNum = query?.test;
 
   const tripsResult = useMemo(
     () =>
       getTripsList({
-        pattern: currentPattern,
+        patternWithTrips,
         intl,
         testNum,
         wantedDay,
       }),
-    [currentPattern, intl, testNum, wantedDay],
+    [patternWithTrips, intl, testNum, wantedDay],
   );
 
   const routeId = route?.gtfsId;
@@ -119,21 +116,15 @@ const ScheduleContainer = ({
       ? constantOperationRoutes[routeId][locale]
       : null;
 
-  const validation = validateScheduleData({
-    pattern,
-    route,
-    constantOperationInfo,
-  });
-
   const redirectDecision = useMemo(
     () =>
       calculateRedirectDecision({
         testNum,
         wantedDay,
-        patternCode: pattern?.code,
+        patternCode,
         routeId,
       }),
-    [testNum, wantedDay, pattern?.code, routeId],
+    [testNum, wantedDay, patternCode, routeId],
   );
 
   useRouterRedirect({
@@ -145,11 +136,11 @@ const ScheduleContainer = ({
   });
 
   useEffect(() => {
-    if (pattern?.code) {
+    if (patternCode) {
       setFrom(0);
       setTo(pattern.stops.length - 1);
     }
-  }, [pattern?.code, pattern?.stops?.length]);
+  }, [patternCode, pattern?.stops?.length]);
 
   // Handler for timetable origin stop selection
   const onFromSelectChange = useCallback(
@@ -245,11 +236,11 @@ const ScheduleContainer = ({
     });
   }, []);
 
-  if (!validation.shouldRender || redirectDecision.shouldRedirect) {
+  if (redirectDecision.shouldRedirect) {
     return null;
   }
 
-  if (validation.reason === 'constant-operation') {
+  if (constantOperationInfo) {
     return (
       <ScheduleConstantOperation
         constantOperationInfo={constantOperationInfo}
@@ -258,10 +249,6 @@ const ScheduleContainer = ({
         breakpoint={breakpoint}
       />
     );
-  }
-
-  if (tripsResult.noTripsMessage) {
-    return tripsResult.noTripsMessage;
   }
 
   const showTrips = tripsResult.trips;
@@ -273,7 +260,7 @@ const ScheduleContainer = ({
           mobile: breakpoint !== 'large',
         })}
       >
-        {route && route.patterns && (
+        {route?.patterns && (
           <RouteControlPanel
             match={match}
             route={route}

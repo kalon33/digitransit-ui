@@ -96,19 +96,11 @@ describe('<ScheduleHeader />', () => {
     expect(toOptions).to.have.lengthOf(2); // stops 2-3
   });
 
-  it('should render StopHeaderDisplay component', () => {
+  it('should render StopHeaderDisplay component with correct stop names', () => {
     const wrapper = shallow(<ScheduleHeader {...defaultProps} />);
     const stopHeaderDisplay = wrapper.find(StopHeaderDisplay);
 
     expect(stopHeaderDisplay.exists()).to.equal(true);
-    expect(stopHeaderDisplay.prop('fromDisplayName')).to.equal('First Stop');
-    expect(stopHeaderDisplay.prop('toDisplayName')).to.equal('Fourth Stop');
-  });
-
-  it('should display correct stop names in printable headers', () => {
-    const wrapper = shallow(<ScheduleHeader {...defaultProps} />);
-    const stopHeaderDisplay = wrapper.find(StopHeaderDisplay);
-
     expect(stopHeaderDisplay.prop('fromDisplayName')).to.equal('First Stop');
     expect(stopHeaderDisplay.prop('toDisplayName')).to.equal('Fourth Stop');
   });

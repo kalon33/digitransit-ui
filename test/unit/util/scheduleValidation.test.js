@@ -2,60 +2,11 @@ import { expect } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { DateTime, Settings } from 'luxon';
 
-import {
-  calculateRedirectDecision,
-  validateScheduleData,
-} from '../../../app/util/scheduleValidation';
+import { calculateRedirectDecision } from '../../../app/util/scheduleValidation';
 import { routePagePath, PREFIX_TIMETABLE } from '../../../app/util/path';
 import { DATE_FORMAT } from '../../../app/constants';
 
 describe('scheduleValidation', () => {
-  describe('validateScheduleData', () => {
-    it('should render when constant operation info is provided', () => {
-      const result = validateScheduleData({
-        pattern: null,
-        route: null,
-        constantOperationInfo: { isAlwaysAvailable: true },
-      });
-
-      expect(result.shouldRender).to.equal(true);
-      expect(result.reason).to.equal('constant-operation');
-    });
-
-    it('should not render when pattern is missing but route exists', () => {
-      const result = validateScheduleData({
-        pattern: null,
-        route: { gtfsId: 'HSL:1001' },
-        constantOperationInfo: null,
-      });
-
-      expect(result.shouldRender).to.equal(false);
-      expect(result.reason).to.equal('no-pattern');
-    });
-
-    it('should not render when pattern and route are missing', () => {
-      const result = validateScheduleData({
-        pattern: null,
-        route: null,
-        constantOperationInfo: null,
-      });
-
-      expect(result.shouldRender).to.equal(false);
-      expect(result.reason).to.equal('no-pattern-no-route');
-    });
-
-    it('should render when pattern exists', () => {
-      const result = validateScheduleData({
-        pattern: { code: 'HSL:1001:0:01' },
-        route: { gtfsId: 'HSL:1001' },
-        constantOperationInfo: null,
-      });
-
-      expect(result.shouldRender).to.equal(true);
-      expect(result.reason).to.equal('valid');
-    });
-  });
-
   describe('calculateRedirectDecision', () => {
     const fixedNow = DateTime.fromISO('2024-01-15T10:00:00');
     const originalTestingEnv = process.env.ROUTEPAGETESTING;
@@ -74,9 +25,7 @@ describe('scheduleValidation', () => {
       const decision = calculateRedirectDecision({
         testNum: '0',
         wantedDay: DateTime.now().minus({ days: 1 }),
-        firstDataDate: DateTime.now(),
-        noTrips: true,
-        patternCode: 'HSL:1001:0:01',
+        validationReason: 'valid',
         routeId: 'HSL:1001',
       });
 
@@ -90,9 +39,7 @@ describe('scheduleValidation', () => {
       const decision = calculateRedirectDecision({
         testNum: undefined,
         wantedDay: DateTime.now().minus({ days: 2 }),
-        firstDataDate: DateTime.now().plus({ days: 3 }),
-        noTrips: false,
-        patternCode: 'HSL:1001:0:01',
+        validationReason: 'valid',
         routeId: 'HSL:1001',
       });
 
@@ -108,9 +55,7 @@ describe('scheduleValidation', () => {
       const decision = calculateRedirectDecision({
         testNum: undefined,
         wantedDay: DateTime.fromISO('invalid-date-string'),
-        firstDataDate: DateTime.now().plus({ days: 3 }),
-        noTrips: false,
-        patternCode: 'HSL:1001:0:01',
+        validationReason: 'valid',
         routeId: 'HSL:1001',
       });
 
@@ -127,9 +72,7 @@ describe('scheduleValidation', () => {
       const decision = calculateRedirectDecision({
         testNum: undefined,
         wantedDay: undefined,
-        firstDataDate: undefined,
-        noTrips: false,
-        patternCode: null,
+        validationReason: 'no-pattern',
         routeId,
       });
 
@@ -145,8 +88,6 @@ describe('scheduleValidation', () => {
       const decision = calculateRedirectDecision({
         testNum: undefined,
         wantedDay: DateTime.now().plus({ days: 2 }),
-        firstDataDate: DateTime.now().plus({ days: 1 }),
-        noTrips: false,
         patternCode: 'HSL:1001:0:01',
         routeId: 'HSL:1001',
       });
@@ -162,7 +103,7 @@ describe('scheduleValidation', () => {
       const decision = calculateRedirectDecision({
         testNum: '1',
         wantedDay: DateTime.now().minus({ days: 1 }),
-        patternCode: 'HSL:1001:0:01',
+        validationReason: 'valid',
         routeId: 'HSL:1001',
       });
 

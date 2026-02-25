@@ -9,47 +9,6 @@ import { routePagePath, PREFIX_TIMETABLE } from './path';
 import { DATE_FORMAT } from '../constants';
 
 /**
- * Validate schedule data and determine if component should render
- * @param {Object} params - Validation parameters
- * @param {Object} params.pattern - Pattern object
- * @param {Object} params.route - Route object
- * @param {Object|null} params.constantOperationInfo - Constant operation info
- * @returns {ValidationResult} Validation result object
- */
-export const validateScheduleData = ({
-  pattern,
-  route,
-  constantOperationInfo,
-}) => {
-  // Check constant operation first (doesn't need pattern)
-  if (constantOperationInfo) {
-    return {
-      shouldRender: true,
-      reason: 'constant-operation',
-    };
-  }
-
-  if (!pattern) {
-    const routeId = route?.gtfsId;
-    if (routeId) {
-      return {
-        shouldRender: false,
-        reason: 'no-pattern',
-      };
-    }
-    return {
-      shouldRender: false,
-      reason: 'no-pattern-no-route',
-    };
-  }
-
-  return {
-    shouldRender: true,
-    reason: 'valid',
-  };
-};
-
-/**
  * Determine if should redirect based on date conditions
  * @param {Object} params - Validation parameters
  * @param {string|number} params.testNum - Test number (for testing mode)
@@ -66,7 +25,6 @@ export const calculateRedirectDecision = ({
 }) => {
   const resolvedTestNum = !!process.env.ROUTEPAGETESTING && testNum;
 
-  // Helper to add test parameter to query if needed
   const buildQuery = baseQuery => {
     if (resolvedTestNum) {
       return { ...baseQuery, test: testNum };

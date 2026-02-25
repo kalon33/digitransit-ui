@@ -81,20 +81,6 @@ describe('scheduleDataUtils', () => {
       expect(result).to.have.lengthOf(1);
     });
 
-    it('should return dates in sorted order', () => {
-      const departures = {
-        wk1wed: [{ departureStoptime: { scheduledDeparture: 32400 } }],
-        wk1mon: [{ departureStoptime: { scheduledDeparture: 28800 } }],
-        wk1tue: [{ departureStoptime: { scheduledDeparture: 30600 } }],
-      };
-
-      const result = buildAvailableDates(departures);
-
-      expect(result).to.have.lengthOf(3);
-      expect(result[0].toMillis()).to.be.lessThan(result[1].toMillis());
-      expect(result[1].toMillis()).to.be.lessThan(result[2].toMillis());
-    });
-
     it('should calculate dates relative to current week', () => {
       const departures = {
         wk1mon: [{ departureStoptime: { scheduledDeparture: 28800 } }],

@@ -1,5 +1,4 @@
 import { DateTime } from 'luxon';
-import { DATE_FORMAT } from '../constants';
 import getTestData from '../component/routepage/schedule/ScheduleDebugData';
 
 const WEEKDAY_MAP = {
@@ -31,10 +30,8 @@ const parseScheduleKey = key => {
  * @returns {Array<DateTime>} Array of available dates
  */
 export const buildAvailableDates = departures => {
-  // Current week anchor for translating wk{n}{day} keys into dates.
   const startOfCurrentWeek = DateTime.now().startOf('week');
-
-  const dateMap = new Map();
+  const dates = [];
 
   if (!departures) {
     return [];
@@ -42,11 +39,11 @@ export const buildAvailableDates = departures => {
 
   Object.entries(departures).forEach(([key, dayDepartures]) => {
     const parsed = parseScheduleKey(key);
-    if (!parsed) {
-      return;
-    }
-
-    if (!Array.isArray(dayDepartures) || dayDepartures.length === 0) {
+    if (
+      !parsed ||
+      !Array.isArray(dayDepartures) ||
+      dayDepartures.length === 0
+    ) {
       return;
     }
 
@@ -54,15 +51,10 @@ export const buildAvailableDates = departures => {
       weeks: parsed.weekIndex - 1,
       days: parsed.dayIndex - 1,
     });
-    const dateKey = date.toFormat(DATE_FORMAT);
-    if (!dateMap.has(dateKey)) {
-      dateMap.set(dateKey, date);
-    }
+    dates.push(date);
   });
 
-  return Array.from(dateMap.values()).sort(
-    (a, b) => a.toMillis() - b.toMillis(),
-  );
+  return dates;
 };
 
 /**

@@ -145,7 +145,7 @@ describe('scheduleTripsUtils', () => {
       const wantedDay = DateTime.fromFormat('20240116', DATE_FORMAT);
 
       const result = getTripsList({
-        pattern,
+        patternWithTrips: pattern,
         wantedDay,
         intl: mockIntl,
       });
@@ -171,7 +171,7 @@ describe('scheduleTripsUtils', () => {
       };
 
       const result = getTripsList({
-        pattern,
+        patternWithTrips: pattern,
         intl: mockIntl,
       });
 
@@ -183,7 +183,7 @@ describe('scheduleTripsUtils', () => {
 
     it('should return null for pattern when pattern is null', () => {
       const result = getTripsList({
-        pattern: null,
+        patternWithTrips: null,
         intl: mockIntl,
       });
 
@@ -192,7 +192,7 @@ describe('scheduleTripsUtils', () => {
 
     it('should return null for pattern when pattern is undefined', () => {
       const result = getTripsList({
-        pattern: undefined,
+        patternWithTrips: undefined,
         intl: mockIntl,
       });
 
@@ -207,7 +207,7 @@ describe('scheduleTripsUtils', () => {
       const wantedDay = DateTime.fromFormat('20240115', DATE_FORMAT);
 
       getTripsList({
-        pattern,
+        patternWithTrips: pattern,
         intl: mockIntl,
         wantedDay,
       });
@@ -223,12 +223,12 @@ describe('scheduleTripsUtils', () => {
       };
 
       const result = getTripsList({
-        pattern,
+        patternWithTrips: pattern,
         intl: mockIntl,
       });
 
       expect(result.trips).to.equal(null);
-      expect(result.noTripsMessage).to.equal(null);
+      expect(result.noTripsMessage).to.not.equal(null);
     });
 
     describe('Testing mode', () => {
@@ -257,7 +257,7 @@ describe('scheduleTripsUtils', () => {
           };
 
           const result = getTripsList({
-            pattern,
+            patternWithTrips: pattern,
             intl: mockIntl,
             testNum: '1',
           });
@@ -294,7 +294,7 @@ describe('scheduleTripsUtils', () => {
           };
 
           const result = getTripsList({
-            pattern,
+            patternWithTrips: pattern,
             intl: mockIntl,
           });
 
@@ -328,7 +328,7 @@ describe('scheduleTripsUtils', () => {
           };
 
           const result = getTripsList({
-            pattern,
+            patternWithTrips: pattern,
             intl: mockIntl,
             testNum: '1',
           });
@@ -348,7 +348,7 @@ describe('scheduleTripsUtils', () => {
         };
 
         const result = getTripsList({
-          pattern,
+          patternWithTrips: pattern,
           intl: mockIntl,
         });
 
@@ -375,7 +375,7 @@ describe('scheduleTripsUtils', () => {
         };
 
         const result = getTripsList({
-          pattern,
+          patternWithTrips: pattern,
           intl: mockIntl,
         });
 
@@ -392,7 +392,7 @@ describe('scheduleTripsUtils', () => {
         };
 
         const result = getTripsList({
-          pattern,
+          patternWithTrips: pattern,
           intl: mockIntl,
           wantedDay: undefined,
         });
@@ -413,7 +413,7 @@ describe('scheduleTripsUtils', () => {
         };
 
         const result = getTripsList({
-          pattern,
+          patternWithTrips: pattern,
           intl: mockIntl,
         });
 

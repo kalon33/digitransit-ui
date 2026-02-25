@@ -31,7 +31,6 @@ describe('<ScheduleContainer />', () => {
   let useTranslationsContextStub;
   let useConfigContextStub;
   let useFragmentStub;
-  let validateScheduleDataStub;
   let calculateRedirectDecisionStub;
   let buildAvailableDatesStub;
   let getTripsListStub;
@@ -152,9 +151,6 @@ describe('<ScheduleContainer />', () => {
       .stub(ConfigContext, 'useConfigContext')
       .returns(mockConfig);
 
-    validateScheduleDataStub = sinon
-      .stub(scheduleValidation, 'validateScheduleData')
-      .returns({ shouldRender: true, reason: 'valid' });
     calculateRedirectDecisionStub = sinon
       .stub(scheduleValidation, 'calculateRedirectDecision')
       .returns({
@@ -218,9 +214,6 @@ describe('<ScheduleContainer />', () => {
     if (useConfigContextStub) {
       useConfigContextStub.restore();
     }
-    if (validateScheduleDataStub) {
-      validateScheduleDataStub.restore();
-    }
     if (calculateRedirectDecisionStub) {
       calculateRedirectDecisionStub.restore();
     }
@@ -268,19 +261,10 @@ describe('<ScheduleContainer />', () => {
         <ScheduleContainer {...defaultProps} match={matchWithServiceDay} />,
       );
 
-      expect(validateScheduleDataStub.calledOnce).to.equal(true);
-      expect(
-        validateScheduleDataStub.calledWithMatch({
-          pattern: defaultProps.pattern,
-          route: defaultProps.route,
-        }),
-      ).to.equal(true);
-
       expect(calculateRedirectDecisionStub.calledOnce).to.equal(true);
       expect(
         calculateRedirectDecisionStub.calledWithMatch({
           testNum: '1',
-          patternCode: defaultProps.pattern.code,
           routeId: defaultProps.route.gtfsId,
         }),
       ).to.equal(true);
@@ -389,16 +373,12 @@ describe('<ScheduleContainer />', () => {
   });
 
   describe('Conditional rendering', () => {
-    it('should render constant operation view when validation says so', () => {
+    it('should render constant operation view when constantOperationInfo exists', () => {
       mockConfig.constantOperationRoutes = {
         'HSL:1001': {
           en: { text: 'Always on', link: 'https://example.com' },
         },
       };
-      validateScheduleDataStub.returns({
-        shouldRender: true,
-        reason: 'constant-operation',
-      });
 
       const wrapper = shallow(
         <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
