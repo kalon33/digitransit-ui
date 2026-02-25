@@ -89,7 +89,7 @@ const ScheduleContainer = ({
 
   const availableDates = useMemo(
     () => buildAvailableDates(firstDepartures),
-    [wantedDay, firstDepartures],
+    [firstDepartures],
   );
 
   const patternCode = pattern?.code;

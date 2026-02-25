@@ -25,7 +25,6 @@ const parseScheduleKey = key => {
 
 /**
  * Populate and return the list of available dates.
- * @param {DateTime} wantedDayIn - Preferred date to select (may be invalid)
  * @param {Object} departures - Departures object keyed by wk{n}{day}
  * @returns {Array<DateTime>} Array of available dates
  */

@@ -36,7 +36,7 @@ export const sortTrips = trips => {
  * @param {Object} params.patternWithTrips - Pattern object with trips
  * @param {Object} params.intl - Internationalization object
  * @param {string|number} params.testNum - Test number for filtering trips in testing mode (optional)
- * @param {string} params.serviceDay - Service day for no trips message formatting (optional)
+ * @param {DateTime} params.wantedDay - DateTime object for no trips message formatting (optional)
  * @returns {Object} { trips: Array|null, noTripsMessage: JSX|null }
  */
 export const getTripsList = ({

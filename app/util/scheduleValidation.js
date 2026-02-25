@@ -13,7 +13,7 @@ import { DATE_FORMAT } from '../constants';
  * Common causes include old or incorrect URLs.
  * @param {Object} params - Validation parameters
  * @param {string|number} params.testNum - Test number (for testing mode)
- * @param {DateTime|string} params.wantedDay - The requested service day
+ * @param {DateTime} params.wantedDay - The requested service day as a DateTime object
  * @param {string|null} params.patternCode - Current pattern code
  * @param {string|null} params.routeId - Current route ID
  * @returns {Object} { shouldRedirect: boolean, redirectPath: string|null, query: Object }
