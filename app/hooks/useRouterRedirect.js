@@ -1,6 +1,3 @@
-/**
- * Generic hook for handling router redirects
- */
 import { useEffect } from 'react';
 
 /**

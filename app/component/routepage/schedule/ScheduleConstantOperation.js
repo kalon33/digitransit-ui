@@ -5,7 +5,6 @@ import { routeShape } from '../../../util/shapes';
 import RouteControlPanel from '../RouteControlPanel';
 
 /**
- * ScheduleConstantOperation
  * Shown for routes that operate 24/7 instead of a timetable list.
  */
 const ScheduleConstantOperation = ({

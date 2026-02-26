@@ -49,8 +49,7 @@ function DateSelectGrouped({
       sourceDates = generateDateRange(validStartDate, GENERATED_DAYS, locale);
     }
 
-    // Option objects with labels
-    const processed = processDates(
+    const options = processDates(
       sourceDates,
       today,
       tomorrow,
@@ -58,9 +57,9 @@ function DateSelectGrouped({
       intl,
     );
 
-    const groupedOptions = groupDatesByWeek(processed, today.weekNumber, intl);
+    const groupedOptions = groupDatesByWeek(options, today.weekNumber, intl);
 
-    return { grouped: groupedOptions, processedDates: processed };
+    return { grouped: groupedOptions, processedDates: options };
   }, [dateFormat, dates, startDate?.toISODate(), locale]);
 
   const selectedOption = useMemo(() => {

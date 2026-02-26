@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import Icon from '../../Icon';
 
 /**
- * StopHeaderDisplay - Displays stop information for printing
- * Shows origin and destination stops with map marker icons
- * This component is only visible when printing the schedule
+ * Displays stop information for printing the schedule.
  */
 const StopHeaderDisplay = ({ fromDisplayName, toDisplayName }) => {
   return (

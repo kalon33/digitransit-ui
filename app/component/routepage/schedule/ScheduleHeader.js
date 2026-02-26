@@ -5,7 +5,6 @@ import StopHeaderDisplay from './StopHeaderDisplay';
 import { stopShape } from '../../../util/shapes';
 
 /**
- * ScheduleHeader
  * Header component for route schedules with origin/destination selection.
  * Includes printable stop headers for the print view.
  */

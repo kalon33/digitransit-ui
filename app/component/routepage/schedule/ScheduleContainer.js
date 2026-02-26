@@ -48,10 +48,9 @@ const printRouteTimetable = e => {
 };
 
 /**
- * ScheduleContainer
- * - Unwraps schedule fragments with `useFragment`
- * - Orchestrates routing, analytics, and view composition
- * - Handles timetable date selection + stop range selection
+ * ScheduleContainer is the main component for the route schedule page.
+ * It handles data fetching and state management for the schedule,
+ * and renders the header, trip list, date selector, and action buttons.
  */
 const ScheduleContainer = ({
   pattern: patternRef,

@@ -1,4 +1,3 @@
-// Scope all date-select styles to the grouped variant only
 .route-schedule-grouped-date-select .date-select {
   @media print {
     display: none;
@@ -97,7 +96,6 @@
     box-shadow: 0 0 3px 0 $secondary-color;
   }
 
-  // Dropdown arrow styling (stays nested as it's in the control, not the portal)
   .date-select-arrow {
     display: flex;
     align-items: center;
@@ -114,7 +112,6 @@
     }
   }
 
-  // make the dropdown indicator container small and place it 16px from right edge
   .route-schedule-grouped__dropdown-indicator {
     padding: 0;
     width: 16px;
@@ -131,7 +128,6 @@
   }
 }
 
-// Global styles for portaled menu (menuPortalTarget)
 .route-schedule-grouped__menu {
   width: 100%;
   min-width: 100%;

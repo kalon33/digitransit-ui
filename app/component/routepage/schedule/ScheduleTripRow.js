@@ -5,7 +5,6 @@ import React from 'react';
 import Icon from '@digitransit-component/digitransit-component-icon';
 
 /**
- * ScheduleTripRow
  * Presents a single departure/arrival row with optional cancel styling.
  */
 function ScheduleTripRow(props) {

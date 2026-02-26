@@ -1,7 +1,5 @@
 /**
  * Validation utilities for ScheduleContainer
- * Centralized validation logic for schedule data
- *
  */
 
 import { DateTime } from 'luxon';
@@ -10,7 +8,6 @@ import { DATE_FORMAT } from '../constants';
 
 /**
  * Determine if should redirect. Handles test mode, dates, and missing pattern code.
- * Common causes include old or incorrect URLs.
  * @param {Object} params - Validation parameters
  * @param {string|number} params.testNum - Test number (for testing mode)
  * @param {DateTime} params.wantedDay - The requested service day as a DateTime object
