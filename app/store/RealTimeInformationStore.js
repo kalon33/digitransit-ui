@@ -85,6 +85,18 @@ class RealTimeInformationStore extends Store {
   setTopics({ topics, topicsByRoute }) {
     this.topics = topics;
     this.topicsByRoute = topicsByRoute;
+
+    if (topicsByRoute) {
+      const allowedRoutes = new Set(Object.keys(topicsByRoute));
+      this.vehicles = Object.fromEntries(
+        Object.entries(this.vehicles).filter(([, vehicle]) => {
+          const routeId = vehicle.route?.split(':')[1];
+          return routeId && allowedRoutes.has(routeId);
+        }),
+      );
+    }
+
+    this.emitChange();
   }
 
   getVehicle = id => this.vehicles[id];
