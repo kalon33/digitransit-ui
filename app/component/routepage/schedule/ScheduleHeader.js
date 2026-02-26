@@ -53,6 +53,7 @@ function ScheduleHeader({
           labelId="origin"
           title={fromDisplayName}
           list={fromOptions}
+          value={from}
           onSelectChange={onFromSelectChange}
         />
         <ScheduleDropdown
@@ -60,6 +61,7 @@ function ScheduleHeader({
           labelId="destination"
           title={toDisplayName}
           list={toOptions}
+          value={to}
           onSelectChange={onToSelectChange}
           alignRight
         />

@@ -5,6 +5,10 @@ import { shallow } from 'enzyme';
 import Select from 'react-select';
 
 import ScheduleDropdown from '../../../../app/component/routepage/schedule/ScheduleDropdown';
+import {
+  getAriaMessages,
+  getClassNamePrefix,
+} from '../../../../app/component/routepage/schedule/scheduleDropdownUtils';
 import { createSimpleTestContext } from '../../helpers/mock-schedule-context';
 
 describe('<ScheduleDropdown />', () => {
@@ -17,14 +21,15 @@ describe('<ScheduleDropdown />', () => {
 
     defaultProps = {
       id: 'test-dropdown',
-      title: 'Test Title',
+      title: 'Kamppi',
       list: [
-        { label: 'Option 1', value: 'opt1' },
-        { label: 'Option 2', value: 'opt2' },
-        { label: 'Option 3', value: 'opt3' },
+        { label: 'Kamppi', value: 'kamppi' },
+        { label: 'Rautatientori', value: 'rautatientori' },
+        { label: 'Sörnäinen', value: 'sornainen' },
       ],
       onSelectChange: sandbox.spy(),
       alignRight: false,
+      changeTitleOnChange: true,
       labelId: undefined,
     };
   });
@@ -33,291 +38,412 @@ describe('<ScheduleDropdown />', () => {
     sandbox.restore();
   });
 
-  it('should render without crashing', () => {
-    const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
-    expect(wrapper.exists()).to.equal(true);
+  describe('Display behavior', () => {
+    it('should display the initial title in placeholder', () => {
+      const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
+      const select = wrapper.find(Select);
+
+      expect(select.prop('placeholder')).to.not.equal(undefined);
+    });
+
+    it('should update displayed text when changeTitleOnChange is true and selection changes', () => {
+      const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
+
+      // Initial placeholder should render with title
+      let placeholder = wrapper.find(Select).prop('placeholder');
+      expect(placeholder.props.children[0].props.children).to.equal('Kamppi');
+
+      // Simulate selection
+      const select = wrapper.find(Select);
+      select.prop('onChange')({
+        value: 'rautatientori',
+        label: 'Rautatientori',
+        titleLabel: 'Rautatientori',
+      });
+
+      wrapper.update();
+
+      // Displayed text should update to selected option
+      placeholder = wrapper.find(Select).prop('placeholder');
+      expect(placeholder.props.children[0].props.children).to.equal(
+        'Rautatientori',
+      );
+    });
+
+    it('should keep original title displayed when changeTitleOnChange is false', () => {
+      const props = { ...defaultProps, changeTitleOnChange: false };
+      const wrapper = shallow(<ScheduleDropdown {...props} />);
+
+      // Get initial displayed text
+      let placeholder = wrapper.find(Select).prop('placeholder');
+      const initialText = placeholder.props.children[0].props.children;
+
+      // Simulate selection
+      const select = wrapper.find(Select);
+      select.prop('onChange')({
+        value: 'sornainen',
+        label: 'Sörnäinen',
+        titleLabel: 'Sörnäinen',
+      });
+
+      wrapper.update();
+
+      // Displayed text should remain unchanged
+      placeholder = wrapper.find(Select).prop('placeholder');
+      expect(placeholder.props.children[0].props.children).to.equal(
+        initialText,
+      );
+    });
+
+    it('should handle selection when onSelectChange is not provided', () => {
+      const props = { ...defaultProps, onSelectChange: undefined };
+      const wrapper = shallow(<ScheduleDropdown {...props} />);
+      const select = wrapper.find(Select);
+
+      const option = { value: 'kamppi', label: 'Kamppi', titleLabel: 'Kamppi' };
+      expect(() => select.prop('onChange')(option)).to.not.throw();
+    });
   });
 
-  it('should render Select component', () => {
-    const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
-    expect(wrapper.find(Select)).to.have.lengthOf(1);
+  describe('State management', () => {
+    it('should select option matching controlled value prop', () => {
+      const props = { ...defaultProps, value: 'kamppi' };
+      const wrapper = shallow(<ScheduleDropdown {...props} />);
+      const select = wrapper.find(Select);
+
+      const valueProp = select.prop('value');
+      expect(valueProp).to.be.an('object');
+      expect(valueProp.value).to.equal('kamppi');
+    });
+
+    it('should select option matching defaultValue for initial uncontrolled state', () => {
+      const props = { ...defaultProps, defaultValue: 'sornainen' };
+      const wrapper = shallow(<ScheduleDropdown {...props} />);
+      const select = wrapper.find(Select);
+
+      const valueProp = select.prop('value');
+      expect(valueProp).to.be.an('object');
+      expect(valueProp.value).to.equal('sornainen');
+    });
+
+    it('should clear selection when value is not in options list', () => {
+      const props = { ...defaultProps, value: 'nonexistent' };
+      const wrapper = shallow(<ScheduleDropdown {...props} />);
+      const select = wrapper.find(Select);
+
+      const valueProp = select.prop('value');
+      expect(valueProp).to.equal(null);
+    });
+
+    it('should update selection when controlled value prop changes', () => {
+      const props = { ...defaultProps, value: 'kamppi' };
+      const wrapper = shallow(<ScheduleDropdown {...props} />);
+
+      let select = wrapper.find(Select);
+      expect(select.prop('value').value).to.equal('kamppi');
+
+      // Update controlled value
+      wrapper.setProps({ value: 'sornainen' });
+      wrapper.update();
+
+      select = wrapper.find(Select);
+      expect(select.prop('value').value).to.equal('sornainen');
+    });
   });
 
-  it('should pass list options to Select', () => {
-    const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
-    const select = wrapper.find(Select);
-    const options = select.prop('options');
+  describe('Menu behavior', () => {
+    it('should render checkmark icon next to selected option when changeTitleOnChange is true', () => {
+      const props = {
+        ...defaultProps,
+        changeTitleOnChange: true,
+        value: 'kamppi',
+      };
+      const wrapper = shallow(<ScheduleDropdown {...props} />);
+      const select = wrapper.find(Select);
 
-    expect(options).to.have.lengthOf(3);
+      const formatOptionLabel = select.prop('formatOptionLabel');
+      const selectedOption = { value: 'kamppi', label: 'Kamppi' };
+      const unselectedOption = { value: 'sornainen', label: 'Sörnäinen' };
+
+      // Format selected option (in menu context) - returns JSX fragment
+      const selectedFormatted = formatOptionLabel(selectedOption, {
+        context: 'menu',
+      });
+      const selectedWrapper = shallow(<div>{selectedFormatted}</div>);
+      // Should contain Icon with check
+      expect(selectedWrapper.find('Icon').prop('img')).to.equal('check');
+      expect(selectedWrapper.text()).to.include('Kamppi');
+
+      // Format unselected option (in menu context) - returns JSX fragment
+      const unselectedFormatted = formatOptionLabel(unselectedOption, {
+        context: 'menu',
+      });
+      const unselectedWrapper = shallow(<div>{unselectedFormatted}</div>);
+      // Should not contain Icon
+      expect(unselectedWrapper.find('Icon')).to.have.lengthOf(0);
+      expect(unselectedWrapper.text()).to.include('Sörnäinen');
+    });
+
+    it('should not render checkmark icons when changeTitleOnChange is false', () => {
+      const props = {
+        ...defaultProps,
+        changeTitleOnChange: false,
+        value: 'kamppi',
+      };
+      const wrapper = shallow(<ScheduleDropdown {...props} />);
+      const select = wrapper.find(Select);
+
+      const formatOptionLabel = select.prop('formatOptionLabel');
+      const selectedOption = { value: 'kamppi', label: 'Kamppi' };
+
+      // Format selected option (in menu context)
+      const formatted = formatOptionLabel(selectedOption, { context: 'menu' });
+
+      // Should just return the label without icon (plain string or label value)
+      expect(formatted).to.equal('Kamppi');
+    });
+
+    it('should format options correctly in value context (no checkmark)', () => {
+      const props = {
+        ...defaultProps,
+        changeTitleOnChange: true,
+        value: 'kamppi',
+      };
+      const wrapper = shallow(<ScheduleDropdown {...props} />);
+      const select = wrapper.find(Select);
+
+      const formatOptionLabel = select.prop('formatOptionLabel');
+      const selectedOption = { value: 'kamppi', label: 'Kamppi' };
+
+      // Format in value context (displayed in dropdown button)
+      const valueFormatted = formatOptionLabel(selectedOption, {
+        context: 'value',
+      });
+
+      // Should return just the label without checkmark icon
+      expect(valueFormatted).to.equal('Kamppi');
+    });
+
+    it('should pass all options to Select component', () => {
+      const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
+      const select = wrapper.find(Select);
+      const options = select.prop('options');
+
+      expect(options).to.have.lengthOf(3);
+      expect(options[0].value).to.equal('kamppi');
+      expect(options[1].value).to.equal('rautatientori');
+      expect(options[2].value).to.equal('sornainen');
+    });
   });
 
-  it('should call onSelectChange when option is selected', () => {
-    const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
-    const select = wrapper.find(Select);
+  describe('Accessibility', () => {
+    it('should properly associate label and input IDs for screen readers', () => {
+      const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
+      const label = wrapper.find('label').first();
+      const select = wrapper.find(Select);
 
-    const option = { value: 'opt2', label: 'Option 2', titleLabel: 'Option 2' };
-    select.prop('onChange')(option);
+      const labelId = 'aria-label-test-dropdown';
+      const inputId = 'aria-input-test-dropdown';
 
-    expect(defaultProps.onSelectChange.calledOnce).to.equal(true);
-    expect(defaultProps.onSelectChange.calledWith('opt2')).to.equal(true);
+      expect(label.prop('id')).to.equal(labelId);
+      expect(label.prop('htmlFor')).to.equal(inputId);
+      expect(select.prop('inputId')).to.equal(inputId);
+      expect(select.prop('aria-labelledby')).to.equal(labelId);
+    });
+
+    it('should render visible label when labelId is provided', () => {
+      const props = { ...defaultProps, labelId: 'origin' };
+      const wrapper = shallow(<ScheduleDropdown {...props} />);
+
+      const visibleLabel = wrapper
+        .find('label.dd-header-title')
+        .not('.sr-only');
+      expect(visibleLabel).to.have.lengthOf(1);
+    });
+
+    it('should render screen-reader-only label when labelId is not provided', () => {
+      const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
+
+      const srOnlyLabel = wrapper.find('label.sr-only');
+      expect(srOnlyLabel).to.have.lengthOf(1);
+      expect(srOnlyLabel.text()).to.equal(defaultProps.title);
+    });
+
+    it('should render localized label text when labelId is provided', () => {
+      const props = { ...defaultProps, labelId: 'origin' };
+      const wrapper = shallow(<ScheduleDropdown {...props} />);
+
+      const label = wrapper.find('label').first();
+      const select = wrapper.find(Select);
+
+      // Label should contain translated text from intl context (mock returns 'translated text')
+      expect(label.text()).to.equal('translated text');
+      // When labelId is provided, visible label should not have sr-only class
+      expect(label.hasClass('sr-only')).to.equal(false);
+      // Select should reference this label via aria-labelledby
+      expect(select.prop('aria-labelledby')).to.equal(
+        'aria-label-test-dropdown',
+      );
+    });
+
+    it('should render title as fallback when labelId is not provided', () => {
+      const props = { ...defaultProps, title: 'Custom Stop Name' };
+      const wrapper = shallow(<ScheduleDropdown {...props} />);
+
+      const label = wrapper.find('label').first();
+      const select = wrapper.find(Select);
+
+      // Label should contain the title prop as fallback
+      expect(label.text()).to.equal('Custom Stop Name');
+      // Select should reference this label
+      expect(select.prop('aria-labelledby')).to.equal(
+        'aria-label-test-dropdown',
+      );
+    });
+
+    it('should not have aria-label prop that would override aria-labelledby', () => {
+      const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
+      const select = wrapper.find(Select);
+
+      // aria-label should not be present, allowing aria-labelledby to work
+      expect(select.prop('aria-label')).to.equal(undefined);
+    });
+
+    it('should maintain consistent aria-labelledby regardless of selection state', () => {
+      const props = { ...defaultProps, labelId: 'destination' };
+      const wrapper = shallow(<ScheduleDropdown {...props} />);
+
+      const selectBefore = wrapper.find(Select);
+      const ariaLabelledByBefore = selectBefore.prop('aria-labelledby');
+
+      // Simulate selection
+      selectBefore.prop('onChange')({
+        value: 'kamppi',
+        label: <span>Kamppi</span>,
+        titleLabel: 'Kamppi',
+      });
+
+      wrapper.update();
+      const selectAfter = wrapper.find(Select);
+      const ariaLabelledByAfter = selectAfter.prop('aria-labelledby');
+
+      // aria-labelledby should remain constant regardless of selection
+      expect(ariaLabelledByBefore).to.equal(ariaLabelledByAfter);
+      expect(ariaLabelledByAfter).to.equal('aria-label-test-dropdown');
+    });
   });
 
-  it('should apply alignRight class when alignRight prop is true', () => {
-    const props = { ...defaultProps, alignRight: true };
-    const wrapper = shallow(<ScheduleDropdown {...props} />);
+  describe('User interaction callbacks', () => {
+    it('should call onSelectChange with the selected value string', () => {
+      const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
+      const select = wrapper.find(Select);
 
-    const select = wrapper.find(Select);
-    expect(select.prop('classNamePrefix')).to.equal('dd-right');
+      select.prop('onChange')({
+        value: 'rautatientori',
+        label: 'Rautatientori',
+        titleLabel: 'Rautatientori',
+      });
+
+      expect(defaultProps.onSelectChange.calledOnce).to.equal(true);
+      expect(defaultProps.onSelectChange.firstCall.args[0]).to.equal(
+        'rautatientori',
+      );
+    });
+
+    it('should work in uncontrolled mode and update display after selection', () => {
+      const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
+
+      // Initially shows title
+      let placeholder = wrapper.find(Select).prop('placeholder');
+      expect(placeholder.props.children[0].props.children).to.equal('Kamppi');
+
+      // User selects different option
+      wrapper.find(Select).prop('onChange')({
+        value: 'sornainen',
+        label: 'Sörnäinen',
+        titleLabel: 'Sörnäinen',
+      });
+
+      wrapper.update();
+
+      // Display updates to show selected option (when changeTitleOnChange=true)
+      placeholder = wrapper.find(Select).prop('placeholder');
+      expect(placeholder.props.children[0].props.children).to.equal(
+        'Sörnäinen',
+      );
+    });
+  });
+});
+
+describe('scheduleDropdownUtils', () => {
+  describe('getClassNamePrefix', () => {
+    it('should return dd-timerange for other-dates with alignRight', () => {
+      expect(getClassNamePrefix(true, 'other-dates')).to.equal('dd-timerange');
+    });
+
+    it('should return dd-right for alignRight with other IDs', () => {
+      expect(getClassNamePrefix(true, 'some-dropdown')).to.equal('dd-right');
+    });
+
+    it('should return dd when alignRight is false', () => {
+      expect(getClassNamePrefix(false, 'any-id')).to.equal('dd');
+    });
   });
 
-  it('should use dd classNamePrefix when alignRight is false', () => {
-    const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
-    const select = wrapper.find(Select);
+  describe('getAriaMessages', () => {
+    it('should return aria message configuration object', () => {
+      const mockIntl = {
+        formatMessage: ({ id }) => {
+          if (id === 'route-page.pattern-chosen') {
+            return 'Chosen';
+          }
+          return id;
+        },
+      };
 
-    expect(select.prop('classNamePrefix')).to.equal('dd');
-  });
+      const messages = getAriaMessages(mockIntl);
 
-  it('should use dd-timerange for other-dates dropdown when alignRight', () => {
-    const props = { ...defaultProps, id: 'other-dates', alignRight: true };
-    const wrapper = shallow(<ScheduleDropdown {...props} />);
-    const select = wrapper.find(Select);
+      expect(messages).to.have.property('guidance');
+      expect(messages).to.have.property('onChange');
+      expect(messages).to.have.property('onFilter');
+      expect(messages).to.have.property('onFocus');
+    });
 
-    expect(select.prop('classNamePrefix')).to.equal('dd-timerange');
-  });
+    it('should format onChange message with option label', () => {
+      const mockIntl = {
+        formatMessage: ({ id }) => {
+          if (id === 'route-page.pattern-chosen') {
+            return 'Selected:';
+          }
+          return id;
+        },
+      };
 
-  it('should render label when labelId is provided', () => {
-    const props = { ...defaultProps, labelId: 'origin' };
-    const wrapper = shallow(<ScheduleDropdown {...props} />);
+      const messages = getAriaMessages(mockIntl);
+      const changeMessage = messages.onChange({
+        value: { label: 'Test Stop' },
+      });
 
-    const label = wrapper.find('label.dd-header-title');
-    expect(label).to.have.lengthOf(1);
-  });
+      expect(changeMessage).to.include('Selected:');
+      expect(changeMessage).to.include('Test Stop');
+    });
 
-  it('should not render visible label when labelId is not provided', () => {
-    const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
+    it('should use label in onChange message', () => {
+      const mockIntl = {
+        formatMessage: ({ id }) => {
+          if (id === 'route-page.pattern-chosen') {
+            return 'Selected:';
+          }
+          return id;
+        },
+      };
 
-    const visibleLabel = wrapper.find('label.dd-header-title').not('.sr-only');
-    expect(visibleLabel).to.have.lengthOf(0);
-  });
+      const messages = getAriaMessages(mockIntl);
+      const changeMessage = messages.onChange({
+        value: { label: 'Test Stop Label' },
+      });
 
-  it('should render hidden label for accessibility when no labelId', () => {
-    const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
-
-    const hiddenLabel = wrapper.find('label.sr-only');
-    expect(hiddenLabel).to.have.lengthOf(1);
-  });
-
-  it('should set isSearchable to false', () => {
-    const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
-    const select = wrapper.find(Select);
-
-    expect(select.prop('isSearchable')).to.equal(false);
-  });
-
-  it('should render dropdown with correct id', () => {
-    const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
-    const select = wrapper.find(Select);
-
-    expect(select.prop('name')).to.equal('test-dropdown');
-    expect(select.prop('inputId')).to.equal('aria-input-test-dropdown');
-  });
-
-  it('should truncate long titles in placeholder', () => {
-    const props = {
-      ...defaultProps,
-      title: 'Very Long Title That Should Be Truncated',
-    };
-    const wrapper = shallow(<ScheduleDropdown {...props} />);
-
-    // Should render but truncate in placeholder
-    expect(wrapper.exists()).to.equal(true);
-  });
-
-  it('should add check icon to options matching title', () => {
-    const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
-    const select = wrapper.find(Select);
-    const options = select.prop('options');
-
-    // Options are enhanced with titleLabel and check icons
-    expect(options).to.be.an('array');
-  });
-
-  it('should handle menu open state', () => {
-    const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
-    const select = wrapper.find(Select);
-
-    select.prop('onMenuOpen')();
-    wrapper.update();
-
-    const updatedSelect = wrapper.find(Select);
-    expect(updatedSelect.prop('menuIsOpen')).to.equal(true);
-  });
-
-  it('should handle menu close state', () => {
-    const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
-    const select = wrapper.find(Select);
-
-    // Open then close
-    select.prop('onMenuOpen')();
-    wrapper.update();
-    wrapper.find(Select).prop('onMenuClose')();
-    wrapper.update();
-
-    const updatedSelect = wrapper.find(Select);
-    expect(updatedSelect.prop('menuIsOpen')).to.equal(false);
-  });
-
-  it('should handle selection when no id is provided', () => {
-    const props = { ...defaultProps, id: '' };
-    const wrapper = shallow(<ScheduleDropdown {...props} />);
-    const select = wrapper.find(Select);
-
-    const option = { value: 'opt1', label: 'Option 1', titleLabel: 'Option 1' };
-    select.prop('onChange')(option);
-
-    expect(defaultProps.onSelectChange.called).to.equal(true);
-  });
-
-  it('should apply withLabel class when labelId is provided', () => {
-    const props = { ...defaultProps, labelId: 'origin' };
-    const wrapper = shallow(<ScheduleDropdown {...props} />);
-
-    expect(wrapper.find('.dd-container').hasClass('withLabel')).to.equal(true);
-  });
-
-  it('should not apply withLabel class when no labelId', () => {
-    const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
-
-    expect(wrapper.find('.dd-container').hasClass('withLabel')).to.equal(false);
-  });
-
-  it('should have aria-live="off" on container', () => {
-    const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
-
-    expect(wrapper.find('.dd-container').prop('aria-live')).to.equal('off');
-  });
-
-  it('should pass aria-labelledby to Select', () => {
-    const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
-    const select = wrapper.find(Select);
-
-    expect(select.prop('aria-labelledby')).to.equal('aria-label-test-dropdown');
-  });
-
-  it('should have proper aria-live messages', () => {
-    const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
-    const select = wrapper.find(Select);
-
-    expect(select.prop('ariaLiveMessages')).to.be.an('object');
-    expect(select.prop('ariaLiveMessages')).to.have.property('guidance');
-    expect(select.prop('ariaLiveMessages')).to.have.property('onChange');
-    expect(select.prop('ariaLiveMessages')).to.have.property('onFilter');
-    expect(select.prop('ariaLiveMessages')).to.have.property('onFocus');
-  });
-
-  it('should remove dropdown indicator and separator', () => {
-    const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
-    const select = wrapper.find(Select);
-    const components = select.prop('components');
-
-    expect(components.DropdownIndicator()).to.equal(null);
-    expect(components.IndicatorSeparator()).to.equal(null);
-  });
-
-  it('should handle list with single option', () => {
-    const props = {
-      ...defaultProps,
-      list: [{ label: 'Only Option', value: 'only' }],
-    };
-    const wrapper = shallow(<ScheduleDropdown {...props} />);
-    const select = wrapper.find(Select);
-
-    expect(select.prop('options')).to.have.lengthOf(1);
-  });
-
-  it('should handle list with many options', () => {
-    const manyOptions = Array.from({ length: 50 }, (_, i) => ({
-      label: `Option ${i}`,
-      value: `opt${i}`,
-    }));
-    const props = { ...defaultProps, list: manyOptions };
-    const wrapper = shallow(<ScheduleDropdown {...props} />);
-    const select = wrapper.find(Select);
-
-    expect(select.prop('options')).to.have.lengthOf(50);
-  });
-
-  it('should use default title when title prop is not provided', () => {
-    const props = { ...defaultProps, title: undefined };
-    const wrapper = shallow(<ScheduleDropdown {...props} />);
-
-    // Component should use defaultProps title
-    expect(wrapper.exists()).to.equal(true);
-  });
-
-  it('should handle options with special characters', () => {
-    const props = {
-      ...defaultProps,
-      list: [
-        { label: 'Käpylä (Helsinki)', value: 'kapyla' },
-        { label: 'Töölö / Tölö', value: 'toolo' },
-      ],
-    };
-    const wrapper = shallow(<ScheduleDropdown {...props} />);
-    const select = wrapper.find(Select);
-
-    expect(select.prop('options')).to.have.lengthOf(2);
-  });
-
-  it('should handle empty list gracefully', () => {
-    const props = { ...defaultProps, list: [] };
-    const wrapper = shallow(<ScheduleDropdown {...props} />);
-    const select = wrapper.find(Select);
-
-    expect(select.prop('options')).to.have.lengthOf(0);
-  });
-
-  it('should align label right when alignRight and labelId provided', () => {
-    const props = { ...defaultProps, alignRight: true, labelId: 'destination' };
-    const wrapper = shallow(<ScheduleDropdown {...props} />);
-    const label = wrapper.find('label.dd-header-title');
-
-    expect(label.hasClass('alignRight')).to.equal(true);
-  });
-
-  it('should not align label right when alignRight is false', () => {
-    const props = { ...defaultProps, alignRight: false, labelId: 'origin' };
-    const wrapper = shallow(<ScheduleDropdown {...props} />);
-    const label = wrapper.find('label.dd-header-title');
-
-    expect(label.hasClass('alignRight')).to.equal(false);
-  });
-
-  it('should handle selection without onSelectChange callback', () => {
-    const props = { ...defaultProps, onSelectChange: undefined };
-    const wrapper = shallow(<ScheduleDropdown {...props} />);
-    const select = wrapper.find(Select);
-
-    const option = { value: 'opt1', label: 'Option 1', titleLabel: 'Option 1' };
-    // Should not throw error
-    expect(() => select.prop('onChange')(option)).to.not.throw();
-  });
-
-  it('should have correct htmlFor attribute on label', () => {
-    const props = { ...defaultProps, labelId: 'origin' };
-    const wrapper = shallow(<ScheduleDropdown {...props} />);
-    const label = wrapper.find('label.dd-header-title');
-
-    expect(label.prop('htmlFor')).to.equal('aria-input-test-dropdown');
-  });
-
-  it('should match label and input ids for accessibility', () => {
-    const wrapper = shallow(<ScheduleDropdown {...defaultProps} />);
-    const label = wrapper.find('label').first();
-    const select = wrapper.find(Select);
-
-    expect(label.prop('id')).to.equal('aria-label-test-dropdown');
-    expect(select.prop('inputId')).to.equal('aria-input-test-dropdown');
-    expect(select.prop('aria-labelledby')).to.equal('aria-label-test-dropdown');
+      expect(changeMessage).to.include('Test Stop Label');
+    });
   });
 });

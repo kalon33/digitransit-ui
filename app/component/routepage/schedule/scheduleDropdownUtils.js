@@ -6,13 +6,11 @@
 export const getAriaMessages = intl => ({
   guidance: () => '.', // react-select requires non-empty string for aria-live regions
   onChange: ({ value }) =>
-    `${intl.formatMessage({ id: 'route-page.pattern-chosen' })} ${
-      value.fullLabel || value.label
-    }`,
+    `${intl.formatMessage({ id: 'route-page.pattern-chosen' })} ${value.label}`,
   onFilter: () => '',
   onFocus: ({ context: itemContext, focused }) => {
     if (itemContext === 'menu') {
-      return focused.fullLabel || focused.label;
+      return focused.label;
     }
     return '';
   },

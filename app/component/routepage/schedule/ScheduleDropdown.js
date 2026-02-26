@@ -1,110 +1,135 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import Select from 'react-select';
 import Icon from '@digitransit-component/digitransit-component-icon';
-import isEmpty from 'lodash/isEmpty';
 import { useTranslationsContext } from '../../../util/useTranslationsContext';
 import { truncateLabel } from '../../../util/stringUtils';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 import { getAriaMessages, getClassNamePrefix } from './scheduleDropdownUtils';
 
 /**
- * ScheduleDropdown
  * Generic dropdown used on the schedule page for stop selection.
+ * Supports both controlled (via `value` prop) and uncontrolled (via `defaultValue`) usage.
  */
 function ScheduleDropdown({
   alignRight,
   changeTitleOnChange,
+  defaultValue,
   id,
   labelId,
   list,
   onSelectChange,
   title,
+  value: controlledValue,
 }) {
   const intl = useTranslationsContext();
   const config = useConfigContext();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState([]);
+  const [uncontrolledValue, setUncontrolledValue] = useState(
+    defaultValue ?? null,
+  );
+
+  const isControlled = controlledValue !== undefined;
+  const currentValue = isControlled ? controlledValue : uncontrolledValue;
+
+  const validatedValue = useMemo(() => {
+    if (currentValue == null) {
+      return null;
+    }
+    const exists = list.some(opt => opt.value === currentValue);
+    return exists ? currentValue : null;
+  }, [currentValue, list]);
 
   const onMenuOpen = () => setIsMenuOpen(true);
   const onMenuClose = () => setIsMenuOpen(false);
 
   const handleChange = selectedOption => {
-    if (changeTitleOnChange) {
-      const option = {
-        ...selectedOption,
-        label: selectedOption.titleLabel,
-      };
-      setSelectedValue(option);
-    } else {
-      setSelectedValue(title);
+    const newValue = selectedOption.value;
+
+    if (!isControlled) {
+      setUncontrolledValue(newValue);
     }
+
     if (onSelectChange) {
-      onSelectChange(selectedOption.value);
+      onSelectChange(newValue);
     }
   };
 
   const optionList = useMemo(() => {
-    if (!changeTitleOnChange) {
-      return list;
-    }
+    return list.map(option => ({
+      value: option.value,
+      label: option.label,
+      titleLabel: truncateLabel(option.label),
+    }));
+  }, [list]);
 
-    return list.map(option => {
-      const titleLabel = truncateLabel(option.label);
-      return {
-        value: option.value,
-        fullLabel: option.label,
-        label: (
-          <>
-            <span>{option.label}</span>
-            {option.label === title && (
-              <Icon img="check" height={1.1525} width={0.904375} />
-            )}
-          </>
-        ),
-        titleLabel,
-      };
-    });
-  }, [list, title, changeTitleOnChange]);
+  // Format options dynamically based on selection (more efficient than rebuilding entire list)
+  const formatOptionLabel = useCallback(
+    (option, { context }) => {
+      if (!changeTitleOnChange || context !== 'menu') {
+        return option.label;
+      }
+
+      const isSelected = validatedValue === option.value;
+      return (
+        <>
+          <span>{option.label}</span>
+          {isSelected && <Icon img="check" height={1.1525} width={0.904375} />}
+        </>
+      );
+    },
+    [validatedValue, changeTitleOnChange],
+  );
+
+  const selectedOption = useMemo(() => {
+    if (!validatedValue) {
+      return null;
+    }
+    return optionList.find(opt => opt.value === validatedValue) || null;
+  }, [validatedValue, optionList]);
 
   const ariaMessages = useMemo(() => getAriaMessages(intl), [intl]);
 
   const classNamePrefix = getClassNamePrefix(alignRight, id);
 
-  const renderDropdownContent = label => (
-    <>
-      <span>{truncateLabel(label)}</span>
-      <Icon
-        img="arrow-dropdown"
-        height={0.625}
-        width={0.625}
-        color={config.colors.primary}
-      />
-    </>
+  const displayLabel = useMemo(() => {
+    if (changeTitleOnChange && selectedOption) {
+      return selectedOption.titleLabel || title;
+    }
+    return title;
+  }, [changeTitleOnChange, selectedOption, title]);
+
+  const renderDropdownContent = useCallback(
+    label => {
+      return (
+        <>
+          <span>{truncateLabel(label)}</span>
+          <Icon
+            img="arrow-dropdown"
+            height={0.625}
+            width={0.625}
+            color={config.colors.primary}
+          />
+        </>
+      );
+    },
+    [config.colors.primary],
   );
 
   return (
     <div className={cx('dd-container', { withLabel: labelId })} aria-live="off">
-      {labelId && (
-        <label
-          className={cx('dd-header-title', { alignRight })}
-          id={`aria-label-${id}`}
-          htmlFor={`aria-input-${id}`}
-        >
-          {intl.formatMessage({ id: labelId })}
-        </label>
-      )}
-      {!labelId && (
-        <label
-          className="dd-header-title sr-only"
-          id={`aria-label-${id}`}
-          htmlFor={`aria-input-${id}`}
-        >
-          {title}
-        </label>
-      )}
+      <label
+        className={cx('dd-header-title', {
+          alignRight: labelId && alignRight,
+          'sr-only': !labelId,
+        })}
+        id={`aria-label-${id}`}
+        htmlFor={`aria-input-${id}`}
+      >
+        {labelId ? intl.formatMessage({ id: labelId }) : title}
+      </label>
       <Select
         aria-labelledby={`aria-label-${id}`}
         ariaLiveMessages={ariaMessages}
@@ -114,17 +139,8 @@ function ScheduleDropdown({
           DropdownIndicator: () => null,
           IndicatorSeparator: () => null,
         }}
+        formatOptionLabel={formatOptionLabel}
         inputId={`aria-input-${id}`}
-        aria-label={
-          (isEmpty(selectedValue) &&
-            `${
-              labelId &&
-              intl.formatMessage({
-                id: 'route-page.pattern-chosen',
-              })
-            } ${title}`) ||
-          ''
-        }
         isSearchable={false}
         name={id}
         menuIsOpen={isMenuOpen}
@@ -132,8 +148,8 @@ function ScheduleDropdown({
         onMenuOpen={onMenuOpen}
         onMenuClose={onMenuClose}
         options={optionList}
-        placeholder={title && renderDropdownContent(title)}
-        value={!title && renderDropdownContent(selectedValue)}
+        placeholder={displayLabel ? renderDropdownContent(displayLabel) : null}
+        value={selectedOption}
       />
     </div>
   );
@@ -142,6 +158,7 @@ function ScheduleDropdown({
 ScheduleDropdown.propTypes = {
   alignRight: PropTypes.bool,
   changeTitleOnChange: PropTypes.bool,
+  defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   id: PropTypes.string.isRequired,
   labelId: PropTypes.string,
   list: PropTypes.arrayOf(
@@ -152,14 +169,17 @@ ScheduleDropdown.propTypes = {
   ).isRequired,
   onSelectChange: PropTypes.func,
   title: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 ScheduleDropdown.defaultProps = {
   alignRight: false,
   changeTitleOnChange: true,
+  defaultValue: undefined,
   labelId: undefined,
   onSelectChange: undefined,
   title: 'No title',
+  value: undefined,
 };
 
 ScheduleDropdown.displayName = 'ScheduleDropdown';
