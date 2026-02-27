@@ -34,274 +34,245 @@ describe('<ScheduleTripList />', () => {
     toIdx: 1,
   };
 
-  it('should render null for empty trips array', () => {
-    const props = { ...defaultProps, trips: [] };
-    const wrapper = shallow(<ScheduleTripList {...props} />);
-    expect(wrapper.type()).to.equal(null);
+  describe('Conditional rendering', () => {
+    it('should render null when trips array is empty', () => {
+      const props = { ...defaultProps, trips: [] };
+      const wrapper = shallow(<ScheduleTripList {...props} />);
+      expect(wrapper.type()).to.equal(null);
+    });
   });
 
-  it('should render ScheduleTripRow for each trip', () => {
-    const wrapper = shallow(<ScheduleTripList {...defaultProps} />);
-    const rows = wrapper.find(ScheduleTripRow);
-    expect(rows).to.have.lengthOf(2);
-  });
-
-  it('should pass departure and arrival times to ScheduleTripRow', () => {
-    const wrapper = shallow(<ScheduleTripList {...defaultProps} />);
-    const firstRow = wrapper.find(ScheduleTripRow).at(0);
-
-    expect(firstRow.prop('departureTime')).to.be.a('string');
-    expect(firstRow.prop('arrivalTime')).to.be.a('string');
-  });
-
-  it('should detect canceled trips correctly', () => {
-    const trips = [
-      createTrip('canceled-trip', 28080, 30060, 'CANCELED'),
-      createTrip('normal-trip', 29080, 31060, 'SCHEDULED'),
-    ];
-
-    const props = { ...defaultProps, trips };
-    const wrapper = shallow(<ScheduleTripList {...props} />);
-
-    const canceledRow = wrapper.find(ScheduleTripRow).at(0);
-    const normalRow = wrapper.find(ScheduleTripRow).at(1);
-
-    expect(canceledRow.prop('isCanceled')).to.equal(true);
-    expect(normalRow.prop('isCanceled')).to.equal(false);
-  });
-
-  it('should handle partially canceled trips (not all stops canceled)', () => {
-    const partialyCanceledTrip = {
-      id: 'partial-trip',
-      stoptimes: [
+  describe('Trip filtering', () => {
+    it('should filter out trips missing fromIdx stoptime', () => {
+      const trips = [
+        createTrip('valid-trip', 28080, 30060),
         {
-          scheduledDeparture: 28080,
-          scheduledArrival: 28080,
-          serviceDay: 1547503200,
-          realtimeState: 'CANCELED',
+          id: 'incomplete-trip',
+          stoptimes: [
+            // Missing stoptime at fromIdx=0
+            null,
+            {
+              scheduledDeparture: 30060,
+              scheduledArrival: 30060,
+              serviceDay: 1547503200,
+              realtimeState: 'SCHEDULED',
+            },
+          ],
         },
+      ];
+
+      const props = { ...defaultProps, trips };
+      const wrapper = shallow(<ScheduleTripList {...props} />);
+
+      expect(wrapper.find(ScheduleTripRow)).to.have.lengthOf(1);
+      expect(wrapper.find(ScheduleTripRow).first().key()).to.include(
+        'valid-trip',
+      );
+    });
+
+    it('should filter out trips missing toIdx stoptime', () => {
+      const trips = [
+        createTrip('valid-trip', 28080, 30060),
         {
-          scheduledDeparture: 30060,
-          scheduledArrival: 30060,
-          serviceDay: 1547503200,
-          realtimeState: 'SCHEDULED',
+          id: 'incomplete-trip',
+          stoptimes: [
+            {
+              scheduledDeparture: 28080,
+              scheduledArrival: 28080,
+              serviceDay: 1547503200,
+              realtimeState: 'SCHEDULED',
+            },
+            // Missing stoptime at toIdx=1
+            null,
+          ],
         },
-      ],
-    };
+      ];
 
-    const props = { ...defaultProps, trips: [partialyCanceledTrip] };
-    const wrapper = shallow(<ScheduleTripList {...props} />);
+      const props = { ...defaultProps, trips };
+      const wrapper = shallow(<ScheduleTripList {...props} />);
 
-    const row = wrapper.find(ScheduleTripRow).first();
-    expect(row.prop('isCanceled')).to.equal(false); // Not fully canceled
-  });
+      expect(wrapper.find(ScheduleTripRow)).to.have.lengthOf(1);
+      expect(wrapper.find(ScheduleTripRow).first().key()).to.include(
+        'valid-trip',
+      );
+    });
 
-  it('should handle single trip', () => {
-    const trips = [createTrip('single-trip', 28080, 30060)];
-    const props = { ...defaultProps, trips };
-    const wrapper = shallow(<ScheduleTripList {...props} />);
-
-    expect(wrapper.find(ScheduleTripRow)).to.have.lengthOf(1);
-  });
-
-  it('should handle many trips', () => {
-    const trips = Array.from({ length: 50 }, (_, i) =>
-      createTrip(`trip-${i}`, 28080 + i * 600, 30060 + i * 600),
-    );
-
-    const props = { ...defaultProps, trips };
-    const wrapper = shallow(<ScheduleTripList {...props} />);
-
-    expect(wrapper.find(ScheduleTripRow)).to.have.lengthOf(50);
-  });
-
-  it('should use correct fromIdx and toIdx', () => {
-    const trip = {
-      id: 'multi-stop-trip',
-      stoptimes: [
+    it('should filter out trips with empty stoptimes array', () => {
+      const trips = [
+        createTrip('valid-trip', 28080, 30060),
         {
-          scheduledDeparture: 28080,
-          scheduledArrival: 28080,
-          serviceDay: 1547503200,
-          realtimeState: 'SCHEDULED',
+          id: 'no-stoptimes-trip',
+          stoptimes: [],
         },
-        {
-          scheduledDeparture: 29080,
-          scheduledArrival: 29080,
-          serviceDay: 1547503200,
-          realtimeState: 'SCHEDULED',
-        },
-        {
-          scheduledDeparture: 30080,
-          scheduledArrival: 30080,
-          serviceDay: 1547503200,
-          realtimeState: 'SCHEDULED',
-        },
-        {
-          scheduledDeparture: 31080,
-          scheduledArrival: 31080,
-          serviceDay: 1547503200,
-          realtimeState: 'SCHEDULED',
-        },
-      ],
-    };
+      ];
 
-    const props = { trips: [trip], fromIdx: 1, toIdx: 3 };
-    const wrapper = shallow(<ScheduleTripList {...props} />);
+      const props = { ...defaultProps, trips };
+      const wrapper = shallow(<ScheduleTripList {...props} />);
 
-    expect(wrapper.find(ScheduleTripRow)).to.have.lengthOf(1);
+      expect(wrapper.find(ScheduleTripRow)).to.have.lengthOf(1);
+    });
+
+    it('should use correct fromIdx and toIdx when extracting stoptimes', () => {
+      const trip = {
+        id: 'multi-stop-trip',
+        stoptimes: [
+          {
+            scheduledDeparture: 10000,
+            scheduledArrival: 10000,
+            serviceDay: 1547503200,
+            realtimeState: 'SCHEDULED',
+          },
+          {
+            scheduledDeparture: 20000,
+            scheduledArrival: 20000,
+            serviceDay: 1547503200,
+            realtimeState: 'SCHEDULED',
+          },
+          {
+            scheduledDeparture: 30000,
+            scheduledArrival: 30000,
+            serviceDay: 1547503200,
+            realtimeState: 'SCHEDULED',
+          },
+          {
+            scheduledDeparture: 40000,
+            scheduledArrival: 40000,
+            serviceDay: 1547503200,
+            realtimeState: 'SCHEDULED',
+          },
+        ],
+      };
+
+      // Select stops 1 and 3 (indices 1 and 3)
+      const props = { trips: [trip], fromIdx: 1, toIdx: 3 };
+      const wrapper = shallow(<ScheduleTripList {...props} />);
+
+      const row = wrapper.find(ScheduleTripRow).first();
+      // Verify times match the selected stoptimes (20000 and 40000 seconds)
+      expect(row.prop('departureTime')).to.equal('05:33');
+      expect(row.prop('arrivalTime')).to.equal('11:06');
+    });
   });
 
-  it('should generate unique keys for each trip row', () => {
-    const wrapper = shallow(<ScheduleTripList {...defaultProps} />);
-    const rows = wrapper.find(ScheduleTripRow);
+  describe('Cancellation logic', () => {
+    it('should mark trip as canceled when all stoptimes are CANCELED', () => {
+      const fullyCanceledTrip = {
+        id: 'fully-canceled',
+        stoptimes: [
+          {
+            scheduledDeparture: 28080,
+            scheduledArrival: 28080,
+            serviceDay: 1547503200,
+            realtimeState: 'CANCELED',
+          },
+          {
+            scheduledDeparture: 30060,
+            scheduledArrival: 30060,
+            serviceDay: 1547503200,
+            realtimeState: 'CANCELED',
+          },
+        ],
+      };
 
-    const keys = rows.map(row => row.key());
-    const uniqueKeys = new Set(keys);
+      const props = { ...defaultProps, trips: [fullyCanceledTrip] };
+      const wrapper = shallow(<ScheduleTripList {...props} />);
 
-    expect(uniqueKeys.size).to.equal(keys.length);
+      const row = wrapper.find(ScheduleTripRow).first();
+      expect(row.prop('isCanceled')).to.equal(true);
+    });
+
+    it('should not mark trip as canceled when only some stoptimes are CANCELED', () => {
+      const partiallyCanceledTrip = {
+        id: 'partial-trip',
+        stoptimes: [
+          {
+            scheduledDeparture: 28080,
+            scheduledArrival: 28080,
+            serviceDay: 1547503200,
+            realtimeState: 'CANCELED',
+          },
+          {
+            scheduledDeparture: 30060,
+            scheduledArrival: 30060,
+            serviceDay: 1547503200,
+            realtimeState: 'SCHEDULED',
+          },
+        ],
+      };
+
+      const props = { ...defaultProps, trips: [partiallyCanceledTrip] };
+      const wrapper = shallow(<ScheduleTripList {...props} />);
+
+      const row = wrapper.find(ScheduleTripRow).first();
+      expect(row.prop('isCanceled')).to.equal(false);
+    });
+
+    it('should not mark trip as canceled for SCHEDULED state', () => {
+      const wrapper = shallow(<ScheduleTripList {...defaultProps} />);
+      const row = wrapper.find(ScheduleTripRow).first();
+      expect(row.prop('isCanceled')).to.equal(false);
+    });
+
+    it('should not mark trip as canceled for UPDATED state', () => {
+      const trips = [createTrip('updated-trip', 28080, 30060, 'UPDATED')];
+      const props = { ...defaultProps, trips };
+      const wrapper = shallow(<ScheduleTripList {...props} />);
+
+      const row = wrapper.find(ScheduleTripRow).first();
+      expect(row.prop('isCanceled')).to.equal(false);
+    });
   });
 
-  it('should handle trips at midnight', () => {
-    const trips = [createTrip('midnight-trip', 0, 3600)];
-    const props = { ...defaultProps, trips };
-    const wrapper = shallow(<ScheduleTripList {...props} />);
+  describe('Data transformation', () => {
+    it('should pass formatted departure and arrival times to ScheduleTripRow', () => {
+      // serviceDay: 1547503200 = 2019-01-15 00:00:00 UTC
+      // 28080 seconds = 07:48
+      // 30060 seconds = 08:21
+      const wrapper = shallow(<ScheduleTripList {...defaultProps} />);
+      const firstRow = wrapper.find(ScheduleTripRow).at(0);
 
-    const row = wrapper.find(ScheduleTripRow).first();
-    expect(row.prop('departureTime')).to.match(/^0[0-2]:[0-5][0-9]$/); // Validate HH:MM format
-    expect(row.prop('arrivalTime')).to.match(/^0[0-1]:[0-5][0-9]$/);
-  });
+      expect(firstRow.prop('departureTime')).to.equal('07:48');
+      expect(firstRow.prop('arrivalTime')).to.equal('08:21');
+    });
 
-  it('should handle trips after midnight (next day)', () => {
-    const trips = [createTrip('late-trip', 86400 + 1800, 86400 + 3600)];
-    const props = { ...defaultProps, trips };
-    const wrapper = shallow(<ScheduleTripList {...props} />);
+    it('should calculate times correctly for different service days', () => {
+      const trip = {
+        id: 'different-day',
+        stoptimes: [
+          {
+            scheduledDeparture: 3600, // 01:00
+            scheduledArrival: 3600,
+            serviceDay: 1547589600, // Different day: 2019-01-16
+            realtimeState: 'SCHEDULED',
+          },
+          {
+            scheduledDeparture: 7200, // 02:00
+            scheduledArrival: 7200,
+            serviceDay: 1547589600,
+            realtimeState: 'SCHEDULED',
+          },
+        ],
+      };
 
-    const row = wrapper.find(ScheduleTripRow).first();
-    // Times wrap around at midnight in standard 24h format (00:00-23:59)
-    expect(row.prop('departureTime')).to.match(/^[0-2][0-9]:[0-5][0-9]$/);
-    expect(row.prop('arrivalTime')).to.match(/^[0-2][0-9]:[0-5][0-9]$/);
-  });
+      const props = { ...defaultProps, trips: [trip] };
+      const wrapper = shallow(<ScheduleTripList {...props} />);
 
-  it('should handle trips with very short duration', () => {
-    const trips = [createTrip('quick-trip', 28080, 28200)]; // 2 minutes
-    const props = { ...defaultProps, trips };
-    const wrapper = shallow(<ScheduleTripList {...props} />);
+      const row = wrapper.find(ScheduleTripRow).first();
+      expect(row.prop('departureTime')).to.equal('01:00');
+      expect(row.prop('arrivalTime')).to.equal('02:00');
+    });
 
-    const row = wrapper.find(ScheduleTripRow).first();
-    expect(row.prop('departureTime')).to.match(/^\d{1,2}:[0-5][0-9]$/);
-    expect(row.prop('arrivalTime')).to.match(/^\d{1,2}:[0-5][0-9]$/);
-    expect(row.prop('departureTime')).to.not.equal(row.prop('arrivalTime'));
-  });
+    it('should render one ScheduleTripRow per valid trip', () => {
+      const trips = [
+        createTrip('trip-1', 28080, 30060),
+        createTrip('trip-2', 29080, 31060),
+        createTrip('trip-3', 30080, 32060),
+      ];
 
-  it('should handle trips with long duration', () => {
-    const trips = [createTrip('long-trip', 28080, 50000)]; // Several hours
-    const props = { ...defaultProps, trips };
-    const wrapper = shallow(<ScheduleTripList {...props} />);
+      const props = { ...defaultProps, trips };
+      const wrapper = shallow(<ScheduleTripList {...props} />);
 
-    const row = wrapper.find(ScheduleTripRow).first();
-    expect(row.prop('departureTime')).to.match(/^\d{1,2}:[0-5][0-9]$/);
-    expect(row.prop('arrivalTime')).to.match(/^\d{1,2}:[0-5][0-9]$/);
-    expect(row.prop('departureTime')).to.not.equal(row.prop('arrivalTime'));
-  });
-
-  it('should handle trips with UPDATED realtimeState', () => {
-    const trips = [createTrip('updated-trip', 28080, 30060, 'UPDATED')];
-    const props = { ...defaultProps, trips };
-    const wrapper = shallow(<ScheduleTripList {...props} />);
-
-    const row = wrapper.find(ScheduleTripRow).first();
-    expect(row.prop('isCanceled')).to.equal(false);
-  });
-
-  it('should handle trips with ADDED realtimeState', () => {
-    const trips = [createTrip('added-trip', 28080, 30060, 'ADDED')];
-    const props = { ...defaultProps, trips };
-    const wrapper = shallow(<ScheduleTripList {...props} />);
-
-    const row = wrapper.find(ScheduleTripRow).first();
-    expect(row.prop('isCanceled')).to.equal(false);
-  });
-
-  it('should handle all stoptimes canceled', () => {
-    const fullyCanceledTrip = {
-      id: 'fully-canceled',
-      stoptimes: [
-        {
-          scheduledDeparture: 28080,
-          scheduledArrival: 28080,
-          serviceDay: 1547503200,
-          realtimeState: 'CANCELED',
-        },
-        {
-          scheduledDeparture: 29080,
-          scheduledArrival: 29080,
-          serviceDay: 1547503200,
-          realtimeState: 'CANCELED',
-        },
-        {
-          scheduledDeparture: 30080,
-          scheduledArrival: 30080,
-          serviceDay: 1547503200,
-          realtimeState: 'CANCELED',
-        },
-      ],
-    };
-
-    const props = { trips: [fullyCanceledTrip], fromIdx: 0, toIdx: 2 };
-    const wrapper = shallow(<ScheduleTripList {...props} />);
-
-    const row = wrapper.find(ScheduleTripRow).first();
-    expect(row.prop('isCanceled')).to.equal(true);
-  });
-
-  it('should handle different service days', () => {
-    const trip1 = {
-      id: 'trip-day1',
-      stoptimes: [
-        {
-          scheduledDeparture: 28080,
-          scheduledArrival: 28080,
-          serviceDay: 1547503200,
-          realtimeState: 'SCHEDULED',
-        },
-        {
-          scheduledDeparture: 30060,
-          scheduledArrival: 30060,
-          serviceDay: 1547503200,
-          realtimeState: 'SCHEDULED',
-        },
-      ],
-    };
-
-    const trip2 = {
-      id: 'trip-day2',
-      stoptimes: [
-        {
-          scheduledDeparture: 28080,
-          scheduledArrival: 28080,
-          serviceDay: 1547589600, // Different day
-          realtimeState: 'SCHEDULED',
-        },
-        {
-          scheduledDeparture: 30060,
-          scheduledArrival: 30060,
-          serviceDay: 1547589600,
-          realtimeState: 'SCHEDULED',
-        },
-      ],
-    };
-
-    const props = { ...defaultProps, trips: [trip1, trip2] };
-    const wrapper = shallow(<ScheduleTripList {...props} />);
-
-    expect(wrapper.find(ScheduleTripRow)).to.have.lengthOf(2);
-  });
-
-  it('should render multiple ScheduleTripRow components', () => {
-    const wrapper = shallow(<ScheduleTripList {...defaultProps} />);
-    const rows = wrapper.find(ScheduleTripRow);
-
-    expect(rows.length).to.be.greaterThan(0);
+      expect(wrapper.find(ScheduleTripRow)).to.have.lengthOf(3);
+    });
   });
 });

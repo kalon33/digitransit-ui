@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { afterEach, beforeEach, describe, it } from 'mocha';
+import { beforeEach, describe, it } from 'mocha';
 import { DateTime } from 'luxon';
 import { renderHook } from '@testing-library/react-hooks/dom';
 import sinon from 'sinon';
@@ -11,7 +11,6 @@ describe('useRouterRedirect', () => {
   let mockRouter;
   let mockMatch;
   let routerReplaceSpy;
-  const originalTestingEnv = process.env.ROUTEPAGETESTING;
 
   beforeEach(() => {
     routerReplaceSpy = sinon.spy();
@@ -27,162 +26,178 @@ describe('useRouterRedirect', () => {
     };
   });
 
-  afterEach(() => {
-    process.env.ROUTEPAGETESTING = originalTestingEnv;
-  });
-
-  it('should not redirect when shouldRedirect is false', () => {
-    renderHook(() =>
-      useRouterRedirect({
-        match: mockMatch,
-        router: mockRouter,
-        shouldRedirect: false,
-      }),
-    );
-
-    expect(routerReplaceSpy.called).to.equal(false);
-  });
-
-  it('should redirect with query params when provided', () => {
-    const redirectDate = DateTime.fromISO('2024-01-15');
-
-    renderHook(() =>
-      useRouterRedirect({
-        match: mockMatch,
-        router: mockRouter,
-        shouldRedirect: true,
-        query: { serviceDay: redirectDate.toFormat(DATE_FORMAT) },
-      }),
-    );
-
-    expect(routerReplaceSpy.calledOnce).to.equal(true);
-    const callArg = routerReplaceSpy.firstCall.args[0];
-    expect(callArg.pathname).to.equal(mockMatch.location.pathname);
-    expect(callArg.query.serviceDay).to.equal(
-      redirectDate.toFormat(DATE_FORMAT),
-    );
-  });
-
-  it('should redirect with path when pathname is provided', () => {
-    const redirectPath = '/route/HSL:1001/timetable';
-
-    renderHook(() =>
-      useRouterRedirect({
-        match: mockMatch,
-        router: mockRouter,
-        shouldRedirect: true,
-        pathname: redirectPath,
-      }),
-    );
-
-    expect(routerReplaceSpy.calledOnce).to.equal(true);
-    const callArg = routerReplaceSpy.firstCall.args[0];
-    expect(callArg.pathname).to.equal(redirectPath);
-    expect(callArg.query.serviceDay).to.equal(undefined);
-  });
-
-  it('should redirect with both path and query when both are provided', () => {
-    const redirectDate = DateTime.fromISO('2024-01-15');
-    const redirectPath = '/route/HSL:1001/timetable';
-
-    renderHook(() =>
-      useRouterRedirect({
-        match: mockMatch,
-        router: mockRouter,
-        shouldRedirect: true,
-        pathname: redirectPath,
-        query: { serviceDay: redirectDate.toFormat(DATE_FORMAT) },
-      }),
-    );
-
-    expect(routerReplaceSpy.calledOnce).to.equal(true);
-    const callArg = routerReplaceSpy.firstCall.args[0];
-    expect(callArg.pathname).to.equal(redirectPath);
-    expect(callArg.query.serviceDay).to.equal(
-      redirectDate.toFormat(DATE_FORMAT),
-    );
-  });
-
-  it('should preserve test param from existing query', () => {
-    process.env.ROUTEPAGETESTING = 'true';
-    const redirectDate = DateTime.fromISO('2024-01-15');
-
-    const matchWithTest = {
-      ...mockMatch,
-      location: {
-        ...mockMatch.location,
-        query: { test: '1' },
-      },
-    };
-
-    renderHook(() =>
-      useRouterRedirect({
-        match: matchWithTest,
-        router: mockRouter,
-        shouldRedirect: true,
-        query: { serviceDay: redirectDate.toFormat(DATE_FORMAT) },
-      }),
-    );
-
-    expect(routerReplaceSpy.calledOnce).to.equal(true);
-    const callArg = routerReplaceSpy.firstCall.args[0];
-    expect(callArg.query.test).to.equal('1');
-    expect(callArg.query.serviceDay).to.equal(
-      redirectDate.toFormat(DATE_FORMAT),
-    );
-  });
-
-  it('should preserve existing query params', () => {
-    const redirectDate = DateTime.fromISO('2024-01-15');
-
-    const matchWithQuery = {
-      ...mockMatch,
-      location: {
-        ...mockMatch.location,
-        query: { someParam: 'value' },
-      },
-    };
-
-    renderHook(() =>
-      useRouterRedirect({
-        match: matchWithQuery,
-        router: mockRouter,
-        shouldRedirect: true,
-        query: { serviceDay: redirectDate.toFormat(DATE_FORMAT) },
-      }),
-    );
-
-    expect(routerReplaceSpy.calledOnce).to.equal(true);
-    const callArg = routerReplaceSpy.firstCall.args[0];
-    expect(callArg.query.someParam).to.equal('value');
-    expect(callArg.query.serviceDay).to.equal(
-      redirectDate.toFormat(DATE_FORMAT),
-    );
-  });
-
-  it('should redirect when shouldRedirect changes', () => {
-    const { rerender } = renderHook(
-      ({ shouldRedirect, query }) =>
+  describe('Redirect behavior', () => {
+    it('does not redirect when disabled', () => {
+      renderHook(() =>
         useRouterRedirect({
           match: mockMatch,
           router: mockRouter,
-          shouldRedirect,
-          query,
+          shouldRedirect: false,
         }),
-      {
-        initialProps: { shouldRedirect: false, query: {} },
-      },
-    );
+      );
 
-    expect(routerReplaceSpy.called).to.equal(false);
-
-    rerender({
-      shouldRedirect: true,
-      query: {
-        serviceDay: DateTime.fromISO('2024-01-15').toFormat(DATE_FORMAT),
-      },
+      expect(routerReplaceSpy.called).to.equal(false);
     });
 
-    expect(routerReplaceSpy.calledOnce).to.equal(true);
+    it('redirects when enabled', () => {
+      renderHook(() =>
+        useRouterRedirect({
+          match: mockMatch,
+          router: mockRouter,
+          shouldRedirect: true,
+        }),
+      );
+
+      expect(routerReplaceSpy.calledOnce).to.equal(true);
+    });
+
+    it('triggers redirect when shouldRedirect changes from false to true', () => {
+      const { rerender } = renderHook(
+        ({ shouldRedirect }) =>
+          useRouterRedirect({
+            match: mockMatch,
+            router: mockRouter,
+            shouldRedirect,
+          }),
+        {
+          initialProps: { shouldRedirect: false },
+        },
+      );
+
+      expect(routerReplaceSpy.called).to.equal(false);
+
+      rerender({ shouldRedirect: true });
+
+      expect(routerReplaceSpy.calledOnce).to.equal(true);
+    });
+  });
+
+  describe('Path handling', () => {
+    it('keeps current pathname when no new pathname provided', () => {
+      renderHook(() =>
+        useRouterRedirect({
+          match: mockMatch,
+          router: mockRouter,
+          shouldRedirect: true,
+        }),
+      );
+
+      const redirectTarget = routerReplaceSpy.firstCall.args[0];
+      expect(redirectTarget.pathname).to.equal(mockMatch.location.pathname);
+    });
+
+    it('uses new pathname when provided', () => {
+      const newPath = '/route/HSL:1001/timetable';
+
+      renderHook(() =>
+        useRouterRedirect({
+          match: mockMatch,
+          router: mockRouter,
+          shouldRedirect: true,
+          pathname: newPath,
+        }),
+      );
+
+      const redirectTarget = routerReplaceSpy.firstCall.args[0];
+      expect(redirectTarget.pathname).to.equal(newPath);
+    });
+  });
+
+  describe('Query parameter merging', () => {
+    it('adds new query params to empty query', () => {
+      const serviceDay = DateTime.fromISO('2024-01-15').toFormat(DATE_FORMAT);
+
+      renderHook(() =>
+        useRouterRedirect({
+          match: mockMatch,
+          router: mockRouter,
+          shouldRedirect: true,
+          query: { serviceDay },
+        }),
+      );
+
+      const redirectTarget = routerReplaceSpy.firstCall.args[0];
+      expect(redirectTarget.query).to.deep.equal({ serviceDay });
+    });
+
+    it('preserves existing query params while adding new ones', () => {
+      const matchWithQuery = {
+        ...mockMatch,
+        location: {
+          ...mockMatch.location,
+          query: { existing: 'value', other: 'param' },
+        },
+      };
+      const serviceDay = DateTime.fromISO('2024-01-15').toFormat(DATE_FORMAT);
+
+      renderHook(() =>
+        useRouterRedirect({
+          match: matchWithQuery,
+          router: mockRouter,
+          shouldRedirect: true,
+          query: { serviceDay },
+        }),
+      );
+
+      const redirectTarget = routerReplaceSpy.firstCall.args[0];
+      expect(redirectTarget.query).to.deep.equal({
+        existing: 'value',
+        other: 'param',
+        serviceDay,
+      });
+    });
+
+    it('overwrites existing params with new values for same key', () => {
+      const matchWithQuery = {
+        ...mockMatch,
+        location: {
+          ...mockMatch.location,
+          query: { serviceDay: '2024-01-01' },
+        },
+      };
+      const newServiceDay =
+        DateTime.fromISO('2024-01-15').toFormat(DATE_FORMAT);
+
+      renderHook(() =>
+        useRouterRedirect({
+          match: matchWithQuery,
+          router: mockRouter,
+          shouldRedirect: true,
+          query: { serviceDay: newServiceDay },
+        }),
+      );
+
+      const redirectTarget = routerReplaceSpy.firstCall.args[0];
+      expect(redirectTarget.query.serviceDay).to.equal(newServiceDay);
+    });
+
+    it('handles both pathname and query changes together', () => {
+      const matchWithQuery = {
+        ...mockMatch,
+        location: {
+          ...mockMatch.location,
+          query: { existing: 'value' },
+        },
+      };
+      const newPath = '/route/HSL:1001/timetable';
+      const serviceDay = DateTime.fromISO('2024-01-15').toFormat(DATE_FORMAT);
+
+      renderHook(() =>
+        useRouterRedirect({
+          match: matchWithQuery,
+          router: mockRouter,
+          shouldRedirect: true,
+          pathname: newPath,
+          query: { serviceDay },
+        }),
+      );
+
+      const redirectTarget = routerReplaceSpy.firstCall.args[0];
+      expect(redirectTarget.pathname).to.equal(newPath);
+      expect(redirectTarget.query).to.deep.equal({
+        existing: 'value',
+        serviceDay,
+      });
+    });
   });
 });

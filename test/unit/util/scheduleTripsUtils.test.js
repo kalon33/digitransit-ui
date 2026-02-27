@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import { describe, it, beforeEach } from 'mocha';
 import { DateTime } from 'luxon';
-import sinon from 'sinon';
 
 import { sortTrips, getTripsList } from '../../../app/util/scheduleTripsUtils';
 import { DATE_FORMAT } from '../../../app/constants';
@@ -131,13 +130,18 @@ describe('scheduleTripsUtils', () => {
 
     beforeEach(() => {
       mockIntl = {
-        formatMessage: sinon
-          .stub()
-          .returns('No journeys found for the selected date '),
+        formatMessage: ({ id, defaultMessage }, values) => {
+          if (id === 'no-trips-found') {
+            return `No journeys found for the selected date ${
+              values?.selectedDate || ''
+            }`;
+          }
+          return defaultMessage;
+        },
       };
     });
 
-    it('should return message when no trips are found for wantedDay', () => {
+    it('should return message when no trips are found', () => {
       const pattern = {
         code: 'HSL:1001:0:01',
         trips: [],
@@ -152,7 +156,7 @@ describe('scheduleTripsUtils', () => {
 
       expect(result.trips).to.equal(null);
       expect(result.noTripsMessage).to.not.equal(null);
-      expect(mockIntl.formatMessage.called).to.equal(true);
+      expect(result.noTripsMessage.props.children).to.include('16.1.2024');
     });
 
     it('should return sorted trips when trips are available', () => {
@@ -199,22 +203,21 @@ describe('scheduleTripsUtils', () => {
       expect(result.trips).to.equal(null);
     });
 
-    it('should format wantedDay correctly in message', () => {
+    it('should include formatted date in message when no trips found', () => {
       const pattern = {
         code: 'HSL:1001:0:01',
         trips: [],
       };
       const wantedDay = DateTime.fromFormat('20240115', DATE_FORMAT);
 
-      getTripsList({
+      const result = getTripsList({
         patternWithTrips: pattern,
         intl: mockIntl,
         wantedDay,
       });
 
-      expect(mockIntl.formatMessage.called).to.equal(true);
-      const callArg = mockIntl.formatMessage.firstCall.args[0];
-      expect(callArg.id).to.equal('no-trips-found');
+      expect(result.noTripsMessage).to.not.equal(null);
+      expect(result.noTripsMessage.props.children).to.include('15.1.2024');
     });
 
     it('should handle pattern without trips property', () => {
@@ -229,6 +232,7 @@ describe('scheduleTripsUtils', () => {
 
       expect(result.trips).to.equal(null);
       expect(result.noTripsMessage).to.not.equal(null);
+      expect(result.noTripsMessage.props.role).to.equal('alert');
     });
 
     describe('Testing mode', () => {
@@ -399,6 +403,9 @@ describe('scheduleTripsUtils', () => {
 
         expect(result.trips).to.equal(null);
         expect(result.noTripsMessage).to.not.equal(null);
+        expect(result.noTripsMessage.props.className).to.equal(
+          'no-trips-message',
+        );
       });
 
       it('should return object with both trips and noTripsMessage properties', () => {

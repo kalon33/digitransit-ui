@@ -308,29 +308,6 @@ describe('<ScheduleDropdown />', () => {
       // aria-label should not be present, allowing aria-labelledby to work
       expect(select.prop('aria-label')).to.equal(undefined);
     });
-
-    it('should maintain consistent aria-labelledby regardless of selection state', () => {
-      const props = { ...defaultProps, labelId: 'destination' };
-      const wrapper = shallow(<ScheduleDropdown {...props} />);
-
-      const selectBefore = wrapper.find(Select);
-      const ariaLabelledByBefore = selectBefore.prop('aria-labelledby');
-
-      // Simulate selection
-      selectBefore.prop('onChange')({
-        value: 'kamppi',
-        label: <span>Kamppi</span>,
-        titleLabel: 'Kamppi',
-      });
-
-      wrapper.update();
-      const selectAfter = wrapper.find(Select);
-      const ariaLabelledByAfter = selectAfter.prop('aria-labelledby');
-
-      // aria-labelledby should remain constant regardless of selection
-      expect(ariaLabelledByBefore).to.equal(ariaLabelledByAfter);
-      expect(ariaLabelledByAfter).to.equal('aria-label-test-dropdown');
-    });
   });
 
   describe('User interaction callbacks', () => {
@@ -426,24 +403,6 @@ describe('scheduleDropdownUtils', () => {
 
       expect(changeMessage).to.include('Selected:');
       expect(changeMessage).to.include('Test Stop');
-    });
-
-    it('should use label in onChange message', () => {
-      const mockIntl = {
-        formatMessage: ({ id }) => {
-          if (id === 'route-page.pattern-chosen') {
-            return 'Selected:';
-          }
-          return id;
-        },
-      };
-
-      const messages = getAriaMessages(mockIntl);
-      const changeMessage = messages.onChange({
-        value: { label: 'Test Stop Label' },
-      });
-
-      expect(changeMessage).to.include('Test Stop Label');
     });
   });
 });

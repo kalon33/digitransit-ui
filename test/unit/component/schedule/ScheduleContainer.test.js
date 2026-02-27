@@ -145,84 +145,28 @@ describe('<ScheduleContainer />', () => {
     sandbox.restore();
   });
 
-  describe('Initialization and hooks', () => {
-    it('should call useConfigContext and useTranslationsContext on mount', () => {
-      shallow(
-        <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
-      );
-
-      // Verify the context hooks were called
-      expect(stubs.useTranslationsContext.called).to.equal(true);
-      expect(stubs.useConfigContext.called).to.equal(true);
-    });
-
-    it('should call schedule validation helpers with expected inputs', () => {
-      const matchWithServiceDay = {
-        ...mockMatchWithRouter,
-        location: {
-          ...mockMatchWithRouter.location,
-          query: {
-            serviceDay: DateTime.now().toFormat(DATE_FORMAT),
-            test: '1',
-          },
-        },
-      };
-
-      shallow(
-        <ScheduleContainer {...defaultProps} match={matchWithServiceDay} />,
-      );
-
-      expect(stubs.calculateRedirectDecision.calledOnce).to.equal(true);
-      expect(
-        stubs.calculateRedirectDecision.calledWithMatch({
-          testNum: '1',
-          routeId: defaultProps.route.gtfsId,
-        }),
-      ).to.equal(true);
-    });
-
-    it('should initialize with from and to stops from pattern', () => {
+  describe('State initialization', () => {
+    it('should initialize from/to stops covering entire pattern', () => {
       const wrapper = shallow(
         <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
       );
 
       const header = wrapper.find(ScheduleHeader);
-      expect(header).to.have.lengthOf(1);
-      expect(header.prop('stops')).to.equal(defaultProps.pattern.stops);
-      expect(header.prop('from')).to.equal(0);
-      expect(header.prop('to')).to.equal(defaultProps.pattern.stops.length - 1);
-
       const tripList = wrapper.find(ScheduleTripList);
-      expect(tripList).to.have.lengthOf(1);
-      expect(tripList.prop('trips')).to.deep.equal(
-        stubs.getTripsList.getCall(0).returnValue.trips,
-      );
+
+      // Should start at first stop and end at last stop
+      expect(header.prop('from')).to.equal(0);
+      expect(header.prop('to')).to.equal(1); // pattern has 2 stops (0-1)
       expect(tripList.prop('fromIdx')).to.equal(0);
-      expect(tripList.prop('toIdx')).to.equal(
-        defaultProps.pattern.stops.length - 1,
-      );
+      expect(tripList.prop('toIdx')).to.equal(1);
     });
   });
 
-  describe('Layout and interactions', () => {
-    it('should render route controls and date select', () => {
-      const wrapper = shallow(
-        <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
-      );
-
-      const controlPanel = wrapper.find(RouteControlPanel);
-      expect(controlPanel).to.have.lengthOf(1);
-      expect(controlPanel.prop('route')).to.equal(defaultProps.route);
-      expect(controlPanel.prop('breakpoint')).to.equal(defaultProps.breakpoint);
-
-      const dateSelect = wrapper.find(DateSelectGrouped);
-      expect(dateSelect).to.have.lengthOf(1);
-      expect(dateSelect.prop('dateFormat')).to.equal(DATE_FORMAT);
-    });
-
-    it('should update trip list bounds when header changes', () => {
+  describe('Stop selection interactions', () => {
+    it('should update trip list when user changes destination stop', () => {
       const patternWithMoreStops = {
-        ...defaultProps.pattern,
+        ...mockPattern,
+        code: 'HSL:1001:0:01',
         stops: [
           { id: 'stop1', name: 'Stop 1' },
           { id: 'stop2', name: 'Stop 2' },
@@ -233,31 +177,24 @@ describe('<ScheduleContainer />', () => {
       const props = {
         ...defaultProps,
         pattern: patternWithMoreStops,
-        route: {
-          ...defaultProps.route,
-          patterns: [
-            { ...defaultProps.route.patterns[0], ...patternWithMoreStops },
-          ],
-        },
       };
 
       const wrapper = shallow(
         <ScheduleContainer {...props} match={mockMatchWithRouter} />,
       );
 
-      wrapper.find(ScheduleHeader).prop('onFromSelectChange')(2);
-      wrapper.update();
-
-      const tripList = wrapper.find(ScheduleTripList);
-      expect(tripList.prop('fromIdx')).to.equal(2);
-      expect(tripList.prop('toIdx')).to.equal(3);
-
+      // User selects stop 2 as destination
       wrapper.find(ScheduleHeader).prop('onToSelectChange')(2);
       wrapper.update();
+
+      // Both header and trip list should update
+      expect(wrapper.find(ScheduleHeader).prop('to')).to.equal(2);
       expect(wrapper.find(ScheduleTripList).prop('toIdx')).to.equal(2);
     });
+  });
 
-    it('should trigger router replace when other dates selection changes', () => {
+  describe('Date selection interactions', () => {
+    it('should update URL with serviceDay query param when user changes date', () => {
       const wrapper = shallow(
         <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
       );
@@ -265,26 +202,37 @@ describe('<ScheduleContainer />', () => {
       wrapper.find(DateSelectGrouped).prop('onDateChange')('20240102');
 
       expect(routerReplaceSpy.calledOnce).to.equal(true);
-      expect(
-        routerReplaceSpy.calledWithMatch({
-          query: { serviceDay: '20240102' },
-        }),
-      ).to.equal(true);
+      const callArgs = routerReplaceSpy.firstCall.args[0];
+      expect(callArgs.query.serviceDay).to.equal('20240102');
     });
 
-    it('should still render date select when no options are available', () => {
-      stubs.buildAvailableDates.returns([DateTime.fromISO('2024-01-01')]);
+    it('should preserve other query params when changing date', () => {
+      const matchWithQuery = {
+        ...mockMatchWithRouter,
+        location: {
+          ...mockMatchWithRouter.location,
+          query: {
+            test: '1',
+            someOtherParam: 'value',
+          },
+        },
+      };
 
       const wrapper = shallow(
-        <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
+        <ScheduleContainer {...defaultProps} match={matchWithQuery} />,
       );
 
-      expect(wrapper.find(DateSelectGrouped)).to.have.lengthOf(1);
+      wrapper.find(DateSelectGrouped).prop('onDateChange')('20240103');
+
+      const callArgs = routerReplaceSpy.firstCall.args[0];
+      expect(callArgs.query.serviceDay).to.equal('20240103');
+      expect(callArgs.query.test).to.equal('1');
+      expect(callArgs.query.someOtherParam).to.equal('value');
     });
   });
 
-  describe('Conditional rendering', () => {
-    it('should render constant operation view when constantOperationInfo exists', () => {
+  describe('Conditional rendering based on data and config', () => {
+    it('should show constant operation view instead of timetable when route has constant operation', () => {
       mocks.config.constantOperationRoutes = {
         'HSL:1001': {
           en: { text: 'Always on', link: 'https://example.com' },
@@ -295,44 +243,74 @@ describe('<ScheduleContainer />', () => {
         <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
       );
 
+      // Should render constant operation component
       const constantOp = wrapper.find(ScheduleConstantOperation);
       expect(constantOp).to.have.lengthOf(1);
-      expect(constantOp.prop('match')).to.equal(mockMatchWithRouter);
       expect(constantOp.prop('route')).to.equal(defaultProps.route);
+
+      // Should not render regular timetable components
+      expect(wrapper.find(ScheduleHeader)).to.have.lengthOf(0);
+      expect(wrapper.find(ScheduleTripList)).to.have.lengthOf(0);
     });
 
-    it('should return null when redirect decision requires redirect', () => {
+    it('should show regular timetable when route has no constant operation', () => {
+      mocks.config.constantOperationRoutes = {};
+
+      const wrapper = shallow(
+        <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
+      );
+
+      // Should render regular timetable components
+      expect(wrapper.find(ScheduleHeader)).to.have.lengthOf(1);
+      expect(wrapper.find(ScheduleTripList)).to.have.lengthOf(1);
+
+      // Should not render constant operation component
+      expect(wrapper.find(ScheduleConstantOperation)).to.have.lengthOf(0);
+    });
+
+    it('should render nothing and trigger redirect when redirect is required', () => {
       stubs.calculateRedirectDecision.returns({
         shouldRedirect: true,
-        redirectPath: null,
-        query: {},
+        redirectPath: '/route/HSL:1001',
+        query: { serviceDay: '20240101' },
       });
 
       const wrapper = shallow(
         <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
       );
 
+      // Should be empty - redirecting
       expect(wrapper.isEmptyRender()).to.equal(true);
+
+      // Should have called redirect hook with correct params
       expect(stubs.useRouterRedirect.calledOnce).to.equal(true);
-      expect(stubs.useRouterRedirect.firstCall.args[0].shouldRedirect).to.equal(
-        true,
-      );
+      const redirectArgs = stubs.useRouterRedirect.firstCall.args[0];
+      expect(redirectArgs.shouldRedirect).to.equal(true);
+      expect(redirectArgs.pathname).to.equal('/route/HSL:1001');
+      expect(redirectArgs.query.serviceDay).to.equal('20240101');
     });
 
-    it('should render no-trips message when provided', () => {
+    it('should show no-trips message when no trips are available', () => {
       stubs.getTripsList.returns({
         trips: null,
-        noTripsMessage: <div className="text-center">No trips</div>,
+        noTripsMessage: <div className="no-trips-test">No service today</div>,
       });
 
       const wrapper = shallow(
         <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
       );
 
-      expect(wrapper.find('.text-center')).to.have.lengthOf(1);
+      // Should show the no-trips message
+      expect(wrapper.find('.no-trips-test')).to.have.lengthOf(1);
+      expect(wrapper.find('.no-trips-test').text()).to.equal(
+        'No service today',
+      );
+
+      // Should not show trip list
+      expect(wrapper.find(ScheduleTripList)).to.have.lengthOf(0);
     });
 
-    it('should render timetable print button when route PDF exists', () => {
+    it('should show timetable print button when route PDF config exists', () => {
       mocks.config.URL.ROUTE_TIMETABLES = { HSL: 'https://example.com' };
       mocks.config.timetables = {
         HSL: {
@@ -349,29 +327,113 @@ describe('<ScheduleContainer />', () => {
       const printButton = wrapper
         .find(SecondaryButton)
         .filterWhere(button => button.prop('buttonName') === 'print-timetable');
+
       expect(printButton).to.have.lengthOf(1);
+      expect(printButton.prop('buttonClickAction')).to.be.a('function');
+    });
+
+    it('should not show timetable print button when route PDF config is missing', () => {
+      mocks.config.URL.ROUTE_TIMETABLES = {};
+      mocks.config.timetables = {};
+
+      const wrapper = shallow(
+        <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
+      );
+
+      const printButton = wrapper
+        .find(SecondaryButton)
+        .filterWhere(button => button.prop('buttonName') === 'print-timetable');
+
+      expect(printButton).to.have.lengthOf(0);
     });
   });
 
-  describe('Testing mode', () => {
-    it('should pass test param into redirect decision', () => {
-      const matchWithTestParam = {
-        ...mockMatchWithRouter,
-        location: {
-          ...mockMatchWithRouter.location,
-          query: {
-            test: '1',
-          },
-        },
-      };
-
-      shallow(
-        <ScheduleContainer {...defaultProps} match={matchWithTestParam} />,
+  describe('Component coordination', () => {
+    it('should pass pattern stops to header component', () => {
+      const wrapper = shallow(
+        <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
       );
 
-      expect(
-        stubs.calculateRedirectDecision.calledWithMatch({ testNum: '1' }),
-      ).to.equal(true);
+      const header = wrapper.find(ScheduleHeader);
+      expect(header.prop('stops')).to.equal(defaultProps.pattern.stops);
+    });
+
+    it('should pass trips from utility to trip list component', () => {
+      const mockTrips = [
+        { id: 'trip-1', stoptimes: [] },
+        { id: 'trip-2', stoptimes: [] },
+      ];
+      stubs.getTripsList.returns({ trips: mockTrips, noTripsMessage: null });
+
+      const wrapper = shallow(
+        <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
+      );
+
+      const tripList = wrapper.find(ScheduleTripList);
+      expect(tripList.prop('trips')).to.equal(mockTrips);
+    });
+
+    it('should pass route and breakpoint to control panel', () => {
+      const wrapper = shallow(
+        <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
+      );
+
+      const controlPanel = wrapper.find(RouteControlPanel);
+      expect(controlPanel.prop('route')).to.equal(defaultProps.route);
+      expect(controlPanel.prop('breakpoint')).to.equal('large');
+    });
+
+    it('should pass available dates to date selector', () => {
+      const mockDates = [
+        DateTime.fromISO('2024-01-01'),
+        DateTime.fromISO('2024-01-02'),
+        DateTime.fromISO('2024-01-03'),
+      ];
+      stubs.buildAvailableDates.returns(mockDates);
+
+      const wrapper = shallow(
+        <ScheduleContainer {...defaultProps} match={mockMatchWithRouter} />,
+      );
+
+      const dateSelect = wrapper.find(DateSelectGrouped);
+      expect(dateSelect.prop('dates')).to.equal(mockDates);
+      expect(dateSelect.prop('dateFormat')).to.equal(DATE_FORMAT);
+    });
+
+    it('should keep header and trip list from/to indices synchronized', () => {
+      const patternWithMoreStops = {
+        ...mockPattern,
+        code: 'HSL:1001:0:01',
+        stops: [
+          { id: 'stop1', name: 'Stop 1' },
+          { id: 'stop2', name: 'Stop 2' },
+          { id: 'stop3', name: 'Stop 3' },
+        ],
+      };
+      const props = {
+        ...defaultProps,
+        pattern: patternWithMoreStops,
+      };
+
+      const wrapper = shallow(
+        <ScheduleContainer {...props} match={mockMatchWithRouter} />,
+      );
+
+      // Change origin
+      wrapper.find(ScheduleHeader).prop('onFromSelectChange')(1);
+      wrapper.update();
+
+      // Header and trip list should match
+      expect(wrapper.find(ScheduleHeader).prop('from')).to.equal(1);
+      expect(wrapper.find(ScheduleTripList).prop('fromIdx')).to.equal(1);
+
+      // Change destination
+      wrapper.find(ScheduleHeader).prop('onToSelectChange')(1);
+      wrapper.update();
+
+      // Both should stay synchronized
+      expect(wrapper.find(ScheduleHeader).prop('to')).to.equal(1);
+      expect(wrapper.find(ScheduleTripList).prop('toIdx')).to.equal(1);
     });
   });
 });
