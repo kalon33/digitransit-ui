@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import { shallow } from 'enzyme';
 import Select from 'react-select';
+import Icon from '@digitransit-component/digitransit-component-icon';
 
 import ScheduleDropdown from '../../../../app/component/routepage/schedule/ScheduleDropdown';
 import {
@@ -171,7 +172,7 @@ describe('<ScheduleDropdown />', () => {
       });
       const selectedWrapper = shallow(<div>{selectedFormatted}</div>);
       // Should contain Icon with check
-      expect(selectedWrapper.find('Icon').prop('img')).to.equal('check');
+      expect(selectedWrapper.find(Icon).prop('img')).to.equal('check');
       expect(selectedWrapper.text()).to.include('Kamppi');
 
       // Format unselected option (in menu context) - returns JSX fragment
@@ -180,7 +181,7 @@ describe('<ScheduleDropdown />', () => {
       });
       const unselectedWrapper = shallow(<div>{unselectedFormatted}</div>);
       // Should not contain Icon
-      expect(unselectedWrapper.find('Icon')).to.have.lengthOf(0);
+      expect(unselectedWrapper.find(Icon)).to.have.lengthOf(0);
       expect(unselectedWrapper.text()).to.include('Sörnäinen');
     });
 
