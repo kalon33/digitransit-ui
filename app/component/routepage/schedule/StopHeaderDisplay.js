@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import Icon from '../../Icon';
 
 /**
- * Displays stop information for printing the schedule.
+ * Displays the selected origin and destination when printing the schedule page.
+ * Hidden in the regular view, only shown in print media.
  */
 const StopHeaderDisplay = ({ fromDisplayName, toDisplayName }) => {
   return (
