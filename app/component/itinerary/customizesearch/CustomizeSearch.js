@@ -84,7 +84,6 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
             <MinTransferTime
               minTransferTimeOptions={config.minTransferTimeSelection}
               currentSettings={currentSettings}
-              defaultSettings={defaultSettings}
             />
           )}
           <TransferOptions
@@ -98,10 +97,7 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
           </div>
         )}
         <div className="settings-section">
-          <StreetModeSelector
-            currentSettings={currentSettings}
-            defaultSettings={defaultSettings}
-          />
+          <StreetModeSelector currentSettings={currentSettings} />
         </div>
         <div className="settings-section">
           <AccessibilityOptions currentSettings={currentSettings} />

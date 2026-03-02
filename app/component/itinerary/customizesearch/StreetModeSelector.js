@@ -10,7 +10,7 @@ import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 
 export default function StreetModeSelector(
-  { currentSettings, defaultSettings },
+  { currentSettings },
   { executeAction },
 ) {
   const config = useConfigContext();
@@ -47,7 +47,6 @@ export default function StreetModeSelector(
       />
       <BikingSpeed
         bikeSpeed={currentSettings.bikeSpeed}
-        defaultSettings={defaultSettings}
         bikeSpeedOptions={config.defaultOptions.bikeSpeed}
       />
       {config.showBikeAndParkItineraries && (
@@ -91,7 +90,6 @@ export default function StreetModeSelector(
 
 StreetModeSelector.propTypes = {
   currentSettings: settingsShape.isRequired,
-  defaultSettings: settingsShape.isRequired,
 };
 
 StreetModeSelector.contextTypes = {
