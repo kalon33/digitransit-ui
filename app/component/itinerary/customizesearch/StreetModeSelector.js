@@ -45,10 +45,7 @@ export default function StreetModeSelector(
         onToggle={() => onToggle('includeBikeSuggestions', 'OwnBike')}
         borderStyle="bottom-border"
       />
-      <BikingSpeed
-        bikeSpeed={currentSettings.bikeSpeed}
-        bikeSpeedOptions={config.defaultOptions.bikeSpeed}
-      />
+      <BikingSpeed bikeSpeed={currentSettings.bikeSpeed} />
       {config.showBikeAndParkItineraries && (
         <SettingsToggle
           id="settings-toggle-bikeAndPark"

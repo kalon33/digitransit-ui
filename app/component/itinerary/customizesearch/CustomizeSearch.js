@@ -68,10 +68,7 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
       </div>
       <ScrollableWrapper>
         <div className="settings-section">
-          <WalkingOptions
-            currentSettings={currentSettings}
-            defaultSettings={defaultSettings}
-          />
+          <WalkingOptions currentSettings={currentSettings} />
         </div>
         {config.personalisation && (
           <div className="settings-section">
@@ -86,10 +83,7 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
               currentSettings={currentSettings}
             />
           )}
-          <TransferOptions
-            defaultSettings={defaultSettings}
-            currentSettings={currentSettings}
-          />
+          <TransferOptions currentSettings={currentSettings} />
         </div>
         {useCitybikes(config.vehicleRental?.networks, config) && (
           <div className="settings-section">
