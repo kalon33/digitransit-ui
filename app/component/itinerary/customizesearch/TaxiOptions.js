@@ -32,6 +32,7 @@ const TaxiOptions = ({ currentSettings }, { executeAction }) => {
       <SettingsToggle
         id="settings-toggle-taxi"
         labelId="taxis-and-ride-hailing"
+        labelStyle="mode-label"
         leftElement={
           <Icon
             img="icon_taxi-external"
