@@ -314,7 +314,7 @@ class IndexPage extends React.Component {
       origin,
       destination,
       lang,
-      locationSources,
+      sources: locationSources,
       targets,
       refPoint,
       searchPanelText: intl.formatMessage({
