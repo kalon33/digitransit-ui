@@ -175,13 +175,7 @@ const translations = {
     run: 'Løbe',
     save: 'Gem',
     search: 'Til',
-    'search-destination-results-but-no-search': 'Se resultater i Til-fanen',
-    'search-no-results': 'Ingen resultater',
-    'search-origin': 'tilføj afgangssted',
-    'search-position': 'Led efter position',
-    'search-search-results-but-no-destination': 'Se resultater i Fra-fanen',
     'searching-position': 'Leder etter position',
-    'select-position': 'Vælg din position baseret på tidligere søg',
     send: 'Send',
     settings: 'Indstillinger',
     'settings-label-change': 'Ændre indstillinger',
@@ -652,21 +646,10 @@ const translations = {
       'Um Scooter nutzen zu können, wird eine Anmeldung benötigt',
     'scooterwalk-distance-duration': 'Scooter {distance} schieben ({duration})',
     search: 'Suchen',
-    'search-autosuggest-label':
-      'Ort und Haltestellensuche. Liste mit Pfeiltasten navigieren, mit Enter-Taste auswählen',
-    'search-autosuggest-len': 'Es sind {len} Vorschläge verfügbar',
     'search-button-label': 'Suchen',
     'search-current-suggestion': 'Aktuelle Auswahl: {selection}',
-    'search-destination': 'Suche Ziel, Linie oder Haltestelle',
     'search-destination-index': 'Geben Sie das Ziel ein',
-    'search-destination-results-but-no-search':
-      'Siehe Ergebnisse im "Zielort"-Tab',
-    'search-no-results': 'Keine Ergebnisse',
-    'search-origin': 'Geben Sie Ihren Abfahrtsort ein',
     'search-origin-index': 'Geben Sie Ihren Abfahrtsort ein',
-    'search-position': 'Standort suchen',
-    'search-search-results-but-no-destination':
-      'Siehe Ergebnisse im "Linie oder Haltestelle"-Tab',
     'searching-position': 'Suche aktuellen Standort...',
     'select-date': 'Datum auswählen',
     'select-from-map-destination': 'Ziel wählen',
@@ -856,11 +839,6 @@ const translations = {
     'as-viapoint': 'Viapoint',
     back: 'Back',
     'buy-in-app': 'Buy in App',
-    'search-autosuggest-label': 'Venue, place and stopsearch.',
-    'search-autosuggest-label-move-to-destination':
-      'After selecting the starting location you are automatically moved to the destination field.',
-    'search-autosuggest-len':
-      'There {len, plural, =1 {is 1 suggestion} other {are {len} suggestions}} available',
     'search-current-suggestion': 'Current selection: {selection}',
     'select-date': 'Select date',
     'select-from-map-destination': 'Select destination',
@@ -1594,18 +1572,10 @@ const translations = {
       'Walk your kick scooter {duration} ({distance})',
     search: 'Search',
     'search-button-label': 'Search',
-    'search-destination': 'Search destination, route or stop',
     'search-destination-index': 'Enter destination',
-    'search-destination-results-but-no-search':
-      'View results in the adjacent “Destination” tab',
     'search-fields.sr-instructions':
       'Route search will take place automatically when you enter origin and destination. Changing search parameters will trigger a new search. Navigate to the search fields using the tab key',
-    'search-no-results': 'No location',
-    'search-origin': 'Search origin, route or stop',
     'search-origin-index': 'Enter origin',
-    'search-position': 'Detect location',
-    'search-search-results-but-no-destination':
-      'View results in the adjacent “About the route or stop” tab',
     'searching-position': 'Detecting location...',
     'select-all-routes': 'Select all routes',
     'select-map-layers-header': 'Show on map',
@@ -2060,14 +2030,6 @@ const translations = {
     run: 'Correr',
     save: 'Guardar',
     search: 'Buscar',
-    'search-destination': 'Busque destino, ruta o parada',
-    'search-destination-results-but-no-search':
-      'Ver resultados en la pestaña de “Destino”',
-    'search-no-results': 'Sin localización',
-    'search-origin': 'Busque origen, ruta o parada',
-    'search-position': 'Detectar localización',
-    'search-search-results-but-no-destination':
-      'Ver resultados en la pestaña “Sobre la ruta o la parada”',
     'searching-position': 'Detectando localización...',
     'select-position': 'Seleccione su localización de las búsquedas anteriores',
     send: 'Enviar',
@@ -2185,19 +2147,7 @@ const translations = {
     'as-origin': 'Lähtöpaikaksi',
     'as-viapoint': 'Välipisteeksi',
     'buy-in-app': 'Osta sovelluksessa',
-    'search-autosuggest-label': 'Paikka, linja ja pysäkkihaku.',
-    'search-autosuggest-label-move-to-destination':
-      'Valittuasi lähtöpaikan siirrytään suoraan määränpää-kenttään.',
-    'search-autosuggest-len':
-      ' Löydettiin {len, plural, =1 {1 ehdotus} other {{len} ehdotusta}}',
     'search-current-suggestion': 'Tämänhetkinen valinta: {selection}',
-    // eslint-disable-next-line sort-keys
-    'add-via-duration-button-label':
-      'Aseta välipisteelle {index} pysähdyksen kesto',
-    'add-via-duration-button-label-close':
-      'Avaa välipisteen {index} pysähdyksen kesto valitsin',
-    'add-via-duration-button-label-open':
-      'Sulje välipisteen {index} pysähdyksen kesto valitsin',
     'select-date': 'Valitse päivä',
     'select-from-map-destination': 'Valitse määränpää',
     'select-from-map-favourite': 'Valitse kartalta',
@@ -2922,18 +2872,10 @@ const translations = {
       'Taluta potkulautaa {duration} ({distance})',
     search: 'Etsi',
     'search-button-label': 'Hae',
-    'search-destination': 'Hae määränpäätä, linjaa tai pysäkkiä',
     'search-destination-index': 'Syötä määränpää',
-    'search-destination-results-but-no-search':
-      'Katso tulokset viereiseltä Määränpää-välilehdeltä',
     'search-fields.sr-instructions':
       'Reittihaku tehdään automaattisesti kun lähtöpaikka ja määränpää on asetettu. Haun parametrien muuttaminen laukaisee uuden reittihaun. Navigoi hakukenttiin tab-näppäimellä.',
-    'search-no-results': 'Ei tuloksia',
-    'search-origin': 'Hae lähtöpaikkaa, linjaa tai pysäkkiä',
     'search-origin-index': 'Syötä lähtöpaikka',
-    'search-position': 'Paikanna',
-    'search-search-results-but-no-destination':
-      'Katso tulokset viereiseltä "Tietoja linjasta tai pysäkistä" –välilehdeltä',
     'searching-position': 'Paikannetaan...',
     'select-all-routes': 'Valitse kaikki reitit',
     'select-map-layers-header': 'Näytä kartalla',
@@ -3415,14 +3357,6 @@ const translations = {
     run: 'Lancer',
     save: 'Enregistrer',
     search: 'Recherche',
-    'search-destination': 'Entrer votre point de destination',
-    'search-destination-results-but-no-search':
-      "Voir les résultats de l'onglet 'Destination'",
-    'search-no-results': 'Aucun résultat',
-    'search-origin': 'Entrer votre point de départ',
-    'search-position': 'Rechercher la position',
-    'search-search-results-but-no-destination':
-      "Voir les résultats de l'onglet 'Ligne, arrêt ou mot-clé'",
     'searching-position': 'Localisation en cours...',
     'select-map-layers-header': "Qu'afficher sur la carte ?",
     'select-position': 'Utiliser une localisation précédente',
@@ -3684,11 +3618,6 @@ const translations = {
     run: 'Løping',
     save: 'Lagre',
     search: 'Til',
-    'search-destination-results-but-no-search': 'Se resultater i Til-fanen',
-    'search-no-results': 'Ingen resultater',
-    'search-origin': 'skriv avgangssted',
-    'search-position': 'Let etter posisjon',
-    'search-search-results-but-no-destination': 'Se resultater i Fra-fanen',
     'searching-position': 'Leter etter posisjon',
     'select-position': 'Velg din posisjon basert på tidligere søk',
     send: 'Send',
@@ -3802,11 +3731,6 @@ const translations = {
     'as-destination': 'Cel',
     'as-origin': 'Początek',
     'as-viapoint': 'Punkt pośredni',
-    'search-autosuggest-label': 'Miejsce, lokalizacja i przystanek.',
-    'search-autosuggest-label-move-to-destination':
-      'Po wybraniu lokalizacji początkowej, automatycznie przejdziesz do pola miejsca docelowego.',
-    'search-autosuggest-len':
-      '{len, plural, =1 {Dostępna jest 1 propozycja} few {Dostępne są {len} propozycje} other {Dostępnych jest {len} propozycji}}',
     'search-current-suggestion': 'Obecny wybór: {selection}',
     'select-date': 'Wybierz datę',
     'select-from-map-destination': 'Wybierz cel',
@@ -4414,18 +4338,10 @@ const translations = {
       'Przejdź z hulajnogą {duration} ({distance})',
     search: 'Szukaj',
     'search-button-label': 'Szukaj',
-    'search-destination': 'Szukaj celu, trasy lub przystanku',
     'search-destination-index': 'Wprowadź cel',
-    'search-destination-results-but-no-search':
-      'View results in the adjacent “Destination” tab',
     'search-fields.sr-instructions':
       'Route search will take place automatically when you enter origin and destination. Changing search parameters will trigger a new search. Navigate to the search fields using the tab key',
-    'search-no-results': 'Brak lokalizacji',
-    'search-origin': 'Wyszukaj początek, koniec lub punkt pośredni',
     'search-origin-index': 'Wprowadź początek',
-    'search-position': 'Wykryj lokalizację',
-    'search-search-results-but-no-destination':
-      'View results in the adjacent “About the route or stop” tab',
     'searching-position': 'Wykrywanie lokalizacji…',
     'select-all-routes': 'Wybierz wszystkie trasy',
     'select-map-layers-header': 'Pokazuj na mapie',
@@ -4650,9 +4566,6 @@ const translations = {
     'add-via-duration-button-label-open':
       'Deschideți selectorul de durată a staționării la punctul intermediar {index}',
     'arrive-leave': 'Ajungeți sau plecați la ora selectată',
-    'search-autosuggest-label':
-      'Locații, adrese, stații. Selectați cu mouse-ul sau alegeți din săgețile tastaturii.',
-    'search-autosuggest-len': 'Am găsit {len} sugestii',
     'search-current-suggestion': 'Current selection: {selection}',
     'select-date': 'Selectați data',
     'set-time-earlier-button-label':
@@ -4988,16 +4901,8 @@ const translations = {
       'Împingeți trotineta {duration} ({distance})',
     search: 'Caută',
     'search-button-label': 'Caută',
-    'search-destination': 'Căutați punctul de plecare, ruta sau stația',
     'search-destination-index': 'Enter destination',
-    'search-destination-results-but-no-search':
-      'Vedeți rezultatele în fereastra “Destinație”',
-    'search-no-results': 'Nicio locație',
-    'search-origin': 'Căutați destinația, ruta sau stația',
     'search-origin-index': 'Enter origin',
-    'search-position': 'Detectați locația',
-    'search-search-results-but-no-destination':
-      'Vedeți rezultatele în fereastra “Despre rută sau stație”',
     'searching-position': 'Se caută locația...',
     'select-map-layers-header': 'Ce ar trebui să apară pe hartă?',
     'select-position': 'Locații din căutările anterioare',
@@ -5154,10 +5059,6 @@ const translations = {
     'book-a-lift':
       'Tilaa kyyti sovelluksella ja jää odottamaan sen saapumista:',
     'buy-in-app': 'Köp i appen',
-    'search-autosuggest-label': 'Plats, linje och hållplatssökning.',
-    'search-autosuggest-label-move-to-destination':
-      'Efter att du valt avgångsplatsen tas du direkt till Destination-fältet.',
-    'search-autosuggest-len': 'Hittade {len} förslag',
     'search-current-suggestion': 'Nuvarande val: {selection}',
     'select-date': 'Välj datum',
     'set-time-earlier-button-label': 'Ställ in restid till tidigare',
@@ -5878,18 +5779,10 @@ const translations = {
     'scooterwalk-distance-duration': 'Led sparkcykeln {duration} ({distance})',
     search: 'Sök',
     'search-button-label': 'Sök',
-    'search-destination': 'Sök destination, linje eller hållplats',
     'search-destination-index': 'Skriv destination',
-    'search-destination-results-but-no-search':
-      'Se resultaten under fliken Destination',
     'search-fields.sr-instructions':
       'Ruttsökning görs automatiskt när du skriver in avgångsplats och destination. Om du ändrar sökvillkoren, startas en ny ruttsökning automatiskt. Navigera till sökfälten med tabbtangenten.',
-    'search-no-results': 'Inga sökresultat',
-    'search-origin': 'Sök avfärdsplats, linje eller hållplats',
     'search-origin-index': 'Skriv avfärdsplats',
-    'search-position': 'Sök position',
-    'search-search-results-but-no-destination':
-      'Se resultaten under fliken Linje eller hållplats',
     'searching-position': 'Söker position...',
     'select-all-routes': 'Välj alla rutter',
     'select-from-map-destination': 'Välj destination',
