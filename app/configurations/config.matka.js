@@ -266,8 +266,6 @@ export default {
     'ferry',
     'citybike',
     'airplane',
-    'carpark',
-    'bikepark',
   ],
   useAlternativeNameForModes: ['RAIL'],
 
