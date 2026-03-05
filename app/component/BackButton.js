@@ -58,7 +58,7 @@ export default function BackButton(props, context) {
       >
         <Icon
           img="icon_arrow-collapse--left"
-          color={context.config.colors.primary}
+          color={config.colors.primary}
           className="arrow-icon"
         />
       </button>
