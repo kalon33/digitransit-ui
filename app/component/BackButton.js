@@ -48,7 +48,7 @@ export default function BackButton(props, context) {
   }
   return (
     <div className="back-button">
-      {props.title && <h1 className="h1">{props.title}</h1>}
+      {props.title && <h1>{props.title}</h1>}
       <button
         type="button"
         className="icon-holder noborder cursor-pointer"
