@@ -209,6 +209,7 @@ $btn-heigth: 17px;
   &.small {
     height: 28px;
     padding: 5px 15px;
+    font-size: $font-size-xxsmall;
   }
 
   @media print {
