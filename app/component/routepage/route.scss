@@ -819,6 +819,8 @@ $margin-left-right: 21.3px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  flex-direction: row;
+  gap: var(--space-m);
 
   @media print {
     display: none;
