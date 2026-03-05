@@ -322,6 +322,8 @@ $content-background-color: $background-color;
 }
 
 .back-button {
+  display: flex;
+
   button {
     font-size: 15px;
     position: absolute;
@@ -628,20 +630,18 @@ section.content {
         color: $desktop-title-arrow-icon-color;
       }
 
-      .title-container {
-        @include font-medium;
+      @include font-medium;
 
-        color: #333;
-        margin: 50px 0 16px 0;
-        line-height: 1;
+      color: #333;
+      margin: 50px 0 16px 0;
+      line-height: 1;
 
-        .back-button {
-          position: static;
+      .back-button {
+        position: static;
 
-          button {
-            left: 0.5em;
-            top: auto;
-          }
+        button {
+          left: 0.5em;
+          top: auto;
         }
       }
 
@@ -649,7 +649,6 @@ section.content {
         @include font-medium;
 
         font-family: $heading-font-family;
-        color: #333;
         display: inline;
       }
 
