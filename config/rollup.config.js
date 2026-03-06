@@ -19,7 +19,6 @@ const globals = {
   'prop-types': 'PropTypes',
   'react-is': 'react-is',
   i18next: 'i18next',
-  'react-autosuggest': 'Autosuggest',
   'react-sortablejs': 'reactSortablejs',
   'react-modal': 'ReactModal',
   '@hsl-fi/modal': 'Modal',
