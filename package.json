@@ -137,7 +137,7 @@
     "@hsl-fi/container-spinner": "0.3.2",
     "@hsl-fi/hooks": "1.2.4",
     "@hsl-fi/modal": " ^0.3.2",
-    "@hsl-fi/sass": " ^0.2.0",
+    "@hsl-fi/sass": " ^1.0.0",
     "@hsl-fi/shimmer": "0.1.2",
     "@hsl-fi/site-header": "4.5.2",
     "@mapbox/sphericalmercator": "1.1.0",

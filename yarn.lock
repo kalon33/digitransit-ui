@@ -3100,21 +3100,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hsl-fi/sass@npm: ^0.2.0, @hsl-fi/sass@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@hsl-fi/sass@npm:0.2.0"
-  peerDependencies:
-    sass: ^1.37.2
-  checksum: 666bb04523b75b17ca3b54e33eef0bda1f75804e9b3cc5f927375187d50868b010c1c64ca4b926dcdc46c30cca670314681547219616270bcf31bfbd07a9de97
-  languageName: node
-  linkType: hard
-
-"@hsl-fi/sass@npm:^1.0.0":
+"@hsl-fi/sass@npm: ^1.0.0, @hsl-fi/sass@npm:^1.0.0":
   version: 1.0.0
   resolution: "@hsl-fi/sass@npm:1.0.0"
   peerDependencies:
     sass: ^1.37.2
   checksum: 406abefb5243d310abd3f3aeb33772c4e754a452def15849159ab755d5a2f9308d417047a6a94f2478c34bbd811f56117eb1a82746c3a2f31ab455e0d62f666a
+  languageName: node
+  linkType: hard
+
+"@hsl-fi/sass@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@hsl-fi/sass@npm:0.2.0"
+  peerDependencies:
+    sass: ^1.37.2
+  checksum: 666bb04523b75b17ca3b54e33eef0bda1f75804e9b3cc5f927375187d50868b010c1c64ca4b926dcdc46c30cca670314681547219616270bcf31bfbd07a9de97
   languageName: node
   linkType: hard
 
@@ -11321,7 +11321,7 @@ __metadata:
     "@hsl-fi/container-spinner": 0.3.2
     "@hsl-fi/hooks": 1.2.4
     "@hsl-fi/modal": " ^0.3.2"
-    "@hsl-fi/sass": " ^0.2.0"
+    "@hsl-fi/sass": " ^1.0.0"
     "@hsl-fi/shimmer": 0.1.2
     "@hsl-fi/site-header": 4.5.2
     "@lerna/batch-packages": 3.16.0
