@@ -726,7 +726,7 @@ $margin-left-right: 21.3px;
   overflow: hidden;
 
   @media print {
-    .row {
+    .trip-column {
       margin-left: 0;
     }
   }
@@ -871,7 +871,7 @@ $margin-left-right: 21.3px;
     margin: 0 0 var(--space-xs) 0;
   }
 
-  .route-schedule-grouped-date-select-wrapper {
+  .date-select-wrapper {
     width: 100%;
   }
 
