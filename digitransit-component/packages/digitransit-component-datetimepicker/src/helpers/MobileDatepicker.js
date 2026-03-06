@@ -6,7 +6,15 @@ import cx from 'classnames';
 import styles from './styles.scss';
 import { isAndroid } from './mobileDetection';
 
-const AndroidSelect = ({ value, dateChoices, id, getDisplay, onChange }) => {
+const AndroidSelect = ({
+  value,
+  dateChoices,
+  id,
+  getDisplay,
+  onChange,
+  labelId,
+  inputId,
+}) => {
   const items = dateChoices.map(date => ({
     value: date,
     label: getDisplay(date),
@@ -33,7 +41,9 @@ const AndroidSelect = ({ value, dateChoices, id, getDisplay, onChange }) => {
 
   return (
     <div className={styles.container}>
-      <div {...getToggleButtonProps()}>
+      <div
+        {...getToggleButtonProps({ 'aria-labelledby': labelId, id: inputId })}
+      >
         <div className={styles.input}>{selectedItem.label}</div>
       </div>
       <div
@@ -65,6 +75,8 @@ AndroidSelect.propTypes = {
   id: PropTypes.string.isRequired,
   getDisplay: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
+  labelId: PropTypes.string.isRequired,
+  inputId: PropTypes.string.isRequired,
 };
 
 /**
@@ -97,6 +109,7 @@ function MobileDatepicker({
       </span>
       {nativeInput ? (
         <select
+          id={inputId}
           className={styles['mobile-input-display']}
           onChange={e => onChange(Number(e.target.value))}
           value={value}
@@ -117,6 +130,8 @@ function MobileDatepicker({
             id,
             getDisplay,
             onChange,
+            labelId,
+            inputId,
           }}
         />
       )}
