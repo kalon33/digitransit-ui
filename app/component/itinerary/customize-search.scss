@@ -233,7 +233,7 @@
   .close-offcanvas {
     position: absolute;
     background-color: transparent;
-    color: $primary-color;
+    color: $theme-primary-color;
     right: 1em;
     top: 1em;
     padding: 0;
@@ -503,7 +503,7 @@
       right: 0.7em;
       top: 0.7em;
       font-size: 1.5em;
-      color: $primary-color;
+      color: $theme-primary-color;
       pointer-events: none;
     }
 
@@ -629,7 +629,7 @@
     .settings-mode-option-label-value {
       font-size: $font-size-small;
       float: right;
-      color: $primary-color;
+      color: $theme-primary-color;
       width: 100%;
       padding-right: 14.72px;
       margin: 14.72px 0;
@@ -686,7 +686,7 @@
 
   .disclaimer-close-button-container {
     margin-left: 10px;
-    background-color: $primary-color;
+    background-color: $theme-primary-color;
     width: fit-content;
     height: fit-content;
     color: white;
