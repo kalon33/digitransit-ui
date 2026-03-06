@@ -2069,7 +2069,7 @@ __metadata:
     "@digitransit-component/digitransit-component-icon": ^2.0.0
     "@hsl-fi/sass": ^0.2.0
     classnames: 2.5.1
-    downshift: ^9.0.10
+    downshift: 9.0.10
     i18next: ^22.5.1
     lodash: 4.17.21
     lodash-es: 4.17.21
@@ -2094,7 +2094,7 @@ __metadata:
     "@digitransit-component/digitransit-component-suggestion-item": ^3.0.0
     "@hsl-fi/sass": ^0.2.0
     classnames: 2.5.1
-    downshift: ^9.0.10
+    downshift: 9.0.10
     i18next: ^22.5.1
     lodash: 4.17.21
     lodash-es: 4.17.21
@@ -2127,7 +2127,7 @@ __metadata:
   peerDependencies:
     "@digitransit-component/digitransit-component-icon": ^2.0.0
     classnames: 2.5.1
-    downshift: ^9.0.10
+    downshift: 9.0.10
     i18next: ^22.5.1
     lodash: 4.17.21
     lodash-es: 4.17.21
@@ -2277,7 +2277,7 @@ __metadata:
     "@hsl-fi/sass": ^0.2.0
     "@hsl-fi/shimmer": 0.1.2
     classnames: 2.5.1
-    downshift: ^9.0.10
+    downshift: 9.0.10
     hoist-non-react-statics: 2.5.4
     i18next: ^22.5.1
     lodash: 4.17.21
