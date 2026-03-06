@@ -22,7 +22,7 @@ const AndroidSelect = ({ value, dateChoices, id, getDisplay, onChange }) => {
   } = useSelect({
     selectedItem,
     items,
-    itemToString: item => (item ? item.displayName : ''),
+    itemToString: item => item?.label ?? '',
     onSelectedItemChange: ({ selectedItem: nextSelectedItem }) => {
       if (nextSelectedItem) {
         onChange(nextSelectedItem.value);
