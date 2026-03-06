@@ -15,8 +15,8 @@ $hsl-rail-red: #8c4799;
 $hsl-ferry-blue: #007a97;
 
 /* Application palette */
-$primary-color: $hsl-blue;
-$secondary-color: $hsl-dark-blue;
+$theme-primary-color: $hsl-blue;
+$theme-secondary-color: $hsl-dark-blue;
 $favourite-color: $hsl-pink;
 $highlight-color: $hsl-pink;
 $action-color: $hsl-blue;
@@ -24,14 +24,16 @@ $current-location-color: #f653b9;
 $navigation-background-color: #ebf6fd;
 
 /* Component palette */
-$standalone-btn-color: $primary-color;
-$standalone-btn-hover-color: $secondary-color;
-$standalone-btn-active-color: $secondary-color;
+$standalone-btn-color: $theme-primary-color;
+$standalone-btn-hover-color: $theme-secondary-color;
+$standalone-btn-active-color: $theme-secondary-color;
 $viewpoint-marker-color: $hsl-blue;
-$link-color: $primary-color;
+$link-color: $theme-primary-color;
 $desktop-title-color: #007ac9;
-$desktop-title-arrow-icon-color: $secondary-color;
-$top-bar-color: $primary-color;
+$desktop-title-arrow-icon-color: $theme-secondary-color;
+$top-bar-color: $theme-primary-color;
+$disclaimer-background-color: #ebf6fd;
+$disclaimer-border-color: #ebf6fd;
 
 /* Vehicle palette */
 $bus-color: $hsl-blue;
