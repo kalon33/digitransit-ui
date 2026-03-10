@@ -6,11 +6,11 @@ import Icon from './Icon';
 import { useTranslationsContext } from '../util/useTranslationsContext';
 
 /**
- * A generic snackbar that displays a success notification.
+ * A generic snackbar notification.
  * The caller is responsible for managing the `show` state transitions and
  * for providing a `liveRegionMessage` for screen-reader announcements.
  */
-const SuccessSnackbar = ({
+const Snackbar = ({
   show,
   messageId,
   defaultMessage,
@@ -23,7 +23,7 @@ const SuccessSnackbar = ({
   return (
     <>
       <div
-        className={cx('success-snackbar', className, {
+        className={cx('snackbar', className, {
           hide: show === null,
           show: show === true,
           'slide-out': show === false,
@@ -54,7 +54,7 @@ const SuccessSnackbar = ({
   );
 };
 
-SuccessSnackbar.propTypes = {
+Snackbar.propTypes = {
   /** null = hidden, true = slide in, false = slide out */
   show: PropTypes.oneOf([null, true, false]),
   messageId: PropTypes.string.isRequired,
@@ -65,11 +65,11 @@ SuccessSnackbar.propTypes = {
   className: PropTypes.string,
 };
 
-SuccessSnackbar.defaultProps = {
+Snackbar.defaultProps = {
   show: null,
   liveRegionMessage: '',
   iconImg: 'icon_checkmark-circled',
   className: undefined,
 };
 
-export default SuccessSnackbar;
+export default Snackbar;

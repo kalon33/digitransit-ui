@@ -1,5 +1,5 @@
 .mobile {
-  .success-snackbar {
+  .snackbar {
     width: calc(100% - 32px);
     left: 16px;
     top: unset;
@@ -17,7 +17,7 @@
   }
 }
 
-.success-snackbar {
+.snackbar {
   position: fixed;
   left: 50%;
   top: 78px;

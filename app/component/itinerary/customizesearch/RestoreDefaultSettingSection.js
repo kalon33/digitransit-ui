@@ -10,7 +10,7 @@ import {
 import { configShape } from '../../../util/shapes';
 import { getCustomizedSettings } from '../../../store/localStorage';
 import Icon from '../../Icon';
-import SuccessSnackbar from '../../SuccessSnackbar';
+import Snackbar from '../../Snackbar';
 
 const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
   const [showSnackbar, setShowSnackbar] = useState(null);
@@ -100,7 +100,7 @@ const RestoreDefaultSettingSection = ({ config }, { executeAction, intl }) => {
 
   return (
     <>
-      <SuccessSnackbar
+      <Snackbar
         show={showSnackbar}
         messageId="restore-default-settings-success"
         defaultMessage="Settings restored to default."
