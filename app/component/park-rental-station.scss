@@ -18,7 +18,7 @@
     h1 {
       font-size: $font-size-normal;
       font-family: $heading-font-family;
-      line-height: 0.6em;
+      line-height: 0.5em;
       letter-spacing: -0.025em;
     }
 
@@ -191,6 +191,13 @@
 .mobile {
   .station-page-container {
     margin: 0 24px;
+
+    .large-header {
+      h1 {
+        font-size: 1.2em;
+        letter-spacing: -0.025em;
+      }
+    }
   }
 
   .station-header,
