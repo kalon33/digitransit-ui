@@ -546,7 +546,7 @@
     text-align: center;
 
     &.success {
-      background-color: $success-color;
+      background-color: $theme-success-color;
       gap: var(--space-xs);
 
       button {
@@ -764,7 +764,7 @@
     height: 40px;
     text-align: center;
     margin-left: 16px;
-    background-color: $primary-color;
+    background-color: $theme-primary-color;
     color: white;
 
     a {
