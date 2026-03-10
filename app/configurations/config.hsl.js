@@ -841,5 +841,5 @@ export default {
   },
 
   showRouteDescNotification: IS_DEV,
-  personalisation: IS_DEV,
+  personalisation: false,
 };
