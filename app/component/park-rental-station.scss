@@ -10,6 +10,19 @@
       line-height: 1.2em;
       letter-spacing: -0.025em;
     }
+
+    padding-bottom: 16px;
+  }
+
+  .small-header {
+    h1 {
+      font-size: $font-size-normal;
+      font-family: $heading-font-family;
+      line-height: 0.6em;
+      letter-spacing: -0.025em;
+    }
+
+    margin-bottom: 10px;
   }
 
   .separator,
@@ -50,7 +63,6 @@
       padding: 8px 8px 0 0;
     }
 
-    padding-bottom: 15px;
     padding-top: 3em;
     display: flex;
 
@@ -106,6 +118,7 @@
   .park-header {
     display: flex;
     flex-direction: row;
+    align-items: center;
 
     .header-icon {
       margin-right: 8px;
@@ -172,7 +185,7 @@
 
 .station-header-with-separator {
   border-bottom: 1px solid #ddd;
-  margin-bottom: 16px;
+  padding-bottom: 16px;
 }
 
 .mobile {
