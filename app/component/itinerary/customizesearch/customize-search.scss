@@ -225,6 +225,14 @@
         font-weight: $font-weight-medium;
         color: $theme-primary-color;
       }
+
+      .breakable {
+        white-space: normal;
+      }
+
+      .nobreaks {
+        white-space: nowrap;
+      }
     }
   }
 
