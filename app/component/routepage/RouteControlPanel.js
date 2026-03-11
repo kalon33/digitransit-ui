@@ -441,6 +441,16 @@ class RouteControlPanel extends React.Component {
           aria-live="polite"
         >
           {routeNotifications}
+          {patternId && (
+            <RoutePatternSelectContainer
+              params={match.params}
+              route={route}
+              onSelectChange={this.onPatternChange}
+              gtfsId={route.gtfsId}
+              className={cx({ 'bp-large': breakpoint === 'large' })}
+              useCurrentTime={useCurrentTime}
+            />
+          )}
           {/* eslint-disable jsx-a11y/interactive-supports-focus */}
           <div
             className="route-tabs"
@@ -541,16 +551,6 @@ class RouteControlPanel extends React.Component {
               </div>
             </button>
           </div>
-          {patternId && (
-            <RoutePatternSelectContainer
-              params={match.params}
-              route={route}
-              onSelectChange={this.onPatternChange}
-              gtfsId={route.gtfsId}
-              className={cx({ 'bp-large': breakpoint === 'large' })}
-              useCurrentTime={useCurrentTime}
-            />
-          )}
         </div>
       </div>
     );
