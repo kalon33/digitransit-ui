@@ -100,7 +100,7 @@ function PatternOption({
         )}
         {...getItemProps({
           item: option,
-          index: optionIndexTable[option.code],
+          index: optionIndexTable[option.gtfsId], // similar routes don't have a code, use gtfsId instead
         })}
       >
         <Link
@@ -247,10 +247,9 @@ export default function RoutePatternSelect({
                 <ul aria-labelledby={`section-${sectionIndex}`} role="group">
                   <label
                     id={`section-${sectionIndex}`}
-                    className={cx([
-                      'section-title',
-                      section.name ? '' : 'sr-only',
-                    ])}
+                    className={cx('section-title', {
+                      'sr-only': !section.name,
+                    })}
                   >
                     {section.name}
                   </label>
