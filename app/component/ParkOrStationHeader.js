@@ -48,12 +48,7 @@ const ParkOrBikeStationHeader = (
 
   return (
     <div className="bike-station-header">
-      {breakpoint === 'large' && backButton && (
-        <BackButton
-          icon="icon_arrow-collapse--left"
-          iconClassName="arrow-icon"
-        />
-      )}
+      {breakpoint === 'large' && backButton && <BackButton />}
       <div className="header">
         <h1>{name}</h1>
         <div className="bike-station-sub-header">

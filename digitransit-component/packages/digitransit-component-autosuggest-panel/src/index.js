@@ -552,7 +552,7 @@ class DTAutosuggestPanel extends React.Component {
                       }
                       lang={this.props.lang}
                       sources={this.props.sources}
-                      targets={this.props.targets}
+                      targets={['Stops', 'Stations']}
                       filterResults={this.props.filterResults}
                       getAutoSuggestIcons={this.props.getAutoSuggestIcons}
                       isMobile={this.props.isMobile}
@@ -606,7 +606,6 @@ class DTAutosuggestPanel extends React.Component {
                       label={t('viapoint-slack-amount', { lng })}
                       options={slackTime}
                       value={getViaPointSlackTimeOrDefault(viaPoints[i])}
-                      getDisplay={this.getSlackDisplay}
                       viaPointIndex={i}
                       icon={
                         <span

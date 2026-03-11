@@ -168,12 +168,12 @@ $itinerary-tab-switch-height: 48px;
         margin-top: $padding-medium;
 
         .agency-link {
-          color: $primary-color;
+          color: $theme-primary-color;
           display: block;
           margin-top: $padding-medium;
 
           a {
-            color: $primary-color;
+            color: $theme-primary-color;
           }
         }
       }
@@ -190,7 +190,7 @@ $itinerary-tab-switch-height: 48px;
         font-size: 20px;
 
         .icon {
-          color: $primary-color;
+          color: $theme-primary-color;
           width: 1em;
           height: 1em;
         }
@@ -221,7 +221,7 @@ $itinerary-tab-switch-height: 48px;
 
       .icon {
         &.info {
-          color: $primary-color;
+          color: $theme-primary-color;
           width: 1em;
           height: 1em;
         }
@@ -399,7 +399,7 @@ $itinerary-tab-switch-height: 48px;
   .emissions-info-link {
     text-decoration: none;
     font-weight: $font-weight-medium;
-    color: $primary-color;
+    color: $theme-primary-color;
     font-size: $font-size-small;
   }
 
@@ -711,7 +711,7 @@ $itinerary-tab-switch-height: 48px;
 }
 
 .itinerary-search-icon {
-  color: $primary-color;
+  color: $theme-primary-color;
 }
 
 .duration,
@@ -762,7 +762,7 @@ $itinerary-tab-switch-height: 48px;
   }
 
   .external-link-icon {
-    color: $primary-color;
+    color: $theme-primary-color;
   }
 }
 
@@ -856,7 +856,7 @@ $itinerary-tab-switch-height: 48px;
         margin-left: 1px;
 
         svg {
-          color: $primary-color;
+          color: $theme-primary-color;
           height: 18px;
           width: 18px;
           margin: 0;
@@ -1561,6 +1561,7 @@ $itinerary-tab-switch-height: 48px;
   }
 
   .itinerary-time-column {
+    position: relative;
     font-size: 1em;
     text-align: center;
     color: $black;
@@ -2521,7 +2522,7 @@ $itinerary-tab-switch-height: 48px;
       }
 
       .intermediate-stops-amount {
-        color: $primary-color;
+        color: $theme-primary-color;
         font-weight: $font-weight-medium;
         line-height: 1.2;
         border-bottom: none;
@@ -2554,7 +2555,7 @@ $itinerary-tab-switch-height: 48px;
         margin-right: 10px;
 
         svg {
-          fill: $primary-color;
+          fill: $theme-primary-color;
           width: 20px;
           height: 20px;
         }
@@ -2830,7 +2831,7 @@ div.itinerary-container-content {
 }
 
 .swipe-button .icon {
-  fill: $primary-color;
+  fill: $theme-primary-color;
   height: 1.3em;
   width: 1.3em;
   margin: 0;
@@ -2855,12 +2856,6 @@ div.itinerary-container-content {
   flex-grow: 1;
   min-height: 100%;
   max-height: 100%;
-
-  .desktop-title {
-    .title-container {
-      display: flex;
-    }
-  }
 }
 
 @media print {
@@ -3502,7 +3497,7 @@ $font-print-decrease: 0.7;
   width: 60%;
   border-radius: 50vh;
   padding: 5px;
-  color: $primary-color;
+  color: $theme-primary-color;
   border: 1px solid #888;
   text-align: center;
   text-decoration: none;
