@@ -1,6 +1,3 @@
-import prUtils from '../util/ParkAndRideUtils';
-
-const HSLParkAndRideUtils = prUtils.HSL;
 const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
 const OTP_URL = process.env.OTP_URL || `${API_URL}/routing/v2/waltti/`;
 const MAP_URL = process.env.MAP_URL || 'https://dev-cdn.digitransit.fi';
@@ -150,16 +147,8 @@ export default {
   includeCarSuggestions: true,
   includeParkAndRideSuggestions: true,
   showBikeAndParkItineraries: true,
-  parkingAreaSources: ['liipi'],
 
-  parkAndRide: {
-    showParkAndRide: false,
-    showParkAndRideForBikes: false,
-    parkAndRideMinZoom: 14,
-    pageContent: {
-      default: HSLParkAndRideUtils,
-    },
-  },
+  parkAndRide: { parkAndRideMinZoom: 14 },
 
   hostnames: [
     // DEV hostnames
