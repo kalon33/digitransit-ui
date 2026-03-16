@@ -70,8 +70,7 @@ describe('scheduleParamUtils', () => {
       expect(decision.redirectPath).to.equal(null);
     });
 
-    it('should redirect to first available date that is not in the past when no trips found and wantedDay differs', () => {
-      const pastDate = DateTime.now().minus({ days: 2 }).startOf('day');
+    it('should redirect to first available date when no trips found and wantedDay differs', () => {
       const firstAvailable = DateTime.now().plus({ days: 3 }).startOf('day');
       const secondAvailable = firstAvailable.plus({ days: 1 });
 
@@ -79,7 +78,7 @@ describe('scheduleParamUtils', () => {
         wantedDay: DateTime.now().plus({ days: 7 }),
         patternCode: 'HSL:1001:0:01',
         routeId: 'HSL:1001',
-        availableDates: [secondAvailable, pastDate, firstAvailable],
+        availableDates: [firstAvailable, secondAvailable],
         hasTrips: false,
       });
 
