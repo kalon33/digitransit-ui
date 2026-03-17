@@ -66,10 +66,7 @@ export default function Popover({ onClose, message, buttonText }, { intl }) {
           })}
         >
           {buttonText || (
-            <FormattedMessage
-              id="popover-button-got-it"
-              defaultMessage="Got it!"
-            />
+            <FormattedMessage id="acknowledged" defaultMessage="Got it!" />
           )}
         </button>
       </div>
