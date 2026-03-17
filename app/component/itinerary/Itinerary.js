@@ -778,61 +778,55 @@ const Itinerary = (
     : 'itinerary-summary-row.first-departure';
 
   const textSummary = (
-    <div className="sr-only" key="screenReader">
-      <FormattedMessage
-        id="itinerary-summary-row.description"
-        values={{
-          departureDate: dateOrEmpty(startTime, refTime),
-          departureTime,
-          arrivalDate: dateOrEmpty(endTime, refTime),
-          arrivalTime,
-          firstDeparture: vehicleNames.length && firstDeparture && (
-            <FormattedMessage
-              id={firstDepartureLabelId}
-              values={{
-                vehicle: vehicleNames[0],
-                departureTime: legTimeStr(firstDeparture.start),
-                firstDepartureTime: legTimeStr(firstDeparture.start), // vehicle rental start time
-                stopName: stopNames[0],
-                firstDepartureStop: stopNames[0], // vehicle rental stop name
-                platformOrTrack: getBoardingInformationText(
-                  firstDeparture,
-                  intl,
-                ),
-              }}
-            />
-          ),
-          transfers: vehicleNames.map((name, index) => {
-            if (index === 0) {
-              return null;
-            }
-            return formatMessage(
-              {
-                id: stopNames[index]
-                  ? 'itinerary-summary-row.transfers'
-                  : 'itinerary-summary-row.transfers-to-rental',
-              },
-              {
-                vehicle: name,
-                stopName: stopNames[index],
-              },
-            );
-          }),
-          totalTime: <Duration duration={duration} />,
-        }}
-      />
-    </div>
+    <FormattedMessage
+      id="itinerary-summary-row.description"
+      values={{
+        departureDate: dateOrEmpty(startTime, refTime),
+        departureTime,
+        arrivalDate: dateOrEmpty(endTime, refTime),
+        arrivalTime,
+        firstDeparture: vehicleNames.length && firstDeparture && (
+          <FormattedMessage
+            id={firstDepartureLabelId}
+            values={{
+              vehicle: vehicleNames[0],
+              departureTime: legTimeStr(firstDeparture.start),
+              firstDepartureTime: legTimeStr(firstDeparture.start), // vehicle rental start time
+              stopName: stopNames[0],
+              firstDepartureStop: stopNames[0], // vehicle rental stop name
+              platformOrTrack: getBoardingInformationText(firstDeparture, intl),
+            }}
+          />
+        ),
+        transfers: vehicleNames.map((name, index) => {
+          if (index === 0) {
+            return null;
+          }
+          return formatMessage(
+            {
+              id: stopNames[index]
+                ? 'itinerary-summary-row.transfers'
+                : 'itinerary-summary-row.transfers-to-rental',
+            },
+            {
+              vehicle: name,
+              stopName: stopNames[index],
+            },
+          );
+        }),
+        totalTime: <Duration duration={duration} />,
+      }}
+    />
   );
+
   const co2summary = (
-    <div className="sr-only">
-      <FormattedMessage
-        id="itinerary-co2.description-simple"
-        defaultMessage="CO₂ emissions for this route"
-        values={{
-          co2value,
-        }}
-      />
-    </div>
+    <FormattedMessage
+      id="itinerary-co2.description-simple"
+      defaultMessage="CO₂ emissions for this route"
+      values={{
+        co2value,
+      }}
+    />
   );
 
   const ariaLabelMessage = intl.formatMessage(
@@ -877,18 +871,19 @@ const Itinerary = (
       setShowOverflowIcon(false);
     }
   }, [itineraryContainerOverflowRef]);
+
   return (
-    <span role="listitem" className={classes} aria-atomic="true">
-      <h3 className="sr-only">
+    <div role="listitem" className={classes} aria-atomic="true">
+      <div className="sr-only">
         <FormattedMessage
           id="summary-page.row-label"
           values={{
             number: props.hash + 1,
           }}
         />
-      </h3>
-      {textSummary}
-      {showCo2Info && co2summary}
+        {textSummary}
+        {showCo2Info && co2summary}
+      </div>
       <div
         className="itinerary-summary-visible"
         style={{ display: 'flex' }}
@@ -1030,9 +1025,8 @@ const Itinerary = (
             </div>
           )}
         </div>
-        <span className="itinerary-details-container" aria-expanded="false" />
       </div>
-    </span>
+    </div>
   );
 };
 
