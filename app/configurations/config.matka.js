@@ -96,6 +96,7 @@ export default {
         'PahkakankaanLiikenne',
         'IngvesSvanback',
         'CAR_FERRIES',
+        'flixbus',
       ],
   externalFeedIds: ['02Taksi'],
 
