@@ -450,8 +450,8 @@ export default {
       hsl: {
         enabled: true,
         season: {
-          preSeasonStart: '1.3',
-          start: '17.3',
+          preSeasonStart: '1.4',
+          start: '1.4',
           end: '31.10',
         },
         capacity: BIKEAVL_WITHMAX,
