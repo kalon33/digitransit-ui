@@ -341,4 +341,8 @@ export default configMerger(walttiConfig, {
     showParkAndRide: true,
     showParkAndRideForBikes: true,
   },
+
+  defaultSettings: {
+    minTransferTime: 180,
+  },
 });
