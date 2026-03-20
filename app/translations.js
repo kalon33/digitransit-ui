@@ -3,8 +3,6 @@ const translations = {
   da: {
     'about-this-service': 'Om tjenesten',
     accessibility: 'Fremkommelighed',
-    'add-itinerary-via-point': 'Tilføj viapunkt til rejsen',
-    'add-location-to-favourites': 'Tilføj sted til favoritter',
     address: 'Adresse',
     'address-or-stop': 'Adresse eller stoppested',
     agency: 'Operatør',
@@ -249,18 +247,13 @@ const translations = {
     'about-this-service': 'Über diesen Service',
     accessibility: 'Barrierefreiheit',
     'accessibility-limited': 'Rollstuhlgerecht',
-    'accessibility-nolimit': 'Keine Einschränkungen',
     'accessibility-statement': 'Hinweis zur Barrierefreiheit',
-    'add-home': 'Zuhause setzen',
-    'add-itinerary-via-point': 'Zwischenstopp hinzufügen',
-    'add-location-to-favourites': 'Ort zu Favoriten hinzufügen',
     'add-via-button-label': 'Zwischenstopp hinzufügen',
     'add-via-duration-button-label': 'Aufenthaltszeit am Zwischenstopp {index}',
     'add-via-duration-button-label-close':
       'Schließe Aufenthaltszeit-Auswahl am Zwischenstopp {index}',
     'add-via-duration-button-label-open':
       'Öffne Aufenthaltszeit-Auswahl am Zwischenstopp {index}',
-    'add-work': 'Arbeit setzen',
     address: 'Adresse',
     'address-or-stop': 'Adresse oder Haltestelle',
     agency: 'Betreiber',
@@ -794,13 +787,11 @@ const translations = {
   },
 
   en: {
-    'about-service-feedback': 'About the service and feedback',
     'about-these-pages': 'About the web pages',
     'about-this-service': 'About the service',
     access_with: 'access with',
     accessibility: 'Accessibility',
     'accessibility-limited': 'Wheelchair',
-    'accessibility-nolimit': 'No limits',
     'accessibility-statement': 'Accessibility statement',
     'accessible-car-places': 'Wheelchair accessible',
     acknowledged: 'OK',
@@ -810,9 +801,6 @@ const translations = {
     'add-favourite-route-failed-heading': 'Saving the route failed',
     'add-favourite-station-failed-heading': 'Saving the station failed.',
     'add-favourite-stop-failed-heading': 'Saving the stop failed',
-    'add-home': 'Add home',
-    'add-itinerary-via-point': 'Add via point for itinerary',
-    'add-location-to-favourites': 'Add an important location to your Favorites',
     'add-to-favourites': 'Add to your Favorites',
     'add-via-button-label': 'Add via point',
     'add-via-duration-button-label': 'Set stop duration at via point {index}',
@@ -820,7 +808,6 @@ const translations = {
       'Close stop duration selector at via point {index}',
     'add-via-duration-button-label-open':
       'Open stop duration selector at via point {index}',
-    'add-work': 'Add work',
     all: 'All',
     'alternative-legs':
       'Also {leg1} at {startTime1} and {leg2} at {startTime2}',
@@ -1839,10 +1826,6 @@ const translations = {
     'about-this-service': 'Sobre el servicio',
     accessibility: 'Accesibilidad',
     'accessibility-limited': 'Silla de ruedas',
-    'accessibility-nolimit': 'Sin límites',
-    'add-itinerary-via-point': 'Añadir punto intermedio al itinerario',
-    'add-location-to-favourites':
-      'Añadir una importante localización a tus Favoritos',
     address: 'Dirección',
     'address-or-stop': 'Dirección o parada',
     agency: 'Operador',
@@ -2121,13 +2104,11 @@ const translations = {
   },
 
   fi: {
-    'about-service-feedback': 'Tietoja palvelusta ja palaute',
     'about-these-pages': 'Tietoja sivustosta',
     'about-this-service': 'Tietoja palvelusta',
     access_with: 'pääsy',
     accessibility: 'Esteettömyys',
     'accessibility-limited': 'Pyörätuoli',
-    'accessibility-nolimit': 'Ei rajoitusta',
     'accessibility-statement': 'Saavutettavuusseloste',
     'accessible-car-places': 'Pyörätuolilla saavutettava',
     acknowledged: 'Selvä',
@@ -2138,13 +2119,8 @@ const translations = {
     'add-favourite-station-failed-heading':
       'Aseman tallentaminen ei onnistunut',
     'add-favourite-stop-failed-heading': 'Pysäkin tallentaminen ei onnistunut',
-    'add-home': 'Lisää koti',
-    'add-itinerary-via-point': 'Lisää reitille välipiste',
-    'add-location-to-favourites':
-      'Lisää sinulle tärkeä paikka Suosikkisi-välilehdelle',
     'add-to-favourites': 'Lisää suosikiksi',
     'add-via-button-label': 'Lisää välipiste',
-    'add-work': 'Lisää työ',
     all: 'Kaikki',
     'alternative-legs':
       'Myös {leg1} klo {startTime1} ja {leg2} klo {startTime2}',
@@ -3154,10 +3130,6 @@ const translations = {
     'about-this-service': 'À propos de ce service',
     accessibility: 'Accessibilité',
     'accessibility-limited': 'Fauteuil roulant',
-    'accessibility-nolimit': 'Aucune limite',
-    'add-itinerary-via-point': 'Ajouter une étape au trajet',
-    'add-location-to-favourites':
-      "Ajouter vos lieux importants à l'onglet favoris",
     address: 'Adresse',
     'address-or-stop': 'Adresse ou arrêt',
     agency: 'Transporteur',
@@ -3476,8 +3448,6 @@ const translations = {
   nb: {
     'about-this-service': 'Om tjenesten',
     accessibility: 'Tilgjengelighet',
-    'add-itinerary-via-point': 'Tilføy viapunkt i reisen',
-    'add-location-to-favourites': 'Legg til sted i favoritter',
     address: 'Adresse',
     'address-or-stop': 'Adresse eller stoppested',
     agency: 'Operatør',
@@ -3721,13 +3691,11 @@ const translations = {
   },
 
   pl: {
-    'about-service-feedback': 'O usłudze i informacje zwrotne',
     'about-these-pages': 'Informacje o stronie',
     'about-this-service': 'Informacje o usłudze',
     access_with: 'uzyskaj dostęp przez',
     accessibility: 'Dostępność',
     'accessibility-limited': 'Wózek inwalidzki',
-    'accessibility-nolimit': 'Bez ograniczeń',
     'accessibility-statement': 'Oświadczenie ws. dostępności',
     'add-favourite-bikeStation-failed-heading':
       'Nie udało się zapisać stacji roweru miejskiego',
@@ -3735,9 +3703,6 @@ const translations = {
     'add-favourite-route-failed-heading': 'Nie udało się zapisać trasy',
     'add-favourite-station-failed-heading': 'Nie udało się zapisać stacji.',
     'add-favourite-stop-failed-heading': 'Nie udało się zapisać przystanku',
-    'add-home': 'Dodaj dom',
-    'add-itinerary-via-point': 'Dodaj punkt pośredni do planu podróży',
-    'add-location-to-favourites': 'Dodaj ważne miejsce do swoich Ulubionych',
     'add-to-favourites': 'Dodaj do ulubionych',
     'add-via-button-label': 'Dodaj punkt pośredni',
     'add-via-duration-button-label': 'Wybierz czas postoju dla punktu {index}',
@@ -3745,7 +3710,6 @@ const translations = {
       'Zamknij wybornik czasu postoju w punkcie {index}',
     'add-via-duration-button-label-open':
       'Otwórz wybornik czasu postoju w punkcie {index}',
-    'add-work': 'Dodaj pracę',
     all: 'Wszystkie',
     'alternative-legs': 'Lub {leg1} o {startTime1} i {leg2} o {startTime2}',
     'alternative-legs-single': 'Lub {leg1} o {startTime1}',
@@ -4585,9 +4549,6 @@ const translations = {
     'about-this-service': 'Despre acest serviciu',
     accessibility: 'Accesibilitate',
     'accessibility-limited': 'Scaun cu rotile',
-    'accessibility-nolimit': 'Fără limite',
-    'add-itinerary-via-point': 'Adaugă punct intermediar',
-    'add-location-to-favourites': 'Adaugă un punct important la favorite',
     'add-via-button-label': 'Adaugă intermediar',
     'add-via-duration-button-label':
       'Introdu durata staționării la punctul intermediar {index}',
@@ -5040,13 +5001,11 @@ const translations = {
   },
 
   sv: {
-    'about-service-feedback': 'Om tjänsten och respons',
     'about-these-pages': 'Om webbplatsen',
     'about-this-service': 'Om tjänsten',
     access_with: 'åtgång med',
     accessibility: 'Tillgänglighet',
     'accessibility-limited': 'Med rullstolen',
-    'accessibility-nolimit': 'Ingen begränsning',
     'accessibility-statement': 'Tillgänglighetsförklaring',
     'accessible-car-places': 'Tillgänglig med rullstol',
     acknowledged: 'Klart',
@@ -5056,10 +5015,6 @@ const translations = {
     'add-favourite-route-failed-heading': 'Kunde inte spara linjen',
     'add-favourite-station-failed-heading': 'Kunde inte spara stationen',
     'add-favourite-stop-failed-heading': 'Kunde inte spara hållplatsen',
-    'add-home': 'Lägg till hem',
-    'add-itinerary-via-point': 'Lägg till mellanstopp',
-    'add-location-to-favourites':
-      'Lägg till en plats som är viktig för dig på fliken Favoriter',
     'add-to-favourites': 'Lägg till för dig på fliken Favoriter',
     'add-via-button-label': 'Lägg till viapunkt',
     'add-via-duration-button-label':
@@ -5068,7 +5023,6 @@ const translations = {
       'Stäng väljaren för varaktighet vid via-punkten',
     'add-via-duration-button-label-open':
       'Öppna väljaren för varaktighet vid via-punkten',
-    'add-work': 'Lägg till arbete',
     all: 'Allt',
     'alternative-legs':
       'Också {leg1} kl. {startTime1} och {leg2} kl. {startTime2}',
