@@ -343,7 +343,6 @@ export default configMerger(walttiConfig, {
   },
 
   defaultSettings: {
-    ...walttiConfig.defaultSettings,
     minTransferTime: 180,
   },
 });
