@@ -1,11 +1,7 @@
-/* eslint sort-keys: "error" */
 const translations = {
   da: {
     'about-this-service': 'Om tjenesten',
     accessibility: 'Fremkommelighed',
-    address: 'Adresse',
-    'address-or-stop': 'Adresse eller stoppested',
-    agency: 'Operatør',
     airplane: 'Fly',
     'airplane-with-route-number': 'Fly {routeNumber}',
     'airport-check-in': 'Bagage kan checkes ind hos {agency}',
@@ -248,15 +244,6 @@ const translations = {
     accessibility: 'Barrierefreiheit',
     'accessibility-limited': 'Rollstuhlgerecht',
     'accessibility-statement': 'Hinweis zur Barrierefreiheit',
-    'add-via-button-label': 'Zwischenstopp hinzufügen',
-    'add-via-duration-button-label': 'Aufenthaltszeit am Zwischenstopp {index}',
-    'add-via-duration-button-label-close':
-      'Schließe Aufenthaltszeit-Auswahl am Zwischenstopp {index}',
-    'add-via-duration-button-label-open':
-      'Öffne Aufenthaltszeit-Auswahl am Zwischenstopp {index}',
-    address: 'Adresse',
-    'address-or-stop': 'Adresse oder Haltestelle',
-    agency: 'Betreiber',
     airplane: 'Flug',
     'airplane-with-route-number': 'Flug {routeNumber}',
     'airport-check-in': 'Gepäck bei {agency} einchecken',
@@ -264,7 +251,6 @@ const translations = {
     'airport-security-check-go-to-gate':
       'Gehen Sie durch die Sicherheitskontrolle zum Abfluggate',
     'all-routes': 'Alle Linien',
-    'all-routes-disabled': 'Keine Linien',
     'aria-itinerary-summary':
       'Gesamtdauer {duration}. Route fährt ab {inFuture} {departureTime} mit Ankunft {arrivalTime}.',
     'aria-itinerary-summary-bike-distance':
@@ -802,12 +788,7 @@ const translations = {
     'add-favourite-station-failed-heading': 'Saving the station failed.',
     'add-favourite-stop-failed-heading': 'Saving the stop failed',
     'add-to-favourites': 'Add to your Favorites',
-    'add-via-button-label': 'Add via point',
-    'add-via-duration-button-label': 'Set stop duration at via point {index}',
-    'add-via-duration-button-label-close':
-      'Close stop duration selector at via point {index}',
-    'add-via-duration-button-label-open':
-      'Open stop duration selector at via point {index}',
+    airplane: 'Flight',
     all: 'All',
     'alternative-legs':
       'Also {leg1} at {startTime1} and {leg2} at {startTime2}',
@@ -840,11 +821,6 @@ const translations = {
     'station-exit': 'Exit',
     'time-navigation-buttons': 'Time navigation buttons',
     'time-selector-form': 'Edit time',
-    // eslint-disable-next-line sort-keys
-    address: 'Address',
-    'address-or-stop': 'Address or stop',
-    agency: 'Operator',
-    airplane: 'Flight',
     'airplane-with-route-number': 'Flight {routeNumber}',
     'airport-check-in':
       'Check-in immediately upon arrival if you have not completed check-in in advance',
@@ -852,7 +828,6 @@ const translations = {
     'airport-security-check-go-to-gate':
       'Proceed to your gate through security check',
     'all-routes': 'All routes',
-    'all-routes-disabled': 'No routes',
     'arriving-at': 'Arriving',
     'arriving-soon': 'Now',
     'at-time': 'at',
@@ -969,7 +944,6 @@ const translations = {
     'crushed-standing-room-only': 'Crushed standing room only',
     'cycle-distance-duration': 'Cycle {duration} ({distance})',
     'cyclewalk-distance-duration': 'Walk your bike {duration} ({distance})',
-    // eslint-disable-next-line sort-keys
     currentposition: 'Current position',
     datasources: 'Data sources',
     date: 'Date',
@@ -1354,7 +1328,6 @@ const translations = {
     'nearest-stops-update-location': 'Update {mode}',
     'nearest-stops-updated-location': 'Location on the map has changed',
     'network-error': 'Network error',
-    // eslint-disable-next-line sort-keys
     neighbourhood: 'Neighbourhood ',
     'new-route': 'Is the route new to you?',
     next: 'Next',
@@ -1666,7 +1639,6 @@ const translations = {
       'Show park and ride route. Duration {duration}, driving distance {length}',
     'street-mode-walk-aria':
       'Show walking route. Duration {duration}, distance {length}',
-    // eslint-disable-next-line sort-keys
     street: 'Street',
     subway: 'Metro',
     'subway-entrance.sr-description': 'Metro station entrance {entranceName}',
@@ -1762,7 +1734,6 @@ const translations = {
     'via-point-index': 'Via point {index}',
     'viapoint-slack-amount': 'Stop duration',
     'view-route': 'View Route',
-    // eslint-disable-next-line sort-keys
     venue: 'Venue',
     vr_ticket: 'VR ticket',
     wait: 'Wait',
@@ -1826,9 +1797,6 @@ const translations = {
     'about-this-service': 'Sobre el servicio',
     accessibility: 'Accesibilidad',
     'accessibility-limited': 'Silla de ruedas',
-    address: 'Dirección',
-    'address-or-stop': 'Dirección o parada',
-    agency: 'Operador',
     airplane: 'Vuelo',
     'airplane-with-route-number': 'Vuelo {routeNumber}',
     'airport-check-in': 'Facture en el mostrador de {agency}',
@@ -1836,7 +1804,6 @@ const translations = {
     'airport-security-check-go-to-gate':
       'Proceda a su puerta a través del control de seguridad',
     'all-routes': 'Todas las rutas',
-    'all-routes-disabled': 'Ninguna ruta',
     'arriving-at': 'Llegada',
     'arriving-soon': 'Ahora',
     'avoid-transfers': 'Evitar transbordos',
@@ -2120,7 +2087,6 @@ const translations = {
       'Aseman tallentaminen ei onnistunut',
     'add-favourite-stop-failed-heading': 'Pysäkin tallentaminen ei onnistunut',
     'add-to-favourites': 'Lisää suosikiksi',
-    'add-via-button-label': 'Lisää välipiste',
     all: 'Kaikki',
     'alternative-legs':
       'Myös {leg1} klo {startTime1} ja {leg2} klo {startTime2}',
@@ -2138,24 +2104,8 @@ const translations = {
     'as-origin': 'Lähtöpaikaksi',
     'as-viapoint': 'Välipisteeksi',
     'buy-in-app': 'Osta sovelluksessa',
-    'search-current-suggestion': 'Tämänhetkinen valinta: {selection}',
-    'select-date': 'Valitse päivä',
-    'select-from-map-destination': 'Valitse määränpää',
-    'select-from-map-favourite': 'Valitse kartalta',
-    'select-from-map-no-title': 'Ei otsikkoa',
-    'select-from-map-origin': 'Valitse lähtöpaikka',
-    'select-from-map-viaPoint': 'Valitse välipiste',
-    'set-time-earlier-button-label': 'Aikaista matkustusajankohtaa',
-    'set-time-later-button-label': 'Myöhäistä matkustusajankohtaa',
-    'set-time-now-button-label': 'Aseta matkustusajankohdaksi nyt',
-    'station-entrance': 'Sisäänkäynti',
-    'station-exit': 'Uloskäynti',
     'time-navigation-buttons': 'Matkustusajankohdan muokkausnapit',
     'time-selector-form': 'Muokkaa Matkustusajankohtaa',
-    // eslint-disable-next-line sort-keys
-    address: 'Osoite',
-    'address-or-stop': 'Osoite tai pysäkki',
-    agency: 'Liikennöitsijä',
     airplane: 'Lentokone',
     'airplane-with-route-number': 'Lento {routeNumber}',
     'airport-check-in':
@@ -2164,7 +2114,6 @@ const translations = {
     'airport-security-check-go-to-gate':
       'Kävele turvatarkastuksen läpi lähtöportille',
     'all-routes': 'Kaikki linjat',
-    'all-routes-disabled': 'Ei linjoja',
     'arriving-at': 'Perillä',
     'arriving-soon': 'Nyt',
     'at-time': 'klo',
@@ -2279,7 +2228,6 @@ const translations = {
     'crushed-standing-room-only': 'Kova tungos',
     'cycle-distance-duration': 'Pyöräile {duration} ({distance})',
     'cyclewalk-distance-duration': 'Taluta pyörää {duration} ({distance})',
-    // eslint-disable-next-line sort-keys
     currentposition: 'Tämänhetkinen sijainti',
     datasources: 'Tietolähteet',
     date: 'Päivämäärä',
@@ -2659,7 +2607,6 @@ const translations = {
     'nearest-stops-update-location': 'Päivitä {mode}',
     'nearest-stops-updated-location': 'Kartan sijainti on muuttunut',
     'network-error': 'Verkkovirhe',
-    // eslint-disable-next-line sort-keys
     neighbourhood: 'Naapurusto',
     'new-route': 'Onko reitti sinulle uusi?',
     next: 'Seuraava',
@@ -2877,6 +2824,18 @@ const translations = {
     'scooterwalk-distance-duration':
       'Taluta potkulautaa {duration} ({distance})',
     search: 'Etsi',
+    'search-current-suggestion': 'Tämänhetkinen valinta: {selection}',
+    'select-date': 'Valitse päivä',
+    'select-from-map-destination': 'Valitse määränpää',
+    'select-from-map-favourite': 'Valitse kartalta',
+    'select-from-map-no-title': 'Ei otsikkoa',
+    'select-from-map-origin': 'Valitse lähtöpaikka',
+    'select-from-map-viaPoint': 'Valitse välipiste',
+    'set-time-earlier-button-label': 'Aikaista matkustusajankohtaa',
+    'set-time-later-button-label': 'Myöhäistä matkustusajankohtaa',
+    'set-time-now-button-label': 'Aseta matkustusajankohdaksi nyt',
+    'station-entrance': 'Sisäänkäynti',
+    'station-exit': 'Uloskäynti',
     'search-button-label': 'Hae',
     'search-destination-index': 'Syötä määränpää',
     'search-fields.sr-instructions':
@@ -2969,7 +2928,6 @@ const translations = {
       'Näytä liityntäpysäköintireitti. Kesto {duration}, autoilun pituus {length}',
     'street-mode-walk-aria':
       'Näytä kävelyreitti. Kesto {duration}, pituus {length}',
-    // eslint-disable-next-line sort-keys
     street: 'Katu',
     subway: 'Metro',
     'subway-entrance.sr-description': 'Metroaseman sisäänkäynti {entranceName}',
@@ -3064,7 +3022,6 @@ const translations = {
     'via-point-index': 'Välipiste {index}',
     'viapoint-slack-amount': 'Pysähdyksen kesto',
     'view-route': 'Linjan tiedot',
-    // eslint-disable-next-line sort-keys
     venue: 'Paikka',
     vr_ticket: 'VR-lipulla',
     wait: 'Odota',
@@ -3130,9 +3087,6 @@ const translations = {
     'about-this-service': 'À propos de ce service',
     accessibility: 'Accessibilité',
     'accessibility-limited': 'Fauteuil roulant',
-    address: 'Adresse',
-    'address-or-stop': 'Adresse ou arrêt',
-    agency: 'Transporteur',
     airplane: 'Avion',
     'airplane-with-route-number': 'Avion {routeNumber}',
     'airport-check-in': "S'enregistrer au guichet {agency}",
@@ -3140,7 +3094,6 @@ const translations = {
     'airport-security-check-go-to-gate':
       "Franchir les contrôles de sécurité et se rendre à la porte d'embarquement",
     'all-routes': 'Toutes lignes',
-    'all-routes-disabled': 'Aucune ligne',
     'arriving-at': 'Arrivée',
     'arriving-soon': 'Imm.',
     'avoid-transfers': 'Éviter les correspondances',
@@ -3448,9 +3401,6 @@ const translations = {
   nb: {
     'about-this-service': 'Om tjenesten',
     accessibility: 'Tilgjengelighet',
-    address: 'Adresse',
-    'address-or-stop': 'Adresse eller stoppested',
-    agency: 'Operatør',
     airplane: 'Fly',
     'airplane-with-route-number': 'Fly {routeNumber}',
     'airport-check-in': 'Bagasje kan sjekkes inn hos {agency}',
@@ -3704,12 +3654,7 @@ const translations = {
     'add-favourite-station-failed-heading': 'Nie udało się zapisać stacji.',
     'add-favourite-stop-failed-heading': 'Nie udało się zapisać przystanku',
     'add-to-favourites': 'Dodaj do ulubionych',
-    'add-via-button-label': 'Dodaj punkt pośredni',
-    'add-via-duration-button-label': 'Wybierz czas postoju dla punktu {index}',
-    'add-via-duration-button-label-close':
-      'Zamknij wybornik czasu postoju w punkcie {index}',
-    'add-via-duration-button-label-open':
-      'Otwórz wybornik czasu postoju w punkcie {index}',
+    airplane: 'Lot',
     all: 'Wszystkie',
     'alternative-legs': 'Lub {leg1} o {startTime1} i {leg2} o {startTime2}',
     'alternative-legs-single': 'Lub {leg1} o {startTime1}',
@@ -3737,11 +3682,6 @@ const translations = {
     'set-time-now-button-label': 'Ustaw czas podróży na późniejszą godzinę',
     'time-navigation-buttons': 'Time navigation buttons',
     'time-selector-form': 'Edytuj czas',
-    // eslint-disable-next-line sort-keys
-    address: 'Adres',
-    'address-or-stop': 'Adres lub przystanek',
-    agency: 'Operator',
-    airplane: 'Lot',
     'airplane-with-route-number': 'Lot {routeNumber}',
     'airport-check-in':
       'Check-in immediately upon arrival if you have not completed check-in in advance',
@@ -3749,7 +3689,6 @@ const translations = {
     'airport-security-check-go-to-gate':
       'Proceed to your gate through security check',
     'all-routes': 'Wszystkie trasy',
-    'all-routes-disabled': 'Brak tras',
     'arriving-at': 'Arriving',
     'arriving-soon': 'Teraz',
     'at-time': 'o',
@@ -3860,7 +3799,6 @@ const translations = {
     'cycle-distance-duration': '{duration} rowerem ({distance})',
     'cyclewalk-distance-duration':
       'Prowadź rower przez {duration} ({distance})',
-    // eslint-disable-next-line sort-keys
     currentposition: 'Obecne położenie',
     datasources: 'Źródła danych',
     date: 'Data',
@@ -4146,7 +4084,6 @@ const translations = {
     'nearest-stops-update-location': 'Aktualizuj {mode}',
     'nearest-stops-updated-location': 'Lokalizacja na mapie zmieniła się',
     'network-error': 'Błąd sieciowy',
-    // eslint-disable-next-line sort-keys
     neighbourhood: 'Okolice ',
     next: 'Next',
     'no-bike-allowed-popup-train':
@@ -4411,7 +4348,6 @@ const translations = {
       'Show park and ride route. Duration {duration}, driving distance {length}',
     'street-mode-walk-aria':
       'Show walking route. Duration {duration}, distance {length}',
-    // eslint-disable-next-line sort-keys
     street: 'Ulica',
     subway: 'Metro',
     'subway-with-route-number': 'Metro {routeNumber} {headSign}',
@@ -4486,7 +4422,6 @@ const translations = {
     'via-point-index': 'Punkt pośredni {index}',
     'viapoint-slack-amount': 'Czas postoju',
     'view-route': 'Pokaż trasę',
-    // eslint-disable-next-line sort-keys
     venue: 'Venue',
     vr_ticket: 'VR ticket',
     wait: 'Czekaj',
@@ -4549,13 +4484,6 @@ const translations = {
     'about-this-service': 'Despre acest serviciu',
     accessibility: 'Accesibilitate',
     'accessibility-limited': 'Scaun cu rotile',
-    'add-via-button-label': 'Adaugă intermediar',
-    'add-via-duration-button-label':
-      'Introdu durata staționării la punctul intermediar {index}',
-    'add-via-duration-button-label-close':
-      'Închideți selectorul de durată a staționării la punctul intermediar {index}',
-    'add-via-duration-button-label-open':
-      'Deschideți selectorul de durată a staționării la punctul intermediar {index}',
     'arrive-leave': 'Ajungeți sau plecați la ora selectată',
     'search-current-suggestion': 'Current selection: {selection}',
     'select-date': 'Selectați data',
@@ -4565,10 +4493,6 @@ const translations = {
     'set-time-now-button-label': 'Setează ora la cea curentă',
     'time-navigation-buttons': 'Butoane pentru modificarea orei',
     'time-selector-form': 'Modificați ora călătoriei',
-    // eslint-disable-next-line sort-keys
-    address: 'Adresă',
-    'address-or-stop': 'Adresă sau stație',
-    agency: 'Companie',
     airplane: 'Zbor',
     'airplane-with-route-number': 'Zborul {routeNumber}',
     'airport-check-in': 'Check-in la ghișeul {agency}',
@@ -4576,7 +4500,6 @@ const translations = {
     'airport-security-check-go-to-gate':
       'Mergeți spre poartă, trecând prin controlul de securitate',
     'all-routes': 'Toate',
-    'all-routes-disabled': 'Niciuna',
     'arriving-at': 'Ajunge',
     'arriving-soon': 'Acum',
     'at-time': 'la',
@@ -4624,7 +4547,6 @@ const translations = {
     'cycle-distance-duration': 'Pedalați {duration} ({distance})',
     'cyclewalk-distance-duration':
       'Împingeți bicicleta {duration} ({distance})',
-    // eslint-disable-next-line sort-keys
     currentposition: 'Locația curentă',
     datasources: 'Surse de informații',
     date: 'Data',
@@ -4775,7 +4697,6 @@ const translations = {
     navigate: 'Navigare',
     nearest: 'Cel mai aproape',
     'network-error': 'Eroare de rețea',
-    // eslint-disable-next-line sort-keys
     neighbourhood: 'Cartier ',
     next: 'Următorul',
     'no-bike-allowed-popup-train':
@@ -4931,7 +4852,6 @@ const translations = {
     'street-mode-bicycle-aria': 'Bicicletă',
     'street-mode-car-aria': 'Mașină',
     'street-mode-walk-aria': 'Mers pe jos',
-    // eslint-disable-next-line sort-keys
     street: 'Stradă',
     subway: 'Metrou',
     'subway-with-route-number': 'Metroul {routeNumber} {headSign}',
@@ -4981,7 +4901,6 @@ const translations = {
     'via-point-index': 'Punctul intermediar {index}',
     'viapoint-slack-amount': 'Durata opririi',
     'view-route': 'Vedeți ruta',
-    // eslint-disable-next-line sort-keys
     venue: 'Locație',
     wait: 'Așteptare',
     'wait-amount-of-time': 'Așteptați {duration}',
@@ -5016,13 +4935,6 @@ const translations = {
     'add-favourite-station-failed-heading': 'Kunde inte spara stationen',
     'add-favourite-stop-failed-heading': 'Kunde inte spara hållplatsen',
     'add-to-favourites': 'Lägg till för dig på fliken Favoriter',
-    'add-via-button-label': 'Lägg till viapunkt',
-    'add-via-duration-button-label':
-      'Ställ in varaktighet för viapunkten {index}',
-    'add-via-duration-button-label-close':
-      'Stäng väljaren för varaktighet vid via-punkten',
-    'add-via-duration-button-label-open':
-      'Öppna väljaren för varaktighet vid via-punkten',
     all: 'Allt',
     'alternative-legs':
       'Också {leg1} kl. {startTime1} och {leg2} kl. {startTime2}',
@@ -5052,10 +4964,6 @@ const translations = {
     'station-exit': 'Utgång',
     'time-navigation-buttons': 'Tidsnavigeringsknappar',
     'time-selector-form': 'Redigera tid',
-    // eslint-disable-next-line sort-keys
-    address: 'Adress',
-    'address-or-stop': 'Adress eller hållplats',
-    agency: 'Trafikidkare',
     airplane: 'Flyg',
     'airplane-with-route-number': 'Flyg {routeNumber}',
     'airport-check-in':
@@ -5064,7 +4972,6 @@ const translations = {
     'airport-security-check-go-to-gate':
       'Gå igenom säkerhetskontrollen till gate',
     'all-routes': 'Alla linjer',
-    'all-routes-disabled': 'Inga linjer',
     'arriving-at': 'Anländer',
     'arriving-soon': 'Nu',
     'at-time': 'kl.',
@@ -5177,7 +5084,6 @@ const translations = {
     'crushed-standing-room-only': 'Nästan fullt',
     'cycle-distance-duration': 'Cykla {duration} ({distance})',
     'cyclewalk-distance-duration': 'Led cykeln {duration} ({distance})',
-    // eslint-disable-next-line sort-keys
     currentposition: 'Nuvarande position',
     datasources: 'Datakällor',
     date: 'Datum',
@@ -5559,7 +5465,6 @@ const translations = {
     'nearest-stops-update-location': 'Uppdatera {mode}',
     'nearest-stops-updated-location': 'Kartans läge har ändrats',
     'network-error': 'Nätverksfel',
-    // eslint-disable-next-line sort-keys
     neighbourhood: 'Gransskap',
     'new-route': 'Är rutten ny för dig?',
     next: 'Nästa',
@@ -5874,7 +5779,6 @@ const translations = {
       'Visa anslutningsparkeringrutt. Tid {duration}, längd {length}',
     'street-mode-walk-aria':
       'Visa promenadrutt. Tid {duration}, längd {length}',
-    // eslint-disable-next-line sort-keys
     street: 'Gata',
     subway: 'Metro',
     'subway-entrance.sr-description': 'Metro stationens ingång {entranceName}',
@@ -5974,7 +5878,6 @@ const translations = {
     'via-point-index': 'Stoppets längd {index}',
     'viapoint-slack-amount': 'Stop duration',
     'view-route': 'Visa linje',
-    // eslint-disable-next-line sort-keys
     venue: 'Mötesplats',
     vr_ticket: 'VR-biljetten',
     wait: 'Vänta',
