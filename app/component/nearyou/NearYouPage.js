@@ -87,8 +87,8 @@ function NearYouPage(
   { executeAction },
 ) {
   const config = useConfigContext();
-  const modes = useRef(getModes(config, favourites));
   const centerOfMap = useRef({});
+  const [modes, setModes] = useState(getModes(config, favourites));
   const [phase, setPhase] = useState(PH_START);
   const [centerOfMapChanged, setCenterOfMapChanged] = useState(false);
   const [searchPosition, setSearchPosition] = useState({});
@@ -97,7 +97,6 @@ function NearYouPage(
   const [resultsLoaded, setResultsLoaded] = useState(0);
 
   const { mode } = match.params;
-  const allModes = modes.current;
 
   const updateMapLayerOptions = () => {
     if (config.map.showLayerSelector) {
@@ -164,6 +163,11 @@ function NearYouPage(
     window.addEventListener('keydown', tabHandler);
     return () => window.removeEventListener('keydown', tabHandler);
   }, []);
+
+  useEffect(() => {
+    // update tab list when favourites have been fetched
+    setModes(getModes(config, favourites));
+  }, [favouritesFetched]);
 
   useEffect(() => {
     updateMapLayerOptions();
@@ -282,7 +286,7 @@ function NearYouPage(
   };
 
   const onSwipe = e => {
-    const newMode = allModes[e];
+    const newMode = modes[e];
     const paramArray = match.location.pathname.split(mode);
     const pathParams = paramArray.length > 1 ? paramArray[1] : '/POS';
     const path = `/${PREFIX_NEARYOU}/${newMode}${pathParams}`;
@@ -299,13 +303,15 @@ function NearYouPage(
     !favouriteVehicleStationIds.length;
 
   const renderContent = () => {
-    const index = allModes.indexOf(mode);
-    const tabs = allModes.map(tabMode => {
+    const index = modes.indexOf(mode);
+    const tabs = modes.map(tabMode => {
       const renderStopRouteSearch =
         tabMode !== 'FERRY' && tabMode !== 'FAVORITE';
       const isActive = tabMode === mode;
+
       if (tabMode === 'FAVORITE') {
         const noFavs = noFavourites();
+
         return (
           <div
             key={tabMode}
@@ -565,7 +571,7 @@ function NearYouPage(
       }
       bckBtnFallback="back"
       content={renderContent()}
-      scrollable={allModes.length === 1}
+      scrollable={modes.length === 1}
       map={
         <>
           {mapSearch()}
