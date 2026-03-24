@@ -25,7 +25,6 @@ import i18n from './i18n';
 import { historyMiddlewares, render } from './routes';
 import StoreListeningIntlProvider from './util/StoreListeningIntlProvider';
 import appCreator from './app';
-import translations from './translations';
 import { BUILD_TIME } from './buildInfo';
 import ErrorBoundary from './component/ErrorBoundary';
 import oldParamParser from './util/oldParamParser';
@@ -84,6 +83,10 @@ async function init() {
     );
     await Promise.all(modules);
   }
+
+  const translations = await import(
+    /* webpackChunkName: "translation" */ `./intl/${language}`
+  );
 
   // Get additional feedIds and searchParams from localstorage
   if (config.mainMenu.countrySelection) {
