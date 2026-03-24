@@ -406,7 +406,7 @@ class IndexPage extends React.Component {
                 <CtrlPanel.SeparatorLine />
               </>
             )}
-            {trafficNowLink?.[config.language] && (
+            {trafficNowLink && (
               <TrafficNowLink
                 lang={config.language}
                 handleClick={this.trafficNowHandler}
@@ -453,14 +453,13 @@ class IndexPage extends React.Component {
               <StopRouteSearch isMobile {...stopRouteSearchProps} />
             </div>
             <CtrlPanel.SeparatorLine usePaddingBottom20 />
-            {!trafficNowLink ||
-              (trafficNowLink[config.language] !== '' && (
-                <TrafficNowLink
-                  lang={config.language}
-                  handleClick={this.trafficNowHandler}
-                  fontWeights={fontWeights}
-                />
-              ))}
+            {trafficNowLink && (
+              <TrafficNowLink
+                lang={config.language}
+                handleClick={this.trafficNowHandler}
+                fontWeights={fontWeights}
+              />
+            )}
           </CtrlPanel>
         </div>
       </div>
