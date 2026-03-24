@@ -68,26 +68,6 @@ const getParams = query => {
 };
 
 async function init() {
-  const { language } = config;
-
-  // Guard againist Samsung et.al. which are not properly polyfilled by polyfill-service
-  if (typeof window.Intl === 'undefined') {
-    const modules = [
-      import(/* webpackChunkName: "intl",  webpackMode: "lazy" */ 'intl'),
-    ];
-
-    modules.push(
-      import(
-        /* webpackChunkName: "intl",  webpackMode: "lazy-once" */ `intl/locale-data/jsonp/${language}`
-      ),
-    );
-    await Promise.all(modules);
-  }
-
-  const translations = await import(
-    /* webpackChunkName: "translation" */ `./intl/${language}`
-  );
-
   // Get additional feedIds and searchParams from localstorage
   if (config.mainMenu.countrySelection) {
     const selectedCountries = context.getStore('CountryStore').getCountries();
@@ -123,6 +103,8 @@ async function init() {
     ? `?${config.API_SUBSCRIPTION_QUERY_PARAMETER_NAME}=${config.API_SUBSCRIPTION_TOKEN}`
     : '';
 
+  const { language } = config;
+  const translations = await import(`./intl/${language}`);
   i18n.changeLanguage(language);
 
   const network = new RelayNetworkLayer([
