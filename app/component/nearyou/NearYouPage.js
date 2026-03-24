@@ -69,6 +69,15 @@ function tabHandler(e) {
   }
 }
 
+// temp solution to force fav near you tab for hsl.fi
+// entering the tab should not be  possible if favourites do not exist
+function extendModes(modes, currentMode) {
+  if (currentMode === 'FAVORITE' && modes[0] !== 'FAVORITE') {
+    modes.unshift('FAVORITE');
+  }
+  return modes;
+}
+
 function NearYouPage(
   {
     breakpoint,
@@ -86,17 +95,18 @@ function NearYouPage(
   },
   { executeAction },
 ) {
+  const { mode } = match.params;
   const config = useConfigContext();
   const centerOfMap = useRef({});
-  const [modes, setModes] = useState(getModes(config, favourites));
+  const [modes, setModes] = useState(
+    extendModes(getModes(config, favourites), mode),
+  );
   const [phase, setPhase] = useState(PH_START);
   const [centerOfMapChanged, setCenterOfMapChanged] = useState(false);
   const [searchPosition, setSearchPosition] = useState({});
   const [mapLayerOptions, setMapLayerOptions] = useState({});
   // eslint-disable-next-line
   const [resultsLoaded, setResultsLoaded] = useState(0);
-
-  const { mode } = match.params;
 
   const updateMapLayerOptions = () => {
     if (config.map.showLayerSelector) {
@@ -166,7 +176,7 @@ function NearYouPage(
 
   useEffect(() => {
     // update tab list when favourites have been fetched
-    setModes(getModes(config, favourites));
+    setModes(extendModes(getModes(config, favourites), mode));
   }, [favouritesFetched]);
 
   useEffect(() => {
