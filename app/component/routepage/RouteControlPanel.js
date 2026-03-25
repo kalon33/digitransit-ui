@@ -7,11 +7,9 @@ import cx from 'classnames';
 import sortBy from 'lodash/sortBy';
 import { matchShape, routerShape } from 'found';
 import { enrichPatterns } from '@digitransit-util/digitransit-util';
-import connectToStores from 'fluxible-addons-react/connectToStores';
 import { configShape } from '../../util/shapes';
 import CallAgencyWarning from './CallAgencyWarning';
 import RoutePatternSelectContainer from './RoutePatternSelectContainer';
-import Notification from './Notification';
 import { DATE_FORMAT, ExtendedRouteTypes } from '../../constants';
 import {
   startRealTimeClient,
@@ -80,12 +78,10 @@ class RouteControlPanel extends React.Component {
     match: matchShape.isRequired,
     breakpoint: PropTypes.string.isRequired,
     noInitialServiceDay: PropTypes.bool,
-    language: PropTypes.string,
     tripStartTime: PropTypes.string,
   };
 
   static defaultProps = {
-    language: 'fi',
     noInitialServiceDay: false,
     tripStartTime: undefined,
   };
@@ -359,25 +355,9 @@ class RouteControlPanel extends React.Component {
 
   /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions, jsx-a11y/anchor-is-valid */
   render() {
-    const { breakpoint, match, route, language } = this.props;
+    const { breakpoint, match, route } = this.props;
     const { patternId } = match.params;
     const { config } = this.context;
-
-    const routeNotifications = [];
-    if (
-      config.NODE_ENV !== 'test' &&
-      config.routeNotifications &&
-      config.routeNotifications.length > 0
-    ) {
-      for (let i = 0; i < config.routeNotifications.length; i++) {
-        const n = config.routeNotifications[i];
-        if (n.showForRoute?.(route)) {
-          routeNotifications.push(
-            <Notification notification={n} lang={language} key={n.id} />,
-          );
-        }
-      }
-    }
 
     const activeTab = getActiveTab(match.location.pathname);
     const currentTime = unixTime();
@@ -440,7 +420,6 @@ class RouteControlPanel extends React.Component {
           })}
           aria-live="polite"
         >
-          {routeNotifications}
           {patternId && (
             <RoutePatternSelectContainer
               match={match}
@@ -556,12 +535,6 @@ class RouteControlPanel extends React.Component {
   }
 }
 
-const connectedComponent = connectToStores(
-  RouteControlPanel,
-  ['PreferencesStore'],
-  context => ({
-    language: context.getStore('PreferencesStore').getLanguage(),
-  }),
-);
+const connectedComponent = RouteControlPanel;
 
 export { connectedComponent as default, RouteControlPanel as Component };
