@@ -102,6 +102,10 @@ export default configMerger(walttiConfig, {
     },
   },
 
+  defaultSettings: {
+    minTransferTime: 5 * 60,
+  },
+
   transportModes: {
     bus: {
       color: '#e8aa27',
@@ -215,5 +219,9 @@ export default configMerger(walttiConfig, {
   customWeights: {
     FERRY: 0.6,
     FUNICULAR: 0.1,
+  },
+  parkAndRide: {
+    showParkAndRide: true,
+    showParkAndRideForBikes: true,
   },
 });

@@ -1,6 +1,7 @@
 import safeJsonParse from '../util/safeJsonParser';
 import { BIKEAVL_WITHMAX } from '../util/vehicleRentalUtils';
 import realtime from './realtimeUtils';
+import prUtils from '../util/ParkAndRideUtils';
 
 const CONFIG = process.env.CONFIG || 'default';
 const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
@@ -207,12 +208,7 @@ export default {
    * If not, the selection may not make any sense.
    */
   defaultOptions: {
-    walkReluctance: {
-      least: 5,
-      less: 3,
-      more: 1,
-      most: 0.2,
-    },
+    highWalkReluctance: 5,
     walkSpeed: [0.69, 0.97, 1.2, 1.67, 2.22],
     bikeSpeed: [2.77, 4.15, 5.55, 6.94, 8.33],
   },
@@ -752,7 +748,6 @@ export default {
   vehicles: false,
   showVehiclesOnStopPage: false,
   showVehiclesOnItineraryPage: false,
-  trafficNowLink: '',
 
   timetables: {},
 
@@ -789,6 +784,14 @@ export default {
 
   constantOperationStops: {},
   constantOperationRoutes: {},
+
+  parkAndRide: {
+    showParkAndRide: false,
+    showParkAndRideForBikes: false,
+    parkAndRideMinZoom: 13,
+    resolver: prUtils.liipi,
+  },
+  parkingAreaSources: ['liipi'],
 
   embeddedSearch: {
     title: {
@@ -884,4 +887,5 @@ export default {
     allowedExternalFlexRouteTypes: [1501],
     minTransferTime: 900, // seconds
   },
+  personalisation: false,
 };

@@ -39,10 +39,6 @@ import { getIntermediatePlaces } from '../../util/otpStrings';
 const stopCode = stop => stop && stop.code && <StopCode code={stop.code} />;
 
 export default class Legs extends React.Component {
-  static childContextTypes = {
-    focusFunction: PropTypes.func,
-  };
-
   static propTypes = {
     itinerary: itineraryShape.isRequired,
     fares: PropTypes.arrayOf(fareShape),
@@ -71,10 +67,6 @@ export default class Legs extends React.Component {
     usingOwnCarWholeTrip: false,
     relayEnvironment: undefined,
   };
-
-  getChildContext() {
-    return { focusFunction: this.focus };
-  }
 
   focus = position => e => {
     e.stopPropagation();
@@ -208,7 +200,12 @@ export default class Legs extends React.Component {
         legs.push(<TaxiLeg {...legProps} />);
       } else if (isLegOnFoot(leg)) {
         legs.push(
-          <WalkLeg {...legProps} previousLeg={previousLeg} nextLeg={nextLeg}>
+          <WalkLeg
+            {...legProps}
+            previousLeg={previousLeg}
+            nextLeg={nextLeg}
+            focusToPoint={this.props.focusToPoint}
+          >
             {stopCode(leg.from.stop)}
           </WalkLeg>,
         );
@@ -315,6 +312,7 @@ export default class Legs extends React.Component {
           nextLeg={compressedLegs[numberOfLegs]}
           focusAction={this.focus(lastLeg.to)}
           focusToLeg={this.focusToLeg(lastLeg)}
+          focusToPoint={this.props.focusToPoint}
         >
           {stopCode(lastLeg.to.stop)}
         </WalkLeg>,
