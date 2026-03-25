@@ -64,7 +64,7 @@ export default {
     ferry: '#247C7B',
   },
   feedIds: IS_DEV
-    ? ['MATKA']
+    ? ['MATKA', 'flixbus', 'CAR_FERRIES']
     : [
         'MATKA',
         'HSL',
@@ -96,6 +96,7 @@ export default {
         'PahkakankaanLiikenne',
         'IngvesSvanback',
         'CAR_FERRIES',
+        'flixbus',
       ],
   externalFeedIds: ['02Taksi'],
 
