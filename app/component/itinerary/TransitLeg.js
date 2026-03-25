@@ -507,7 +507,7 @@ class TransitLeg extends React.Component {
             !this.state.showIntermediateStops ||
             (leg.intermediatePlaces.length === 0 && interliningLegs.length < 1)
           }
-          appendClass={isLocalCallAgency(leg.route, config) ? 'call-local' : ''}
+          appendClass={isLocalCallAgency(leg, config) ? 'call-local' : ''}
         />
         <div
           style={{

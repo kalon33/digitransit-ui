@@ -109,6 +109,7 @@ export const LegMode = {
   Car: 'CAR',
   Rail: 'RAIL',
   Wait: 'WAIT',
+  Taxi: 'TAXI',
 };
 
 /**
@@ -135,13 +136,11 @@ export function getLegMode(legOrMode) {
       return LegMode.Car;
     case LegMode.Rail:
       return LegMode.Rail;
+    case LegMode.Taxi:
+      return LegMode.Taxi;
     default:
       return undefined;
   }
-}
-
-export function isCallAgencyLeg(route) {
-  return route?.type === ExtendedRouteTypes.CallAgency;
 }
 
 /**
@@ -444,7 +443,13 @@ function isBikingLeg(leg) {
   return [LegMode.Bicycle, LegMode.CityBike].includes(getLegMode(leg));
 }
 function isDrivingLeg(leg) {
-  return [LegMode.Car].includes(getLegMode(leg));
+  return LegMode.Car === getLegMode(leg);
+}
+function isTaxiLeg(leg) {
+  return LegMode.Taxi === getLegMode(leg);
+}
+export function isCallAgencyLeg(leg) {
+  return leg.route?.type === ExtendedRouteTypes.CallAgency;
 }
 
 /**
@@ -508,6 +513,29 @@ export function legContainsCarPark(leg) {
 }
 
 /**
+ * Checks how many transit legs an external flex itinerary contains.
+ *
+ * @param {*} itinerary - The itinerary to check.
+ * @returns {number} - Count of transit legs in itinerary.
+ */
+export function getTotalTransitLegsInExternalFlexTransitItinerary(itinerary) {
+  return itinerary.legs.filter(leg => !isWalkingLeg(leg) && !isTaxiLeg(leg))
+    .length;
+}
+
+/**
+ * Checks how many transit legs an internal flex itinerary contains.
+ *
+ * @param {*} itinerary - The itinerary to check.
+ * @returns {number} - Count of transit legs in itinerary.
+ */
+export function getTotalTransitLegsInInternalFlexTransitItinerary(itinerary) {
+  return itinerary.legs.filter(
+    leg => !isWalkingLeg(leg) && !isCallAgencyLeg(leg),
+  ).length;
+}
+
+/**
  * Calculates and returns the total walking distance undertaken in an itinerary.
  * This could be used as a fallback if the backend returns an invalid value.
  *
@@ -523,7 +551,6 @@ export function getTotalWalkingDistance(itinerary) {
  *
  * @param {*} itinerary the itinerary to extract the total biking distance from
  */
-
 export function getTotalBikingDistance(itinerary) {
   return sumDistances(itinerary.legs.filter(isBikingLeg));
 }
@@ -960,12 +987,12 @@ export function getValidatedLegName(name, intl, start) {
  * @param {object} config - Config data.
  * @returns {boolean} - Returns true if leg is a local call agency.
  */
-export function isLocalCallAgency(route, config) {
-  if (!route) {
+export function isLocalCallAgency(leg, config) {
+  if (!leg?.route) {
     return false;
   }
   return (
-    isCallAgencyLeg(route) &&
-    config.flex.internalAgencies.includes(route.agency.gtfsId)
+    isCallAgencyLeg(leg) &&
+    config.flex.internalAgencies.includes(leg.route.agency.gtfsId)
   );
 }

@@ -96,7 +96,7 @@ class ItineraryLine extends React.Component {
         leg.from.vehicleRentalStation?.rentalNetwork.networkId ||
         leg.from.rentalVehicle?.rentalNetwork.networkId;
 
-      const appendClass = isLocalCallAgency(leg.route, this.context.config)
+      const appendClass = isLocalCallAgency(leg, this.context.config)
         ? 'call-local'
         : '';
 

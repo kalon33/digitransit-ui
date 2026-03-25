@@ -11,7 +11,12 @@ import {
 import { PlannerMessageType, ExtendedRouteTypes } from '../../constants';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
 import { boundWithMinimumArea } from '../../util/geo-utils';
-import { compressLegs, getTotalBikingDistance } from '../../util/legUtils';
+import {
+  compressLegs,
+  getTotalBikingDistance,
+  getTotalTransitLegsInExternalFlexTransitItinerary,
+  getTotalTransitLegsInInternalFlexTransitItinerary,
+} from '../../util/legUtils';
 import { getMapLayerOptions } from '../../util/mapLayerUtils';
 import { getDefaultSettings, getSettings } from '../../util/planParamUtil';
 import { getStartTimeWithColon } from '../../util/timeUtils';
@@ -410,9 +415,6 @@ export function filterItineraries(edges, modes) {
   );
 }
 
-/**
- * Filters itineraries that are not the right route type
- */
 export function filterItinerariesByRouteType(
   edges,
   types,
@@ -427,6 +429,28 @@ export function filterItinerariesByRouteType(
         types.includes(leg.route?.type) &&
         (includeTaxiSuggestions || leg.route?.type !== 'TAXI'),
     ),
+  );
+}
+
+/**
+ * This function filters away itineraries that have a greater count than the
+ * itinerary with the lowest count. The count is determined by the countFunction.
+ */
+export function filterItinerariesKeepOnlyLeastCount(edges, countFunction) {
+  if (!edges || edges.length === 0) {
+    return [];
+  }
+
+  let leastAmountOfTransitLegs = countFunction(edges[0].node);
+  edges.forEach(edge => {
+    const amountOfTransitLegs = countFunction(edge.node);
+    if (leastAmountOfTransitLegs > amountOfTransitLegs) {
+      leastAmountOfTransitLegs = amountOfTransitLegs;
+    }
+  });
+
+  return edges.filter(
+    edge => countFunction(edge.node) === leastAmountOfTransitLegs,
   );
 }
 
@@ -565,10 +589,13 @@ export function mergeExternalTransitPlan(
   allowedExternalFlexRouteTypes,
   includeTaxiSuggestions,
 ) {
-  const externalTransitEdges = filterItinerariesByRouteType(
-    externalPlan.edges,
-    allowedExternalFlexRouteTypes,
-    includeTaxiSuggestions,
+  const externalTransitEdges = filterItinerariesKeepOnlyLeastCount(
+    filterItinerariesByRouteType(
+      externalPlan.edges,
+      allowedExternalFlexRouteTypes,
+      includeTaxiSuggestions,
+    ),
+    getTotalTransitLegsInExternalFlexTransitItinerary,
   );
   return sortAndMergePlans(externalTransitEdges, transitPlan, arriveBy);
 }
@@ -596,7 +623,10 @@ export function mergeFlexPlan(
   arriveBy,
   maxAdditionalEdges = 1,
 ) {
-  const edges = flexEdges(flexPlan.edges);
+  const edges = filterItinerariesKeepOnlyLeastCount(
+    flexEdges(flexPlan.edges),
+    getTotalTransitLegsInInternalFlexTransitItinerary,
+  );
   return sortAndMergePlans(edges, plan, arriveBy, maxAdditionalEdges);
 }
 

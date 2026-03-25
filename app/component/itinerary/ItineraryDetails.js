@@ -199,7 +199,7 @@ function ItineraryDetails(
       callAgencyInfo &&
       itinerary.legs.some(
         leg =>
-          isCallAgencyLeg(leg.route) &&
+          isCallAgencyLeg(leg) &&
           !config.flex.internalAgencies.includes(leg.route.agency.gtfsId),
       )
     ) {

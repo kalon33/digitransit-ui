@@ -136,7 +136,7 @@ function WalkLeg(
         />
       </span>
       <div className="small-2 columns itinerary-time-column" aria-hidden="true">
-        {previousLeg && isCallAgencyLeg(previousLeg.route) && (
+        {previousLeg && isCallAgencyLeg(previousLeg) && (
           <FormattedMessage id="estimate" />
         )}
         <div className="itinerary-time-column-time">
