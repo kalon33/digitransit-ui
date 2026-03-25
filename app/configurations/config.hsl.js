@@ -818,12 +818,6 @@ export default {
   navigation: true,
   crazyEgg: true,
 
-  // features that should not be deployed to production
-  experimental: {
-    allowFlexJourneys: false,
-    allowDirectFlexJourneys: false,
-  },
-
   showStopStatusMarkers: true,
 
   flex: {
