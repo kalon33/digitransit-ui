@@ -162,7 +162,17 @@ class ItineraryLine extends React.Component {
     );
   }
 
-  handleLine(previousLeg, leg, nextLeg, mode, i, geometry, objs, clusterObjs) {
+  handleLine(
+    previousLeg,
+    leg,
+    nextLeg,
+    mode,
+    i,
+    geometry,
+    objs,
+    clusterObjs,
+    appendClass,
+  ) {
     const entranceObject = getEntranceObject(previousLeg, leg);
     const indoorLegType = getIndoorLegType(previousLeg, leg, nextLeg);
     if (indoorLegType !== IndoorLegType.NoStepsInside) {
@@ -185,6 +195,7 @@ class ItineraryLine extends React.Component {
           geometry={geometry}
           mode={mode}
           passive={this.props.passive}
+          appendClass={appendClass}
         />,
       );
     }
@@ -440,6 +451,7 @@ class ItineraryLine extends React.Component {
         geometry,
         objs,
         clusterObjs,
+        appendClass,
       );
       this.handleDurationBubble(leg, mode, i, objs, middle);
       this.handleIntermediateStops(leg, mode, objs);
