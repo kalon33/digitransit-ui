@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import { addLocaleData } from 'react-intl';
 import ReactDOM from 'react-dom';
 import BrowserProtocol from 'farce/BrowserProtocol';
 import createFarceRouter from 'found/createFarceRouter';
@@ -23,12 +23,12 @@ import { Settings } from 'luxon';
 import { configShape } from './util/shapes';
 import i18n from './i18n';
 import { historyMiddlewares, render } from './routes';
-import StoreListeningIntlProvider from './util/StoreListeningIntlProvider';
 import appCreator from './app';
 import { BUILD_TIME } from './buildInfo';
 import ErrorBoundary from './component/ErrorBoundary';
 import oldParamParser from './util/oldParamParser';
 import { ClientProvider as ClientBreakpointProvider } from './util/withBreakpoint';
+import { AppIntlProvider } from './util/useTranslationsContext';
 import meta from './meta';
 import {
   initAnalyticsClientSide,
@@ -106,6 +106,9 @@ async function init() {
   const { language } = config;
   const translations = await import(`./intl/${language}`);
   i18n.changeLanguage(language);
+
+  const localeData = await import(`react-intl/locale-data/${language}`);
+  addLocaleData(localeData.default);
 
   const network = new RelayNetworkLayer([
     cacheMiddleware({
@@ -195,16 +198,16 @@ async function init() {
       });
   }
 
-  const ContextProvider = provideContext(StoreListeningIntlProvider, {
+  const ContextProvider = provideContext(AppIntlProvider, {
     config: configShape,
-    headers: PropTypes.objectOf(PropTypes.string),
   });
 
   const content = (
     <ConfigProvider value={config}>
       <ClientBreakpointProvider>
         <ContextProvider
-          translations={translations}
+          locale={language}
+          messages={translations.default[language]}
           context={context.getComponentContext()}
         >
           <RelayEnvironmentProvider environment={environment}>

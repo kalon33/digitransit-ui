@@ -1,25 +1,37 @@
 import React, { createContext, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { intlShape } from 'react-intl';
+import { IntlProvider, injectIntl } from 'react-intl';
 
-const IntlContext = createContext();
-
-export const IntlContextProvider = ({ intl, children }) => (
-  <IntlContext.Provider value={intl}>{children}</IntlContext.Provider>
-);
-
-IntlContextProvider.propTypes = {
-  intl: intlShape.isRequired,
-  children: PropTypes.node.isRequired,
-};
+const IntlContext = createContext(null);
 
 export const useTranslationsContext = () => {
   const intl = useContext(IntlContext);
   if (!intl) {
     throw new Error(
-      'useTranslationsContext must be used within an IntlContextProvider. ' +
-        'Make sure your component is wrapped in StoreListeningIntlProvider.',
+      'useTranslationsContext must be used within AppIntlProvider.',
     );
   }
   return intl;
+};
+
+const IntlBridge = injectIntl(({ intl, children }) => (
+  <IntlContext.Provider value={intl}>{children}</IntlContext.Provider>
+));
+
+IntlBridge.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+export function AppIntlProvider({ locale, messages, children }) {
+  return (
+    <IntlProvider locale={locale} messages={messages}>
+      <IntlBridge>{children}</IntlBridge>
+    </IntlProvider>
+  );
+}
+
+AppIntlProvider.propTypes = {
+  locale: PropTypes.string.isRequired,
+  messages: PropTypes.object.isRequired,
+  children: PropTypes.node.isRequired,
 };
