@@ -152,6 +152,7 @@ export default function RoutePatternSelect({
   router,
   backgroundColor = null,
 }) {
+  const intl = useTranslationsContext();
   if (!currentPattern) {
     return null;
   }
@@ -221,7 +222,10 @@ export default function RoutePatternSelect({
             <FormattedMessage id="route-page.pattern-select-title" />
           </span>
         </label>
-        <div {...getToggleButtonProps()}>
+        <div
+          {...getToggleButtonProps()}
+          title={intl.formatMessage({ id: 'route-pattern-select-tooltip' })}
+        >
           <div className="input-display" aria-hidden="true">
             <span
               className="option-count-pill"
