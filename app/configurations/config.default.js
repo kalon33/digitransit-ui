@@ -861,4 +861,5 @@ export default {
   showRouteDescNotification: false,
   showStopStatusMarkers: false,
   personalisation: false,
+  interactiveElementsUseModeColor: false,
 };
