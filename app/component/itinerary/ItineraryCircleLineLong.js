@@ -14,7 +14,10 @@ const ItineraryCircleLineLong = props => {
     if (isFirstChild() && top) {
       return (
         <div className="itinerary-icon-container start">
-          <Icon img="icon_mapMarker" className="itinerary-icon from from-it" />
+          <Icon
+            img="icon_origin-ellipse"
+            className="itinerary-icon from from-it"
+          />
         </div>
       );
     }
