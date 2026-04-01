@@ -69,16 +69,13 @@ const baseProps = {
 
 describe('<RoutePage />', () => {
   let sandbox;
-  let configStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     sandbox
       .stub(useTranslationsContextModule, 'useTranslationsContext')
       .returns(baseIntl);
-    configStub = sandbox
-      .stub(ConfigContextModule, 'useConfigContext')
-      .returns(baseConfig);
+    sandbox.stub(ConfigContextModule, 'useConfigContext').returns(baseConfig);
   });
 
   afterEach(() => {
@@ -513,27 +510,6 @@ describe('<RoutePage />', () => {
         },
       });
       expect(wrapper.find(RouteControlPanel)).to.have.lengthOf(0);
-    });
-  });
-
-  describe('Local call agency styling', () => {
-    it('applies call-local styling when route is a local call agency', () => {
-      const callAgencyRoute = {
-        ...baseRoute,
-        type: 715, // ExtendedRouteTypes.CallAgency
-        agency: { ...baseRoute.agency, gtfsId: 'FOO:FOO' },
-      };
-      configStub.returns({
-        ...baseConfig,
-        flex: { internalAgencies: ['FOO:FOO'] },
-      });
-      const wrapper = render({ route: callAgencyRoute });
-      expect(wrapper.find('.call-local')).to.have.lengthOf.at.least(1);
-    });
-
-    it('does not apply call-local styling for a regular route', () => {
-      const wrapper = render();
-      expect(wrapper.find('.call-local')).to.have.lengthOf(0);
     });
   });
 

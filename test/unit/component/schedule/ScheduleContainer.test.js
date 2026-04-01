@@ -41,6 +41,7 @@ describe('<ScheduleContainer />', () => {
   const mockRoute = {
     gtfsId: 'HSL:1001',
     mode: 'BUS',
+    type: 3,
     agency: { name: 'HSL' },
     patterns: [
       {
