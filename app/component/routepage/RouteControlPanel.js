@@ -404,8 +404,6 @@ class RouteControlPanel extends React.Component {
       (hasActiveAlert && 'active-disruption-alert') ||
       (hasActiveServiceAlerts && 'active-service-alert');
 
-    const useCurrentTime = activeTab === Tab.Stops;
-
     const countOfButtons = 3;
 
     let disruptionIcon;
@@ -445,12 +443,11 @@ class RouteControlPanel extends React.Component {
           {routeNotifications}
           {patternId && (
             <RoutePatternSelectContainer
-              params={match.params}
+              match={match}
               route={route}
               onSelectChange={this.onPatternChange}
               gtfsId={route.gtfsId}
               className={cx({ 'bp-large': breakpoint === 'large' })}
-              useCurrentTime={useCurrentTime}
             />
           )}
           {/* eslint-disable jsx-a11y/interactive-supports-focus */}
