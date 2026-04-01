@@ -5,8 +5,7 @@ $font-weight-normal: $font-weight-medium;
 $body-font-family: $font-family;
 $body-font-weight: $font-weight-medium;
 
-@import '@hsl-fi/design-tokens/css/colors.css';
-@import '@hsl-fi/design-tokens/css/shadows.css';
+@import '@hsl-fi/design-system-core/css/styles.css';
 
 // Apply theme specific values over standard hsl theme
 @import 'design-theme.css';

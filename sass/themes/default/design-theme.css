@@ -6,4 +6,6 @@
   --color-accent-primary-900: #000a80;
   --color-accent-primary-500: #000f94;
   --color-accent-primary-100: #88bbdd;
+  --font-family: "Roboto", arial, georgia, serif;
+  --font-family-narrow: "Roboto Condensed", "Arial Condensed", arial, georgia, serif;
 }
