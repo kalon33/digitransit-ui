@@ -971,6 +971,7 @@ export default function ItineraryPage(props, context) {
     // so, if no itineraries are found with standard settings, scooter is not suggested
     // maybe it should be?
     if (settingsLimitRouting(config) && !settingsState.settingsChanged) {
+      setCombinedRelaxState({ ...emptyState, loading: LOADSTATE.LOADING });
       makeRelaxedQuery();
       makeRelaxedScooterQuery();
       makeRelaxedFlexQuery();
@@ -1113,7 +1114,6 @@ export default function ItineraryPage(props, context) {
         relaxFlexState.plan,
         match.location.query.arriveBy === 'true',
       );
-
       setCombinedRelaxState({ plan, loading: LOADSTATE.DONE });
       resetItineraryPageSelection();
     }
