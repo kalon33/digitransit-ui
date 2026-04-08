@@ -282,11 +282,13 @@ class RouteControlPanel extends React.Component {
     );
     if (type === PREFIX_TIMETABLE) {
       const today = unixToYYYYMMDD(unixTime(), config);
-      if (pattern[0].minAndMaxDate && today < pattern[0].minAndMaxDate[0]) {
+      if (match.location.query?.serviceDay) {
+        newPath += `?serviceDay=${match.location.query.serviceDay}`;
+      } else if (
+        pattern[0].minAndMaxDate &&
+        today < pattern[0].minAndMaxDate[0]
+      ) {
         newPath += `?serviceDay=${pattern[0].minAndMaxDate[0]}`;
-      }
-      if (match.query && match.query.serviceDay) {
-        newPath += `?serviceDay=${match.query.serviceDay}`;
       }
     }
     router.replace(newPath);
@@ -296,7 +298,7 @@ class RouteControlPanel extends React.Component {
     const { config, executeAction } = this.context;
     const { match, route, tripStartTime } = this.props;
     const { realTime } = config;
-    if (config.NODE_ENV === 'test' || !realTime) {
+    if (process.env.NODE_ENV === 'test' || !realTime) {
       return;
     }
 
@@ -370,7 +372,7 @@ class RouteControlPanel extends React.Component {
 
     const routeNotifications = [];
     if (
-      config.NODE_ENV !== 'test' &&
+      process.env.NODE_ENV !== 'test' &&
       config.routeNotifications &&
       config.routeNotifications.length > 0
     ) {
