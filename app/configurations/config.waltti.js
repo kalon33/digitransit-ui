@@ -271,9 +271,10 @@ export default {
   flex: {
     internalFlexEnabled: false,
     allowTaxiJourneys: IS_DEV(),
-    directOnlyTaxiJourneys: IS_DEV(),
+    directOnlyTaxiJourneys: false,
     internalAgencies: [],
     externalAgencies: ['02Taksi:02_taksi'],
+    infoLanguage: 'fi',
   },
 
   replacementBusNotification: {
