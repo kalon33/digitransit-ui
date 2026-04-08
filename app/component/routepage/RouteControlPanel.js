@@ -53,6 +53,12 @@ const getActiveTab = pathname => {
   return undefined;
 };
 
+const TAB_ANALYTICS_ACTIONS = {
+  [PREFIX_TIMETABLE]: 'OpenTimetableTab',
+  [PREFIX_STOPS]: 'OpenStopsTab',
+  [PREFIX_DISRUPTION]: 'OpenDisruptionsTab',
+};
+
 function RouteControlPanel(
   {
     route,
@@ -72,18 +78,17 @@ function RouteControlPanel(
   const stopTabRef = useRef(null);
   const timetableTabRef = useRef(null);
   const disruptionTabRef = useRef(null);
-  const tabRefs = [stopTabRef, timetableTabRef, disruptionTabRef];
+  const tabRefMap = {
+    [Tab.Stops]: stopTabRef,
+    [Tab.Timetable]: timetableTabRef,
+    [Tab.Disruptions]: disruptionTabRef,
+  };
 
   const activeTab = getActiveTab(location.pathname);
 
   // Focus the active tab on mount for correct screen-reader cursor placement
   // after SPA tab navigation (per WCAG APG roving tabindex pattern).
   useEffect(() => {
-    const tabRefMap = {
-      [Tab.Stops]: stopTabRef,
-      [Tab.Timetable]: timetableTabRef,
-      [Tab.Disruptions]: disruptionTabRef,
-    };
     const activeRef = activeTab && tabRefMap[activeTab];
     if (activeRef?.current) {
       activeRef.current.focus();
@@ -110,26 +115,21 @@ function RouteControlPanel(
         });
       }
 
-      let sortedPatternsByCountOfTrips;
-      const tripsExists = 'trips' in route.patterns[0];
+      // Sort by most trips descending; for equal trip counts, sort by code descending as tiebreak.
+      const sortedPatternsByCountOfTrips =
+        'trips' in route.patterns[0]
+          ? sortBy(
+              sortBy(route.patterns, 'code').reverse(),
+              'trips.length',
+            ).reverse()
+          : undefined;
 
-      if (tripsExists) {
-        sortedPatternsByCountOfTrips = sortBy(
-          sortBy(route.patterns, 'code').reverse(),
-          'trips.length',
-        ).reverse();
-      }
-
-      const pattern =
-        sortedPatternsByCountOfTrips !== undefined
-          ? sortedPatternsByCountOfTrips[0]
-          : route.patterns.find(({ code }) => code === patternId);
-
-      if (pattern) {
-        const selectedPattern = sortedPatternsByCountOfTrips?.find(
+      const selectedPattern =
+        sortedPatternsByCountOfTrips?.find(
           sorted => sorted.code === patternId,
-        );
+        ) ?? route.patterns.find(({ code }) => code === patternId);
 
+      if (selectedPattern) {
         if (params.type === PREFIX_TIMETABLE) {
           const enrichedPattern = enrichPatterns(
             [selectedPattern],
@@ -213,11 +213,11 @@ function RouteControlPanel(
         : route.patterns.filter(x => x.code === newPattern);
     const isActivePattern = isActiveDate(pattern[0]);
 
+    const routeParts = route.gtfsId.split(':');
+    const feedId = routeParts[0];
     // if config contains mqtt feed and old client has not been removed
     if (client) {
       const { realTime } = config;
-      const routeParts = route.gtfsId.split(':');
-      const feedId = routeParts[0];
       const source = realTime[feedId];
 
       if (isActivePattern) {
@@ -244,8 +244,6 @@ function RouteControlPanel(
     } else if (isActivePattern) {
       const { realTime } = config;
       if (realTime && process.env.NODE_ENV !== 'test') {
-        const routeParts = route.gtfsId.split(':');
-        const feedId = routeParts[0];
         const source = realTime[feedId];
         if (source?.active) {
           const id =
@@ -291,43 +289,29 @@ function RouteControlPanel(
   const changeTab = tab => {
     const path = routePagePath(route.gtfsId, tab, patternId);
     router.replace(path);
-    let action;
-    switch (tab) {
-      case PREFIX_TIMETABLE:
-        action = 'OpenTimetableTab';
-        break;
-      case PREFIX_STOPS:
-        action = 'OpenStopsTab';
-        break;
-      case PREFIX_DISRUPTION:
-        action = 'OpenDisruptionsTab';
-        break;
-      default:
-        action = 'Unknown';
-        break;
-    }
-    addAnalyticsEvent({ category: 'Route', action, name: null });
+    addAnalyticsEvent({
+      category: 'Route',
+      action: TAB_ANALYTICS_ACTIONS[tab] ?? 'Unknown',
+      name: null,
+    });
   };
 
   const handleTabKeyDown = e => {
     const tabs = [Tab.Stops, Tab.Timetable, Tab.Disruptions];
-    const tabCount = tabs.length;
-    const activeIndex = tabs.indexOf(focusedTab);
-    let index;
+    const currentIndex = tabs.indexOf(focusedTab);
+    let nextTab;
     switch (e.nativeEvent.code) {
       case 'ArrowLeft':
-        index = (activeIndex - 1 + tabCount) % tabCount;
-        tabRefs[index].current.focus();
-        setFocusedTab(tabs[index]);
+        nextTab = tabs[(currentIndex - 1 + tabs.length) % tabs.length];
         break;
       case 'ArrowRight':
-        index = (activeIndex + 1) % tabCount;
-        tabRefs[index].current.focus();
-        setFocusedTab(tabs[index]);
+        nextTab = tabs[(currentIndex + 1) % tabs.length];
         break;
       default:
-        break;
+        return;
     }
+    tabRefMap[nextTab].current.focus();
+    setFocusedTab(nextTab);
   };
 
   const currentTime = unixTime();
@@ -355,14 +339,14 @@ function RouteControlPanel(
   const countOfButtons = 3;
 
   let disruptionIcon;
-  if (disruptionClassName === 'active-disruption-alert') {
+  if (hasActiveAlert) {
     disruptionIcon = (
       <Icon
         img="icon_caution-no-excl-no-stroke"
         color={config.colors.caution}
       />
     );
-  } else if (disruptionClassName === 'active-service-alert') {
+  } else if (hasActiveServiceAlerts) {
     disruptionIcon = <Icon className="service-alert-icon" img="icon_info" />;
   }
 

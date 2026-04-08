@@ -89,7 +89,6 @@ function RoutePage({
         className={cx('route-container', {
           'bp-large': breakpoint === 'large',
         })}
-        aria-live="polite"
       >
         {breakpoint === 'large' && <BackButton />}
         <div className="route-header">
@@ -148,7 +147,7 @@ function RoutePage({
         )}
         <RouteAgencyInfo route={route} />
       </div>
-      {route && route.patterns && match.params.type === PREFIX_DISRUPTION && (
+      {route.patterns && match.params.type === PREFIX_DISRUPTION && (
         <RouteControlPanel
           match={match}
           route={route}
