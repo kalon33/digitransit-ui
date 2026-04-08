@@ -447,7 +447,7 @@ export default {
   navigation: true,
 
   flex: {
-    internalFlexEnabled: IS_DEV,
+    internalFlexEnabled: IS_DEV(),
     allowTaxiJourneys: true,
     directOnlyTaxiJourneys: true,
     internalAgencies: ['KirkkonummiE:612', 'KirkkonummiP:612'],
@@ -467,5 +467,5 @@ export default {
   },
 
   showStopStatusMarkers: true,
-  showRouteDescNotification: IS_DEV,
+  showRouteDescNotification: IS_DEV(),
 };
