@@ -376,7 +376,7 @@ class TransitLeg extends React.Component {
     };
     const routeNotifications = [];
     if (
-      config.NODE_ENV !== 'test' &&
+      process.env.NODE_ENV !== 'test' &&
       config.routeNotifications &&
       config.routeNotifications.length > 0
     ) {

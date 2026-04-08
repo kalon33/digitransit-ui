@@ -1,15 +1,12 @@
 import configMerger from '../util/configMerger';
+import { IS_DEV } from '../util/envUtils';
 import walttiConfig from './config.waltti';
 
 const CONFIG = 'oulu';
 const APP_DESCRIPTION = 'Oulun seudun reittiopas';
 const APP_TITLE = 'Reittiopas';
 
-const IS_DEV =
-  process.env.RUN_ENV === 'development' ||
-  process.env.NODE_ENV !== 'production';
-
-const virtualMonitorBaseUrl = IS_DEV
+const virtualMonitorBaseUrl = IS_DEV()
   ? 'https://dev-oulumonitori.digitransit.fi'
   : 'https://pysakkinaytto.osl.fi';
 
