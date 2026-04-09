@@ -1,12 +1,19 @@
-# Using scripts
+# Scripts
+
+## Using `sort-translations.js`
+
+This script sorts [`app/translations.js`](/app/translations.js).
+See the `sort-translations` and `format` scripts in [`package.json`](/package.json).
+
+## Using `ui.sh`
 
 See the `themeMap` in `app/configurations/config.default.js` for configuration options.
 
-## Before using
+### Before using
 ```
 source ui.sh
 ```
-## Usage examples
+### Usage examples
 
 Using remote instance of OTP with subscription key:
 ```
