@@ -287,7 +287,7 @@ class RouteControlPanel extends React.Component {
     const { config, executeAction } = this.context;
     const { match, route, tripStartTime } = this.props;
     const { realTime } = config;
-    if (config.NODE_ENV === 'test' || !realTime) {
+    if (process.env.NODE_ENV === 'test' || !realTime) {
       return;
     }
 
