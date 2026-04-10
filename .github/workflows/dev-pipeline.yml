@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.18]
+        node-version: [24.14.1]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.18]
+        node-version: [24.14.1]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -122,7 +122,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.18]
+        node-version: [24.14.1]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -188,7 +188,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.18]
+        node-version: [24.14.1]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -248,7 +248,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 20.18 ]
+        node-version: [24.14.1]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
