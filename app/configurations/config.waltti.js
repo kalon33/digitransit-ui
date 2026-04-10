@@ -1,6 +1,5 @@
-import prUtils from '../util/ParkAndRideUtils';
+import { IS_DEV } from '../util/envUtils';
 
-const HSLParkAndRideUtils = prUtils.HSL;
 const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
 const OTP_URL = process.env.OTP_URL || `${API_URL}/routing/v2/waltti/`;
 const MAP_URL = process.env.MAP_URL || 'https://dev-cdn.digitransit.fi';
@@ -60,77 +59,45 @@ export default {
   availableLanguages: ['fi', 'sv', 'en'],
   defaultLanguage: 'fi',
 
+  vehicles: true,
+  showVehiclesOnStopPage: true,
+  showVehiclesOnItineraryPage: true,
   showCO2InItinerarySummary: true,
 
   transportModes: {
     bus: {
       availableForSelection: true,
       defaultValue: true,
-      nearYouLabel: {
-        fi: 'Bussit ja lähipysäkit kartalla',
-        sv: 'Bussar och hållplatser på kartan',
-        en: 'Buses and nearby stops on map',
-      },
     },
 
     rail: {
       availableForSelection: false,
       defaultValue: false,
-      nearYouLabel: {
-        fi: 'Junat ja lähiasemat kartalla',
-        sv: 'Tåg och stationer på kartan',
-        en: 'Trains and nearby stations on map',
-      },
     },
 
     tram: {
       availableForSelection: false,
       defaultValue: false,
-      nearYouLabel: {
-        fi: 'Raitiovaunut ja lähipysäkit kartalla',
-        sv: 'Spårvagnar och hållplatser på kartan',
-        en: 'Trams and nearby stops on map',
-      },
     },
 
     subway: {
       availableForSelection: false,
       defaultValue: false,
-      nearYouLabel: {
-        fi: 'Metrot ja lähiasemat kartalla',
-        sv: 'Metro och stationer på kartan',
-        en: 'Metro and nearby stations on map',
-      },
     },
 
     citybike: {
       availableForSelection: false,
       defaultValue: false,
-      nearYouLabel: {
-        fi: 'Lähimmät kaupunkipyöräasemat',
-        sv: 'Närmaste cykelstationer',
-        en: 'The closest city bike stations',
-      },
     },
 
     airplane: {
       availableForSelection: false,
       defaultValue: false,
-      nearYouLabel: {
-        fi: 'Lähimmät lentoasemat',
-        sv: 'Närmaste flygplatser',
-        en: 'The closest airports',
-      },
     },
 
     ferry: {
       availableForSelection: false,
       defaultValue: false,
-      nearYouLabel: {
-        fi: 'Lähimmät lauttalaiturit',
-        sv: 'Närmaste färjekajer',
-        en: 'The closest ferry piers',
-      },
     },
 
     funicular: {
@@ -144,10 +111,14 @@ export default {
     },
   },
 
+  showNearYouButtons: true,
+  nearYouTitle: {
+    fi: 'Aikataulut ja linjat',
+    sv: 'Tidtabeller och linjer',
+    en: 'Timetables and routes',
+  },
   nearYouModes: ['bus'],
-  nearbyModeSet: 'waltti',
-
-  maxNearbyStopDistance: {
+  maxNearYouDistance: {
     bus: 30000,
     tram: 30000,
     rail: 50000,
@@ -165,42 +136,21 @@ export default {
     },
     sv: {
       name: 'matka.fintraffic.fi',
-      href: 'https://matka.fintraffic.fi/',
+      href: 'https://matka.fintraffic.fi/sv/',
     },
     en: {
       name: 'matka.fintraffic.fi',
-      href: 'https://matka.fintraffic.fi/',
+      href: 'https://matka.fintraffic.fi/en/',
     },
   },
-
-  showNearYouButtons: true,
-  nearYouButton: {
-    borderRadius: '50%',
-    color: '#000F94',
-  },
-  nearYouTitle: {
-    fi: 'Aikataulut ja linjat',
-    sv: 'Tidtabeller och linjer',
-    en: 'Timetables and routes',
-  },
-
-  allowLogin: false,
 
   messageBarAlerts: true,
 
   includeCarSuggestions: true,
   includeParkAndRideSuggestions: true,
   showBikeAndParkItineraries: true,
-  parkingAreaSources: ['liipi'],
 
-  parkAndRide: {
-    showParkAndRide: false,
-    showParkAndRideForBikes: false,
-    parkAndRideMinZoom: 13,
-    pageContent: {
-      default: HSLParkAndRideUtils,
-    },
-  },
+  parkAndRide: { parkAndRideMinZoom: 14 },
 
   hostnames: [
     // DEV hostnames
@@ -320,12 +270,8 @@ export default {
 
   // features that should not be deployed to production
   experimental: {
-    allowFlexJourneys:
-      process.env.RUN_ENV === 'development' ||
-      process.env.NODE_ENV !== 'production',
-    allowDirectFlexJourneys:
-      process.env.RUN_ENV === 'development' ||
-      process.env.NODE_ENV !== 'production',
+    allowFlexJourneys: IS_DEV(),
+    allowDirectFlexJourneys: IS_DEV(),
   },
 
   replacementBusNotification: {

@@ -14,6 +14,7 @@ import {
 import {
   buildQueryString,
   buildURL,
+  getIndexPath,
   getPathWithEndpointObjects,
   PREFIX_ITINERARY_SUMMARY,
 } from '../../util/path';
@@ -21,6 +22,7 @@ import Icon from '../Icon';
 import Loading from '../Loading';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
 import useUTMCampaignParams from './hooks/useUTMCampaignParams';
+import { locationToOTP } from '../../util/otpStrings';
 
 const LocationSearch = withSearchContext(DTAutosuggestPanel, true);
 
@@ -172,8 +174,6 @@ const EmbeddedSearch = (props, context) => {
     }
   }, [query]);
 
-  const color = colors.primary;
-  const hoverColor = colors.hover;
   const appElement = 'embedded-root';
   let titleText;
   if (bikeOnly) {
@@ -220,8 +220,6 @@ const EmbeddedSearch = (props, context) => {
     lang,
     sources,
     targets: getLocationSearchTargets(config, false),
-    color,
-    hoverColor,
     refPoint,
     searchPanelText: titleText,
     originPlaceHolder: 'search-origin-index',
@@ -229,7 +227,7 @@ const EmbeddedSearch = (props, context) => {
     selectHandler: onSelectLocation,
     onGeolocationStart: onSelectLocation,
     fontWeights,
-    modeIconColors: config.colors.iconColors,
+    colors,
     modeSet: config.iconModeSet,
     isMobile: true,
     showScroll: true,
@@ -247,14 +245,32 @@ const EmbeddedSearch = (props, context) => {
   const executeSearch = () => {
     const urlEnd = bikeOnly ? '/bike' : walkOnly ? '/walk' : '';
 
-    const targetUrl = buildURL([
-      lang,
-      getPathWithEndpointObjects(origin, destination, PREFIX_ITINERARY_SUMMARY),
-      urlEnd,
-    ]);
+    // if origin or destination is missing and current location is not used,
+    // redirect to index page instead
+    const isComplete =
+      (origin.address && destination.address) ||
+      origin.type === 'CurrentLocation' ||
+      destination.type === 'CurrentLocation';
+    const targetUrl = isComplete
+      ? buildURL([
+          lang,
+          getPathWithEndpointObjects(
+            origin,
+            destination,
+            PREFIX_ITINERARY_SUMMARY,
+          ),
+          urlEnd,
+        ])
+      : buildURL([
+          lang,
+          getIndexPath(
+            locationToOTP(origin),
+            locationToOTP(destination),
+            config.indexPath || '',
+          ),
+        ]);
 
     targetUrl.search += buildQueryString(utmCampaignParams);
-
     addAnalyticsEvent({
       category: 'EmbeddedSearch',
       action: 'executeSearch',

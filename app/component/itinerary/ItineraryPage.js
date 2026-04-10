@@ -5,7 +5,13 @@ import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 import polyline from 'polyline-encoded';
 import PropTypes from 'prop-types';
-import React, { cloneElement, useEffect, useRef, useState } from 'react';
+import React, {
+  cloneElement,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { FormattedMessage, intlShape } from 'react-intl';
 import { fetchQuery } from 'react-relay';
 import { saveFutureRoute } from '../../action/FutureRoutesActions';
@@ -48,7 +54,7 @@ import Loading from '../Loading';
 import MobileView from '../MobileView';
 import ItineraryPageMap from '../map/ItineraryPageMap';
 import AlternativeItineraryBar from './AlternativeItineraryBar';
-import CustomizeSearch from './CustomizeSearch';
+import CustomizeSearch from './customizesearch/CustomizeSearch';
 import { spinnerPosition } from './ItineraryList';
 import ItineraryListContainer from './ItineraryListContainer';
 import ItineraryPageControls from './ItineraryPageControls';
@@ -382,7 +388,7 @@ export default function ItineraryPage(props, context) {
 
   async function makeRelaxedQuery() {
     if (!planQueryNeeded(config, match, PLANTYPE.TRANSIT, true)) {
-      setRelaxState(emptyPlan);
+      setRelaxState({ plan: {}, loading: LOADSTATE.DONE });
       return;
     }
     setRelaxState({ loading: LOADSTATE.LOADING });
@@ -394,13 +400,13 @@ export default function ItineraryPage(props, context) {
       );
       setRelaxState({ plan, loading: LOADSTATE.DONE });
     } catch (error) {
-      setRelaxState(emptyPlan);
+      setRelaxState({ plan: {}, loading: LOADSTATE.DONE });
     }
   }
 
   async function makeMainQuery() {
     if (!planQueryNeeded(config, match, PLANTYPE.TRANSIT)) {
-      setState(emptyState);
+      setState({ plan: {}, loading: LOADSTATE.DONE });
       return;
     }
     ariaRef.current = 'itinerary-page.loading-itineraries';
@@ -415,13 +421,13 @@ export default function ItineraryPage(props, context) {
       ariaRef.current = 'itinerary-page.itineraries-loaded';
     } catch (error) {
       reportError(error);
-      setState(emptyPlan);
+      setState({ plan: {}, loading: LOADSTATE.DONE });
     }
   }
 
   async function makeScooterQuery() {
     if (!planQueryNeeded(config, match, PLANTYPE.SCOOTERTRANSIT)) {
-      setScooterState(emptyPlan);
+      setScooterState({ plan: {}, loading: LOADSTATE.DONE });
       return;
     }
     setScooterState({ loading: LOADSTATE.LOADING });
@@ -441,13 +447,13 @@ export default function ItineraryPage(props, context) {
       setScooterState({ plan, loading: LOADSTATE.DONE });
     } catch (error) {
       reportError(error);
-      setScooterState(emptyPlan);
+      setScooterState({ plan: {}, loading: LOADSTATE.DONE });
     }
   }
 
   async function makeRelaxedScooterQuery() {
     if (!planQueryNeeded(config, match, PLANTYPE.SCOOTERTRANSIT, true)) {
-      setRelaxScooterState(emptyPlan);
+      setRelaxScooterState({ plan: {}, loading: LOADSTATE.DONE });
       return;
     }
 
@@ -476,13 +482,13 @@ export default function ItineraryPage(props, context) {
       const scooterPlan = { edges: scooterEdges(plan.edges) };
       setRelaxScooterState({ plan: scooterPlan, loading: LOADSTATE.DONE });
     } catch (error) {
-      setRelaxScooterState(emptyPlan);
+      setRelaxScooterState({ plan: {}, loading: LOADSTATE.DONE });
     }
   }
 
   async function makeFlexQuery() {
     if (!planQueryNeeded(config, match, PLANTYPE.FLEXTRANSIT)) {
-      setFlexState(emptyPlan);
+      setFlexState({ plan: {}, loading: LOADSTATE.DONE });
       return;
     }
     setFlexState({ loading: LOADSTATE.LOADING });
@@ -498,13 +504,13 @@ export default function ItineraryPage(props, context) {
       setFlexState({ plan, loading: LOADSTATE.DONE });
     } catch (error) {
       reportError(error);
-      setFlexState(emptyPlan);
+      setFlexState({ plan: {}, loading: LOADSTATE.DONE });
     }
   }
 
   async function makeRelaxedFlexQuery() {
     if (!planQueryNeeded(config, match, PLANTYPE.FLEXTRANSIT, true)) {
-      setRelaxFlexState(emptyPlan);
+      setRelaxFlexState({ plan: {}, loading: LOADSTATE.DONE });
       return;
     }
     setRelaxFlexState({ loading: LOADSTATE.LOADING });
@@ -532,7 +538,7 @@ export default function ItineraryPage(props, context) {
       };
       setRelaxFlexState({ plan: flexPlan, loading: LOADSTATE.DONE });
     } catch (error) {
-      setRelaxFlexState(emptyPlan);
+      setRelaxFlexState({ plan: {}, loading: LOADSTATE.DONE });
     }
   }
 
@@ -942,6 +948,18 @@ export default function ItineraryPage(props, context) {
     };
   }, []);
 
+  // A stable reference for intermediatePlaces based on content
+  const intermediatePlacesKey = useMemo(() => {
+    const { intermediatePlaces } = query;
+    if (!intermediatePlaces) {
+      return '';
+    }
+    if (Array.isArray(intermediatePlaces)) {
+      return intermediatePlaces.join('|');
+    }
+    return intermediatePlaces;
+  }, [query.intermediatePlaces]);
+
   useEffect(() => {
     setCombinedState({ ...emptyState, loading: LOADSTATE.LOADING });
     makeScooterQuery();
@@ -953,6 +971,7 @@ export default function ItineraryPage(props, context) {
     // so, if no itineraries are found with standard settings, scooter is not suggested
     // maybe it should be?
     if (settingsLimitRouting(config) && !settingsState.settingsChanged) {
+      setCombinedRelaxState({ ...emptyState, loading: LOADSTATE.LOADING });
       makeRelaxedQuery();
       makeRelaxedScooterQuery();
       makeRelaxedFlexQuery();
@@ -963,7 +982,7 @@ export default function ItineraryPage(props, context) {
     params.to,
     query.time,
     query.arriveBy,
-    query.intermediatePlaces,
+    intermediatePlacesKey,
   ]);
 
   useEffect(() => {
@@ -1095,7 +1114,6 @@ export default function ItineraryPage(props, context) {
         relaxFlexState.plan,
         match.location.query.arriveBy === 'true',
       );
-
       setCombinedRelaxState({ plan, loading: LOADSTATE.DONE });
       resetItineraryPageSelection();
     }
@@ -1421,6 +1439,7 @@ export default function ItineraryPage(props, context) {
           ) : (
             <NaviContainer
               focusToLeg={focusToLeg}
+              focusToPoint={focusToPoint}
               relayEnvironment={props.relayEnvironment}
               setNavigation={setNavigation}
               mapRef={mwtRef.current}
@@ -1584,7 +1603,6 @@ export default function ItineraryPage(props, context) {
       content={content}
       settingsDrawer={settingsDrawer}
       map={map}
-      mapRef={mwtRef.current}
       ref={mobileRef}
       match={match}
       enableBottomScroll={!naviMode}

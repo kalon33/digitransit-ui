@@ -34,7 +34,6 @@ import { addAnalyticsEvent } from '../util/analyticsUtils';
 import withBreakpoint from '../util/withBreakpoint';
 import Geomover from './Geomover';
 import scrollTop from '../util/scroll';
-import { LightenDarkenColor } from '../util/colorUtils';
 import { getRefPoint } from '../util/apiUtils';
 import { filterObject } from '../util/filterUtils';
 import {
@@ -46,6 +45,7 @@ import {
   checkPositioningPermission,
   startLocationWatch,
 } from '../action/PositionActions';
+import FavouriteStore from '../store/FavouriteStore';
 
 const StopRouteSearch = withSearchContext(DTAutoSuggest);
 const LocationSearch = withSearchContext(DTAutosuggestPanel);
@@ -64,25 +64,21 @@ class IndexPage extends React.Component {
     breakpoint: PropTypes.string.isRequired,
     origin: locationShape.isRequired,
     destination: locationShape.isRequired,
-    lang: PropTypes.string,
     currentTime: PropTypes.number.isRequired,
     // eslint-disable-next-line
     query: PropTypes.object.isRequired,
     favouriteModalAction: PropTypes.string,
     fromMap: PropTypes.string,
     locationState: locationShape.isRequired,
+    favouriteStatus: PropTypes.string.isRequired,
+    // eslint-disable-next-line
+    favourites: PropTypes.array.isRequired,
   };
 
   static defaultProps = {
-    lang: 'fi',
     favouriteModalAction: '',
     fromMap: undefined,
   };
-
-  constructor(props, context) {
-    super(props, context);
-    this.state = {};
-  }
 
   componentDidMount() {
     const { from, to } = this.context.match.params;
@@ -227,21 +223,21 @@ class IndexPage extends React.Component {
 
   NearStops() {
     const { intl, config } = this.context;
-    const { colors, fontWeights } = config;
-    const { lang } = this.props;
-    const transportModes = getTransportModes(config);
-    const nearYouModes = getNearYouModes(config);
+    const { colors, fontWeights, language } = config;
 
-    // Styles are defined by which button type is configured (narrow/wide)
-    const narrowButtons = config.narrowNearYouButtons;
-    const modeTitles = filterObject(
-      transportModes,
-      'availableForSelection',
-      true,
-    );
+    const nearYouModes = getNearYouModes(config, this.props.favourites);
+
     // If nearYouModes is configured, display those. Otherwise, display all configured transport modes
-    const modes =
-      nearYouModes?.length > 0 ? nearYouModes : Object.keys(modeTitles);
+    const modeArray =
+      nearYouModes.length > 0
+        ? nearYouModes
+        : Object.keys(
+            filterObject(
+              getTransportModes(config),
+              'availableForSelection',
+              true,
+            ),
+          );
 
     const alertsContext = {
       currentTime: this.props.currentTime,
@@ -249,29 +245,37 @@ class IndexPage extends React.Component {
       feedIds: config.feedIds,
     };
 
+    const directionProps = config.narrowNearYouButtons
+      ? {}
+      : { horizontal: false };
+
     return config.showNearYouButtons ? (
       <CtrlPanel.NearStopsAndRoutes
-        modeArray={modes}
+        appElement="#app"
+        modeArray={modeArray}
+        loading={
+          this.props.favouriteStatus ===
+          FavouriteStore.STATUS_FETCHING_OR_UPDATING
+        }
+        modeSet={config.iconModeSet}
         urlPrefix={`/${PREFIX_NEARYOU}`}
-        language={lang}
-        showTitle
+        language={language}
+        title={config.nearYouTitle}
         alertsContext={alertsContext}
         origin={this.props.origin}
         omitLanguageUrl
         onClick={this.clickStopNearIcon}
-        buttonStyle={narrowButtons ? undefined : config.nearYouButton}
-        title={narrowButtons ? undefined : config.nearYouTitle}
-        modes={narrowButtons ? undefined : modeTitles}
-        modeSet={config.nearbyModeSet || config.iconModeSet}
-        modeIconColors={colors.iconColors}
+        colors={colors}
         fontWeights={fontWeights}
+        {...directionProps}
+        isMobile={this.props.breakpoint !== 'large'}
       />
     ) : (
       <div className="stops-near-you-text">
         <h2>
           {intl.formatMessage({
-            id: 'stop-near-you-title',
-            defaultMessage: 'Stops and lines near you',
+            id: 'near-you-search',
+            defaultMessage: 'Search stops and routes',
           })}
         </h2>
       </div>
@@ -282,18 +286,18 @@ class IndexPage extends React.Component {
   render() {
     const { intl, config } = this.context;
     const { trafficNowLink, colors, fontWeights } = config;
-    const color = colors.primary;
-    const hoverColor = colors.hover || LightenDarkenColor(colors.primary, -20);
-    const accessiblePrimaryColor = colors.accessiblePrimary || colors.primary;
-    const { breakpoint, lang } = this.props;
+    const { breakpoint } = this.props;
     const origin = this.pendingOrigin || this.props.origin;
     const destination = this.pendingDestination || this.props.destination;
+    const locationSources = ['History', 'Datasource'];
     const sources = ['Favourite', 'History', 'Datasource'];
     const stopAndRouteSearchTargets = ['Stations', 'Stops', 'Routes'];
     const targets = getLocationSearchTargets(config, breakpoint !== 'large');
 
     targets.push('FutureRoutes');
-
+    if (this.context.getStore('FavouriteStore').getLocationCount()) {
+      locationSources.push('Favourite');
+    }
     if (!config.targetsFromOTP) {
       if (useCitybikes(config.vehicleRental?.networks, config)) {
         stopAndRouteSearchTargets.push('VehicleRentalStations');
@@ -311,12 +315,9 @@ class IndexPage extends React.Component {
       appElement: '#app',
       origin,
       destination,
-      lang,
-      sources,
+      lang: config.language,
+      sources: locationSources,
       targets,
-      color,
-      hoverColor,
-      accessiblePrimaryColor,
       refPoint,
       searchPanelText: intl.formatMessage({
         id: 'where',
@@ -329,7 +330,7 @@ class IndexPage extends React.Component {
       onGeolocationStart: this.onSelectLocation,
       fromMap: this.props.fromMap,
       fontWeights,
-      modeIconColors: colors.iconColors,
+      colors,
       modeSet: config.iconModeSet,
     };
 
@@ -342,14 +343,11 @@ class IndexPage extends React.Component {
       selectHandler: this.onSelectStopRoute,
       getAutoSuggestIcons: config.getAutoSuggestIcons,
       value: '',
-      lang,
-      color,
-      hoverColor,
-      accessiblePrimaryColor,
+      lang: config.language,
       sources,
       targets: stopAndRouteSearchTargets,
       fontWeights,
-      modeIconColors: colors.iconColors,
+      colors,
       modeSet: config.iconModeSet,
       geocodingSize: 25,
     };
@@ -375,13 +373,7 @@ class IndexPage extends React.Component {
           <h1 className="sr-only">
             <FormattedMessage id="index.title" default="Journey Planner" />
           </h1>
-          <CtrlPanel
-            instance="hsl"
-            language={lang}
-            origin={origin}
-            position="left"
-            fontWeights={fontWeights}
-          >
+          <CtrlPanel position="left" fontWeights={fontWeights}>
             <span className="sr-only">
               <FormattedMessage
                 id="search-fields.sr-instructions"
@@ -390,14 +382,18 @@ class IndexPage extends React.Component {
             </span>
             <LocationSearch {...locationSearchProps} />
             <div className="datetimepicker-container">
-              <DatetimepickerContainer realtime color={color} lang={lang} />
+              <DatetimepickerContainer
+                realtime
+                color={colors.primary}
+                lang={config.language}
+              />
             </div>
             {!config.hideFavourites && (
               <>
                 <FavouritesContainer
                   favouriteModalAction={this.props.favouriteModalAction}
                   onClickFavourite={this.clickFavourite}
-                  lang={lang}
+                  lang={config.language}
                 />
                 <CtrlPanel.SeparatorLine usePaddingBottom20 />
               </>
@@ -410,9 +406,9 @@ class IndexPage extends React.Component {
                 <CtrlPanel.SeparatorLine />
               </>
             )}
-            {trafficNowLink?.[lang] && (
+            {trafficNowLink && (
               <TrafficNowLink
-                lang={lang}
+                lang={config.language}
                 handleClick={this.trafficNowHandler}
               />
             )}
@@ -433,23 +429,22 @@ class IndexPage extends React.Component {
             backgroundColor: '#ffffff',
           }}
         >
-          <CtrlPanel
-            instance="hsl"
-            language={lang}
-            position="bottom"
-            fontWeights={fontWeights}
-          >
+          <CtrlPanel position="bottom" fontWeights={fontWeights}>
             <LocationSearch
               disableAutoFocus
               isMobile
               {...locationSearchProps}
             />
             <div className="datetimepicker-container">
-              <DatetimepickerContainer realtime color={color} lang={lang} />
+              <DatetimepickerContainer
+                realtime
+                color={colors.primary}
+                lang={config.language}
+              />
             </div>
             <FavouritesContainer
               onClickFavourite={this.clickFavourite}
-              lang={lang}
+              lang={config.language}
               isMobile
             />
             <CtrlPanel.SeparatorLine />
@@ -458,14 +453,13 @@ class IndexPage extends React.Component {
               <StopRouteSearch isMobile {...stopRouteSearchProps} />
             </div>
             <CtrlPanel.SeparatorLine usePaddingBottom20 />
-            {!trafficNowLink ||
-              (trafficNowLink[lang] !== '' && (
-                <TrafficNowLink
-                  lang={lang}
-                  handleClick={this.trafficNowHandler}
-                  fontWeights={fontWeights}
-                />
-              ))}
+            {trafficNowLink && (
+              <TrafficNowLink
+                lang={config.language}
+                handleClick={this.trafficNowHandler}
+                fontWeights={fontWeights}
+              />
+            )}
           </CtrlPanel>
         </div>
       </div>
@@ -480,9 +474,9 @@ const Index = memo(
     isEqual(nextProps.origin, props.origin) &&
     isEqual(nextProps.destination, props.destination) &&
     isEqual(nextProps.breakpoint, props.breakpoint) &&
-    isEqual(nextProps.lang, props.lang) &&
     isEqual(nextProps.query, props.query) &&
-    isEqual(nextProps.locationState, props.locationState),
+    isEqual(nextProps.locationState, props.locationState) &&
+    isEqual(nextProps.favouriteStatus, props.favouriteStatus),
 );
 
 const IndexPageWithBreakpoint = withBreakpoint(Index);
@@ -493,8 +487,8 @@ const IndexPageWithStores = connectToStores(
     'OriginStore',
     'DestinationStore',
     'TimeStore',
-    'PreferencesStore',
     'PositionStore',
+    'FavouriteStore',
   ],
   (context, props) => {
     const origin = context.getStore('OriginStore').getOrigin();
@@ -514,9 +508,10 @@ const IndexPageWithStores = connectToStores(
     }
     newProps.origin = origin;
     newProps.destination = destination;
-    newProps.lang = context.getStore('PreferencesStore').getLanguage();
     newProps.currentTime = context.getStore('TimeStore').getCurrentTime();
     newProps.query = query; // defines itinerary search time & arriveBy
+    newProps.favouriteStatus = context.getStore('FavouriteStore').getStatus();
+    newProps.favourites = context.getStore('FavouriteStore').getFavourites();
 
     return newProps;
   },

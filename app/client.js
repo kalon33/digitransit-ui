@@ -17,7 +17,7 @@ import {
 import OfflinePlugin from 'offline-plugin/runtime';
 import { Helmet } from 'react-helmet';
 import { Environment, RecordSource, Store } from 'relay-runtime';
-import { ReactRelayContext } from 'react-relay';
+import { RelayEnvironmentProvider } from 'react-relay';
 import { setRelayEnvironment } from '@digitransit-search-util/digitransit-search-util-query-utils';
 import { Settings } from 'luxon';
 import { configShape } from './util/shapes';
@@ -43,6 +43,8 @@ import {
   fetchFavourites,
   fetchFavouritesComplete,
 } from './action/FavouriteActions';
+import { ConfigProvider } from './configurations/ConfigContext';
+import { FavouriteProvider } from './hooks/FavouriteContext';
 
 window.debug = debug; // Allow _debug.enable('*') in browser console
 
@@ -67,19 +69,19 @@ const getParams = query => {
 };
 
 async function init() {
+  const { language } = config;
+
   // Guard againist Samsung et.al. which are not properly polyfilled by polyfill-service
   if (typeof window.Intl === 'undefined') {
     const modules = [
       import(/* webpackChunkName: "intl",  webpackMode: "lazy" */ 'intl'),
     ];
 
-    config.availableLanguages.forEach(language => {
-      modules.push(
-        import(
-          /* webpackChunkName: "intl",  webpackMode: "lazy-once" */ `intl/locale-data/jsonp/${language}`
-        ),
-      );
-    });
+    modules.push(
+      import(
+        /* webpackChunkName: "intl",  webpackMode: "lazy-once" */ `intl/locale-data/jsonp/${language}`
+      ),
+    );
     await Promise.all(modules);
   }
 
@@ -117,11 +119,6 @@ async function init() {
   const queryParameters = config.hasAPISubscriptionQueryParameter
     ? `?${config.API_SUBSCRIPTION_QUERY_PARAMETER_NAME}=${config.API_SUBSCRIPTION_TOKEN}`
     : '';
-
-  const language = context
-    .getComponentContext()
-    .getStore('PreferencesStore')
-    .getLanguage();
 
   i18n.changeLanguage(language);
 
@@ -214,34 +211,37 @@ async function init() {
   }
 
   const ContextProvider = provideContext(StoreListeningIntlProvider, {
-    /* eslint-disable-next-line */
     config: configShape,
     headers: PropTypes.objectOf(PropTypes.string),
   });
 
   const content = (
-    <ClientBreakpointProvider>
-      <ContextProvider
-        translations={translations}
-        context={context.getComponentContext()}
-      >
-        <ReactRelayContext.Provider value={{ environment }}>
-          <ErrorBoundary>
-            <React.Fragment>
-              <Helmet
-                {...meta(
-                  context.getStore('PreferencesStore').getLanguage(),
-                  window.location.host,
-                  window.location.href,
-                  config,
-                )}
-              />
-              <Router resolver={resolver} />
-            </React.Fragment>
-          </ErrorBoundary>
-        </ReactRelayContext.Provider>
-      </ContextProvider>
-    </ClientBreakpointProvider>
+    <ConfigProvider value={config}>
+      <ClientBreakpointProvider>
+        <ContextProvider
+          translations={translations}
+          context={context.getComponentContext()}
+        >
+          <RelayEnvironmentProvider environment={environment}>
+            <FavouriteProvider context={context.getComponentContext()}>
+              <ErrorBoundary>
+                <React.Fragment>
+                  <Helmet
+                    {...meta(
+                      language,
+                      window.location.host,
+                      window.location.href,
+                      config,
+                    )}
+                  />
+                  <Router resolver={resolver} />
+                </React.Fragment>
+              </ErrorBoundary>
+            </FavouriteProvider>
+          </RelayEnvironmentProvider>
+        </ContextProvider>
+      </ClientBreakpointProvider>
+    </ConfigProvider>
   );
 
   const rootNode = document.getElementById('app');

@@ -2,7 +2,7 @@ import { startMqttClient, changeTopics } from '../util/mqttClient';
 
 export function startRealTimeClient(actionContext, settings, done) {
   /* settings may have changed, so reset old store content */
-  if (actionContext.config.NODE_ENV === 'test') {
+  if (process.env.NODE_ENV === 'test') {
     return;
   }
   actionContext.dispatch('RealTimeClientReset');
@@ -19,9 +19,6 @@ export function stopRealTimeClient(actionContext, client, done) {
 }
 
 export function changeRealTimeClientTopics(actionContext, settings, done) {
-  // remove existing vehicles/topics
-  actionContext.dispatch('RealTimeClientReset');
-
   changeTopics(settings, actionContext);
   done();
 }

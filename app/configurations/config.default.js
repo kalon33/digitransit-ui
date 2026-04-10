@@ -1,6 +1,7 @@
 import safeJsonParse from '../util/safeJsonParser';
 import { BIKEAVL_WITHMAX } from '../util/vehicleRentalUtils';
 import realtime from './realtimeUtils';
+import prUtils from '../util/ParkAndRideUtils';
 
 const CONFIG = process.env.CONFIG || 'default';
 const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
@@ -20,11 +21,6 @@ const API_SUBSCRIPTION_HEADER_NAME =
 const API_SUBSCRIPTION_TOKEN =
   process.env.API_SUBSCRIPTION_TOKEN || 'c65af0cd2d0a401a9599894970a2b29c';
 
-const {
-  // AXE,
-  NODE_ENV,
-  RUN_ENV,
-} = process.env;
 const hasAPISubscriptionQueryParameter = true;
 const PORT = process.env.PORT || 8080;
 const APP_DESCRIPTION = 'Digitransit journey planning UI';
@@ -37,7 +33,6 @@ export default {
   PORT,
   // AXE,
   CONFIG,
-  NODE_ENV,
   OTPTimeout: OTP_TIMEOUT,
   URL: {
     API_URL,
@@ -112,7 +107,6 @@ export default {
   API_SUBSCRIPTION_QUERY_PARAMETER_NAME,
   API_SUBSCRIPTION_HEADER_NAME,
   API_SUBSCRIPTION_TOKEN,
-  RUN_ENV,
 
   hasAPISubscriptionQueryParameter,
 
@@ -163,15 +157,15 @@ export default {
     minimalRegexp: /.{2,}/,
   },
 
-  nearbyRoutes: {
+  nearYouRoutes: {
     radius: 10000,
     bucketSize: 1000,
   },
 
   omitNonPickups: true,
-  maxNearbyStopAmount: 5,
-  maxNearbyStopRefetches: 5,
-  maxNearbyStopDistance: {
+  maxNearYouCount: 5,
+  maxNearYouRefetches: 5,
+  maxNearYouDistance: {
     favorite: 20000,
     bus: 50000,
     tram: 20000,
@@ -180,6 +174,8 @@ export default {
     ferry: 50000,
     citybike: 20000,
     airplane: 100000,
+    bikepark: 10000,
+    carpark: 50000,
   },
 
   defaultSettings: {
@@ -205,12 +201,7 @@ export default {
    * If not, the selection may not make any sense.
    */
   defaultOptions: {
-    walkReluctance: {
-      least: 5,
-      less: 3,
-      more: 1,
-      most: 0.2,
-    },
+    highWalkReluctance: 5,
     walkSpeed: [0.69, 0.97, 1.2, 1.67, 2.22],
     bikeSpeed: [2.77, 4.15, 5.55, 6.94, 8.33],
   },
@@ -344,7 +335,7 @@ export default {
       sv: 'Köp ett abonnemang för en dag, en vecka eller för en hel säsong',
       en: 'Buy a daily, weekly or season pass',
     },
-    maxNearbyRentalVehicleAmount: 5,
+    maxNearYouRentalVehicleAmount: 5,
     maxDistanceToRentalVehiclesInMeters: 100,
     maxMinutesToRentalJourneyStart: 60,
     maxMinutesToRentalJourneyEnd: 720,
@@ -371,21 +362,22 @@ export default {
 
   colors: {
     primary: '#000F94',
+    caution: '#dc0451',
     backgroundInfo: '#ebf6fd',
-    iconColors: {
-      'mode-airplane': '#0046ad',
-      'mode-bus': '#007ac9',
-      'mode-tram': '#008151',
-      'mode-subway': '#CA4000',
-      'mode-rail': '#8c4799',
-      'mode-ferry': '#007A97',
-      'mode-ferry-external': '#666666',
-      'mode-citybike': '#f2b62d',
-      'mode-citybike-secondary': '#333333',
-      'mode-scooter': '#C5CAD2',
-      'mode-taxi': '#647693',
-      'mode-replacement-bus': '#DC0451',
-    },
+    airplane: '#0046ad',
+    bus: '#007ac9',
+    'replacement-bus': '#dc0451',
+    tram: '#008151',
+    subway: '#ca4000',
+    rail: '#8c4799',
+    ferry: '#007a97',
+    'ferry-external': '#666666',
+    citybike: '#f2b62d',
+    'citybike-secondary': '#333333',
+    scooter: '#c5cad2',
+    taxi: '#647693',
+    bikepark: '#f2b62d',
+    carpark: '#007ac9',
   },
   iconModeSet: 'digitransit',
   fontWeights: {
@@ -748,11 +740,9 @@ export default {
 
   vehicles: false,
   showVehiclesOnStopPage: false,
-  trafficNowLink: '',
+  showVehiclesOnItineraryPage: false,
 
   timetables: {},
-
-  showVehiclesOnItineraryPage: false,
 
   showWeatherInformation: true,
   showBikeAndParkItineraries: false,
@@ -788,6 +778,14 @@ export default {
 
   constantOperationStops: {},
   constantOperationRoutes: {},
+
+  parkAndRide: {
+    showParkAndRide: false,
+    showParkAndRideForBikes: false,
+    parkAndRideMinZoom: 13,
+    resolver: prUtils.liipi,
+  },
+  parkingAreaSources: ['liipi'],
 
   embeddedSearch: {
     title: {
@@ -856,4 +854,5 @@ export default {
   allowedFlexRouteTypes: [1501],
   showRouteDescNotification: false,
   showStopStatusMarkers: false,
+  personalisation: false,
 };

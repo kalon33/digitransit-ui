@@ -1,9 +1,8 @@
+import { IS_DEV } from '../util/envUtils';
 import { BIKEAVL_WITHMAX } from '../util/vehicleRentalUtils';
-import prUtils from '../util/ParkAndRideUtils';
 import ttConfig from './timetableConfigUtils';
 
 const HSLTimetables = ttConfig.HSL;
-const HSLParkAndRideUtils = prUtils.HSL;
 const CONFIG = 'hsl';
 const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
 const OTP_URL = process.env.OTP_URL || `${API_URL}/routing/v2/hsl/`;
@@ -19,11 +18,7 @@ const SUGGESTION_URL = process.env.CONTENT_DOMAIN
   ? `${process.env.CONTENT_DOMAIN}/api/v1/search/suggestions`
   : 'https://content.hsl.fi/api/v1/search/suggestions'; // old url
 
-const IS_DEV =
-  process.env.RUN_ENV === 'development' ||
-  process.env.NODE_ENV !== 'production';
-
-const virtualMonitorBaseUrl = IS_DEV
+const virtualMonitorBaseUrl = IS_DEV()
   ? 'https://dev-hslmonitori.digitransit.fi'
   : 'https://omatnaytot.hsl.fi';
 
@@ -41,6 +36,10 @@ export default {
     STOP_MAP: {
       default: `${POI_MAP_PREFIX}/fi/stops,stations/`,
       sv: `${POI_MAP_PREFIX}/sv/stops,stations/`,
+    },
+    AREA_STOP_MAP: {
+      default: `${POI_MAP_PREFIX}/fi/areaStops/`,
+      sv: `${POI_MAP_PREFIX}/sv/areaStops/`,
     },
     REALTIME_STOP_MAP: {
       default: `${POI_MAP_PREFIX}/fi/realtimeStops,stations/`,
@@ -76,6 +75,16 @@ export default {
       sv: 'https://www.hsl.fi/sv/reseplaneraren_co2',
       en: 'https://www.hsl.fi/en/journey_planner_co2',
     },
+    HOLIDAYS_AND_EXCEPTIONS: {
+      fi: 'https://www.hsl.fi/matkustaminen/juhlapyhat-ja-poikkeusaikataulut',
+      sv: 'https://www.hsl.fi/sv/att-resa/helger-och-avvikande-tidtabeller',
+      en: 'https://www.hsl.fi/en/travelling/bank-holidays-and-changes-to-public-transport-services',
+    },
+    MAJOR_CHANGES: {
+      fi: 'https://www.hsl.fi/hsl/uutiset/teemat/merkittavat-liikenteen-muutokset',
+      sv: 'https://www.hsl.fi/hsl/uutiset/teemat/merkittavat-liikenteen-muutokset',
+      en: 'https://www.hsl.fi/hsl/uutiset/teemat/merkittavat-liikenteen-muutokset',
+    },
   },
 
   indexPath: 'etusivu',
@@ -108,11 +117,6 @@ export default {
   loginAnalyticsEventName: 'user-hsl-id',
   loginAnalyticsKey: 'hsl-id',
 
-  nearbyRoutes: {
-    radius: 500,
-    bucketSize: 100,
-  },
-
   defaultSettings: {
     walkSpeed: 1.28,
     showBikeAndParkItineraries: true,
@@ -134,15 +138,10 @@ export default {
   omitNonPickups: true,
 
   parkAndRide: {
-    showParkAndRide: true,
-    parkAndRideMinZoom: 13,
     url: {
       fi: 'https://www.hsl.fi/matkustaminen/liityntapysakointi',
       sv: 'https://www.hsl.fi/sv/att-resa/anslutningsparkering',
       en: 'https://www.hsl.fi/en/travelling/park--ride',
-    },
-    pageContent: {
-      default: HSLParkAndRideUtils,
     },
   },
 
@@ -155,11 +154,9 @@ export default {
     primary: '#0074bf',
     accessiblePrimary: '#0074be',
     hover: '#0062a1',
-    iconColors: {
-      'mode-bus-express': '#CA4000',
-      'mode-bus-local': '#007ac9',
-      'mode-speedtram': '#007E79',
-    },
+    'bus-express': '#CA4000',
+    'bus-local': '#007ac9',
+    speedtram: '#007E79',
   },
   getAutoSuggestIcons: {
     citybikes: station => {
@@ -169,7 +166,7 @@ export default {
       return ['citybike-stop-default', '#f2b62d'];
     },
   },
-  iconModeSet: 'default',
+  iconModeSet: 'hsl',
   fontWeights: {
     medium: 500,
   },
@@ -335,22 +332,6 @@ export default {
     en: 'HSL',
   },
 
-  maxNearbyStopDistance: {
-    favorite: 20000,
-    bus: 20000,
-    tram: 20000,
-    subway: 20000,
-    rail: 20000,
-    ferry: 20000,
-    citybike: 20000,
-  },
-
-  prioritizedStopsNearYou: {
-    ferry: ['HSL:1030701'],
-  },
-
-  showTicketSelector: false,
-
   staticMessages: [
     // {
     //   id: '2',
@@ -466,8 +447,8 @@ export default {
       smoove: {
         enabled: true,
         season: {
-          preSeasonStart: '18.3',
-          start: '1.4',
+          preSeasonStart: '1.3',
+          start: '17.3',
           end: '31.10',
         },
         capacity: BIKEAVL_WITHMAX,
@@ -490,34 +471,6 @@ export default {
           en: 'https://www.hsl.fi/en/citybikes/helsinki/instructions#ride',
         },
         timeBeforeSurcharge: 60 * 60,
-        showRentalStations: true,
-      },
-      vantaa: {
-        enabled: true,
-        season: {
-          preSeasonStart: '18.3',
-          start: '1.4',
-          end: '31.10',
-        },
-        capacity: BIKEAVL_WITHMAX,
-        icon: 'citybike-secondary',
-        name: {
-          fi: 'Vantaa',
-          sv: 'Vanda',
-          en: 'Vantaa',
-        },
-        type: 'citybike',
-        returnInstructions: {
-          fi: 'https://www.hsl.fi/kaupunkipyorat/vantaa/kayttoohje#palauta',
-          sv: 'https://www.hsl.fi/sv/stadscyklar/vanda/anvisningar#aterlamna',
-          en: 'https://www.hsl.fi/en/citybikes/vantaa/instructions#return',
-        },
-        durationInstructions: {
-          fi: 'https://www.hsl.fi/kaupunkipyorat/vantaa/kayttoohje#aja',
-          sv: 'https://www.hsl.fi/sv/stadscyklar/vanda/anvisningar#cykla',
-          en: 'https://www.hsl.fi/en/citybikes/vantaa/instructions#ride',
-        },
-        timeBeforeSurcharge: 120 * 60,
         showRentalStations: true,
       },
     },
@@ -557,8 +510,6 @@ export default {
   includeCarSuggestions: true,
   includeParkAndRideSuggestions: true,
 
-  parkingAreaSources: ['liipi'],
-
   showNearYouButtons: true,
   nearYouModes: [
     'favorite',
@@ -566,10 +517,29 @@ export default {
     'tram',
     'subway',
     'rail',
-    'ferry',
+    'carpark',
     'citybike',
+    'ferry',
+    'bikepark',
   ],
+
   narrowNearYouButtons: true,
+  nearYouRoutes: {
+    radius: 500,
+    bucketSize: 100,
+  },
+  maxNearYouDistance: {
+    favorite: 20000,
+    bus: 20000,
+    tram: 20000,
+    subway: 20000,
+    rail: 20000,
+    ferry: 20000,
+    citybike: 20000,
+  },
+  prioritizedStopsNearYou: {
+    ferry: ['HSL:1030701'],
+  },
 
   hostnames: [
     // DEV hostnames
@@ -726,6 +696,32 @@ export default {
       },
       linkLabel,
     },
+    {
+      showForRoute: route => route.type === 715,
+      id: 'flexBusNotification',
+      header: {
+        fi: 'Kutsuliikenne',
+        en: 'On-demand service',
+        sv: 'Anropsbusstrafiken',
+      },
+      content: {
+        fi: [
+          'Linja toimii ennakkotilauksella. Varmistaaksesi matkan, tee varaus etukäteen. Tarkemmat tiedot palveluntarjoalta.',
+        ],
+        en: [
+          'This service operates by advance booking. To ensure your ride, please book ahead of time. More information is available from the service provider. ',
+        ],
+        sv: [
+          'Linjen fungerar med förhandsbokning. Boka din resa i förväg för att säkerställa resan. Mer information från tjänsteleverantören.',
+        ],
+      },
+      link: {
+        fi: 'hsl.fi/matkustaminen/lahibussit',
+        en: 'hsl.fi/en/travelling/neighborhood-buses',
+        sv: 'hsl.fi/sv/att-resa/narbussar',
+      },
+      linkLabel,
+    },
   ],
 
   replacementBusNotification: {
@@ -784,19 +780,40 @@ export default {
     },
   },
 
+  favouriteLink: {
+    fi: 'https://tili.hsl.fi/omat-pysakit-paikat-ja-linjat',
+    en: 'https://tili.hsl.fi/en/my-stops-places-and-routes',
+    sv: 'https://tili.hsl.fi/mina-hallplatser-platser-och-linjer',
+  },
+
   startSearchFromUserLocation: true,
 
   navigationLogo: 'hsl/navigator-logo.svg',
   thumbsUpGraphic: 'hsl/thumbs-up.svg',
   trafficLightGraphic: 'hsl/traffic-light.svg',
   naviGeolocationGraphic: 'hsl/geolocation.svg',
+  notFoundGraphic: 'hsl/not-found.svg',
   navigation: true,
   crazyEgg: true,
+
   // features that should not be deployed to production
   experimental: {
-    allowFlexJourneys: false,
+    allowFlexJourneys: IS_DEV(),
     allowDirectFlexJourneys: false,
   },
 
   showStopStatusMarkers: true,
+
+  flex: {
+    internalFlexEnabled: IS_DEV(),
+    allowTaxiJourneys: IS_DEV(),
+    directOnlyTaxiJourneys: false,
+    internalAgencies: ['KirkkonummiE:612', 'KirkkonummiP:612'],
+    externalAgencies: ['02Taksi:02_taksi'],
+    allowedExternalFlexRouteTypes: [1501],
+    infoLanguage: 'fi',
+  },
+
+  showRouteDescNotification: IS_DEV(),
+  personalisation: false,
 };

@@ -199,10 +199,6 @@ class TransitLeg extends React.Component {
             arrival={place.arrival}
             realTime={leg.realTime}
             stopCode={place.stop.code}
-            focusFunction={this.context.focusFunction({
-              lat: place.stop.lat,
-              lon: place.stop.lon,
-            })}
             showZoneLimits={this.context.config.zones.itinerary}
             showCurrentZoneDelimiter={previousZoneIdDiffers}
             previousZoneId={
@@ -380,7 +376,7 @@ class TransitLeg extends React.Component {
     };
     const routeNotifications = [];
     if (
-      config.NODE_ENV !== 'test' &&
+      process.env.NODE_ENV !== 'test' &&
       config.routeNotifications &&
       config.routeNotifications.length > 0
     ) {
@@ -719,7 +715,6 @@ TransitLeg.defaultProps = {
 };
 
 TransitLeg.contextTypes = {
-  focusFunction: PropTypes.func.isRequired,
   config: configShape.isRequired,
   intl: intlShape.isRequired,
 };

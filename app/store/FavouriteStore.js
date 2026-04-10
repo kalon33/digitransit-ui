@@ -37,6 +37,19 @@ function mapToStore(favourites) {
   );
 }
 
+const locationTypes = ['station', 'stop', 'place', 'bikeStation'];
+
+/* fav count excluding routes */
+export function countLocations(favourites) {
+  let cnt = 0;
+  favourites.forEach(favourite => {
+    if (locationTypes.includes(favourite.type)) {
+      cnt += 1;
+    }
+  });
+  return cnt;
+}
+
 export default class FavouriteStore extends Store {
   static storeName = 'FavouriteStore';
 
@@ -57,6 +70,7 @@ export default class FavouriteStore extends Store {
     this.config = dispatcher.getContext().config;
     if (!this.config.allowLogin) {
       this.favourites = mapFromStore(getFavouriteStorage());
+      this.status = FavouriteStore.STATUS_HAS_DATA;
     } else {
       this.status = FavouriteStore.STATUS_FETCHING_OR_UPDATING;
     }
@@ -166,6 +180,10 @@ export default class FavouriteStore extends Store {
     return this.favourites.filter(
       favourite => favourite.type === 'bikeStation',
     );
+  }
+
+  getLocationCount() {
+    return countLocations(this.favourites);
   }
 
   /**

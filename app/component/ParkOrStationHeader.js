@@ -3,17 +3,17 @@ import React, { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { configShape } from '../util/shapes';
 import StopCode from './StopCode';
+import withBreakpoint from '../util/withBreakpoint';
 import BackButton from './BackButton';
 import { getJson } from '../util/xhrPromise';
 import getZoneId from '../util/zoneIconUtils';
 import ZoneIcon from './ZoneIcon';
-import withBreakpoint from '../util/withBreakpoint';
 import { hasVehicleRentalCode } from '../util/vehicleRentalUtils';
 import { getIdWithoutFeed } from '../util/feedScopedIdUtils';
 import FavouriteVehicleRentalStationContainer from './FavouriteVehicleRentalStationContainer';
 
 const ParkOrBikeStationHeader = (
-  { parkOrStation, breakpoint, parkType },
+  { parkOrStation, breakpoint, parkType, backButton, withSeparator },
   { config },
 ) => {
   const [zoneId, setZoneId] = useState(undefined);
@@ -45,18 +45,13 @@ const ParkOrBikeStationHeader = (
   const { name, stationId } = parkOrStation;
   const parkHeaderId = parkType === 'bike' ? 'bike-park' : 'car-park';
   const isRentalStation = stationId;
-
+  const cn = withSeparator ? 'station-header-with-separator' : 'station-header';
   return (
-    <div className="bike-station-header">
-      {breakpoint === 'large' && (
-        <BackButton
-          icon="icon_arrow-collapse--left"
-          iconClassName="arrow-icon"
-        />
-      )}
-      <div className="header">
+    <div className={cn}>
+      {breakpoint === 'large' && backButton && <BackButton />}
+      <div className="header-section">
         <h1>{name}</h1>
-        <div className="bike-station-sub-header">
+        <div className="station-sub-header">
           <FormattedMessage
             id={isRentalStation ? 'citybike-station-no-id' : parkHeaderId}
           />
@@ -64,7 +59,7 @@ const ParkOrBikeStationHeader = (
             <StopCode code={getIdWithoutFeed(stationId)} />
           )}
           {zoneId && (
-            <span className="bike-station-zone-icon">
+            <span className="station-zone-icon">
               <ZoneIcon zoneId={zoneId.toUpperCase()} />
             </span>
           )}
@@ -80,7 +75,7 @@ const ParkOrBikeStationHeader = (
 };
 
 ParkOrBikeStationHeader.propTypes = {
-  breakpoint: PropTypes.string.isRequired,
+  backButton: PropTypes.bool,
   parkOrStation: PropTypes.shape({
     name: PropTypes.string.isRequired,
     stationId: PropTypes.string,
@@ -88,9 +83,15 @@ ParkOrBikeStationHeader.propTypes = {
     lon: PropTypes.number.isRequired,
   }).isRequired,
   parkType: PropTypes.string,
+  breakpoint: PropTypes.string.isRequired,
+  withSeparator: PropTypes.bool,
 };
 
-ParkOrBikeStationHeader.defaultProps = { parkType: undefined };
+ParkOrBikeStationHeader.defaultProps = {
+  parkType: undefined,
+  backButton: true,
+  withSeparator: true,
+};
 
 ParkOrBikeStationHeader.contextTypes = {
   config: configShape.isRequired,

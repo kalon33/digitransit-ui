@@ -10,11 +10,6 @@ const MAP_URL = process.env.MAP_URL || 'https://dev-cdn.digitransit.fi';
 const POI_MAP_PREFIX = `${MAP_URL}/map/v3/varely`;
 const colorPrimary = '#008161';
 
-const minLat = 59.98;
-const maxLat = 61.8;
-const minLon = 21;
-const maxLon = 23.9;
-
 export default configMerger(walttiConfig, {
   CONFIG,
 
@@ -37,10 +32,8 @@ export default configMerger(walttiConfig, {
   colors: {
     primary: colorPrimary,
     hover: '#00BF6F',
-    iconColors: {
-      'mode-bus': colorPrimary,
-      'mode-ferry': '#0064f0',
-    },
+    bus: colorPrimary,
+    ferry: '#0064f0',
   },
 
   appBarLink: { name: 'Seutu+', href: 'https://seutuplus.fi/' },
@@ -80,18 +73,23 @@ export default configMerger(walttiConfig, {
 
   nearYouModes: ['bus', 'ferry'],
 
-  searchParams: {
-    'boundary.rect.min_lat': minLat,
-    'boundary.rect.max_lat': maxLat,
-    'boundary.rect.min_lon': minLon,
-    'boundary.rect.max_lon': maxLon,
-  },
+  useSearchPolygon: true,
 
   areaPolygon: [
-    [minLon, minLat],
-    [minLon, maxLat],
-    [maxLon, maxLat],
-    [maxLon, minLat],
+    [21.0, 59.75],
+    [22.83, 59.77],
+    [22.92, 59.96],
+    [23.73, 60.15],
+    [24.04, 60.65],
+    [23.38, 60.8],
+    [23.33, 61.06],
+    [22.68, 61.47],
+    [22.92, 61.75],
+    [22.79, 61.98],
+    [22.97, 62.27],
+    [22.58, 62.36],
+    [22.03, 62.1],
+    [21.0, 62.02],
   ],
 
   map: {
@@ -125,8 +123,6 @@ export default configMerger(walttiConfig, {
   /* Enable real-time map layer for vehicle positions */
   vehicles: false,
   viaPointsEnabled: false,
-  showVehiclesOnStopPage: true,
-  showVehiclesOnItineraryPage: true,
 
   aboutThisService: {
     fi: [
@@ -185,10 +181,6 @@ export default configMerger(walttiConfig, {
     },
   },
 
-  staticMessages: [],
-  showCO2InItinerarySummary: true,
-  showNearYouButtons: true,
-  allowLogin: false,
   routeNotifications: [],
   analyticsScript: '',
   GTMid: null,

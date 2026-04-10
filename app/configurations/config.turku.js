@@ -44,12 +44,10 @@ export default configMerger(walttiConfig, {
   colors: {
     primary: '#e8aa27',
     hover: '#a07415',
-    iconColors: {
-      'mode-bus': '#e8aa27',
-      'mode-rail': '#8c4799',
-      'mode-ferry': '#0064f0',
-      'mode-funicular': '#ff00ff',
-    },
+    bus: '#e8aa27',
+    rail: '#8c4799',
+    ferry: '#0064f0',
+    funicular: '#ff00ff',
   },
 
   appBarLink: { name: 'Föli', href: 'http://www.foli.fi/fi' },
@@ -102,6 +100,10 @@ export default configMerger(walttiConfig, {
         },
       },
     },
+  },
+
+  defaultSettings: {
+    minTransferTime: 5 * 60,
   },
 
   transportModes: {
@@ -171,10 +173,6 @@ export default configMerger(walttiConfig, {
     lon: 22.267633,
   },
 
-  vehicles: true,
-  showVehiclesOnStopPage: true,
-  showVehiclesOnItineraryPage: true,
-
   aboutThisService: {
     fi: [
       {
@@ -204,13 +202,10 @@ export default configMerger(walttiConfig, {
     ],
   },
 
-  staticMessages: [],
   geoJson: {
     layerConfigUrl: 'https://data.foli.fi/geojson/reittiopas',
   },
 
-  showNearYouButtons: true,
-  allowLogin: false,
   constantOperationStops: {
     'FUNI:9900': CONSTANT_OPERATION_PARAGRAPHS.fori,
     'FUNI:9901': CONSTANT_OPERATION_PARAGRAPHS.fori,
@@ -224,5 +219,9 @@ export default configMerger(walttiConfig, {
   customWeights: {
     FERRY: 0.6,
     FUNICULAR: 0.1,
+  },
+  parkAndRide: {
+    showParkAndRide: true,
+    showParkAndRideForBikes: true,
   },
 });

@@ -1,15 +1,12 @@
 import configMerger from '../util/configMerger';
+import { IS_DEV } from '../util/envUtils';
 import walttiConfig from './config.waltti';
 
 const CONFIG = 'oulu';
 const APP_DESCRIPTION = 'Oulun seudun reittiopas';
 const APP_TITLE = 'Reittiopas';
 
-const IS_DEV =
-  process.env.RUN_ENV === 'development' ||
-  process.env.NODE_ENV !== 'production';
-
-const virtualMonitorBaseUrl = IS_DEV
+const virtualMonitorBaseUrl = IS_DEV()
   ? 'https://dev-oulumonitori.digitransit.fi'
   : 'https://pysakkinaytto.osl.fi';
 
@@ -25,9 +22,7 @@ export default configMerger(walttiConfig, {
 
   colors: {
     primary: '#e10669',
-    iconColors: {
-      'mode-bus': '#e10669',
-    },
+    bus: '#e10669',
   },
 
   socialMedia: {
@@ -118,10 +113,6 @@ export default configMerger(walttiConfig, {
     ],
   },
 
-  vehicles: true,
-  showVehiclesOnStopPage: true,
-  showVehiclesOnItineraryPage: true,
-
   aboutThisService: {
     fi: [
       {
@@ -180,4 +171,9 @@ export default configMerger(walttiConfig, {
   showTicketPrice: true,
   ticketLinkOperatorCode: 50229,
   appName: 'oslapp',
+
+  parkAndRide: {
+    showParkAndRide: true,
+    showParkAndRideForBikes: true,
+  },
 });

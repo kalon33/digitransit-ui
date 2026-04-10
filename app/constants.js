@@ -136,3 +136,34 @@ export const ViaLocationType = Object.freeze({
   PassThrough: 'PASS_THROUGH',
   Visit: 'VISIT',
 });
+
+export const VerticalDirection = Object.freeze({
+  Up: 'UP',
+  Down: 'DOWN',
+  Unknown: 'UNKNOWN',
+});
+
+export const IndoorStepType = Object.freeze({
+  Entrance: 'Entrance',
+  ElevatorUse: 'ElevatorUse',
+  EscalatorUse: 'EscalatorUse',
+  StairsUse: 'StairsUse',
+});
+
+export const IndoorLegType = Object.freeze({
+  AllStepsInside: 'ALL_STEPS_INSIDE',
+  StepsAfterEntranceInside: 'STEPS_AFTER_ENTRANCE_INSIDE',
+  StepsBeforeEntranceInside: 'STEPS_BEFORE_ENTRANCE_INSIDE',
+  NoStepsInside: 'NO_STEPS_INSIDE',
+});
+
+export const WheelchairBoarding = Object.freeze({
+  NotPossible: 'NOT_POSSIBLE',
+  NoInformation: 'NO_INFORMATION',
+  Possible: 'POSSIBLE',
+});
+
+export const NaviCardType = Object.freeze({
+  Default: 'DEFAULT',
+  Indoor: 'INDOOR',
+});

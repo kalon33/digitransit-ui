@@ -6,7 +6,7 @@ import { getCustomizedSettings } from '../store/localStorage';
 import { isInBoundingBox } from './geo-utils';
 import { addAnalyticsEvent } from './analyticsUtils';
 import { ExtendedRouteTypes, TransportMode } from '../constants';
-import { isDevelopmentEnvironment } from './envUtils';
+import { IS_DEV } from './envUtils';
 import { getFeedWithoutId, isExternalFeed } from './feedScopedIdUtils';
 
 function seasonMs(ddmmyyyy) {
@@ -39,13 +39,13 @@ export function isCitybikePreSeasonActive(season) {
   );
 }
 
-export function showCitybikeNetwork(networkConfig, config) {
+export function showCitybikeNetwork(networkConfig) {
   return (
     networkConfig?.enabled &&
     networkConfig.type === 'citybike' &&
     (isCitybikeSeasonActive(networkConfig?.season) ||
       isCitybikePreSeasonActive(networkConfig?.season) ||
-      isDevelopmentEnvironment(config))
+      IS_DEV())
   );
 }
 
@@ -78,7 +78,7 @@ export function useScooters(config) {
   );
 }
 
-export function showRentalVehiclesOfType(networks, config, type) {
+export function showRentalVehiclesOfType(networks, type) {
   if (!networks) {
     return false;
   }
@@ -86,18 +86,29 @@ export function showRentalVehiclesOfType(networks, config, type) {
     network =>
       network.type === type.toLowerCase() &&
       network.enabled &&
-      (network.showRentalVehicles || showCitybikeNetwork(network, config)),
+      (network.showRentalVehicles || showCitybikeNetwork(network)),
   );
 }
 
-export function getNearYouModes(config) {
-  if (!config.vehicleRental?.networks) {
-    return config.nearYouModes;
+const nearYouStopTypes = ['stop', 'station'];
+
+export function getNearYouModes(config, favourites) {
+  let modes = config.nearYouModes;
+  let cityBikesActive = config.nearYouModes.includes('citybike');
+  if (cityBikesActive && !useCitybikes(config.vehicleRental.networks, config)) {
+    modes = modes.filter(mode => mode !== 'citybike');
+    cityBikesActive = false;
   }
-  if (!useCitybikes(config.vehicleRental.networks, config)) {
-    return config.nearYouModes.filter(mode => mode !== 'citybike');
+  const nearFavs = favourites.filter(f => {
+    return (
+      nearYouStopTypes.includes(f.type) ||
+      (f.type === 'bikeStation' && cityBikesActive)
+    );
+  });
+  if (!nearFavs.length) {
+    modes = modes.filter(mode => mode !== 'favorite');
   }
-  return config.nearYouModes;
+  return modes;
 }
 
 export function getTransportModes(config) {

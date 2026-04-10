@@ -6,20 +6,15 @@ import KotkaConfig from './config.kotka';
 import KouvolaConfig from './config.kouvola';
 import KuopioConfig from './config.kuopio';
 import LahtiConfig from './config.lahti';
-import prUtils from '../util/ParkAndRideUtils';
+import { IS_DEV } from '../util/envUtils';
 
-const HSLParkAndRideUtils = prUtils.HSL;
 const CONFIG = 'matka';
 const APP_DESCRIPTION =
   'Fintraffic Matka on reittiopaspalvelu, joka auttaa suunnittelemaan matkoja koko Suomessa yhdistämällä eri liikennemuodot helposti ovelta ovelle.';
 const APP_TITLE = 'Fintraffic Matka – Joukkoliikenteen reittiopas ja matkahaku';
 const YEAR = 1900 + new Date().getYear();
 
-const IS_DEV =
-  process.env.RUN_ENV === 'development' ||
-  process.env.NODE_ENV !== 'production';
-
-const virtualMonitorBaseUrl = IS_DEV
+const virtualMonitorBaseUrl = IS_DEV()
   ? 'https://dev-matkamonitori.digitransit.fi'
   : 'https://matkamonitori.digitransit.fi';
 
@@ -61,14 +56,12 @@ export default {
 
   colors: {
     primary: '#000',
-    iconColors: {
-      'mode-tram': '#5E7921',
-      'mode-rail': '#000',
-      'mode-ferry': '#247C7B',
-    },
+    tram: '#5E7921',
+    rail: '#000',
+    ferry: '#247C7B',
   },
-  feedIds: IS_DEV
-    ? ['MATKA']
+  feedIds: IS_DEV()
+    ? ['MATKA', 'flixbus', 'CAR_FERRIES']
     : [
         'MATKA',
         'HSL',
@@ -100,6 +93,7 @@ export default {
         'PahkakankaanLiikenne',
         'IngvesSvanback',
         'CAR_FERRIES',
+        'flixbus',
       ],
   externalFeedIds: ['02Taksi'],
 
@@ -280,15 +274,9 @@ export default {
   includeParkAndRideSuggestions: true,
   showBikeAndParkItineraries: true,
 
-  parkingAreaSources: ['liipi'],
-
   parkAndRide: {
     showParkAndRide: true,
     showParkAndRideForBikes: true,
-    parkAndRideMinZoom: 13,
-    pageContent: {
-      default: HSLParkAndRideUtils,
-    },
   },
 
   sourceForAlertsAndDisruptions: {

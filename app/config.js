@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import cloneDeep from 'lodash/cloneDeep';
-
 import defaultConfig from './configurations/config.default';
 import configMerger from './util/configMerger';
+import { LightenDarkenColor } from './util/colorUtils';
 import { boundWithMinimumAreaSimple } from './util/geo-utils';
 
 const configs = {}; // cache merged configs for speed
@@ -121,6 +121,12 @@ export function getNamedConfiguration(configName) {
       config.searchParams = config.searchParams || {};
       config.searchParams['boundary.polygon'] = pointsParam;
     }
+    if (!config.colors.accessiblePrimary) {
+      config.colors.accessiblePrimary = config.colors.primary;
+    }
+    if (!config.colors.hover) {
+      config.colors.hover = LightenDarkenColor(config.colors.primary, -20);
+    }
 
     Object.keys(config.modePolygons).forEach(mode => {
       const boundingBoxes = [];
@@ -184,8 +190,10 @@ export function getNamedConfiguration(configName) {
       );
       seasonDefinitions.forEach(seasonDef => {
         const confCitybike = conf.vehicleRental.networks[seasonDef.networkName];
-        confCitybike.enabled = seasonDef.enabled;
-        confCitybike.season = seasonDef.season;
+        if (confCitybike) {
+          confCitybike.enabled = seasonDef.enabled;
+          confCitybike.season = seasonDef.season;
+        }
       });
     }
   }
