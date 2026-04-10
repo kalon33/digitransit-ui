@@ -650,7 +650,7 @@ const Itinerary = (
           isTransitLeg={false}
           mode={LegMode.Wait}
           large={breakpoint === 'large'}
-          icon={usingOwnCarWholeTrip ? 'icon_wait-car' : undefined}
+          icon={usingOwnCarWholeTrip ? 'icon_wait-car' : 'icon_wait_standing'}
         />,
       );
     }
