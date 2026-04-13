@@ -313,11 +313,33 @@ export function getPlanParams(
   const intermediateLocations = getIntermediatePlaces({
     intermediatePlaces,
   });
-  const via = intermediateLocations.map(loc => ({
-    passThrough: {
-      stopLocationIds: [loc.gtfsId],
-    },
-  }));
+  let via = intermediateLocations
+    .map(loc => {
+      if (loc.gtfsId) {
+        return {
+          visit: {
+            stopLocationIds: [loc.gtfsId],
+            coordinate: {
+              latitude: loc.lat,
+              longitude: loc.lon,
+            },
+          },
+        };
+      }
+      if (loc.lat && loc.lon) {
+        return {
+          visit: {
+            coordinate: {
+              latitude: loc.lat,
+              longitude: loc.lon,
+            },
+          },
+        };
+      }
+      return null;
+    })
+    .filter(Boolean);
+
   const distance = estimateItineraryDistance(
     fromLocation,
     toLocation,
@@ -417,6 +439,7 @@ export function getPlanParams(
       egress = access;
       direct = directFlexOnly ? ['WALK', 'FLEX'] : null;
       transitOnly = false;
+      via = null;
       break;
     default: // direct modes
       direct = [planType];

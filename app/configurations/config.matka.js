@@ -456,4 +456,5 @@ export default {
   },
 
   showStopStatusMarkers: true,
+  viaPointsEnabled: true,
 };
