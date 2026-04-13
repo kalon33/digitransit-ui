@@ -99,7 +99,7 @@ $margin-left-right: 21.3px;
 
     label {
       color: $theme-primary-color;
-      font-weight: bold;
+      font-weight: $font-weight-bold;
       margin-right: 10px;
     }
 
@@ -120,7 +120,7 @@ $margin-left-right: 21.3px;
   h3 {
     margin-top: 1px;
     font-size: $font-size-xsmall;
-    font-weight: bold;
+    font-weight: $font-weight-bold;
   }
 
   ul {
@@ -652,7 +652,7 @@ $margin-left-right: 21.3px;
       @include font-book;
 
       font-size: 13px;
-      font-weight: normal;
+      font-weight: $font-weight-book;
       line-height: 1.38;
       letter-spacing: -0.43px;
       color: #666;
@@ -800,7 +800,7 @@ $margin-left-right: 21.3px;
   .stop-select-label {
     position: relative;
     font-style: normal;
-    font-weight: normal;
+    font-weight: $font-weight-book;
     font-size: 13px;
     line-height: 16px;
     letter-spacing: -0.03em;
@@ -1154,7 +1154,7 @@ $margin-left-right: 21.3px;
     letter-spacing: -0.42px;
     border-radius: var(--radius-radius-pill, 999px);
     color: #333;
-    font-weight: normal;
+    font-weight: $font-weight-book;
 
     &.is-active {
       font-weight: $font-weight-medium;

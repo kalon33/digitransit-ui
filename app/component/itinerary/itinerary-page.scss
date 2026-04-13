@@ -441,7 +441,7 @@
   padding: 15px;
   font-family: $font-family;
   font-style: normal;
-  font-weight: normal;
+  font-weight: $font-weight-book;
   line-height: 21px;
   letter-spacing: -0.03em;
   color: #000;
@@ -457,7 +457,7 @@
   }
 
   h3 {
-    font-weight: bold;
+    font-weight: $font-weight-bold;
     font-size: $font-size-xsmall;
   }
 
@@ -471,7 +471,7 @@
     color: $theme-primary-color;
 
     #change-settings-button {
-      font-weight: bold;
+      font-weight: $font-weight-bold;
     }
   }
 }

@@ -214,7 +214,7 @@
   padding-left: 0.5em;
   padding-right: 0.5em;
   text-decoration: none;
-  font-weight: normal;
+  font-weight: $font-weight-book;
 
   + .stop-tab-singletab {
     border-left: 1px solid $light-gray;
