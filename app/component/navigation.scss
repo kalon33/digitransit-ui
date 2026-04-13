@@ -340,7 +340,6 @@ $content-background-color: $background-color;
     font-size: 1.2em;
     margin: 0 0 0 2.5em;
     font-weight: $font-weight-medium;
-    font-family: $heading-font-family;
 
     &::first-letter {
       text-transform: capitalize;
@@ -445,8 +444,6 @@ $content-background-color: $background-color;
 
   button.noborder {
     @include font-medium;
-
-    font-family: $button-font-family;
   }
 
   .menu-section {
@@ -456,8 +453,6 @@ $content-background-color: $background-color;
 
     &.main-links {
       .offcanvas-section {
-        font-family: $heading-font-family;
-
         button {
           font-weight: $font-weight-medium;
         }
@@ -478,7 +473,6 @@ $content-background-color: $background-color;
   }
 
   .copyright {
-    font-family: $heading-font-family;
     font-weight: $font-weight-book;
     color: black;
     margin-top: 30px;
@@ -556,10 +550,8 @@ $content-background-color: $background-color;
     margin: 0;
     display: inline-block;
     font-size: $font-size-normal;
-    font-family: $heading-font-family;
 
     button {
-      font-family: $button-font-family;
       font-size: $font-size-normal;
     }
 
@@ -573,7 +565,6 @@ $content-background-color: $background-color;
     align-items: center;
 
     .icon.disruption-info {
-      font-family: $heading-font-family;
       padding-left: 0;
       margin-left: 10px;
       width: 24px;
@@ -632,7 +623,6 @@ section.content {
       }
 
       h1 {
-        font-family: $heading-font-family;
         line-height: 1em;
         letter-spacing: -0.025em;
       }

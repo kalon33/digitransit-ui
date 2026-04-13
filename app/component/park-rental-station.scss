@@ -6,7 +6,6 @@
   .large-header {
     h1 {
       font-size: $font-size-xlarge;
-      font-family: $heading-font-family;
       line-height: 1.2em;
       letter-spacing: -0.025em;
     }
@@ -17,7 +16,6 @@
   .small-header {
     h1 {
       font-size: $font-size-normal;
-      font-family: $heading-font-family;
       line-height: 0.5em;
       letter-spacing: -0.025em;
     }
