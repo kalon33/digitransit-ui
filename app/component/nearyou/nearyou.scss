@@ -547,7 +547,6 @@
 }
 
 .modal-desktop-container {
-  font-family: $font-family;
   display: flex;
   flex-direction: column;
 
@@ -589,7 +588,6 @@
         top: 3px;
         width: 100%;
         height: 44px;
-        font-family: $font-family;
         border-radius: 5px;
         border: solid 1px #888;
         background-color: #fff;

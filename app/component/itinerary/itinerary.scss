@@ -384,7 +384,6 @@ $itinerary-tab-switch-height: 48px;
         width: auto;
       }
 
-      font-family: $font-family;
       font-style: normal;
       font-weight: $font-weight-book;
       font-size: 15px;
@@ -438,7 +437,6 @@ $itinerary-tab-switch-height: 48px;
         height: 18px;
         left: 48px;
         top: 528px;
-        font-family: $font-family;
         font-style: normal;
         font-weight: $font-weight-book;
         font-size: 15px;
@@ -470,7 +468,6 @@ $itinerary-tab-switch-height: 48px;
       .itinerary-co2-value {
         min-width: 29px;
         height: 16px;
-        font-family: $font-family;
         font-style: normal;
         font-weight: $font-weight-medium;
         font-size: 13px;
@@ -1998,7 +1995,6 @@ $itinerary-tab-switch-height: 48px;
         margin: 0 3px 0 3px;
         background-color: $background-color-lighter;
         font-weight: $font-weight-medium;
-        font-family: $id-font-family;
 
         &.platform-updated {
           @include platformUpdated;
@@ -3243,7 +3239,6 @@ $font-print-decrease: 0.7;
   }
 
   .itinerary-leg-stopname {
-    font-family: $font-family;
     font-weight: $font-weight-medium;
     font-size: $font-size-large;
     color: $black;

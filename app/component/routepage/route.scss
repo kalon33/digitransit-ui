@@ -249,7 +249,6 @@ $margin-left-right: 21.3px;
   min-width: calc(100% - 13% - 15px);
   margin-bottom: 3px;
   flex-direction: row;
-  font-family: $font-family;
 }
 
 .drop-off-container {
@@ -260,7 +259,6 @@ $margin-left-right: 21.3px;
   border-radius: 5px;
   color: $black;
   font-size: 0.8125em;
-  font-family: $font-family;
   font-weight: $font-weight-book;
 
   span {
@@ -489,7 +487,6 @@ $margin-left-right: 21.3px;
 
         .route-stop-address {
           font-size: $font-size-xsmall;
-          font-family: $font-family;
           font-weight: $font-weight-book;
           line-height: 1.25rem;
           letter-spacing: -0.03em;
@@ -502,7 +499,6 @@ $margin-left-right: 21.3px;
 
         .itinerary-zone-icon {
           flex: 1;
-          font-family: $font-family;
         }
       }
 
@@ -515,7 +511,6 @@ $margin-left-right: 21.3px;
 
         span {
           margin: 0;
-          font-family: $font-family;
 
           &.time {
             display: flex;
@@ -560,7 +555,6 @@ $margin-left-right: 21.3px;
 
   .route-stop-address-row {
     font-size: $font-size-xsmall;
-    font-family: $font-family;
     font-weight: $font-weight-book;
     line-height: 1.25rem;
     letter-spacing: -0.03em;
@@ -1449,7 +1443,6 @@ $margin-left-right: 21.3px;
           .similar-route-text {
             flex-grow: 1;
             overflow: auto;
-            font-family: $font-family;
             display: flex;
             flex-direction: column;
             white-space: nowrap;
