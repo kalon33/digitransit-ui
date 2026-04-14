@@ -231,6 +231,7 @@ export const planConnection = graphql`
                   networkId
                 }
               }
+              viaLocationType
             }
             to {
               lat
@@ -273,6 +274,7 @@ export const planConnection = graphql`
                   url
                 }
               }
+              viaLocationType
             }
             fareProducts {
               product {

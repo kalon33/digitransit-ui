@@ -376,7 +376,7 @@ class TransitLeg extends React.Component {
     };
     const routeNotifications = [];
     if (
-      config.NODE_ENV !== 'test' &&
+      process.env.NODE_ENV !== 'test' &&
       config.routeNotifications &&
       config.routeNotifications.length > 0
     ) {
@@ -442,6 +442,8 @@ class TransitLeg extends React.Component {
             !this.state.showIntermediateStops ||
             (leg.intermediatePlaces.length === 0 && interliningLegs.length < 1)
           }
+          viaType={leg.from.viaLocationType}
+          isStop={!!leg.from.stop}
         />
         <div
           style={{
@@ -478,7 +480,7 @@ class TransitLeg extends React.Component {
                 to={stopPagePath(false, leg.from.stop.gtfsId)}
               >
                 {leg.from.name}
-                {leg.isViaPoint && (
+                {leg.from.viaLocationType && (
                   <Icon
                     img="icon_mapMarker"
                     className="itinerary-mapmarker-icon"

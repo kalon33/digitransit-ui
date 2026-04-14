@@ -25,6 +25,7 @@ $livi-funicular-pink: #f0f;
 $background-color: #fff;
 $background-color-darker: #e0e5e8;
 $background-color-lighter: #f2f5f7;
+$suggestion-highlight-color: #dfe5e8;
 $selector-background-color: #f4f4f4;
 $button-hover-color: #f4f4f4;
 $theme-primary-color: $livi-blue;
@@ -70,6 +71,7 @@ $navigation-background-color: $background-color-lighter;
 $route-title-margin: 2.7em;
 $success-bar-color: #3b7f00;
 $attention-color: #c53291;
+$control-border-color: #888;
 
 /* Vehicle palette */
 $airplane-color: $livi-airplane-blue;
@@ -100,6 +102,7 @@ $font-family: 'Roboto', arial, georgia, serif;
 $heading-font-family: $font-family;
 $button-font-family: $font-family;
 $font-weight-book: 400;
+$font-weight-semibold: 600;
 $font-weight-medium: 700;
 $font-weight-map-container: $font-weight-book;
 $font-weight-disclaimer: $font-weight-medium;

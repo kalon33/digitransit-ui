@@ -3,13 +3,13 @@ import React from 'react';
 import cx from 'classnames';
 import Icon from '../Icon';
 import RouteNumber from '../RouteNumber';
-import { IndoorLegType } from '../../constants';
+import { ViaLocationType, IndoorLegType } from '../../constants';
 
 class ItineraryCircleLineWithIcon extends React.Component {
   static propTypes = {
     index: PropTypes.number.isRequired,
     modeClassName: PropTypes.string.isRequired,
-    isVia: PropTypes.bool,
+    viaType: PropTypes.string,
     indoorLegType: PropTypes.oneOf(Object.values(IndoorLegType)),
     showIntermediateSteps: PropTypes.bool,
     bikePark: PropTypes.bool,
@@ -19,11 +19,12 @@ class ItineraryCircleLineWithIcon extends React.Component {
     icon: PropTypes.string,
     style: PropTypes.shape({}),
     isNotFirstLeg: PropTypes.bool,
+    isStop: PropTypes.bool,
     indoorStepsLength: PropTypes.number,
   };
 
   static defaultProps = {
-    isVia: false,
+    viaType: null,
     indoorLegType: IndoorLegType.NoStepsInside,
     showIntermediateSteps: false,
     color: null,
@@ -33,19 +34,18 @@ class ItineraryCircleLineWithIcon extends React.Component {
     icon: undefined,
     style: {},
     isNotFirstLeg: undefined,
+    isStop: false,
     indoorStepsLength: 0,
   };
 
   isFirstChild = () => {
     return (
-      !this.props.isNotFirstLeg &&
-      this.props.index === 0 &&
-      this.props.isVia === false
+      !this.props.isNotFirstLeg && this.props.index === 0 && !this.props.viaType
     );
   };
 
   getMarker = top => {
-    if (this.props.isVia === true) {
+    if (this.props.viaType === ViaLocationType.Visit && !this.props.isStop) {
       return (
         <div className="itinerary-icon-container">
           <Icon img="icon_mapMarker" className="itinerary-icon via via-it" />
@@ -129,7 +129,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
     return (
       <div
         className={cx('leg-before', this.props.modeClassName, {
-          via: this.props.isVia,
+          via: !!this.props.viaType,
           indoor: this.props.indoorLegType !== IndoorLegType.NoStepsInside,
           'has-indoor-steps': this.props.indoorStepsLength !== 0,
           'only-one-step': this.props.indoorStepsLength === 1,
