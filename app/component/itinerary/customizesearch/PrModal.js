@@ -57,15 +57,21 @@ export default function PrModal({ closeModal }) {
             </div>
           </div>
           <div className="pr-beta">
-            <div className="icon-area">
-              <Icon
-                img="personalization"
-                color={config.colors.primary}
-                height={5}
-                width={5}
-              />
-            </div>
-            <div className="beta-desc">
+            {breakpoint === 'large' && (
+              <div className="icon-area">
+                <Icon
+                  img="personalization"
+                  color={config.colors.primary}
+                  height={5}
+                  width={5}
+                />
+              </div>
+            )}
+            <div
+              className={cx('beta-desc', {
+                'beta-desc-mobile': breakpoint !== 'large',
+              })}
+            >
               <span className="beta-label">Beta</span>
               <span>
                 <FormattedMessage id="personalisation-beta" />
