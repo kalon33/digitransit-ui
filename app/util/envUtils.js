@@ -9,9 +9,6 @@
  *
  * @returns boolean value determining if any dev environment flag is active
  */
-export function IS_DEV() {
-  return (
-    process.env.RUN_ENV === 'development' ||
-    process.env.NODE_ENV !== 'production'
-  );
-}
+export const IS_DEV =
+  process.env.RUN_ENV === 'development' ||
+  process.env.NODE_ENV !== 'production';
