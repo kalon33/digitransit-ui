@@ -6,7 +6,7 @@ const CONFIG = 'oulu';
 const APP_DESCRIPTION = 'Oulun seudun reittiopas';
 const APP_TITLE = 'Reittiopas';
 
-const virtualMonitorBaseUrl = IS_DEV()
+const virtualMonitorBaseUrl = IS_DEV
   ? 'https://dev-oulumonitori.digitransit.fi'
   : 'https://pysakkinaytto.osl.fi';
 
