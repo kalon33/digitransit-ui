@@ -18,7 +18,7 @@ function PlatformNumber({ number, short, isRailOrSubway, updated, withText }) {
       <span className="platform-short">
         {withText && (
           <FormattedMessage
-            id={isRailOrSubway ? 'track-short-no-num' : 'platform-short-no-num'}
+            id={isRailOrSubway ? 'track' : 'platform-short-no-num'}
             defaultMessage={isRailOrSubway ? 'Track ' : 'Plat. '}
           />
         )}

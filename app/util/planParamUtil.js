@@ -273,10 +273,9 @@ export function planQueryNeeded(
   }
 }
 
-function getLocation(str, planType) {
+function getLocation(str) {
   const loc = otpToLocation(str);
-  // direct car routing from/to a stop does not work
-  if (loc.gtfsId && planType !== PLANTYPE.CAR) {
+  if (loc.gtfsId) {
     return {
       location: {
         stopLocation: { stopLocationId: loc.gtfsId },
@@ -305,8 +304,8 @@ export function getPlanParams(
   planType,
   relaxSettings = false,
 ) {
-  const fromPlace = getLocation(from, planType);
-  const toPlace = getLocation(to, planType);
+  const fromPlace = getLocation(from);
+  const toPlace = getLocation(to);
   const useLatestArrival = arriveBy === 'true';
   // estimate distance for search iteration heuristics
   const fromLocation = otpToLocation(from);
@@ -314,11 +313,33 @@ export function getPlanParams(
   const intermediateLocations = getIntermediatePlaces({
     intermediatePlaces,
   });
-  const via = intermediateLocations.map(loc => ({
-    passThrough: {
-      stopLocationIds: [loc.gtfsId],
-    },
-  }));
+  let via = intermediateLocations
+    .map(loc => {
+      if (loc.gtfsId) {
+        return {
+          visit: {
+            stopLocationIds: [loc.gtfsId],
+            coordinate: {
+              latitude: loc.lat,
+              longitude: loc.lon,
+            },
+          },
+        };
+      }
+      if (loc.lat && loc.lon) {
+        return {
+          visit: {
+            coordinate: {
+              latitude: loc.lat,
+              longitude: loc.lon,
+            },
+          },
+        };
+      }
+      return null;
+    })
+    .filter(Boolean);
+
   const distance = estimateItineraryDistance(
     fromLocation,
     toLocation,
@@ -418,6 +439,7 @@ export function getPlanParams(
       egress = access;
       direct = directFlexOnly ? ['WALK', 'FLEX'] : null;
       transitOnly = false;
+      via = null;
       break;
     default: // direct modes
       direct = [planType];

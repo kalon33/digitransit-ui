@@ -43,7 +43,9 @@ export default function AppBar(
   return (
     <>
       {disruptionInfoOpen && <DisruptionInfo setOpen={toggleDisruptionInfo} />}
-      {config.NODE_ENV !== 'test' && <MessageBar breakpoint={breakpoint} />}
+      {process.env.NODE_ENV !== 'test' && (
+        <MessageBar breakpoint={breakpoint} />
+      )}
       <nav className={`top-bar ${breakpoint !== 'large' ? 'mobile' : ''}`}>
         <section className="title">
           <button

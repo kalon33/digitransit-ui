@@ -272,37 +272,6 @@ $btn-heigth: 17px;
       color: rgb(0, 122, 201);
     }
   }
-
-  &.no-bike-allowed-popup {
-    .popup-icon,
-    .popup-text {
-      text-align: center;
-    }
-
-    .popup-icon {
-      margin-bottom: 1em;
-    }
-
-    .popup-text {
-      margin-bottom: 1.5em;
-      font-size: $font-size-large;
-      user-select: none;
-    }
-
-    .close-popup {
-      display: flex;
-      flex-direction: row-reverse;
-    }
-
-    .icon {
-      &.caution {
-        width: 3.5em;
-        height: 3.5em;
-        fill: rgb(220, 4, 81);
-        color: #fff;
-      }
-    }
-  }
 }
 
 .mode-filter {
@@ -340,12 +309,18 @@ select {
 }
 
 .canceled {
-  color: $cancelation-red;
-  background: linear-gradient(
-    to bottom,
-    transparent calc(50% - 1px),
-    $cancelation-red calc(50% - 1px),
-    $cancelation-red calc(50% + 1px),
-    transparent calc(50% + 1px)
-  );
+  color: $black;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 2px;
+    background: $cancelation-red;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
 }
