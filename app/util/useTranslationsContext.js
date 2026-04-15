@@ -32,6 +32,6 @@ export function AppIntlProvider({ locale, messages, children }) {
 
 AppIntlProvider.propTypes = {
   locale: PropTypes.string.isRequired,
-  messages: PropTypes.object.isRequired,
+  messages: PropTypes.objectOf(PropTypes.string).isRequired,
   children: PropTypes.node.isRequired,
 };

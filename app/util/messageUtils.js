@@ -1,4 +1,5 @@
-import translations from '../translations';
+import { useTranslationsContext } from './useTranslationsContext';
+import { useConfigContext } from '../configurations/ConfigContext';
 
 export const favouriteTypes = [
   'stop',
@@ -9,7 +10,7 @@ export const favouriteTypes = [
 ];
 
 /**
- * Generates a multi-language favourite save or delete error message
+ * Generates a favourite save or delete error message
  * that can be stored in MessageStore.
  *
  * @param {string} type the type of the favourite (stop|station|citybike-station|route|place)
@@ -17,31 +18,29 @@ export const favouriteTypes = [
  * @returns error message that can be added to MessageStore
  */
 export function failedFavouriteMessage(type, isSave) {
-  const english = translations.en;
+  const { language } = useConfigContext();
+  const intl = useTranslationsContext();
+
   const content = {};
   const favouriteType = favouriteTypes.includes(type)
     ? type
     : favouriteTypes[0];
-  Object.keys(translations).forEach(lang => {
-    const current = translations[lang];
-    content[lang] = [];
+  content[language] = [];
 
-    const headingKey = isSave
-      ? `add-favourite-${favouriteType}-failed-heading`
-      : 'delete-favourite-failed-heading';
-    const heading = current[headingKey] || english[headingKey];
-    content[lang].push({
-      type: 'heading',
-      content: heading,
-    });
-
-    const textKey = 'favourite-failed-text';
-    const text = current[textKey] || english[textKey];
-    content[lang].push({
-      type: 'text',
-      content: text,
-    });
+  const headingKey = isSave
+    ? `add-favourite-${favouriteType}-failed-heading`
+    : 'delete-favourite-failed-heading';
+  content[language].push({
+    type: 'heading',
+    content: intl.formatMessage({ id: headingKey }),
   });
+
+  const textKey = 'favourite-failed-text';
+  content[language].push({
+    type: 'text',
+    content: intl.formatMessage({ id: textKey }),
+  });
+
   return {
     id: isSave
       ? `failedFavouriteSave-${favouriteType}`

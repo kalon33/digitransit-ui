@@ -1,7 +1,5 @@
-import translations from '../translations';
+export const geolocationMessages = {};
 
-const english = translations.en;
-const geolocationMessages = {};
 const sections = ['heading', 'text', 'a'];
 const events = {
   timeout: {
@@ -26,35 +24,26 @@ const events = {
   },
 };
 
-Object.keys(events).forEach(e => {
-  const message = {
-    ...events[e],
-    id: `geolocation_${e}`,
-    icon: 'caution_white_exclamation',
-    iconColor: '#dc0451',
-    backgroundColor: '#fdf0f5',
-    content: {},
-  };
+export function initGeolocationMessages(translations, language) {
+  Object.keys(events).forEach(e => {
+    const message = {
+      ...events[e],
+      id: `geolocation_${e}`,
+      icon: 'caution_white_exclamation',
+      iconColor: '#dc0451',
+      backgroundColor: '#fdf0f5',
+      content: {},
+    };
 
-  // assemble multilanguage contents
-  Object.keys(translations).forEach(lang => {
-    const current = translations[lang];
-    message.content[lang] = [];
+    message.content[language] = [];
 
     sections.forEach(s => {
       const key = `geolocation-${e}-${s}`;
-      const section = current[key] || english[key];
-
-      if (section) {
-        message.content[lang].push({
-          type: s,
-          content: section,
-        });
-      }
+      message.content[language].push({
+        type: s,
+        content: translations[key],
+      });
     });
+    geolocationMessages[e] = message;
   });
-
-  geolocationMessages[e] = message;
-});
-
-export default geolocationMessages;
+}

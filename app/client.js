@@ -35,6 +35,7 @@ import {
   addAnalyticsEvent,
   handleUserAnalytics,
 } from './util/analyticsUtils';
+import { initGeolocationMessages } from './util/geolocationMessages';
 import { configureCountry } from './util/configureCountry';
 import { getUser } from './util/apiUtils';
 import setUser from './action/userActions';
@@ -106,6 +107,7 @@ async function init() {
   const { language } = config;
   const translations = await import(`./intl/${language}`);
   i18n.changeLanguage(language);
+  initGeolocationMessages(translations.default[language], language);
 
   const localeData = await import(`react-intl/locale-data/${language}`);
   addLocaleData(localeData.default);
