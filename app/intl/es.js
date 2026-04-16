@@ -158,6 +158,7 @@ export default {
     'use-own-position': 'Usar localización actual',
     'via-point': 'Punto intermedio',
     'view-route': 'Ver ruta',
+    wait: 'Esperar',
     'wait-amount-of-time': 'Esperar {duration}',
     walk: 'andando',
     'walk-distance-duration': 'Andar {duration} ({distance})',

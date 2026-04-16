@@ -769,6 +769,7 @@ export default {
     'via-leg-stop-duration': 'Mellanstopp {stayDuration}',
     'via-point': 'Stoppets längd',
     'view-route': 'Visa linje',
+    wait: 'Vänta',
     'wait-amount-of-time': 'Vänta {duration}',
     'wait-in-vehicle': 'Vänta i fordonet',
     walk: 'gång',

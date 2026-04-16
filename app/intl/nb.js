@@ -133,6 +133,7 @@ export default {
     'use-own-position': 'Bruk min posisjon',
     'via-leg-stop-duration': 'Viapunkt {stayDuration}',
     'via-point': 'Viapunkt',
+    wait: 'Vent',
     'wait-amount-of-time': 'Vent {duration}',
     walk: 'gå',
     'walk-distance-duration': 'Gå {duration} ({distance})',

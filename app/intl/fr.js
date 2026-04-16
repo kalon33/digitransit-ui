@@ -174,6 +174,7 @@ export default {
     'via-leg-stop-duration': "Attente de {stayDuration} à l'étape",
     'via-point': 'Étape',
     'view-route': "Voir l'itinéraire",
+    wait: 'Attendre',
     'wait-amount-of-time': 'Attendre {duration}',
     walk: 'marche',
     'walk-distance-duration': 'Marcher {duration} ({distance})',

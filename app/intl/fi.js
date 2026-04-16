@@ -759,6 +759,7 @@ export default {
     'via-leg-stop-duration': 'Välipisteessä {stayDuration}',
     'via-point': 'Välipiste',
     'view-route': 'Linjan tiedot',
+    wait: 'Odota',
     'wait-amount-of-time': 'Odota {duration}',
     'wait-in-vehicle': 'Odota kulkuneuvossa',
     walk: 'kävelyn',

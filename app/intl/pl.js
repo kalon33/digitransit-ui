@@ -588,6 +588,7 @@ export default {
     'via-leg-stop-duration': 'W punkcie pośrednim {stayDuration}',
     'via-point': 'Punkt pośredni',
     'view-route': 'Pokaż trasę',
+    wait: 'Czekaj',
     'wait-amount-of-time': 'Czekaj {duration}',
     walk: 'walking',
     'walk-bike-itinerary-1': 'Your search returned only walking routes.',

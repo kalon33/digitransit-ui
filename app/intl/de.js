@@ -326,6 +326,7 @@ export default {
     'via-leg-stop-duration': 'Am Zwischenstopp {stayDuration}',
     'via-point': 'Zwischenstopp',
     'view-route': 'Route anzeigen',
+    wait: 'Wartezeit',
     'wait-amount-of-time': 'Wartezeit {duration}',
     walk: 'gehen',
     'walk-bike-itinerary-1': 'Ihre Suche ergab nur Fußweg-Routen.',

@@ -776,6 +776,7 @@ export default {
     'via-leg-stop-duration': 'At via point {stayDuration}',
     'via-point': 'Via point',
     'view-route': 'View Route',
+    wait: 'Wait',
     'wait-amount-of-time': 'Wait {duration}',
     'wait-in-vehicle': 'Wait on board',
     walk: 'walking',

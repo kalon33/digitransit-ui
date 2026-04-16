@@ -249,6 +249,7 @@ export default {
     'via-leg-stop-duration': 'La orice punct {stayDuration}',
     'via-point': 'Punct intermediar',
     'view-route': 'Vedeți ruta',
+    wait: 'Așteptare',
     'wait-amount-of-time': 'Așteptați {duration}',
     walk: 'mers pe jos',
     'walk-distance-duration': 'Mergeți pe jos {duration} ({distance})',
