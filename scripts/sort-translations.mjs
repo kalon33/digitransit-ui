@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-const TRANSLATIONS_FILE = path.resolve(__dirname, '../app/translations.js');
+const TRANSLATIONS_FILE = path.resolve(
+  import.meta.dirname,
+  '../app/translations.mjs',
+);
 const PRINT_WIDTH = 80;
 const VALID_FLAGS = new Set(['--check', '--fix']);
 
@@ -65,7 +68,7 @@ function sortedTranslationsFileContent(translations) {
 
 async function main() {
   try {
-    console.log('---------- Running sort-translations.js script ----------');
+    console.log('---------- Running sort-translations.mjs script ----------');
     const flag = process.argv[2];
     if (!VALID_FLAGS.has(flag)) {
       console.error(
