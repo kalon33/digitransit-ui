@@ -187,7 +187,7 @@ $margin-left-right: 21.3px;
 
 // stop list
 .route-stop-list {
-  @include font-narrow-medium;
+  @include font-medium;
 
   background-color: $white;
   margin: 0 0 0 2px;
@@ -511,6 +511,7 @@ $margin-left-right: 21.3px;
 
         span {
           margin: 0;
+          font-family: $font-family;
 
           &.time {
             display: flex;
