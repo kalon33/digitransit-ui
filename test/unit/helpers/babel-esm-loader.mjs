@@ -33,7 +33,7 @@ export async function load(url, context, defaultLoad) {
   const transformed = await transformAsync(source, {
     filename: fileURLToPath(url),
     caller: {
-      name: 'mocha-esm-loader',
+      name: 'babel-esm-loader',
       supportsStaticESM: true,
     },
     sourceMaps: 'inline',
