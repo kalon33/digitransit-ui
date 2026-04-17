@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { useFragment } from 'react-relay';
 import { matchShape, routerShape } from 'found';
-import { intlShape, FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { planEdgeShape } from '../../util/shapes';
 import Icon from '../Icon';
 import ItineraryList from './ItineraryList';
@@ -217,7 +217,7 @@ ItineraryListContainer.defaultProps = {
 ItineraryListContainer.contextTypes = {
   router: routerShape.isRequired,
   match: matchShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default ItineraryListContainer;

@@ -1,7 +1,6 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { intlShape } from 'react-intl';
 import { configShape } from '../util/shapes';
 
 const ZoneIcon = ({ className, zoneId, showUnknown }, { config, intl }) => {
@@ -73,7 +72,7 @@ ZoneIcon.defaultProps = {
 };
 
 ZoneIcon.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   config: configShape.isRequired,
 };
 

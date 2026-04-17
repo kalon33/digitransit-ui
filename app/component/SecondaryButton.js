@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
 
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import Icon from './Icon';
 
 const secondaryButton = (props, context) => {
@@ -39,7 +39,7 @@ secondaryButton.propTypes = {
 };
 
 secondaryButton.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default secondaryButton;

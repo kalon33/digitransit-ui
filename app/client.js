@@ -1,5 +1,4 @@
 import React from 'react';
-import { addLocaleData } from 'react-intl';
 import ReactDOM from 'react-dom';
 import BrowserProtocol from 'farce/BrowserProtocol';
 import createFarceRouter from 'found/createFarceRouter';
@@ -20,6 +19,7 @@ import { Environment, RecordSource, Store } from 'relay-runtime';
 import { RelayEnvironmentProvider } from 'react-relay';
 import { setRelayEnvironment } from '@digitransit-search-util/digitransit-search-util-query-utils';
 import { Settings } from 'luxon';
+import { IntlProvider } from 'react-intl';
 import { configShape } from './util/shapes';
 import i18n from './i18n';
 import { historyMiddlewares, render } from './routes';
@@ -28,7 +28,7 @@ import { BUILD_TIME } from './buildInfo';
 import ErrorBoundary from './component/ErrorBoundary';
 import oldParamParser from './util/oldParamParser';
 import { ClientProvider as ClientBreakpointProvider } from './util/withBreakpoint';
-import { AppIntlProvider } from './util/useTranslationsContext';
+import IntlBridge from './util/IntlBridge';
 import meta from './meta';
 import {
   initAnalyticsClientSide,
@@ -110,8 +110,6 @@ async function init() {
   i18n.changeLanguage(language);
   initGeolocationMessages(translations.default[language], language);
   initFailedFavouriteMessages(translations.default[language], language);
-  const localeData = await import(`react-intl/locale-data/${language}`);
-  addLocaleData(localeData.default);
 
   const network = new RelayNetworkLayer([
     cacheMiddleware({
@@ -201,7 +199,7 @@ async function init() {
       });
   }
 
-  const ContextProvider = provideContext(AppIntlProvider, {
+  const ContextProvider = provideContext(IntlProvider, {
     config: configShape,
   });
 
@@ -213,23 +211,25 @@ async function init() {
           messages={translations.default[language]}
           context={context.getComponentContext()}
         >
-          <RelayEnvironmentProvider environment={environment}>
-            <FavouriteProvider context={context.getComponentContext()}>
-              <ErrorBoundary>
-                <React.Fragment>
-                  <Helmet
-                    {...meta(
-                      language,
-                      window.location.host,
-                      window.location.href,
-                      config,
-                    )}
-                  />
-                  <Router resolver={resolver} />
-                </React.Fragment>
-              </ErrorBoundary>
-            </FavouriteProvider>
-          </RelayEnvironmentProvider>
+          <IntlBridge>
+            <RelayEnvironmentProvider environment={environment}>
+              <FavouriteProvider context={context.getComponentContext()}>
+                <ErrorBoundary>
+                  <React.Fragment>
+                    <Helmet
+                      {...meta(
+                        language,
+                        window.location.host,
+                        window.location.href,
+                        config,
+                      )}
+                    />
+                    <Router resolver={resolver} />
+                  </React.Fragment>
+                </ErrorBoundary>
+              </FavouriteProvider>
+            </RelayEnvironmentProvider>
+          </IntlBridge>
         </ContextProvider>
       </ClientBreakpointProvider>
     </ConfigProvider>

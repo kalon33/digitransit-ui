@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { intlShape } from 'react-intl';
 import TruncateMarkup from 'react-truncate-markup';
 
 const TruncatedMessage = (
@@ -63,7 +62,7 @@ TruncatedMessage.defaultProps = {
 };
 
 TruncatedMessage.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default TruncatedMessage;

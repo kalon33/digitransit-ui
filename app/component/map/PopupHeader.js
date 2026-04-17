@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { intlShape } from 'react-intl';
 
 const PopupHeader = ({ header, subHeader, children }, { intl }) => {
   return (
@@ -31,7 +30,7 @@ PopupHeader.defaultProps = {
 };
 
 PopupHeader.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default PopupHeader;

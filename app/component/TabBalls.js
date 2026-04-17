@@ -1,6 +1,5 @@
 import React, { useRef, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
-import { intlShape } from 'react-intl';
 
 function setDecreasingAttributes(tabBalls) {
   const newTabBalls = tabBalls;
@@ -148,7 +147,7 @@ TabBalls.propTypes = {
 };
 
 TabBalls.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 TabBalls.defaultProps = {

@@ -5,7 +5,7 @@ import uniqBy from 'lodash/uniqBy';
 import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
 import padStart from 'lodash/padStart';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { matchShape, routerShape } from 'found';
 import { useFragment } from 'react-relay';
 import { connectToStores } from 'fluxible-addons-react';
@@ -483,7 +483,7 @@ Timetable.contextTypes = {
   router: routerShape.isRequired,
   match: matchShape.isRequired,
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 Timetable.displayName = 'Timetable';

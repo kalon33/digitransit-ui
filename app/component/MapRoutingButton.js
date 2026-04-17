@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { matchShape, routerShape } from 'found';
 import Modal from '@hsl-fi/modal';
 import { stopShape, configShape } from '../util/shapes';
@@ -154,7 +154,7 @@ export default function MapRoutingButton(
 MapRoutingButton.propTypes = { stop: stopShape.isRequired };
 
 MapRoutingButton.contextTypes = {
-  intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+  intl: PropTypes.object.isRequired, // eslint-disable-line react/no-typos
   config: configShape.isRequired,
   executeAction: PropTypes.func.isRequired,
   router: routerShape.isRequired,

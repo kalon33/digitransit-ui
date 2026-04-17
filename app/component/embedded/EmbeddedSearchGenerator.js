@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState, useRef } from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import DTAutosuggest from '@digitransit-component/digitransit-component-autosuggest';
 import { configShape } from '../../util/shapes';
@@ -473,7 +473,7 @@ EmbeddedSearchGenerator.defaultProps = { breakpoint: undefined };
 
 EmbeddedSearchGenerator.contextTypes = {
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default connectToStores(

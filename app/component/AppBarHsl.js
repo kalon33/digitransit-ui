@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 import PropTypes from 'prop-types';
 import React, { useState, useEffect, useRef } from 'react';
-import { intlShape } from 'react-intl';
 import { matchShape } from 'found';
 import { Helmet } from 'react-helmet';
 import SiteHeader from '@hsl-fi/site-header';
@@ -146,7 +145,7 @@ AppBarHsl.contextTypes = {
   match: matchShape.isRequired,
   config: configShape.isRequired,
   getStore: PropTypes.func.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 AppBarHsl.propTypes = {

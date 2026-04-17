@@ -1,5 +1,4 @@
 import React from 'react';
-import { intlShape } from 'react-intl';
 import { uniq } from 'lodash';
 import AlertList from '../AlertList';
 import {
@@ -113,6 +112,6 @@ const StopAlerts = ({ stop }, { intl, config }) => {
 };
 
 StopAlerts.propTypes = { stop: stopShape.isRequired };
-StopAlerts.contextTypes = { intl: intlShape, config: configShape };
+StopAlerts.contextTypes = { config: configShape };
 
 export default StopAlerts;

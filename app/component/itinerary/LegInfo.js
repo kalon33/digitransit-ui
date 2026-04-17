@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import cx from 'classnames';
 import Link from 'found/Link';
 import PropTypes from 'prop-types';
-import { intlShape } from 'react-intl';
 import Modal from '@hsl-fi/modal';
 import { legShape, configShape } from '../../util/shapes';
 import { legTimeStr } from '../../util/legUtils';
@@ -160,6 +159,6 @@ LegInfo.defaultProps = {
 };
 
 LegInfo.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   config: configShape.isRequired,
 };

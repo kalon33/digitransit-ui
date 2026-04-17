@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { displayDistance } from '../../../util/geo-utils';
@@ -194,6 +194,6 @@ NaviInstructions.defaultProps = {
   showDestinationInfo: false,
 };
 NaviInstructions.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   config: configShape.isRequired,
 };

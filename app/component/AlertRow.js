@@ -3,7 +3,6 @@ import capitalize from 'lodash/capitalize';
 import { DateTime } from 'luxon';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { intlShape } from 'react-intl';
 import Link from 'found/Link';
 import { configShape } from '../util/shapes';
 import ExternalLink from './ExternalLink';
@@ -266,7 +265,7 @@ AlertRow.propTypes = {
 
 AlertRow.contextTypes = {
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 AlertRow.defaultProps = {

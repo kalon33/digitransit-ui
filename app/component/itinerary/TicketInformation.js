@@ -1,7 +1,6 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { intlShape } from 'react-intl';
 import { v4 as uuid } from 'uuid';
 import { configShape, fareShape, legShape } from '../../util/shapes';
 import { renderZoneTicket } from './ZoneTicket';
@@ -113,7 +112,7 @@ TicketInformation.defaultProps = {
 
 TicketInformation.contextTypes = {
   config: configShape,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 TicketInformation.displayName = 'TicketInformation';

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Link from 'found/Link';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import cx from 'classnames';
 import {
   alertShape,
@@ -386,7 +386,7 @@ RouteStop.defaultProps = {
 };
 
 RouteStop.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   config: configShape.isRequired,
 };
 

@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import { intlShape } from 'react-intl';
 import React from 'react';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import { startLocationWatch } from '../action/PositionActions';
@@ -76,7 +75,7 @@ export default function withGeomover(WrappedComponent) {
   );
 
   geomover.contextTypes = {
-    intl: intlShape.isRequired,
+    intl: PropTypes.object.isRequired,
     executeAction: PropTypes.func.isRequired,
     getStore: PropTypes.func.isRequired,
   };

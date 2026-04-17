@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
-import { intlShape } from 'react-intl';
 import { configShape } from '../../util/shapes';
 import { epochToTime } from '../../util/timeUtils';
 import Icon from '../Icon';
@@ -88,7 +87,7 @@ export default function DepartureTime(props, context) {
 }
 
 DepartureTime.contextTypes = {
-  intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+  intl: PropTypes.object.isRequired, // eslint-disable-line react/no-typos
   config: configShape.isRequired,
 };
 
@@ -114,7 +113,7 @@ DepartureTime.defaultProps = {
 
 DepartureTime.contextTypes = {
   config: configShape.isRequired,
-  intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+  intl: PropTypes.object.isRequired, // eslint-disable-line react/no-typos
 };
 
 /**

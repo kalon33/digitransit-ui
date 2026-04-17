@@ -25,7 +25,6 @@ const isProduction = mode === 'production';
 const isDevelopment = !isProduction;
 
 const languageExp = new RegExp(`^./(${languages.join('|')})$`);
-const reactIntlExpression = /react-intl[/\\]locale-data$/;
 const intlExpression = /intl[/\\]locale-data[/\\]jsonp$/;
 const themeExpression = /sass[/\\]themes$/;
 const selectedTheme = new RegExp(
@@ -296,7 +295,6 @@ module.exports = {
       ? false
       : process.env.WEBPACK_DEVTOOL || (isProduction ? 'source-map' : 'eval'),
   plugins: [
-    new webpack.ContextReplacementPlugin(reactIntlExpression, languageExp),
     new webpack.ContextReplacementPlugin(intlExpression, languageExp),
     ...(isDevelopment
       ? [new webpack.ContextReplacementPlugin(themeExpression, selectedTheme)]

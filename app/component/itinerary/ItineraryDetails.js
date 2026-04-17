@@ -3,7 +3,7 @@ import connectToStores from 'fluxible-addons-react/connectToStores';
 import { matchShape, routerShape } from 'found';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { useFragment } from 'react-relay';
 import { getRouteMode } from '../../util/modeUtils';
 import {
@@ -428,7 +428,7 @@ ItineraryDetails.contextTypes = {
   config: configShape.isRequired,
   router: routerShape.isRequired,
   match: matchShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   getStore: PropTypes.func.isRequired,
 };
 

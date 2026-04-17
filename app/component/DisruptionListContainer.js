@@ -2,7 +2,7 @@ import cx from 'classnames';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { createFragmentContainer, graphql } from 'react-relay';
 import AlertList from './AlertList';
 import Icon from './Icon';
@@ -175,7 +175,7 @@ function DisruptionListContainer(
 }
 
 DisruptionListContainer.contextTypes = {
-  intl: intlShape,
+  intl: PropTypes.object,
 };
 
 DisruptionListContainer.propTypes = {

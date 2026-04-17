@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { configShape } from '../../util/shapes';
 import Icon from '../Icon';
 import { durationToString } from '../../util/timeUtils';
@@ -46,5 +46,5 @@ StreetSummary.defaultProps = { className: '', icon: undefined };
 
 StreetSummary.contextTypes = {
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };

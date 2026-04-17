@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import cx from 'classnames';
 import Icon from './Icon';
 
@@ -71,7 +71,7 @@ PlatformNumber.defaultProps = {
 };
 
 PlatformNumber.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 PlatformNumber.displayName = 'PlatformNumber';

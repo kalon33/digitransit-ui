@@ -1,4 +1,4 @@
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
@@ -68,7 +68,7 @@ TaxiLinkContainer.propTypes = {
 };
 
 TaxiLinkContainer.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 TaxiLinkContainer.defaultProps = {

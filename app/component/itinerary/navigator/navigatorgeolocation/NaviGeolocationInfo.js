@@ -1,7 +1,7 @@
 import Button from '@hsl-fi/button';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { configShape } from '../../../../util/shapes';
 
 const NaviGeolocationInfo = ({ logo, onClose }, context) => {
@@ -32,7 +32,7 @@ NaviGeolocationInfo.defaultProps = {
 };
 
 NaviGeolocationInfo.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   config: configShape.isRequired,
 };
 

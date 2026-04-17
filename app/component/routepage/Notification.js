@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
-import { intlShape } from 'react-intl';
 import { configShape } from '../../util/shapes';
 import { getDialogState, setDialogState } from '../../store/localStorage';
 
@@ -105,7 +104,7 @@ RouteNotification.propTypes = {
 
 RouteNotification.contextTypes = {
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default RouteNotification;

@@ -2,7 +2,6 @@ import cx from 'classnames';
 import uniqueId from 'lodash/uniqueId';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { intlShape } from 'react-intl';
 import Message from './Message';
 
 import { isKeyboardSelectionEvent } from '../util/browser';
@@ -103,7 +102,7 @@ Checkbox.defaultProps = {
 };
 
 Checkbox.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default Checkbox;

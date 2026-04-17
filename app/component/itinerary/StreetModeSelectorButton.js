@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { intlShape } from 'react-intl';
 import cx from 'classnames';
 import { configShape, planShape } from '../../util/shapes';
 import Icon from '../Icon';
@@ -153,6 +152,6 @@ StreetModeSelectorButton.propTypes = {
 };
 
 StreetModeSelectorButton.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   config: configShape.isRequired,
 };

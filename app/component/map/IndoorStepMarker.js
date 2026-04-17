@@ -4,7 +4,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { default as L } from 'leaflet';
 
-import { intlShape } from 'react-intl';
 import cx from 'classnames';
 import { configShape, locationShape } from '../../util/shapes';
 import GenericMarker from './GenericMarker';
@@ -120,7 +119,7 @@ export default function IndoorStepMarker(
 
 IndoorStepMarker.contextTypes = {
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 IndoorStepMarker.propTypes = {

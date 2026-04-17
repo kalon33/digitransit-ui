@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { intlShape } from 'react-intl';
 import { configShape } from '../../../../util/shapes';
 import { useLogo } from '../hooks/useLogo';
 import NavigatorModal from '../NavigatorModal';
@@ -25,7 +24,7 @@ NaviGeolocationInfoModal.propTypes = {
 };
 
 NaviGeolocationInfoModal.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   config: configShape.isRequired,
 };
 

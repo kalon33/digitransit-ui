@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { intlShape } from 'react-intl';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import { configShape } from '../../../util/shapes';
@@ -81,7 +80,7 @@ NaviMessage.defaultProps = {
 };
 
 NaviMessage.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   config: configShape.isRequired,
 };
 

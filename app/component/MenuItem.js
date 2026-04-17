@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { routerShape } from 'found';
 
 const mapToLink = (href, children, onClick) => (
@@ -69,7 +69,7 @@ MenuItem.defaultProps = {
 
 MenuItem.contextTypes = {
   router: routerShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 MenuItem.displayName = 'MenuItem';

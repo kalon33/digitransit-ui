@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { intlShape } from 'react-intl';
 import { isKeyboardSelectionEvent } from '../../util/browser';
 import Icon from '../Icon';
 
@@ -31,7 +30,7 @@ ItineraryMapAction.defaultProps = {
 };
 
 ItineraryMapAction.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default ItineraryMapAction;

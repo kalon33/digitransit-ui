@@ -1,6 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
-import { intlShape } from 'react-intl';
 import { matchShape } from 'found';
 import { configShape } from '../../util/shapes';
 import { otpToLocation } from '../../util/otpStrings';
@@ -45,7 +45,7 @@ ItineraryPageMeta.propTypes = {
 
 ItineraryPageMeta.contextTypes = {
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default ItineraryPageMeta;

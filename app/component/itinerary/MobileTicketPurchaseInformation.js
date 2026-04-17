@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { intlShape, FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { configShape, fareShape } from '../../util/shapes';
 import { renderZoneTicket } from './ZoneTicket';
 import { getAlternativeFares, formatFare } from '../../util/fareUtils';
@@ -81,7 +81,7 @@ MobileTicketPurchaseInformation.defaultProps = {
 
 MobileTicketPurchaseInformation.contextTypes = {
   config: configShape,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 MobileTicketPurchaseInformation.displayName = 'TicketInformation';

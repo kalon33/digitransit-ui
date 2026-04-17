@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { configShape } from '../../util/shapes';
 import Icon from '../Icon';
 
@@ -38,7 +38,7 @@ StartNavi.propTypes = {
 
 StartNavi.contextTypes = {
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default StartNavi;

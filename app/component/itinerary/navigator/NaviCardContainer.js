@@ -1,7 +1,6 @@
 import { matchShape, routerShape } from 'found';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
-import { intlShape } from 'react-intl';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import {
   isAnyLegPropertyIdentical,
@@ -287,7 +286,7 @@ NaviCardContainer.defaultProps = {
 };
 
 NaviCardContainer.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   config: configShape.isRequired,
   match: matchShape.isRequired,
   router: routerShape.isRequired,

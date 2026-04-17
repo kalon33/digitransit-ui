@@ -2,7 +2,7 @@ import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { createRef, useLayoutEffect, useState } from 'react';
 import { useFragment } from 'react-relay';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import {
   legShape,
   locationShape,
@@ -158,7 +158,7 @@ export function RouteLeg(
 
 RouteLeg.propTypes = {
   leg: legShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   large: PropTypes.bool.isRequired,
   legLength: PropTypes.number.isRequired,
   fitRouteNumber: PropTypes.bool.isRequired,
@@ -1044,7 +1044,7 @@ Itinerary.defaultProps = {
 };
 
 Itinerary.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   config: configShape.isRequired,
 };
 

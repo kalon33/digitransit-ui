@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
-import { intlShape } from 'react-intl';
 import { configShape } from '../util/shapes';
 import { transitIconName } from '../util/modeUtils';
 import IconWithBigCaution from './IconWithBigCaution';
@@ -278,7 +277,7 @@ RouteNumber.defaultProps = {
 };
 
 RouteNumber.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   config: configShape.isRequired,
 };
 

@@ -1,6 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
-import { intlShape } from 'react-intl';
 import { useFragment, graphql } from 'react-relay';
 import { configShape, stopShape } from '../../util/shapes';
 import { generateMetaData } from '../../util/metaUtils';
@@ -50,7 +50,7 @@ StopPageMeta.propTypes = {
 
 StopPageMeta.contextTypes = {
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default StopPageMeta;

@@ -4,7 +4,6 @@ import { QueryRenderer, graphql } from 'react-relay';
 import Link from 'found/Link';
 import cx from 'classnames';
 import ReactRelayContext from 'react-relay/lib/ReactRelayContext';
-import { intlShape } from 'react-intl';
 import VehicleIcon from '../VehicleIcon';
 import TripLinkWithScroll from './TripLinkWithScroll';
 import { routePagePath, PREFIX_STOPS } from '../../util/path';
@@ -142,7 +141,7 @@ FuzzyTripLink.defaultProps = {
 };
 
 FuzzyTripLink.contextTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default FuzzyTripLink;

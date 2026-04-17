@@ -2,7 +2,7 @@ import React from 'react';
 import cx from 'classnames';
 import { Link } from 'found';
 import PropTypes from 'prop-types';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { displayDistance } from '../../util/geo-utils';
 import { legDestination, legTimeStr } from '../../util/legUtils';
 import { PREFIX_BIKEPARK } from '../../util/path';
@@ -104,7 +104,7 @@ const BikeParkLeg = (
 };
 BikeParkLeg.contextTypes = {
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 BikeParkLeg.propTypes = {

@@ -5,7 +5,6 @@ import TileLayer from 'react-leaflet/es/TileLayer';
 import AttributionControl from 'react-leaflet/es/AttributionControl';
 import ScaleControl from 'react-leaflet/es/ScaleControl';
 import ZoomControl from 'react-leaflet/es/ZoomControl';
-import { intlShape } from 'react-intl';
 import L from 'leaflet';
 import get from 'lodash/get';
 import isString from 'lodash/isString';
@@ -345,5 +344,5 @@ Map.contextTypes = {
   executeAction: PropTypes.func.isRequired,
   getStore: PropTypes.func,
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };

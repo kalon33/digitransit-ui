@@ -1,6 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
-import { intlShape } from 'react-intl';
 import { useFragment, graphql } from 'react-relay';
 import { configShape, stationShape } from '../../util/shapes';
 
@@ -51,7 +51,7 @@ TerminalPageMeta.propTypes = {
 
 TerminalPageMeta.contextTypes = {
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default TerminalPageMeta;

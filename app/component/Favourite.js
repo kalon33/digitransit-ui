@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import cx from 'classnames';
 import DialogModal from '@digitransit-component/digitransit-component-dialog-modal';
 import { matchShape } from 'found';
-import { intlShape } from 'react-intl';
 import Icon from './Icon';
 import { addAnalyticsEvent } from '../util/analyticsUtils';
 
@@ -136,7 +135,7 @@ export default function Favourite(
 
 Favourite.contextTypes = {
   match: matchShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 Favourite.propTypes = {
