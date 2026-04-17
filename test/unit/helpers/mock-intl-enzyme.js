@@ -10,9 +10,6 @@ import { mount, shallow } from 'enzyme';
 import { createIntl, createIntlCache, IntlProvider } from 'react-intl';
 import translations from '../../../app/intl/en';
 import IntlBridge from '../../../app/util/IntlBridge';
-import { initFailedFavouriteMessages } from '../../../app/util/messageUtils';
-
-initFailedFavouriteMessages(translations.en, 'en');
 
 const getMessages = locale => translations[locale] || {};
 

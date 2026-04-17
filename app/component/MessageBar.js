@@ -79,6 +79,19 @@ const toMessage = (alert, intl, config, lang) => {
   };
 };
 
+// Resolve a message's content array for rendering.
+// New shape: content is a flat array of { type, content: translationKey }
+// Old shape: content is an object keyed by locale { fi: [...], en: [...] }
+const resolveContent = (msg, lang, intl) => {
+  if (Array.isArray(msg.content)) {
+    return msg.content.map(item => ({
+      ...item,
+      content: intl.formatMessage({ id: item.content }),
+    }));
+  }
+  return msg.content[lang] || msg.content.fi;
+};
+
 class MessageBar extends Component {
   static contextTypes = {
     getStore: PropTypes.func.isRequired,
@@ -153,21 +166,23 @@ class MessageBar extends Component {
     }
   }
 
-  getTabContent = (textColor, slideIndex) =>
-    this.validMessages().map((el, index) => (
+  getTabContent = (textColor, slideIndex) => {
+    const { intl } = this.context;
+    return this.validMessages().map((el, index) => (
       <div
         key={el.id}
         className={`swipeable-tab ${slideIndex !== index && 'inactive'}`}
       >
         <MessageBarMessage
           key={el.id}
-          content={el.content[this.props.lang] || el.content.fi}
+          content={resolveContent(el, this.props.lang, intl)}
           textColor={textColor}
           truncate={!this.state.allAlertsOpen}
           onShowMore={this.openAllAlerts}
         />
       </div>
     ));
+  };
 
   validMessages = () => {
     const { serviceAlerts } = this.state;
@@ -184,14 +199,12 @@ class MessageBar extends Component {
       ),
       ...messages,
     ].filter(el => {
-      if (
-        Array.isArray(el.content[lang]) &&
-        el.content[lang].length > 0 &&
-        el.content[lang][0].content
-      ) {
-        return true;
-      }
-      return false;
+      const resolved = Array.isArray(el.content)
+        ? el.content
+        : el.content[lang] || el.content.fi;
+      return (
+        Array.isArray(resolved) && resolved.length > 0 && resolved[0].content
+      );
     });
   };
 
@@ -238,7 +251,10 @@ class MessageBar extends Component {
       <>
         <span className="sr-only" role="alert">
           {messages.map(el =>
-            ariaContent(el.content[this.props.lang] || el.content.fi, el.id),
+            ariaContent(
+              resolveContent(el, this.props.lang, this.context.intl),
+              el.id,
+            ),
           )}
         </span>
         <section
