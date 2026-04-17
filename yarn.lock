@@ -11892,7 +11892,6 @@ __metadata:
     hoist-non-react-statics: "npm:2.5.5"
     husky: "npm:4.3.8"
     i18next: "npm:22.5.1"
-    intl: "npm:1.2.5"
     iso-morphic-style-loader: "npm:2.0.1"
     jest: "npm:29.7.0"
     jest-circus: "npm:29.7.0"
@@ -16427,13 +16426,6 @@ __metadata:
     intl-format-cache: "npm:^4.2.21"
     intl-messageformat-parser: "npm:^3.6.4"
   checksum: 10/7037f9eb980b9b722f381c4d75762c0bcd96ee7269011dd48ad58467b708be6f416a45301ec702bf6083596e509f769533736e5e44621ed4a0f7242c6bce2cbc
-  languageName: node
-  linkType: hard
-
-"intl@npm:1.2.5":
-  version: 1.2.5
-  resolution: "intl@npm:1.2.5"
-  checksum: 10/4dc351bbf75d256134fa896d6ff2b245329109dd543ec5775e78e7c719d5d8683315d87a05671e39f96542155b5c5a81afcbc462cda860cb500268d101292412
   languageName: node
   linkType: hard
 

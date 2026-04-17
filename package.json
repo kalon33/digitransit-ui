@@ -161,7 +161,6 @@
     "helmet": "4.1.0",
     "hoist-non-react-statics": "2.5.5",
     "i18next": "22.5.1",
-    "intl": "1.2.5",
     "leaflet": "1.6.0",
     "lodash": "4.17.21",
     "lru-cache": "6.0.0",
