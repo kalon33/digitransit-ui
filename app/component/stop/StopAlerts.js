@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { uniq } from 'lodash';
 import AlertList from '../AlertList';
 import {
@@ -112,6 +113,9 @@ const StopAlerts = ({ stop }, { intl, config }) => {
 };
 
 StopAlerts.propTypes = { stop: stopShape.isRequired };
-StopAlerts.contextTypes = { config: configShape };
+StopAlerts.contextTypes = {
+  intl: PropTypes.object.isRequired,
+  config: configShape,
+};
 
 export default StopAlerts;
