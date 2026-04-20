@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { memo } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import { intlShape, FormattedMessage } from 'react-intl';
 import { matchShape, routerShape } from 'found';
 import connectToStores from 'fluxible-addons-react/connectToStores';
@@ -50,95 +50,72 @@ import FavouriteStore from '../store/FavouriteStore';
 const StopRouteSearch = withSearchContext(DTAutoSuggest);
 const LocationSearch = withSearchContext(DTAutosuggestPanel);
 
-class IndexPage extends React.Component {
-  static contextTypes = {
-    intl: intlShape.isRequired,
-    executeAction: PropTypes.func.isRequired,
-    getStore: PropTypes.func.isRequired,
-    router: routerShape.isRequired,
-    match: matchShape.isRequired,
-    config: configShape.isRequired,
-  };
+function IndexPage(props, context) {
+  const pendingOriginRef = useRef(null);
+  const pendingDestinationRef = useRef(null);
 
-  static propTypes = {
-    breakpoint: PropTypes.string.isRequired,
-    origin: locationShape.isRequired,
-    destination: locationShape.isRequired,
-    currentTime: PropTypes.number.isRequired,
-    // eslint-disable-next-line
-    query: PropTypes.object.isRequired,
-    favouriteModalAction: PropTypes.string,
-    fromMap: PropTypes.string,
-    locationState: locationShape.isRequired,
-    favouriteStatus: PropTypes.string.isRequired,
-    // eslint-disable-next-line
-    favourites: PropTypes.array.isRequired,
-  };
+  useEffect(() => {
+    const { from, to } = context.match.params;
 
-  static defaultProps = {
-    favouriteModalAction: '',
-    fromMap: undefined,
-  };
-
-  componentDidMount() {
-    const { from, to } = this.context.match.params;
-    /* initialize stores from URL params */
     const origin = parseLocation(from);
     const destination = parseLocation(to);
 
-    // synchronizing page init using fluxible is - hard -
-    // see navigation conditions in componentDidUpdate below
-    if (!sameLocations(this.props.origin, origin)) {
-      this.pendingOrigin = origin;
-      this.context.executeAction(storeOrigin, origin);
-    }
-    if (!sameLocations(this.props.destination, destination)) {
-      this.pendingDestination = destination;
-      this.context.executeAction(storeDestination, destination);
+    if (!sameLocations(props.origin, origin)) {
+      pendingOriginRef.current = origin;
+      context.executeAction(storeOrigin, origin);
     }
 
-    if (this.context.config.startSearchFromUserLocation && !origin.lat) {
+    if (!sameLocations(props.destination, destination)) {
+      pendingDestinationRef.current = destination;
+      context.executeAction(storeDestination, destination);
+    }
+
+    if (context.config.startSearchFromUserLocation && !origin.lat) {
       checkPositioningPermission().then(permission => {
         if (
           permission.state === 'granted' &&
-          this.props.locationState.status === 'no-location'
+          props.locationState.status === 'no-location'
         ) {
-          this.context.executeAction(startLocationWatch);
+          context.executeAction(startLocationWatch);
         }
       });
     }
+
     scrollTop();
-  }
+    // run once on mount
+  }, []);
 
-  componentDidUpdate() {
-    const { origin, destination } = this.props;
+  useEffect(() => {
+    const { origin, destination, locationState } = props;
 
-    if (this.pendingOrigin && isEqual(this.pendingOrigin, origin)) {
-      delete this.pendingOrigin;
+    if (pendingOriginRef.current && isEqual(pendingOriginRef.current, origin)) {
+      pendingOriginRef.current = null;
     }
+
     if (
-      this.pendingDestination &&
-      isEqual(this.pendingDestination, destination)
+      pendingDestinationRef.current &&
+      isEqual(pendingDestinationRef.current, destination)
     ) {
-      delete this.pendingDestination;
+      pendingDestinationRef.current = null;
     }
-    if (this.pendingOrigin || this.pendingDestination) {
-      // not ready for navigation yet
+
+    if (pendingOriginRef.current || pendingDestinationRef.current) {
       return;
     }
 
-    const { router, match, config } = this.context;
+    const { router, match, config } = context;
     const { location } = match;
 
     const currentLocation =
       config.startSearchFromUserLocation &&
-      !this.props.origin.address &&
-      this.props.locationState?.hasLocation &&
-      this.props.locationState;
+      !origin.address &&
+      locationState?.hasLocation &&
+      locationState;
+
     if (currentLocation && !currentLocation.isReverseGeocodingInProgress) {
       const originPoint = [currentLocation.lon, currentLocation.lat];
       if (inside(originPoint, config.areaPolygon)) {
-        this.context.executeAction(storeOrigin, currentLocation);
+        context.executeAction(storeOrigin, currentLocation);
       }
     }
 
@@ -151,6 +128,7 @@ class IndexPage extends React.Component {
           PREFIX_ITINERARY_SUMMARY,
         ),
       };
+
       if (newLocation.query.time === undefined) {
         newLocation.query.time = Math.floor(Date.now() / 1000).toString();
       }
@@ -162,6 +140,7 @@ class IndexPage extends React.Component {
         destination,
         config.indexPath,
       );
+
       if (path !== location.pathname) {
         const newLocation = {
           ...location,
@@ -170,18 +149,19 @@ class IndexPage extends React.Component {
         router.replace(newLocation);
       }
     }
-  }
+  }, [props.origin, props.destination, props.locationState, context]);
 
-  onSelectStopRoute = item => {
+  const onSelectStopRoute = item => {
     addAnalyticsEvent({
       event: 'route_search',
       search_action: 'route_or_stop',
     });
-    this.context.router.push(getStopRoutePath(item));
+    context.router.push(getStopRoutePath(item));
   };
 
-  onSelectLocation = (item, id) => {
-    const { router, executeAction } = this.context;
+  const onSelectLocation = (item, id) => {
+    const { router, executeAction } = context;
+
     addAnalyticsEvent({
       event: 'itinerary_search',
       search_action: item.type,
@@ -198,36 +178,35 @@ class IndexPage extends React.Component {
     }
   };
 
-  clickFavourite = favourite => {
+  const clickFavourite = favourite => {
     addAnalyticsEvent({
       event: 'favorite_press',
       favorite_type: 'place',
     });
-    this.context.executeAction(storeDestination, favourite);
+    context.executeAction(storeDestination, favourite);
   };
 
-  trafficNowHandler = (e, lang) => {
-    window.location = `${this.context.config.URL.ROOTLINK}/${
+  const trafficNowHandler = (e, lang) => {
+    window.location = `${context.config.URL.ROOTLINK}/${
       lang === 'fi' ? '' : `${lang}/`
-    }${this.context.config.trafficNowLink[lang]}`;
+    }${context.config.trafficNowLink[lang]}`;
   };
 
-  clickStopNearIcon = url => {
+  const clickStopNearIcon = url => {
     addAnalyticsEvent({
       event: 'sendMatomoEvent',
       category: 'nearbyStops',
       stop_type: url.split('/')[2].toLowerCase(),
     });
-    this.context.router.push(url);
+    context.router.push(url);
   };
 
-  NearStops() {
-    const { intl, config } = this.context;
+  const renderNearStops = () => {
+    const { intl, config } = context;
     const { colors, fontWeights, language } = config;
 
-    const nearYouModes = getNearYouModes(config, this.props.favourites);
+    const nearYouModes = getNearYouModes(config, props.favourites);
 
-    // If nearYouModes is configured, display those. Otherwise, display all configured transport modes
     const modeArray =
       nearYouModes.length > 0
         ? nearYouModes
@@ -240,7 +219,7 @@ class IndexPage extends React.Component {
           );
 
     const alertsContext = {
-      currentTime: this.props.currentTime,
+      currentTime: props.currentTime,
       getModesWithAlerts,
       feedIds: config.feedIds,
     };
@@ -254,21 +233,20 @@ class IndexPage extends React.Component {
         appElement="#app"
         modeArray={modeArray}
         loading={
-          this.props.favouriteStatus ===
-          FavouriteStore.STATUS_FETCHING_OR_UPDATING
+          props.favouriteStatus === FavouriteStore.STATUS_FETCHING_OR_UPDATING
         }
         modeSet={config.iconModeSet}
         urlPrefix={`/${PREFIX_NEARYOU}`}
         language={language}
         title={config.nearYouTitle}
         alertsContext={alertsContext}
-        origin={this.props.origin}
+        origin={props.origin}
         omitLanguageUrl
-        onClick={this.clickStopNearIcon}
+        onClick={clickStopNearIcon}
         colors={colors}
         fontWeights={fontWeights}
         {...directionProps}
-        isMobile={this.props.breakpoint !== 'large'}
+        isMobile={props.breakpoint !== 'large'}
       />
     ) : (
       <div className="stops-near-you-text">
@@ -280,192 +258,220 @@ class IndexPage extends React.Component {
         </h2>
       </div>
     );
+  };
+
+  const { intl, config } = context;
+  const { trafficNowLink, colors, fontWeights } = config;
+  const { breakpoint } = props;
+
+  const origin = pendingOriginRef.current || props.origin;
+  const destination = pendingDestinationRef.current || props.destination;
+
+  const locationSources = ['History', 'Datasource'];
+  const sources = ['Favourite', 'History', 'Datasource'];
+  const stopAndRouteSearchTargets = ['Stations', 'Stops', 'Routes'];
+  const targets = getLocationSearchTargets(config, breakpoint !== 'large');
+
+  targets.push('FutureRoutes');
+
+  if (context.getStore('FavouriteStore').getLocationCount()) {
+    locationSources.push('Favourite');
+  }
+
+  if (!config.targetsFromOTP) {
+    if (useCitybikes(config.vehicleRental?.networks, config)) {
+      stopAndRouteSearchTargets.push('VehicleRentalStations');
+    }
+    if (config.includeParkAndRideSuggestions) {
+      stopAndRouteSearchTargets.push('ParkingAreas');
+    }
+  }
+
+  const showSpinner =
+    (origin.type === 'CurrentLocation' && !origin.address) ||
+    (destination.type === 'CurrentLocation' && !destination.address);
+
+  const refPoint = getRefPoint(origin, destination, props.locationState);
+
+  const locationSearchProps = {
+    appElement: '#app',
+    origin,
+    destination,
+    lang: config.language,
+    sources: locationSources,
+    targets,
+    refPoint,
+    searchPanelText: intl.formatMessage({
+      id: 'where',
+      defaultMessage: 'Where to?',
+    }),
+    originPlaceHolder: 'search-origin-index',
+    destinationPlaceHolder: 'search-destination-index',
+    selectHandler: onSelectLocation,
+    getAutoSuggestIcons: config.getAutoSuggestIcons,
+    onGeolocationStart: onSelectLocation,
+    fromMap: props.fromMap,
+    fontWeights,
+    colors,
+    modeSet: config.iconModeSet,
+  };
+
+  const stopRouteSearchProps = {
+    appElement: '#app',
+    icon: 'search',
+    id: 'stop-route-station',
+    className: 'destination',
+    placeholder: 'stop-near-you',
+    selectHandler: onSelectStopRoute,
+    getAutoSuggestIcons: config.getAutoSuggestIcons,
+    value: '',
+    lang: config.language,
+    sources,
+    targets: stopAndRouteSearchTargets,
+    fontWeights,
+    colors,
+    modeSet: config.iconModeSet,
+    geocodingSize: 25,
+  };
+
+  if (config.stopSearchFilter) {
+    stopRouteSearchProps.filterResults = results =>
+      results.filter(config.stopSearchFilter);
+    stopRouteSearchProps.geocodingSize = 40;
+    locationSearchProps.filterResults = results =>
+      results.filter(config.stopSearchFilter);
   }
 
   /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
-  render() {
-    const { intl, config } = this.context;
-    const { trafficNowLink, colors, fontWeights } = config;
-    const { breakpoint } = this.props;
-    const origin = this.pendingOrigin || this.props.origin;
-    const destination = this.pendingDestination || this.props.destination;
-    const locationSources = ['History', 'Datasource'];
-    const sources = ['Favourite', 'History', 'Datasource'];
-    const stopAndRouteSearchTargets = ['Stations', 'Stops', 'Routes'];
-    const targets = getLocationSearchTargets(config, breakpoint !== 'large');
-
-    targets.push('FutureRoutes');
-    if (this.context.getStore('FavouriteStore').getLocationCount()) {
-      locationSources.push('Favourite');
-    }
-    if (!config.targetsFromOTP) {
-      if (useCitybikes(config.vehicleRental?.networks, config)) {
-        stopAndRouteSearchTargets.push('VehicleRentalStations');
-      }
-      if (config.includeParkAndRideSuggestions) {
-        stopAndRouteSearchTargets.push('ParkingAreas');
-      }
-    }
-
-    const showSpinner =
-      (origin.type === 'CurrentLocation' && !origin.address) ||
-      (destination.type === 'CurrentLocation' && !destination.address);
-    const refPoint = getRefPoint(origin, destination, this.props.locationState);
-    const locationSearchProps = {
-      appElement: '#app',
-      origin,
-      destination,
-      lang: config.language,
-      sources: locationSources,
-      targets,
-      refPoint,
-      searchPanelText: intl.formatMessage({
-        id: 'where',
-        defaultMessage: 'Where to?',
-      }),
-      originPlaceHolder: 'search-origin-index',
-      destinationPlaceHolder: 'search-destination-index',
-      selectHandler: this.onSelectLocation,
-      getAutoSuggestIcons: config.getAutoSuggestIcons,
-      onGeolocationStart: this.onSelectLocation,
-      fromMap: this.props.fromMap,
-      fontWeights,
-      colors,
-      modeSet: config.iconModeSet,
-    };
-
-    const stopRouteSearchProps = {
-      appElement: '#app',
-      icon: 'search',
-      id: 'stop-route-station',
-      className: 'destination',
-      placeholder: 'stop-near-you',
-      selectHandler: this.onSelectStopRoute,
-      getAutoSuggestIcons: config.getAutoSuggestIcons,
-      value: '',
-      lang: config.language,
-      sources,
-      targets: stopAndRouteSearchTargets,
-      fontWeights,
-      colors,
-      modeSet: config.iconModeSet,
-      geocodingSize: 25,
-    };
-
-    if (config.stopSearchFilter) {
-      stopRouteSearchProps.filterResults = results =>
-        results.filter(config.stopSearchFilter);
-      stopRouteSearchProps.geocodingSize = 40; // increase size to compensate filtering
-      locationSearchProps.filterResults = results =>
-        results.filter(config.stopSearchFilter);
-    }
-
-    return breakpoint === 'large' ? (
+  return breakpoint === 'large' ? (
+    <div
+      className={`front-page flex-vertical ${
+        showSpinner && `blurred`
+      } fullscreen bp-${breakpoint}`}
+    >
       <div
-        className={`front-page flex-vertical ${
-          showSpinner && `blurred`
-        } fullscreen bp-${breakpoint}`}
+        style={{ display: 'block' }}
+        className="scrollable-content-wrapper momentum-scroll"
       >
-        <div
-          style={{ display: 'block' }}
-          className="scrollable-content-wrapper momentum-scroll"
-        >
-          <h1 className="sr-only">
-            <FormattedMessage id="index.title" default="Journey Planner" />
-          </h1>
-          <CtrlPanel position="left" fontWeights={fontWeights}>
-            <span className="sr-only">
-              <FormattedMessage
-                id="search-fields.sr-instructions"
-                defaultMessage="The search is triggered automatically when origin and destination are set. Changing any search parameters triggers a new search"
-              />
-            </span>
-            <LocationSearch {...locationSearchProps} />
-            <div className="datetimepicker-container">
-              <DatetimepickerContainer
-                realtime
-                color={colors.primary}
-                lang={config.language}
-              />
-            </div>
-            {!config.hideFavourites && (
-              <>
-                <FavouritesContainer
-                  favouriteModalAction={this.props.favouriteModalAction}
-                  onClickFavourite={this.clickFavourite}
-                  lang={config.language}
-                />
-                <CtrlPanel.SeparatorLine usePaddingBottom20 />
-              </>
-            )}
-
-            {!config.hideStopRouteSearch && (
-              <>
-                <>{this.NearStops()}</>
-                <StopRouteSearch {...stopRouteSearchProps} />
-                <CtrlPanel.SeparatorLine />
-              </>
-            )}
-            {trafficNowLink && (
-              <TrafficNowLink
-                lang={config.language}
-                handleClick={this.trafficNowHandler}
-              />
-            )}
-          </CtrlPanel>
-        </div>
-        {(showSpinner && <OverlayWithSpinner />) || null}
-      </div>
-    ) : (
-      <div
-        className={`front-page flex-vertical ${
-          showSpinner && `blurred`
-        } bp-${breakpoint}`}
-      >
-        {(showSpinner && <OverlayWithSpinner />) || null}
-        <div
-          style={{
-            display: 'block',
-            backgroundColor: '#ffffff',
-          }}
-        >
-          <CtrlPanel position="bottom" fontWeights={fontWeights}>
-            <LocationSearch
-              disableAutoFocus
-              isMobile
-              {...locationSearchProps}
+        <h1 className="sr-only">
+          <FormattedMessage id="index.title" default="Journey Planner" />
+        </h1>
+        <CtrlPanel position="left" fontWeights={fontWeights}>
+          <span className="sr-only">
+            <FormattedMessage
+              id="search-fields.sr-instructions"
+              defaultMessage="The search is triggered automatically when origin and destination are set. Changing any search parameters triggers a new search"
             />
-            <div className="datetimepicker-container">
-              <DatetimepickerContainer
-                realtime
-                color={colors.primary}
-                lang={config.language}
-              />
-            </div>
-            <FavouritesContainer
-              onClickFavourite={this.clickFavourite}
+          </span>
+          <LocationSearch {...locationSearchProps} />
+          <div className="datetimepicker-container">
+            <DatetimepickerContainer
+              realtime
+              color={colors.primary}
               lang={config.language}
-              isMobile
             />
-            <CtrlPanel.SeparatorLine />
-            <>{this.NearStops()}</>
-            <div className="stop-route-search-container">
-              <StopRouteSearch isMobile {...stopRouteSearchProps} />
-            </div>
-            <CtrlPanel.SeparatorLine usePaddingBottom20 />
-            {trafficNowLink && (
-              <TrafficNowLink
+          </div>
+          {!config.hideFavourites && (
+            <>
+              <FavouritesContainer
+                favouriteModalAction={props.favouriteModalAction}
+                onClickFavourite={clickFavourite}
                 lang={config.language}
-                handleClick={this.trafficNowHandler}
-                fontWeights={fontWeights}
               />
-            )}
-          </CtrlPanel>
-        </div>
+              <CtrlPanel.SeparatorLine usePaddingBottom20 />
+            </>
+          )}
+
+          {!config.hideStopRouteSearch && (
+            <>
+              <>{renderNearStops()}</>
+              <StopRouteSearch {...stopRouteSearchProps} />
+              <CtrlPanel.SeparatorLine />
+            </>
+          )}
+
+          {trafficNowLink && (
+            <TrafficNowLink
+              lang={config.language}
+              handleClick={trafficNowHandler}
+            />
+          )}
+        </CtrlPanel>
       </div>
-    );
-  }
+      {(showSpinner && <OverlayWithSpinner />) || null}
+    </div>
+  ) : (
+    <div
+      className={`front-page flex-vertical ${
+        showSpinner && `blurred`
+      } bp-${breakpoint}`}
+    >
+      {(showSpinner && <OverlayWithSpinner />) || null}
+      <div
+        style={{
+          display: 'block',
+          backgroundColor: '#ffffff',
+        }}
+      >
+        <CtrlPanel position="bottom" fontWeights={fontWeights}>
+          <LocationSearch disableAutoFocus isMobile {...locationSearchProps} />
+          <div className="datetimepicker-container">
+            <DatetimepickerContainer
+              realtime
+              color={colors.primary}
+              lang={config.language}
+            />
+          </div>
+          <FavouritesContainer
+            onClickFavourite={clickFavourite}
+            lang={config.language}
+            isMobile
+          />
+          <CtrlPanel.SeparatorLine />
+          <>{renderNearStops()}</>
+          <div className="stop-route-search-container">
+            <StopRouteSearch isMobile {...stopRouteSearchProps} />
+          </div>
+          <CtrlPanel.SeparatorLine usePaddingBottom20 />
+          {trafficNowLink && (
+            <TrafficNowLink
+              lang={config.language}
+              handleClick={trafficNowHandler}
+              fontWeights={fontWeights}
+            />
+          )}
+        </CtrlPanel>
+      </div>
+    </div>
+  );
 }
+
+IndexPage.contextTypes = {
+  intl: intlShape.isRequired,
+  executeAction: PropTypes.func.isRequired,
+  getStore: PropTypes.func.isRequired,
+  router: routerShape.isRequired,
+  match: matchShape.isRequired,
+  config: configShape.isRequired,
+};
+
+IndexPage.propTypes = {
+  breakpoint: PropTypes.string.isRequired,
+  origin: locationShape.isRequired,
+  destination: locationShape.isRequired,
+  currentTime: PropTypes.number.isRequired,
+  query: PropTypes.object.isRequired,
+  favouriteModalAction: PropTypes.string,
+  fromMap: PropTypes.string,
+  locationState: locationShape.isRequired,
+  favouriteStatus: PropTypes.string.isRequired,
+  favourites: PropTypes.array.isRequired,
+};
+
+IndexPage.defaultProps = {
+  favouriteModalAction: '',
+  fromMap: undefined,
+};
 
 // update only when origin/destination/breakpoint, favourite store status or language changes
 const Index = memo(
@@ -498,6 +504,7 @@ const IndexPageWithStores = connectToStores(
     const newProps = {};
     const { query } = location;
     const { favouriteModalAction, fromMap } = query;
+
     newProps.locationState = locationState;
 
     if (favouriteModalAction) {
@@ -506,10 +513,11 @@ const IndexPageWithStores = connectToStores(
     if (fromMap === 'origin' || fromMap === 'destination') {
       newProps.fromMap = fromMap;
     }
+
     newProps.origin = origin;
     newProps.destination = destination;
     newProps.currentTime = context.getStore('TimeStore').getCurrentTime();
-    newProps.query = query; // defines itinerary search time & arriveBy
+    newProps.query = query;
     newProps.favouriteStatus = context.getStore('FavouriteStore').getStatus();
     newProps.favourites = context.getStore('FavouriteStore').getFavourites();
 
