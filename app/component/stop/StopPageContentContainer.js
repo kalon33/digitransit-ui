@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { createRefetchContainer, graphql } from 'react-relay';
 import connectToStores from 'fluxible-addons-react/connectToStores';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { matchShape } from 'found';
 import {
   configShape,
@@ -16,8 +16,9 @@ import ScrollableWrapper from '../ScrollableWrapper';
 
 function StopPageContent(
   { stop, relay, currentTime, error, match },
-  { config, intl },
+  { config },
 ) {
+  const intl = useIntl();
   if (!stop && error) {
     throw error.message;
   }
