@@ -96,6 +96,20 @@ const resolveContent = (msg, lang, intl) => {
   return msg.content[lang] || msg.content.fi;
 };
 
+/**
+ * Returns true if a message element has renderable content for the given
+ * language. Content may be a plain array (already resolved) or a map keyed
+ * by locale; in the latter case the requested language is tried first,
+ * falling back to Finnish. A message is considered valid when the resolved
+ * value is a non-empty array whose first item carries actual content text.
+ */
+const hasContent = (el, lang) => {
+  const resolved = Array.isArray(el.content)
+    ? el.content
+    : el.content[lang] || el.content.fi;
+  return Array.isArray(resolved) && resolved.length > 0 && resolved[0].content;
+};
+
 class MessageBar extends Component {
   static contextTypes = {
     getStore: PropTypes.func.isRequired,
@@ -202,14 +216,7 @@ class MessageBar extends Component {
         toMessage(alert, intl, config, lang),
       ),
       ...messages,
-    ].filter(el => {
-      const resolved = Array.isArray(el.content)
-        ? el.content
-        : el.content[lang] || el.content.fi;
-      return (
-        Array.isArray(resolved) && resolved.length > 0 && resolved[0].content
-      );
-    });
+    ].filter(el => hasContent(el, lang));
   };
 
   handleClose = () => {
