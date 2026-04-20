@@ -206,6 +206,7 @@ async function init() {
           locale={language}
           messages={translations.default[language]}
           context={context.getComponentContext()}
+          textComponent="span"
         >
           <IntlBridge>
             <RelayEnvironmentProvider environment={environment}>
