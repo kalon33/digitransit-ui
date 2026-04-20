@@ -166,7 +166,7 @@ export default function DepartureRow(
         className={cx('route-number-container', {
           long: shortName && shortName.length <= 6 && shortName.length >= 5,
         })}
-        style={{ backgroundColor: `#${route.color}` }}
+        style={{ backgroundColor: route.color ? `#${route.color}` : undefined }}
       >
         <div aria-hidden="true" className="route-number">
           {nameOrIcon}

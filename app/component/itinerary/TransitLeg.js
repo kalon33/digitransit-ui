@@ -191,7 +191,7 @@ class TransitLeg extends React.Component {
         return (
           <IntermediateLeg
             placesCount={places.length}
-            color={leg.route ? `#${leg.route.color}` : 'currentColor'}
+            color={leg.route?.color ? `#${leg.route.color}` : 'currentColor'}
             key={place.stop.gtfsId}
             gtfsId={place.stop.gtfsId}
             mode={mode}
@@ -437,7 +437,7 @@ class TransitLeg extends React.Component {
         <ItineraryCircleLine
           index={index}
           modeClassName={modeClassName}
-          color={leg.route ? `#${leg.route.color}` : 'currentColor'}
+          color={leg.route?.color ? `#${leg.route.color}` : 'currentColor'}
           renderBottomMarker={
             !this.state.showIntermediateStops ||
             (leg.intermediatePlaces.length === 0 && interliningLegs.length < 1)
@@ -447,7 +447,7 @@ class TransitLeg extends React.Component {
         />
         <div
           style={{
-            color: leg.route ? `#${leg.route.color}` : 'currentColor',
+            color: leg.route?.color ? `#${leg.route.color}` : 'currentColor',
           }}
           className={cx(
             'small-9 columns itinerary-instruction-column',
