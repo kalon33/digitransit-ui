@@ -759,6 +759,7 @@ export default {
     'trafficnow-bread': 'Travelling',
     'trafficnow-description':
       'Up-to-date information on disruptions and exceptions',
+    tram: 'Tram',
     'tram-with-route-number': 'Tram {routeNumber} {headSign}',
     transfer: 'Transfer',
     'travel-time': '{min} min',

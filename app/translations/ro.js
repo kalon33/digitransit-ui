@@ -239,6 +239,7 @@ export default {
     today: 'Azi',
     tomorrow: 'Mâine',
     'track-num': 'Peronul {platformCode}',
+    tram: 'Tramvai',
     'tram-with-route-number': 'Tramvaiul {routeNumber} {headSign}',
     'travel-time': '{min} min',
     'travel-time-label': 'Timp de călătorie',

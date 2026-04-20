@@ -129,6 +129,7 @@ export default {
     timetable: 'Køreplan',
     today: 'I dag',
     tomorrow: 'I morgen',
+    tram: 'Sporvogn',
     'tram-with-route-number': 'Sporvogn {routeNumber} {headSign}',
     'try-again': 'Prøv igen.',
     'use-own-position': 'Brug min position',

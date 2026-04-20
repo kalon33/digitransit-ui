@@ -128,6 +128,7 @@ export default {
     timetable: 'Tidstabeller',
     today: 'I dag',
     tomorrow: 'I morgen',
+    tram: 'Trikk',
     'tram-with-route-number': 'Trikk {routeNumber} {headSign}',
     'try-again': 'Prøv igjen.',
     'use-own-position': 'Bruk min posisjon',

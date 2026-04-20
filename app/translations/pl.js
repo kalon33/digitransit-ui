@@ -572,6 +572,7 @@ export default {
     'tracking-button-off': 'tracking off',
     'tracking-button-offline': 'tracking failed',
     'tracking-button-on': 'tracking on',
+    tram: 'Tramwaj',
     'tram-with-route-number': 'Tramwaj {routeNumber} {headSign}',
     transfer: 'Przesiadka',
     'travel-time': '{min} min.',

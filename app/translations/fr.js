@@ -167,6 +167,7 @@ export default {
     timetable: 'Fiche horaire',
     today: "Aujourd'hui",
     tomorrow: 'Demain',
+    tram: 'Tramway',
     'tram-with-route-number': 'Tramway {routeNumber} {headSign}',
     'trip-information': 'Informations de voyage',
     'try-again': 'Réessayer',

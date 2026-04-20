@@ -152,6 +152,7 @@ export default {
     timetable: 'Horario',
     today: 'Hoy',
     tomorrow: 'Mañana',
+    tram: 'Tranvía',
     'tram-with-route-number': 'Tranvía {routeNumber} {headSign}',
     'trip-information': 'Información sobre el viaje',
     'try-again': 'Pruebe de nuevo',

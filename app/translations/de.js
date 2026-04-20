@@ -313,6 +313,7 @@ export default {
     tomorrow: 'Morgen',
     track: 'Gleis',
     'track-num': 'Gleis {platformCode}',
+    tram: 'Tram',
     'tram-with-route-number': 'Tram {routeNumber} {headSign}',
     'travel-time': '{min} min',
     'travel-time-label': 'Reisezeit',
