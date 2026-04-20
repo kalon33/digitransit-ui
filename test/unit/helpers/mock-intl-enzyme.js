@@ -8,7 +8,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { mount, shallow } from 'enzyme';
 import { createIntl, createIntlCache, IntlProvider } from 'react-intl';
-import translations from '../../../app/intl/en';
+import translations from '../../../app/translations/en';
 import IntlBridge from '../../../app/util/IntlBridge';
 
 const getMessages = locale => translations[locale] || {};

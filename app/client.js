@@ -104,7 +104,7 @@ async function init() {
     : '';
 
   const { language } = config;
-  const translations = await import(`./intl/${language}`);
+  const translations = await import(`./translations/${language}`);
   i18n.changeLanguage(language);
 
   const network = new RelayNetworkLayer([
