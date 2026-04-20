@@ -161,7 +161,7 @@ BubbleDialog.defaultProps = {
 };
 
 BubbleDialog.contextTypes = {
-  intl: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired, // eslint-disable-line
   router: routerShape.isRequired,
   match: matchShape.isRequired,
 };

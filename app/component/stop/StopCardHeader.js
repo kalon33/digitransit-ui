@@ -140,7 +140,7 @@ StopCardHeader.contextTypes = {
       }).isRequired,
     }).isRequired,
   }).isRequired,
-  intl: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired, // eslint-disable-line
   executeAction: PropTypes.func.isRequired,
   match: matchShape.isRequired,
 };

@@ -427,7 +427,7 @@ DepartureListContainer.contextTypes = {
   executeAction: PropTypes.func.isRequired,
   getStore: PropTypes.func.isRequired,
   config: configShape.isRequired,
-  intl: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired, // eslint-disable-line
 };
 
 const containerComponent = createFragmentContainer(DepartureListContainer, {

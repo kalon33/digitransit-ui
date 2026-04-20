@@ -716,7 +716,7 @@ TransitLeg.defaultProps = {
 
 TransitLeg.contextTypes = {
   config: configShape.isRequired,
-  intl: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired, // eslint-disable-line
 };
 
 const connectedComponent = connectToStores(
