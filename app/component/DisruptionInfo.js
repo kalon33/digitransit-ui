@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
+import { useIntl } from 'react-intl';
 import { graphql, QueryRenderer, ReactRelayContext } from 'react-relay';
 import Modal from '@hsl-fi/modal';
 import Loading from './Loading';
@@ -7,7 +8,7 @@ import DisruptionListContainer from './DisruptionListContainer';
 
 export default function DisruptionInfo(props, context) {
   const { setOpen } = props;
-  const { intl } = context;
+  const intl = useIntl();
   const { environment } = useContext(ReactRelayContext);
 
   return (
@@ -65,7 +66,6 @@ DisruptionInfo.propTypes = {
 };
 
 DisruptionInfo.contextTypes = {
-  intl: PropTypes.object.isRequired,
   config: PropTypes.shape({
     feedIds: PropTypes.arrayOf(PropTypes.string.isRequired),
   }).isRequired,

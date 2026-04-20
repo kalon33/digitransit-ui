@@ -87,7 +87,6 @@ StopPageContent.defaultProps = {
 };
 
 StopPageContent.contextTypes = {
-  intl: PropTypes.object.isRequired,
   config: configShape.isRequired,
 };
 

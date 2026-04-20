@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { matchShape } from 'found';
 import { Helmet } from 'react-helmet';
 import SiteHeader from '@hsl-fi/site-header';
+import { useIntl } from 'react-intl';
 import { favouriteShape, configShape } from '../util/shapes';
 import { clearOldSearches, clearFutureRoutes } from '../util/storeUtils';
 import { getJson } from '../util/xhrPromise';
@@ -17,7 +18,8 @@ const clearStorages = context => {
 const notificationAPI = '/api/user/notifications';
 
 const AppBarHsl = ({ lang, user, favourites }, context) => {
-  const { config, match, intl } = context;
+  const intl = useIntl();
+  const { config, match } = context;
   const { location } = match;
 
   const notificationApiUrls = {
@@ -145,7 +147,6 @@ AppBarHsl.contextTypes = {
   match: matchShape.isRequired,
   config: configShape.isRequired,
   getStore: PropTypes.func.isRequired,
-  intl: PropTypes.object.isRequired,
 };
 
 AppBarHsl.propTypes = {

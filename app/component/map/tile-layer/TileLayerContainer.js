@@ -75,7 +75,6 @@ class TileLayerContainer extends GridLayer {
 
   static contextTypes = {
     getStore: PropTypes.func.isRequired,
-    intl: PropTypes.object.isRequired,
     config: configShape.isRequired,
     match: matchShape.isRequired,
     router: routerShape.isRequired,

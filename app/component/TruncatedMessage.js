@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import TruncateMarkup from 'react-truncate-markup';
 
-const TruncatedMessage = (
-  { lines, message, className, truncate, onShowMore, onTruncate = () => {} },
-  { intl },
-) => {
+const TruncatedMessage = ({
+  lines,
+  message,
+  className,
+  truncate,
+  onShowMore,
+  onTruncate = () => {},
+}) => {
+  const intl = useIntl();
   const [isTruncated, setTruncated] = useState(true);
 
   useEffect(() => {
@@ -61,8 +67,6 @@ TruncatedMessage.defaultProps = {
   onTruncate: () => {},
 };
 
-TruncatedMessage.contextTypes = {
-  intl: PropTypes.object.isRequired,
-};
+TruncatedMessage.contextTypes = {};
 
 export default TruncatedMessage;

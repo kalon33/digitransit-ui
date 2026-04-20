@@ -38,7 +38,6 @@ NavigatorIntroModal.defaultProps = {
 };
 
 NavigatorIntroModal.contextTypes = {
-  intl: PropTypes.object.isRequired,
   config: configShape.isRequired,
 };
 

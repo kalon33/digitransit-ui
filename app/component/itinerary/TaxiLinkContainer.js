@@ -67,10 +67,6 @@ TaxiLinkContainer.propTypes = {
   icon: PropTypes.string.isRequired,
 };
 
-TaxiLinkContainer.contextTypes = {
-  intl: PropTypes.object.isRequired,
-};
-
 TaxiLinkContainer.defaultProps = {
   infoUrl: undefined,
 };

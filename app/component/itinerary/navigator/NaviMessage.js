@@ -80,7 +80,6 @@ NaviMessage.defaultProps = {
 };
 
 NaviMessage.contextTypes = {
-  intl: PropTypes.object.isRequired,
   config: configShape.isRequired,
 };
 

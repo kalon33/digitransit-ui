@@ -24,7 +24,6 @@ NaviGeolocationInfoModal.propTypes = {
 };
 
 NaviGeolocationInfoModal.contextTypes = {
-  intl: PropTypes.object.isRequired,
   config: configShape.isRequired,
 };
 

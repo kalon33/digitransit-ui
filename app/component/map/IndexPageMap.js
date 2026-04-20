@@ -109,7 +109,6 @@ IndexPageMap.defaultProps = {
 IndexPageMap.contextTypes = {
   config: configShape.isRequired,
   executeAction: PropTypes.func.isRequired,
-  intl: PropTypes.object.isRequired,
 };
 
 const IndexPageMapWithStores = connectToStores(

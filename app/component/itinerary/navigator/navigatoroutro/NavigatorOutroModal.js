@@ -25,7 +25,6 @@ NavigatorOutroModal.propTypes = {
 };
 
 NavigatorOutroModal.contextTypes = {
-  intl: PropTypes.object.isRequired,
   config: configShape.isRequired,
 };
 

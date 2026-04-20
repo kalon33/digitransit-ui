@@ -3,6 +3,7 @@ import cx from 'classnames';
 import { Link } from 'found';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useIntl } from 'react-intl';
 import {
   alertSeverityCompare,
   getAlertsForObject,
@@ -35,8 +36,9 @@ export default function DepartureRow(
     platformUpdated,
     ...props
   },
-  { config, intl },
+  { config },
 ) {
+  const intl = useIntl();
   const { trip, trip: { route } = {} } = departure;
   const mode = getRouteMode(route, config);
   const departureTimeMs = departureTime * 1000;
@@ -291,5 +293,4 @@ DepartureRow.defaultProps = {
 
 DepartureRow.contextTypes = {
   config: configShape.isRequired,
-  intl: PropTypes.object.isRequired,
 };

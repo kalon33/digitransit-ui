@@ -70,10 +70,6 @@ PlatformNumber.defaultProps = {
   withText: true,
 };
 
-PlatformNumber.contextTypes = {
-  intl: PropTypes.object.isRequired,
-};
-
 PlatformNumber.displayName = 'PlatformNumber';
 
 export default PlatformNumber;

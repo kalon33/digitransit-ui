@@ -1,6 +1,7 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useIntl } from 'react-intl';
 import { v4 as uuid } from 'uuid';
 import { configShape, fareShape, legShape } from '../../util/shapes';
 import { renderZoneTicket } from './ZoneTicket';
@@ -9,8 +10,9 @@ import { getAlternativeFares, formatFare } from '../../util/fareUtils';
 
 export default function TicketInformation(
   { fares, zones, legs, ticketLink },
-  { config, intl },
+  { config },
 ) {
+  const intl = useIntl();
   if (fares.length === 0) {
     return null;
   }
@@ -112,7 +114,6 @@ TicketInformation.defaultProps = {
 
 TicketInformation.contextTypes = {
   config: configShape,
-  intl: PropTypes.object.isRequired,
 };
 
 TicketInformation.displayName = 'TicketInformation';

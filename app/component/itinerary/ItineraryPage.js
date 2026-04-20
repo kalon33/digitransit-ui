@@ -1616,7 +1616,6 @@ ItineraryPage.contextTypes = {
   getStore: PropTypes.func,
   router: routerShape.isRequired,
   match: matchShape.isRequired,
-  intl: PropTypes.object.isRequired,
 };
 
 ItineraryPage.propTypes = {

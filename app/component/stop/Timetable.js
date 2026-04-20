@@ -483,7 +483,6 @@ Timetable.contextTypes = {
   router: routerShape.isRequired,
   match: matchShape.isRequired,
   config: configShape.isRequired,
-  intl: PropTypes.object.isRequired,
 };
 
 Timetable.displayName = 'Timetable';

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
+import { useIntl } from 'react-intl';
 import cx from 'classnames';
 import DialogModal from '@digitransit-component/digitransit-component-dialog-modal';
 import { matchShape } from 'found';
@@ -20,6 +21,7 @@ export default function Favourite(
   },
   context,
 ) {
+  const intl = useIntl();
   const [disable, handleDisable] = useState(false);
   const [showLoginModal, setLoginModalVisibility] = useState(false);
 
@@ -30,7 +32,7 @@ export default function Favourite(
   let isModalClosed = false;
 
   const renderLoginModal = () => {
-    const { match, intl } = context;
+    const { match } = context;
     const { location } = match;
     const url = encodeURI(`${location.pathname}${location.search}`);
 
@@ -108,11 +110,11 @@ export default function Favourite(
       onClick={onClick}
       aria-label={
         favourite && (!requireLoggedIn || isLoggedIn)
-          ? context.intl.formatMessage({
+          ? intl.formatMessage({
               id: 'remove-favourite',
               defautlMessage: 'Remove favourite selection',
             })
-          : context.intl.formatMessage({
+          : intl.formatMessage({
               id: 'add-to-favourites',
               defautlMessage: 'Set favourite',
             })
@@ -135,7 +137,6 @@ export default function Favourite(
 
 Favourite.contextTypes = {
   match: matchShape.isRequired,
-  intl: PropTypes.object.isRequired,
 };
 
 Favourite.propTypes = {

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useIntl } from 'react-intl';
 /* eslint-disable react/no-array-index-key */
 
 import PropTypes from 'prop-types';
@@ -14,10 +15,8 @@ import Icon from '../Icon';
 import { IndoorStepType, VerticalDirection } from '../../constants';
 import { getVerticalTransportationUseIconId } from '../../util/indoorUtils';
 
-export default function IndoorStepMarker(
-  { position, index, indoorSteps },
-  { intl },
-) {
+export default function IndoorStepMarker({ position, index, indoorSteps }) {
+  const intl = useIntl();
   const objs = [];
 
   const getIcon = () => {
@@ -119,7 +118,6 @@ export default function IndoorStepMarker(
 
 IndoorStepMarker.contextTypes = {
   config: configShape.isRequired,
-  intl: PropTypes.object.isRequired,
 };
 
 IndoorStepMarker.propTypes = {

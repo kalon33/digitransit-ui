@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useIntl } from 'react-intl';
 
-const PopupHeader = ({ header, subHeader, children }, { intl }) => {
+const PopupHeader = ({ header, subHeader, children }) => {
+  const intl = useIntl();
   return (
     <div className="location-popup-wrapper">
       <div className="location-address">{header}</div>
@@ -29,8 +31,6 @@ PopupHeader.defaultProps = {
   children: undefined,
 };
 
-PopupHeader.contextTypes = {
-  intl: PropTypes.object.isRequired,
-};
+PopupHeader.contextTypes = {};
 
 export default PopupHeader;

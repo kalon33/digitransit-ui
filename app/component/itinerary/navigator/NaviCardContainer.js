@@ -286,7 +286,6 @@ NaviCardContainer.defaultProps = {
 };
 
 NaviCardContainer.contextTypes = {
-  intl: PropTypes.object.isRequired,
   config: configShape.isRequired,
   match: matchShape.isRequired,
   router: routerShape.isRequired,

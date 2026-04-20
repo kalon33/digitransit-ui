@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useFragment } from 'react-relay';
 import get from 'lodash/get';
 import { legShape, configShape } from '../../util/shapes';
@@ -22,7 +21,6 @@ function LegAgencyInfo({ leg: legRef }, { config }) {
 }
 
 LegAgencyInfo.contextTypes = {
-  intl: PropTypes.object.isRequired,
   config: configShape.isRequired,
 };
 

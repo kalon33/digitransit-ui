@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useIntl } from 'react-intl';
 import cx from 'classnames';
 import { configShape } from '../../util/shapes';
 import { epochToTime } from '../../util/timeUtils';
 import Icon from '../Icon';
 
 export default function DepartureTime(props, context) {
+  const intl = useIntl();
   let shownTime;
   const timeDiffInMinutes = Math.floor(
     (props.departureTime - props.currentTime) / 60,
@@ -13,7 +15,7 @@ export default function DepartureTime(props, context) {
   if (timeDiffInMinutes <= -1) {
     shownTime = undefined;
   } else if (timeDiffInMinutes <= context.config.minutesToDepartureLimit) {
-    shownTime = context.intl.formatMessage(
+    shownTime = intl.formatMessage(
       { id: 'departure-time-in-minutes', defaultMessage: '{minutes} min' },
       { minutes: timeDiffInMinutes },
     );
@@ -25,14 +27,14 @@ export default function DepartureTime(props, context) {
         <>
           <span className="sr-only">
             {shownTime
-              ? context.intl.formatMessage(
+              ? intl.formatMessage(
                   {
                     id: 'stop-departure-time-future',
                     defaultMessage: 'Departure time is in {minutes} minutes',
                   },
                   { minutes: timeDiffInMinutes },
                 )
-              : context.intl.formatMessage({
+              : intl.formatMessage({
                   id: 'stop-departure-time-past',
                   defaultMessage: 'Departure time was at',
                 })}
@@ -52,7 +54,7 @@ export default function DepartureTime(props, context) {
           </span>
           {props.realtime && (
             <span className="sr-only">
-              {context.intl.formatMessage({
+              {intl.formatMessage({
                 id: 'realtime',
                 defaultMessage: 'Realtime',
               })}
@@ -73,7 +75,7 @@ export default function DepartureTime(props, context) {
         )}
       >
         {props.isNextDeparture &&
-          `${context.intl.formatMessage({
+          `${intl.formatMessage({
             id: 'next',
             defaultMessage: 'Next',
           })} `}
@@ -87,7 +89,6 @@ export default function DepartureTime(props, context) {
 }
 
 DepartureTime.contextTypes = {
-  intl: PropTypes.object.isRequired, // eslint-disable-line react/no-typos
   config: configShape.isRequired,
 };
 
@@ -113,7 +114,6 @@ DepartureTime.defaultProps = {
 
 DepartureTime.contextTypes = {
   config: configShape.isRequired,
-  intl: PropTypes.object.isRequired, // eslint-disable-line react/no-typos
 };
 
 /**

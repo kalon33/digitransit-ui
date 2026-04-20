@@ -1,12 +1,14 @@
 /* eslint-disable camelcase */
 import PropTypes from 'prop-types';
 import React, { useCallback, useState, useRef, useEffect } from 'react';
+import { useIntl } from 'react-intl';
 import cx from 'classnames';
 import Icon from './Icon';
 import { isKeyboardSelectionEvent } from '../util/browser';
 import { userShape } from '../util/shapes';
 
-const UserMenu = ({ menuItems, user }, { intl }) => {
+const UserMenu = ({ menuItems, user }) => {
+  const intl = useIntl();
   const [menuOpen, setMenuOpen] = useState(false);
   const useMenuRef = useRef(null);
   const { given_name, family_name } = user;
@@ -97,8 +99,6 @@ UserMenu.defaultProps = {
   user: {},
 };
 
-UserMenu.contextTypes = {
-  intl: PropTypes.object.isRequired,
-};
+UserMenu.contextTypes = {};
 
 export default UserMenu;

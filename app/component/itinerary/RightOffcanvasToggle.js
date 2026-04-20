@@ -91,7 +91,6 @@ RightOffcanvasToggle.defaultProps = {
 };
 
 RightOffcanvasToggle.contextTypes = {
-  intl: PropTypes.object.isRequired,
   config: configShape,
 };
 

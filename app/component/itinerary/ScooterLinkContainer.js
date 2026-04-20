@@ -91,7 +91,6 @@ ScooterLinkContainer.defaultProps = {
 
 ScooterLinkContainer.contextTypes = {
   config: configShape.isRequired,
-  intl: PropTypes.object.isRequired,
 };
 const ScooterLinkWithBreakpoint = withBreakpoint(ScooterLinkContainer);
 

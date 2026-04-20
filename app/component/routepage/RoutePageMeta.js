@@ -1,11 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { useFragment, graphql } from 'react-relay';
+import { useIntl } from 'react-intl';
 import { configShape, routeShape } from '../../util/shapes';
 import { generateMetaData } from '../../util/metaUtils';
 
-function RoutePageMeta({ route: routeRef }, { config, intl }) {
+function RoutePageMeta({ route: routeRef }, { config }) {
   const route = useFragment(
     graphql`
       fragment RoutePageMeta_route on Route {
@@ -15,6 +15,7 @@ function RoutePageMeta({ route: routeRef }, { config, intl }) {
     `,
     routeRef,
   );
+  const intl = useIntl();
 
   if (!route) {
     return false;
@@ -51,7 +52,6 @@ RoutePageMeta.propTypes = {
 
 RoutePageMeta.contextTypes = {
   config: configShape.isRequired,
-  intl: PropTypes.object.isRequired,
 };
 
 export default RoutePageMeta;

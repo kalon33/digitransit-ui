@@ -3,6 +3,7 @@ import capitalize from 'lodash/capitalize';
 import { DateTime } from 'luxon';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useIntl } from 'react-intl';
 import Link from 'found/Link';
 import { configShape } from '../util/shapes';
 import ExternalLink from './ExternalLink';
@@ -107,8 +108,9 @@ export default function AlertRow(
     index,
     onClickLink,
   },
-  { intl, config },
+  { config },
 ) {
+  const intl = useIntl();
   if (!description && !header) {
     return null;
   }
@@ -265,7 +267,6 @@ AlertRow.propTypes = {
 
 AlertRow.contextTypes = {
   config: configShape.isRequired,
-  intl: PropTypes.object.isRequired,
 };
 
 AlertRow.defaultProps = {

@@ -71,7 +71,6 @@ EndLeg.propTypes = {
 };
 
 EndLeg.contextTypes = {
-  intl: PropTypes.object.isRequired,
   match: matchShape.isRequired,
 };
 
