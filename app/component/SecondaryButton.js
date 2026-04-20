@@ -39,6 +39,4 @@ secondaryButton.propTypes = {
   smallSize: PropTypes.bool,
 };
 
-secondaryButton.contextTypes = {};
-
 export default secondaryButton;

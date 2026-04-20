@@ -99,6 +99,4 @@ UserMenu.defaultProps = {
   user: {},
 };
 
-UserMenu.contextTypes = {};
-
 export default UserMenu;

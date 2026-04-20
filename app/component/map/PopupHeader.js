@@ -31,6 +31,4 @@ PopupHeader.defaultProps = {
   children: undefined,
 };
 
-PopupHeader.contextTypes = {};
-
 export default PopupHeader;

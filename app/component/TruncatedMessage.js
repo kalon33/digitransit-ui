@@ -53,7 +53,6 @@ const TruncatedMessage = ({
 
 TruncatedMessage.propTypes = {
   lines: PropTypes.number.isRequired,
-  // eslint-disable-next-line
   message: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   className: PropTypes.string,
   truncate: PropTypes.bool,
@@ -66,7 +65,5 @@ TruncatedMessage.defaultProps = {
   truncate: false,
   onTruncate: () => {},
 };
-
-TruncatedMessage.contextTypes = {};
 
 export default TruncatedMessage;

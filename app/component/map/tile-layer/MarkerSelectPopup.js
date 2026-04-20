@@ -134,8 +134,6 @@ function MarkerSelectPopup(props) {
   );
 }
 
-MarkerSelectPopup.displayName = 'MarkerSelectPopup';
-
 MarkerSelectPopup.propTypes = {
   options: PropTypes.arrayOf(
     PropTypes.shape({
@@ -149,7 +147,5 @@ MarkerSelectPopup.propTypes = {
 MarkerSelectPopup.defaultProps = {
   zoom: undefined,
 };
-
-MarkerSelectPopup.contextTypes = {};
 
 export default MarkerSelectPopup;
