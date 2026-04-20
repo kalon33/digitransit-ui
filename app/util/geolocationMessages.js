@@ -2,7 +2,7 @@ const events = {
   timeout: { type: 'info', persistence: 'repeat', priority: 2 },
   denied: {
     type: 'info',
-    persistence: 'repeat', // TODO: enabled for testing. Probably to be shown only once.
+    persistence: 'repeat',
     priority: 3,
   },
   failed: { type: 'error', persistence: 'repeat', priority: 4 },
