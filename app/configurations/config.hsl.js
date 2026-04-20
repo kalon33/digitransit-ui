@@ -813,7 +813,6 @@ export default {
     allowedExternalFlexRouteTypes: [1501],
     infoLanguage: 'fi',
   },
-
   showRouteDescNotification: IS_DEV,
   personalisation: false,
   viaPointsEnabled: true,

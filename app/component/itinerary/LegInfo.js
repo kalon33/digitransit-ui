@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl';
 import Modal from '@hsl-fi/modal';
 import { legShape, configShape } from '../../util/shapes';
 import { legTimeStr } from '../../util/legUtils';
-import { getRouteMode } from '../../util/modeUtils';
+import { getTripOrRouteMode } from '../../util/modeUtils';
 import RouteNumber from '../RouteNumber';
 import { routePagePath, PREFIX_STOPS } from '../../util/path';
 import { getCapacityForLeg } from '../../util/occupancyUtil';
@@ -35,7 +35,8 @@ export default function LegInfo(
     !constantOperationRoutes || !constantOperationRoutes[leg.route.gtfsId];
   const mode = isCallAgency
     ? 'call'
-    : getRouteMode(
+    : getTripOrRouteMode(
+        leg.trip,
         { mode: leg.mode, type: leg.route.type, gtfsId: leg.route.gtfsId },
         config,
       );
@@ -66,14 +67,14 @@ export default function LegInfo(
         aria-label={`${intl.formatMessage({
           id: mode,
           defaultMessage: 'Vehicle',
-        })} ${leg.route && leg.route.shortName?.toLowerCase()}`}
+        })} ${(leg.route.shortName || leg.trip?.tripShortName)?.toLowerCase()}`}
       >
         <span aria-hidden="true">
           <RouteNumber
             mode={mode}
             alertSeverityLevel={alertSeverityLevel}
             color={leg.route ? `#${leg.route.color}` : 'currentColor'}
-            text={leg.route && leg.route.shortName}
+            text={leg.route.shortName || leg.trip?.tripShortName}
             realtime={false}
             withBar
             fadeLong

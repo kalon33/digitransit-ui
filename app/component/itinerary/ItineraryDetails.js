@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useFragment } from 'react-relay';
-import { getRouteMode } from '../../util/modeUtils';
+import { getTripOrRouteMode } from '../../util/modeUtils';
 import {
   getFaresFromLegs,
   shouldShowFareInfo,
@@ -226,7 +226,7 @@ function ItineraryDetails(
     itinerary.legs.forEach(({ route, trip }) => {
       const isReplacementRoute =
         route &&
-        (getRouteMode(route, config)?.includes('replacement') ||
+        (getTripOrRouteMode(trip, route, config)?.includes('replacement') ||
           config.replacementBusRoutes?.includes(route.gtfsId));
       const isReplacementTrip =
         trip?.submode?.includes('replacement') || trip?.submode?.includes(714);
