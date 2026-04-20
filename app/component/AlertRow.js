@@ -58,7 +58,10 @@ export const getTimePeriod = ({ currentTime, startTime, endTime, intl }) => {
 const getColor = entities => {
   if (Array.isArray(entities)) {
     const routeEntities = getEntitiesOfType(entities, AlertEntityType.Route);
-    return routeEntities.length > 0 && `#${routeEntities[0].color}`;
+    return (
+      routeEntities.length > 0 &&
+      (routeEntities[0].color ? `#${routeEntities[0].color}` : null)
+    );
   }
   return null;
 };

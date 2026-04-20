@@ -183,7 +183,7 @@ function RouteNumber(props, context) {
                 mode,
                 { long: longText },
               )}
-              style={{ color: !props.withBar && getColor() }}
+              style={{ color: !props.withBar ? getColor() : null }}
             >
               {filteredText}
             </span>

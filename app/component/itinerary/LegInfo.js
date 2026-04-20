@@ -72,7 +72,7 @@ export default function LegInfo(
           <RouteNumber
             mode={mode}
             alertSeverityLevel={alertSeverityLevel}
-            color={leg.route ? `#${leg.route.color}` : 'currentColor'}
+            color={leg.route?.color ? `#${leg.route.color}` : 'currentColor'}
             text={leg.route.shortName || leg.trip?.tripShortName}
             realtime={false}
             withBar
