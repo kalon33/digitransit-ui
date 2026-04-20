@@ -84,10 +84,14 @@ const toMessage = (alert, intl, config, lang) => {
 // Old shape: content is an object keyed by locale { fi: [...], en: [...] }
 const resolveContent = (msg, lang, intl) => {
   if (Array.isArray(msg.content)) {
-    return msg.content.map(item => ({
-      ...item,
-      content: intl.formatMessage({ id: item.content }),
-    }));
+    return msg.content
+      .filter(
+        item => !item.content || intl.messages[item.content] !== undefined,
+      )
+      .map(item => ({
+        ...item,
+        content: intl.formatMessage({ id: item.content }),
+      }));
   }
   return msg.content[lang] || msg.content.fi;
 };
