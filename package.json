@@ -32,7 +32,7 @@
     "test:update-all-snapshots": "yarn test:update-all-desktop-snapshots && yarn test:update-all-mobile-snapshots",
     "lint": "yarn run eslint && yarn run prettier-styles && yarn run stylelint",
     "format": "yarn run sort-translations && yarn run eslint-fix && yarn run prettier-styles-fix && yarn run stylelint-fix",
-    "sort-translations": "node scripts/sort-translations.js --fix",
+    "sort-translations": "node scripts/sort-translations.mjs",
     "eslint": "eslint .",
     "eslint-fix": "eslint . --fix",
     "prettier-styles": "prettier sass/**/*.scss app/**/*.scss digitransit-component/**/*.scss --check",
