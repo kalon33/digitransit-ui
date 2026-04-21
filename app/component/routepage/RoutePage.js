@@ -128,14 +128,15 @@ function RoutePage({
           </div>
           {!tripId && (
             <div className="route-header-actions">
-              {matchingNotification && (
-                <>
-                  <RouteNotificationButton
-                    notification={matchingNotification}
-                  />
-                  <span className="route-header-divider" aria-hidden="true" />
-                </>
-              )}
+              {matchingNotification &&
+                matchingNotification.closeButtonLabel?.[intl.locale] && (
+                  <>
+                    <RouteNotificationButton
+                      notification={matchingNotification}
+                    />
+                    <span className="route-header-divider" aria-hidden="true" />
+                  </>
+                )}
               <FavouriteRouteContainer
                 className="route-page-header"
                 gtfsId={route.gtfsId}
