@@ -525,6 +525,7 @@ const IndexPageWithStores = connectToStores(
 );
 
 IndexPageWithStores.contextTypes = {
+  ...IndexPageWithStores.contextTypes,
   executeAction: PropTypes.func.isRequired,
 };
 

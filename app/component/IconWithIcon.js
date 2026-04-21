@@ -1,60 +1,60 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useIntl } from 'react-intl';
 
-import { intlShape } from 'react-intl';
 import Icon from './Icon';
 import IconBackground from './icon/IconBackground';
 import IconBadge from './icon/IconBadge';
 
-const IconWithIcon = (
-  {
-    badgeFill,
-    badgeText,
-    badgeTextFill,
-    className,
-    color,
-    id,
-    img,
-    subIcon,
-    subIconClassName,
-    subIconShape,
-    mode,
-    omitViewBox,
-  },
-  { intl },
-) => (
-  <span id={id} className={className}>
-    <span>
-      <Icon
-        color={color}
-        img={img}
-        viewBox={mode === 'call' ? '0 0 60 60' : undefined}
-        omitViewBox={omitViewBox}
-        foreground={
-          (badgeFill || badgeText) && (
-            <IconBadge
-              badgeFill={badgeFill}
-              badgeText={badgeText}
-              badgeTextFill={badgeTextFill}
-            />
-          )
-        }
-      />
-    </span>
-    {subIcon && (
-      <span
-        className={subIconClassName}
-        title={intl.formatMessage({ id: 'disruption' })}
-      >
+const IconWithIcon = ({
+  badgeFill,
+  badgeText,
+  badgeTextFill,
+  className,
+  color,
+  id,
+  img,
+  subIcon,
+  subIconClassName,
+  subIconShape,
+  mode,
+  omitViewBox,
+}) => {
+  const intl = useIntl();
+  return (
+    <span id={id} className={className}>
+      <span>
         <Icon
-          img={subIcon}
+          color={color}
+          img={img}
+          viewBox={mode === 'call' ? '0 0 60 60' : undefined}
           omitViewBox={omitViewBox}
-          background={subIconShape && <IconBackground shape={subIconShape} />}
+          foreground={
+            (badgeFill || badgeText) && (
+              <IconBadge
+                badgeFill={badgeFill}
+                badgeText={badgeText}
+                badgeTextFill={badgeTextFill}
+              />
+            )
+          }
         />
       </span>
-    )}
-  </span>
-);
+      {subIcon && (
+        <span
+          className={subIconClassName}
+          title={intl.formatMessage({ id: 'disruption' })}
+        >
+          <Icon
+            img={subIcon}
+            omitViewBox={omitViewBox}
+            background={subIconShape && <IconBackground shape={subIconShape} />}
+          />
+        </span>
+      )}
+    </span>
+  );
+};
 
 IconWithIcon.displayName = 'IconWithIcon';
 
@@ -71,10 +71,6 @@ IconWithIcon.propTypes = {
   subIconShape: PropTypes.string,
   mode: PropTypes.string,
   omitViewBox: PropTypes.bool,
-};
-
-IconWithIcon.contextTypes = {
-  intl: intlShape.isRequired,
 };
 
 IconWithIcon.defaultProps = {

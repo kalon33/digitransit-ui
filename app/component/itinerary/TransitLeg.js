@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import Link from 'found/Link';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import LegAgencyInfo from './LegAgencyInfo';
@@ -191,7 +191,7 @@ class TransitLeg extends React.Component {
         return (
           <IntermediateLeg
             placesCount={places.length}
-            color={leg.route ? `#${leg.route.color}` : 'currentColor'}
+            color={leg.route?.color ? `#${leg.route.color}` : 'currentColor'}
             key={place.stop.gtfsId}
             gtfsId={place.stop.gtfsId}
             mode={mode}
@@ -437,7 +437,7 @@ class TransitLeg extends React.Component {
         <ItineraryCircleLine
           index={index}
           modeClassName={modeClassName}
-          color={leg.route ? `#${leg.route.color}` : 'currentColor'}
+          color={leg.route?.color ? `#${leg.route.color}` : 'currentColor'}
           renderBottomMarker={
             !this.state.showIntermediateStops ||
             (leg.intermediatePlaces.length === 0 && interliningLegs.length < 1)
@@ -447,7 +447,7 @@ class TransitLeg extends React.Component {
         />
         <div
           style={{
-            color: leg.route ? `#${leg.route.color}` : 'currentColor',
+            color: leg.route?.color ? `#${leg.route.color}` : 'currentColor',
           }}
           className={cx(
             'small-9 columns itinerary-instruction-column',
@@ -716,7 +716,7 @@ TransitLeg.defaultProps = {
 
 TransitLeg.contextTypes = {
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired, // eslint-disable-line
 };
 
 const connectedComponent = connectToStores(

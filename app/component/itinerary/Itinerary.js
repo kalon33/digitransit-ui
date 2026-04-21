@@ -2,7 +2,7 @@ import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { createRef, useLayoutEffect, useState } from 'react';
 import { useFragment } from 'react-relay';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import {
   legShape,
   locationShape,
@@ -88,7 +88,6 @@ export function RouteLeg(
   {
     leg,
     large,
-    intl,
     legLength,
     isTransitLeg,
     interliningWithRoute,
@@ -100,6 +99,7 @@ export function RouteLeg(
   },
   { config },
 ) {
+  const intl = useIntl();
   let routeNumber;
   const mode = getTripOrRouteMode(leg.trip, leg.route, config);
 
@@ -159,7 +159,6 @@ export function RouteLeg(
 
 RouteLeg.propTypes = {
   leg: legShape.isRequired,
-  intl: intlShape.isRequired,
   large: PropTypes.bool.isRequired,
   legLength: PropTypes.number.isRequired,
   fitRouteNumber: PropTypes.bool.isRequired,
@@ -275,8 +274,10 @@ const Itinerary = (
     lowestCo2value,
     ...props
   },
-  { intl, intl: { formatMessage }, config },
+  { config },
 ) => {
+  const intl = useIntl();
+  const { formatMessage } = intl;
   const itinerary = useFragment(ItineraryFragment, itineraryRef);
   const isTransitLeg = leg => leg.transitLeg;
   const isTransitOrRentalLeg = leg => leg.transitLeg || leg.rentedBike;
@@ -596,7 +597,6 @@ const Itinerary = (
             (fitAllRouteNumbers && !longName) || renderRouteNumberForALongLeg
           }
           interliningWithRoute={interliningWithRoute}
-          intl={intl}
           legLength={legLength}
           large={breakpoint === 'large'}
           withBicycle={withBicycle}
@@ -1047,7 +1047,6 @@ Itinerary.defaultProps = {
 };
 
 Itinerary.contextTypes = {
-  intl: intlShape.isRequired,
   config: configShape.isRequired,
 };
 
