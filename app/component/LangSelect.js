@@ -1,10 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { matchShape } from 'found';
 import { useIntl } from 'react-intl';
-import { configShape } from '../util/shapes';
 import { useConfigContext } from '../configurations/ConfigContext';
 
-const language = (lang, highlight, match, intl) => {
+const Language = ({ lang }, { match }) => {
+  const { language } = useConfigContext();
+  const intl = useIntl();
+  const highlight = lang === language;
+
   const aria = highlight
     ? intl.formatMessage(
         { id: 'search-current-suggestion' },
@@ -24,21 +28,18 @@ const language = (lang, highlight, match, intl) => {
   );
 };
 
-const LangSelect = ({}, { match }) => { // eslint-disable-line
-  const config = useConfigContext();
-  const intl = useIntl();
+Language.contextTypes = { match: matchShape.isRequired };
+Language.propTypes = { lang: PropTypes.string.isRequired };
+
+const LanguageSelect = ({}, { match }) => { // eslint-disable-line
+  const { availableLanguages } = useConfigContext();
   return (
     <div key="lang-select" id="lang-select">
-      {config.availableLanguages.map(lang =>
-        language(lang, lang === config.language, match, intl),
-      )}
+      {availableLanguages.map(lang => (
+        <Language key={lang} lang={lang} />
+      ))}
     </div>
   );
 };
 
-LangSelect.contextTypes = {
-  config: configShape.isRequired,
-  match: matchShape.isRequired,
-};
-
-export default LangSelect;
+export default LanguageSelect;
