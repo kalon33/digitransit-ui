@@ -408,6 +408,9 @@ export default {
     'navigation-mode-late': '{name} har försenats',
     'navigation-outro-dismiss': 'Stäng guidning',
     'navigation-outro-header': 'Du är framme!',
+    'navigation-pier-change': 'Kajändring',
+    'navigation-pier-change-details': '{name} avgår från kaj {number}',
+    'navigation-pier-restored': 'Avgår från sin ursprungliga kaj',
     'navigation-platform-change': 'Plattformsändring',
     'navigation-platform-change-details':
       '{name} avgår från plattform {number}',
@@ -534,6 +537,8 @@ export default {
     'pick-mode': 'Trafikslag',
     'pick-street-mode': 'Egna färdmedel',
     pier: 'Kaj',
+    'pier-num': 'Kaj {platformCode}',
+    'pier-short-no-num': 'Kaj',
     platform: 'Plattform',
     'platform-num': 'Plattform {platformCode}',
     'platform-short-no-num': 'Plattf.',

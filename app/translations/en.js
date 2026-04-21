@@ -412,6 +412,9 @@ export default {
     'navigation-mode-late': '{name} is late',
     'navigation-outro-dismiss': 'End guidance',
     'navigation-outro-header': "You've arrived!",
+    'navigation-pier-change': 'Pier changed',
+    'navigation-pier-change-details': '{name} departs from pier {number}',
+    'navigation-pier-restored': 'Departs from original pier',
     'navigation-platform-change': 'Platform changed',
     'navigation-platform-change-details':
       '{name} departs from platform {number}',
@@ -540,6 +543,8 @@ export default {
     'pick-mode': 'Transport modes',
     'pick-street-mode': 'My modes of transport',
     pier: 'Pier',
+    'pier-num': 'Pier {platformCode}',
+    'pier-short-no-num': 'Pier',
     platform: 'Platform',
     'platform-num': 'Platform {platformCode}',
     'platform-short-no-num': 'Plat.',
