@@ -1,9 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import { matchShape, routerShape } from 'found';
+import { matchShape } from 'found';
 import { useIntl } from 'react-intl';
-import connectToStores from 'fluxible-addons-react/connectToStores';
 import { configShape } from '../util/shapes';
+import { useConfigContext } from '../configurations/ConfigContext';
 
 const language = (lang, highlight, match, intl) => {
   const aria = highlight
@@ -25,36 +24,21 @@ const language = (lang, highlight, match, intl) => {
   );
 };
 
-const LangSelect = ({ currentLanguage }, { config, match }) => {
+const LangSelect = ({}, { match }) => { // eslint-disable-line
+  const config = useConfigContext();
   const intl = useIntl();
   return (
     <div key="lang-select" id="lang-select">
       {config.availableLanguages.map(lang =>
-        language(lang, lang === currentLanguage, match, intl),
+        language(lang, lang === config.language, match, intl),
       )}
     </div>
   );
 };
 
-LangSelect.displayName = 'LangSelect';
-
-LangSelect.propTypes = {
-  currentLanguage: PropTypes.string.isRequired,
-};
-
 LangSelect.contextTypes = {
-  executeAction: PropTypes.func.isRequired,
   config: configShape.isRequired,
-  router: routerShape.isRequired,
   match: matchShape.isRequired,
 };
 
-const connected = connectToStores(
-  LangSelect,
-  ['PreferencesStore'],
-  context => ({
-    currentLanguage: context.getStore('PreferencesStore').getLanguage(),
-  }),
-);
-
-export { connected as default, LangSelect as Component };
+export default LangSelect;
