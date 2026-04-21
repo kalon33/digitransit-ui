@@ -522,6 +522,7 @@ export default {
       'Please note that you need to use the app of the operator in question in order to use and pay for the taxis or scooters.',
     'payment-info-taxi':
       'Please note that you need to use the app of the operator in question in order to use and pay for the taxis.',
+    'personal-itineraries': 'Personal itineraries',
     personalisation: 'Personalisation',
     'personalisation-beta':
       'Personalization is still in the testing phase, meaning we are trying out the service. We would love to hear about your experience. The survey will open in a new tab.',
