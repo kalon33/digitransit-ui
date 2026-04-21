@@ -2,7 +2,7 @@
 
 ## Using `sort-translations.js`
 
-This script sorts [`app/translations.js`](/app/translations.js).
+This script sorts translation files in the [`app/translations`](/app/translations) directory.
 See the `sort-translations` and `format` scripts in [`package.json`](/package.json).
 
 ## Using `ui.sh`
