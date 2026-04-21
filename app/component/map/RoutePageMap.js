@@ -235,6 +235,7 @@ export default createFragmentContainer(RoutePageMapWithVehicles, {
       stoptimesForDate {
         scheduledDeparture
       }
+      isReplacement
       gtfsId
       directionId
     }

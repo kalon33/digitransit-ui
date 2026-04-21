@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import { createFragmentContainer, graphql } from 'react-relay';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import cx from 'classnames';
 import { matchShape } from 'found';
 import { routeShape, errorShape } from '../../util/shapes';
@@ -27,7 +27,6 @@ import {
 import { AlertEntityType } from '../../constants';
 import FavouriteRouteContainer from './FavouriteRouteContainer';
 import RouteNotificationButton from './RouteNotificationButton';
-import { useTranslationsContext } from '../../util/useTranslationsContext';
 import { useConfigContext } from '../../configurations/ConfigContext';
 
 function resolveHeadsign(pattern) {
@@ -48,7 +47,7 @@ function RoutePage({
   error = undefined,
   currentTime,
 }) {
-  const intl = useTranslationsContext();
+  const intl = useIntl();
   const config = useConfigContext();
 
   const headingRef = useRef(null);
@@ -222,6 +221,9 @@ const containerComponent = createFragmentContainer(
           }
           headsign
           code
+          stops {
+            name
+          }
           trips: tripsForDate(serviceDate: $date) {
             stoptimes: stoptimesForDate(serviceDate: $date) {
               realtimeState

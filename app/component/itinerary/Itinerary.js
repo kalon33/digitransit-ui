@@ -2,7 +2,7 @@ import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { createRef, useLayoutEffect, useState } from 'react';
 import { useFragment } from 'react-relay';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import {
   legShape,
   locationShape,
@@ -16,17 +16,17 @@ import RouteNumberContainer from '../RouteNumberContainer';
 import { getActiveLegAlertSeverityLevel } from '../../util/alertUtils';
 import {
   getLegMode,
-  splitLegsAtViaPoints,
   compressLegs,
   getLegBadgeProps,
   getInterliningLegs,
   isFirstInterliningLeg,
   getTotalDistance,
-  getRouteText,
+  getTripOrRouteText,
   legTime,
   legTimeStr,
   LegMode,
   getZones,
+  splitLegsAtViaPoints,
 } from '../../util/legUtils';
 import { dateOrEmpty, isTomorrow, timeStr } from '../../util/timeUtils';
 import withBreakpoint from '../../util/withBreakpoint';
@@ -37,11 +37,12 @@ import {
   getRentalNetworkConfig,
   getVehicleCapacity,
 } from '../../util/vehicleRentalUtils';
-import { getRouteMode } from '../../util/modeUtils';
+import { getTripOrRouteMode } from '../../util/modeUtils';
 import { getCapacityForLeg } from '../../util/occupancyUtil';
 import getCo2Value from '../../util/emissions';
 import { ItineraryFragment } from './queries/ItineraryFragment';
 import { getTicketString } from '../../util/fareUtils';
+import { ViaLocationType } from '../../constants';
 import BoardingInformation, {
   getBoardingInformationText,
 } from './BoardingInformation';
@@ -87,7 +88,6 @@ export function RouteLeg(
   {
     leg,
     large,
-    intl,
     legLength,
     isTransitLeg,
     interliningWithRoute,
@@ -99,8 +99,9 @@ export function RouteLeg(
   },
   { config },
 ) {
+  const intl = useIntl();
   let routeNumber;
-  const mode = getRouteMode(leg.route, config);
+  const mode = getTripOrRouteMode(leg.trip, leg.route, config);
 
   const getOccupancyStatus = () => {
     if (hasOneTransitLeg) {
@@ -129,6 +130,7 @@ export function RouteLeg(
     routeNumber = (
       <RouteNumberContainer
         alertSeverityLevel={getActiveLegAlertSeverityLevel(leg)}
+        trip={leg.trip}
         route={leg.route}
         className={cx('line', mode)}
         interliningWithRoute={interliningWithRoute}
@@ -157,7 +159,6 @@ export function RouteLeg(
 
 RouteLeg.propTypes = {
   leg: legShape.isRequired,
-  intl: intlShape.isRequired,
   large: PropTypes.bool.isRequired,
   legLength: PropTypes.number.isRequired,
   fitRouteNumber: PropTypes.bool.isRequired,
@@ -250,18 +251,6 @@ export const ViaLeg = () => (
   </div>
 );
 
-const getViaPointIndex = (leg, intermediatePlaces) => {
-  if (!leg || !Array.isArray(intermediatePlaces)) {
-    return -1;
-  }
-  return intermediatePlaces.findIndex(
-    place => place.lat === leg.from.lat && place.lon === leg.from.lon,
-  );
-};
-
-const connectsFromViaPoint = (currLeg, intermediatePlaces) =>
-  getViaPointIndex(currLeg, intermediatePlaces) > -1;
-
 const bikeWasParked = legs => {
   const legsLength = legs.length;
   for (let i = 0; i < legsLength; i++) {
@@ -285,8 +274,10 @@ const Itinerary = (
     lowestCo2value,
     ...props
   },
-  { intl, intl: { formatMessage }, config },
+  { config },
 ) => {
+  const intl = useIntl();
+  const { formatMessage } = intl;
   const itinerary = useFragment(ItineraryFragment, itineraryRef);
   const isTransitLeg = leg => leg.transitLeg;
   const isTransitOrRentalLeg = leg => leg.transitLeg || leg.rentedBike;
@@ -321,13 +312,10 @@ const Itinerary = (
     if (isTransitLeg(leg)) {
       noTransitLegs = false;
       transitLegCount += 1;
-      nameLengthSum += getRouteText(leg.route, config).length;
+      nameLengthSum += getTripOrRouteText(leg.trip, leg.route, config).length;
     }
     nameLengthSum += 10; // every leg requires some minimum space
-    if (
-      i > 0 &&
-      (leg.intermediatePlace || connectsFromViaPoint(leg, intermediatePlaces))
-    ) {
+    if (i > 0 && (leg.from.viaLocationType || leg.to.viaLocationType)) {
       intermediateSlack +=
         legTime(leg.start) - legTime(compressedLegs[i - 1].end); // calculate time spent at each intermediate place
     }
@@ -368,17 +356,14 @@ const Itinerary = (
     let waitLength;
     const startMs = legTime(leg.start);
     const endMs = legTime(leg.end);
-    const previousLeg = i > 0 ? compressedLegs[i - 1] : null;
     const nextLeg =
       i < compressedLegs.length - 1 ? compressedLegs[i + 1] : null;
     let legLength = relativeLength(endMs - startMs);
-    const longName = !leg?.route?.shortName || leg?.route?.shortName.length > 5;
+    const routeName =
+      leg.route && getTripOrRouteText(leg.trip, leg.route, config);
+    const longName = !routeName || routeName.length > 5;
 
-    if (
-      nextLeg &&
-      !nextLeg.intermediatePlace &&
-      !connectsFromViaPoint(nextLeg, intermediatePlaces)
-    ) {
+    if (nextLeg && !leg.to.viaLocationType) {
       // don't show waiting in intermediate places
       waitTime = legTime(nextLeg.start) - endMs;
       waitLength = relativeLength(waitTime);
@@ -427,14 +412,11 @@ const Itinerary = (
       renderBar = false;
       addition += legLength; // carry over the length of the leg to the next
     }
-    // There are two places which inject ViaLegs in this logic, but we certainly
-    // don't want to add it twice in the same place with the same key, so we
-    // record whether we added it here at the first place.
-    let viaAdded = false;
-    if (leg.intermediatePlace) {
+    let viaPointAdded = false;
+    if (leg.from.viaLocationType === ViaLocationType.Visit) {
+      viaPointAdded = true;
       onlyIconLegs += 1;
       legs.push(<ViaLeg key={`via_${leg.mode}_${startMs}`} />);
-      viaAdded = true;
     }
     if (isLegOnFoot(leg) && renderBar) {
       const walkingTime = Math.floor(leg.duration / 60);
@@ -596,11 +578,11 @@ const Itinerary = (
         usingOwnCarWholeTrip &&
         config.carBoardingModes[leg.route.mode] !== undefined;
       if (
-        previousLeg &&
-        !previousLeg.intermediatePlace &&
-        connectsFromViaPoint(leg, intermediatePlaces) &&
-        !viaAdded
+        leg.from.viaLocationType === ViaLocationType.PassThrough ||
+        (leg.viaStopCall && !viaPointAdded)
       ) {
+        viaPointAdded = true;
+        onlyIconLegs += 1;
         legs.push(<ViaLeg key={`via_${leg.mode}_${startMs}`} />);
       }
       const renderRouteNumberForALongLeg =
@@ -615,7 +597,6 @@ const Itinerary = (
             (fitAllRouteNumbers && !longName) || renderRouteNumberForALongLeg
           }
           interliningWithRoute={interliningWithRoute}
-          intl={intl}
           legLength={legLength}
           large={breakpoint === 'large'}
           withBicycle={withBicycle}
@@ -630,12 +611,19 @@ const Itinerary = (
             id: `${leg.mode.toLowerCase()}-with-route-number`,
           },
           {
-            routeNumber: leg.route.shortName,
+            routeNumber: routeName,
             headSign: '',
           },
         ),
       );
       stopNames.push(leg.from.name);
+      if (
+        leg.to.viaLocationType === ViaLocationType.PassThrough &&
+        !(nextLeg.transitLeg && nextLeg.from.viaLocationType)
+      ) {
+        onlyIconLegs += 1;
+        legs.push(<ViaLeg key={`via_${leg.mode}_${startMs}`} />);
+      }
     }
 
     if (waiting && !nextLeg?.interlineWithPreviousLeg) {
@@ -650,7 +638,7 @@ const Itinerary = (
           isTransitLeg={false}
           mode={LegMode.Wait}
           large={breakpoint === 'large'}
-          icon={usingOwnCarWholeTrip ? 'icon_wait-car' : undefined}
+          icon={usingOwnCarWholeTrip ? 'icon_wait-car' : 'icon_wait_standing'}
         />,
       );
     }
@@ -1059,7 +1047,6 @@ Itinerary.defaultProps = {
 };
 
 Itinerary.contextTypes = {
-  intl: intlShape.isRequired,
   config: configShape.isRequired,
 };
 

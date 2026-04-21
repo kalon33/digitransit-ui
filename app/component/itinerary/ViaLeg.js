@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { legShape, legTimeShape, configShape } from '../../util/shapes';
 import { displayDistance } from '../../util/geo-utils';
 import { durationToString } from '../../util/timeUtils';
@@ -39,13 +39,18 @@ const getDescription = (mode, distance, duration) => {
   );
 };
 
-function ViaLeg(props, { config, intl }) {
+function ViaLeg(props, { config }) {
+  const intl = useIntl();
   const distance = displayDistance(
     parseInt(props.leg.distance, 10),
     config,
     intl.formatNumber,
   );
-  const [address, place] = splitStringToAddressAndPlace(props.leg.from.name);
+  const [name, place] = splitStringToAddressAndPlace(props.leg.from.name);
+  const address =
+    props.leg.from.viaLocationType && props.leg.viaAddress
+      ? props.leg.viaAddress
+      : name;
   const startTime = legTimeStr(props.leg.start);
   const arrivalMs = legTime(props.arrival);
   const arrivalTime = legTimeStr(props.arrival);
@@ -96,7 +101,8 @@ function ViaLeg(props, { config, intl }) {
         </div>
       </div>
       <ItineraryCircleLineWithIcon
-        isVia
+        viaType={props.leg.from.viaLocationType}
+        isStop={!!props.leg.from.stop}
         index={props.index}
         modeClassName={props.leg.mode.toLowerCase()}
       />
@@ -153,7 +159,6 @@ ViaLeg.defaultProps = {
 
 ViaLeg.contextTypes = {
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
 };
 
 export default ViaLeg;

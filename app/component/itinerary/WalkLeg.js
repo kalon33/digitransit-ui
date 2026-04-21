@@ -1,9 +1,10 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import Link from 'found/Link';
-import { legShape, configShape } from '../../util/shapes';
+import { legShape } from '../../util/shapes';
+import { useConfigContext } from '../../configurations/ConfigContext';
 import { legTime, legTimeStr, legDestination } from '../../util/legUtils';
 import Icon from '../Icon';
 import ItineraryMapAction from './ItineraryMapAction';
@@ -33,20 +34,19 @@ import {
 import IndoorStep from './IndoorStep';
 import { IndoorLegType } from '../../constants';
 
-function WalkLeg(
-  {
-    children,
-    focusAction,
-    focusToLeg,
-    focusToPoint,
-    index,
-    leg,
-    previousLeg,
-    nextLeg,
-    useOriginAddress,
-  },
-  { config, intl },
-) {
+function WalkLeg({
+  children,
+  focusAction,
+  focusToLeg,
+  focusToPoint,
+  index,
+  leg,
+  previousLeg,
+  nextLeg,
+  useOriginAddress,
+}) {
+  const intl = useIntl();
+  const config = useConfigContext();
   // If there is only one indoor routing step, always show it.
   const [showIntermediateSteps, setShowIntermediateSteps] = useState(
     getIndoorStepsWithVerticalTransportation(previousLeg, leg, nextLeg)
@@ -67,7 +67,9 @@ function WalkLeg(
   const modeClassName = 'walk';
   const fromMode = (leg[toOrFrom].stop && leg[toOrFrom].stop.vehicleMode) || '';
   const isFirstLeg = i => i === 0;
-  const [address, place] = splitStringToAddressAndPlace(leg[toOrFrom].name);
+  const [name, place] = splitStringToAddressAndPlace(leg[toOrFrom].name);
+  const address =
+    leg[toOrFrom].viaLocationType && leg.viaAddress ? leg.viaAddress : name;
   const network =
     previousLeg?.[toOrFrom]?.vehicleRentalStation?.rentalNetwork.networkId ||
     previousLeg?.[toOrFrom]?.rentalVehicle?.rentalNetwork.networkId;
@@ -150,6 +152,8 @@ function WalkLeg(
         appendClass={appendClass}
         index={index}
         modeClassName={modeClassName}
+        viaType={leg.isViaPoint ? leg.from.viaLocationType : null}
+        isStop={!!leg.from.stop}
         indoorLegType={indoorLegType}
         showIntermediateSteps={showIntermediateSteps}
         indoorStepsLength={indoorSteps.length}
@@ -203,10 +207,15 @@ function WalkLeg(
                 >
                   {returnNotice || leg[toOrFrom].name}
                   {leg.isViaPoint && (
-                    <Icon
-                      img="icon_mapMarker"
-                      className="itinerary-mapmarker-icon"
-                    />
+                    <>
+                      <Icon
+                        img="icon_mapMarker"
+                        className="itinerary-mapmarker-icon"
+                      />
+                      <span className="sr-only">
+                        {intl.formatMessage({ id: 'via-point' })}
+                      </span>
+                    </>
                   )}
                   {leg[toOrFrom].stop && (
                     <Icon
@@ -247,7 +256,9 @@ function WalkLeg(
                       />
                     </div>
                   )}
-                  {!returnNotice && !alightNotice && leg[toOrFrom].name}
+                  {!returnNotice &&
+                    !alightNotice &&
+                    (leg.viaAddress || leg[toOrFrom].name)}
                   {leg[toOrFrom].stop && !alightNotice && (
                     <Icon
                       img="icon_arrow-collapse--right"
@@ -387,11 +398,6 @@ WalkLeg.defaultProps = {
   nextLeg: undefined,
   children: undefined,
   useOriginAddress: false,
-};
-
-WalkLeg.contextTypes = {
-  config: configShape.isRequired,
-  intl: intlShape.isRequired,
 };
 
 export default WalkLeg;

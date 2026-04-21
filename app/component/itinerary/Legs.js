@@ -30,7 +30,7 @@ import {
   markViaPoints,
   getBoardingLeg,
 } from '../../util/legUtils';
-import { getRouteMode } from '../../util/modeUtils';
+import { getTripOrRouteMode } from '../../util/modeUtils';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
 import Profile from './Profile';
 import BikeParkLeg from './BikeParkLeg';
@@ -181,7 +181,9 @@ export default class Legs extends React.Component {
               start={leg.end}
               waitTime={waitTime}
               focusAction={this.focus(leg.to)}
-              icon={usingOwnCarWholeTrip ? 'icon_wait-car' : undefined}
+              icon={
+                usingOwnCarWholeTrip ? 'icon_wait-car' : 'icon_wait_standing'
+              }
             >
               {stopCode(leg.to.stop)}
             </WaitLeg>
@@ -218,7 +220,8 @@ export default class Legs extends React.Component {
           leg.mode === 'FUNICULAR') &&
         !leg.interlineWithPreviousLeg
       ) {
-        const mode = getRouteMode(
+        const mode = getTripOrRouteMode(
+          leg.trip,
           {
             mode: leg.mode,
             type: leg.route?.type,

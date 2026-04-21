@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { displayDistance } from '../../../util/geo-utils';
@@ -11,7 +11,7 @@ import {
   getToLocalizedMode,
   withRealTime,
 } from './NaviUtils';
-import { getRouteMode } from '../../../util/modeUtils';
+import { getTripOrRouteMode } from '../../../util/modeUtils';
 import BoardingInfo from './BoardingInfo';
 import Duration from '../Duration';
 
@@ -19,7 +19,7 @@ function getBoardingParams(leg, time, config) {
   if (!leg?.transitLeg) {
     return {};
   }
-  const { headsign, route, start } = leg;
+  const { headsign, trip, route, start } = leg;
   const hs = headsign || leg.trip?.tripHeadsign;
 
   const remainingDuration = <Duration duration={legTime(start) - time} />;
@@ -28,7 +28,7 @@ function getBoardingParams(leg, time, config) {
     duration: withRealTime(rt, remainingDuration),
     legTime: withRealTime(rt, legTimeStr(start)),
   };
-  const routeMode = getRouteMode(route, config);
+  const routeMode = getTripOrRouteMode(trip, route, config);
   return { routeMode, route, hs, values };
 }
 
@@ -43,8 +43,9 @@ export default function NaviInstructions(
     tailLength,
     showDestinationInfo,
   },
-  { intl, config },
+  { config },
 ) {
+  const intl = useIntl();
   const { routeMode, route, hs, values } = getBoardingParams(
     nextLeg,
     time,
@@ -194,6 +195,5 @@ NaviInstructions.defaultProps = {
   showDestinationInfo: false,
 };
 NaviInstructions.contextTypes = {
-  intl: intlShape.isRequired,
   config: configShape.isRequired,
 };

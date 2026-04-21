@@ -177,6 +177,8 @@ export const planConnection = graphql`
               gtfsId
               directionId
               tripHeadsign
+              isReplacement
+              tripShortName
               stoptimesForDate {
                 stop {
                   gtfsId
@@ -231,6 +233,7 @@ export const planConnection = graphql`
                   networkId
                 }
               }
+              viaLocationType
             }
             to {
               lat
@@ -273,6 +276,7 @@ export const planConnection = graphql`
                   url
                 }
               }
+              viaLocationType
             }
             fareProducts {
               product {

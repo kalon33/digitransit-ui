@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { intlShape } from 'react-intl';
 import { matchShape } from 'found';
+import { useIntl } from 'react-intl';
 import { userShape, configShape } from '../util/shapes';
 import Icon from './Icon';
 import { addAnalyticsEvent } from '../util/analyticsUtils';
@@ -14,8 +14,9 @@ import UserMenu from './UserMenu';
 
 export default function AppBar(
   { showLogo, title, homeUrl, logo, user, breakpoint, titleClicked },
-  { config, intl, match, getStore },
+  { config, match, getStore },
 ) {
+  const intl = useIntl();
   const { location } = match;
   const [disruptionInfoOpen, setDisruptionInfoOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(
@@ -142,6 +143,5 @@ AppBar.defaultProps = {
 AppBar.contextTypes = {
   getStore: PropTypes.func.isRequired,
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
   match: matchShape.isRequired,
 };
