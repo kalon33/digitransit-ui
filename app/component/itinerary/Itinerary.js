@@ -2,7 +2,7 @@ import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { createRef, useLayoutEffect, useState } from 'react';
 import { useFragment } from 'react-relay';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import {
   legShape,
   locationShape,
@@ -21,7 +21,7 @@ import {
   getInterliningLegs,
   isFirstInterliningLeg,
   getTotalDistance,
-  getRouteText,
+  getTripOrRouteText,
   legTime,
   legTimeStr,
   LegMode,
@@ -37,7 +37,7 @@ import {
   getRentalNetworkConfig,
   getVehicleCapacity,
 } from '../../util/vehicleRentalUtils';
-import { getRouteMode } from '../../util/modeUtils';
+import { getTripOrRouteMode } from '../../util/modeUtils';
 import { getCapacityForLeg } from '../../util/occupancyUtil';
 import getCo2Value from '../../util/emissions';
 import { ItineraryFragment } from './queries/ItineraryFragment';
@@ -88,7 +88,6 @@ export function RouteLeg(
   {
     leg,
     large,
-    intl,
     legLength,
     isTransitLeg,
     interliningWithRoute,
@@ -100,8 +99,9 @@ export function RouteLeg(
   },
   { config },
 ) {
+  const intl = useIntl();
   let routeNumber;
-  const mode = getRouteMode(leg.route, config);
+  const mode = getTripOrRouteMode(leg.trip, leg.route, config);
 
   const getOccupancyStatus = () => {
     if (hasOneTransitLeg) {
@@ -130,6 +130,7 @@ export function RouteLeg(
     routeNumber = (
       <RouteNumberContainer
         alertSeverityLevel={getActiveLegAlertSeverityLevel(leg)}
+        trip={leg.trip}
         route={leg.route}
         className={cx('line', mode)}
         interliningWithRoute={interliningWithRoute}
@@ -158,7 +159,6 @@ export function RouteLeg(
 
 RouteLeg.propTypes = {
   leg: legShape.isRequired,
-  intl: intlShape.isRequired,
   large: PropTypes.bool.isRequired,
   legLength: PropTypes.number.isRequired,
   fitRouteNumber: PropTypes.bool.isRequired,
@@ -274,8 +274,10 @@ const Itinerary = (
     lowestCo2value,
     ...props
   },
-  { intl, intl: { formatMessage }, config },
+  { config },
 ) => {
+  const intl = useIntl();
+  const { formatMessage } = intl;
   const itinerary = useFragment(ItineraryFragment, itineraryRef);
   const isTransitLeg = leg => leg.transitLeg;
   const isTransitOrRentalLeg = leg => leg.transitLeg || leg.rentedBike;
@@ -310,7 +312,7 @@ const Itinerary = (
     if (isTransitLeg(leg)) {
       noTransitLegs = false;
       transitLegCount += 1;
-      nameLengthSum += getRouteText(leg.route, config).length;
+      nameLengthSum += getTripOrRouteText(leg.trip, leg.route, config).length;
     }
     nameLengthSum += 10; // every leg requires some minimum space
     if (i > 0 && (leg.from.viaLocationType || leg.to.viaLocationType)) {
@@ -357,7 +359,9 @@ const Itinerary = (
     const nextLeg =
       i < compressedLegs.length - 1 ? compressedLegs[i + 1] : null;
     let legLength = relativeLength(endMs - startMs);
-    const longName = !leg?.route?.shortName || leg?.route?.shortName.length > 5;
+    const routeName =
+      leg.route && getTripOrRouteText(leg.trip, leg.route, config);
+    const longName = !routeName || routeName.length > 5;
 
     if (nextLeg && !leg.to.viaLocationType) {
       // don't show waiting in intermediate places
@@ -593,7 +597,6 @@ const Itinerary = (
             (fitAllRouteNumbers && !longName) || renderRouteNumberForALongLeg
           }
           interliningWithRoute={interliningWithRoute}
-          intl={intl}
           legLength={legLength}
           large={breakpoint === 'large'}
           withBicycle={withBicycle}
@@ -608,7 +611,7 @@ const Itinerary = (
             id: `${leg.mode.toLowerCase()}-with-route-number`,
           },
           {
-            routeNumber: leg.route.shortName,
+            routeNumber: routeName,
             headSign: '',
           },
         ),
@@ -1038,7 +1041,6 @@ Itinerary.defaultProps = {
 };
 
 Itinerary.contextTypes = {
-  intl: intlShape.isRequired,
   config: configShape.isRequired,
 };
 

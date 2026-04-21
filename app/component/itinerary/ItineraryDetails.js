@@ -3,9 +3,9 @@ import connectToStores from 'fluxible-addons-react/connectToStores';
 import { matchShape, routerShape } from 'found';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { useFragment } from 'react-relay';
-import { getRouteMode } from '../../util/modeUtils';
+import { getTripOrRouteMode } from '../../util/modeUtils';
 import {
   getFaresFromLegs,
   shouldShowFareInfo,
@@ -94,9 +94,10 @@ function ItineraryDetails(
     carPublicItineraryCount,
     relayEnvironment,
   },
-  { config, match, intl },
+  { config, match },
 ) {
   const itinerary = useFragment(ItineraryDetailsFragment, itineraryRef);
+  const intl = useIntl();
 
   const shouldShowDisclaimer =
     config.showDisclaimer &&
@@ -225,7 +226,7 @@ function ItineraryDetails(
     itinerary.legs.forEach(({ route, trip }) => {
       const isReplacementRoute =
         route &&
-        (getRouteMode(route, config)?.includes('replacement') ||
+        (getTripOrRouteMode(trip, route, config)?.includes('replacement') ||
           config.replacementBusRoutes?.includes(route.gtfsId));
       const isReplacementTrip =
         trip?.submode?.includes('replacement') || trip?.submode?.includes(714);
@@ -428,7 +429,6 @@ ItineraryDetails.contextTypes = {
   config: configShape.isRequired,
   router: routerShape.isRequired,
   match: matchShape.isRequired,
-  intl: intlShape.isRequired,
   getStore: PropTypes.func.isRequired,
 };
 

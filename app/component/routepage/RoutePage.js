@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import { createFragmentContainer, graphql } from 'react-relay';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import cx from 'classnames';
 import { matchShape, routerShape } from 'found';
 import { routeShape, configShape, errorShape } from '../../util/shapes';
@@ -32,7 +32,7 @@ class RoutePage extends React.Component {
   static contextTypes = {
     getStore: PropTypes.func.isRequired,
     executeAction: PropTypes.func.isRequired,
-    intl: intlShape.isRequired,
+    intl: PropTypes.object.isRequired,
     config: configShape.isRequired,
   };
 
@@ -73,7 +73,17 @@ class RoutePage extends React.Component {
     const label = route.shortName ? route.shortName : route.longName || '';
     const selectedPattern =
       patternId && route.patterns.find(p => p.code === patternId);
-    const headsign = selectedPattern?.headsign;
+    let headsign = null;
+    if (selectedPattern) {
+      if (
+        !selectedPattern.code.startsWith('NETEX:') &&
+        selectedPattern.headsign
+      ) {
+        headsign = selectedPattern.headsign;
+      } else {
+        headsign = selectedPattern.stops[selectedPattern.stops.length - 1].name;
+      }
+    }
     const filteredAlerts = selectedPattern?.alerts
       ?.filter(alert => hasEntitiesOfType(alert, AlertEntityType.Route))
       .filter(alert => isAlertValid(alert, currentTime));
@@ -206,6 +216,9 @@ const containerComponent = createFragmentContainer(
           }
           headsign
           code
+          stops {
+            name
+          }
           trips: tripsForDate(serviceDate: $date) {
             stoptimes: stoptimesForDate(serviceDate: $date) {
               realtimeState
