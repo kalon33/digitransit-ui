@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { memo, useEffect, useRef } from 'react';
-import { intlShape, FormattedMessage } from 'react-intl';
+import { useIntl, FormattedMessage } from 'react-intl';
 import { matchShape, routerShape } from 'found';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import isEqual from 'lodash/isEqual';
@@ -11,7 +11,7 @@ import TrafficNowLink from '@digitransit-component/digitransit-component-traffic
 import { getModesWithAlerts } from '@digitransit-search-util/digitransit-search-util-query-utils';
 import { createUrl } from '@digitransit-store/digitransit-store-future-route';
 import inside from 'point-in-polygon';
-import { configShape, locationShape } from '../util/shapes';
+import { locationShape } from '../util/shapes';
 import storeOrigin from '../action/originActions';
 import storeDestination from '../action/destinationActions';
 import OverlayWithSpinner from './visual/OverlayWithSpinner';
@@ -46,6 +46,7 @@ import {
   startLocationWatch,
 } from '../action/PositionActions';
 import FavouriteStore from '../store/FavouriteStore';
+import { useConfigContext } from '../configurations/ConfigContext';
 
 const StopRouteSearch = withSearchContext(DTAutoSuggest);
 const LocationSearch = withSearchContext(DTAutosuggestPanel);
@@ -53,6 +54,8 @@ const LocationSearch = withSearchContext(DTAutosuggestPanel);
 function IndexPage(props, context) {
   const pendingOriginRef = useRef(null);
   const pendingDestinationRef = useRef(null);
+  const config = useConfigContext();
+  const intl = useIntl();
 
   useEffect(() => {
     const { from, to } = context.match.params;
@@ -70,7 +73,7 @@ function IndexPage(props, context) {
       context.executeAction(storeDestination, destination);
     }
 
-    if (context.config.startSearchFromUserLocation && !origin.lat) {
+    if (config.startSearchFromUserLocation && !origin.lat) {
       checkPositioningPermission().then(permission => {
         if (
           permission.state === 'granted' &&
@@ -103,7 +106,7 @@ function IndexPage(props, context) {
       return;
     }
 
-    const { router, match, config } = context;
+    const { router, match } = context;
     const { location } = match;
 
     const currentLocation =
@@ -187,9 +190,9 @@ function IndexPage(props, context) {
   };
 
   const trafficNowHandler = (e, lang) => {
-    window.location = `${context.config.URL.ROOTLINK}/${
+    window.location = `${config.URL.ROOTLINK}/${
       lang === 'fi' ? '' : `${lang}/`
-    }${context.config.trafficNowLink[lang]}`;
+    }${config.trafficNowLink[lang]}`;
   };
 
   const clickStopNearIcon = url => {
@@ -202,7 +205,6 @@ function IndexPage(props, context) {
   };
 
   const renderNearStops = () => {
-    const { intl, config } = context;
     const { colors, fontWeights, language } = config;
 
     const nearYouModes = getNearYouModes(config, props.favourites);
@@ -260,7 +262,6 @@ function IndexPage(props, context) {
     );
   };
 
-  const { intl, config } = context;
   const { trafficNowLink, colors, fontWeights } = config;
   const { breakpoint } = props;
 
@@ -447,12 +448,10 @@ function IndexPage(props, context) {
 }
 
 IndexPage.contextTypes = {
-  intl: intlShape.isRequired,
   executeAction: PropTypes.func.isRequired,
   getStore: PropTypes.func.isRequired,
   router: routerShape.isRequired,
   match: matchShape.isRequired,
-  config: configShape.isRequired,
 };
 
 IndexPage.propTypes = {
@@ -526,9 +525,7 @@ const IndexPageWithStores = connectToStores(
 );
 
 IndexPageWithStores.contextTypes = {
-  ...IndexPageWithStores.contextTypes,
   executeAction: PropTypes.func.isRequired,
-  config: configShape.isRequired,
 };
 
 const GeoIndexPage = Geomover(IndexPageWithStores);
