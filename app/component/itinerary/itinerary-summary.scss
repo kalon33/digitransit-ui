@@ -5,7 +5,7 @@
   position: absolute;
   left: 0;
   top: 15px;
-  height: 80px;
+  height: 90%;
   border-left: 8px solid $theme-primary-color;
 }
 
@@ -39,12 +39,6 @@
     .itinerary-first-leg-start-time {
       text-decoration: line-through;
       color: $cancelation-red;
-    }
-  }
-
-  &.passive {
-    .summary-clickable-area {
-      border-bottom: 1px solid $light-gray;
     }
   }
 
@@ -650,10 +644,6 @@
     border-left-width: 8px;
     padding: 0 0 0 60px;
 
-    .summary-clickable-area {
-      max-width: calc(100% - 70px);
-    }
-
     h3,
     h4 {
       margin-top: 10px;
@@ -695,12 +685,16 @@
   }
 
   .summary-clickable-area {
-    border-bottom: 1px solid #ddd;
     padding-bottom: 13px;
     display: flex;
     flex: auto;
     flex-wrap: wrap;
     transition: border 0.4s ease;
+  }
+
+  .summary-separator {
+    border-bottom: 1px solid #ddd;
+    width: 100%;
   }
 
   .itinerary-summary-visible {
@@ -712,37 +706,6 @@
   .itinerary-summary-header {
     display: flex;
     flex: auto;
-  }
-}
-
-.additional-canceled-itineraries {
-  border-bottom: 1px solid $light-gray;
-  border-top: 1px solid $light-gray;
-  cursor: pointer;
-  font-size: $font-size-xsmall;
-  padding: 1em;
-
-  .canceled-itineraries-button {
-    color: $theme-primary-color;
-  }
-
-  .canceled-itineraries-container {
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-
-    &.centered {
-      justify-content: center;
-    }
-
-    .canceled-itineraries-icon-container {
-      color: $theme-primary-color;
-      margin-right: 1em;
-
-      .icon {
-        font-size: 1.4em;
-      }
-    }
   }
 }
 
@@ -771,10 +734,6 @@
 .mobile {
   .subicon-caution {
     left: -0.3em;
-  }
-
-  .summary-clickable-area {
-    border-bottom: 1px solid #ddd !important;
   }
 
   .itinerary-summary-header {

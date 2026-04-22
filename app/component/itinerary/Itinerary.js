@@ -886,116 +886,118 @@ const Itinerary = (
             because screen reader works weirdly with nested buttons. Same functonality works from the inner button */
         /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
         <div className="itinerary-summary-header">
-          <div
-            className="summary-clickable-area"
-            onClick={e => {
-              if (mobile(breakpoint)) {
-                e.stopPropagation();
-                props.onSelectImmediately(props.hash);
-              } else {
-                props.onSelect(props.hash);
+          <div className="itinerary-summary-inner">
+            <div
+              className="summary-clickable-area"
+              onClick={e => {
+                if (mobile(breakpoint)) {
+                  e.stopPropagation();
+                  props.onSelectImmediately(props.hash);
+                } else {
+                  props.onSelect(props.hash);
+                }
+              }}
+              onKeyPress={e =>
+                isKeyboardSelectionEvent(e) && props.onSelect(props.hash)
               }
-            }}
-            onKeyPress={e =>
-              isKeyboardSelectionEvent(e) && props.onSelect(props.hash)
-            }
-            tabIndex="0"
-            role="button"
-            aria-label={ariaLabelMessage}
-          >
-            <span key="ShowOnMapScreenReader" className="sr-only">
-              <FormattedMessage id="itinerary-summary-row.clickable-area-description" />
-            </span>
-            <div
-              className="itinerary-duration-container"
-              key="startTime"
-              aria-hidden="true"
+              tabIndex="0"
+              role="button"
+              aria-label={ariaLabelMessage}
             >
-              {startDate && (
-                <div className="itinerary-start-date">{startDate}</div>
-              )}
-              <div className="itinerary-start-time-and-end-time">
-                {`${departureTime} - ${arrivalTime}`}
-              </div>
-
-              <div style={{ flexGrow: 1 }} />
-              {config.showDistanceInItinerarySummary && (
-                <div className="itinerary-total-distance">
-                  {(getTotalDistance(itinerary) / 1000).toFixed(1)} km
-                </div>
-              )}
-              {showCo2Info && (
-                <div className="itinerary-co2-value-container">
-                  {lowestCo2value === co2value && (
-                    <Icon img="icon_co2_leaf" className="co2-leaf" />
-                  )}
-                  <div className="itinerary-co2-value">{co2value} g</div>
-                </div>
-              )}
-              <div className="itinerary-duration">
-                <Duration duration={duration} />
-              </div>
-            </div>
-            <div
-              className="legs-container"
-              style={{ '--minus': `${iconLegsInPixels}px` }}
-              key="legs"
-              aria-hidden="true"
-            >
+              <span key="ShowOnMapScreenReader" className="sr-only">
+                <FormattedMessage id="itinerary-summary-row.clickable-area-description" />
+              </span>
               <div
-                className={cx(
-                  'itinerary-legs',
-                  showOverflowIcon ? 'overflow-icon' : '',
-                )}
-                style={{ '--plus': `${iconLegsInPercents}%` }}
-                ref={itineraryContainerOverflowRef}
+                className="itinerary-duration-container"
+                key="startTime"
+                aria-hidden="true"
               >
-                {legs}
-              </div>
-              <div className="overflow-icon-container">
-                {showOverflowIcon && (
-                  <Icon img="icon_three-dots" className="overflow-icon" />
+                {startDate && (
+                  <div className="itinerary-start-date">{startDate}</div>
                 )}
+                <div className="itinerary-start-time-and-end-time">
+                  {`${departureTime} - ${arrivalTime}`}
+                </div>
+
+                <div style={{ flexGrow: 1 }} />
+                {config.showDistanceInItinerarySummary && (
+                  <div className="itinerary-total-distance">
+                    {(getTotalDistance(itinerary) / 1000).toFixed(1)} km
+                  </div>
+                )}
+                {showCo2Info && (
+                  <div className="itinerary-co2-value-container">
+                    {lowestCo2value === co2value && (
+                      <Icon img="icon_co2_leaf" className="co2-leaf" />
+                    )}
+                    <div className="itinerary-co2-value">{co2value} g</div>
+                  </div>
+                )}
+                <div className="itinerary-duration">
+                  <Duration duration={duration} />
+                </div>
               </div>
-            </div>
-            <div
-              className="itinerary-first-leg-start-time-container"
-              key="endtime-distance"
-              aria-hidden="true"
-            >
-              {firstLegStartTime}
-            </div>
-            {showRentalBikeDurationWarning &&
-              (citybikeNetworks.size === 1 ? (
-                <div className="citybike-duration-info-short">
-                  <Icon img={citybikeicon} height={1.2} width={1.2} />
-                  <FormattedMessage
-                    id="citybike-duration-info-short"
-                    values={{
-                      duration:
-                        config.vehicleRental.networks[bikeNetwork]
-                          .timeBeforeSurcharge / 60,
-                    }}
-                    defaultMessage=""
-                  />
+              <div
+                className="legs-container"
+                style={{ '--minus': `${iconLegsInPixels}px` }}
+                key="legs"
+                aria-hidden="true"
+              >
+                <div
+                  className={cx(
+                    'itinerary-legs',
+                    showOverflowIcon ? 'overflow-icon' : '',
+                  )}
+                  style={{ '--plus': `${iconLegsInPercents}%` }}
+                  ref={itineraryContainerOverflowRef}
+                >
+                  {legs}
                 </div>
-              ) : (
-                <div className="citybike-duration-info-short">
-                  <Icon img={citybikeicon} height={1.2} width={1.2} />
-                  <FormattedMessage
-                    id="citybike-duration-general-header"
-                    defaultMessage=""
-                  />
+                <div className="overflow-icon-container">
+                  {showOverflowIcon && (
+                    <Icon img="icon_three-dots" className="overflow-icon" />
+                  )}
                 </div>
-              ))}
+              </div>
+              <div
+                className="itinerary-first-leg-start-time-container"
+                key="endtime-distance"
+                aria-hidden="true"
+              >
+                {firstLegStartTime}
+              </div>
+              {showRentalBikeDurationWarning &&
+                (citybikeNetworks.size === 1 ? (
+                  <div className="citybike-duration-info-short">
+                    <Icon img={citybikeicon} height={1.2} width={1.2} />
+                    <FormattedMessage
+                      id="citybike-duration-info-short"
+                      values={{
+                        duration:
+                          config.vehicleRental.networks[bikeNetwork]
+                            .timeBeforeSurcharge / 60,
+                      }}
+                      defaultMessage=""
+                    />
+                  </div>
+                ) : (
+                  <div className="citybike-duration-info-short">
+                    <Icon img={citybikeicon} height={1.2} width={1.2} />
+                    <FormattedMessage
+                      id="citybike-duration-general-header"
+                      defaultMessage=""
+                    />
+                  </div>
+                ))}
+            </div>
+            <Feedback />
+            <div className="summary-separator" />
           </div>
           {mobile(breakpoint) !== true && (
             <div
               tabIndex="0"
               role="button"
-              title={formatMessage({
-                id: 'itinerary-page.show-details',
-              })}
+              title={formatMessage({ id: 'itinerary-page.show-details' })}
               key="arrow"
               className="action-arrow-click-area flex-vertical noborder"
               onClick={e => {
@@ -1014,7 +1016,6 @@ const Itinerary = (
             </div>
           )}
         </div>
-        <Feedback />
       </div>
     </div>
   );
