@@ -1,0 +1,37 @@
+.feedback-frame {
+  border: 1px;
+  border-color: var(--color-border-weak);
+  border-radius: var(--radius-m);
+  padding: 4px;
+}
+
+.feedback-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  min-height: 3.5em;
+  justify-content: space-between;
+  font-size: $font-size-normal;
+
+  .feedback-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .icon-container {
+      display: flex;
+      flex-direction: row;
+      width: 3em;
+      align-items: center;
+    }
+  }
+
+  .favourite {
+    color: var(--color-accent-secondary);
+  }
+
+  .thumb {
+    color: var(--color-accent);
+  }
+}
