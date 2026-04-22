@@ -77,7 +77,7 @@ export default {
     'bike-station-disabled': 'Pyöräasema ei ole käytössä.',
     'bikes-available': 'Pyöriä asemalla {amount}',
     'biking-speed': 'Pyöräilynopeus',
-    'book-a-lift': 'Ota taksi käyttöön sovelluksella',
+    'book-a-lift': 'Tilaa kyyti sovelluksella',
     bus: 'Bussi',
     'bus-express': 'Runkolinjabussi',
     'bus-express-with-route-number': 'Runkolinjabussi {routeNumber} {headSign}',
@@ -717,8 +717,6 @@ export default {
     'swipe-stops-near-you-tab': 'Lähipysäkkivälilehti {number}',
     'swipe-summary-page-tab': 'Reittiehdotus {number}',
     taxi: 'Taxi',
-    'taxi-alternative':
-      'Entä jos kulkisit osan matkasta taksilla? {paymentInfo}',
     'taxi-distance-duration': 'Matkusta {duration} ({distance})',
     'taxi-external': 'Taksi',
     'taxi-with-route-number': 'Taksi {routeNumber}',
