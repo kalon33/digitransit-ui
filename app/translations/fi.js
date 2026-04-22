@@ -515,11 +515,15 @@ export default {
       'Huomaathan, että taksien ja kyytipalveluiden käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
     'personal-itineraries': 'Yksilölliset reittiehdotukset',
     personalisation: 'Personointi',
+    'personalisation-ask': 'Pidätkö tästä reittisuosituksesta?',
     'personalisation-beta':
       'Personointi on vielä testausvaiheessa, eli kokeilemme palvelua. Haluaisimme kuulla kokemuksestasi. Kysely avautuu uuteen välilehteen.',
+    'personalisation-disliked':
+      'Saat jatkossa vähemmän tämänkaltaisia suosituksia.',
     'personalisation-feedback': 'Anna palautetta',
     'personalisation-info':
       'Löydä mieleiset reitit ja matkusta tottumustesi mukaan.',
+    'personalisation-liked': 'Saat jatkossa samankaltaisia suosituksia.',
     'personalisation-modal-feedback': 'Opimme palautteestasi',
     'personalisation-modal-feedback-details':
       'Hyödynnämme reittisuosituksissa palautettasi. Kerro mielipiteesi suosituksista, niin huomioimme mieltymyksesi jatkossa.',

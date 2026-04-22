@@ -521,11 +521,16 @@ export default {
       'Vänligen observera att användning och betalning av taxi görs via operatörernas egna appar.',
     'personal-itineraries': 'Individuella ruttförslag',
     personalisation: 'Personalisering',
+    'personalisation-ask': 'Gillar du den här ruttrekommendationen?',
     'personalisation-beta':
       'Personaliseringen är fortfarande i testfasen, vilket innebär att vi testar tjänsten. Vi vill gärna höra om din upplevelse. Undersökningen öppnas i en ny flik.',
+    'personalisation-disliked':
+      'Du kommer att få färre rekommendationer som denna i framtiden.',
     'personalisation-feedback': 'Ge feedback',
     'personalisation-info':
       'Hitta dina favoritrutter och res utifrån dina vanor.',
+    'personalisation-liked':
+      'Du kommer att få liknande rekommendationer i framtiden.',
     'personalisation-modal-feedback': 'Vi lär oss av er feedback',
     'personalisation-modal-feedback-details':
       'Vi använder din feedback i våra ruttrekommendationer. Berätta vad du tycker om rekommendationerna så tar vi hänsyn till dina preferenser i framtiden.',
