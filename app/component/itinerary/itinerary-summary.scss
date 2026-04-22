@@ -4,8 +4,8 @@
   content: '';
   position: absolute;
   left: 0;
-  top: 15px;
-  height: 90%;
+  top: 20px;
+  height: 80%;
   border-left: 8px solid $theme-primary-color;
 }
 
@@ -614,16 +614,9 @@
     }
   }
 
-  .action-arrow-click-area {
-    padding: 0.25em 0.3em 0.25em 0.3em;
-    display: flex;
-  }
-
   .action-arrow {
     display: flex;
-    align-items: center;
-    padding: $padding-xxsmall $padding-xxsmall 0 $padding-xxsmall;
-    line-height: 1;
+    padding: 2.3em $padding-xxsmall 0 $padding-xxsmall;
 
     svg {
       color: $action-color;
@@ -665,7 +658,6 @@
 
     .action-arrow-click-area {
       padding: 0 15px 0 20px;
-      margin-left: 5px;
     }
 
     .action-arrow {
@@ -685,7 +677,6 @@
   }
 
   .summary-clickable-area {
-    padding-bottom: 13px;
     display: flex;
     flex: auto;
     flex-wrap: wrap;

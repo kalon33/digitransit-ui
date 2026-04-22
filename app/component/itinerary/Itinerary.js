@@ -886,7 +886,7 @@ const Itinerary = (
             because screen reader works weirdly with nested buttons. Same functonality works from the inner button */
         /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
         <div className="itinerary-summary-header">
-          <div className="itinerary-summary-inner">
+          <div>
             <div
               className="summary-clickable-area"
               onClick={e => {
@@ -990,7 +990,9 @@ const Itinerary = (
                   </div>
                 ))}
             </div>
-            <Feedback />
+            <div className="feedback-frame">
+              <Feedback />
+            </div>
             <div className="summary-separator" />
           </div>
           {mobile(breakpoint) !== true && (
@@ -999,7 +1001,7 @@ const Itinerary = (
               role="button"
               title={formatMessage({ id: 'itinerary-page.show-details' })}
               key="arrow"
-              className="action-arrow-click-area flex-vertical noborder"
+              className="action-arrow-click-area"
               onClick={e => {
                 e.stopPropagation();
                 props.onSelectImmediately(props.hash);
