@@ -990,9 +990,11 @@ const Itinerary = (
                   </div>
                 ))}
             </div>
-            <div className="feedback-frame">
-              <Feedback />
-            </div>
+            {props.recommended && (
+              <div className="feedback-frame">
+                <Feedback />
+              </div>
+            )}
             <div className="summary-separator" />
           </div>
           {mobile(breakpoint) !== true && (
@@ -1035,6 +1037,7 @@ Itinerary.propTypes = {
   hideSelectionIndicator: PropTypes.bool,
   lowestCo2value: PropTypes.number,
   viaPoints: PropTypes.arrayOf(locationShape),
+  recommended: PropTypes.bool,
 };
 
 Itinerary.defaultProps = {

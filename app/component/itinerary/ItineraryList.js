@@ -65,6 +65,7 @@ function ItineraryList(
       intermediatePlaces={getIntermediatePlaces(location.query)}
       hideSelectionIndicator={i !== activeIndex || planEdges.length === 1}
       lowestCo2value={lowestCo2value}
+      recommended={i === 2} // temp value
     />
   ));
 

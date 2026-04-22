@@ -5,7 +5,7 @@
   position: absolute;
   left: 0;
   top: 20px;
-  height: 80%;
+  height: 75px;
   border-left: 8px solid $theme-primary-color;
 }
 
@@ -14,7 +14,7 @@
   position: absolute;
   left: 0;
   top: 15px;
-  height: 80px;
+  height: 75px;
   border-left: 8px solid transparent;
 }
 
@@ -61,7 +61,7 @@
     letter-spacing: -0.5px;
     line-height: normal;
     font-style: normal;
-    padding-top: 17px;
+    padding-top: 15px;
     display: flex;
 
     .itinerary-start-date {
@@ -616,7 +616,7 @@
 
   .action-arrow {
     display: flex;
-    padding: 2.3em $padding-xxsmall 0 $padding-xxsmall;
+    padding: 2.2em $padding-xxsmall 0 $padding-xxsmall;
 
     svg {
       color: $action-color;
@@ -686,6 +686,7 @@
   .summary-separator {
     border-bottom: 1px solid #ddd;
     width: 100%;
+    margin-top: 15px;
   }
 
   .itinerary-summary-visible {
