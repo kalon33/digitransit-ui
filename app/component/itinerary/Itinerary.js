@@ -10,6 +10,7 @@ import {
   configShape,
 } from '../../util/shapes';
 import Icon from '../Icon';
+import Feedback from './Feedback';
 import Duration from './Duration';
 import RouteNumber from '../RouteNumber';
 import RouteNumberContainer from '../RouteNumberContainer';
@@ -1013,6 +1014,7 @@ const Itinerary = (
             </div>
           )}
         </div>
+        <Feedback />
       </div>
     </div>
   );
