@@ -733,6 +733,8 @@ export default {
     'swipe-stops-near-you-tab': 'Stops near you swipe result tabs.',
     'swipe-summary-page-tab': 'Itinerary swipe result tabs',
     taxi: 'Taxi',
+    'taxi-alternative':
+      'How about using a taxi for part of your journey? {paymentInfo}',
     'taxi-distance-duration': 'Travel for {duration} ({distance})',
     'taxi-external': 'Taxi',
     'taxi-with-route-number': 'Taxi {routeNumber}',

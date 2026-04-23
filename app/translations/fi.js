@@ -717,6 +717,8 @@ export default {
     'swipe-stops-near-you-tab': 'Lähipysäkkivälilehti {number}',
     'swipe-summary-page-tab': 'Reittiehdotus {number}',
     taxi: 'Taxi',
+    'taxi-alternative':
+      'Entä jos kulkisit osan matkasta taksilla? {paymentInfo}',
     'taxi-distance-duration': 'Matkusta {duration} ({distance})',
     'taxi-external': 'Taksi',
     'taxi-with-route-number': 'Taksi {routeNumber}',
