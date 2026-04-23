@@ -717,6 +717,7 @@ $itinerary-tab-switch-height: 48px;
 }
 
 .itinerary-disclaimer {
+  flex-direction: column;
   margin: 17px 15px 15px 15px;
   white-space: normal;
   color: #666;
