@@ -726,6 +726,8 @@ export default {
     'swipe-summary-page-tab':
       'Navigeringsknapp för att kunna bläddra ruttförslag.',
     taxi: 'Taxi',
+    'taxi-alternative':
+      'Och om du skulle åka taxi en del av din resa? {paymentInfo}',
     'taxi-distance-duration': 'Res {duration} ({distance})',
     'taxi-external': 'Taxi',
     'taxi-with-route-number': 'Taxi {routeNumber}',
