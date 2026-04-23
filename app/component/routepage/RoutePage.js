@@ -18,6 +18,10 @@ import {
 import withBreakpoint from '../../util/withBreakpoint';
 import BackButton from '../BackButton';
 import { getRouteMode } from '../../util/modeUtils';
+import {
+  getModeIconColor,
+  ensureColorAccessibleOnWhite,
+} from '../../util/colorUtils';
 import AlertBanner from '../AlertBanner';
 import {
   hasEntitiesOfType,
@@ -70,6 +74,10 @@ function RoutePage({
     return null;
   }
   const mode = getRouteMode(route, config);
+  const rawRouteColor = route.color
+    ? `#${route.color}`
+    : getModeIconColor(config, mode);
+  const shortNameColor = ensureColorAccessibleOnWhite(rawRouteColor);
   const label = route.shortName ? route.shortName : route.longName || '';
   const selectedPattern =
     patternId && route.patterns.find(p => p.code === patternId);
@@ -109,7 +117,7 @@ function RoutePage({
               className={cx('route-short-name', mode)}
               ref={headingRef}
               tabIndex={-1}
-              style={{ color: route.color ? `#${route.color}` : null }}
+              style={{ color: shortNameColor }}
             >
               <span className="sr-only" style={{ whiteSpace: 'pre' }}>
                 {intl.formatMessage({
