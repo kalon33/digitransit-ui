@@ -48,16 +48,19 @@ function IntermediateLeg(
       return { position: 'absolute', right: -3, top: '50%' };
     }
     if (placesCount === 1 && !nextZoneId) {
-      return { position: 'absolute', right: -3, top: '50%' };
+      return { position: 'absolute', right: -3, top: '35%' };
     }
-    return { position: 'absolute' };
+    if (currentZoneId && previousZoneId) {
+      return { position: 'absolute', right: -3, bottom: 11 };
+    }
+    return { position: 'absolute', right: -3, top: '-1px', bottom: 'unset' };
   };
 
   const stationNameStyle = () => {
     if (placesCount === 2 && !previousZoneId && !currentZoneId && !nextZoneId) {
-      return { paddingBottom: '15px' };
+      return { paddingTop: '15px', paddingBottom: '15px' };
     }
-    return { paddingBottom: '22px' };
+    return { paddingTop: '0', paddingBottom: '22px' };
   };
 
   /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */

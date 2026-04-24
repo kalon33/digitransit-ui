@@ -92,4 +92,58 @@ describe('<IntermediateLeg />', () => {
     expect(wrapper.find('.zone-previous')).to.have.lengthOf(0);
     expect(wrapper.find(ZoneIcon)).to.have.lengthOf(0);
   });
+
+  it('should position circle with bottom:11 for zone-previous rows', () => {
+    const props = {
+      ...emptyProps,
+      currentZoneId: 'foo',
+      previousZoneId: 'baz',
+      showZoneLimits: true,
+      gtfsId: 'foo:1',
+    };
+    const wrapper = shallowWithIntl(<IntermediateLeg {...props} />, {
+      context: { config: { feedIds: ['foo'], colors: { primary: '#007ac9' } } },
+    });
+    const circle = wrapper.find('.leg-before-circle.circle-fill');
+    expect(circle.prop('style')).to.have.property('bottom', 11);
+  });
+
+  it('should position circle with top:-1px for non-zone rows', () => {
+    const props = {
+      ...emptyProps,
+      placesCount: 3,
+    };
+    const wrapper = shallowWithIntl(<IntermediateLeg {...props} />, {
+      context: { config: { feedIds: [], colors: { primary: '#007ac9' } } },
+    });
+    const circle = wrapper.find('.leg-before-circle.circle-fill');
+    expect(circle.prop('style')).to.have.property('top', '-1px');
+    expect(circle.prop('style')).to.have.property('bottom', 'unset');
+  });
+
+  it('should apply paddingTop:15px and paddingBottom:15px for 2-place no-zone rows', () => {
+    const props = {
+      ...emptyProps,
+      placesCount: 2,
+    };
+    const wrapper = shallowWithIntl(<IntermediateLeg {...props} />, {
+      context: { config: { feedIds: [], colors: { primary: '#007ac9' } } },
+    });
+    const row = wrapper.find('.itinerary-leg-row-intermediate');
+    expect(row.prop('style')).to.have.property('paddingTop', '15px');
+    expect(row.prop('style')).to.have.property('paddingBottom', '15px');
+  });
+
+  it('should apply paddingTop:0 and paddingBottom:22px for default rows', () => {
+    const props = {
+      ...emptyProps,
+      placesCount: 3,
+    };
+    const wrapper = shallowWithIntl(<IntermediateLeg {...props} />, {
+      context: { config: { feedIds: [], colors: { primary: '#007ac9' } } },
+    });
+    const row = wrapper.find('.itinerary-leg-row-intermediate');
+    expect(row.prop('style')).to.have.property('paddingTop', '0');
+    expect(row.prop('style')).to.have.property('paddingBottom', '22px');
+  });
 });

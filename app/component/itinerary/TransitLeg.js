@@ -324,7 +324,6 @@ class TransitLeg extends React.Component {
       );
     }
     const { showBikeBoardingInformation, showCarBoardingInformation } = leg;
-
     const createNotification = notification => {
       return (
         <>
@@ -607,10 +606,10 @@ class TransitLeg extends React.Component {
           {routeNotifications}
           <LegAgencyInfo leg={leg} />
           {children}
-          {intermediateStopCount !== 0 && (
+          {intermediateStopCount > 1 && (
             <div className="intermediate-stops-button-container">
-              {(leg.intermediatePlaces.length > 1 ||
-                interliningLegs.length >= 1) && (
+              {(leg.intermediatePlaces.length >= 2 ||
+                interliningLegs.length >= 2) && (
                 <StopInfo
                   toggleFunction={this.toggleShowIntermediateStops}
                   leg={leg}

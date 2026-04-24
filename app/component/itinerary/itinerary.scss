@@ -278,6 +278,7 @@ $itinerary-tab-switch-height: 48px;
   .itinerary-leg-container {
     .zone-dual {
       min-height: 4em;
+      max-height: 0;
     }
 
     .zone-triple {
@@ -1807,7 +1808,7 @@ $itinerary-tab-switch-height: 48px;
         color: #333;
         font-size: 0.9375rem;
         font-weight: $font-weight-medium;
-        padding-bottom: 22px;
+        padding-bottom: 11px;
         display: flex;
 
         .itinerary-arrow-icon {
