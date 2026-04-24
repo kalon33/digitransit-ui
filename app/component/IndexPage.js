@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { memo, useEffect, useRef } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
-import { matchShape, routerShape } from 'found';
+import { useRouter } from 'found';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import isEqual from 'lodash/isEqual';
 import DTAutoSuggest from '@digitransit-component/digitransit-component-autosuggest';
@@ -54,23 +54,26 @@ const LocationSearch = withSearchContext(DTAutosuggestPanel);
 function IndexPage(props, context) {
   const pendingOriginRef = useRef(null);
   const pendingDestinationRef = useRef(null);
-  const config = useConfigContext();
   const intl = useIntl();
+  const { match, router } = useRouter();
+  const config = useConfigContext();
+  const { colors, fontWeights, language, iconModeSet } = config;
+  const { executeAction } = context;
 
   useEffect(() => {
-    const { from, to } = context.match.params;
+    const { from, to } = match.params;
 
     const origin = parseLocation(from);
     const destination = parseLocation(to);
 
     if (!sameLocations(props.origin, origin)) {
       pendingOriginRef.current = origin;
-      context.executeAction(storeOrigin, origin);
+      executeAction(storeOrigin, origin);
     }
 
     if (!sameLocations(props.destination, destination)) {
       pendingDestinationRef.current = destination;
-      context.executeAction(storeDestination, destination);
+      executeAction(storeDestination, destination);
     }
 
     if (config.startSearchFromUserLocation && !origin.lat) {
@@ -79,13 +82,12 @@ function IndexPage(props, context) {
           permission.state === 'granted' &&
           props.locationState.status === 'no-location'
         ) {
-          context.executeAction(startLocationWatch);
+          executeAction(startLocationWatch);
         }
       });
     }
 
     scrollTop();
-    // run once on mount
   }, []);
 
   useEffect(() => {
@@ -106,19 +108,18 @@ function IndexPage(props, context) {
       return;
     }
 
-    const { router, match } = context;
     const { location } = match;
 
     const currentLocation =
       config.startSearchFromUserLocation &&
       !origin.address &&
       locationState?.hasLocation &&
-      locationState;
+      locationState; // assign locationState conditionally
 
     if (currentLocation && !currentLocation.isReverseGeocodingInProgress) {
       const originPoint = [currentLocation.lon, currentLocation.lat];
       if (inside(originPoint, config.areaPolygon)) {
-        context.executeAction(storeOrigin, currentLocation);
+        executeAction(storeOrigin, currentLocation);
       }
     }
 
@@ -152,19 +153,17 @@ function IndexPage(props, context) {
         router.replace(newLocation);
       }
     }
-  }, [props.origin, props.destination, props.locationState, context]);
+  }, [props.origin, props.destination, props.locationState]);
 
   const onSelectStopRoute = item => {
     addAnalyticsEvent({
       event: 'route_search',
       search_action: 'route_or_stop',
     });
-    context.router.push(getStopRoutePath(item));
+    router.push(getStopRoutePath(item));
   };
 
   const onSelectLocation = (item, id) => {
-    const { router, executeAction } = context;
-
     addAnalyticsEvent({
       event: 'itinerary_search',
       search_action: item.type,
@@ -186,7 +185,7 @@ function IndexPage(props, context) {
       event: 'favorite_press',
       favorite_type: 'place',
     });
-    context.executeAction(storeDestination, favourite);
+    executeAction(storeDestination, favourite);
   };
 
   const trafficNowHandler = (e, lang) => {
@@ -201,12 +200,10 @@ function IndexPage(props, context) {
       category: 'nearbyStops',
       stop_type: url.split('/')[2].toLowerCase(),
     });
-    context.router.push(url);
+    router.push(url);
   };
 
   const renderNearStops = () => {
-    const { colors, fontWeights, language } = config;
-
     const nearYouModes = getNearYouModes(config, props.favourites);
 
     const modeArray =
@@ -237,7 +234,7 @@ function IndexPage(props, context) {
         loading={
           props.favouriteStatus === FavouriteStore.STATUS_FETCHING_OR_UPDATING
         }
-        modeSet={config.iconModeSet}
+        modeSet={iconModeSet}
         urlPrefix={`/${PREFIX_NEARYOU}`}
         language={language}
         title={config.nearYouTitle}
@@ -262,7 +259,7 @@ function IndexPage(props, context) {
     );
   };
 
-  const { trafficNowLink, colors, fontWeights } = config;
+  const { trafficNowLink } = config;
   const { breakpoint } = props;
 
   const origin = pendingOriginRef.current || props.origin;
@@ -298,7 +295,7 @@ function IndexPage(props, context) {
     appElement: '#app',
     origin,
     destination,
-    lang: config.language,
+    lang: language,
     sources: locationSources,
     targets,
     refPoint,
@@ -314,7 +311,7 @@ function IndexPage(props, context) {
     fromMap: props.fromMap,
     fontWeights,
     colors,
-    modeSet: config.iconModeSet,
+    modeSet: iconModeSet,
   };
 
   const stopRouteSearchProps = {
@@ -326,12 +323,12 @@ function IndexPage(props, context) {
     selectHandler: onSelectStopRoute,
     getAutoSuggestIcons: config.getAutoSuggestIcons,
     value: '',
-    lang: config.language,
+    lang: language,
     sources,
     targets: stopAndRouteSearchTargets,
     fontWeights,
     colors,
-    modeSet: config.iconModeSet,
+    modeSet: iconModeSet,
     geocodingSize: 25,
   };
 
@@ -369,7 +366,7 @@ function IndexPage(props, context) {
             <DatetimepickerContainer
               realtime
               color={colors.primary}
-              lang={config.language}
+              lang={language}
             />
           </div>
           {!config.hideFavourites && (
@@ -377,7 +374,7 @@ function IndexPage(props, context) {
               <FavouritesContainer
                 favouriteModalAction={props.favouriteModalAction}
                 onClickFavourite={clickFavourite}
-                lang={config.language}
+                lang={language}
               />
               <CtrlPanel.SeparatorLine usePaddingBottom20 />
             </>
@@ -392,10 +389,7 @@ function IndexPage(props, context) {
           )}
 
           {trafficNowLink && (
-            <TrafficNowLink
-              lang={config.language}
-              handleClick={trafficNowHandler}
-            />
+            <TrafficNowLink lang={language} handleClick={trafficNowHandler} />
           )}
         </CtrlPanel>
       </div>
@@ -420,12 +414,12 @@ function IndexPage(props, context) {
             <DatetimepickerContainer
               realtime
               color={colors.primary}
-              lang={config.language}
+              lang={language}
             />
           </div>
           <FavouritesContainer
             onClickFavourite={clickFavourite}
-            lang={config.language}
+            lang={language}
             isMobile
           />
           <CtrlPanel.SeparatorLine />
@@ -436,7 +430,7 @@ function IndexPage(props, context) {
           <CtrlPanel.SeparatorLine usePaddingBottom20 />
           {trafficNowLink && (
             <TrafficNowLink
-              lang={config.language}
+              lang={language}
               handleClick={trafficNowHandler}
               fontWeights={fontWeights}
             />
@@ -450,8 +444,6 @@ function IndexPage(props, context) {
 IndexPage.contextTypes = {
   executeAction: PropTypes.func.isRequired,
   getStore: PropTypes.func.isRequired,
-  router: routerShape.isRequired,
-  match: matchShape.isRequired,
 };
 
 IndexPage.propTypes = {
@@ -499,20 +491,17 @@ const IndexPageWithStores = connectToStores(
     const origin = context.getStore('OriginStore').getOrigin();
     const destination = context.getStore('DestinationStore').getDestination();
     const locationState = context.getStore('PositionStore').getLocationState();
-    const { location } = props.match;
-    const newProps = {};
-    const { query } = location;
+    const { query } = props.match.location;
     const { favouriteModalAction, fromMap } = query;
 
+    const newProps = {};
     newProps.locationState = locationState;
-
     if (favouriteModalAction) {
       newProps.favouriteModalAction = favouriteModalAction;
     }
     if (fromMap === 'origin' || fromMap === 'destination') {
       newProps.fromMap = fromMap;
     }
-
     newProps.origin = origin;
     newProps.destination = destination;
     newProps.currentTime = context.getStore('TimeStore').getCurrentTime();
