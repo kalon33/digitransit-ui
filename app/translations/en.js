@@ -82,7 +82,7 @@ export default {
     'bike-station-disabled': 'The bike station is out of service.',
     'bikes-available': '{amount} bikes at the station ',
     'biking-speed': 'Biking speed',
-    'book-a-lift': 'Use an app to book a taxi',
+    'book-a-lift': 'Use an app to book a ride',
     bus: 'Bus',
     'bus-express': 'Trunk bus',
     'bus-express-with-route-number': 'Trunk bus {routeNumber} {headSign}',
@@ -233,7 +233,7 @@ export default {
       'Detecting your location is taking longer than expected.',
     'geolocation-timeout-text':
       "Have you accepted your browser's request to access your location?",
-    'get-off-the-ride': 'TO_DO_Nouse pois kyydistä',
+    'get-off-the-ride': 'Get off the ride',
     hour: 'Hour',
     'include-estonia': 'Include Estonia',
     'index.title': 'Journey Planner',
@@ -412,6 +412,9 @@ export default {
     'navigation-mode-late': '{name} is late',
     'navigation-outro-dismiss': 'End guidance',
     'navigation-outro-header': "You've arrived!",
+    'navigation-pier-change': 'Pier changed',
+    'navigation-pier-change-details': '{name} departs from pier {number}',
+    'navigation-pier-restored': 'Departs from original pier',
     'navigation-platform-change': 'Platform changed',
     'navigation-platform-change-details':
       '{name} departs from platform {number}',
@@ -522,6 +525,7 @@ export default {
       'Please note that you need to use the app of the operator in question in order to use and pay for the taxis or scooters.',
     'payment-info-taxi':
       'Please note that you need to use the app of the operator in question in order to use and pay for the taxis.',
+    'personal-itineraries': 'Personal itineraries',
     personalisation: 'Personalisation',
     'personalisation-beta':
       'Personalization is still in the testing phase, meaning we are trying out the service. We would love to hear about your experience. The survey will open in a new tab.',
@@ -540,6 +544,8 @@ export default {
     'pick-mode': 'Transport modes',
     'pick-street-mode': 'My modes of transport',
     pier: 'Pier',
+    'pier-num': 'Pier {platformCode}',
+    'pier-short-no-num': 'Pier',
     platform: 'Platform',
     'platform-num': 'Platform {platformCode}',
     'platform-short-no-num': 'Plat.',
@@ -732,7 +738,7 @@ export default {
     'taxi-distance-duration': 'Travel for {duration} ({distance})',
     'taxi-external': 'Taxi',
     'taxi-with-route-number': 'Taxi {routeNumber}',
-    'taxis-and-ride-hailing': 'Taxis and ride-hailing',
+    'taxis-and-ride-hailing': 'Taxis and ride-hailing services',
     terminal: 'Terminal',
     'terminal-page.description': 'Terminal {name}',
     'terminal-page.title': 'Terminal {name}',
