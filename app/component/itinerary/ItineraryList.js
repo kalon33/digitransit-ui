@@ -3,8 +3,8 @@ import React from 'react';
 import { useFragment } from 'react-relay';
 import { FormattedMessage } from 'react-intl';
 import cx from 'classnames';
-import { matchShape } from 'found';
-import { configShape, planEdgeShape } from '../../util/shapes';
+import { useRouter } from 'found';
+import { planEdgeShape } from '../../util/shapes';
 import Icon from '../Icon';
 import Itinerary from './Itinerary';
 import {
@@ -18,35 +18,33 @@ import Loading from '../Loading';
 import { streetHash } from '../../util/path';
 import { getIntermediatePlaces } from '../../util/otpStrings';
 import { ItineraryListPlanEdges } from './queries/ItineraryListPlanEdges';
+import { useConfigContext } from '../../configurations/ConfigContext';
 
 const spinnerPosition = {
   top: 'top',
   bottom: 'bottom',
 };
 
-function ItineraryList(
-  {
-    planEdges: planEdgesRef,
-    activeIndex,
-    onSelect,
-    onSelectImmediately,
-    searchTime,
-    bikeParkItineraryCount,
-    carDirectItineraryCount,
-    showRelaxedPlanNotifier,
-    rentalVehicleNotifierId,
-    separator2,
-    loadingMore,
-    separator1,
-    ...rest
-  },
-  context,
-) {
-  const { config } = context;
-  const { location } = context.match;
-  const { hash } = context.match.params;
+function ItineraryList({
+  planEdges: planEdgesRef,
+  activeIndex,
+  onSelect,
+  onSelectImmediately,
+  searchTime,
+  bikeParkItineraryCount = 0,
+  carDirectItineraryCount = 0,
+  showRelaxedPlanNotifier = false,
+  rentalVehicleNotifierId,
+  separator2,
+  loadingMore,
+  separator1,
+  ...rest
+}) {
+  const config = useConfigContext();
+  const { match } = useRouter();
+  const { hash } = match.params;
 
-  const planEdges = useFragment(ItineraryListPlanEdges, planEdgesRef);
+  const planEdges = useFragment(ItineraryListPlanEdges, planEdgesRef) || [];
 
   const co2s = planEdges
     .filter(e => e.node.emissionsPerPerson?.co2 >= 0)
@@ -62,7 +60,7 @@ function ItineraryList(
       passive={i !== activeIndex}
       onSelect={onSelect}
       onSelectImmediately={onSelectImmediately}
-      intermediatePlaces={getIntermediatePlaces(location.query)}
+      intermediatePlaces={getIntermediatePlaces(match.location.query)}
       hideSelectionIndicator={i !== activeIndex || planEdges.length === 1}
       lowestCo2value={lowestCo2value}
       recommended={config.personalisation && i === 2} // temp value
@@ -251,22 +249,6 @@ ItineraryList.propTypes = {
   separator1: PropTypes.number,
   separator2: PropTypes.number,
   loadingMore: PropTypes.string,
-};
-
-ItineraryList.defaultProps = {
-  bikeParkItineraryCount: 0,
-  carDirectItineraryCount: 0,
-  planEdges: [],
-  showRelaxedPlanNotifier: false,
-  rentalVehicleNotifierId: undefined,
-  separator1: undefined,
-  separator2: undefined,
-  loadingMore: undefined,
-};
-
-ItineraryList.contextTypes = {
-  config: configShape.isRequired,
-  match: matchShape.isRequired,
 };
 
 export { ItineraryList as default, spinnerPosition };
