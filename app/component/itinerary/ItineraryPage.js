@@ -183,6 +183,7 @@ export default function ItineraryPage(props, context) {
   const [topicsState, setTopicsState] = useState(null);
   const [mapState, setMapState] = useState({});
   const [naviMode, setNaviMode] = useState(false);
+  const [recommendedItinerary, setRecommendedItinerary] = useState(-1);
 
   const itineraryContext = useItineraryContext();
 
@@ -405,6 +406,8 @@ export default function ItineraryPage(props, context) {
   }
 
   async function makeMainQuery() {
+    setRecommendedItinerary(-1);
+
     if (!planQueryNeeded(config, match, PLANTYPE.TRANSIT)) {
       setState({ plan: {}, loading: LOADSTATE.DONE });
       return;
@@ -417,6 +420,7 @@ export default function ItineraryPage(props, context) {
         planParams,
         planParams.maxQueryIterations,
       );
+      setRecommendedItinerary(Date.now() % 5); // just pick random for now
       setState({ ...emptyState, plan, loading: LOADSTATE.DONE });
       ariaRef.current = 'itinerary-page.itineraries-loaded';
     } catch (error) {
@@ -1468,6 +1472,7 @@ export default function ItineraryPage(props, context) {
         <ItineraryTabs
           isMobile={!desktop}
           tabIndex={selectedIndex}
+          recommendedIndex={recommendedItinerary}
           changeHash={changeHash}
           plan={plan}
           planEdges={combinedEdges}
@@ -1497,6 +1502,7 @@ export default function ItineraryPage(props, context) {
     content = (
       <ItineraryListContainer
         activeIndex={selectedIndex}
+        recommendedIndex={recommendedItinerary}
         planEdges={combinedEdges}
         params={params}
         bikeParkItineraryCount={bikePublicPlan.bikeParkItineraryCount}

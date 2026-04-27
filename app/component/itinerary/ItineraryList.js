@@ -28,6 +28,7 @@ const spinnerPosition = {
 function ItineraryList({
   planEdges: planEdgesRef,
   activeIndex,
+  recommendedIndex,
   onSelect,
   onSelectImmediately,
   searchTime,
@@ -63,7 +64,7 @@ function ItineraryList({
       intermediatePlaces={getIntermediatePlaces(match.location.query)}
       hideSelectionIndicator={i !== activeIndex || planEdges.length === 1}
       lowestCo2value={lowestCo2value}
-      recommended={config.personalisation && i === 2} // temp value
+      recommended={i === recommendedIndex}
     />
   ));
 
@@ -238,6 +239,7 @@ function ItineraryList({
 
 ItineraryList.propTypes = {
   activeIndex: PropTypes.number.isRequired,
+  recommendedIndex: PropTypes.number,
   searchTime: PropTypes.number.isRequired,
   planEdges: PropTypes.arrayOf(planEdgeShape),
   onSelect: PropTypes.func.isRequired,
