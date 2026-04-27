@@ -435,13 +435,12 @@ const Itinerary = ({
         leg.from.rentalVehicle?.rentalNetwork.networkId;
       if (
         bikeNetwork &&
-        config.vehicleRental.networks &&
-        config.vehicleRental.networks[bikeNetwork]?.timeBeforeSurcharge &&
-        config.vehicleRental.networks[bikeNetwork]?.durationInstructions
+        config.vehicleRental?.networks?.[bikeNetwork]?.timeBeforeSurcharge &&
+        config.vehicleRental.networks[bikeNetwork].durationInstructions
       ) {
         const rentDurationOverSurchargeLimit =
           leg.duration >
-          config.vehicleRental?.networks[bikeNetwork].timeBeforeSurcharge;
+          config.vehicleRental.networks[bikeNetwork].timeBeforeSurcharge;
         if (rentDurationOverSurchargeLimit) {
           citybikeNetworks.add(bikeNetwork);
         }
