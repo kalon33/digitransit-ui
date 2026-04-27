@@ -3528,6 +3528,7 @@ $font-print-decrease: 0.7;
   font-weight: $font-weight-medium;
   font-family: $id-font-family;
   display: inline;
+  letter-spacing: 0.075em;
 
   &.platform-updated {
     @include platformUpdated;
