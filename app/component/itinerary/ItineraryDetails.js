@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { matchShape } from 'found';
+import { useRouter } from 'found';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -78,24 +78,23 @@ function getExtraProps(itinerary, intl) {
   };
 }
 
-function ItineraryDetails(
-  {
-    itinerary: itineraryRef,
-    focusToPoint,
-    focusToLeg,
-    isMobile,
-    tabIndex,
-    hideTitle,
-    carEmissions,
-    changeHash,
-    openSettings,
-    startNavigation,
-    bikePublicItineraryCount,
-    carPublicItineraryCount,
-    relayEnvironment,
-  },
-  { match },
-) {
+function ItineraryDetails({
+  itinerary: itineraryRef,
+  focusToPoint,
+  focusToLeg,
+  isMobile,
+  tabIndex,
+  hideTitle = false,
+  carEmissions,
+  changeHash = () => {},
+  openSettings,
+  startNavigation,
+  bikePublicItineraryCount = 0,
+  carPublicItineraryCount = 0,
+  relayEnvironment,
+  recommended = false,
+}) {
+  const { match } = useRouter();
   const config = useConfigContext();
   const { language } = config;
   const itinerary = useFragment(ItineraryDetailsFragment, itineraryRef);
@@ -396,7 +395,7 @@ function ItineraryDetails(
               <div className="itinerary-disclaimer" key="feedback">
                 <div className="separator" />
                 <div className="itinerary-empty-space" />
-                <Feedback />
+                <Feedback recommended={recommended} />
               </div>
             )}
             <div className="itinerary-empty-space" key="emptyspace" />
@@ -421,18 +420,7 @@ ItineraryDetails.propTypes = {
   bikePublicItineraryCount: PropTypes.number,
   carPublicItineraryCount: PropTypes.number,
   relayEnvironment: relayShape,
+  recommended: PropTypes.bool,
 };
-
-ItineraryDetails.defaultProps = {
-  hideTitle: false,
-  changeHash: () => {},
-  bikePublicItineraryCount: 0,
-  carPublicItineraryCount: 0,
-  carEmissions: undefined,
-  relayEnvironment: undefined,
-  startNavigation: undefined,
-};
-
-ItineraryDetails.contextTypes = { match: matchShape.isRequired };
 
 export default ItineraryDetails;
