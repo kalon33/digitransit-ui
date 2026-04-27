@@ -6,7 +6,14 @@ import { planEdgeShape } from '../../util/shapes';
 
 /* eslint-disable react/no-array-index-key */
 
-function ItineraryTabs({ planEdges, tabIndex, isMobile, changeHash, ...rest }) {
+function ItineraryTabs({
+  planEdges,
+  tabIndex,
+  recommendedIndex,
+  isMobile,
+  changeHash,
+  ...rest
+}) {
   const itineraryTabs = planEdges.map((edge, i) => {
     return (
       <div
@@ -20,6 +27,7 @@ function ItineraryTabs({ planEdges, tabIndex, isMobile, changeHash, ...rest }) {
           changeHash={isMobile ? changeHash : undefined}
           isMobile={isMobile}
           tabIndex={i}
+          recommended={i === recommendedIndex}
           {...rest}
         />
       </div>
@@ -39,13 +47,10 @@ function ItineraryTabs({ planEdges, tabIndex, isMobile, changeHash, ...rest }) {
 
 ItineraryTabs.propTypes = {
   tabIndex: PropTypes.number.isRequired,
+  recommendedIndex: PropTypes.number,
   isMobile: PropTypes.bool.isRequired,
   planEdges: PropTypes.arrayOf(planEdgeShape).isRequired,
   changeHash: PropTypes.func,
-};
-
-ItineraryTabs.defaultProps = {
-  changeHash: undefined,
 };
 
 export default ItineraryTabs;
