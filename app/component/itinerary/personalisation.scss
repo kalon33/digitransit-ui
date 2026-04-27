@@ -38,6 +38,15 @@
       align-items: center;
     }
 
+    .icon.favourite {
+      stroke: #ddd;
+
+      &.selected {
+        stroke: transparent;
+        fill: $attention-color;
+      }
+    }
+
     .icon-container {
       display: flex;
       flex-direction: row;
