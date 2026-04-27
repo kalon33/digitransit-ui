@@ -71,10 +71,10 @@ export default configMerger(walttiConfig, {
 
   vehicleRental: {
     networks: {
-      freebike_kuopio: {
+      breeze_kuopio: {
         enabled: true,
         season: {
-          start: '29.4',
+          start: '27.4',
           end: '31.10',
         },
         capacity: BIKEAVL_BIKES,
