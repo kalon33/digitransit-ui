@@ -170,6 +170,9 @@
       font-size: 13px;
       overflow: hidden;
       white-space: normal;
+      display: inline-flex;
+      align-items: center;
+      vertical-align: middle;
 
       .platform-or-track {
         text-transform: lowercase;
