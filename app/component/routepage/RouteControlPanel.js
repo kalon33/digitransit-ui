@@ -33,6 +33,7 @@ import { isIOS } from '../../util/browser';
 import { unixTime, unixToYYYYMMDD } from '../../util/timeUtils';
 import { saveSearch } from '../../action/SearchActions';
 import Icon from '../Icon';
+import Notification from './Notification';
 
 const Tab = {
   Disruptions: PREFIX_DISRUPTION,
@@ -84,6 +85,22 @@ function RouteControlPanel(
     [Tab.Timetable]: timetableTabRef,
     [Tab.Disruptions]: disruptionTabRef,
   };
+
+  const routeNotifications = [];
+  if (
+    config.NODE_ENV !== 'test' &&
+    config.routeNotifications &&
+    config.routeNotifications.length > 0
+  ) {
+    for (let i = 0; i < config.routeNotifications.length; i++) {
+      const n = config.routeNotifications[i];
+      if (n.showForRoute?.(route)) {
+        routeNotifications.push(
+          <Notification notification={n} lang={intl.locale} key={n.id} />,
+        );
+      }
+    }
+  }
 
   const activeTab = getActiveTab(location.pathname);
 
@@ -376,6 +393,7 @@ function RouteControlPanel(
           'bp-large': breakpoint === 'large',
         })}
       >
+        {!config.showNewRoutePage && routeNotifications}
         {patternId && (
           <RoutePatternSelectContainer
             match={match}
@@ -385,6 +403,71 @@ function RouteControlPanel(
             className={cx({ 'bp-large': breakpoint === 'large' })}
           />
         )}
+        <div className="route-tabs" role="tablist">
+          <button
+            type="button"
+            className={cx({ 'is-active': activeTab === Tab.Stops })}
+            onClick={() => changeTab(Tab.Stops)}
+            onKeyDown={handleTabKeyDown}
+            tabIndex={activeTab === Tab.Stops ? 0 : -1}
+            role="tab"
+            id="route-stop-tab"
+            ref={stopTabRef}
+            aria-selected={activeTab === Tab.Stops}
+            style={{ '--totalCount': `${countOfButtons}` }}
+          >
+            <div>
+              <FormattedMessage id="stops" defaultMessage="Stops" />
+            </div>
+          </button>
+          <button
+            type="button"
+            className={cx({ 'is-active': activeTab === Tab.Timetable })}
+            onClick={() => changeTab(Tab.Timetable)}
+            onKeyDown={handleTabKeyDown}
+            tabIndex={activeTab === Tab.Timetable ? 0 : -1}
+            role="tab"
+            id="route-timetable-tab"
+            ref={timetableTabRef}
+            aria-selected={activeTab === Tab.Timetable}
+            style={{ '--totalCount': `${countOfButtons}` }}
+          >
+            <div>
+              <FormattedMessage id="timetable" defaultMessage="Timetable" />
+            </div>
+          </button>
+          <button
+            type="button"
+            className={cx({
+              activeAlert: hasActiveAlert,
+              'is-active': activeTab === Tab.Disruptions,
+            })}
+            onClick={() => changeTab(Tab.Disruptions)}
+            onKeyDown={handleTabKeyDown}
+            tabIndex={activeTab === Tab.Disruptions ? 0 : -1}
+            role="tab"
+            id="route-disruption-tab"
+            ref={disruptionTabRef}
+            aria-selected={activeTab === Tab.Disruptions}
+            aria-label={`${intl.formatMessage({
+              id: 'disruptions',
+            })}: ${intl.formatMessage({
+              id: disruptionClassName
+                ? 'disruptions-tab.sr-disruptions'
+                : 'disruptions-tab.sr-no-disruptions',
+            })}`}
+            style={{ '--totalCount': `${countOfButtons}` }}
+          >
+            <div
+              className={`tab-route-disruption ${
+                disruptionClassName || `no-alerts`
+              }`}
+            >
+              {disruptionIcon}
+              <FormattedMessage id="disruptions" defaultMessage="Disruptions" />
+            </div>
+          </button>
+        </div>
         <div className="route-tabs" role="tablist">
           <button
             type="button"
