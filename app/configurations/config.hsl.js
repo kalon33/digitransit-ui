@@ -91,11 +91,9 @@ export default {
 
   title: 'Reittiopas',
 
-  availableLanguages: ['fi', 'sv', 'en'],
   availableTickets: {
     Sipoo: true,
   },
-  defaultLanguage: 'fi',
   passLanguageToRootLink: true,
 
   favicon: './app/configurations/images/hsl/hsl-favicon.png',

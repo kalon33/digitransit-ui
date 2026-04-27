@@ -48,11 +48,8 @@ import InterlineInfo from './InterlineInfo';
 import AlternativeLegsInfo from './AlternativeLegsInfo';
 import LegInfo from './LegInfo';
 import ExternalLink from '../ExternalLink';
-import {
-  getBoardingInformationText,
-  getPlatformChangeLabel,
-} from './BoardingInformation';
-import { modeUsesTrack } from '../../util/modeUtils';
+import { getBoardingInformationText } from './BoardingInformation';
+import { getTrackOrPierOrPlatformChangeText } from '../../util/modeUtils';
 
 const stopCode = code => code && <StopCode code={code} />;
 
@@ -276,7 +273,7 @@ class TransitLeg extends React.Component {
             trackInfo: getBoardingInformationText(leg, intl, false),
           }}
         />
-        {platformChanged && getPlatformChangeLabel(modeUsesTrack(mode), intl)}
+        {platformChanged && getTrackOrPierOrPlatformChangeText(intl, mode)}
       </>
     );
 
@@ -504,9 +501,7 @@ class TransitLeg extends React.Component {
                 <PlatformNumber
                   number={leg.from.stop.platformCode}
                   short
-                  isRailOrSubway={
-                    modeClassName === 'rail' || modeClassName === 'subway'
-                  }
+                  mode={mode}
                   updated={platformChanged}
                 />
               </div>
