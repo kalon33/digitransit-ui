@@ -3,12 +3,7 @@ import PropTypes from 'prop-types';
 import React, { createRef, useLayoutEffect, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { FormattedMessage, useIntl } from 'react-intl';
-import {
-  legShape,
-  locationShape,
-  itineraryShape,
-  configShape,
-} from '../../util/shapes';
+import { legShape, locationShape, itineraryShape } from '../../util/shapes';
 import Icon from '../Icon';
 import Feedback from './Feedback';
 import Duration from './Duration';
@@ -47,6 +42,7 @@ import { ViaLocationType } from '../../constants';
 import BoardingInformation, {
   getBoardingInformationText,
 } from './BoardingInformation';
+import { useConfigContext } from '../../configurations/ConfigContext';
 
 const NAME_LENGTH_THRESHOLD = 65; // for truncating long short names
 
@@ -54,8 +50,8 @@ const Leg = ({
   mode,
   routeNumber,
   legLength,
-  fitRouteNumber,
-  renderModeIcons,
+  fitRouteNumber = false,
+  renderModeIcons = false,
 }) => {
   return (
     <div
@@ -80,27 +76,21 @@ Leg.propTypes = {
   renderModeIcons: PropTypes.bool,
 };
 
-Leg.defaultProps = {
-  fitRouteNumber: false,
-  renderModeIcons: false,
-};
-
-export function RouteLeg(
-  {
-    leg,
-    large,
-    legLength,
-    isTransitLeg,
-    interliningWithRoute,
-    fitRouteNumber,
-    withBicycle,
-    withCar,
-    hasOneTransitLeg,
-    shortenLabels,
-  },
-  { config },
-) {
+export function RouteLeg({
+  leg,
+  large,
+  legLength,
+  isTransitLeg = true,
+  interliningWithRoute,
+  fitRouteNumber,
+  withBicycle,
+  withCar,
+  hasOneTransitLeg = false,
+  shortenLabels = false,
+}) {
   const intl = useIntl();
+  const config = useConfigContext();
+
   let routeNumber;
   const mode = getTripOrRouteMode(leg.trip, leg.route, config);
 
@@ -171,21 +161,16 @@ RouteLeg.propTypes = {
   shortenLabels: PropTypes.bool,
 };
 
-RouteLeg.contextTypes = {
-  config: configShape.isRequired,
-};
-
-RouteLeg.defaultProps = {
-  isTransitLeg: true,
-  interliningWithRoute: undefined,
-  hasOneTransitLeg: false,
-  shortenLabels: false,
-};
-
-export const ModeLeg = (
-  { leg, mode, large, legLength, duration, renderModeIcons, icon },
-  { config },
-) => {
+export const ModeLeg = ({
+  leg,
+  mode,
+  large,
+  legLength,
+  duration,
+  renderModeIcons = false,
+  icon,
+}) => {
+  const config = useConfigContext();
   let networkIcon;
   if (
     (mode === 'CITYBIKE' || mode === 'BICYCLE') &&
@@ -236,16 +221,6 @@ ModeLeg.propTypes = {
   icon: PropTypes.string,
 };
 
-ModeLeg.defaultProps = {
-  renderModeIcons: false,
-  duration: undefined,
-  icon: undefined,
-};
-
-ModeLeg.contextTypes = {
-  config: configShape.isRequired,
-};
-
 export const ViaLeg = () => (
   <div className="leg via">
     <Icon img="icon_mapMarker" className="itinerary-icon place" />
@@ -266,18 +241,17 @@ const hasOneTransitLeg = itinerary => {
   return itinerary.legs.filter(leg => leg.transitLeg).length === 1;
 };
 
-const Itinerary = (
-  {
-    itinerary: itineraryRef,
-    breakpoint,
-    intermediatePlaces,
-    hideSelectionIndicator,
-    lowestCo2value,
-    ...props
-  },
-  { config },
-) => {
+const Itinerary = ({
+  itinerary: itineraryRef,
+  breakpoint,
+  intermediatePlaces = [],
+  hideSelectionIndicator = true,
+  lowestCo2value = 0,
+  passive = false,
+  ...props
+}) => {
   const intl = useIntl();
+  const config = useConfigContext();
   const { formatMessage } = intl;
   const itinerary = useFragment(ItineraryFragment, itineraryRef);
   const isTransitLeg = leg => leg.transitLeg;
@@ -747,7 +721,7 @@ const Itinerary = (
     'itinerary-summary-row',
     'cursor-pointer',
     {
-      passive: props.passive,
+      passive,
       'bp-large': breakpoint === 'large',
       'no-border': hideSelectionIndicator,
     },
@@ -992,7 +966,7 @@ const Itinerary = (
             </div>
             {props.recommended && (
               <div className="feedback-frame">
-                <Feedback />
+                <Feedback recommended={props.recommended} />
               </div>
             )}
             <div className="summary-separator" />
@@ -1039,20 +1013,6 @@ Itinerary.propTypes = {
   viaPoints: PropTypes.arrayOf(locationShape),
   recommended: PropTypes.bool,
 };
-
-Itinerary.defaultProps = {
-  passive: false,
-  intermediatePlaces: [],
-  hideSelectionIndicator: true,
-  lowestCo2value: 0,
-  viaPoints: [],
-};
-
-Itinerary.contextTypes = {
-  config: configShape.isRequired,
-};
-
-Itinerary.displayName = 'Itinerary';
 
 const ItineraryWithBreakpoint = withBreakpoint(Itinerary);
 
