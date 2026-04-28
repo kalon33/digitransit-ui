@@ -1,13 +1,23 @@
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-import React, { useState } from 'react';
+import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Icon from '../Icon';
 import { useConfigContext } from '../../configurations/ConfigContext';
 
-export default function Feedback({ recommended }) {
+export default function Feedback({ recommended, feedback, giveFeedback }) {
   const intl = useIntl();
   const { colors } = useConfigContext();
+
+  let status;
+  if (feedback === true) {
+    status = 'personalisation-liked';
+  } else if (feedback === false) {
+    status = 'personalisation-disliked';
+  } else {
+    status = 'personalisation-ask';
+  }
+
   const favIcon = recommended
     ? 'icon_star-with-circle'
     : 'icon_star-unselected';
@@ -23,18 +33,6 @@ export default function Feedback({ recommended }) {
       color: colors.primary,
     },
   };
-
-  // status: ask, liked, disliked
-  const [status, setStatus] = useState('personalisation-ask');
-
-  const like = () => {
-    setStatus('personalisation-liked');
-  };
-
-  const dislike = () => {
-    setStatus('personalisation-disliked');
-  };
-
   const iconProps = iconMap[status];
 
   return (
@@ -53,7 +51,7 @@ export default function Feedback({ recommended }) {
           <button
             type="button"
             className="thumb-button"
-            onClick={like}
+            onClick={() => giveFeedback(true)}
             aria-label={intl.formatMessage({ id: 'personalisation-aria-like' })}
           >
             <Icon
@@ -66,7 +64,7 @@ export default function Feedback({ recommended }) {
           <button
             type="button"
             className="thumb-button"
-            onClick={dislike}
+            onClick={() => giveFeedback(false)}
             aria-label={intl.formatMessage({
               id: 'personalisation-aria-dislike',
             })}
@@ -86,5 +84,6 @@ export default function Feedback({ recommended }) {
 
 Feedback.propTypes = {
   recommended: PropTypes.bool,
-  // setFeedback: PropTypes.func.isRequired,
+  feedback: PropTypes.bool,
+  giveFeedback: PropTypes.func.isRequired,
 };
