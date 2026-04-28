@@ -93,6 +93,8 @@ function ItineraryDetails({
   carPublicItineraryCount = 0,
   relayEnvironment,
   recommended = false,
+  feedback,
+  giveFeedback,
 }) {
   const { match } = useRouter();
   const config = useConfigContext();
@@ -395,7 +397,11 @@ function ItineraryDetails({
               <div className="itinerary-disclaimer" key="feedback">
                 <div className="separator" />
                 <div className="itinerary-empty-space" />
-                <Feedback recommended={recommended} />
+                <Feedback
+                  recommended={recommended}
+                  feedback={feedback}
+                  giveFeedback={giveFeedback}
+                />
               </div>
             )}
             <div className="itinerary-empty-space" key="emptyspace" />
@@ -421,6 +427,8 @@ ItineraryDetails.propTypes = {
   carPublicItineraryCount: PropTypes.number,
   relayEnvironment: relayShape,
   recommended: PropTypes.bool,
+  feedback: PropTypes.bool,
+  giveFeedback: PropTypes.func,
 };
 
 export default ItineraryDetails;

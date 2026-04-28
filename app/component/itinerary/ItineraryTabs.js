@@ -1,17 +1,18 @@
+/* eslint-disable react/no-array-index-key */
 import PropTypes from 'prop-types';
 import React from 'react';
 import ItineraryDetails from './ItineraryDetails';
 import SwipeableTabs from '../SwipeableTabs';
 import { planEdgeShape } from '../../util/shapes';
 
-/* eslint-disable react/no-array-index-key */
-
 function ItineraryTabs({
   planEdges,
   tabIndex,
-  recommendedIndex,
   isMobile,
   changeHash,
+  recommendedIndex,
+  feedback = {},
+  giveFeedback,
   ...rest
 }) {
   const itineraryTabs = planEdges.map((edge, i) => {
@@ -28,6 +29,8 @@ function ItineraryTabs({
           isMobile={isMobile}
           tabIndex={i}
           recommended={i === recommendedIndex}
+          feedback={feedback[i]}
+          giveFeedback={like => giveFeedback(i, like)}
           {...rest}
         />
       </div>
@@ -47,10 +50,12 @@ function ItineraryTabs({
 
 ItineraryTabs.propTypes = {
   tabIndex: PropTypes.number.isRequired,
-  recommendedIndex: PropTypes.number,
   isMobile: PropTypes.bool.isRequired,
   planEdges: PropTypes.arrayOf(planEdgeShape).isRequired,
   changeHash: PropTypes.func,
+  recommendedIndex: PropTypes.number,
+  feedback: PropTypes.objectOf(PropTypes.bool),
+  giveFeedback: PropTypes.func,
 };
 
 export default ItineraryTabs;
