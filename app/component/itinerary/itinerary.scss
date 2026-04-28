@@ -3530,7 +3530,7 @@ $font-print-decrease: 0.7;
   font-family: $id-font-family;
   display: inline;
   letter-spacing: 0.045em;
-  font-size: 12px;
+  font-size: $font-size-xxsmall;
 
   &.platform-updated {
     @include platformUpdated;
