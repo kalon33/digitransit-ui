@@ -1,7 +1,7 @@
 import Button from '@hsl-fi/button';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { configShape } from '../../../util/shapes';
 import Icon from '../../Icon';
@@ -9,8 +9,9 @@ import { useLogo } from './hooks/useLogo';
 
 const NaviStarter = (
   { time, startItinerary, containerTopPosition, isPastStart },
-  { config, intl },
+  { config },
 ) => {
+  const intl = useIntl();
   const { logo } = useLogo(config.trafficLightGraphic);
   const [isVisible, setIsVisible] = useState(!isPastStart);
   const [isDismissed, setIsDismissed] = useState(false);
@@ -60,7 +61,7 @@ const NaviStarter = (
         ) : (
           <Icon
             aria-hidden="true"
-            img="icon_navigation_wait"
+            img="icon_wait_standing"
             className="mode"
             height={2}
             width={2}
@@ -94,7 +95,6 @@ NaviStarter.defaultProps = {
 };
 
 NaviStarter.contextTypes = {
-  intl: intlShape.isRequired,
   config: configShape.isRequired,
 };
 

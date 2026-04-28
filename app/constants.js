@@ -27,7 +27,7 @@ export const TransportMode = Object.freeze({
   /** Taking the train */
   Rail: 'RAIL',
   /** Taking the subway */
-  Subway: 'Subway',
+  Subway: 'SUBWAY',
   /** Taking the tram */
   Tram: 'TRAM',
   /** Taking the funicular */
@@ -133,6 +133,14 @@ export const OtpCornerNamingPattern = Object.freeze({
   fi: /katujen .* ja .* kulma/,
   sv: /hörnet av .* och .*/,
   en: /corner of .* and .*/,
+});
+
+/**
+ * OpenTripPlanner (v2) via point types.
+ */
+export const ViaLocationType = Object.freeze({
+  PassThrough: 'PASS_THROUGH',
+  Visit: 'VISIT',
 });
 
 export const VerticalDirection = Object.freeze({

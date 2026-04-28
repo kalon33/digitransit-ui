@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import cx from 'classnames';
 import { legShape, configShape } from '../../util/shapes';
 import Icon from '../Icon';
@@ -13,7 +13,8 @@ import TaxiLinkContainer from './TaxiLinkContainer';
 import { splitStringToAddressAndPlace } from '../../util/otpStrings';
 import ItineraryCircleLine from './ItineraryCircleLine';
 
-export default function TaxiLeg(props, { config, intl }) {
+export default function TaxiLeg(props, { config }) {
+  const intl = useIntl();
   const { leg, index } = props;
   const isFirstLeg = i => i === 0;
   const alternativeOperators = [
@@ -50,7 +51,11 @@ export default function TaxiLeg(props, { config, intl }) {
     </span>
   );
 
-  const [address, place] = splitStringToAddressAndPlace(leg.from.name);
+  const [name, place] = splitStringToAddressAndPlace(props.leg.from.name);
+  const address =
+    props.leg.from.viaLocationType && props.leg.viaAddress
+      ? props.leg.viaAddress
+      : name;
   const { bookingUrl, infoUrl } = props.leg.pickupBookingInfo.contactInfo;
   return (
     <>
@@ -68,6 +73,7 @@ export default function TaxiLeg(props, { config, intl }) {
             index={index}
             modeClassName="walk"
             appendClass="taxi"
+            viaType={props.leg.from.viaLocationType}
           />
           <div
             className={`small-9 columns itinerary-instruction-column ${firstLegClassName} ${lowerCaseLegMode}`}
@@ -120,6 +126,7 @@ export default function TaxiLeg(props, { config, intl }) {
           taxi
           style={style}
           isNotFirstLeg
+          viaType={props.leg.from.viaLocationType}
         />
         <div
           className={`small-9 columns itinerary-instruction-column ${firstLegClassName} ${lowerCaseLegMode}`}
@@ -177,5 +184,4 @@ TaxiLeg.propTypes = {
 
 TaxiLeg.contextTypes = {
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
 };

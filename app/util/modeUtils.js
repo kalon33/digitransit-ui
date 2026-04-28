@@ -45,7 +45,7 @@ export function showCitybikeNetwork(networkConfig) {
     networkConfig.type === 'citybike' &&
     (isCitybikeSeasonActive(networkConfig?.season) ||
       isCitybikePreSeasonActive(networkConfig?.season) ||
-      IS_DEV())
+      IS_DEV)
   );
 }
 
@@ -152,6 +152,23 @@ export function getRouteMode(route, config) {
         ? `${route.mode?.toLowerCase()}-external`
         : route.mode?.toLowerCase();
   }
+}
+
+/**
+ * In NeTEx, mode and submode are properties of the trip. In GTFS, they are
+ * properties of the route. Eventually we hope we can get OTP to always report
+ * them in the more specific entity, trip, but because historically we have
+ * taken them from route, this is a fail safe way of making the change.
+ * @param trip
+ * @param route
+ * @param config
+ * @returns {string|*}
+ */
+export function getTripOrRouteMode(trip, route, config) {
+  if (trip?.isReplacement) {
+    return 'replacement-bus';
+  }
+  return getRouteMode(route, config);
 }
 
 /**
@@ -380,6 +397,126 @@ export function toggleTransportMode(transportMode, config) {
   return modes;
 }
 
-export function modeUsesTrack(mode) {
-  return mode === 'RAIL' || mode === 'SUBWAY';
+export function getTrackOrPierOrPlatformTextShort(intl, mode) {
+  if (mode === TransportMode.Rail) {
+    return intl.formatMessage({
+      id: 'track',
+      defaultMessage: 'Track',
+    });
+  }
+  if (mode === TransportMode.Ferry) {
+    return intl.formatMessage({
+      id: 'pier-short-no-num',
+      defaultMessage: 'Pier',
+    });
+  }
+  return intl.formatMessage({
+    id: 'platform-short-no-num',
+    defaultMessage: 'Plat.',
+  });
+}
+
+export function getTrackOrPierOrPlatformText(intl, mode) {
+  if (mode === TransportMode.Rail) {
+    return intl.formatMessage({ id: 'track', defaultMessage: 'Track' });
+  }
+  if (mode === TransportMode.Ferry) {
+    return intl.formatMessage({ id: 'pier', defaultMessage: 'Pier' });
+  }
+  return intl.formatMessage({ id: 'platform', defaultMessage: 'Platform' });
+}
+
+export function getTrackOrPierOrPlatformWithNumText(intl, mode, platformCode) {
+  if (mode === TransportMode.Rail) {
+    return intl.formatMessage({ id: 'track-num' }, { platformCode });
+  }
+  if (mode === TransportMode.Ferry) {
+    return intl.formatMessage({ id: 'pier-num' }, { platformCode });
+  }
+  return intl.formatMessage({ id: 'platform-num' }, { platformCode });
+}
+
+export function getTrackOrPierOrPlatformChangeText(intl, mode) {
+  if (mode === TransportMode.Rail) {
+    return intl.formatMessage({
+      id: 'navigation-track-change',
+      defaultMessage: 'Track change',
+    });
+  }
+  if (mode === TransportMode.Ferry) {
+    return intl.formatMessage({
+      id: 'navigation-pier-change',
+      defaultMessage: 'Pier change',
+    });
+  }
+  return intl.formatMessage({
+    id: 'navigation-platform-change',
+    defaultMessage: 'Platform change',
+  });
+}
+
+export function getTrackOrPierOrPlatformRestoredText(intl, mode) {
+  if (mode === TransportMode.Rail) {
+    return intl.formatMessage({
+      id: 'navigation-track-restored',
+      defaultMessage: 'Track restored',
+    });
+  }
+  if (mode === TransportMode.Ferry) {
+    return intl.formatMessage({
+      id: 'navigation-pier-restored',
+      defaultMessage: 'Pier restored',
+    });
+  }
+  return intl.formatMessage({
+    id: 'navigation-platform-restored',
+    defaultMessage: 'Platform restored',
+  });
+}
+
+export function getTrackOrPierOrPlatformChangeDetailsText(
+  intl,
+  mode,
+  number,
+  routeName,
+) {
+  if (mode === TransportMode.Rail) {
+    return intl.formatMessage(
+      { id: `navigation-track-change-details` },
+      {
+        number: number || '',
+
+        name: routeName || '',
+      },
+    );
+  }
+  if (mode === TransportMode.Ferry) {
+    return intl.formatMessage(
+      { id: `navigation-pier-change-details` },
+      {
+        number: number || '',
+        name: routeName || '',
+      },
+    );
+  }
+  return intl.formatMessage(
+    { id: `navigation-platform-change-details` },
+    {
+      number: number || '',
+      name: routeName || '',
+    },
+  );
+}
+
+export function getTerminalOrStationText(intl, mode) {
+  if (mode === TransportMode.Ferry) {
+    return intl.formatMessage({
+      id: 'terminal',
+      defaultMessage: 'Terminal',
+    });
+  }
+  return intl.formatMessage({
+    id: 'station',
+    defaultMessage: 'Station',
+  });
 }

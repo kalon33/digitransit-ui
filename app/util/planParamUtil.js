@@ -335,11 +335,33 @@ export function getPlanParams(
   const intermediateLocations = getIntermediatePlaces({
     intermediatePlaces,
   });
-  const via = intermediateLocations.map(loc => ({
-    passThrough: {
-      stopLocationIds: [loc.gtfsId],
-    },
-  }));
+  let via = intermediateLocations
+    .map(loc => {
+      if (loc.gtfsId) {
+        return {
+          visit: {
+            stopLocationIds: [loc.gtfsId],
+            coordinate: {
+              latitude: loc.lat,
+              longitude: loc.lon,
+            },
+          },
+        };
+      }
+      if (loc.lat && loc.lon) {
+        return {
+          visit: {
+            coordinate: {
+              latitude: loc.lat,
+              longitude: loc.lon,
+            },
+          },
+        };
+      }
+      return null;
+    })
+    .filter(Boolean);
+
   const distance = estimateItineraryDistance(
     fromLocation,
     toLocation,
@@ -363,6 +385,9 @@ export function getPlanParams(
   let otpModes = transitModes.map(mode => {
     return { mode };
   });
+  if (transitModes.includes('RAIL') && !transitModes.includes('BUS')) {
+    otpModes.push({ mode: 'BUS', replacement: { requirement: 'REQUIRED' } });
+  }
   if (config.customWeights) {
     otpModes.forEach(m => {
       if (config.customWeights[m.mode]) {
@@ -442,6 +467,7 @@ export function getPlanParams(
       direct = directFlexOnly ? ['WALK', 'FLEX'] : null;
       transitOnly = false;
       filters = excludeAgencies(config.flex?.internalAgencies);
+      via = null;
       break;
     case PLANTYPE.FLEXTRANSIT_INTERNAL:
       access = [...access, 'FLEX'];
@@ -449,6 +475,7 @@ export function getPlanParams(
       direct = access;
       filters = excludeAgencies(config.flex?.externalAgencies);
       minTransferTime = config.flex?.minTransferTime || minTransferTime;
+      via = null;
       break;
     default: // direct modes
       direct = [planType];

@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import Link from 'found/Link';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import LegAgencyInfo from './LegAgencyInfo';
@@ -50,11 +50,8 @@ import InterlineInfo from './InterlineInfo';
 import AlternativeLegsInfo from './AlternativeLegsInfo';
 import LegInfo from './LegInfo';
 import ExternalLink from '../ExternalLink';
-import {
-  getBoardingInformationText,
-  getPlatformChangeLabel,
-} from './BoardingInformation';
-import { modeUsesTrack } from '../../util/modeUtils';
+import { getBoardingInformationText } from './BoardingInformation';
+import { getTrackOrPierOrPlatformChangeText } from '../../util/modeUtils';
 
 const stopCode = code => code && <StopCode code={code} />;
 
@@ -193,7 +190,7 @@ class TransitLeg extends React.Component {
         return (
           <IntermediateLeg
             placesCount={places.length}
-            color={leg.route ? `#${leg.route.color}` : 'currentColor'}
+            color={leg.route?.color ? `#${leg.route.color}` : 'currentColor'}
             key={place.stop.gtfsId}
             gtfsId={place.stop.gtfsId}
             mode={mode}
@@ -335,7 +332,7 @@ class TransitLeg extends React.Component {
             trackInfo: getBoardingInformationText(leg, intl, false),
           }}
         />
-        {platformChanged && getPlatformChangeLabel(modeUsesTrack(mode), intl)}
+        {platformChanged && getTrackOrPierOrPlatformChangeText(intl, mode)}
       </>
     );
 
@@ -498,16 +495,18 @@ class TransitLeg extends React.Component {
         <ItineraryCircleLine
           index={index}
           modeClassName={modeClassName}
-          color={leg.route ? `#${leg.route.color}` : 'currentColor'}
+          color={leg.route?.color ? `#${leg.route.color}` : 'currentColor'}
           renderBottomMarker={
             !this.state.showIntermediateStops ||
             (leg.intermediatePlaces.length === 0 && interliningLegs.length < 1)
           }
+          viaType={leg.from.viaLocationType}
+          isStop={!!leg.from.stop}
           appendClass={isLocalCallAgency(leg, config) ? 'call-local' : ''}
         />
         <div
           style={{
-            color: leg.route ? `#${leg.route.color}` : 'currentColor',
+            color: leg.route?.color ? `#${leg.route.color}` : 'currentColor',
           }}
           className={cx(
             'small-9 columns itinerary-instruction-column',
@@ -540,7 +539,7 @@ class TransitLeg extends React.Component {
                 to={stopPagePath(false, leg.from.stop.gtfsId)}
               >
                 {validatedFromLegName}
-                {leg.isViaPoint && (
+                {leg.from.viaLocationType && (
                   <Icon
                     img="icon_mapMarker"
                     className="itinerary-mapmarker-icon"
@@ -564,9 +563,7 @@ class TransitLeg extends React.Component {
                 <PlatformNumber
                   number={leg.from.stop.platformCode}
                   short
-                  isRailOrSubway={
-                    modeClassName === 'rail' || modeClassName === 'subway'
-                  }
+                  mode={mode}
                   updated={platformChanged}
                 />
               </div>
@@ -740,7 +737,7 @@ TransitLeg.defaultProps = {
 
 TransitLeg.contextTypes = {
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired, // eslint-disable-line
 };
 
 const connectedComponent = connectToStores(

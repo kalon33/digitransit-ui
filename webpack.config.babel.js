@@ -14,19 +14,12 @@ const StatsPlugin = require('stats-webpack-plugin');
 
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const {
-  languages,
-  themeEntries,
-  faviconPlugins,
-} = require('./build/contextHelper');
+const { themeEntries, faviconPlugins } = require('./build/contextHelper');
 
 const mode = process.env.NODE_ENV;
 const isProduction = mode === 'production';
 const isDevelopment = !isProduction;
 
-const languageExp = new RegExp(`^./(${languages.join('|')})$`);
-const reactIntlExpression = /react-intl[/\\]locale-data$/;
-const intlExpression = /intl[/\\]locale-data[/\\]jsonp$/;
 const themeExpression = /sass[/\\]themes$/;
 const selectedTheme = new RegExp(
   `^./(${process.env.CONFIG || 'default'})/main.scss$`,
@@ -207,6 +200,50 @@ module.exports = {
         },
       },
       {
+        // These node_modules packages ship untranspiled ES2018+ / ESM syntax
+        test: /\.js$/,
+        include: /node_modules\/(@hsl-fi|@radix-ui|@floating-ui)/,
+        loader: 'babel-loader',
+        options: {
+          configFile: false,
+          presets: [
+            [
+              '@babel/preset-env',
+              {
+                modules: false,
+              },
+            ],
+          ],
+          plugins: [
+            '@babel/plugin-transform-class-properties',
+            '@babel/plugin-transform-json-strings',
+          ],
+        },
+      },
+      {
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: 'javascript/auto',
+        use: {
+          loader: 'babel-loader',
+          options: {
+            configFile: false,
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  modules: false,
+                },
+              ],
+            ],
+            plugins: [
+              '@babel/plugin-transform-class-properties',
+              '@babel/plugin-transform-json-strings',
+            ],
+          },
+        },
+      },
+      {
         test: /\.scss$/,
         use: [
           isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
@@ -252,8 +289,6 @@ module.exports = {
       ? false
       : process.env.WEBPACK_DEVTOOL || (isProduction ? 'source-map' : 'eval'),
   plugins: [
-    new webpack.ContextReplacementPlugin(reactIntlExpression, languageExp),
-    new webpack.ContextReplacementPlugin(intlExpression, languageExp),
     ...(isDevelopment
       ? [new webpack.ContextReplacementPlugin(themeExpression, selectedTheme)]
       : productionPlugins),
@@ -293,6 +328,7 @@ module.exports = {
   },
   cache: true,
   resolve: {
+    extensions: ['.mjs', '.js', '.json'],
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],
     alias: {
       lodash: 'lodash-es',

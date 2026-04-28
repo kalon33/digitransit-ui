@@ -1,7 +1,6 @@
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { intlShape } from 'react-intl';
 import { ReactRelayContext } from 'react-relay';
 import GridLayer from 'react-leaflet/es/GridLayer';
 import SphericalMercator from '@mapbox/sphericalmercator';
@@ -43,7 +42,6 @@ class TileLayerContainer extends GridLayer {
     tileSize: PropTypes.number.isRequired,
     zoomOffset: PropTypes.number.isRequired,
     locationPopup: PropTypes.string, // all, none, reversegeocoding, origindestination
-    allowViaPoint: PropTypes.bool, // temporary, until OTP2 handles arbitrary via points
     onSelectLocation: PropTypes.func,
     mergeStops: PropTypes.bool,
     mapLayers: mapLayerShape.isRequired,
@@ -68,7 +66,6 @@ class TileLayerContainer extends GridLayer {
   static defaultProps = {
     onSelectLocation: undefined,
     locationPopup: undefined,
-    allowViaPoint: false,
     objectsToHide: { vehicleRentalStations: [] },
     highlightedStops: undefined,
     stopsToShow: undefined,
@@ -78,7 +75,6 @@ class TileLayerContainer extends GridLayer {
 
   static contextTypes = {
     getStore: PropTypes.func.isRequired,
-    intl: intlShape.isRequired,
     config: configShape.isRequired,
     match: matchShape.isRequired,
     router: routerShape.isRequired,
@@ -350,10 +346,7 @@ class TileLayerContainer extends GridLayer {
     let contents;
     const breakpoint = getClientBreakpoint();
     let showPopup = true;
-    const locationPopup =
-      this.props.allowViaPoint || this.props.locationPopup !== 'all'
-        ? this.props.locationPopup
-        : 'origindestination';
+    const { locationPopup } = this.props;
 
     if (typeof this.state.selectableTargets !== 'undefined') {
       if (this.state.selectableTargets.length === 1) {

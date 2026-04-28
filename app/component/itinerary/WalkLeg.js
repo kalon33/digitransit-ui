@@ -1,9 +1,10 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import Link from 'found/Link';
 import { legShape } from '../../util/shapes';
+import { useConfigContext } from '../../configurations/ConfigContext';
 import {
   legTime,
   legTimeStr,
@@ -27,7 +28,6 @@ import { displayDistance } from '../../util/geo-utils';
 import { durationToString } from '../../util/timeUtils';
 import { splitStringToAddressAndPlace } from '../../util/otpStrings';
 import VehicleRentalLeg from './VehicleRentalLeg';
-import { useConfigContext } from '../../configurations/ConfigContext';
 import IndoorInfo from './IndoorInfo';
 import {
   subwayTransferUsesSameStation,
@@ -40,20 +40,18 @@ import {
 import IndoorStep from './IndoorStep';
 import { IndoorLegType } from '../../constants';
 
-function WalkLeg(
-  {
-    children,
-    focusAction,
-    focusToLeg,
-    focusToPoint,
-    index,
-    leg,
-    previousLeg,
-    nextLeg,
-    useOriginAddress,
-  },
-  { intl },
-) {
+function WalkLeg({
+  children,
+  focusAction,
+  focusToLeg,
+  focusToPoint,
+  index,
+  leg,
+  previousLeg,
+  nextLeg,
+  useOriginAddress,
+}) {
+  const intl = useIntl();
   const config = useConfigContext();
   const { colors, emphasizeDistance } = config;
   // If there is only one indoor routing step, always show it.
@@ -76,7 +74,9 @@ function WalkLeg(
   const modeClassName = 'walk';
   const fromMode = (leg[toOrFrom].stop && leg[toOrFrom].stop.vehicleMode) || '';
   const isFirstLeg = i => i === 0;
-  const [address, place] = splitStringToAddressAndPlace(leg[toOrFrom].name);
+  const [name, place] = splitStringToAddressAndPlace(leg[toOrFrom].name);
+  const address =
+    leg[toOrFrom].viaLocationType && leg.viaAddress ? leg.viaAddress : name;
   const network =
     previousLeg?.[toOrFrom]?.vehicleRentalStation?.rentalNetwork.networkId ||
     previousLeg?.[toOrFrom]?.rentalVehicle?.rentalNetwork.networkId;
@@ -90,7 +90,8 @@ function WalkLeg(
     config,
   ).type;
   const isScooter = networkType === RentalNetworkType.Scooter;
-  const alightNotice = previousLeg?.mode === 'TAXI' || leg?.mode === 'TAXI'; // Taxi leg is the current leg when the walk leg is added after a taxi leg without a walk leg from data
+  // Taxi leg is the current leg when the walk leg is added after a taxi leg without a walk leg from data
+  const alightNotice = previousLeg?.mode === 'TAXI' || leg?.mode === 'TAXI';
   const returnNotice = previousLeg?.rentedBike ? (
     <FormattedMessage
       id={
@@ -166,6 +167,8 @@ function WalkLeg(
         appendClass={appendClass}
         index={index}
         modeClassName={modeClassName}
+        viaType={leg.isViaPoint ? leg.from.viaLocationType : null}
+        isStop={!!leg.from.stop}
         indoorLegType={indoorLegType}
         showIntermediateSteps={showIntermediateSteps}
         indoorStepsLength={indoorSteps.length}
@@ -219,10 +222,15 @@ function WalkLeg(
                 >
                   {returnNotice || validatedLegName}
                   {leg.isViaPoint && (
-                    <Icon
-                      img="icon_mapMarker"
-                      className="itinerary-mapmarker-icon"
-                    />
+                    <>
+                      <Icon
+                        img="icon_mapMarker"
+                        className="itinerary-mapmarker-icon"
+                      />
+                      <span className="sr-only">
+                        {intl.formatMessage({ id: 'via-point' })}
+                      </span>
+                    </>
                   )}
                   {leg[toOrFrom].stop && (
                     <Icon
@@ -259,11 +267,13 @@ function WalkLeg(
                     <div className="itinerary-leg-action-content">
                       <FormattedMessage
                         id="get-off-the-ride"
-                        defaultMessage="Get off the taxi"
+                        defaultMessage="Get off the ride"
                       />
                     </div>
                   )}
-                  {!returnNotice && !alightNotice && validatedLegName}
+                  {!returnNotice &&
+                    !alightNotice &&
+                    (leg.viaAddress || validatedLegName)}
                   {leg[toOrFrom].stop && !alightNotice && (
                     <Icon
                       img="icon_arrow-collapse--right"
@@ -287,9 +297,7 @@ function WalkLeg(
                     <PlatformNumber
                       number={leg[toOrFrom].stop.platformCode}
                       short
-                      isRailOrSubway={
-                        fromMode === 'RAIL' || fromMode === 'SUBWAY'
-                      }
+                      mode={fromMode}
                     />
                   )}
                 </div>
@@ -399,10 +407,6 @@ WalkLeg.defaultProps = {
   nextLeg: undefined,
   children: undefined,
   useOriginAddress: false,
-};
-
-WalkLeg.contextTypes = {
-  intl: intlShape.isRequired,
 };
 
 export default WalkLeg;

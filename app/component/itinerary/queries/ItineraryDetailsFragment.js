@@ -134,6 +134,8 @@ export const ItineraryDetailsFragment = graphql`
           occupancy {
             occupancyStatus
           }
+          isReplacement
+          tripShortName
           gtfsId
         }
         realTime
@@ -196,6 +198,7 @@ export const ItineraryDetailsFragment = graphql`
             gtfsId
           }
         }
+        viaLocationType
       }
       to {
         lat
@@ -248,6 +251,7 @@ export const ItineraryDetailsFragment = graphql`
           vehicleParkingId
           name
         }
+        viaLocationType
       }
       intermediatePlaces {
         arrival {
@@ -288,7 +292,6 @@ export const ItineraryDetailsFragment = graphql`
       interlineWithPreviousLeg
       distance
       duration
-      intermediatePlace
       route {
         shortName
         color
@@ -321,6 +324,8 @@ export const ItineraryDetailsFragment = graphql`
       trip {
         gtfsId
         tripHeadsign
+        isReplacement
+        tripShortName
         pattern {
           code
         }

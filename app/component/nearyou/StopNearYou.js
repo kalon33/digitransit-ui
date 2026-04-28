@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'found';
 import Modal from '@hsl-fi/modal';
 import { stopShape, relayShape } from '../../util/shapes';
@@ -11,19 +11,17 @@ import NearYouHeader from './NearYouHeader';
 import AlertBanner from '../AlertBanner';
 import StopNearYouDepartureRowContainer from './StopNearYouDepartureRowContainer';
 import CapacityModal from '../CapacityModal';
-import { useTranslationsContext } from '../../util/useTranslationsContext';
 import { useConfigContext } from '../../configurations/ConfigContext';
 
 const StopNearYou = ({ stop, currentTime, relay, isParentTabActive }) => {
   const config = useConfigContext();
-  const intl = useTranslationsContext();
+  const intl = useIntl();
   if (!stop.stoptimesWithoutPatterns) {
     return null;
   }
   const timeRef = useRef(currentTime);
   const [capacityModalOpen, setCapacityModalOpen] = useState(false);
-  const stopMode = stop.stoptimesWithoutPatterns[0]?.trip.route.mode;
-  const { gtfsId } = stop;
+  const { gtfsId, vehicleMode } = stop;
 
   useEffect(() => {
     if (isParentTabActive && currentTime - timeRef.current > 30) {
@@ -51,6 +49,7 @@ const StopNearYou = ({ stop, currentTime, relay, isParentTabActive }) => {
           desc={stop.desc}
           isStation={isStation}
           linkAddress={linkAddress}
+          mode={vehicleMode}
         />
         <span className="sr-only">
           <FormattedMessage
@@ -80,9 +79,9 @@ const StopNearYou = ({ stop, currentTime, relay, isParentTabActive }) => {
           <>
             <StopNearYouDepartureRowContainer
               currentTime={currentTime}
-              mode={stopMode}
+              mode={vehicleMode}
               stopTimes={stop.stoptimesWithoutPatterns}
-              isStation={isStation && stopMode !== 'SUBWAY'}
+              isStation={isStation && vehicleMode !== 'SUBWAY'}
               openCapacityModal={() => setCapacityModalOpen(true)}
               isParentTabActive={isParentTabActive}
             />

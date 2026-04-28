@@ -8,11 +8,11 @@ import React from 'react';
 import { getMiddleOf } from '../../util/geo-utils';
 import {
   getInterliningLegs,
-  getRouteText,
+  getTripOrRouteText,
   LegMode,
   isLocalCallAgency,
 } from '../../util/legUtils';
-import { getRouteMode } from '../../util/modeUtils';
+import { getTripOrRouteMode } from '../../util/modeUtils';
 import { configShape, legShape } from '../../util/shapes';
 import { durationToString } from '../../util/timeUtils';
 import Line from './Line';
@@ -395,7 +395,8 @@ class ItineraryLine extends React.Component {
       const nextLeg = this.props.legs[i + 1];
       const previousLeg = this.props.legs[i - 1];
 
-      let mode = getRouteMode(
+      let mode = getTripOrRouteMode(
+        leg.trip,
         {
           mode: leg.mode,
           type: leg.route?.type,
@@ -477,7 +478,8 @@ class ItineraryLine extends React.Component {
             />,
           );
         } else if (leg.transitLeg && mode !== 'taxi-external') {
-          const name = getRouteText(
+          const name = getTripOrRouteText(
+            leg.trip,
             leg.route,
             this.context.config,
             interliningWithRoute,

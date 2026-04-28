@@ -2,11 +2,12 @@ import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { createRefetchContainer, graphql } from 'react-relay';
 import connectToStores from 'fluxible-addons-react/connectToStores';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import DepartureListContainer from '../DepartureListContainer';
 import Icon from '../Icon';
 import ScrollableWrapper from '../ScrollableWrapper';
 import { stationShape, errorShape, relayShape } from '../../util/shapes';
+import { getTrackOrPierOrPlatformText } from '../../util/modeUtils';
 
 function TerminalPageContent({ station, relay, currentTime, error }) {
   if (!station && error) {
@@ -19,15 +20,9 @@ function TerminalPageContent({ station, relay, currentTime, error }) {
     });
   }, [currentTime, relay]);
 
+  const intl = useIntl();
   const { stoptimes } = station;
-  // eslint-disable-next-line prefer-destructuring
-  const stopsWithPatterns = station.stops.filter(
-    stop => stop.patterns.length > 0,
-  );
-  const mode =
-    stopsWithPatterns.length > 0
-      ? stopsWithPatterns[0].patterns[0].route.mode
-      : 'BUS';
+  const mode = station.vehicleMode || 'BUS';
   if (!stoptimes || stoptimes.length === 0) {
     return (
       <div className="stop-no-departures-container">
@@ -36,8 +31,7 @@ function TerminalPageContent({ station, relay, currentTime, error }) {
       </div>
     );
   }
-  const isStreetTrafficTerminal = () =>
-    stopsWithPatterns.some(stop => stop.patterns[0].route.mode === 'BUS');
+
   return (
     <ScrollableWrapper>
       <div className="stop-page-departure-wrapper stop-scroll-container">
@@ -55,18 +49,7 @@ function TerminalPageContent({ station, relay, currentTime, error }) {
             <FormattedMessage id="leaving-at" defaultMessage="Leaves" />
           </span>
           <span className="track-header">
-            <FormattedMessage
-              id={
-                mode === 'BUS' || isStreetTrafficTerminal()
-                  ? 'platform'
-                  : 'track'
-              }
-              defaultMessage={
-                mode === 'BUS' || isStreetTrafficTerminal()
-                  ? 'Platform'
-                  : 'Track'
-              }
-            />
+            {getTrackOrPierOrPlatformText(intl, mode)}
           </span>
         </div>
         <DepartureListContainer
@@ -108,6 +91,7 @@ const connectedComponent = createRefetchContainer(
         timeRange: { type: "Int!", defaultValue: 43200 }
         numberOfDepartures: { type: "Int!", defaultValue: 100 }
       ) {
+        vehicleMode
         url
         stops {
           patterns {

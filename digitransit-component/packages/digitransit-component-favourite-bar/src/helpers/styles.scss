@@ -114,17 +114,14 @@ $favourite-highlight-background-color: #f2f5f7;
       flex-direction: row;
 
       .name {
-        font-family: 'Gotham Rounded A', 'Gotham Rounded B', Roboto, Arial,
-          Georgia, serif;
+        font-family: var(--font-family);
         font-size: 15px;
         margin-right: 6px;
         font-weight: var(--font-weight-medium);
         font-stretch: normal;
         font-style: normal;
-        line-height: 1;
         letter-spacing: -0.6px;
         color: #333;
-        margin-top: 3px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -135,8 +132,7 @@ $favourite-highlight-background-color: #f2f5f7;
       }
 
       .address {
-        font-family: 'Gotham Rounded A', 'Gotham Rounded B', Roboto, Arial,
-          Georgia, serif;
+        font-family: var(--font-family);
         font-size: 12px;
         margin-right: 6px;
         font-weight: normal;
