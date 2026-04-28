@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import React, { useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import Icon from '../Icon';
 import { useConfigContext } from '../../configurations/ConfigContext';
 
 export default function Feedback({ recommended }) {
+  const intl = useIntl();
   const { colors } = useConfigContext();
   const favIcon = recommended
     ? 'icon_star-with-circle'
@@ -49,7 +50,12 @@ export default function Feedback({ recommended }) {
       </div>
       {status === 'personalisation-ask' && (
         <div className="feedback-section">
-          <button type="button" className="thumb-button" onClick={like}>
+          <button
+            type="button"
+            className="thumb-button"
+            onClick={like}
+            aria-label={intl.formatMessage({ id: 'personalisation-aria-like' })}
+          >
             <Icon
               img="icon_thumb"
               color={colors.primary}
@@ -57,7 +63,14 @@ export default function Feedback({ recommended }) {
               width={1}
             />
           </button>
-          <button type="button" className="thumb-button" onClick={dislike}>
+          <button
+            type="button"
+            className="thumb-button"
+            onClick={dislike}
+            aria-label={intl.formatMessage({
+              id: 'personalisation-aria-dislike',
+            })}
+          >
             <Icon
               img="icon_thumb-down"
               color={colors.primary}
