@@ -963,9 +963,13 @@ const Itinerary = ({
                   </div>
                 ))}
             </div>
-            {props.recommended && (
+            {config.personalisation && props.recommended && (
               <div className="feedback-frame">
-                <Feedback recommended={props.recommended} />
+                <Feedback
+                  recommended={props.recommended}
+                  feedback={props.feedback}
+                  giveFeedback={props.giveFeedback}
+                />
               </div>
             )}
             <div className="summary-separator" />
@@ -1011,6 +1015,8 @@ Itinerary.propTypes = {
   lowestCo2value: PropTypes.number,
   viaPoints: PropTypes.arrayOf(locationShape),
   recommended: PropTypes.bool,
+  feedback: PropTypes.bool,
+  giveFeedback: PropTypes.func,
 };
 
 const ItineraryWithBreakpoint = withBreakpoint(Itinerary);

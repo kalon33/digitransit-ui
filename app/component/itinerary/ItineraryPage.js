@@ -183,6 +183,7 @@ export default function ItineraryPage(props, context) {
   const [mapState, setMapState] = useState({});
   const [naviMode, setNaviMode] = useState(false);
   const [recommendedItinerary, setRecommendedItinerary] = useState(-1);
+  const [feedback, setFeedback] = useState({}); // boolean map, key = itinerary index
 
   const itineraryContext = useItineraryContext();
 
@@ -406,6 +407,7 @@ export default function ItineraryPage(props, context) {
 
   async function makeMainQuery() {
     setRecommendedItinerary(-1);
+    setFeedback({});
 
     if (!planQueryNeeded(config, match, PLANTYPE.TRANSIT)) {
       setState({ plan: {}, loading: LOADSTATE.DONE });
@@ -1253,6 +1255,12 @@ export default function ItineraryPage(props, context) {
     }, 500);
   };
 
+  const giveFeedback = (i, liked) => {
+    const updated = { ...feedback };
+    updated[i] = liked;
+    setFeedback(updated);
+  };
+
   function renderMap(from, to, viaPoints, planEdges, activeIndex) {
     const mwtProps = {};
     if (mapState.bounds) {
@@ -1472,6 +1480,8 @@ export default function ItineraryPage(props, context) {
           isMobile={!desktop}
           tabIndex={selectedIndex}
           recommendedIndex={recommendedItinerary}
+          feedback={feedback}
+          giveFeedback={giveFeedback}
           changeHash={changeHash}
           plan={plan}
           planEdges={combinedEdges}
@@ -1502,6 +1512,8 @@ export default function ItineraryPage(props, context) {
       <ItineraryListContainer
         activeIndex={selectedIndex}
         recommendedIndex={recommendedItinerary}
+        feedback={feedback}
+        giveFeedback={giveFeedback}
         planEdges={combinedEdges}
         params={params}
         bikeParkItineraryCount={bikePublicPlan.bikeParkItineraryCount}
