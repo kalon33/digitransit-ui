@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
 import { matchShape, routerShape } from 'found';
 import isEmpty from 'lodash/isEmpty';
