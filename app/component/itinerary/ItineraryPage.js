@@ -91,6 +91,7 @@ import NaviContainer from './navigator/NaviContainer';
 import NaviGeolocationInfoModal from './navigator/navigatorgeolocation/NaviGeolocationInfoModal';
 import NavigatorIntroModal from './navigator/navigatorintro/NavigatorIntroModal';
 import { planConnection } from './queries/PlanConnection';
+import { hasTaxiLegs } from '../../util/legUtils';
 
 const MAX_QUERY_COUNT = 4; // number of attempts to collect enough itineraries
 
@@ -1459,7 +1460,10 @@ export default function ItineraryPage(props, context) {
           Date.now() + 24 * 3600 * 1000;
 
       const navigateHook =
-        !desktop && config.navigation && presentSearch
+        !desktop &&
+        config.navigation &&
+        presentSearch &&
+        !hasTaxiLegs(combinedEdges[selectedIndex]?.node)
           ? () =>
               startNavigationWithAnalytics(combinedEdges[selectedIndex]?.node)
           : undefined;
