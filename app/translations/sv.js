@@ -160,6 +160,7 @@ export default {
     day: 'Dagen',
     delete: 'Ta bort',
     'delete-favourite-failed-heading': 'Unable to delete save',
+    'demand-responsive-traffic': 'Efterfrågestyrd kollektivtrafik',
     'departure-list-update.sr-instructions':
       'Listan på avgångar och avgångstider uppdateras i realtid.',
     'departure-page-sr':

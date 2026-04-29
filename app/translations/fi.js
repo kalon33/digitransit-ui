@@ -155,6 +155,7 @@ export default {
     day: 'Päivä',
     delete: 'Poista',
     'delete-favourite-failed-heading': 'Tallennuksen poistaminen ei onnistunut',
+    'demand-responsive-traffic': 'Kutsuliikenne',
     'departure-list-update.sr-instructions':
       'Tulevien lähtöjen lista ja lähtöajat päivittyvät reaaliajassa.',
     'departure-page-sr':

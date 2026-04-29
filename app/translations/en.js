@@ -162,6 +162,7 @@ export default {
     day: 'Day',
     delete: 'Delete',
     'delete-favourite-failed-heading': 'Unable to delete save',
+    'demand-responsive-traffic': 'Demand-responsive transport',
     'departure-list-update.sr-instructions':
       'The list of upcoming departures and departure times will update in real time.',
     'departure-page-sr': 'Route {shortName} {destination}, departs at {time},',
