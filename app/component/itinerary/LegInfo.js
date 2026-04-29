@@ -4,31 +4,33 @@ import Link from 'found/Link';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import Modal from '@hsl-fi/modal';
-import { legShape, configShape } from '../../util/shapes';
+import { legShape } from '../../util/shapes';
 import { legTimeStr } from '../../util/legUtils';
 import { getTripOrRouteMode } from '../../util/modeUtils';
 import RouteNumber from '../RouteNumber';
 import { routePagePath, PREFIX_STOPS } from '../../util/path';
-import { getCapacityForLeg } from '../../util/occupancyUtil';
+import {
+  getCapacityForLeg,
+  capacityToTranslationId,
+} from '../../util/occupancyUtil';
 import Icon from '../Icon';
 import CapacityModal from '../CapacityModal';
+import { useConfigContext } from '../../configurations/ConfigContext';
 
 /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
-export default function LegInfo(
-  {
-    leg,
-    hasNoShortName,
-    headsign,
-    alertSeverityLevel,
-    isAlternativeLeg,
-    displayTime,
-    changeHash,
-    tabIndex,
-    isCallAgency,
-  },
-  { config },
-) {
+export default function LegInfo({
+  leg,
+  hasNoShortName,
+  headsign,
+  alertSeverityLevel,
+  isAlternativeLeg,
+  displayTime,
+  changeHash,
+  tabIndex,
+  isCallAgency = false,
+}) {
   const intl = useIntl();
+  const config = useConfigContext();
   const [capacityModalOpen, setCapacityModalOpen] = useState(false);
   const { constantOperationRoutes } = config;
   const shouldLinkToTrip =
@@ -41,10 +43,6 @@ export default function LegInfo(
         config,
       );
   const capacity = getCapacityForLeg(config, leg);
-  let capacityTranslation;
-  if (capacity) {
-    capacityTranslation = capacity.toLowerCase().replaceAll('_', '-');
-  }
   const startTime = legTimeStr(leg.start);
 
   return (
@@ -93,7 +91,7 @@ export default function LegInfo(
           className="capacity-icon-container"
           onClick={() => setCapacityModalOpen(true)}
           aria-label={intl.formatMessage({
-            id: capacityTranslation,
+            id: capacityToTranslationId(capacity),
             defaultMessage: 'Capacity status',
           })}
         >
@@ -151,16 +149,4 @@ LegInfo.propTypes = {
   changeHash: PropTypes.func,
   tabIndex: PropTypes.number,
   isCallAgency: PropTypes.bool,
-};
-
-LegInfo.defaultProps = {
-  changeHash: undefined,
-  tabIndex: undefined,
-  alertSeverityLevel: undefined,
-  hasNoShortName: undefined,
-  isCallAgency: false,
-};
-
-LegInfo.contextTypes = {
-  config: configShape.isRequired,
 };
