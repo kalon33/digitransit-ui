@@ -18,7 +18,7 @@ function MainMenu(props, { config, executeAction }) {
   const intl = useIntl();
   const [countries, setCountries] = useState(props.countries);
   const appBarLink =
-    config.appBarLink?.altLink?.[currentLanguage] || config.appBarLink;
+    config.appBarLink?.altLink?.[props.currentLanguage] || config.appBarLink;
   return (
     <div className="main-menu no-select" tabIndex={-1}>
       <div className="main-menu-top-section">
