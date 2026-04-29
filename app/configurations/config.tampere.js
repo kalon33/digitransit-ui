@@ -18,7 +18,7 @@ export default configMerger(walttiConfig, {
   CONFIG,
 
   appBarLink: {
-    name: 'Nysse',
+    name: 'Nysse.fi',
     href: 'https://www.nysse.fi/',
     altLink: {
       sv: {
