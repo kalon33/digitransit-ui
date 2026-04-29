@@ -73,6 +73,7 @@ export default {
     'bicycle-walk-to-transit-no-duration':
       'Walk your bike to the {transportMode}',
     bicycle_frame_lock: 'Frame locking',
+    bicycle_walk: 'Walking a bike',
     'bike-availability': 'Bikes available at the station right now',
     'bike-only': 'Cycling only',
     'bike-park': 'Park & Ride for bikes',

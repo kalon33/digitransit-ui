@@ -68,6 +68,7 @@ export default {
       'Taluta {distance} ({duration}) ja ota pyörä mukaan {transportMode}',
     'bicycle-walk-to-transit-no-duration': 'Taluta pyörä {transportMode}',
     bicycle_frame_lock: 'Runkolukitus',
+    bicycle_walk: 'Polkupyörän talutus',
     'bike-availability': 'Pyöriä asemalla juuri nyt',
     'bike-only': 'Vain pyöräily',
     'bike-park': 'Liityntäpysäköinti',

@@ -73,6 +73,7 @@ export default {
       'Led cykeln {distance} ({duration}) och ta cykeln med på {transportMode}',
     'bicycle-walk-to-transit-no-duration': 'Led cykeln på {transportMode}',
     bicycle_frame_lock: 'Ramlås',
+    bicycle_walk: 'Leder en cykel',
     'bike-availability': 'Antal cyklar just nu',
     'bike-only': 'Endast cykling',
     'bike-park': 'Anslutningsparkering för cyklar',
