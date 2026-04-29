@@ -675,7 +675,7 @@ const Itinerary = ({
         </div>
       ) : (
         <div
-          className={cx('itinerary-first-leg-start-time', 'overflow-fade', {
+          className={cx('itinerary-first-leg-start-time', {
             small: breakpoint !== 'large',
           })}
         >
