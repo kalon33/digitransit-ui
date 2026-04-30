@@ -1,4 +1,3 @@
-/*
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import React from 'react';
@@ -30,4 +29,3 @@ describe('<ItineraryDetails />', () => {
     expect(wrapper.find('.itinerary-tab').length).to.equal(1);
   });
 });
-*/
