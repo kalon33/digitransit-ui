@@ -38,6 +38,9 @@ function ItineraryList({
   separator2,
   loadingMore,
   separator1,
+  recommendedIndex,
+  feedback = {},
+  giveFeedback,
   ...rest
 }) {
   const config = useConfigContext();
@@ -63,6 +66,9 @@ function ItineraryList({
       intermediatePlaces={getIntermediatePlaces(match.location.query)}
       hideSelectionIndicator={i !== activeIndex || planEdges.length === 1}
       lowestCo2value={lowestCo2value}
+      recommended={i === recommendedIndex}
+      feedback={feedback[i]} // single feedback entry
+      giveFeedback={giveFeedback ? like => giveFeedback(i, like) : undefined}
     />
   ));
 
@@ -248,6 +254,9 @@ ItineraryList.propTypes = {
   separator1: PropTypes.number,
   separator2: PropTypes.number,
   loadingMore: PropTypes.string,
+  recommendedIndex: PropTypes.number,
+  feedback: PropTypes.objectOf(PropTypes.bool),
+  giveFeedback: PropTypes.func,
 };
 
 export { ItineraryList as default, spinnerPosition };
