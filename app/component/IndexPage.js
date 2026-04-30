@@ -105,16 +105,18 @@ function IndexPage(props, context) {
     }
 
     if (pendingOriginRef.current || pendingDestinationRef.current) {
+      // not ready for navigation yet
       return;
     }
 
     const { location } = match;
 
+    // assign locationState conditionally
     const currentLocation =
       config.startSearchFromUserLocation &&
       !origin.address &&
       locationState?.hasLocation &&
-      locationState; // assign locationState conditionally
+      locationState;
 
     if (currentLocation && !currentLocation.isReverseGeocodingInProgress) {
       const originPoint = [currentLocation.lon, currentLocation.lat];
@@ -205,7 +207,7 @@ function IndexPage(props, context) {
 
   const renderNearStops = () => {
     const nearYouModes = getNearYouModes(config, props.favourites);
-
+    // If nearYouModes is configured, display those. Otherwise, display all configured transport modes
     const modeArray =
       nearYouModes.length > 0
         ? nearYouModes
@@ -335,6 +337,7 @@ function IndexPage(props, context) {
   if (config.stopSearchFilter) {
     stopRouteSearchProps.filterResults = results =>
       results.filter(config.stopSearchFilter);
+    // increase size to compensate filtering
     stopRouteSearchProps.geocodingSize = 40;
     locationSearchProps.filterResults = results =>
       results.filter(config.stopSearchFilter);
@@ -505,9 +508,10 @@ const IndexPageWithStores = connectToStores(
     newProps.origin = origin;
     newProps.destination = destination;
     newProps.currentTime = context.getStore('TimeStore').getCurrentTime();
-    newProps.query = query;
     newProps.favouriteStatus = context.getStore('FavouriteStore').getStatus();
     newProps.favourites = context.getStore('FavouriteStore').getFavourites();
+    // define itinerary search time & arriveBy
+    newProps.query = query;
 
     return newProps;
   },
