@@ -290,7 +290,7 @@ $itinerary-tab-switch-height: 48px;
       .itinerary-time-column {
         .time-column-zone-icons-container {
           &.intermediate-leg {
-            top: -12px;
+            top: -21px;
 
             .zone-icon-container {
               .circle {
@@ -311,6 +311,24 @@ $itinerary-tab-switch-height: 48px;
     }
 
     .zone-previous {
+      .itinerary-time-column {
+        .time-column-zone-icons-container {
+          &.intermediate-leg {
+            top: -26px;
+          }
+        }
+      }
+
+      &.zone-single-stop {
+        .itinerary-time-column {
+          .time-column-zone-icons-container {
+            &.intermediate-leg {
+              top: -24px;
+            }
+          }
+        }
+      }
+
       .leg-before-circle {
         bottom: 0;
       }

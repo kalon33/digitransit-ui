@@ -48,10 +48,10 @@ function IntermediateLeg(
       return { position: 'absolute', right: -3, top: '50%' };
     }
     if (placesCount === 1 && !nextZoneId) {
-      return { position: 'absolute', right: -3, top: '35%' };
+      return { position: 'absolute', right: -3, top: '50%' };
     }
     if (currentZoneId && previousZoneId) {
-      return { position: 'absolute', right: -3, bottom: 11 };
+      return { position: 'absolute', right: -3, bottom: 4 };
     }
     return { position: 'absolute', right: -3, top: '-1px', bottom: 'unset' };
   };
@@ -59,6 +59,9 @@ function IntermediateLeg(
   const stationNameStyle = () => {
     if (placesCount === 2 && !previousZoneId && !currentZoneId && !nextZoneId) {
       return { paddingTop: '15px', paddingBottom: '15px' };
+    }
+    if (isDualZone) {
+      return { paddingTop: '0', paddingBottom: '14px' };
     }
     return { paddingTop: '0', paddingBottom: '22px' };
   };
@@ -73,6 +76,7 @@ function IntermediateLeg(
           'zone-dual': isDualZone && !isTripleZone,
           'zone-triple': isTripleZone,
           'zone-previous': currentZoneId && previousZoneId,
+          'zone-single-stop': placesCount === 1,
         },
       )}
     >
