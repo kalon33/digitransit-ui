@@ -5,7 +5,11 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import Icon from '../Icon';
 import { useConfigContext } from '../../configurations/ConfigContext';
 
-export default function Feedback({ recommended, feedback, giveFeedback }) {
+export default function Feedback({
+  recommended, // true if ranked as best by personalisation algo
+  feedback, // true=likes, false=dislikes, undefined=no feedback yet
+  giveFeedback, // callback to submit user's feedback action
+}) {
   const intl = useIntl();
   const { colors } = useConfigContext();
 
