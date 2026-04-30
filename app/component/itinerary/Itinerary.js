@@ -963,7 +963,7 @@ const Itinerary = ({
                   </div>
                 ))}
             </div>
-            {config.personalisation && props.recommended && (
+            {props.giveFeedback && props.recommended && (
               <div className="feedback-frame">
                 <Feedback
                   recommended={props.recommended}

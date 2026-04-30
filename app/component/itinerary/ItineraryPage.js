@@ -1416,10 +1416,12 @@ export default function ItineraryPage(props, context) {
     </div>
   ) : null;
 
+  const feedbackProp =
+    config.personalisation && settings.personalisation ? giveFeedback : null;
+
   // in mobile, settings drawer hides other content
   const panelHidden = !desktop && settingsDrawer !== null;
   let content; // bottom content of itinerary panel
-
   if (panelHidden) {
     content = null;
   } else if (loading) {
@@ -1485,7 +1487,7 @@ export default function ItineraryPage(props, context) {
           tabIndex={selectedIndex}
           recommendedIndex={recommendedItinerary}
           feedback={feedback}
-          giveFeedback={giveFeedback}
+          giveFeedback={feedbackProp}
           changeHash={changeHash}
           plan={plan}
           planEdges={combinedEdges}
@@ -1517,7 +1519,7 @@ export default function ItineraryPage(props, context) {
         activeIndex={selectedIndex}
         recommendedIndex={recommendedItinerary}
         feedback={feedback}
-        giveFeedback={giveFeedback}
+        giveFeedback={feedbackProp}
         planEdges={combinedEdges}
         params={params}
         bikeParkItineraryCount={bikePublicPlan.bikeParkItineraryCount}

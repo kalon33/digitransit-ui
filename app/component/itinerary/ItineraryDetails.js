@@ -107,8 +107,7 @@ function ItineraryDetails({
     match.params.hash !== streetHash.walk &&
     match.params.hash !== streetHash.bike;
 
-  const shouldShowFeedback =
-    config.personalisation && !streetHash[match.params.hash];
+  const shouldShowFeedback = giveFeedback && !streetHash[match.params.hash];
 
   if (!itinerary?.legs[0]) {
     return null;
