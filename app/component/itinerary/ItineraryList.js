@@ -28,8 +28,7 @@ const spinnerPosition = {
 function ItineraryList({
   planEdges: planEdgesRef,
   activeIndex,
-  onSelectActive,
-  onSelectImmediately,
+  focusToHeader,
   searchTime,
   bikeParkItineraryCount = 0,
   carDirectItineraryCount = 0,
@@ -58,8 +57,7 @@ function ItineraryList({
       hash={i}
       itinerary={edge.node}
       passive={i !== activeIndex}
-      onSelectActive={onSelectActive}
-      onSelectImmediately={onSelectImmediately}
+      focusToHeader={focusToHeader}
       intermediatePlaces={getIntermediatePlaces(match.location.query)}
       hideSelectionIndicator={i !== activeIndex || planEdges.length === 1}
       lowestCo2value={lowestCo2value}
@@ -239,8 +237,7 @@ ItineraryList.propTypes = {
   activeIndex: PropTypes.number.isRequired,
   searchTime: PropTypes.number.isRequired,
   planEdges: PropTypes.arrayOf(planEdgeShape),
-  onSelectActive: PropTypes.func.isRequired,
-  onSelectImmediately: PropTypes.func.isRequired,
+  focusToHeader: PropTypes.func.isRequired,
   bikeParkItineraryCount: PropTypes.number,
   carDirectItineraryCount: PropTypes.number,
   showRelaxedPlanNotifier: PropTypes.bool,

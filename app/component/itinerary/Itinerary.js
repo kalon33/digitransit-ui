@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { createRef, useLayoutEffect, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useRouter } from 'found';
 import {
   legShape,
   locationShape,
@@ -29,10 +30,13 @@ import {
   isCallAgencyLeg,
   isLocalCallAgency,
   splitLegsAtViaPoints,
+  hasTaxiLegs,
 } from '../../util/legUtils';
 import { dateOrEmpty, isTomorrow, timeStr } from '../../util/timeUtils';
 import withBreakpoint from '../../util/withBreakpoint';
 import { isKeyboardSelectionEvent } from '../../util/browser';
+import { addAnalyticsEvent } from '../../util/analyticsUtils';
+import { getItineraryPagePath, streetHash } from '../../util/path';
 import {
   BIKEAVL_UNKNOWN,
   getRentalNetworkIcon,
@@ -256,6 +260,7 @@ const Itinerary = (
     intermediatePlaces,
     hideSelectionIndicator,
     lowestCo2value,
+    focusToHeader,
     ...props
   },
   { config },
@@ -263,6 +268,75 @@ const Itinerary = (
   const intl = useIntl();
   const { formatMessage } = intl;
   const itinerary = useFragment(ItineraryFragment, itineraryRef);
+  const { router, match } = useRouter();
+
+  const onSelectImmediately = () => {
+    const modesWithSubpath = [
+      streetHash.bikeAndVehicle,
+      streetHash.parkAndRide,
+      streetHash.carAndVehicle,
+    ];
+    const subpath = modesWithSubpath.includes(match.params.hash)
+      ? `/${match.params.hash}/`
+      : '/';
+
+    // eslint-disable-next-line compat/compat
+    const momentumScroll =
+      document.getElementsByClassName('momentum-scroll')[0];
+    if (momentumScroll) {
+      momentumScroll.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }
+
+    if (hasTaxiLegs(itinerary)) {
+      addAnalyticsEvent({
+        category: 'Itinerary',
+        action: 'SelectTaxiItinerary',
+        name: props.hash,
+      });
+    }
+
+    addAnalyticsEvent({
+      event: 'sendMatomoEvent',
+      category: 'Itinerary',
+      action: 'OpenItineraryDetails',
+      name: props.hash,
+    });
+
+    const basePath = `${getItineraryPagePath(
+      match.params.from,
+      match.params.to,
+    )}${subpath}`;
+    const indexPath = `${basePath}${props.hash}`;
+    const newLocation = {
+      ...match.location,
+      state: { ...match.location.state, selectedItineraryIndex: props.hash },
+    };
+    newLocation.pathname = basePath;
+    router.replace(newLocation);
+    newLocation.pathname = indexPath;
+    router.push(newLocation);
+    focusToHeader();
+  };
+
+  const onSelectActive = () => {
+    if (!props.passive) {
+      onSelectImmediately();
+    } else {
+      router.replace({
+        ...match.location,
+        state: {
+          ...match.location.state,
+          selectedItineraryIndex: props.hash,
+        },
+      });
+      addAnalyticsEvent({
+        category: 'Itinerary',
+        action: 'HighlightItinerary',
+        name: props.hash,
+      });
+    }
+  };
+
   const isTransitLeg = leg => leg.transitLeg;
   const isTransitOrRentalLeg = leg => leg.transitLeg || leg.rentedBike;
   const isLegOnFoot = leg => leg.mode === 'WALK' || leg.mode === 'BICYCLE_WALK';
@@ -903,14 +977,12 @@ const Itinerary = (
             onClick={e => {
               if (mobile(breakpoint)) {
                 e.stopPropagation();
-                props.onSelectImmediately(props.hash);
+                onSelectImmediately();
               } else {
-                props.onSelectActive(props.hash);
+                onSelectActive();
               }
             }}
-            onKeyPress={e =>
-              isKeyboardSelectionEvent(e) && props.onSelectActive(props.hash)
-            }
+            onKeyPress={e => isKeyboardSelectionEvent(e) && onSelectActive()}
             tabIndex="0"
             role="button"
             aria-label={ariaLabelMessage}
@@ -1014,11 +1086,10 @@ const Itinerary = (
               className="action-arrow-click-area flex-vertical noborder"
               onClick={e => {
                 e.stopPropagation();
-                props.onSelectImmediately(props.hash);
+                onSelectImmediately();
               }}
               onKeyPress={e =>
-                isKeyboardSelectionEvent(e) &&
-                props.onSelectImmediately(props.hash)
+                isKeyboardSelectionEvent(e) && onSelectImmediately()
               }
               aria-label={ariaLabelMessage}
             >
@@ -1038,8 +1109,7 @@ Itinerary.propTypes = {
   itinerary: itineraryShape.isRequired,
   refTime: PropTypes.number.isRequired,
   passive: PropTypes.bool,
-  onSelectActive: PropTypes.func.isRequired,
-  onSelectImmediately: PropTypes.func.isRequired,
+  focusToHeader: PropTypes.func.isRequired,
   hash: PropTypes.number.isRequired,
   breakpoint: PropTypes.string.isRequired,
   intermediatePlaces: PropTypes.arrayOf(locationShape),

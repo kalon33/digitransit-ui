@@ -1544,7 +1544,6 @@ export default function ItineraryPage(props, context) {
       <ItineraryListContainer
         activeIndex={selectedIndex}
         planEdges={combinedEdges}
-        params={params}
         bikeParkItineraryCount={bikePublicPlan.bikeParkItineraryCount}
         carDirectItineraryCount={carPublicPlan.carDirectItineraryCount}
         showRelaxedPlanNotifier={showRelaxedPlanNotifier}
