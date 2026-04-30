@@ -905,11 +905,11 @@ const Itinerary = (
                 e.stopPropagation();
                 props.onSelectImmediately(props.hash);
               } else {
-                props.onSelect(props.hash);
+                props.onSelectActive(props.hash);
               }
             }}
             onKeyPress={e =>
-              isKeyboardSelectionEvent(e) && props.onSelect(props.hash)
+              isKeyboardSelectionEvent(e) && props.onSelectActive(props.hash)
             }
             tabIndex="0"
             role="button"
@@ -1038,7 +1038,7 @@ Itinerary.propTypes = {
   itinerary: itineraryShape.isRequired,
   refTime: PropTypes.number.isRequired,
   passive: PropTypes.bool,
-  onSelect: PropTypes.func.isRequired,
+  onSelectActive: PropTypes.func.isRequired,
   onSelectImmediately: PropTypes.func.isRequired,
   hash: PropTypes.number.isRequired,
   breakpoint: PropTypes.string.isRequired,

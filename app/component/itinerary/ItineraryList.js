@@ -28,7 +28,7 @@ const spinnerPosition = {
 function ItineraryList({
   planEdges: planEdgesRef,
   activeIndex,
-  onSelect,
+  onSelectActive,
   onSelectImmediately,
   searchTime,
   bikeParkItineraryCount = 0,
@@ -58,7 +58,7 @@ function ItineraryList({
       hash={i}
       itinerary={edge.node}
       passive={i !== activeIndex}
-      onSelect={onSelect}
+      onSelectActive={onSelectActive}
       onSelectImmediately={onSelectImmediately}
       intermediatePlaces={getIntermediatePlaces(match.location.query)}
       hideSelectionIndicator={i !== activeIndex || planEdges.length === 1}
@@ -239,7 +239,7 @@ ItineraryList.propTypes = {
   activeIndex: PropTypes.number.isRequired,
   searchTime: PropTypes.number.isRequired,
   planEdges: PropTypes.arrayOf(planEdgeShape),
-  onSelect: PropTypes.func.isRequired,
+  onSelectActive: PropTypes.func.isRequired,
   onSelectImmediately: PropTypes.func.isRequired,
   bikeParkItineraryCount: PropTypes.number,
   carDirectItineraryCount: PropTypes.number,

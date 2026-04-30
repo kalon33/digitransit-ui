@@ -175,7 +175,7 @@ function ItineraryListContainer(
       <ItineraryList
         planEdges={planEdges}
         activeIndex={activeIndex}
-        onSelect={onSelectActive}
+        onSelectActive={onSelectActive}
         onSelectImmediately={onSelectImmediately}
         {...rest}
       />

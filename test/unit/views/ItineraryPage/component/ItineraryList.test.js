@@ -25,7 +25,7 @@ const PROPS_TEMPLATE = {
   locationState: LOCATIONS_STATE_TEMPLATE,
   from: {},
   itineraries: [],
-  onSelect: noop,
+  onSelectActive: noop,
   onSelectImmediately: noop,
   searchTime: 1656509749000,
   to: {},
