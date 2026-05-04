@@ -107,7 +107,7 @@ export default {
   useRoutingFeedbackPrompt: true,
 
   feedIds: ['HSL', 'HSLlautta', 'Sipoo'],
-  externalFeedIds: ['HSLlautta', 'Uber'],
+  externalFeedIds: ['HSLlautta'],
   externalFerryByStopCode: true, // no stop code means external ferry
 
   allowLogin: true,
@@ -799,7 +799,8 @@ export default {
 
   taxiOptionLabelOverride: 'demand-responsive-traffic',
 
-  flex: {
+  // TODO: flex disabled for now, proper configuration coming in the future
+  /* flex: {
     internalFlexEnabled: IS_DEV,
     allowTaxiJourneys: IS_DEV,
     directOnlyTaxiJourneys: false,
@@ -807,7 +808,8 @@ export default {
     externalAgencies: ['Uber:agency-mog2skf5-1'],
     allowedExternalFlexRouteTypes: [1501],
     infoLanguage: 'fi',
-  },
+  }, */
+
   showRouteDescNotification: IS_DEV,
   personalisation: false,
   viaPointsEnabled: true,

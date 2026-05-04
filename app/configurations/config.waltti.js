@@ -290,16 +290,15 @@ export default {
   hideNaviTickets: true, // TODO: temporary force switch
   navigation: true,
 
-  externalFeedIds: ['02Taksi'],
-
-  flex: {
+  // TODO: flex disabled for now, proper configuration coming in the future
+  /* flex: {
     internalFlexEnabled: false,
     allowTaxiJourneys: IS_DEV,
     directOnlyTaxiJourneys: false,
     internalAgencies: [],
     externalAgencies: ['02Taksi:02_taksi'],
     infoLanguage: 'fi',
-  },
+  }, */
 
   replacementBusNotification: {
     header: {
