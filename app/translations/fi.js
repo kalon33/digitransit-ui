@@ -547,6 +547,7 @@ export default {
     'platform-short-no-num': 'Lait.',
     position: 'Sijainti',
     preview: 'Esikatselu',
+    price: 'Hinta',
     print: 'Tulosta',
     'print-timetable': 'Viikkoaikataulu',
     rail: 'Lähijuna',

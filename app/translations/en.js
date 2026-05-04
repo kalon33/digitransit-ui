@@ -561,6 +561,7 @@ export default {
     polish: 'Polish',
     position: 'Position',
     preview: 'Preview',
+    price: 'Price',
     print: 'Print',
     'print-timetable': 'Weekly timetable',
     rail: 'Commuter train',

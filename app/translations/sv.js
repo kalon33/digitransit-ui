@@ -553,6 +553,7 @@ export default {
     'platform-short-no-num': 'Plattf.',
     position: 'Position',
     preview: 'Förhandsgranskning',
+    price: 'Pris',
     print: 'Skriv ut',
     'print-timetable': 'Veckans tidtabell',
     rail: 'Närtåg',
