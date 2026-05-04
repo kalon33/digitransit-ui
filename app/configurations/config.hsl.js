@@ -812,6 +812,6 @@ export default {
     infoLanguage: 'fi',
   },
   showRouteDescNotification: IS_DEV,
-  personalisation: false,
+  personalization: false,
   viaPointsEnabled: true,
 };

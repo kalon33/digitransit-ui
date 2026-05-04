@@ -9,7 +9,7 @@ import Icon from '../../Icon';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { settingsShape } from '../../../util/shapes';
 
-export default function Personalisation(
+export default function Personalization(
   { currentSettings },
   { executeAction },
 ) {
@@ -21,17 +21,17 @@ export default function Personalisation(
   const snackbarTimeout = useRef(null);
 
   const onToggle = () => {
-    const newState = !currentSettings.personalisation;
+    const newState = !currentSettings.personalization;
     addAnalyticsEvent({
       category: 'ItinerarySettings',
-      action: `Settings${newState ? 'Enable' : 'Disable'}Personalisation`,
+      action: `Settings${newState ? 'Enable' : 'Disable'}Personalization`,
       name: null,
     });
-    executeAction(saveRoutingSettings, { personalisation: newState });
+    executeAction(saveRoutingSettings, { personalization: newState });
     if (newState) {
       setShowSnackbar(true);
       setSnackBarLiveRegionMessage(
-        intl.formatMessage({ id: 'personalisation-activated' }),
+        intl.formatMessage({ id: 'personalization-activated' }),
       );
       snackbarTimeout.current = setTimeout(() => {
         setSnackBarLiveRegionMessage('');
@@ -46,7 +46,7 @@ export default function Personalisation(
     setShowSnackbar(false);
   };
 
-  const linkText = intl.formatMessage({ id: 'personalisation-open-info' });
+  const linkText = intl.formatMessage({ id: 'personalization-open-info' });
   const words = linkText.split(' ');
   const lastWord = words.pop();
   const start = words.join(' ');
@@ -55,15 +55,15 @@ export default function Personalisation(
     <>
       <Snackbar
         show={showSnackbar}
-        messageId="personalisation-activated"
+        messageId="personalization-activated"
         liveRegionMessage={snackbarLiveRegionMessage}
         onClose={handleSnackbarClose}
       />
       <div className="section-header">
-        <FormattedMessage id="personalisation" />
+        <FormattedMessage id="personalization" />
       </div>
       <SettingsToggle
-        id="settings-toggle-personalisation"
+        id="settings-toggle-personalization"
         labelId="personal-itineraries"
         labelStyle="mode-label-upper"
         leftElement={
@@ -74,11 +74,11 @@ export default function Personalisation(
             width={2}
           />
         }
-        toggled={!!currentSettings.personalisation}
+        toggled={!!currentSettings.personalization}
         onToggle={onToggle}
       />
       <div className="toggle-info">
-        <FormattedMessage id="personalisation-info" />
+        <FormattedMessage id="personalization-info" />
         <button
           type="button"
           onClick={e => {
@@ -100,10 +100,10 @@ export default function Personalisation(
   );
 }
 
-Personalisation.propTypes = {
+Personalization.propTypes = {
   currentSettings: settingsShape.isRequired,
 };
 
-Personalisation.contextTypes = {
+Personalization.contextTypes = {
   executeAction: PropTypes.func.isRequired,
 };
