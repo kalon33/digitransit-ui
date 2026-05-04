@@ -516,6 +516,7 @@ export default {
       'Huomaathan, että taksien ja kyytipalveluiden käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
     'personal-itineraries': 'Yksilölliset reittiehdotukset',
     personalisation: 'Personointi',
+    'personalisation-activated': 'Personointi on otettu käyttöön',
     'personalisation-aria-dislike': 'En pidä tästä reittisuosituksesta',
     'personalisation-aria-like': 'Pidän tästä reittisuosituksesta',
     'personalisation-ask': 'Pidätkö tästä reittisuosituksesta?',

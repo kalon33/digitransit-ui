@@ -528,6 +528,7 @@ export default {
       'Please note that you need to use the app of the operator in question in order to use and pay for the taxis.',
     'personal-itineraries': 'Personal itineraries',
     personalisation: 'Personalisation',
+    'personalisation-activated': 'Personalization has been enabled',
     'personalisation-aria-dislike': 'I do not like this itinerary',
     'personalisation-aria-like': 'I like this itinerary',
     'personalisation-ask': 'Do you like this route recommendation?',

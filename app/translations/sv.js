@@ -521,6 +521,7 @@ export default {
       'Vänligen observera att användning och betalning av taxi görs via operatörernas egna appar.',
     'personal-itineraries': 'Individuella ruttförslag',
     personalisation: 'Personalisering',
+    'personalisation-activated': 'Personalisering har aktiverats',
     'personalisation-aria-dislike': 'Jag gillar den här ruttrekommendationen',
     'personalisation-aria-like': 'Jag gillar inte den här ruttrekommendationen',
     'personalisation-ask': 'Gillar du den här ruttrekommendationen?',
