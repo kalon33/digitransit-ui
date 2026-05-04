@@ -11,7 +11,7 @@ import {
 import Icon from '../Icon';
 import FavouriteRouteContainer from '../routepage/FavouriteRouteContainer';
 import CallAgencyDisclaimer from './CallAgencyDisclaimer';
-import { useDeepLink } from '../../util/vehicleRentalUtils';
+import { openDeepLink } from '../../util/vehicleRentalUtils';
 
 function OnDemandInfo(
   { routeNumber, route, pickupBookingInfo, mobile, onClose },
@@ -27,7 +27,7 @@ function OnDemandInfo(
     ? () => {
         window.open(bookingUrl, '_blank', 'noopener,noreferrer');
       }
-    : () => useDeepLink(bookingUrl, infoUrl);
+    : () => openDeepLink(bookingUrl, infoUrl);
 
   const latestBookingTime = pickupBookingInfo.latestBookingTime?.time;
   const formattedLatestBookingTime =
