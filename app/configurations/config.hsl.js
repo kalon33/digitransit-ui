@@ -119,7 +119,8 @@ export default {
     walkSpeed: 1.28,
     showBikeAndParkItineraries: true,
     transferPenalty: 180,
-    includeTaxiSuggestions: true,
+    // TODO: flex disabled for now, proper configuration coming in the future
+    // includeTaxiSuggestions: true,
   },
 
   /**
@@ -797,7 +798,8 @@ export default {
 
   showStopStatusMarkers: true,
 
-  taxiOptionLabelOverride: 'demand-responsive-traffic',
+  // TODO: flex disabled for now, proper configuration coming in the future
+  // taxiOptionLabelOverride: 'demand-responsive-traffic',
 
   // TODO: flex disabled for now, proper configuration coming in the future
   /* flex: {
