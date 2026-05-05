@@ -294,7 +294,7 @@ const Itinerary = ({
   };
 
   const onSelectActive = () => {
-    if (!props.passive) {
+    if (!passive) {
       onSelectImmediately();
     } else {
       router.replace({
