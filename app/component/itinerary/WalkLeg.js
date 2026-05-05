@@ -5,7 +5,13 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import Link from 'found/Link';
 import { legShape } from '../../util/shapes';
 import { useConfigContext } from '../../configurations/ConfigContext';
-import { legTime, legTimeStr, legDestination } from '../../util/legUtils';
+import {
+  legTime,
+  legTimeStr,
+  legDestination,
+  isCallAgencyLeg,
+  getValidatedLegName,
+} from '../../util/legUtils';
 import Icon from '../Icon';
 import ItineraryMapAction from './ItineraryMapAction';
 import ItineraryCircleLineWithIcon from './ItineraryCircleLineWithIcon';
@@ -47,6 +53,7 @@ function WalkLeg({
 }) {
   const intl = useIntl();
   const config = useConfigContext();
+  const { colors, emphasizeDistance } = config;
   // If there is only one indoor routing step, always show it.
   const [showIntermediateSteps, setShowIntermediateSteps] = useState(
     getIndoorStepsWithVerticalTransportation(previousLeg, leg, nextLeg)
@@ -73,7 +80,11 @@ function WalkLeg({
   const network =
     previousLeg?.[toOrFrom]?.vehicleRentalStation?.rentalNetwork.networkId ||
     previousLeg?.[toOrFrom]?.rentalVehicle?.rentalNetwork.networkId;
-
+  const validatedLegName = getValidatedLegName(
+    leg[toOrFrom].name,
+    intl,
+    toOrFrom === 'to',
+  );
   const networkType = getRentalNetworkConfig(
     previousLeg?.rentedBike && network,
     config,
@@ -88,7 +99,7 @@ function WalkLeg({
           ? 'return-e-scooter-to'
           : 'return-cycle-to'
       }
-      values={{ station: leg[toOrFrom] ? leg[toOrFrom].name : '' }}
+      values={{ station: leg[toOrFrom] ? validatedLegName : '' }}
       defaultMessage="Return the bike to {station} station"
     />
   ) : null;
@@ -137,12 +148,15 @@ function WalkLeg({
             to: legDestination(intl, leg),
             distance,
             duration,
-            origin: leg[toOrFrom] ? leg[toOrFrom].name : '',
+            origin: leg[toOrFrom] ? validatedLegName : '',
             destination: leg.to ? destinationLabel : '',
           }}
         />
       </span>
       <div className="small-2 columns itinerary-time-column" aria-hidden="true">
+        {previousLeg && isCallAgencyLeg(previousLeg) && (
+          <FormattedMessage id="estimate" />
+        )}
         <div className="itinerary-time-column-time">
           <span className={cx({ realtime: previousLeg?.realTime })}>
             {leg.mode === 'WALK' ? legTimeStr(leg.start) : legTimeStr(leg.end)}
@@ -165,7 +179,7 @@ function WalkLeg({
         <span className="sr-only">
           <FormattedMessage
             id="itinerary-summary.show-on-map"
-            values={{ target: leg[toOrFrom].name || '' }}
+            values={{ target: validatedLegName || '' }}
           />
         </span>
         {isFirstLeg(index) ? (
@@ -177,14 +191,14 @@ function WalkLeg({
                   <Icon
                     img="icon_arrow-collapse--right"
                     className="itinerary-arrow-icon"
-                    color={config.colors.primary}
+                    color={colors.primary}
                   />
                 )}
               </div>
               <div className="place">{place}</div>
             </div>
             <ItineraryMapAction
-              target={leg[toOrFrom].name || ''}
+              target={validatedLegName || ''}
               focusAction={focusAction}
             />
           </div>
@@ -206,7 +220,7 @@ function WalkLeg({
                   }}
                   to={`/${PREFIX_STOPS}/${leg[toOrFrom].stop.gtfsId}`}
                 >
-                  {returnNotice || leg[toOrFrom].name}
+                  {returnNotice || validatedLegName}
                   {leg.isViaPoint && (
                     <>
                       <Icon
@@ -222,7 +236,7 @@ function WalkLeg({
                     <Icon
                       img="icon_arrow-collapse--right"
                       className="itinerary-arrow-icon"
-                      color={config.colors.primary}
+                      color={colors.primary}
                     />
                   )}
                   <ServiceAlertIcon
@@ -240,7 +254,7 @@ function WalkLeg({
                       <div className="divider" />
                       <VehicleRentalLeg
                         isScooter={isScooter}
-                        stationName={leg[toOrFrom].name}
+                        stationName={validatedLegName}
                         vehicleRentalStation={
                           leg[toOrFrom].vehicleRentalStation
                         }
@@ -259,12 +273,12 @@ function WalkLeg({
                   )}
                   {!returnNotice &&
                     !alightNotice &&
-                    (leg.viaAddress || leg[toOrFrom].name)}
+                    (leg.viaAddress || validatedLegName)}
                   {leg[toOrFrom].stop && !alightNotice && (
                     <Icon
                       img="icon_arrow-collapse--right"
                       className="itinerary-arrow-icon"
-                      color={config.colors.primary}
+                      color={colors.primary}
                     />
                   )}
                   <ServiceAlertIcon
@@ -291,7 +305,7 @@ function WalkLeg({
             </div>
             {!returnNotice && (
               <ItineraryMapAction
-                target={leg[toOrFrom].name || ''}
+                target={validatedLegName || ''}
                 focusAction={focusAction}
               />
             )}
@@ -313,11 +327,7 @@ function WalkLeg({
             <FormattedMessage
               id="walk-distance-duration"
               values={{
-                distance: config.emphasizeDistance ? (
-                  <b>{distance}</b>
-                ) : (
-                  distance
-                ),
+                distance: emphasizeDistance ? <b>{distance}</b> : distance,
                 duration,
               }}
               defaultMessage="Walk {distance} ({duration})"

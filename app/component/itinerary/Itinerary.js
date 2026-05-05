@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { createRef, useLayoutEffect, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useRouter } from 'found';
 import { legShape, locationShape, itineraryShape } from '../../util/shapes';
 import Icon from '../Icon';
 import Feedback from './Feedback';
@@ -22,11 +23,16 @@ import {
   legTimeStr,
   LegMode,
   getZones,
+  isCallAgencyLeg,
+  isLocalCallAgency,
   splitLegsAtViaPoints,
+  hasTaxiLegs,
 } from '../../util/legUtils';
 import { dateOrEmpty, isTomorrow, timeStr } from '../../util/timeUtils';
 import withBreakpoint from '../../util/withBreakpoint';
 import { isKeyboardSelectionEvent } from '../../util/browser';
+import { addAnalyticsEvent } from '../../util/analyticsUtils';
+import { getItineraryPagePath, streetHash } from '../../util/path';
 import {
   BIKEAVL_UNKNOWN,
   getRentalNetworkIcon,
@@ -88,10 +94,8 @@ export function RouteLeg({
   hasOneTransitLeg = false,
   shortenLabels = false,
 }) {
-  const intl = useIntl();
   const config = useConfigContext();
 
-  let routeNumber;
   const mode = getTripOrRouteMode(leg.trip, leg.route, config);
 
   const getOccupancyStatus = () => {
@@ -101,42 +105,25 @@ export function RouteLeg({
     return undefined;
   };
 
-  if (mode === 'call') {
-    const message = intl.formatMessage({
-      id: 'pay-attention',
-      defaultMessage: 'Pay Attention',
-    });
-
-    routeNumber = (
-      <RouteNumber
-        mode="call"
-        text={message}
-        className={cx('line', 'call')}
-        vertical
-        withBar
-        isTransitLeg={isTransitLeg}
-      />
-    );
-  } else {
-    routeNumber = (
-      <RouteNumberContainer
-        alertSeverityLevel={getActiveLegAlertSeverityLevel(leg)}
-        trip={leg.trip}
-        route={leg.route}
-        className={cx('line', mode)}
-        interliningWithRoute={interliningWithRoute}
-        mode={mode}
-        vertical
-        withBar
-        isTransitLeg={isTransitLeg}
-        withBicycle={withBicycle}
-        withCar={withCar}
-        occupancyStatus={getOccupancyStatus()}
-        duration={Math.floor(leg.duration / 60)}
-        shortenLongText={shortenLabels}
-      />
-    );
-  }
+  const routeNumber = (
+    <RouteNumberContainer
+      alertSeverityLevel={getActiveLegAlertSeverityLevel(leg)}
+      trip={leg.trip}
+      route={leg.route}
+      className={cx('line', mode)}
+      interliningWithRoute={interliningWithRoute}
+      mode={mode}
+      vertical
+      withBar
+      isTransitLeg={isTransitLeg}
+      withBicycle={withBicycle}
+      withCar={withCar}
+      occupancyStatus={getOccupancyStatus()}
+      duration={Math.floor(leg.duration / 60)}
+      shortenLongText={shortenLabels}
+      appendClass={isLocalCallAgency(leg, config) ? 'call-local' : ''}
+    />
+  );
   return (
     <Leg
       mode={mode}
@@ -197,6 +184,7 @@ export const ModeLeg = ({
       vertical
       withBar
       icon={networkIcon || icon}
+      appendClass={isLocalCallAgency(leg, config) ? 'call-local' : ''}
       {...getLegBadgeProps(leg, config)}
     />
   );
@@ -248,12 +236,82 @@ const Itinerary = ({
   hideSelectionIndicator = true,
   lowestCo2value = 0,
   passive = false,
+  focusToHeader,
   ...props
 }) => {
   const intl = useIntl();
   const config = useConfigContext();
   const { formatMessage } = intl;
   const itinerary = useFragment(ItineraryFragment, itineraryRef);
+  const { router, match } = useRouter();
+
+  const onSelectImmediately = () => {
+    const modesWithSubpath = [
+      streetHash.bikeAndVehicle,
+      streetHash.parkAndRide,
+      streetHash.carAndVehicle,
+    ];
+    const subpath = modesWithSubpath.includes(match.params.hash)
+      ? `/${match.params.hash}/`
+      : '/';
+
+    // eslint-disable-next-line compat/compat
+    const momentumScroll =
+      document.getElementsByClassName('momentum-scroll')[0];
+    if (momentumScroll) {
+      momentumScroll.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }
+
+    if (hasTaxiLegs(itinerary)) {
+      addAnalyticsEvent({
+        category: 'Itinerary',
+        action: 'SelectTaxiItinerary',
+        name: props.hash,
+      });
+    }
+
+    addAnalyticsEvent({
+      event: 'sendMatomoEvent',
+      category: 'Itinerary',
+      action: 'OpenItineraryDetails',
+      name: props.hash,
+    });
+
+    const basePath = `${getItineraryPagePath(
+      match.params.from,
+      match.params.to,
+    )}${subpath}`;
+    const indexPath = `${basePath}${props.hash}`;
+    const newLocation = {
+      ...match.location,
+      state: { ...match.location.state, selectedItineraryIndex: props.hash },
+    };
+    newLocation.pathname = basePath;
+    router.replace(newLocation);
+    newLocation.pathname = indexPath;
+    router.push(newLocation);
+    focusToHeader();
+  };
+
+  const onSelectActive = () => {
+    if (!passive) {
+      onSelectImmediately();
+    } else {
+      router.replace({
+        ...match.location,
+        state: {
+          ...match.location.state,
+          selectedItineraryIndex: props.hash,
+        },
+      });
+      addAnalyticsEvent({
+        category: 'Itinerary',
+        action: 'HighlightItinerary',
+        name: props.hash,
+      });
+    }
+  };
+
   const isTransitLeg = leg => leg.transitLeg;
   const isTransitOrRentalLeg = leg => leg.transitLeg || leg.rentedBike;
   const isLegOnFoot = leg => leg.mode === 'WALK' || leg.mode === 'BICYCLE_WALK';
@@ -622,8 +680,24 @@ const Itinerary = ({
   const iconLegsInPixels = (24 * onlyIconLegs) / normalLegs;
   // the leftover percentage from only showing icons added to each 'normal' leg
   const iconLegsInPercents = onlyIconLegsLength / normalLegs;
+  const hasCallAgencyLeg = itinerary.legs.some(leg => isCallAgencyLeg(leg));
   let firstDeparture;
-  if (!noTransitLegs) {
+  if (hasCallAgencyLeg) {
+    firstLegStartTime = (
+      <div
+        className={cx('itinerary-first-leg-start-time', {
+          small: breakpoint !== 'large',
+        })}
+      >
+        <Icon
+          img="icon_alert-circle"
+          className="itinerary-summary-icon"
+          omitViewBox
+        />
+        <FormattedMessage id="itinerary-summary-row.call-agency-description" />
+      </div>
+    );
+  } else if (!noTransitLegs) {
     firstDeparture = compressedLegs.find(isTransitLeg);
     if (firstDeparture) {
       let firstDepartureStopType;
@@ -738,49 +812,61 @@ const Itinerary = ({
   const firstDepartureLabelId = firstDepartureWithRentals?.rentedBike
     ? rentalLabelId
     : 'itinerary-summary-row.first-departure';
-
-  const textSummary = (
-    <FormattedMessage
-      id="itinerary-summary-row.description"
-      values={{
-        departureDate: dateOrEmpty(startTime, refTime),
-        departureTime,
-        arrivalDate: dateOrEmpty(endTime, refTime),
-        arrivalTime,
-        firstDeparture: vehicleNames.length && firstDeparture && (
-          <FormattedMessage
-            id={firstDepartureLabelId}
-            values={{
-              vehicle: vehicleNames[0],
-              departureTime: legTimeStr(firstDeparture.start),
-              firstDepartureTime: legTimeStr(firstDeparture.start), // vehicle rental start time
-              stopName: stopNames[0],
-              firstDepartureStop: stopNames[0], // vehicle rental stop name
-              platformOrTrack: getBoardingInformationText(firstDeparture, intl),
-            }}
-          />
-        ),
-        transfers: vehicleNames.map((name, index) => {
-          if (index === 0) {
-            return null;
-          }
-          return formatMessage(
-            {
-              id: stopNames[index]
-                ? 'itinerary-summary-row.transfers'
-                : 'itinerary-summary-row.transfers-to-rental',
-            },
-            {
-              vehicle: name,
-              stopName: stopNames[index],
-            },
-          );
-        }),
-        totalTime: <Duration duration={duration} />,
-      }}
-    />
-  );
-
+  let textSummary = '';
+  if (hasCallAgencyLeg) {
+    textSummary = (
+      <div className="sr-only" key="screenReader">
+        <FormattedMessage id="itinerary-summary-row.call-agency-description" />
+      </div>
+    );
+  } else {
+    textSummary = (
+      <div className="sr-only" key="screenReader">
+        <FormattedMessage
+          id="itinerary-summary-row.description"
+          values={{
+            departureDate: dateOrEmpty(startTime, refTime),
+            departureTime,
+            arrivalDate: dateOrEmpty(endTime, refTime),
+            arrivalTime,
+            firstDeparture: vehicleNames.length && firstDeparture && (
+              <FormattedMessage
+                id={firstDepartureLabelId}
+                values={{
+                  vehicle: vehicleNames[0],
+                  departureTime: legTimeStr(firstDeparture.start),
+                  firstDepartureTime: legTimeStr(firstDeparture.start), // vehicle rental start time
+                  stopName: stopNames[0],
+                  firstDepartureStop: stopNames[0], // vehicle rental stop name
+                  platformOrTrack: getBoardingInformationText(
+                    firstDeparture,
+                    intl,
+                  ),
+                }}
+              />
+            ),
+            transfers: vehicleNames.map((name, index) => {
+              if (index === 0) {
+                return null;
+              }
+              return formatMessage(
+                {
+                  id: stopNames[index]
+                    ? 'itinerary-summary-row.transfers'
+                    : 'itinerary-summary-row.transfers-to-rental',
+                },
+                {
+                  vehicle: name,
+                  stopName: stopNames[index],
+                },
+              );
+            }),
+            totalTime: <Duration duration={duration} />,
+          }}
+        />
+      </div>
+    );
+  }
   const co2summary = (
     <FormattedMessage
       id="itinerary-co2.description-simple"
@@ -865,14 +951,12 @@ const Itinerary = ({
               onClick={e => {
                 if (mobile(breakpoint)) {
                   e.stopPropagation();
-                  props.onSelectImmediately(props.hash);
+                  onSelectImmediately();
                 } else {
-                  props.onSelect(props.hash);
+                  onSelectActive();
                 }
               }}
-              onKeyPress={e =>
-                isKeyboardSelectionEvent(e) && props.onSelect(props.hash)
-              }
+              onKeyPress={e => isKeyboardSelectionEvent(e) && onSelectActive()}
               tabIndex="0"
               role="button"
               aria-label={ariaLabelMessage}
@@ -889,6 +973,7 @@ const Itinerary = ({
                   <div className="itinerary-start-date">{startDate}</div>
                 )}
                 <div className="itinerary-start-time-and-end-time">
+                  {hasCallAgencyLeg && <FormattedMessage id="estimate" />}{' '}
                   {`${departureTime} - ${arrivalTime}`}
                 </div>
 
@@ -907,6 +992,7 @@ const Itinerary = ({
                   </div>
                 )}
                 <div className="itinerary-duration">
+                  {hasCallAgencyLeg && <FormattedMessage id="estimate" />}{' '}
                   <Duration duration={duration} />
                 </div>
               </div>
@@ -983,11 +1069,10 @@ const Itinerary = ({
               className="action-arrow-click-area"
               onClick={e => {
                 e.stopPropagation();
-                props.onSelectImmediately(props.hash);
+                onSelectImmediately();
               }}
               onKeyPress={e =>
-                isKeyboardSelectionEvent(e) &&
-                props.onSelectImmediately(props.hash)
+                isKeyboardSelectionEvent(e) && onSelectImmediately()
               }
               aria-label={ariaLabelMessage}
             >
@@ -1006,8 +1091,7 @@ Itinerary.propTypes = {
   itinerary: itineraryShape.isRequired,
   refTime: PropTypes.number.isRequired,
   passive: PropTypes.bool,
-  onSelect: PropTypes.func.isRequired,
-  onSelectImmediately: PropTypes.func.isRequired,
+  focusToHeader: PropTypes.func.isRequired,
   hash: PropTypes.number.isRequired,
   breakpoint: PropTypes.string.isRequired,
   intermediatePlaces: PropTypes.arrayOf(locationShape),

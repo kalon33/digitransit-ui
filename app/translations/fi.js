@@ -79,6 +79,7 @@ export default {
     'bikes-available': 'Pyöriä asemalla {amount}',
     'biking-speed': 'Pyöräilynopeus',
     'book-a-lift': 'Tilaa kyyti sovelluksella',
+    'booking-method': 'Tilaustapa',
     bus: 'Bussi',
     'bus-express': 'Runkolinjabussi',
     'bus-express-with-route-number': 'Runkolinjabussi {routeNumber} {headSign}',
@@ -86,6 +87,8 @@ export default {
     'bus-with-route-number': 'Bussi {routeNumber} {headSign}',
     'buy-in-app': 'Osta sovelluksessa',
     call: 'Kutsujoukkoliikenne',
+    'call-agency-disclaimer':
+      'Linja toimii ennakkotilauksella. Varmistaaksesi matkan, tee varaus etukäteen. Tarkemmat tiedot palveluntarjoalta.',
     'call-number': 'Soita {number}',
     'call-with-route-number': 'Kutsujoukkoliikenne {routeNumber} {headSign}',
     cancel: 'Peruuta',
@@ -153,6 +156,7 @@ export default {
     day: 'Päivä',
     delete: 'Poista',
     'delete-favourite-failed-heading': 'Tallennuksen poistaminen ei onnistunut',
+    'demand-responsive-traffic': 'Kutsuliikenne',
     'departure-list-update.sr-instructions':
       'Tulevien lähtöjen lista ja lähtöajat päivittyvät reaaliajassa.',
     'departure-page-sr':
@@ -195,6 +199,7 @@ export default {
     'embedded-search.form-heading': 'Upotusvalinnat',
     engine_ignition_aid: 'Käynnistysapu',
     english: 'Englanti',
+    estimate: 'Arvio',
     explanations: 'Selitykset',
     'extra-info': 'Lisätiedot',
     'favourite-failed-text': 'Yritä hetken päästä uudelleen.',
@@ -281,6 +286,8 @@ export default {
     'itinerary-page.show-details-label': 'Näytä reittiohje {number}',
     'itinerary-page.title': 'Reittiohje',
     'itinerary-summary-page.description': 'Reittiehdotukset',
+    'itinerary-summary-row.call-agency-description':
+      'Kutsuliikennettä, lisätiedot reittiohjeessa.',
     'itinerary-summary-row.clickable-area-description': 'Näytä kartalla',
     'itinerary-summary-row.description':
       'Lähtö {departureDate} kello {departureTime}. Perillä {arrivalDate} kello {arrivalTime}. {firstDeparture} {transfers} Matka-aika {totalTime}',
@@ -485,6 +492,16 @@ export default {
     'number-of-intermediate-stops':
       '{number, plural, =0 {Ei pysähdyksiä} one {1 pysäkki} other {{number} pysäkkiä} }',
     'number-of-spaces': 'Paikkoja',
+    'on-demand-service': 'Kutsuliikenne',
+    'on-demand-service-description': 'Reitin kuvaus',
+    'on-demand-service-prior-notice-days':
+      'Tilaus tehtävä vähintään {days} päivää ennen matkaa, viimeistään kello {time}.',
+    'on-demand-service-prior-notice-hours':
+      'Tilaus tehtävä vähintään {hours} tuntia ennen matkaa.',
+    'on-demand-service-prior-notice-minutes':
+      'Tilaus tehtävä vähintään {minutes} minuuttia ennen matkaa.',
+    'on-demand-service-route-disclaimer':
+      'Kartalla näkyvä reitti ei välttämättä toteudu juuri esitellyllä tavalla vaan voi vaihdella muiden matkustajien matkasuunnitelmien mukaan.',
     'one-way-journey': 'Yhdensuuntaisen matkan pituus',
     'open-app': 'Avaa sovellus',
     'open-operator-app': 'Avaa {operator} -sovellus',
@@ -536,6 +553,7 @@ export default {
       'Painotamme personoinnissa suosikkilinjojasi. Lisää siis käyttämäsi linjat suosikeiksi.',
     'personalisation-modal-link': 'Lisää tai muokkaa suosikkejasi',
     'personalisation-open-info': 'Lue, miten suositukset toimivat',
+    'phone-number': 'Puhelinnumero',
     'pick-mode': 'Liikennevälineet',
     'pick-street-mode': 'Omat kulkuvälineet',
     pier: 'Laituri',
@@ -734,7 +752,9 @@ export default {
     'terminal-page.description': 'Terminaali - {name}',
     'terminal-page.title': 'Terminaali - {name}',
     'terminal-page.title-short': 'Terminaali',
+    terminus: 'Päätepiste',
     'this-week': 'Tällä viikolla',
+    'ticket-information': 'Lipputiedot',
     timetable: 'Aikataulu',
     'to-bicycle': 'polkupyörään',
     'to-bus': 'bussiin',
