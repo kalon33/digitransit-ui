@@ -4,7 +4,7 @@ import Link from 'found/Link';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import Modal from '@hsl-fi/modal';
-import { legShape, configShape } from '../../util/shapes';
+import { legShape } from '../../util/shapes';
 import { legTimeStr, isLocalCallAgency } from '../../util/legUtils';
 import { getTripOrRouteMode } from '../../util/modeUtils';
 import RouteNumber from '../RouteNumber';
@@ -210,8 +210,4 @@ LegInfo.defaultProps = {
   isCallAgency: false,
   isTransitLeg: false,
   mobile: undefined,
-};
-
-LegInfo.contextTypes = {
-  config: configShape.isRequired,
 };
