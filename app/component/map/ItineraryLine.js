@@ -10,6 +10,7 @@ import {
   getInterliningLegs,
   getTripOrRouteText,
   LegMode,
+  isLocalCallAgency,
 } from '../../util/legUtils';
 import { getTripOrRouteMode } from '../../util/modeUtils';
 import { configShape, legShape } from '../../util/shapes';
@@ -161,7 +162,17 @@ class ItineraryLine extends React.Component {
     );
   }
 
-  handleLine(previousLeg, leg, nextLeg, mode, i, geometry, objs, clusterObjs) {
+  handleLine(
+    previousLeg,
+    leg,
+    nextLeg,
+    mode,
+    i,
+    geometry,
+    objs,
+    clusterObjs,
+    appendClass,
+  ) {
     const entranceObject = getEntranceObject(previousLeg, leg);
     const indoorLegType = getIndoorLegType(previousLeg, leg, nextLeg);
     if (indoorLegType !== IndoorLegType.NoStepsInside) {
@@ -184,6 +195,7 @@ class ItineraryLine extends React.Component {
           geometry={geometry}
           mode={mode}
           passive={this.props.passive}
+          appendClass={appendClass}
         />,
       );
     }
@@ -415,6 +427,10 @@ class ItineraryLine extends React.Component {
         leg.from.vehicleRentalStation?.rentalNetwork.networkId ||
         leg.from.rentalVehicle?.rentalNetwork.networkId;
 
+      const appendClass = isLocalCallAgency(leg, this.context.config)
+        ? 'call-local'
+        : '';
+
       if (interliningLegs.length > 0) {
         // merge the geometries of legs where user can wait in the vehicle and find the middle point
         // of the new geometry
@@ -436,6 +452,7 @@ class ItineraryLine extends React.Component {
         geometry,
         objs,
         clusterObjs,
+        appendClass,
       );
       this.handleDurationBubble(leg, mode, i, objs, middle);
       this.handleIntermediateStops(leg, mode, objs);
@@ -494,6 +511,7 @@ class ItineraryLine extends React.Component {
                 transfer: true,
               }}
               mode={mode}
+              appendClass={appendClass}
             />,
           );
           objs.push(
@@ -509,6 +527,7 @@ class ItineraryLine extends React.Component {
                 transfer: true,
               }}
               mode={mode}
+              appendClass={appendClass}
             />,
           );
         }

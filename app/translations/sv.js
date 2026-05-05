@@ -84,6 +84,7 @@ export default {
     'bikes-available': '{amount} cyklar vid stationen',
     'biking-speed': 'Cykling hastighet',
     'book-a-lift': 'Beställ resa i appen',
+    'booking-method': 'Beställningssätt',
     bus: 'Buss',
     'bus-express': 'Stombuss',
     'bus-express-with-route-number': 'Stombuss {routeNumber} {headSign}',
@@ -91,6 +92,8 @@ export default {
     'bus-with-route-number': 'Buss {routeNumber} {headSign}',
     'buy-in-app': 'Köp i appen',
     call: 'Anropsstyrd kollektivtrafik',
+    'call-agency-disclaimer':
+      'Linjen fungerar med förhandsbokning. Boka din resa i förväg för att säkerställa resan. Mer information från tjänsteleverantören.',
     'call-number': 'Ring {number}',
     'call-with-route-number':
       'Anropsstyrd kollektivtrafik {routeNumber} {headSign}',
@@ -158,6 +161,7 @@ export default {
     day: 'Dagen',
     delete: 'Ta bort',
     'delete-favourite-failed-heading': 'Unable to delete save',
+    'demand-responsive-traffic': 'Efterfrågestyrd kollektivtrafik',
     'departure-list-update.sr-instructions':
       'Listan på avgångar och avgångstider uppdateras i realtid.',
     'departure-page-sr':
@@ -199,6 +203,7 @@ export default {
     'embedded-search.form-heading': 'Inbäddningsverktyg',
     engine_ignition_aid: 'Starthjälp',
     english: 'Engelsk',
+    estimate: 'Uppskattning',
     explanations: 'Förklaringar',
     'extra-info': 'Mer info',
     'favourite-failed-text': 'Försök på nytt senare.',
@@ -288,6 +293,8 @@ export default {
     'itinerary-page.show-details-label': 'Visa ruttbeskrivningen {number}',
     'itinerary-page.title': 'Ruttinformation',
     'itinerary-summary-page.description': 'Ruttförslag',
+    'itinerary-summary-row.call-agency-description':
+      'Anropsstyrd trafik, mer information i ruttbeskrivningen.',
     'itinerary-summary-row.clickable-area-description': 'Visa på kartan',
     'itinerary-summary-row.description':
       'Avgång {departureDate} klockan {departureTime}. Framme {arrivalDate} klockan {arrivalTime}. {firstDeparture} {transfers} Restid {totalTime}.',
@@ -490,6 +497,16 @@ export default {
     'number-of-intermediate-stops':
       '{number, plural, =0 {Inga hållplatser} one {1 hållplats} other {{number} hållplatser} }',
     'number-of-spaces': 'Antalet platser',
+    'on-demand-service': 'Anropsbusstrafiken',
+    'on-demand-service-description': 'Ruttbeskrivning',
+    'on-demand-service-prior-notice-days':
+      'Boka din resa minst {days} dagar före resan, senast kl. {time}.',
+    'on-demand-service-prior-notice-hours':
+      'Bokningen ska göras minst {hours} timmar i förväg.',
+    'on-demand-service-prior-notice-minutes':
+      'Bokningen ska göras minst {minutes} minuter i förväg.',
+    'on-demand-service-route-disclaimer':
+      'Linjen kör nödvändigtvis inte den rutt som visas på kartan utan den kan variera beroende på andra resenärers resplaner.',
     'one-way-journey': ' Längden på en enkel resa',
     'open-app': ' Öppna appen',
     'open-operator-app': 'Öppna appen {operator}',
@@ -543,6 +560,7 @@ export default {
       'Vi betonar dina favoritlinjer i personaliseringen. Så lägg till de linjer du använder som favoriter.',
     'personalization-modal-link': 'Lägg till eller redigera dina favoriter',
     'personalization-open-info': 'Läs hur rekommendationer fungerar',
+    'phone-number': 'Telefonnummer',
     'pick-mode': 'Trafikslag',
     'pick-street-mode': 'Egna färdmedel',
     pier: 'Kaj',
@@ -746,7 +764,9 @@ export default {
     'terminal-page.description': 'Terminal {name}',
     'terminal-page.title': 'Terminal {name}',
     'terminal-page.title-short': 'Terminal',
+    terminus: 'Slutpunkt',
     'this-week': 'Denna vecka',
+    'ticket-information': 'Biljettinformation',
     timetable: 'Tidtabell',
     'to-bicycle': 'stadscykeln',
     'to-bus': 'bussen',

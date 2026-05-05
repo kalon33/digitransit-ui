@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import Modal from '@hsl-fi/modal';
 import { legShape } from '../../util/shapes';
-import { legTimeStr } from '../../util/legUtils';
+import { legTimeStr, isLocalCallAgency } from '../../util/legUtils';
 import { getTripOrRouteMode } from '../../util/modeUtils';
 import RouteNumber from '../RouteNumber';
 import { routePagePath, PREFIX_STOPS } from '../../util/path';
@@ -16,6 +16,8 @@ import {
 import Icon from '../Icon';
 import CapacityModal from '../CapacityModal';
 import { useConfigContext } from '../../configurations/ConfigContext';
+import OnDemandInfo from './OnDemandInfo';
+import RouteNumberContainer from '../RouteNumberContainer';
 
 /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
 export default function LegInfo({
@@ -28,6 +30,8 @@ export default function LegInfo({
   changeHash,
   tabIndex,
   isCallAgency = false,
+  mobile,
+  isTransitLeg,
 }) {
   const intl = useIntl();
   const config = useConfigContext();
@@ -45,6 +49,43 @@ export default function LegInfo({
   const capacity = getCapacityForLeg(config, leg);
   const startTime = legTimeStr(leg.start);
 
+  const routeNumber = (
+    <span aria-hidden="true">
+      <RouteNumberContainer
+        route={leg.route}
+        className={`line ${mode}`}
+        mode={mode}
+        alertSeverityLevel={alertSeverityLevel}
+        color={leg.route.color ? `#${leg.route.color}` : undefined}
+        text={leg.route && leg.route.shortName}
+        realtime={false}
+        withBar
+        fadeLong
+        isTransitLeg={isTransitLeg}
+        appendClass={isLocalCallAgency(leg, config) ? 'call-local' : ''}
+      />
+    </span>
+  );
+
+  const [infoOpenState, setInfoOpenState] = useState(false);
+  const openOnDemandInfo = () => {
+    setInfoOpenState(true);
+  };
+  const closeOnDemandInfo = () => {
+    setInfoOpenState(false);
+  };
+  if (infoOpenState) {
+    return (
+      <OnDemandInfo
+        routeNumber={routeNumber}
+        route={leg.route}
+        pickupBookingInfo={leg.pickupBookingInfo}
+        onClose={closeOnDemandInfo}
+        mobile={mobile}
+      />
+    );
+  }
+
   return (
     <div
       className={cx('itinerary-transit-leg-route', {
@@ -52,33 +93,41 @@ export default function LegInfo({
         'alternative-leg-suggestion': isAlternativeLeg,
       })}
     >
-      <Link
-        onClick={e => {
-          e.stopPropagation();
-        }}
-        to={routePagePath(
-          leg.route.gtfsId,
-          PREFIX_STOPS,
-          leg.trip.pattern.code,
-          shouldLinkToTrip && leg.trip.gtfsId,
-        )}
-        aria-label={`${intl.formatMessage({
-          id: mode,
-          defaultMessage: 'Vehicle',
-        })} ${(leg.route.shortName || leg.trip?.tripShortName)?.toLowerCase()}`}
-      >
-        <span aria-hidden="true">
-          <RouteNumber
-            mode={mode}
-            alertSeverityLevel={alertSeverityLevel}
-            color={leg.route?.color ? `#${leg.route.color}` : 'currentColor'}
-            text={leg.route.shortName || leg.trip?.tripShortName}
-            realtime={false}
-            withBar
-            fadeLong
-          />
-        </span>
-      </Link>
+      {isCallAgency ? (
+        <button type="button" onClick={openOnDemandInfo}>
+          {routeNumber}
+        </button>
+      ) : (
+        <Link
+          onClick={e => {
+            e.stopPropagation();
+          }}
+          to={routePagePath(
+            leg.route.gtfsId,
+            PREFIX_STOPS,
+            leg.trip.pattern.code,
+            shouldLinkToTrip && leg.trip.gtfsId,
+          )}
+          aria-label={`${intl.formatMessage({
+            id: mode,
+            defaultMessage: 'Vehicle',
+          })} ${(
+            leg.route.shortName || leg.trip?.tripShortName
+          )?.toLowerCase()}`}
+        >
+          <span aria-hidden="true">
+            <RouteNumber
+              mode={mode}
+              alertSeverityLevel={alertSeverityLevel}
+              color={leg.route?.color ? `#${leg.route.color}` : undefined}
+              text={leg.route.shortName || leg.trip?.tripShortName}
+              realtime={false}
+              withBar
+              fadeLong
+            />
+          </span>
+        </Link>
+      )}
       <div className="headsign">{headsign}</div>
       {config.showTransitLegDistance && (
         <div className={cx({ 'distance-bold': config.emphasizeDistance })}>
@@ -149,4 +198,16 @@ LegInfo.propTypes = {
   changeHash: PropTypes.func,
   tabIndex: PropTypes.number,
   isCallAgency: PropTypes.bool,
+  isTransitLeg: PropTypes.bool,
+  mobile: PropTypes.bool,
+};
+
+LegInfo.defaultProps = {
+  changeHash: undefined,
+  tabIndex: undefined,
+  alertSeverityLevel: undefined,
+  hasNoShortName: undefined,
+  isCallAgency: false,
+  isTransitLeg: false,
+  mobile: undefined,
 };

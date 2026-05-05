@@ -84,6 +84,7 @@ export default {
     'bikes-available': '{amount} bikes at the station ',
     'biking-speed': 'Biking speed',
     'book-a-lift': 'Use an app to book a ride',
+    'booking-method': 'Booking method',
     bus: 'Bus',
     'bus-express': 'Trunk bus',
     'bus-express-with-route-number': 'Trunk bus {routeNumber} {headSign}',
@@ -91,6 +92,8 @@ export default {
     'bus-with-route-number': 'Bus {routeNumber} {headSign}',
     'buy-in-app': 'Buy in App',
     call: 'Demand responsive transport',
+    'call-agency-disclaimer':
+      'This service operates by advance booking. To ensure your ride, please book ahead of time. More information is available from the service provider. ',
     'call-number': 'Call {number}',
     'call-with-route-number':
       'Demand responsive transport {routeNumber} {headSign}',
@@ -160,6 +163,7 @@ export default {
     day: 'Day',
     delete: 'Delete',
     'delete-favourite-failed-heading': 'Unable to delete save',
+    'demand-responsive-traffic': 'Demand-responsive transport',
     'departure-list-update.sr-instructions':
       'The list of upcoming departures and departure times will update in real time.',
     'departure-page-sr': 'Route {shortName} {destination}, departs at {time},',
@@ -200,6 +204,7 @@ export default {
     'embedded-search.form-heading': 'Embedding tools',
     engine_ignition_aid: 'Engine starting aid',
     english: 'English',
+    estimate: 'Estimate',
     explanations: 'Explanations',
     'extra-info': 'More info',
     'favourite-failed-text': 'Please try again in a while.',
@@ -291,6 +296,8 @@ export default {
     'itinerary-page.show-details-label': 'Show itinerary {number} details',
     'itinerary-page.title': 'Itinerary',
     'itinerary-summary-page.description': 'Route suggestions',
+    'itinerary-summary-row.call-agency-description':
+      'Dial-a-ride service; see the itinerary for details.',
     'itinerary-summary-row.clickable-area-description': 'Show on map',
     'itinerary-summary-row.description':
       'Itinerary departing at {departureDate} {departureTime} and arriving at {arrivalDate} {arrivalTime}. {firstDeparture} {transfers} Total time {totalTime}.',
@@ -497,6 +504,16 @@ export default {
     'number-of-intermediate-stops':
       '{number, plural, =0 {No stops} one {1 stop} other {{number} stops} }',
     'number-of-spaces': 'Number of spaces',
+    'on-demand-service': 'On-demand service',
+    'on-demand-service-description': 'Route description',
+    'on-demand-service-prior-notice-days':
+      'Bookings must be made at least {days} days before the journey, no later than {time}.',
+    'on-demand-service-prior-notice-hours':
+      'Bookings must be made at least {hours} hours in advance.',
+    'on-demand-service-prior-notice-minutes':
+      'Bookings must be made at least {minutes} minutes in advance.',
+    'on-demand-service-route-disclaimer':
+      'The route shown on the map may differ from the actual route, which may be adjusted to accommodate other passengers’ travel plans.',
     'one-way-journey': 'The length of a one-way journey',
     'open-app': 'Open the app',
     'open-operator-app': 'Open the {operator} app',
@@ -550,6 +567,7 @@ export default {
       'We emphasize your favorite routes in personalization. So add the routes you use as favorites.',
     'personalization-modal-link': 'Add or edit your favorites',
     'personalization-open-info': 'Read how recommendations work',
+    'phone-number': 'Phone number',
     'pick-mode': 'Transport modes',
     'pick-street-mode': 'My modes of transport',
     pier: 'Pier',
@@ -753,7 +771,9 @@ export default {
     'terminal-page.description': 'Terminal {name}',
     'terminal-page.title': 'Terminal {name}',
     'terminal-page.title-short': 'Terminal',
+    terminus: 'End point',
     'this-week': 'This week',
+    'ticket-information': 'Ticket information',
     timetable: 'Timetable',
     'to-bicycle': 'bicycle',
     'to-bus': 'bus',
