@@ -17,7 +17,9 @@ import { routePagePath, PREFIX_STOPS } from '../../util/path';
 import RoutePatternSelect, { patternTextWithIcon } from './RoutePatternSelect';
 
 function filterSimilarRoutes(routes, currentRoute) {
-  const withoutCurrent = routes.filter(r => r.gtfsId !== currentRoute.gtfsId);
+  const withoutCurrent = routes.filter(
+    r => r.shortName && r.gtfsId !== currentRoute.gtfsId,
+  );
 
   let routeBasename = currentRoute.shortName;
   if (Number.isNaN(Number(routeBasename))) {
@@ -61,7 +63,7 @@ class RoutePatternSelectContainer extends Component {
 
   fetchSimilarRoutes = route => {
     let searchSimilarTo = route.shortName;
-    const c = route.shortName.length ? route.shortName[0] : '';
+    const c = route.shortName?.length ? route.shortName[0] : '';
     if (c < '0' || c > '9') {
       // must start with number
       return;
