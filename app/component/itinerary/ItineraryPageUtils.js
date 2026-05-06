@@ -672,3 +672,81 @@ export const isStoredItineraryRelevant = ({ itinerary, params }, match) => {
     params.secondHash === match.params.secondHash
   );
 };
+
+const FAVOURITEBONUS = 0.5;
+const ADJUSTMENT = 0.15;
+const MINWEIGHT = 0.5;
+const MAXWEIGHT = 2;
+
+/**
+ * Calculate itinerary score based on mode weights and favourite lines
+ * Higher score = better match with user preferences
+ */
+function calculateScore(itinerary, weights, favourites) {
+  const transitLegs = itinerary.legs.filter(leg => leg.transitLeg);
+
+  if (!transitLegs.length) {
+    return 0;
+  }
+
+  const totalWeight = transitLegs.reduce((sum, leg) => {
+    const mode = leg.mode.toLowerCase();
+    const weight = weights[mode] || 1.0;
+    return sum + weight;
+  }, 0);
+
+  let score = totalWeight / transitLegs.length;
+
+  // Add bonus if route contains a favourite line
+  if (transitLegs.some(leg => favourites.includes(leg.route.gtfsId))) {
+    score += FAVOURITEBONUS;
+  }
+
+  return score;
+}
+
+export function rateItineraries(edges, weights, favorites) {
+  let topScore = 0;
+  let topIndex = -1;
+  let top;
+  edges.forEach((e, i) => {
+    const score = calculateScore(e.node, weights, favorites);
+    if (score > topScore) {
+      topScore = score;
+      topIndex = i;
+      top = e;
+    }
+  });
+  if (top > 0) {
+    edges.splice(topIndex, 1);
+    edges.unshift(top);
+  }
+  return edges;
+}
+
+/**
+ * Apply feedback to weights
+ * Weights are clamped between MINWEIGHT and MAXWEIGHT
+ */
+
+export function applyFeedback(weights, itinerary, positive) {
+  const adjustment = positive ? ADJUSTMENT : -ADJUSTMENT;
+  const updated = { ...weights };
+
+  const modes = new Set(
+    itinerary.legs
+      .filter(leg => leg.transitLeg)
+      .map(leg => leg.mode.toLowerCase()),
+  );
+
+  modes.forEach(mode => {
+    if (mode in updated) {
+      updated[mode] = Math.max(
+        MINWEIGHT,
+        Math.min(MAXWEIGHT, updated[mode] + adjustment),
+      );
+    }
+  });
+
+  return updated;
+}
