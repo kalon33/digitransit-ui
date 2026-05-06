@@ -269,9 +269,10 @@ const Itinerary = ({
 
     if (hasTaxiLegs(itinerary)) {
       addAnalyticsEvent({
+        event: 'sendMatomoEvent',
         category: 'Itinerary',
-        action: 'SelectTaxiItinerary',
-        name: props.hash,
+        action: 'OpenItineraryDetailsWithMode',
+        name: 'taxi',
       });
     }
 
