@@ -972,6 +972,7 @@ const Itinerary = ({
               >
                 {startDate && (
                   <div className="itinerary-start-date">{startDate}</div>
+                )}
                 {legs}
               </div>
               <div className="overflow-icon-container">

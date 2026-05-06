@@ -172,6 +172,7 @@ export const WheelchairBoarding = Object.freeze({
 export const NaviCardType = Object.freeze({
   Default: 'DEFAULT',
   Indoor: 'INDOOR',
+});
 export const LocationTypes = Object.freeze({
   STOP: 'STOP',
   STATION: 'STATION',

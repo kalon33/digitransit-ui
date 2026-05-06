@@ -4,18 +4,15 @@ import { default as L } from 'leaflet';
 
 import { locationShape } from '../../util/shapes';
 import GenericMarker from './GenericMarker';
-import { getCaseRadius, renderAsString, getIndexedIconFields } from '../../util/mapIconUtils';
+import { renderAsString, getIndexedIconFields } from '../../util/mapIconUtils';
 import { WheelchairBoarding } from '../../constants';
 import Icon from '../Icon';
-import { getCaseRadius, renderAsString } from '../../util/mapIconUtils';
 
 export default function EntranceMarker({ position, code, entranceAccessible }) {
   const objs = [];
 
   const codeIndex = entranceAccessible === WheelchairBoarding.Possible ? 1 : 0;
   const entranceIndex = (code ? 1 : 0) + codeIndex;
-  const getSubwayIcon = zoom => {
-    const iconSize = Math.max(getCaseRadius(zoom) * 2, 8);
 
   const getSubwayEntranceIcon = zoom => {
     const { iconSize, iconAnchor } = getIndexedIconFields(zoom, entranceIndex);
