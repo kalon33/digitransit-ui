@@ -212,6 +212,7 @@ export default {
     'from-bus': 'bussista',
     'from-ferry': 'lautasta',
     'from-ferrypier': 'lauttalaiturilta',
+    'from-place': 'kohteesta',
     'from-rail': 'junasta',
     'from-scooter-location': 'potkulaudan sijainti',
     'from-station': 'asemalta',

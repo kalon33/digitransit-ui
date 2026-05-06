@@ -217,6 +217,7 @@ export default {
     'from-bus': 'bus',
     'from-ferry': 'ferry',
     'from-ferrypier': 'ferry pier',
+    'from-place': 'location',
     'from-rail': 'train',
     'from-scooter-location': 'the scooter location',
     'from-station': 'station',

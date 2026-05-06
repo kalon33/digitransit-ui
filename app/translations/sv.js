@@ -216,6 +216,7 @@ export default {
     'from-bus': 'bussen',
     'from-ferry': 'färjan',
     'from-ferrypier': 'färjerkajen',
+    'from-place': 'plats',
     'from-rail': 'tåget',
     'from-scooter-location': 'platsen för sparkcykel',
     'from-station': 'stationen',
