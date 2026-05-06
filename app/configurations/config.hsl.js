@@ -799,9 +799,6 @@ export default {
   showStopStatusMarkers: true,
 
   // TODO: flex disabled for now, proper configuration coming in the future
-  // taxiOptionLabelOverride: 'demand-responsive-traffic',
-
-  // TODO: flex disabled for now, proper configuration coming in the future
   /* flex: {
     internalFlexEnabled: IS_DEV,
     allowTaxiJourneys: IS_DEV,
@@ -810,6 +807,7 @@ export default {
     externalAgencies: ['Uber:agency-mog2skf5-1'],
     allowedExternalFlexRouteTypes: [1501],
     infoLanguage: 'fi',
+    taxiSettingLabelOverride: 'demand-responsive-traffic',
   }, */
 
   showRouteDescNotification: IS_DEV,
