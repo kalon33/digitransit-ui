@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl';
 import { userShape, configShape } from '../util/shapes';
 import Icon from './Icon';
 import { addAnalyticsEvent } from '../util/analyticsUtils';
+import DisruptionInfo from './DisruptionInfo';
 import MainMenuContainer from './MainMenuContainer';
 import MessageBar from './MessageBar';
 import LogoSmall from './LogoSmall';
@@ -17,6 +18,7 @@ export default function AppBar(
 ) {
   const intl = useIntl();
   const { location } = match;
+  const [disruptionInfoOpen, setDisruptionInfoOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(
     window.sessionStorage.menuOpen === 'true',
   );
@@ -32,6 +34,11 @@ export default function AppBar(
     // Set sessionStorage menuOpen to false on closing the menu so it doesn't pop up opened on later refreshes.
     window.sessionStorage.setItem('menuOpen', false);
     setMenuOpen(newState);
+  };
+
+  const toggleDisruptionInfo = newState => {
+    setDisruptionInfoOpen(newState);
+    setMenuOpen(false);
   };
 
   return (
@@ -82,11 +89,12 @@ export default function AppBar(
                 isMobile
               />
             ))}
-          {menuOpen && (
+          {!disruptionInfoOpen && menuOpen && (
             <MainMenuContainer
               homeUrl={homeUrl}
               closeMenu={() => setMenuOpenWithAnalytics(false)}
               breakpoint={breakpoint}
+              setDisruptionInfoOpen={setDisruptionInfoOpen}
             />
           )}
           {config.mainMenu.show ? (

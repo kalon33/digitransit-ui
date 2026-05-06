@@ -28,7 +28,6 @@ import {
   definesItinerarySearch,
   PREFIX_NEARYOU,
   PREFIX_ITINERARY_SUMMARY,
-  TRAFFICNOW,
 } from '../util/path';
 import { addAnalyticsEvent } from '../util/analyticsUtils';
 import withBreakpoint from '../util/withBreakpoint';
@@ -60,6 +59,7 @@ function IndexPage(props, context) {
   const config = useConfigContext();
   const { colors, fontWeights, language, iconModeSet } = config;
   const { executeAction } = context;
+
   useEffect(() => {
     const { from, to } = match.params;
 
