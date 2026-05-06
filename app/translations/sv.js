@@ -273,6 +273,8 @@ export default {
     'itinerary-details.route-has-warning-alert': 'Störningar längs rutten..',
     'itinerary-details.scooter-leg':
       '{time} åk elsparkcykel {distance} från {origin} till destinationen {destination}. Restid {duration}',
+    'itinerary-details.taxi-leg':
+      '{time} åk taxi {distance} från {origin} till {to} {destination}. Restid {duration}',
     'itinerary-details.transit-leg-part-1': '{time} {realtime} ta',
     'itinerary-details.transit-leg-part-2':
       'från hållplats {startStop} {startZoneInfo} {trackInfo} till hållplats {endStop} {endZoneInfo}. Beräknad restid {duration}. ',
@@ -379,7 +381,7 @@ export default {
     'modes.to-scooter': 'elsparkcykel',
     'modes.to-stop': 'hållplats',
     'modes.to-subway': 'metrostation',
-    'modes.to-taxi': 'taxi',
+    'modes.to-taxi': 'destination',
     'modes.to-tram': 'spårvagnshållplats',
     'more-departures': 'Fler avgångar',
     'move-on-map': 'Flytta på kartan',
