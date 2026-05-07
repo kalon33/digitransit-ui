@@ -454,12 +454,12 @@ IndexPage.propTypes = {
   origin: locationShape.isRequired,
   destination: locationShape.isRequired,
   currentTime: PropTypes.number.isRequired,
-  query: PropTypes.object.isRequired,
+  query: PropTypes.object.isRequired, // eslint-disable-line
   favouriteModalAction: PropTypes.string,
   fromMap: PropTypes.string,
   locationState: locationShape.isRequired,
   favouriteStatus: PropTypes.string.isRequired,
-  favourites: PropTypes.array.isRequired,
+  favourites: PropTypes.array.isRequired, // eslint-disable-line
 };
 
 IndexPage.defaultProps = {

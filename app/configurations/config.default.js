@@ -860,7 +860,6 @@ export default {
   shortenLongTextThreshold: 10, // for route number in itinerary summary
   showRouteDescNotification: false,
   showStopStatusMarkers: false,
-
   flex: {
     internalFlexEnabled: false,
     allowTaxiJourneys: false,
