@@ -2,22 +2,22 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import cx from 'classnames';
-import Modal from '@hsl-fi/modal';
+import { Modal, ModalContent } from '@hsl-fi/dialog';
 import Icon from '../Icon';
 import routeCompare from '../../util/route-compare';
-import withBreakpoint from '../../util/withBreakpoint';
 import { isKeyboardSelectionEvent } from '../../util/browser';
 import { getRouteMode } from '../../util/modeUtils';
 import { stopShape } from '../../util/shapes';
+import { useConfigContext } from '../../configurations/ConfigContext';
 
-function FilterTimeTableModal({
+export default function FilterTimeTableModal({
   stop,
   setRoutes,
   showFilterModal,
   showRoutesList,
-  breakpoint,
 }) {
   const intl = useIntl();
+  const config = useConfigContext();
 
   const [showRoutes, setShowRoutes] = useState(showRoutesList);
   const [allRoutes, setAllRoutes] = useState(showRoutesList.length === 0);
@@ -147,61 +147,52 @@ function FilterTimeTableModal({
   });
 
   return (
-    <Modal
-      appElement="#app"
-      contentLabel=""
-      closeButtonLabel={intl.formatMessage({ id: 'close' })}
-      isOpen
-      onCrossClick={closeModal}
-      className="filter-stop-modal"
-      overlayClassName={
-        breakpoint === 'large'
-          ? 'filter-stop-modal-overlay'
-          : 'mobile mobile-filter-stop-modal-overlay stop-scroll-container'
-      }
-    >
-      <h2 className="filter-stop-modal-header">
-        <FormattedMessage id="show-routes" defaultMessage="Show Lines" />
-      </h2>
+    <Modal lang={config.language} onOpenChange={closeModal} open>
+      <ModalContent
+        title={intl.formatMessage({ id: 'show-routes' })}
+        lang={config.language}
+      >
+        <div className="filter-stop-modal">
+          <div className="all-routes-header">
+            <div className="checkbox-container">
+              <input
+                type="checkbox"
+                id="input-all-routes"
+                aria-label={intl.formatMessage({
+                  id: 'select-all-routes',
+                  defaultMessage: 'Select all routes',
+                })}
+                checked={allRoutes}
+                aria-checked={allRoutes}
+                onClick={e => allRoutes === true && e.preventDefault()}
+                onKeyDown={e => {
+                  if (isKeyboardSelectionEvent(e)) {
+                    toggleAllRoutes(e);
+                  }
+                }}
+                onChange={() => {
+                  toggleAllRoutes();
+                }}
+              />
+              <label
+                htmlFor="input-all-routes"
+                className={allRoutes ? 'checked' : ''}
+              >
+                {allRoutes ? (
+                  <Icon img="icon_box-checked" className="checkbox-icon" />
+                ) : null}
+              </label>
+            </div>
+            <div className="all-routes-header-title">
+              <FormattedMessage id="all-routes" defaultMessage="All lines" />
+            </div>
+          </div>
 
-      <div className="all-routes-header">
-        <div className="checkbox-container">
-          <input
-            type="checkbox"
-            id="input-all-routes"
-            aria-label={intl.formatMessage({
-              id: 'select-all-routes',
-              defaultMessage: 'Select all routes',
-            })}
-            checked={allRoutes}
-            aria-checked={allRoutes}
-            onClick={e => allRoutes === true && e.preventDefault()}
-            onKeyDown={e => {
-              if (isKeyboardSelectionEvent(e)) {
-                toggleAllRoutes(e);
-              }
-            }}
-            onChange={() => {
-              toggleAllRoutes();
-            }}
-          />
-          <label
-            htmlFor="input-all-routes"
-            className={allRoutes ? 'checked' : ''}
-          >
-            {allRoutes ? (
-              <Icon img="icon_box-checked" className="checkbox-icon" />
-            ) : null}
-          </label>
+          <div className="routes-container">
+            {routeDivs.length > 0 ? routeDivs : null}
+          </div>
         </div>
-        <div className="all-routes-header-title">
-          <FormattedMessage id="all-routes" defaultMessage="All lines" />
-        </div>
-      </div>
-
-      <div className="routes-container">
-        {routeDivs.length > 0 ? routeDivs : null}
-      </div>
+      </ModalContent>
     </Modal>
   );
 }
@@ -211,7 +202,4 @@ FilterTimeTableModal.propTypes = {
   setRoutes: PropTypes.func.isRequired,
   showFilterModal: PropTypes.func.isRequired,
   showRoutesList: PropTypes.arrayOf(PropTypes.string).isRequired,
-  breakpoint: PropTypes.string.isRequired,
 };
-
-export default withBreakpoint(FilterTimeTableModal);
