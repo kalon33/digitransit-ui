@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
-import cx from 'classnames';
 import { Modal, ModalContent } from '@hsl-fi/dialog';
 import Icon from '../Icon';
 import routeCompare from '../../util/route-compare';
@@ -65,7 +64,6 @@ export default function FilterTimeTableModal({
   };
 
   const routeDivs = [];
-  const LONG_LINE_NAME = 5;
 
   // Find out which departures are ARRIVING to their final stop,
   // not real departures, then remove them
@@ -93,6 +91,7 @@ export default function FilterTimeTableModal({
   routesWithStopTimes.forEach(o => {
     const mode = getRouteMode(o);
     const checked = showRoutes.includes(o.code);
+    const label = o.shortName || o.agency || '';
 
     routeDivs.push(
       <div key={o.code} className="route-row">
@@ -132,14 +131,8 @@ export default function FilterTimeTableModal({
         <div className="route-mode">
           <Icon className={mode} img={`icon_${mode}`} />
         </div>
-        <div
-          className={`route-number ${mode} ${cx({
-            'overflow-fade':
-              (o.shortName ? o.shortName : o.agency) &&
-              (o.shortName ? o.shortName : o.agency).length > LONG_LINE_NAME,
-          })}`}
-        >
-          {o.shortName ? o.shortName : o.agency}
+        <div className="route-label">
+          <span className={mode}> {label} </span>
         </div>
         <div className="route-headsign">{o.headsign}</div>
       </div>,
@@ -183,9 +176,7 @@ export default function FilterTimeTableModal({
                 ) : null}
               </label>
             </div>
-            <div className="all-routes-header-title">
-              <FormattedMessage id="all-routes" defaultMessage="All lines" />
-            </div>
+            <FormattedMessage id="all-routes" defaultMessage="All lines" />
           </div>
 
           <div className="routes-container">
