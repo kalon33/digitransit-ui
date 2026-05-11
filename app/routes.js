@@ -347,15 +347,17 @@ export default config => {
           ),
         }}
       </Route>
-      <Route
-        path={TRAFFICNOW}
-        getComponent={() =>
-          import(
-            /* webpackChunkName: "trafficnow" */ './component/trafficnow/TrafficNow'
-          ).then(getDefault)
-        }
-        render={withRouteContext()}
-      />
+      {config.trafficNowTest && (
+        <Route
+          path={TRAFFICNOW}
+          getComponent={() =>
+            import(
+              /* webpackChunkName: "trafficnow" */ './component/trafficnow/TrafficNow'
+            ).then(getDefault)
+          }
+          render={withRouteContext()}
+        />
+      )}
       <Route
         path="/tietoja-palvelusta"
         getComponent={() =>

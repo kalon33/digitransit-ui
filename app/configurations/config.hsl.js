@@ -434,7 +434,11 @@ export default {
   },
   ticketButtonTextId: 'open-app',
 
-  trafficNowLink: true,
+  trafficNowLink: {
+    fi: 'matkustaminen/liikenne',
+    en: 'travelling/services-now',
+    sv: 'att-resa/Trafiken-just-nu',
+  },
 
   vehicleRental: {
     minZoomStopsNearYou: 10,
