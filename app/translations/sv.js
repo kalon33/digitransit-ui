@@ -705,6 +705,7 @@ export default {
     'settings-missing-itineraries-body':
       'Dina val i inställningar utesluter vissa ruttalternativ.',
     'settings-missing-itineraries-header': 'Saknas det några ruttförslag?',
+    'show-departures': 'Visa avgångarna',
     'show-more': 'Visa mer',
     'show-more-stops-near-you': 'Visa flera hållplatser nära dig',
     'show-routes': 'Välj linjer',
@@ -804,6 +805,9 @@ export default {
     'traffic-now': 'Trafikläget nu',
     'traffic-now-long': 'Trafikläget nu',
     'traffic-now_bread': 'Att resa med oss',
+    'traffic-now_canceled-trips--amount':
+      'Visar {amount} av {totalAmount} inställda avgångar',
+    'traffic-now_canceled-trips--simple': '{amount} inställda',
     'traffic-now_description':
       'Aktuell information om störningar och undantag. ',
     'traffic-now_description_see-also':
@@ -818,6 +822,7 @@ export default {
     'traffic-now_filters_validity-period': 'Filtrera efter giltighetstid',
     'traffic-now_filters_vehicle-mode': 'Filtrera efter fordonsläge',
     'traffic-now_filters_view-results': 'Visa resultat',
+    'traffic-now_go-back': 'Gå tillbaka',
     'traffic-now_link': 'Trafikläget nu',
     'traffic-now_link-description': 'Se störningar och förändringar',
     trafficnow: 'Trafikläget nu',

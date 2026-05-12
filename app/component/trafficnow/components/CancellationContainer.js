@@ -1,9 +1,9 @@
 import React from 'react';
 import Button from '@hsl-fi/button';
 import PropTypes from 'prop-types';
+import { useIntl } from 'react-intl';
 import FavouriteRouteContainer from '../../routepage/FavouriteRouteContainer';
 import { PREFIX_TIMETABLE, routePagePath } from '../../../util/path';
-import { useTranslationsContext } from '../../../util/useTranslationsContext';
 import Icon from '../../Icon';
 import PatternWithCancellations from './PatternWithCancellations';
 import RouteBadgeGroup from './RouteBadgeGroup';
@@ -16,7 +16,7 @@ const CancellationContainer = ({
   onShowDetailsClick,
 }) => {
   const { routeShortName, routeGtfsId, patterns, index, total } = item;
-  const intl = useTranslationsContext();
+  const intl = useIntl();
 
   return (
     <div className="cancellation-container">

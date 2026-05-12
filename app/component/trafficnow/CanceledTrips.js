@@ -4,10 +4,9 @@ import cx from 'classnames';
 import Link from 'found/Link';
 import { DateTime } from 'luxon';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { useIntl, FormattedMessage } from 'react-intl';
 import { usePaginationFragment } from 'react-relay/hooks';
 import { useConfigContext } from '../../configurations/ConfigContext';
-import { useTranslationsContext } from '../../util/useTranslationsContext';
 import Card from '../Card';
 import Icon from '../Icon';
 import CanceledTripsModal from './CanceledTripsModal';
@@ -20,7 +19,7 @@ const CANCELED_TRIPS_QUERY_AMOUNT = 20;
 
 const CanceledTrips = ({ query, isMobile = false, ...props }) => {
   const { colors } = useConfigContext();
-  const intl = useTranslationsContext();
+  const intl = useIntl();
   const [detailsKey, setDetailsKey] = useState(null);
 
   const {
