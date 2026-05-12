@@ -221,6 +221,8 @@ export function getGeolocationState() {
   return getItemAsJson('geolocationPermission', '{ "state": "unknown" }').state;
 }
 
+export const getMapLayerSettings = () => getItemAsJson('map-layers', '{}');
+
 export const setMapLayerSettings = settings => {
   setItem('map-layers', settings);
 };
@@ -229,7 +231,13 @@ export const setCountries = countries => {
   setItem('countries', countries);
 };
 
-export const getMapLayerSettings = () => getItemAsJson('map-layers', '{}');
+export function getPersonalization() {
+  return getItemAsJson('personalisation', '{}');
+}
+
+export function setPersonalization(data) {
+  setItem('personalisation', data);
+}
 
 export const getCountries = () => getItemAsJson('countries', '{}');
 
