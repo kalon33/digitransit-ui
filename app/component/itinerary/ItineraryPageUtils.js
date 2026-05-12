@@ -247,14 +247,14 @@ export function stopClient(context) {
   }
 }
 
-export function startClient(itineraryTopics, context) {
+export function startClient(itineraryTopics, context, config) {
   if (!isEmpty(itineraryTopics)) {
-    const clientConfig = configClient(itineraryTopics, context.config);
+    const clientConfig = configClient(itineraryTopics, config);
     context.executeAction(startRealTimeClient, clientConfig);
   }
 }
 
-export function updateClient(itineraryTopics, context) {
+export function updateClient(itineraryTopics, context, config) {
   const { client, topics } = context.getStore('RealTimeInformationStore');
 
   if (isEmpty(itineraryTopics)) {
@@ -262,7 +262,7 @@ export function updateClient(itineraryTopics, context) {
     return;
   }
   if (client) {
-    const clientConfig = configClient(itineraryTopics, context.config);
+    const clientConfig = configClient(itineraryTopics, config);
     if (clientConfig) {
       context.executeAction(changeRealTimeClientTopics, {
         ...clientConfig,
@@ -273,7 +273,7 @@ export function updateClient(itineraryTopics, context) {
     }
     stopClient(context);
   }
-  startClient(itineraryTopics, context);
+  startClient(itineraryTopics, context, config);
 }
 
 export function addBikeStationMapForRentalVehicleItineraries() {

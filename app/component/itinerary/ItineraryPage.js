@@ -1,5 +1,4 @@
 /* eslint-disable no-nested-ternary */
-import { matchShape, routerShape } from 'found';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 import polyline from 'polyline-encoded';
@@ -13,6 +12,7 @@ import React, {
 } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { fetchQuery } from 'react-relay';
+import { useRouter } from 'found';
 import { saveFutureRoute } from '../../action/FutureRoutesActions';
 import { startLocationWatch } from '../../action/PositionActions';
 import { saveSearch } from '../../action/SearchActions';
@@ -41,11 +41,7 @@ import {
   planQueryNeeded,
   PLANTYPE,
 } from '../../util/planParamUtil';
-import {
-  configShape,
-  mapLayerOptionsShape,
-  relayShape,
-} from '../../util/shapes';
+import { mapLayerOptionsShape, relayShape } from '../../util/shapes';
 import { epochToTime } from '../../util/timeUtils';
 import { getAllNetworksOfType } from '../../util/vehicleRentalUtils';
 import DesktopView from '../DesktopView';
@@ -92,6 +88,7 @@ import NaviGeolocationInfoModal from './navigator/navigatorgeolocation/NaviGeolo
 import NavigatorIntroModal from './navigator/navigatorintro/NavigatorIntroModal';
 import { planConnection } from './queries/PlanConnection';
 import { isCallAgencyLeg, hasTaxiLegs } from '../../util/legUtils';
+import { useConfigContext } from '../../configurations/ConfigContext';
 
 const MAX_QUERY_COUNT = 4; // number of attempts to collect enough itineraries
 
@@ -138,6 +135,8 @@ const unset = { plan: {}, loading: LOADSTATE.UNSET };
 const noFocus = { center: undefined, zoom: undefined, bounds: undefined };
 
 export default function ItineraryPage(props, context) {
+  const { match, router } = useRouter();
+  const config = useConfigContext();
   const headerRef = useRef(null);
   const mwtRef = useRef();
   const mobileRef = useRef();
@@ -191,8 +190,8 @@ export default function ItineraryPage(props, context) {
 
   const itineraryContext = useItineraryContext();
 
-  const { config, router, executeAction } = context;
-  const { match, breakpoint } = props;
+  const { executeAction } = context;
+  const { breakpoint } = props;
   const { params, location } = match;
   const { hash, secondHash } = params;
   const { query } = location;
@@ -468,7 +467,7 @@ export default function ItineraryPage(props, context) {
 
     setRelaxScooterState({ loading: LOADSTATE.LOADING });
     const allScooterNetworks = getAllNetworksOfType(
-      context.config,
+      config,
       TransportMode.Scooter,
     );
 
@@ -1049,7 +1048,7 @@ export default function ItineraryPage(props, context) {
       const { client } = context.getStore('RealTimeInformationStore');
       // Client may not be initialized yet if there was an client before ComponentDidMount
       if (!naviMode && (!isEqual(itineraryTopics, topicsState) || !client)) {
-        updateClient(itineraryTopics, context);
+        updateClient(itineraryTopics, context, config);
       }
       if (!isEqual(itineraryTopics, topicsState) && !naviMode) {
         // eslint-disable-next-line react/no-did-update-set-state
@@ -1681,21 +1680,18 @@ export default function ItineraryPage(props, context) {
 }
 
 ItineraryPage.contextTypes = {
-  config: configShape,
   executeAction: PropTypes.func.isRequired,
   getStore: PropTypes.func,
-  router: routerShape.isRequired,
-  match: matchShape.isRequired,
 };
 
 ItineraryPage.propTypes = {
-  match: matchShape.isRequired,
   content: PropTypes.node,
   map: PropTypes.shape({ type: PropTypes.func.isRequired }),
   breakpoint: PropTypes.string.isRequired,
   relayEnvironment: relayShape.isRequired,
   mapLayers: mapLayerShape.isRequired,
   mapLayerOptions: mapLayerOptionsShape.isRequired,
+  favouriteRoutes: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 ItineraryPage.defaultProps = {

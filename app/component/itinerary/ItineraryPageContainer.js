@@ -30,7 +30,7 @@ const ItineraryPageWithStores = connectToStores(
       lockedMapLayers: ['vehicles', 'citybike', 'stop'],
       selectedMapLayers: ['vehicles'],
     }),
-    favoriteRoutes: getStore('FavouriteStore').getRouteGtfsIds(),
+    favouriteRoutes: getStore('FavouriteStore').getRouteGtfsIds(),
   }),
 );
 
