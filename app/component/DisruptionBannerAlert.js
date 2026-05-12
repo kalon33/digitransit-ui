@@ -79,10 +79,10 @@ const DisruptionBannerAlert = (
                 onClick={e => e.stopPropagation()}
                 href={
                   config.trafficNowTest
-                    ? `${config.URL.ROOTLINK}/${
+                    ? `/${TRAFFICNOW}`
+                    : `${config.URL.ROOTLINK}/${
                         language === 'fi' ? '' : `${language}/`
                       }${config.trafficNowLink[language]}`
-                    : `/${TRAFFICNOW}`
                 }
               >
                 {message}
