@@ -788,6 +788,7 @@ export default {
     'tracking-button-offline': 'paikannus epäonnistui',
     'tracking-button-on': 'paikannus päällä',
     'traffic-now': 'Liikenne nyt',
+    'traffic-now-long': 'Liikennetilanne nyt',
     'traffic-now_bread': 'Matkustaminen',
     'traffic-now_description':
       'Ajantasaiset tiedot häiriöistä ja poikkeuksista. ',

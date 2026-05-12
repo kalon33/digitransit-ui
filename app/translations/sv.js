@@ -798,6 +798,7 @@ export default {
     'tracking-button-offline': 'lokalisering misslyckades',
     'tracking-button-on': 'lokalisering på',
     'traffic-now': 'Trafikläget nu',
+    'traffic-now-long': 'Trafikläget nu',
     'traffic-now_bread': 'Att resa med oss',
     'traffic-now_description':
       'Aktuell information om störningar och undantag. ',

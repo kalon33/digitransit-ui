@@ -805,6 +805,7 @@ export default {
     'tracking-button-offline': 'tracking failed',
     'tracking-button-on': 'tracking on',
     'traffic-now': 'Traffic now',
+    'traffic-now-long': 'Services now',
     'traffic-now_bread': 'Travelling',
     'traffic-now_description':
       'Up-to-date information on disruptions and exceptions. ',

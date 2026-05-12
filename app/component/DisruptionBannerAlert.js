@@ -7,6 +7,7 @@ import { configShape, alertShape } from '../util/shapes';
 import Icon from './Icon';
 import TruncatedMessage from './TruncatedMessage';
 import { mapAlertSource } from '../util/alertUtils';
+import { TRAFFICNOW } from '../util/path';
 
 const DisruptionBannerAlert = (
   { language, alert, openAllAlerts, truncate, onClose },
@@ -76,9 +77,13 @@ const DisruptionBannerAlert = (
               <a
                 className="disruption-info-content"
                 onClick={e => e.stopPropagation()}
-                href={`/${
-                  language === 'fi' || !language ? '' : `${language}/`
-                }${config.trafficNowLink}`}
+                href={
+                  config.trafficNowTest
+                    ? `${config.URL.ROOTLINK}/${
+                        language === 'fi' ? '' : `${language}/`
+                      }${config.trafficNowLink[language]}`
+                    : `/${TRAFFICNOW}`
+                }
               >
                 {message}
               </a>

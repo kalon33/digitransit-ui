@@ -401,7 +401,7 @@ function IndexPage(props, context) {
               href={trafficNowHref}
             />
           )}
-          {trafficNowLink && trafficNowTest && <TrafficNowLinkNew />}
+          {trafficNowTest && <TrafficNowLinkNew />}
         </CtrlPanel>
       </div>
       {(showSpinner && <OverlayWithSpinner />) || null}
@@ -449,7 +449,7 @@ function IndexPage(props, context) {
               href={trafficNowHref}
             />
           )}
-          {trafficNowLink && trafficNowTest && <TrafficNowLinkNew />}
+          {trafficNowTest && <TrafficNowLinkNew />}
         </CtrlPanel>
       </div>
     </div>
