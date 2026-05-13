@@ -144,18 +144,18 @@ export default function ItineraryPage(props, context) {
   const ariaRef = useRef('summary-page.title');
   const mapLayerRef = useRef();
 
-  const [state, setState] = useState({
+  const [mainState, setMainState] = useState({
     ...emptyState,
     loading: LOADSTATE.UNSET,
   });
-  const [relaxState, setRelaxState] = useState(emptyPlan);
+  const [combinedMainState, setCombinedMainState] = useState(emptyPlan);
+  const [relaxMainState, setRelaxMainState] = useState(emptyPlan);
   const [relaxScooterState, setRelaxScooterState] = useState(emptyPlan);
   const [relaxExternalFlexState, setRelaxExternalFlexState] =
     useState(emptyPlan);
   const [combinedExternalRelaxState, setCombinedExternalRelaxState] =
     useState(emptyPlan);
   const [scooterState, setScooterState] = useState(unset);
-  const [combinedState, setCombinedState] = useState(emptyPlan);
   const [externalFlexState, setExternalFlexState] = useState(unset);
   const [internalFlexState, setInternalFlexState] = useState(unset);
   const [isNavigatorIntroDismissed, setNavigatorIntroDismissed] = useState(
@@ -254,20 +254,20 @@ export default function ItineraryPage(props, context) {
 
   function findDefaultPlan() {
     if (
-      !filterWalk(combinedState.plan?.edges).length &&
+      !filterWalk(combinedMainState.plan?.edges).length &&
       !settingsState.settingsChanged
     ) {
       // Note: plan and scooter plan are merged, but relaxed ones are not
       // because a relaxed scooter search is performed separately
       // and shown only if basic relaxed search finds no journeys.
-      if (relaxState.plan?.edges?.length > 0) {
-        return relaxState.plan;
+      if (relaxMainState.plan?.edges?.length > 0) {
+        return relaxMainState.plan;
       }
       if (combinedExternalRelaxState.plan?.edges?.length > 0) {
         return combinedExternalRelaxState.plan;
       }
     }
-    return combinedState.plan;
+    return combinedMainState.plan;
   }
 
   function mapHashToPlan() {
@@ -398,19 +398,19 @@ export default function ItineraryPage(props, context) {
 
   async function makeRelaxedQuery() {
     if (!planQueryNeeded(config, match, PLANTYPE.TRANSIT, true)) {
-      setRelaxState({ plan: {}, loading: LOADSTATE.DONE });
+      setRelaxMainState({ plan: {}, loading: LOADSTATE.DONE });
       return;
     }
-    setRelaxState({ loading: LOADSTATE.LOADING });
+    setRelaxMainState({ loading: LOADSTATE.LOADING });
     const planParams = getPlanParams(config, match, PLANTYPE.TRANSIT, true);
     try {
       const plan = await iterateQuery(
         planParams,
         planParams.maxQueryIterations,
       );
-      setRelaxState({ plan, loading: LOADSTATE.DONE });
+      setRelaxMainState({ plan, loading: LOADSTATE.DONE });
     } catch (error) {
-      setRelaxState({ plan: {}, loading: LOADSTATE.DONE });
+      setRelaxMainState({ plan: {}, loading: LOADSTATE.DONE });
     }
   }
 
@@ -419,11 +419,11 @@ export default function ItineraryPage(props, context) {
     setFeedback({});
 
     if (!planQueryNeeded(config, match, PLANTYPE.TRANSIT)) {
-      setState({ plan: {}, loading: LOADSTATE.DONE });
+      setMainState({ plan: {}, loading: LOADSTATE.DONE });
       return;
     }
     ariaRef.current = 'itinerary-page.loading-itineraries';
-    setState({ ...emptyState, loading: LOADSTATE.LOADING });
+    setMainState({ ...emptyState, loading: LOADSTATE.LOADING });
     const planParams = getPlanParams(config, match, PLANTYPE.TRANSIT);
     try {
       const plan = await iterateQuery(
@@ -431,11 +431,11 @@ export default function ItineraryPage(props, context) {
         planParams.maxQueryIterations,
       );
       setRecommendedItinerary(Date.now() % 5); // just pick random for now
-      setState({ ...emptyState, plan, loading: LOADSTATE.DONE });
+      setMainState({ ...emptyState, plan, loading: LOADSTATE.DONE });
       ariaRef.current = 'itinerary-page.itineraries-loaded';
     } catch (error) {
       reportError(error);
-      setState({ plan: {}, loading: LOADSTATE.DONE });
+      setMainState({ plan: {}, loading: LOADSTATE.DONE });
     }
   }
 
@@ -586,25 +586,25 @@ export default function ItineraryPage(props, context) {
     });
 
     const relaxed =
-      filterWalk(state.plan?.edges).length === 0 &&
-      relaxState.plan?.edges?.length > 0;
-    const origPlan = relaxed ? relaxState.plan : state.plan;
+      filterWalk(mainState.plan?.edges).length === 0 &&
+      relaxMainState.plan?.edges?.length > 0;
+    const origPlan = relaxed ? relaxMainState.plan : mainState.plan;
 
     const planParams = getPlanParams(config, match, PLANTYPE.TRANSIT, relaxed);
     const arriveBy = !!planParams.datetime.latestArrival;
 
-    planParams.after = state.endCursor || origPlan.pageInfo.endCursor;
+    planParams.after = mainState.endCursor || origPlan.pageInfo.endCursor;
     if (!planParams.after) {
       const newState = arriveBy
         ? { topNote: 'no-more-route-msg' }
         : { bottomNote: 'no-more-route-msg' };
-      setState({ ...state, ...newState, loadingMore: undefined });
+      setMainState({ ...mainState, ...newState, loadingMore: undefined });
       return;
     }
     planParams.transitOnly = true;
 
-    setState({
-      ...state,
+    setMainState({
+      ...mainState,
       loadingMore: arriveBy ? spinnerPosition.top : spinnerPosition.bottom,
     });
     ariaRef.current = 'itinerary-page.loading-itineraries';
@@ -613,7 +613,7 @@ export default function ItineraryPage(props, context) {
     try {
       plan = await iterateQuery(planParams, 1);
     } catch (error) {
-      setState({ ...state, loadingMore: undefined });
+      setMainState({ ...mainState, loadingMore: undefined });
       return;
     }
     const edges = getSortedEdges(plan.edges, arriveBy);
@@ -621,13 +621,13 @@ export default function ItineraryPage(props, context) {
       const newState = arriveBy
         ? { topNote: 'no-more-route-msg' }
         : { bottomNote: 'no-more-route-msg' };
-      setState({ ...state, ...newState, loadingMore: undefined });
+      setMainState({ ...mainState, ...newState, loadingMore: undefined });
       return;
     }
     ariaRef.current = 'itinerary-page.itineraries-loaded';
 
     const newState = {
-      ...state,
+      ...mainState,
       loadingMore: undefined,
       endCursor: plan.pageInfo.endCursor,
     };
@@ -636,26 +636,26 @@ export default function ItineraryPage(props, context) {
     // set a separator line there and clicks below the list move feedback button down
     if (arriveBy) {
       // user clicked button above itinerary list
-      const separators = state.separator1
+      const separators = mainState.separator1
         ? {
             separator2: edges.length,
-            separator1: state.separator1 + edges.length,
+            separator1: mainState.separator1 + edges.length,
           }
         : { separator1: edges.length };
-      setState({
+      setMainState({
         ...newState,
         ...separators,
-        earlierEdges: [...edges, ...state.earlierEdges],
+        earlierEdges: [...edges, ...mainState.earlierEdges],
       });
     } else {
       // user clicked button below itinerary list
-      setState({
+      setMainState({
         ...newState,
         separator1:
           origPlan.edges.length +
-          state.earlierEdges.length +
-          state.laterEdges.length,
-        laterEdges: [...state.laterEdges, ...edges],
+          mainState.earlierEdges.length +
+          mainState.laterEdges.length,
+        laterEdges: [...mainState.laterEdges, ...edges],
       });
     }
     if (arriveBy) {
@@ -672,26 +672,26 @@ export default function ItineraryPage(props, context) {
     });
 
     const relaxed =
-      filterWalk(state.plan?.edges).length === 0 &&
-      relaxState.plan?.edges?.length > 0;
-    const origPlan = relaxed ? relaxState.plan : state.plan;
+      filterWalk(mainState.plan?.edges).length === 0 &&
+      relaxMainState.plan?.edges?.length > 0;
+    const origPlan = relaxed ? relaxMainState.plan : mainState.plan;
 
     const planParams = getPlanParams(config, match, PLANTYPE.TRANSIT, relaxed);
     const arriveBy = !!planParams.datetime.latestArrival;
 
-    planParams.before = state.startCursor || origPlan.pageInfo.startCursor;
+    planParams.before = mainState.startCursor || origPlan.pageInfo.startCursor;
     if (!planParams.before) {
       const newState = arriveBy
         ? { bottomNote: 'no-more-route-msg' }
         : { topNote: 'no-more-route-msg' };
-      setState({ ...state, ...newState, loadingMore: undefined });
+      setMainState({ ...mainState, ...newState, loadingMore: undefined });
       return;
     }
     planParams.last = planParams.numItineraries;
     planParams.transitOnly = true;
 
-    setState({
-      ...state,
+    setMainState({
+      ...mainState,
       loadingMore: arriveBy ? spinnerPosition.bottom : spinnerPosition.top,
     });
     ariaRef.current = 'itinerary-page.loading-itineraries';
@@ -700,7 +700,7 @@ export default function ItineraryPage(props, context) {
     try {
       plan = await iterateQuery(planParams, 1);
     } catch (error) {
-      setState({ ...state, loadingMore: undefined });
+      setMainState({ ...mainState, loadingMore: undefined });
       return;
     }
     const edges = getSortedEdges(plan.edges, arriveBy);
@@ -708,37 +708,37 @@ export default function ItineraryPage(props, context) {
       const newState = arriveBy
         ? { bottomNote: 'no-more-route-msg' }
         : { topNote: 'no-more-route-msg' };
-      setState({ ...state, ...newState, loadingMore: undefined });
+      setMainState({ ...mainState, ...newState, loadingMore: undefined });
       return;
     }
     ariaRef.current = 'itinerary-page.itineraries-loaded';
     const newState = {
-      ...state,
+      ...mainState,
       loadingMore: undefined,
       startCursor: plan.pageInfo.startCursor,
     };
     if (arriveBy) {
       // user clicked button below itinerary list
-      setState({
+      setMainState({
         ...newState,
         separator1:
           origPlan.edges.length +
-          state.earlierEdges.length +
-          state.laterEdges.length,
-        laterEdges: [...state.laterEdges, ...edges],
+          mainState.earlierEdges.length +
+          mainState.laterEdges.length,
+        laterEdges: [...mainState.laterEdges, ...edges],
       });
     } else {
       // user clicked button above itinerary list
-      const separators = state.separator1
+      const separators = mainState.separator1
         ? {
             separator2: edges.length,
-            separator1: state.separator1 + edges.length,
+            separator1: mainState.separator1 + edges.length,
           }
         : { separator1: edges.length };
-      setState({
+      setMainState({
         ...newState,
         ...separators,
-        earlierEdges: [...edges, ...state.earlierEdges],
+        earlierEdges: [...edges, ...mainState.earlierEdges],
       });
     }
     if (!arriveBy) {
@@ -760,18 +760,19 @@ export default function ItineraryPage(props, context) {
 
   const getCombinedPlanEdges = () => {
     return [
-      ...(state.earlierEdges || []),
+      ...(mainState.earlierEdges || []),
       ...(mapHashToPlan()?.edges || []),
-      ...(state.laterEdges || []),
+      ...(mainState.laterEdges || []),
     ];
   };
 
   const getItinerarySelection = () => {
-    const hasNoTransitItineraries = filterWalk(state.plan?.edges).length === 0;
+    const hasNoTransitItineraries =
+      filterWalk(mainState.plan?.edges).length === 0;
     const plan = mapHashToPlan();
     let combinedEdges;
     // Remove old itineraries if new query cannot find a route
-    if (state.error) {
+    if (mainState.error) {
       combinedEdges = [];
     } else if (streetHashes.includes(hash)) {
       combinedEdges = plan?.edges || [];
@@ -996,7 +997,7 @@ export default function ItineraryPage(props, context) {
   }, [query.intermediatePlaces]);
 
   useEffect(() => {
-    setCombinedState({ ...emptyState, loading: LOADSTATE.LOADING });
+    setCombinedMainState({ ...emptyState, loading: LOADSTATE.LOADING });
     makeScooterQuery();
     makeExternalFlexQuery();
     makeInternalFlexQuery();
@@ -1068,8 +1069,8 @@ export default function ItineraryPage(props, context) {
     }
   }, [
     hash,
-    combinedState.plan,
-    relaxState.plan,
+    combinedMainState.plan,
+    relaxMainState.plan,
     bikePublicState.plan,
     carPublicState.plan,
     altStates[PLANTYPE.PARKANDRIDE][0].plan,
@@ -1117,14 +1118,14 @@ export default function ItineraryPage(props, context) {
   // merge the main plan, the scooter plan and the flex plan into one
   useEffect(() => {
     if (
-      state.loading === LOADSTATE.DONE &&
+      mainState.loading === LOADSTATE.DONE &&
       scooterState.loading === LOADSTATE.DONE &&
       externalFlexState.loading === LOADSTATE.DONE &&
       internalFlexState.loading === LOADSTATE.DONE
     ) {
       let plan = mergeScooterTransitPlan(
         scooterState.plan,
-        state.plan,
+        mainState.plan,
         config.vehicleRental.allowDirectScooterJourneys,
         match.location.query.arriveBy === 'true',
       );
@@ -1146,12 +1147,12 @@ export default function ItineraryPage(props, context) {
         );
       }
 
-      setCombinedState({ plan, loading: LOADSTATE.DONE });
+      setCombinedMainState({ plan, loading: LOADSTATE.DONE });
       resetItineraryPageSelection();
     }
   }, [
     scooterState.plan,
-    state.plan,
+    mainState.plan,
     externalFlexState.plan,
     internalFlexState.plan,
   ]);
@@ -1174,8 +1175,8 @@ export default function ItineraryPage(props, context) {
 
   useEffect(() => {
     if (
-      combinedState.loading === LOADSTATE.DONE &&
-      relaxState.loading === LOADSTATE.DONE &&
+      combinedMainState.loading === LOADSTATE.DONE &&
+      relaxMainState.loading === LOADSTATE.DONE &&
       combinedExternalRelaxState.loading === LOADSTATE.DONE
     ) {
       const plan = findDefaultPlan();
@@ -1189,8 +1190,8 @@ export default function ItineraryPage(props, context) {
       }
     }
   }, [
-    combinedState,
-    relaxState,
+    combinedMainState,
+    relaxMainState,
     combinedExternalRelaxState,
     settingsState.settingsChanged,
   ]);
@@ -1426,7 +1427,7 @@ export default function ItineraryPage(props, context) {
 
   const settings = getSettings(config);
 
-  const showRelaxedPlanNotifier = plan === relaxState.plan;
+  const showRelaxedPlanNotifier = plan === relaxMainState.plan;
   const showCombinedPlanNotifier = plan === combinedExternalRelaxState.plan;
   let rentalVehicleNotifierId = null;
   if (showCombinedPlanNotifier) {
@@ -1482,8 +1483,8 @@ export default function ItineraryPage(props, context) {
   const loadingAlt = altLoading();
   const waitAlternatives = hasNoTransitItineraries && loadingAlt;
   const loading =
-    combinedState.loading === LOADSTATE.LOADING ||
-    (relaxState.loading === LOADSTATE.LOADING && hasNoTransitItineraries) ||
+    combinedMainState.loading === LOADSTATE.LOADING ||
+    (relaxMainState.loading === LOADSTATE.LOADING && hasNoTransitItineraries) ||
     (combinedExternalRelaxState.loading === LOADSTATE.LOADING &&
       hasNoTransitItineraries) ||
     waitAlternatives ||
@@ -1579,14 +1580,14 @@ export default function ItineraryPage(props, context) {
       );
     }
   } else {
-    if (state.loading === LOADSTATE.UNSET) {
+    if (mainState.loading === LOADSTATE.UNSET) {
       return null; // do not render 'no itineraries' before searches
     }
     const settingsNotification =
       !showRelaxedPlanNotifier && // show only on notifier about limitations
       settingsLimitRouting(config) &&
-      !isEqualItineraries(state.plan?.edges, relaxState.plan?.edges) &&
-      relaxState.plan?.edges?.length > 0 &&
+      !isEqualItineraries(mainState.plan?.edges, relaxMainState.plan?.edges) &&
+      relaxMainState.plan?.edges?.length > 0 &&
       !settingsState.settingsChanged &&
       !hash; // no notifier on p&r or bike&public lists
 
@@ -1601,21 +1602,21 @@ export default function ItineraryPage(props, context) {
         carDirectItineraryCount={carPublicPlan.carDirectItineraryCount}
         showRelaxedPlanNotifier={showRelaxedPlanNotifier}
         rentalVehicleNotifierId={rentalVehicleNotifierId}
-        separator2={hash ? undefined : state.separator2}
+        separator2={hash ? undefined : mainState.separator2}
         onLater={onLater}
         onEarlier={onEarlier}
         focusToHeader={focusToHeader}
         loading={loading}
-        loadingMore={state.loadingMore}
+        loadingMore={mainState.loadingMore}
         settingsNotification={settingsNotification}
-        separator1={hash ? undefined : state.separator1}
-        topNote={state.topNote}
-        bottomNote={state.bottomNote}
+        separator1={hash ? undefined : mainState.separator1}
+        topNote={mainState.topNote}
+        bottomNote={mainState.bottomNote}
         searchTime={searchTime}
         routingErrors={plan?.routingErrors}
         from={from}
         to={to}
-        error={state.error}
+        error={mainState.error}
         walking={walkPlan?.edges?.length > 0}
         biking={bikePlan?.edges?.length > 0 || !!bikePublicPlan?.edges?.length}
         driving={
