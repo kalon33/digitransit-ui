@@ -24,6 +24,8 @@ import {
   getGeolocationState,
   getLatestNavigatorItinerary,
   setDialogState,
+  //  getPersonalization,
+  //  setPersonalization,
 } from '../../store/localStorage';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
 import { getWeatherData } from '../../util/apiUtils';
