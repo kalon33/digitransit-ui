@@ -18,7 +18,6 @@ import {
   getActiveLegAlertSeverityLevel,
   getMaximumAlertSeverityLevel,
   hasEntitiesOfType,
-  legHasCancelation,
   tripHasCancelationForStop,
 } from '../../util/alertUtils';
 import {
@@ -246,13 +245,11 @@ export default function TransitLeg({
       const modeDisclaimer = config.modeDisclaimers?.[mode]?.[language];
       if (modeDisclaimer) {
         return (
-          <div className="disclaimer-container unknown-fare-disclaimer__leg">
-            <div className="description-container">
-              {modeDisclaimer.disclaimer}
-              <a href={modeDisclaimer.link} target="_blank" rel="noreferrer">
-                {modeDisclaimer.text}
-              </a>
-            </div>
+          <div className="disclaimer-container unknown-fare-disclaimer__leg description-container">
+            {modeDisclaimer.disclaimer}
+            <a href={modeDisclaimer.link} target="_blank" rel="noreferrer">
+              {modeDisclaimer.text}
+            </a>
           </div>
         );
       }
@@ -262,9 +259,9 @@ export default function TransitLeg({
           <div className="disclaimer-container unknown-fare-disclaimer__leg">
             <div className="description-container">
               <span className="accent">
-                {`${intl.formatMessage({ id: 'pay-attention' })} `}
+                <FormattedMessage id="pay-attention" />
               </span>
-              {intl.formatMessage({ id: 'separate-ticket-required' })}
+              <FormattedMessage id="separate-ticket-required" />
             </div>
             <div className="ticket-info">
               <div className="accent">
@@ -273,13 +270,13 @@ export default function TransitLeg({
               {leg.fare.agency &&
                 !config.hideExternalOperator(leg.fare.agency) && (
                   <>
-                    <div>{leg.fare.agency.name}</div>
+                    {leg.fare.agency.name}
                     {leg.fare.agency.fareUrl && (
                       <ExternalLink
                         className="agency-link"
                         href={leg.fare.agency.fareUrl}
                       >
-                        {intl.formatMessage({ id: 'extra-info' })}
+                        <FormattedMessage id="extra-info" />
                       </ExternalLink>
                     )}
                   </>
@@ -289,7 +286,6 @@ export default function TransitLeg({
         );
       }
     }
-
     return null;
   };
 
@@ -479,11 +475,7 @@ export default function TransitLeg({
           <span aria-hidden="true">
             <div className="itinerary-time-column-time">
               {isCallAgency && <FormattedMessage id="estimate" />}{' '}
-              <span className={cx({ realtime: leg.realTime })}>
-                <span className={cx({ canceled: legHasCancelation(leg) })}>
-                  {time}
-                </span>
-              </span>
+              <span className={cx({ realtime: leg.realTime })}>{time}</span>
             </div>
             {zoneIcons}
           </span>
@@ -623,43 +615,41 @@ export default function TransitLeg({
           {(alertSeverityLevel === AlertSeverityLevelType.Warning ||
             alertSeverityLevel === AlertSeverityLevelType.Severe ||
             alertSeverityLevel === AlertSeverityLevelType.Unknown) && (
-            <div className="disruption">
-              <div className="disruption-link-container">
-                <Link
-                  to={
-                    (hasEntitiesOfType(alert, AlertEntityType.Route) &&
-                      routePagePath(
-                        leg.route.gtfsId,
-                        PREFIX_DISRUPTION,
-                        leg.trip.pattern.code,
-                      )) ||
-                    (hasEntitiesOfType(alert, AlertEntityType.Stop) &&
-                      stopPagePath(
-                        false,
-                        alert.entities[0].gtfsId,
-                        PREFIX_DISRUPTION,
-                      ))
-                  }
-                  className="disruption-link"
-                >
-                  <div className="disruption-icon">
-                    <ServiceAlertIcon
-                      className="inline-icon"
-                      severityLevel={alertSeverityLevel}
-                    />
-                  </div>
-                  <div className="description">
-                    {config.showAlertHeader
-                      ? alert.alertHeaderText
-                      : alert.alertDescriptionText}
-                  </div>
-                  <Icon
-                    img="icon_arrow-collapse--right"
-                    className="disruption-link-arrow"
-                    color={config.colors.primary}
+            <div className="disruption disruption-link-container">
+              <Link
+                to={
+                  (hasEntitiesOfType(alert, AlertEntityType.Route) &&
+                    routePagePath(
+                      leg.route.gtfsId,
+                      PREFIX_DISRUPTION,
+                      leg.trip.pattern.code,
+                    )) ||
+                  (hasEntitiesOfType(alert, AlertEntityType.Stop) &&
+                    stopPagePath(
+                      false,
+                      alert.entities[0].gtfsId,
+                      PREFIX_DISRUPTION,
+                    ))
+                }
+                className="disruption-link"
+              >
+                <div className="disruption-icon">
+                  <ServiceAlertIcon
+                    className="inline-icon"
+                    severityLevel={alertSeverityLevel}
                   />
-                </Link>
-              </div>
+                </div>
+                <div className="description">
+                  {config.showAlertHeader
+                    ? alert.alertHeaderText
+                    : alert.alertDescriptionText}
+                </div>
+                <Icon
+                  img="icon_arrow-collapse--right"
+                  className="disruption-link-arrow"
+                  color={config.colors.primary}
+                />
+              </Link>
             </div>
           )}
 
