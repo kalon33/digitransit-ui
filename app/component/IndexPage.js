@@ -47,6 +47,7 @@ import {
 } from '../action/PositionActions';
 import FavouriteStore from '../store/FavouriteStore';
 import { useConfigContext } from '../configurations/ConfigContext';
+import TrafficNowLinkNew from './trafficnow/TrafficNowLink';
 
 const StopRouteSearch = withSearchContext(DTAutoSuggest);
 const LocationSearch = withSearchContext(DTAutosuggestPanel);
@@ -190,12 +191,6 @@ function IndexPage(props, context) {
     executeAction(storeDestination, favourite);
   };
 
-  const trafficNowHandler = (e, lang) => {
-    window.location = `${config.URL.ROOTLINK}/${
-      lang === 'fi' ? '' : `${lang}/`
-    }${config.trafficNowLink[lang]}`;
-  };
-
   const clickStopNearIcon = url => {
     addAnalyticsEvent({
       event: 'sendMatomoEvent',
@@ -261,7 +256,12 @@ function IndexPage(props, context) {
     );
   };
 
-  const { trafficNowLink } = config;
+  const { trafficNowLink, trafficNowTest } = config;
+  const trafficNowHref = trafficNowLink
+    ? `${config.URL.ROOTLINK}/${language === 'fi' ? '' : `${language}/`}${
+        config.trafficNowLink[language]
+      }`
+    : undefined;
   const { breakpoint } = props;
 
   const origin = pendingOriginRef.current || props.origin;
@@ -391,9 +391,17 @@ function IndexPage(props, context) {
             </>
           )}
 
-          {trafficNowLink && (
-            <TrafficNowLink lang={language} handleClick={trafficNowHandler} />
+          {trafficNowLink && !trafficNowTest && (
+            <TrafficNowLink
+              handleClick={(e, lang) => {
+                window.location = `${config.URL.ROOTLINK}/${
+                  lang === 'fi' ? '' : `${lang}/`
+                }${config.trafficNowLink[lang]}`;
+              }}
+              href={trafficNowHref}
+            />
           )}
+          {trafficNowTest && <TrafficNowLinkNew />}
         </CtrlPanel>
       </div>
       {(showSpinner && <OverlayWithSpinner />) || null}
@@ -431,13 +439,17 @@ function IndexPage(props, context) {
             <StopRouteSearch isMobile {...stopRouteSearchProps} />
           </div>
           <CtrlPanel.SeparatorLine usePaddingBottom20 />
-          {trafficNowLink && (
+          {trafficNowLink && !trafficNowTest && (
             <TrafficNowLink
-              lang={language}
-              handleClick={trafficNowHandler}
-              fontWeights={fontWeights}
+              handleClick={(e, lang) => {
+                window.location = `${config.URL.ROOTLINK}/${
+                  lang === 'fi' ? '' : `${lang}/`
+                }${config.trafficNowLink[lang]}`;
+              }}
+              href={trafficNowHref}
             />
           )}
+          {trafficNowTest && <TrafficNowLinkNew />}
         </CtrlPanel>
       </div>
     </div>

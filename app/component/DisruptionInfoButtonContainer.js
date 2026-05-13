@@ -1,21 +1,22 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { graphql, QueryRenderer } from 'react-relay';
-import { matchShape, routerShape } from 'found';
 import ReactRelayContext from 'react-relay/lib/ReactRelayContext';
 import DisruptionInfoButton from './DisruptionInfoButton';
 import { addAnalyticsEvent } from '../util/analyticsUtils';
 
-function DisruptionInfoButtonContainer(outerProps, { config: { feedIds } }) {
-  const { setDisruptionInfoOpen } = outerProps;
+function DisruptionInfoButtonContainer(
+  { onClick = () => {} },
+  { config: { feedIds } },
+) {
   const { environment } = useContext(ReactRelayContext);
   const openDisruptionInfo = () => {
-    setDisruptionInfoOpen(true);
     addAnalyticsEvent({
       category: 'Navigation',
       action: 'OpenDisruptions',
       name: null,
     });
+    onClick();
   };
 
   return (
@@ -42,12 +43,10 @@ function DisruptionInfoButtonContainer(outerProps, { config: { feedIds } }) {
 }
 
 DisruptionInfoButtonContainer.propTypes = {
-  setDisruptionInfoOpen: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
 };
 
 DisruptionInfoButtonContainer.contextTypes = {
-  router: routerShape.isRequired,
-  match: matchShape.isRequired,
   config: PropTypes.shape({
     feedIds: PropTypes.arrayOf(PropTypes.string.isRequired),
   }).isRequired,
