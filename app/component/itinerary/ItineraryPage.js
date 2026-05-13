@@ -91,7 +91,7 @@ import NaviContainer from './navigator/NaviContainer';
 import NaviGeolocationInfoModal from './navigator/navigatorgeolocation/NaviGeolocationInfoModal';
 import NavigatorIntroModal from './navigator/navigatorintro/NavigatorIntroModal';
 import { planConnection } from './queries/PlanConnection';
-import { isCallAgencyLeg } from '../../util/legUtils';
+import { isCallAgencyLeg, hasTaxiLegs } from '../../util/legUtils';
 
 const MAX_QUERY_COUNT = 4; // number of attempts to collect enough itineraries
 
@@ -152,7 +152,8 @@ export default function ItineraryPage(props, context) {
   const [relaxScooterState, setRelaxScooterState] = useState(emptyPlan);
   const [relaxExternalFlexState, setRelaxExternalFlexState] =
     useState(emptyPlan);
-  const [combinedRelaxState, setCombinedRelaxState] = useState(emptyPlan);
+  const [combinedExternalRelaxState, setCombinedExternalRelaxState] =
+    useState(emptyPlan);
   const [scooterState, setScooterState] = useState(unset);
   const [combinedState, setCombinedState] = useState(emptyPlan);
   const [externalFlexState, setExternalFlexState] = useState(unset);
@@ -251,6 +252,24 @@ export default function ItineraryPage(props, context) {
     }
   };
 
+  function findDefaultPlan() {
+    if (
+      !filterWalk(combinedState.plan?.edges).length &&
+      !settingsState.settingsChanged
+    ) {
+      // Note: plan and scooter plan are merged, but relaxed ones are not
+      // because a relaxed scooter search is performed separately
+      // and shown only if basic relaxed search finds no journeys.
+      if (relaxState.plan?.edges?.length > 0) {
+        return relaxState.plan;
+      }
+      if (combinedExternalRelaxState.plan?.edges?.length > 0) {
+        return combinedExternalRelaxState.plan;
+      }
+    }
+    return combinedState.plan;
+  }
+
   function mapHashToPlan() {
     switch (hash) {
       case streetHash.walk:
@@ -266,21 +285,7 @@ export default function ItineraryPage(props, context) {
       case streetHash.parkAndRide:
         return altStates[PLANTYPE.PARKANDRIDE][0].plan;
       default:
-        if (
-          !filterWalk(combinedState.plan?.edges).length &&
-          !settingsState.settingsChanged
-        ) {
-          // Note: plan and scooter plan are merged, but relaxed ones are not
-          // because a relaxed scooter search is performed separately
-          // and shown only if basic relaxed search finds no journeys.
-          if (relaxState.plan?.edges?.length > 0) {
-            return relaxState.plan;
-          }
-          if (combinedRelaxState.plan?.edges?.length > 0) {
-            return combinedRelaxState.plan;
-          }
-        }
-        return combinedState.plan;
+        return findDefaultPlan();
     }
   }
 
@@ -516,7 +521,7 @@ export default function ItineraryPage(props, context) {
     }
   }
 
-  async function makeFlexQuery() {
+  async function makeExternalFlexQuery() {
     if (!planQueryNeeded(config, match, PLANTYPE.FLEXTRANSIT_EXTERNAL)) {
       setExternalFlexState({ plan: {}, loading: LOADSTATE.DONE });
       return;
@@ -993,7 +998,7 @@ export default function ItineraryPage(props, context) {
   useEffect(() => {
     setCombinedState({ ...emptyState, loading: LOADSTATE.LOADING });
     makeScooterQuery();
-    makeFlexQuery();
+    makeExternalFlexQuery();
     makeInternalFlexQuery();
     makeMainQuery();
     Object.keys(altStates).forEach(key => makeAltQuery(key));
@@ -1002,7 +1007,10 @@ export default function ItineraryPage(props, context) {
     // so, if no itineraries are found with standard settings, scooter is not suggested
     // maybe it should be?
     if (settingsLimitRouting(config) && !settingsState.settingsChanged) {
-      setCombinedRelaxState({ ...emptyState, loading: LOADSTATE.LOADING });
+      setCombinedExternalRelaxState({
+        ...emptyState,
+        loading: LOADSTATE.LOADING,
+      });
       makeRelaxedQuery();
       makeRelaxedScooterQuery();
       makeRelaxedFlexQuery();
@@ -1066,7 +1074,7 @@ export default function ItineraryPage(props, context) {
     carPublicState.plan,
     altStates[PLANTYPE.PARKANDRIDE][0].plan,
     location.state?.selectedItineraryIndex,
-    combinedRelaxState.plan,
+    combinedExternalRelaxState.plan,
     naviMode,
   ]);
 
@@ -1159,10 +1167,33 @@ export default function ItineraryPage(props, context) {
         relaxExternalFlexState.plan,
         match.location.query.arriveBy === 'true',
       );
-      setCombinedRelaxState({ plan, loading: LOADSTATE.DONE });
+      setCombinedExternalRelaxState({ plan, loading: LOADSTATE.DONE });
       resetItineraryPageSelection();
     }
   }, [relaxScooterState.plan, relaxExternalFlexState.plan]);
+
+  useEffect(() => {
+    if (
+      combinedState.loading === LOADSTATE.DONE &&
+      relaxState.loading === LOADSTATE.DONE &&
+      combinedExternalRelaxState.loading === LOADSTATE.DONE
+    ) {
+      const plan = findDefaultPlan();
+      if (plan?.edges?.some(edge => hasTaxiLegs(edge.node))) {
+        addAnalyticsEvent({
+          event: 'sendMatomoEvent',
+          category: 'Itinerary',
+          action: 'ItineraryImpression',
+          name: 'taxi',
+        });
+      }
+    }
+  }, [
+    combinedState,
+    relaxState,
+    combinedExternalRelaxState,
+    settingsState.settingsChanged,
+  ]);
 
   const setMWTRef = ref => {
     mwtRef.current = ref;
@@ -1396,7 +1427,7 @@ export default function ItineraryPage(props, context) {
   const settings = getSettings(config);
 
   const showRelaxedPlanNotifier = plan === relaxState.plan;
-  const showCombinedPlanNotifier = plan === combinedRelaxState.plan;
+  const showCombinedPlanNotifier = plan === combinedExternalRelaxState.plan;
   let rentalVehicleNotifierId = null;
   if (showCombinedPlanNotifier) {
     if (relaxExternalFlexState.plan?.edges && relaxScooterState.plan?.edges) {
@@ -1453,7 +1484,7 @@ export default function ItineraryPage(props, context) {
   const loading =
     combinedState.loading === LOADSTATE.LOADING ||
     (relaxState.loading === LOADSTATE.LOADING && hasNoTransitItineraries) ||
-    (combinedRelaxState.loading === LOADSTATE.LOADING &&
+    (combinedExternalRelaxState.loading === LOADSTATE.LOADING &&
       hasNoTransitItineraries) ||
     waitAlternatives ||
     (streetHashes.includes(hash) && loadingAlt); // viewing unfinished alt plan
