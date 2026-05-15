@@ -601,7 +601,8 @@ class TransitLeg extends React.Component {
             />
           ) : (
             !omitDivider &&
-            routeNotifications.length === 0 && <div className="divider" />
+            routeNotifications.length === 0 &&
+            intermediateStopCount > 1 && <div className="divider" />
           )}
           {routeNotifications}
           <LegAgencyInfo leg={leg} />

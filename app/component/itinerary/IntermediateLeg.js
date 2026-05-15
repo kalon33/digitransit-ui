@@ -45,20 +45,26 @@ function IntermediateLeg(
       return { position: 'absolute', right: -3, top: '35%' };
     }
     if (placesCount === 2 && !previousZoneId && !currentZoneId && !nextZoneId) {
-      return { position: 'absolute', right: -3, top: '50%' };
+      return { position: 'absolute', right: -3, top: '6px' };
+    }
+    if (placesCount === 1 && !nextZoneId && isDualZone) {
+      return { position: 'absolute', right: -3, bottom: 2 };
     }
     if (placesCount === 1 && !nextZoneId) {
-      return { position: 'absolute', right: -3, top: '50%' };
+      return { position: 'absolute', right: -3, top: '5px' };
     }
     if (currentZoneId && previousZoneId) {
-      return { position: 'absolute', right: -3, bottom: 4 };
+      return { position: 'absolute', right: -3, bottom: 2 };
     }
     return { position: 'absolute', right: -3, top: '-1px', bottom: 'unset' };
   };
 
   const stationNameStyle = () => {
     if (placesCount === 2 && !previousZoneId && !currentZoneId && !nextZoneId) {
-      return { paddingTop: '15px', paddingBottom: '15px' };
+      return { paddingTop: '5px', paddingBottom: '15px' };
+    }
+    if (placesCount === 1 && !isDualZone) {
+      return { paddingTop: '5px', paddingBottom: '14px' };
     }
     if (isDualZone) {
       return { paddingTop: '0', paddingBottom: '14px' };

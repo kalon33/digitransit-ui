@@ -310,6 +310,16 @@ $itinerary-tab-switch-height: 48px;
       }
     }
 
+    .zone-dual:not(.zone-previous) {
+      .itinerary-time-column {
+        .time-column-zone-icons-container {
+          &.intermediate-leg {
+            top: -15px;
+          }
+        }
+      }
+    }
+
     .zone-previous {
       .itinerary-time-column {
         .time-column-zone-icons-container {
@@ -1788,6 +1798,7 @@ $itinerary-tab-switch-height: 48px;
 
     .divider {
       border-top: 1px solid #ddd;
+      margin-bottom: 8px;
     }
 
     .interline-info-container {
