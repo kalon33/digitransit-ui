@@ -269,7 +269,7 @@ export default {
       'Tämän matkan hiilidioksidipäästöt ovat {co2value} g.',
     'itinerary-co2.description-sr':
       'Tämän matkan hiilidioksidipäästöt ovat {co2value} g. Autolla kuljettuna ne olisivat olleet {carCo2Value} g.',
-    'itinerary-co2.link': 'Näin vähennämme päästöjä ›',
+    'itinerary-co2.link': 'Näin toteutamme päästölaskentaa ›',
     'itinerary-co2.title': 'Matkan CO₂-päästöt',
     'itinerary-co2.title-sr': 'Matkan hiilidioksidipäästöt',
     'itinerary-details.biking-leg':

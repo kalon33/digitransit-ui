@@ -274,7 +274,7 @@ export default {
       'Koldioxidutsläppen för denna resa är {co2value} g.',
     'itinerary-co2.description-sr':
       'Koldioxidutsläppen för denna resa är {co2value} g. En bil skulle generera {carCo2Value} g koldioxid på samma resa.',
-    'itinerary-co2.link': 'Så minskar vi utsläppen ›',
+    'itinerary-co2.link': 'Utsläppsberäkningen grundar sig på detta ›',
     'itinerary-co2.title': 'Resans CO₂-utsläpp',
     'itinerary-co2.title-sr': 'Rejsens koldioxidutsläpp',
     'itinerary-details.biking-leg':

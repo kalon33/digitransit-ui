@@ -277,7 +277,7 @@ export default {
       '{co2value} g of carbondioxide emissions will be generated on this journey.',
     'itinerary-co2.description-sr':
       '{co2value} g of carbondioxide emissions will be generated on this journey. A car would generate {carCo2Value} g of carbondioxide on the same journey.',
-    'itinerary-co2.link': 'This is how we reduce emissions ›',
+    'itinerary-co2.link': 'How are emissions calculated ›',
     'itinerary-co2.title': 'CO₂ emissions of the journey',
     'itinerary-co2.title-sr': 'Carbondioxide emissions of the journey',
     'itinerary-details.biking-leg':
