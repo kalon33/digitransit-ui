@@ -1,4 +1,3 @@
-import { IS_DEV } from '../util/envUtils';
 import safeJsonParse from '../util/safeJsonParser';
 import { BIKEAVL_WITHMAX } from '../util/vehicleRentalUtils';
 import realtime from './realtimeUtils';
@@ -874,5 +873,5 @@ export default {
     minTransferTime: 900, // seconds
   },
   personalisation: false,
-  showNewRoutePage: IS_DEV,
+  showNewRoutePage: false,
 };
