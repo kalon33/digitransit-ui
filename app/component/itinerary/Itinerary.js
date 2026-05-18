@@ -785,17 +785,17 @@ const Itinerary = ({
   }
 
   //  accessible representation for summary
+  let firstDepartureLabelId = 'itinerary-summary-row.first-departure';
   const firstDepartureWithRentals = compressedLegs.find(isTransitOrRentalLeg);
-  firstDeparture = firstDepartureWithRentals?.rentedBike
-    ? firstDepartureWithRentals
-    : firstDeparture;
-  const rentalLabelId =
-    firstDeparture?.mode.toLowerCase() === 'scooter'
-      ? 'itinerary-summary-row.first-leg-start-time-scooter'
-      : 'itinerary-summary-row.first-leg-start-time-citybike';
-  const firstDepartureLabelId = firstDepartureWithRentals?.rentedBike
-    ? rentalLabelId
-    : 'itinerary-summary-row.first-departure';
+  if (firstDepartureWithRentals?.rentedBike) {
+    firstDeparture = firstDepartureWithRentals;
+    firstDepartureLabelId =
+      firstDeparture?.mode === LegMode.Scooter
+        ? 'itinerary-summary-row.first-leg-start-time-scooter'
+        : 'itinerary-summary-row.first-leg-start-time-citybike';
+  } else if (firstDeparture?.mode === LegMode.Taxi) {
+    firstDepartureLabelId = 'itinerary-summary-row.first-leg-start-time-taxi';
+  }
 
   const summaryDescription = (
     <div className="sr-only" key="screenReader">
