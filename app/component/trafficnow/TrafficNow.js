@@ -55,40 +55,42 @@ const TrafficNow = () => {
             'traffic-now__body--mobile': mobile,
           })}
         >
-          {mode ? (
-            <Suspense fallback={<Loading />}>
-              <CanceledTripsContainer mode={mode} isMobile={mobile} />
-            </Suspense>
-          ) : (
-            <FilterContextProvider>
-              {!mobile ? (
-                <div className="traffic-now__filters-container">
-                  <Filters />
-                </div>
-              ) : (
-                <div className="traffic-now__filters-button-container">
-                  <FiltersModal
-                    isOpen={showFiltersModal}
-                    onClose={() => setShowFiltersModal(false)}
-                  />
-                  <Button
-                    className="traffic-now__filters-button"
-                    size="medium"
-                    fullWidth
-                    variant="blue"
-                    value={intl.formatMessage({
-                      id: 'filters',
-                      defaultMessage: 'Filters',
-                    })}
-                    onClick={() => setShowFiltersModal(true)}
-                  />
-                </div>
-              )}
+          <FilterContextProvider>
+            {mode ? (
               <Suspense fallback={<Loading />}>
-                <Disruptions />
+                <CanceledTripsContainer mode={mode} isMobile={mobile} />
               </Suspense>
-            </FilterContextProvider>
-          )}
+            ) : (
+              <>
+                {!mobile ? (
+                  <div className="traffic-now__filters-container">
+                    <Filters />
+                  </div>
+                ) : (
+                  <div className="traffic-now__filters-button-container">
+                    <FiltersModal
+                      isOpen={showFiltersModal}
+                      onClose={() => setShowFiltersModal(false)}
+                    />
+                    <Button
+                      className="traffic-now__filters-button"
+                      size="medium"
+                      fullWidth
+                      variant="blue"
+                      value={intl.formatMessage({
+                        id: 'filters',
+                        defaultMessage: 'Filters',
+                      })}
+                      onClick={() => setShowFiltersModal(true)}
+                    />
+                  </div>
+                )}
+                <Suspense fallback={<Loading />}>
+                  <Disruptions />
+                </Suspense>
+              </>
+            )}
+          </FilterContextProvider>
         </div>
       </Gutterer>
     </div>

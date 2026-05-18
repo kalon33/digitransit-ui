@@ -12,7 +12,6 @@ import { useFilterContext } from './filters/FiltersContext';
 import { filterAndSortAlerts } from './filters/filterUtils';
 import AlertsQuery from './queries/AlertsQuery';
 import CanceledTripsOverviewQuery from './queries/CanceledTripsOverviewQuery';
-import { getAvailableModes } from './utils';
 
 const CANCELED_TRIPS_OVERVIEW_QUERY_AMOUNT = 20;
 
@@ -31,15 +30,24 @@ export default function Disruptions() {
     feedIds: config.feedIds,
   });
 
-  const availableModes = getAvailableModes(config);
-
+  // If no modes are selected, fetch cancelations for all
+  const modesToFetch =
+    selectedFilters.vehicleModes.length === 0
+      ? [
+          TransportMode.Bus,
+          TransportMode.Tram,
+          TransportMode.Rail,
+          TransportMode.Subway,
+          TransportMode.Ferry,
+        ]
+      : selectedFilters.vehicleModes.map(mode => mode.toUpperCase());
   const canceledTripsVars = {
     amount: CANCELED_TRIPS_OVERVIEW_QUERY_AMOUNT,
-    fetchBus: availableModes.includes(TransportMode.Bus),
-    fetchTram: availableModes.includes(TransportMode.Tram),
-    fetchRail: availableModes.includes(TransportMode.Rail),
-    fetchSubway: availableModes.includes(TransportMode.Subway),
-    fetchFerry: availableModes.includes(TransportMode.Ferry),
+    fetchBus: modesToFetch.includes(TransportMode.Bus),
+    fetchTram: modesToFetch.includes(TransportMode.Tram),
+    fetchRail: modesToFetch.includes(TransportMode.Rail),
+    fetchSubway: modesToFetch.includes(TransportMode.Subway),
+    fetchFerry: modesToFetch.includes(TransportMode.Ferry),
   };
 
   const { bus, tram, rail, subway, ferry } = useLazyLoadQuery(

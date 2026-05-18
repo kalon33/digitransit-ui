@@ -139,6 +139,7 @@ Important behavior:
 
 ## TODO
 - Move `CanceledTripsContainer` under `FilterContextProvider` and have the selected filters affect CanceledTrips as well
+  - Added filtering based on mode selection, more filters could be added when the api supports them
 - Add a reasonable unit test suite
 - Change CanceledTrips view to render on route basis when OTP endpoint supports such response
   - Currently the response contains cancellations on cancellation basis which results in bad UX if all cancellations don't fit in the initial 20 node quota.
