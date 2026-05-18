@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 require('@babel/register')({
   // This will override `node_modules` ignoring - you can alternatively pass
   // an array of strings to be explicitly matched or a regex / glob
@@ -6,6 +7,9 @@ require('@babel/register')({
   ],
 });
 
+// Prevent Node.js from trying to parse CSS files as JavaScript
+require.extensions['.css'] = () => {};
+
 // @hsl-fi/* packages are ESM-only ("type": "module") and cannot be require()'d
 // in the CommonJS test environment. Node throws ERR_REQUIRE_ESM before Babel can
 // intercept the load, so we must stub these modules at Module._load level, which
@@ -13,9 +17,7 @@ require('@babel/register')({
 // eslint-disable-next-line import/no-commonjs
 const Module = require('module');
 
-// eslint-disable-next-line no-underscore-dangle
 const originalLoad = Module._load;
-// eslint-disable-next-line no-underscore-dangle
 Module._load = function interceptEsmPackages(request, ...args) {
   if (request === '@hsl-fi/dialog') {
     // Named arrow functions so Enzyme can match by displayName / function.name
@@ -42,6 +44,27 @@ Module._load = function interceptEsmPackages(request, ...args) {
           // Return a named stub function so Enzyme can match it by .name
           const stub = { [name]: () => null }[name];
           return stub;
+        },
+      },
+    );
+  }
+  // Fallback: stub any other @hsl-fi/* package generically
+  if (request.startsWith('@hsl-fi/')) {
+    return new Proxy(
+      function StubComponent() {
+        return null;
+      },
+      {
+        get(target, prop) {
+          if (prop === '__esModule') {
+            return true;
+          }
+          if (prop === 'default') {
+            return target;
+          }
+          return function StubComponent() {
+            return null;
+          };
         },
       },
     );

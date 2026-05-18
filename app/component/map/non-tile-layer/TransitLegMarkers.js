@@ -3,7 +3,7 @@ import React from 'react';
 import { withLeaflet } from 'react-leaflet/es/context';
 import polyUtil from 'polyline-encoded';
 import { configShape, legShape } from '../../../util/shapes';
-import { legTime } from '../../../util/legUtils';
+import { isLocalCallAgency, legTime } from '../../../util/legUtils';
 import { getMiddleOf } from '../../../util/geo-utils';
 import LegMarker from './LegMarker';
 import SpeechBubble from '../SpeechBubble';
@@ -255,6 +255,9 @@ class TransitLegMarkers extends React.Component {
           }}
           mode={leg.mode}
           zIndexOffset={leg.zIndexOffset} // Make sure the LegMarker always stays above the StopMarkers
+          appendClass={
+            isLocalCallAgency(leg, this.context.config) ? 'call-local' : ''
+          }
         />,
       );
       pixelPositions.push({
@@ -290,6 +293,9 @@ class TransitLegMarkers extends React.Component {
           }}
           mode={leg.mode}
           zIndexOffset={leg.zIndexOffset} // Make sure the LegMarker always stays above the StopMarkers
+          appendClass={
+            isLocalCallAgency(leg, this.context.config) ? 'call-local' : ''
+          }
         />,
       );
       pixelPositions.push(styleAndPosition.pixelPosition);

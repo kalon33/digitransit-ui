@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { configShape } from '../../../../util/shapes';
-import { useLogo } from '../hooks/useLogo';
+import { useLogo } from '../../../../hooks/useLogo';
 import NavigatorModal from '../NavigatorModal';
 import NavigatorIntro from './NavigatorIntro';
 

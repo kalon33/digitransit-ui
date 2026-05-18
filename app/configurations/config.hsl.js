@@ -17,6 +17,8 @@ const BANNER_URL = process.env.CONTENT_DOMAIN
 const SUGGESTION_URL = process.env.CONTENT_DOMAIN
   ? `${process.env.CONTENT_DOMAIN}/api/v1/search/suggestions`
   : 'https://content.hsl.fi/api/v1/search/suggestions'; // old url
+const travelersAccountUrl = process.env.TRAVELERS_ACCOUNT_URL;
+const staticAssetsUrl = process.env.STATIC_ASSETS_URL;
 
 const virtualMonitorBaseUrl = IS_DEV
   ? 'https://dev-hslmonitori.digitransit.fi'
@@ -67,6 +69,8 @@ export default {
     FONT: 'https://www.hsl.fi/fonts/784131/6C5FB8083F348CFBB.css',
     FONTCOUNTER: 'https://cloud.typography.com/6364294/7432412/css/fonts.css',
     ROOTLINK: rootLink,
+    TRAVELERS_ACCOUNT: travelersAccountUrl,
+    STATIC_ASSETS: staticAssetsUrl,
     BANNERS: BANNER_URL,
     HSL_FI_SUGGESTIONS: SUGGESTION_URL,
     EMBEDDED_SEARCH_GENERATION: '/reittiopas-elementti',
@@ -107,7 +111,7 @@ export default {
   useRoutingFeedbackPrompt: true,
 
   feedIds: ['HSL', 'HSLlautta', 'Sipoo'],
-  externalFeedIds: ['HSLlautta', '02Taksi'],
+  externalFeedIds: ['HSLlautta'],
   externalFerryByStopCode: true, // no stop code means external ferry
 
   allowLogin: true,
@@ -119,6 +123,8 @@ export default {
     walkSpeed: 1.28,
     showBikeAndParkItineraries: true,
     transferPenalty: 180,
+    // TODO: flex disabled for now, proper configuration coming in the future
+    // includeTaxiSuggestions: true,
   },
 
   /**
@@ -794,25 +800,22 @@ export default {
   navigation: true,
   crazyEgg: true,
 
-  // features that should not be deployed to production
-  experimental: {
-    allowFlexJourneys: IS_DEV,
-    allowDirectFlexJourneys: false,
-  },
-
   showStopStatusMarkers: true,
 
-  flex: {
+  // TODO: flex disabled for now, proper configuration coming in the future
+  // taxiOptionLabelOverride: 'demand-responsive-traffic',
+
+  // TODO: flex disabled for now, proper configuration coming in the future
+  /* flex: {
     internalFlexEnabled: IS_DEV,
     allowTaxiJourneys: IS_DEV,
     directOnlyTaxiJourneys: false,
     internalAgencies: ['KirkkonummiE:612', 'KirkkonummiP:612'],
-    externalAgencies: ['02Taksi:02_taksi'],
+    externalAgencies: ['Uber:agency-mog2skf5-1'],
     allowedExternalFlexRouteTypes: [1501],
     infoLanguage: 'fi',
-  },
+  }, */
+
   showRouteDescNotification: IS_DEV,
-  personalisation: false,
-  interactiveElementsUseModeColor: true,
-  viaPointsEnabled: true,
+  personalization: false,
 };

@@ -32,6 +32,7 @@ import { AlertEntityType } from '../../constants';
 import FavouriteRouteContainer from './FavouriteRouteContainer';
 import RouteNotificationButton from './RouteNotificationButton';
 import { useConfigContext } from '../../configurations/ConfigContext';
+import { isLocalCallAgency } from '../../util/legUtils';
 
 function resolveHeadsign(pattern) {
   if (!pattern) {
@@ -88,6 +89,8 @@ function RoutePage({
   const matchingNotification = config.routeNotifications?.find(n =>
     n.showForRoute?.(route),
   );
+  const localCallAgency = isLocalCallAgency({ route }, config);
+
   return (
     <div className="route-page-container">
       <div className="header-for-printing">
@@ -109,12 +112,15 @@ function RoutePage({
               color={route.color ? `#${route.color}` : null}
               mode={mode}
               text=""
+              appendClass={localCallAgency ? 'call-local' : ''}
               isCallAgency={mode === 'call'}
             />
           </div>
           <div className="route-info">
             <h1
-              className={cx('route-short-name', mode)}
+              className={cx('route-short-name', mode, {
+                'call-local': localCallAgency,
+              })}
               ref={headingRef}
               tabIndex={-1}
               style={{ color: shortNameColor }}
@@ -200,6 +206,7 @@ const containerComponent = createFragmentContainer(
         agency {
           name
           phone
+          gtfsId
         }
         patterns {
           alerts(types: [ROUTE, STOPS_ON_PATTERN]) {

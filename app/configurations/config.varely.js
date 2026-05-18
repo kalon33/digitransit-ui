@@ -122,7 +122,6 @@ export default configMerger(walttiConfig, {
 
   /* Enable real-time map layer for vehicle positions */
   vehicles: false,
-  viaPointsEnabled: false,
 
   aboutThisService: {
     fi: [
@@ -152,6 +151,16 @@ export default configMerger(walttiConfig, {
       },
     ],
   },
+
+  // TODO: flex disabled for now, proper configuration coming in the future
+  /* flex: {
+    internalFlexEnabled: false,
+    allowTaxiJourneys: IS_DEV,
+    directOnlyTaxiJourneys: false,
+    internalAgencies: [],
+    externalAgencies: ['02Taksi:02_taksi'],
+    infoLanguage: 'fi',
+  }, */
 
   sourceForAlertsAndDisruptions: {
     VARELY: {

@@ -15,11 +15,8 @@ export const alertShape = PropTypes.shape({
   alertSeverityLevel: PropTypes.string,
   alertUrl: PropTypes.string,
   id: PropTypes.string,
-  entities: PropTypes.arrayOf(
-    PropTypes.shape({
-      __typename: PropTypes.string.isRequired,
-    }),
-  ),
+  // eslint-disable-next-line no-use-before-define
+  entities: PropTypes.arrayOf(() => entityShape),
 });
 
 export const childrenShape = PropTypes.oneOfType([
@@ -466,4 +463,52 @@ export const minTransferTimeShape = PropTypes.arrayOf(
     title: PropTypes.string,
     value: PropTypes.number,
   }),
+);
+
+export const pickupBookingInfoShape = PropTypes.shape({
+  contactInfo: PropTypes.shape({
+    bookingUrl: PropTypes.string,
+    infoUrl: PropTypes.string,
+    phoneNumber: PropTypes.string,
+    latestBookingTime: PropTypes.shape({
+      daysPrior: PropTypes.number,
+      time: PropTypes.string,
+    }),
+    minimumBookingNotice: PropTypes.shape({
+      minutes: PropTypes.number,
+    }),
+  }),
+  message: PropTypes.string,
+});
+
+export const stopOnRouteShape = PropTypes.shape({
+  route: routeShape,
+});
+
+export const entityShape = (props, propName, componentName, ...rest) => {
+  const entity = props[propName];
+  if (!entity || typeof entity !== 'object') {
+    return null;
+  }
+  /* eslint-disable no-underscore-dangle */
+  switch (entity.__typename) {
+    case 'Route':
+      return routeShape(props, propName, componentName, ...rest);
+    case 'Stop':
+      return stopShape(props, propName, componentName, ...rest);
+    case 'StopOnRoute':
+      return stopOnRouteShape(props, propName, componentName, ...rest);
+    case 'Unknown':
+      return null;
+    case 'Agency':
+      return agencyShape(props, propName, componentName, ...rest);
+    default:
+      return new Error(
+        `Invalid entity type '${entity.__typename}' in ${componentName}`,
+      );
+  }
+};
+
+export const stylesShape = PropTypes.objectOf(
+  PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 );

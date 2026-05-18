@@ -29,6 +29,7 @@ const OTP_TIMEOUT = process.env.OTP_TIMEOUT || 12000;
 const YEAR = 1900 + new Date().getYear();
 
 const REALTIME_PATCH = safeJsonParse(process.env.REALTIME_PATCH) || {};
+const TRAFFIC_NOW_TEST = process.env.TRAFFIC_NOW_TEST === 'true';
 
 export default {
   PORT,
@@ -731,6 +732,8 @@ export default {
   vehicles: false,
   showVehiclesOnStopPage: false,
   showVehiclesOnItineraryPage: false,
+  trafficNowLink: false,
+  trafficNowTest: TRAFFIC_NOW_TEST,
 
   timetables: {},
 
@@ -756,7 +759,7 @@ export default {
     itinerary: false,
   },
 
-  viaPointsEnabled: false,
+  viaPointsEnabled: true,
   viaPointsMax: 1,
 
   // Toggling this off shows the alert bodytext instead of the header
@@ -835,15 +838,41 @@ export default {
         ],
       },
     },
+    {
+      showForRoute: route => route.type === 715,
+      id: 'flexBusNotification',
+      header: {
+        fi: 'Kutsuliikenne',
+        en: 'On-demand service',
+        sv: 'Anropsbusstrafiken',
+      },
+      content: {
+        fi: [
+          'Linja toimii ennakkotilauksella. Varmistaaksesi matkan, tee varaus etukäteen. Tarkemmat tiedot palveluntarjoalta.',
+        ],
+        en: [
+          'This service operates by advance booking. To ensure your ride, please book ahead of time. More information is available from the service provider. ',
+        ],
+        sv: [
+          'Linjen fungerar med förhandsbokning. Boka din resa i förväg för att säkerställa resan. Mer information från tjänsteleverantören.',
+        ],
+      },
+    },
   ],
   navigation: false,
   sendAnalyticsCustomEventGoals: false,
   shortenLongTextThreshold: 10, // for route number in itinerary summary
-  allowFlexJourneys: false,
-  allowDirectFlexJourneys: false,
-  allowedFlexRouteTypes: [1501],
   showRouteDescNotification: false,
   showStopStatusMarkers: false,
+  flex: {
+    internalFlexEnabled: false,
+    allowTaxiJourneys: false,
+    directOnlyTaxiJourneys: false,
+    internalAgencies: [], // "FeedId:AgencyId"
+    externalAgencies: [], // "FeedId:AgencyId"
+    allowedExternalFlexRouteTypes: [1501],
+    minTransferTime: 900, // seconds
+  },
   personalisation: false,
   showNewRoutePage: IS_DEV,
 };

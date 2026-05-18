@@ -24,7 +24,9 @@ import { getRouteMode } from '../../util/modeUtils';
 import Icon from '../Icon';
 
 function filterSimilarRoutes(routes, currentRoute) {
-  const withoutCurrent = routes.filter(r => r.gtfsId !== currentRoute.gtfsId);
+  const withoutCurrent = routes.filter(
+    r => r.shortName && r.gtfsId !== currentRoute.gtfsId,
+  );
 
   let routeBasename = currentRoute.shortName;
   if (Number.isNaN(Number(routeBasename))) {
@@ -95,7 +97,7 @@ function RoutePatternSelectContainer({
       } else {
         // For alphanumeric routes like "23A", search by the numeric base "23"
         const searchName = Number.isNaN(Number(route.shortName))
-          ? route.shortName.replace(/\D/g, '')
+          ? route.shortName?.replace(/\D/g, '')
           : route.shortName;
 
         if (!searchName) {
