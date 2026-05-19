@@ -26,6 +26,7 @@ function DisruptionInfoButton(props, { config }) {
         )}
         {props.viewer?.alerts?.length > 0 && (
           <Icon
+            aria-hidden="true"
             img="icon_caution_white_exclamation"
             className="disruption-info"
           />

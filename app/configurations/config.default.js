@@ -873,4 +873,5 @@ export default {
     minTransferTime: 900, // seconds
   },
   personalisation: false,
+  showNewRoutePage: false,
 };

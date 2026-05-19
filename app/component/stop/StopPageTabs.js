@@ -81,7 +81,7 @@ function StopPageTabs({ stop }, { match }) {
     <div>
       {/* eslint-disable jsx-a11y/interactive-supports-focus */}
       <div
-        className="stop-tab-container"
+        className="route-tabs"
         role="tablist"
         onKeyDown={e => {
           const tabs = [Tab.RightNow, Tab.Timetable, Tab.Disruptions];
@@ -107,9 +107,7 @@ function StopPageTabs({ stop }, { match }) {
         {/* eslint-enable jsx-a11y/interactive-supports-focus */}
         <button
           type="button"
-          className={cx('stop-tab-singletab', {
-            active: activeTab === Tab.RightNow,
-          })}
+          className={cx({ 'is-active': activeTab === Tab.RightNow })}
           onClick={() => {
             router.replace(stopPagePath(isTerminal, stop.gtfsId, null, search));
             addAnalyticsEvent({
@@ -122,18 +120,15 @@ function StopPageTabs({ stop }, { match }) {
           ref={rightNowTabRef}
           tabIndex={focusedTab === Tab.RightNow ? 0 : -1}
           aria-selected={activeTab === Tab.RightNow}
+          style={{ '--totalCount': '3' }}
         >
-          <div className="stop-tab-singletab-container">
-            <div>
-              <FormattedMessage id="right-now" defaultMessage="right now" />
-            </div>
+          <div>
+            <FormattedMessage id="right-now" defaultMessage="right now" />
           </div>
         </button>
         <button
           type="button"
-          className={cx('stop-tab-singletab', {
-            active: activeTab === Tab.Timetable,
-          })}
+          className={cx({ 'is-active': activeTab === Tab.Timetable })}
           onClick={() => {
             router.replace(
               stopPagePath(isTerminal, stop.gtfsId, PREFIX_TIMETABLE, search),
@@ -148,17 +143,16 @@ function StopPageTabs({ stop }, { match }) {
           ref={timetableTabRef}
           tabIndex={focusedTab === Tab.Timetable ? 0 : -1}
           aria-selected={activeTab === Tab.Timetable}
+          style={{ '--totalCount': '3' }}
         >
-          <div className="stop-tab-singletab-container">
-            <div>
-              <FormattedMessage id="timetable" defaultMessage="timetable" />
-            </div>
+          <div>
+            <FormattedMessage id="timetable" defaultMessage="timetable" />
           </div>
         </button>
         <button
           type="button"
-          className={cx('stop-tab-singletab', {
-            active: activeTab === Tab.Disruptions,
+          className={cx({
+            'is-active': activeTab === Tab.Disruptions,
             'alert-active': disruptionClassName === 'active-disruption-alert',
             'service-alert-active':
               disruptionClassName === 'active-service-alert',
@@ -177,19 +171,15 @@ function StopPageTabs({ stop }, { match }) {
           ref={disruptionTabRef}
           tabIndex={focusedTab === Tab.Disruptions ? 0 : -1}
           aria-selected={activeTab === Tab.Disruptions}
+          style={{ '--totalCount': '3' }}
         >
-          <div className="stop-tab-singletab-container">
-            <div className={disruptionClassName}>
-              {disruptionIcon}
-              <FormattedMessage id="disruptions" />
-            </div>
-            <span className="sr-only">
-              {disruptionClassName !== 'no-alerts' ? (
-                <FormattedMessage id="disruptions-tab.sr-disruptions" />
-              ) : (
-                <FormattedMessage id="disruptions-tab.sr-no-disruptions" />
-              )}
-            </span>
+          <div
+            className={`tab-route-disruption ${
+              disruptionClassName || 'no-alerts'
+            }`}
+          >
+            {disruptionIcon}
+            <FormattedMessage id="disruptions" />
           </div>
         </button>
       </div>
