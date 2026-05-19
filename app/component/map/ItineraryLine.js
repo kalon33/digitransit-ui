@@ -277,30 +277,20 @@ function ItineraryLine({
 
       index.load(createFeatureObjects(clusterObjs));
       const bbox = [-180, -85, 180, 85]; // Bounding box covers the entire world
-      // TODO Fix to use smaller bbox, probably requires moveend event listening?
-      // The same fix should also be applied to RentalVehicles where supercluster is also used.
-      //
-      //  const bounds = leaflet.map.getBounds();
-      //  const bbox = [
-      //    bounds.getWest(),
-      //    bounds.getSouth(),
-      //    bounds.getEast(),
-      //    bounds.getNorth(),
-      //  ];
-
       const clusters = index.getClusters(bbox, zoom);
       clusters.forEach(clusterFeature => {
+        // Confusingly geojson format uses [lon, lat] instead of [lat, lon] used elsewhere in this file.
         const { coordinates } = clusterFeature.geometry;
         const { properties } = clusterFeature;
         if (properties.cluster) {
           // Handle a cluster.
           objs.push(
             <ClusterNumberMarker
-              key={`clusternumbermarker_${coordinates[0]}_${coordinates[1]}_clusterId_${properties.cluster_id}`}
+              key={`clusternumbermarker_${coordinates[1]}_${coordinates[0]}_clusterId_${properties.cluster_id}`}
               number={properties.iconCount}
               position={{
-                lat: coordinates[0],
-                lon: coordinates[1],
+                lat: coordinates[1],
+                lon: coordinates[0],
               }}
             />,
           );
@@ -310,14 +300,14 @@ function ItineraryLine({
           if (properties.type === IndoorStepType.Entrance) {
             objs.push(
               <EntranceMarker
-                key={`entrance_${coordinates[0]}_${coordinates[1]}`}
+                key={`entrance_${coordinates[1]}_${coordinates[0]}`}
                 entranceAccessible={getEntranceWheelchairAccessibility(
                   previousLeg,
                   leg,
                 )}
                 position={{
-                  lat: coordinates[0],
-                  lon: coordinates[1],
+                  lat: coordinates[1],
+                  lon: coordinates[0],
                 }}
                 code={properties.code}
               />,
@@ -325,10 +315,10 @@ function ItineraryLine({
           } else if (isVerticalTransportationUse(properties.type)) {
             objs.push(
               <IndoorStepMarker
-                key={`indoorstepmarker_${coordinates[0]}_${coordinates[1]}`}
+                key={`indoorstepmarker_${coordinates[1]}_${coordinates[0]}`}
                 position={{
-                  lat: coordinates[0],
-                  lon: coordinates[1],
+                  lat: coordinates[1],
+                  lon: coordinates[0],
                 }}
                 index={properties.index}
                 indoorSteps={getIndoorStepsWithVerticalTransportation(
