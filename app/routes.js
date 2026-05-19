@@ -346,14 +346,16 @@ export default config => {
           ),
         }}
       </Route>
-      <Route
-        path={TRAFFICNOW}
-        getComponent={() =>
-          import(
-            /* webpackChunkName: "trafficnow" */ './component/trafficnow/TrafficNow'
-          ).then(getDefault)
-        }
-      />
+      {config.trafficNowTest && (
+        <Route
+          path={TRAFFICNOW}
+          getComponent={() =>
+            import(
+              /* webpackChunkName: "trafficnow" */ './component/trafficnow/TrafficNow'
+            ).then(getDefault)
+          }
+        />
+      )}
       <Route
         path="/tietoja-palvelusta"
         getComponent={() =>

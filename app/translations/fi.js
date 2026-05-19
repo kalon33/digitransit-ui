@@ -95,20 +95,15 @@ export default {
     canceled: 'Peruttu',
     'capacity-modal.crushed-standing-room-only-body':
       'Vain vähän seisomapaikkoja',
-    'capacity-modal.crushed-standing-room-only-heading': 'Kova tungos',
-    'capacity-modal.few-seats-available-body': 'Joitain istumapaikkoja',
-    'capacity-modal.few-seats-available-heading': 'Ei liikaa tungosta',
+    'capacity-modal.few-seats-available-body': 'Joitakin istumapaikkoja',
     'capacity-modal.full-capacity-body': 'Ei vapaita paikkoja',
-    'capacity-modal.full-capacity-heading': 'Täynnä',
     'capacity-modal.heading': 'Onko kulkuneuvossa tilaa?',
     'capacity-modal.legend': 'Merkkien selitteet',
     'capacity-modal.many-seats-available-body': 'Paljon istumapaikkoja',
-    'capacity-modal.many-seats-available-heading': 'Ei tungosta',
     'capacity-modal.standing-room-only-body':
       'Vain vähän istuma- ja seisomapaikkoja',
-    'capacity-modal.standing-room-only-heading': 'Lähes täynnä',
     'capacity-modal.subheading':
-      'Osasta kulkuneuvoja on saatavilla reaaliaikainen kapasiteettitieto',
+      'Osasta kulkuneuvoja on saatavilla reaaliaikainen arvio paikkatilanteesta',
     car: 'Auto',
     'car-distance-duration': 'Autoile {duration} ({distance})',
     'car-distance-no-duration': 'Autoile {distance}',
@@ -176,6 +171,16 @@ export default {
     disclaimer:
       'Tulokset perustuvat arvioituihin ajoaikoihin. Ehdotetun yhteyden toteutumista ei voida taata.',
     disruption: 'Häiriö',
+    'disruption-badge-additional_service': 'Lisävuoroja',
+    'disruption-badge-detour': 'Poikkeusreitti',
+    'disruption-badge-modified_service': 'Palvelutason muutos',
+    'disruption-badge-no_effect': 'Ei vaikutusta',
+    'disruption-badge-no_service': 'Peruutus',
+    'disruption-badge-other_effect': 'Muu',
+    'disruption-badge-reduced_service': 'Vähennettyä liikennettä',
+    'disruption-badge-significant_delays': 'Viivästyminen',
+    'disruption-badge-stop_moved': 'Pysäkki siirtynyt',
+    'disruption-badge-unknown_effect': 'Tuntematon',
     'disruption-info': 'Poikkeusinfo',
     'disruption-info-no-alerts':
       'Ei tiedossa olevia häiriöitä tai poikkeuksia.',
@@ -183,6 +188,9 @@ export default {
       'Linjalla ei tiedossa olevia häiriöitä tai poikkeuksia.',
     disruptions: 'Häiriöt',
     'disruptions-and-diversions': 'Häiriöt ja poikkeukset',
+    'disruptions-change-filters': 'Kokeile uudestaan muuttamalla valintoja',
+    'disruptions-found-amount':
+      '{amount, plural, =0 {Tiedotteita ei löytynyt} one {Löytyi 1 tiedote} other {Löytyi {amount} tiedotetta} }',
     'disruptions-tab.sr-disruptions': 'Yksi tai useampi häiriö tiedossa',
     'disruptions-tab.sr-no-disruptions': 'Ei tiedossa olevia häiriöitä',
     'distance-total': 'Matkan pituus',
@@ -207,6 +215,8 @@ export default {
     'ferry-external': 'Lautta',
     'ferry-external-with-route-number': 'Lautta {routeNumber} {headSign}',
     'ferry-with-route-number': 'Lautta {routeNumber} {headSign}',
+    filter: 'Suodata',
+    filters: 'Suodattimet',
     finnish: 'Suomi',
     'free-of-charge': 'Maksuton',
     'from-bus': 'bussista',
@@ -254,7 +264,7 @@ export default {
       'Tämän matkan hiilidioksidipäästöt ovat {co2value} g.',
     'itinerary-co2.description-sr':
       'Tämän matkan hiilidioksidipäästöt ovat {co2value} g. Autolla kuljettuna ne olisivat olleet {carCo2Value} g.',
-    'itinerary-co2.link': 'Näin vähennämme päästöjä ›',
+    'itinerary-co2.link': 'Näin toteutamme päästölaskentaa ›',
     'itinerary-co2.title': 'Matkan CO₂-päästöt',
     'itinerary-co2.title-sr': 'Matkan hiilidioksidipäästöt',
     'itinerary-details.biking-leg':
@@ -776,6 +786,26 @@ export default {
     'tracking-button-off': 'paikannus pois päältä',
     'tracking-button-offline': 'paikannus epäonnistui',
     'tracking-button-on': 'paikannus päällä',
+    'traffic-now': 'Liikenne nyt',
+    'traffic-now-long': 'Liikennetilanne nyt',
+    'traffic-now_bread': 'Matkustaminen',
+    'traffic-now_description':
+      'Ajantasaiset tiedot häiriöistä ja poikkeuksista. ',
+    'traffic-now_description_see-also':
+      'Katso myös {amount, plural, =1 {{link1},} other {{link1} sekä {link2},} } jotka löydät yksityiskohtaisemmin omilta sivuiltaan.',
+    'traffic-now_description_see-also--link1': 'lomat ja poikkeukset',
+    'traffic-now_description_see-also--link2': 'suuret muutokset',
+    'traffic-now_filters_entity-search': 'Hae yksittäistä linjaa tai pysäkkiä',
+    'traffic-now_filters_entity-search--placeholder':
+      'Linja, pysäkki tai asema',
+    'traffic-now_filters_toggles--cancellations-only': 'Vain peruutukset',
+    'traffic-now_filters_toggles--favourites-only':
+      'Vain omat linjat ja pysäkit',
+    'traffic-now_filters_validity-period': 'Näytä voimassaolon mukaan',
+    'traffic-now_filters_vehicle-mode': 'Näytä liikennevälineen mukaan',
+    'traffic-now_filters_view-results': 'Näytä tulokset',
+    'traffic-now_link': 'Liikennetilanne nyt',
+    'traffic-now_link-description': 'Katso häiriöt ja poikkeukset',
     trafficnow: 'Liikenne nyt',
     'trafficnow-bread': 'Matkustaminen',
     'trafficnow-description': 'Ajantasaiset tiedot häiriöistä ja poikkeuksista',
@@ -787,6 +817,7 @@ export default {
     'travel-time-with-hours': '{h} h {min} min',
     'trip-information': 'Lähdön tiedot',
     'try-again': 'Yritä uudelleen',
+    upcoming: 'Tuleva',
     'use-national-service-postfix': '-palvelusta.',
     'use-national-service-prefix':
       'Suosittelemme kokeilemaan reittihakua koko maan kattavasta ',
