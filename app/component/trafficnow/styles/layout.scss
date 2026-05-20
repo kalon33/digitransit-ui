@@ -35,6 +35,10 @@
     }
   }
 
+  .gutterer-content {
+    position: relative;
+  }
+
   &__header {
     display: flex;
     flex-direction: column;
@@ -42,6 +46,12 @@
     padding: var(--space-l) $padding-horizontal-gutter var(--space-xl)
       $padding-horizontal-gutter;
     flex: 0 0 50%;
+
+    &-image {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+    }
 
     &-breadcrumb {
       display: inline-flex;

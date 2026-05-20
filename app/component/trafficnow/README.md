@@ -149,4 +149,3 @@ Important behavior:
 - Define whether and how to present `canceledTrips` that are in future (i.e. tomorrow and beyond)
   - Show cancelations on the current day as ongoing, future cancelations as upcoming
   - Needs to wait until api updates
-- `TrafficNowHeader` logo needs to be added. Can be implemented using useLogo hook
