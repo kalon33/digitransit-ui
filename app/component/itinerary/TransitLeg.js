@@ -99,7 +99,7 @@ export default function TransitLeg({
   const [showAlternativeLegs, setShowAlternativeLegs] = useState(false);
 
   const isRouteConstantOperation =
-    config.constantOperationRoutes[leg.route.gtfsId];
+    config.constantOperationRoutes?.[leg.route.gtfsId];
 
   const displayAlternativeLegs =
     config.showAlternativeLegs &&
