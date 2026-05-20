@@ -222,6 +222,16 @@ export default function ItineraryPage(props, context) {
     setTopicsState(null);
   }
 
+  function shiftFeedback(shift) {
+    /* shift existing personalization feedback */
+    const shiftedFeedback = {};
+    Object.keys(feedback).forEach(k => {
+      shiftedFeedback[parseInt(k, 10) + shift] = feedback[k];
+    });
+    setFeedback(shiftedFeedback);
+    recommendedItinerary.current += shift;
+  }
+
   const selectStreetMode = newStreetMode => {
     addAnalyticsEvent({
       category: 'Itinerary',
@@ -647,6 +657,7 @@ export default function ItineraryPage(props, context) {
             separator1: mainState.separator1 + edges.length,
           }
         : { separator1: edges.length };
+      shiftFeedback(edges.length);
       setMainState({
         ...newState,
         ...separators,
@@ -740,6 +751,8 @@ export default function ItineraryPage(props, context) {
             separator1: mainState.separator1 + edges.length,
           }
         : { separator1: edges.length };
+
+      shiftFeedback(edges.length);
       setMainState({
         ...newState,
         ...separators,
