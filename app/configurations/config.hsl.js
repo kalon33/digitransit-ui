@@ -107,7 +107,9 @@ export default {
   useRoutingFeedbackPrompt: true,
 
   feedIds: ['HSL', 'HSLlautta', 'Sipoo'],
-  externalFeedIds: ['HSLlautta', 'Uber'],
+  externalFeedIds: ['HSLlautta'],
+  // TODO add when enabling Uber taxis
+  // externalFeedIds: ['HSLlautta', 'Uber'],
   externalFerryByStopCode: true, // no stop code means external ferry
 
   allowLogin: true,
@@ -119,7 +121,8 @@ export default {
     walkSpeed: 1.28,
     showBikeAndParkItineraries: true,
     transferPenalty: 180,
-    includeTaxiSuggestions: true,
+    // TODO add when enabling Uber taxis
+    // includeTaxiSuggestions: true,
   },
 
   /**
@@ -797,7 +800,8 @@ export default {
 
   showStopStatusMarkers: true,
 
-  flex: {
+  // TODO add when enabling Uber taxis
+  /* flex: {
     internalFlexEnabled: IS_DEV,
     allowTaxiJourneys: IS_DEV,
     directOnlyTaxiJourneys: false,
@@ -806,7 +810,7 @@ export default {
     allowedExternalFlexRouteTypes: [1501],
     infoLanguage: 'fi',
     taxiSettingLabelOverride: 'demand-responsive-traffic',
-  },
+  }, */
 
   showRouteDescNotification: IS_DEV,
   personalisation: false,
