@@ -717,12 +717,11 @@ export function rateItineraries(edges, weights, favorites) {
       top = e;
     }
   });
-  if (top > 0) {
+  if (topIndex > 0) {
     edges.splice(topIndex, 1);
     edges.unshift(top);
-    return 0;
   }
-  return -1;
+  return top ? 0 : -1;
 }
 
 /**
@@ -741,12 +740,8 @@ export function applyFeedback(weights, itinerary, positive) {
   );
 
   modes.forEach(mode => {
-    if (mode in updated) {
-      updated[mode] = Math.max(
-        MINWEIGHT,
-        Math.min(MAXWEIGHT, updated[mode] + adjustment),
-      );
-    }
+    const base = updated[mode] || 1;
+    updated[mode] = Math.max(MINWEIGHT, Math.min(MAXWEIGHT, base + adjustment));
   });
 
   return updated;

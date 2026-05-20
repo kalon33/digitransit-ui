@@ -146,7 +146,7 @@ export default function ItineraryPage(props, context) {
   const mobileRef = useRef();
   const ariaRef = useRef('summary-page.title');
   const mapLayerRef = useRef();
-  const weights = useRef(getPersonalization().weights);
+  const weights = useRef(getPersonalization().weights || {});
   const recommendedItinerary = useRef(-1);
 
   const [mainState, setMainState] = useState({
