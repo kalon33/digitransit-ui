@@ -814,4 +814,5 @@ export default {
 
   showRouteDescNotification: IS_DEV,
   personalization: false,
+  showNewRoutePage: true,
 };
