@@ -125,6 +125,15 @@
     position: sticky;
     top: 0;
 
+    &-mode-option {
+      border: solid $light-gray 1px;
+      border-radius: var(--radius-s);
+      padding: var(--space-xxs) var(--space-xs);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
     &-mobile {
       padding: var(--space-xl) var(--space-m);
     }
