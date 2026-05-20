@@ -202,6 +202,8 @@ export default function ItineraryPage(props, context) {
   const { hash, secondHash } = params;
   const { query } = location;
   const detailView = altTransitHash.includes(hash) ? secondHash : hash;
+  const settings = getSettings(config);
+  const personalization = config.personalization && settings.personalization;
 
   function altLoading() {
     return Object.values(altStates).some(
@@ -1107,7 +1109,6 @@ export default function ItineraryPage(props, context) {
 
   // merge direct car and car transit plans into one
   useEffect(() => {
-    const settings = getSettings(config);
     if (
       altStates[PLANTYPE.CARTRANSIT][0].loading === LOADSTATE.DONE &&
       settings.includeCarSuggestions &&
@@ -1149,12 +1150,13 @@ export default function ItineraryPage(props, context) {
           match.location.query.arriveBy === 'true',
         );
       }
-      recommendedItinerary.current = rateItineraries(
-        plan.edges,
-        weights.current,
-        props.favouriteRoutes,
-      );
-
+      if (personalization) {
+        recommendedItinerary.current = rateItineraries(
+          plan.edges,
+          weights.current,
+          props.favouriteRoutes,
+        );
+      }
       setCombinedMainState({ plan, loading: LOADSTATE.DONE });
       resetItineraryPageSelection();
     }
@@ -1430,8 +1432,6 @@ export default function ItineraryPage(props, context) {
   const bikePublicPlan = bikePublicState.plan;
   const carPublicPlan = carPublicState.plan;
 
-  const settings = getSettings(config);
-
   const showRelaxedPlanNotifier = plan === relaxMainState.plan;
   const showCombinedPlanNotifier = plan === combinedExternalRelaxState.plan;
   let rentalVehicleNotifierId = null;
@@ -1502,7 +1502,7 @@ export default function ItineraryPage(props, context) {
   ) : null;
 
   const feedbackProp =
-    config.personalization && settings.personalization ? giveFeedback : null;
+    personalization && !streetHashes.includes(hash) ? giveFeedback : null;
 
   // in mobile, settings drawer hides other content
   const panelHidden = !desktop && settingsDrawer !== null;
