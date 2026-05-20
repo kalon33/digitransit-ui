@@ -30,7 +30,7 @@ export default function LegInfo({
   changeHash,
   tabIndex,
   isCallAgency = false,
-  mobile,
+  mobile = false,
   isTransitLeg,
 }) {
   const intl = useIntl();
@@ -200,14 +200,4 @@ LegInfo.propTypes = {
   isCallAgency: PropTypes.bool,
   isTransitLeg: PropTypes.bool,
   mobile: PropTypes.bool,
-};
-
-LegInfo.defaultProps = {
-  changeHash: undefined,
-  tabIndex: undefined,
-  alertSeverityLevel: undefined,
-  hasNoShortName: undefined,
-  isCallAgency: false,
-  isTransitLeg: false,
-  mobile: undefined,
 };

@@ -109,6 +109,8 @@ export const LegMode = {
   Rail: 'RAIL',
   Wait: 'WAIT',
   Taxi: 'TAXI',
+  Airplane: 'AIRPLANE',
+  Scooter: 'SCOOTER',
 };
 
 /**
@@ -137,6 +139,10 @@ export function getLegMode(legOrMode) {
       return LegMode.Rail;
     case LegMode.Taxi:
       return LegMode.Taxi;
+    case LegMode.Airplane:
+      return LegMode.Airplane;
+    case LegMode.Scooter:
+      return LegMode.Scooter;
     default:
       return undefined;
   }
@@ -458,6 +464,12 @@ function isWalkingLeg(leg) {
 function isBikingLeg(leg) {
   return [LegMode.Bicycle, LegMode.CityBike].includes(getLegMode(leg));
 }
+function isScooterLeg(leg) {
+  return LegMode.Scooter === getLegMode(leg);
+}
+function isAirplaneLeg(leg) {
+  return LegMode.Airplane === getLegMode(leg);
+}
 function isDrivingLeg(leg) {
   return LegMode.Car === getLegMode(leg);
 }
@@ -470,6 +482,12 @@ export function isCallAgencyLeg(leg) {
 
 export function hasTaxiLegs(itinerary) {
   return itinerary.legs.some(isTaxiLeg);
+}
+export function hasScooterLegs(itinerary) {
+  return itinerary.legs.some(isScooterLeg);
+}
+export function hasAirplaneLegs(itinerary) {
+  return itinerary.legs.some(isAirplaneLeg);
 }
 
 /**

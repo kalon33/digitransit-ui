@@ -112,6 +112,8 @@ export default {
 
   feedIds: ['HSL', 'HSLlautta', 'Sipoo'],
   externalFeedIds: ['HSLlautta'],
+  // TODO add when enabling Uber taxis
+  // externalFeedIds: ['HSLlautta', 'Uber'],
   externalFerryByStopCode: true, // no stop code means external ferry
 
   allowLogin: true,
@@ -123,7 +125,7 @@ export default {
     walkSpeed: 1.28,
     showBikeAndParkItineraries: true,
     transferPenalty: 180,
-    // TODO: flex disabled for now, proper configuration coming in the future
+    // TODO add when enabling Uber taxis
     // includeTaxiSuggestions: true,
   },
 
@@ -802,10 +804,7 @@ export default {
 
   showStopStatusMarkers: true,
 
-  // TODO: flex disabled for now, proper configuration coming in the future
-  // taxiOptionLabelOverride: 'demand-responsive-traffic',
-
-  // TODO: flex disabled for now, proper configuration coming in the future
+  // TODO add when enabling Uber taxis
   /* flex: {
     internalFlexEnabled: IS_DEV,
     allowTaxiJourneys: IS_DEV,
@@ -814,6 +813,7 @@ export default {
     externalAgencies: ['Uber:agency-mog2skf5-1'],
     allowedExternalFlexRouteTypes: [1501],
     infoLanguage: 'fi',
+    taxiSettingLabelOverride: 'demand-responsive-traffic',
   }, */
 
   showRouteDescNotification: IS_DEV,
