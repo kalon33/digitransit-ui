@@ -24,8 +24,8 @@ import {
   getGeolocationState,
   getLatestNavigatorItinerary,
   setDialogState,
-  //  getPersonalization,
-  //  setPersonalization,
+  getPersonalization,
+  setPersonalization,
 } from '../../store/localStorage';
 import { addAnalyticsEvent } from '../../util/analyticsUtils';
 import { getWeatherData } from '../../util/apiUtils';
@@ -81,6 +81,8 @@ import {
   sortAndMergeExternalPlans,
   stopClient,
   updateClient,
+  rateItineraries,
+  applyFeedback,
 } from './ItineraryPageUtils';
 import ItineraryTabs from './ItineraryTabs';
 import { useItineraryContext } from './context/ItineraryContext';
@@ -144,6 +146,8 @@ export default function ItineraryPage(props, context) {
   const mobileRef = useRef();
   const ariaRef = useRef('summary-page.title');
   const mapLayerRef = useRef();
+  const weights = useRef(getPersonalization().weights);
+  const recommendedItinerary = useRef(-1);
 
   const [state, setState] = useState({
     ...emptyState,
@@ -187,7 +191,6 @@ export default function ItineraryPage(props, context) {
   const [topicsState, setTopicsState] = useState(null);
   const [mapState, setMapState] = useState({});
   const [naviMode, setNaviMode] = useState(false);
-  const [recommendedItinerary, setRecommendedItinerary] = useState(-1);
   const [feedback, setFeedback] = useState({}); // boolean map, key = itinerary index
 
   const itineraryContext = useItineraryContext();
@@ -411,7 +414,7 @@ export default function ItineraryPage(props, context) {
   }
 
   async function makeMainQuery() {
-    setRecommendedItinerary(-1);
+    recommendedItinerary.current = -1;
     setFeedback({});
 
     if (!planQueryNeeded(config, match, PLANTYPE.TRANSIT)) {
@@ -426,7 +429,6 @@ export default function ItineraryPage(props, context) {
         planParams,
         planParams.maxQueryIterations,
       );
-      setRecommendedItinerary(Date.now() % 5); // just pick random for now
       setState({ ...emptyState, plan, loading: LOADSTATE.DONE });
       ariaRef.current = 'itinerary-page.itineraries-loaded';
     } catch (error) {
@@ -1138,6 +1140,11 @@ export default function ItineraryPage(props, context) {
           match.location.query.arriveBy === 'true',
         );
       }
+      recommendedItinerary.current = rateItineraries(
+        plan.edges,
+        weights.current,
+        props.favouriteRoutes,
+      );
 
       setCombinedState({ plan, loading: LOADSTATE.DONE });
       resetItineraryPageSelection();
@@ -1296,7 +1303,9 @@ export default function ItineraryPage(props, context) {
     }, 500);
   };
 
-  const giveFeedback = (i, liked) => {
+  const giveFeedback = (i, itinerary, liked) => {
+    weights.current = applyFeedback(weights.current, itinerary, liked);
+    setPersonalization({ weights: weights.current }); // save to local storage
     const updated = { ...feedback };
     updated[i] = liked;
     setFeedback(updated);
@@ -1534,7 +1543,7 @@ export default function ItineraryPage(props, context) {
         <ItineraryTabs
           isMobile={!desktop}
           tabIndex={selectedIndex}
-          recommendedIndex={recommendedItinerary}
+          recommendedIndex={recommendedItinerary.current}
           feedback={feedback}
           giveFeedback={feedbackProp}
           changeHash={changeHash}
@@ -1566,7 +1575,7 @@ export default function ItineraryPage(props, context) {
     content = (
       <ItineraryListContainer
         activeIndex={selectedIndex}
-        recommendedIndex={recommendedItinerary}
+        recommendedIndex={recommendedItinerary.current}
         feedback={feedback}
         giveFeedback={feedbackProp}
         planEdges={combinedEdges}
@@ -1694,9 +1703,4 @@ ItineraryPage.propTypes = {
   mapLayers: mapLayerShape.isRequired,
   mapLayerOptions: mapLayerOptionsShape.isRequired,
   favouriteRoutes: PropTypes.arrayOf(PropTypes.string).isRequired,
-};
-
-ItineraryPage.defaultProps = {
-  content: undefined,
-  map: undefined,
 };

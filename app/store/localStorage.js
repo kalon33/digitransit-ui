@@ -232,11 +232,11 @@ export const setCountries = countries => {
 };
 
 export function getPersonalization() {
-  return getItemAsJson('personalisation', '{}');
+  return getItemAsJson('personalization', '{}');
 }
 
 export function setPersonalization(data) {
-  setItem('personalisation', data);
+  setItem('personalization', data);
 }
 
 export const getCountries = () => getItemAsJson('countries', '{}');

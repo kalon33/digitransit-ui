@@ -720,8 +720,9 @@ export function rateItineraries(edges, weights, favorites) {
   if (top > 0) {
     edges.splice(topIndex, 1);
     edges.unshift(top);
+    return 0;
   }
-  return edges;
+  return -1;
 }
 
 /**
