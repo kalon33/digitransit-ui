@@ -166,14 +166,6 @@ export function setFavouriteStorage(data) {
   return setItem('favouriteStore', data);
 }
 
-export function getFavouriteLocationsStorage() {
-  return getItemAsJson('favouriteLocations');
-}
-
-export function getFavouriteStopsStorage() {
-  return getItemAsJson('favouriteStops');
-}
-
 export function setReadMessageIds(data) {
   setItem('readMessages', data);
 }
@@ -196,10 +188,6 @@ export function setReadMessageId(id) {
   const m = getReadMessageIds();
   m.push(id);
   setReadMessageIds(m);
-}
-
-export function getFavouriteRoutesStorage() {
-  return getItemAsJson('favouriteRoutes');
 }
 
 const filterOld = ['SelectFromMap', 'SelectFromOwnLocations', 'back'];
@@ -233,6 +221,8 @@ export function getGeolocationState() {
   return getItemAsJson('geolocationPermission', '{ "state": "unknown" }').state;
 }
 
+export const getMapLayerSettings = () => getItemAsJson('map-layers', '{}');
+
 export const setMapLayerSettings = settings => {
   setItem('map-layers', settings);
 };
@@ -241,7 +231,13 @@ export const setCountries = countries => {
   setItem('countries', countries);
 };
 
-export const getMapLayerSettings = () => getItemAsJson('map-layers', '{}');
+export function getPersonalization() {
+  return getItemAsJson('personalization', '{}');
+}
+
+export function setPersonalization(data) {
+  setItem('personalization', data);
+}
 
 export const getCountries = () => getItemAsJson('countries', '{}');
 
