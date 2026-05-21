@@ -99,21 +99,15 @@ export default {
       'Anropsstyrd kollektivtrafik {routeNumber} {headSign}',
     cancel: 'Avbryt',
     canceled: 'Inställt',
-    'capacity-modal.crushed-standing-room-only-body': 'Endast några ståplatser',
-    'capacity-modal.crushed-standing-room-only-heading': 'Nästan fullt',
-    'capacity-modal.few-seats-available-body': 'Några sittplatser',
-    'capacity-modal.few-seats-available-heading': 'Ingen stor trängsel',
+    'capacity-modal.crushed-standing-room-only-body': 'Endast få ståplatser',
+    'capacity-modal.few-seats-available-body': 'Några lediga sittplatser',
     'capacity-modal.full-capacity-body': 'Inga lediga platser',
-    'capacity-modal.full-capacity-heading': 'Fullt',
-    'capacity-modal.heading': 'Finns det plats ombord?',
+    'capacity-modal.heading': 'Finns det plats i fordonet?',
     'capacity-modal.legend': 'Teckenförklaringar',
-    'capacity-modal.many-seats-available-body': 'Många sittplatser',
-    'capacity-modal.many-seats-available-heading': 'Ingen trängsel',
-    'capacity-modal.standing-room-only-body':
-      'Endast några få sitt- och ståplatser',
-    'capacity-modal.standing-room-only-heading': 'Stor trängsel',
+    'capacity-modal.many-seats-available-body': 'Många lediga sittplatser',
+    'capacity-modal.standing-room-only-body': 'Endast få sitt- och ståplatser',
     'capacity-modal.subheading':
-      'Information om kapaciteten i realtid finns att rå om vissa fordon',
+      'För vissa fordon visas en uppskattning av platssituationen i realtid',
     car: 'Bil',
     'car-distance-duration': 'Kör {duration} ({distance})',
     'car-distance-no-duration': 'Kör {distance}',
@@ -231,6 +225,7 @@ export default {
     'from-bus': 'bussen',
     'from-ferry': 'färjan',
     'from-ferrypier': 'färjerkajen',
+    'from-place': 'plats',
     'from-rail': 'tåget',
     'from-scooter-location': 'platsen för sparkcykel',
     'from-station': 'stationen',
@@ -274,7 +269,7 @@ export default {
       'Koldioxidutsläppen för denna resa är {co2value} g.',
     'itinerary-co2.description-sr':
       'Koldioxidutsläppen för denna resa är {co2value} g. En bil skulle generera {carCo2Value} g koldioxid på samma resa.',
-    'itinerary-co2.link': 'Så minskar vi utsläppen ›',
+    'itinerary-co2.link': 'Utsläppsberäkningen grundar sig på detta ›',
     'itinerary-co2.title': 'Resans CO₂-utsläpp',
     'itinerary-co2.title-sr': 'Rejsens koldioxidutsläpp',
     'itinerary-details.biking-leg':
@@ -290,6 +285,8 @@ export default {
     'itinerary-details.route-has-warning-alert': 'Störningar längs rutten..',
     'itinerary-details.scooter-leg':
       '{time} åk elsparkcykel {distance} från {origin} till destinationen {destination}. Restid {duration}',
+    'itinerary-details.taxi-leg':
+      '{time} åk taxi {distance} från {origin} till {to} {destination}. Restid {duration}',
     'itinerary-details.transit-leg-part-1': '{time} {realtime} ta',
     'itinerary-details.transit-leg-part-2':
       'från hållplats {startStop} {startZoneInfo} {trackInfo} till hållplats {endStop} {endZoneInfo}. Beräknad restid {duration}. ',
@@ -323,6 +320,8 @@ export default {
       'Avgång kl {firstDepartureTime} från {firstDepartureStop} stadscykelstation',
     'itinerary-summary-row.first-leg-start-time-scooter':
       'Avgång kl {firstDepartureTime} med en sparkcykel',
+    'itinerary-summary-row.first-leg-start-time-taxi':
+      'Avgång kl {firstDepartureTime} med taxi från {firstDepartureStop}',
     'itinerary-summary-row.no-transit-legs': 'Avgå när det passar för dig',
     'itinerary-summary-row.transfers':
       'Byte {vehicle} vid hållplats {stopName}',
@@ -396,7 +395,7 @@ export default {
     'modes.to-scooter': 'elsparkcykel',
     'modes.to-stop': 'hållplats',
     'modes.to-subway': 'metrostation',
-    'modes.to-taxi': 'taxi',
+    'modes.to-taxi': 'destination',
     'modes.to-tram': 'spårvagnshållplats',
     'more-departures': 'Fler avgångar',
     'move-on-map': 'Flytta på kartan',
@@ -509,6 +508,7 @@ export default {
       'Kunde inte hitta några ruttförslag med dina val. Vi hittade dock följande ruttalternativ:',
     'no-route-start': 'Välj avfärdsplats',
     'no-route-start-end': 'Välj avfärdsplats och destination',
+    'no-trips-found': 'Inga resor på den valda dagen {selectedDate}.',
     'notification-minimize': 'Stäng meddelande',
     'notification-open': 'Öppna meddelande',
     'number-of-intermediate-stops':
@@ -623,9 +623,11 @@ export default {
     'route-page-vehicle-position-between':
       '{mode} {shortName} är mellan hållplats {stopName} och hållplats {nextStopName}.',
     'route-page-vehicle-selected': 'Nuvarande urval.',
+    'route-page.alternative-routes': 'Alternativa rutter',
     'route-page.choose-direction': 'Välj riktning och rutt',
     'route-page.description': 'Linje {shortName} - {longName}',
     'route-page.future-routes': 'Framtida rutter',
+    'route-page.main-routes': 'Körriktningar',
     'route-page.pattern-chosen': 'Vald',
     'route-page.pattern-select-title': 'Välj den rutt du vill se',
     'route-page.select-time': 'Välj tid',
@@ -633,6 +635,8 @@ export default {
     'route-page.special-routes': 'Andra rutter',
     'route-page.title': 'Linje {shortName}',
     'route-page.title-short': 'Linje',
+    'route-pattern-select-tooltip': 'Visa rutter',
+    'route-pattern-swap-tooltip': 'Byt riktning',
     'route-to-ferry': 'Rutt till piren',
     'route-to-park': 'Rutt till parken',
     'route-to-station': 'Rutt till stationen',

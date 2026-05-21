@@ -76,8 +76,8 @@ export default {
     EMBEDDED_SEARCH_GENERATION: '/reittiopas-elementti',
     EMISSIONS_INFO: {
       fi: 'https://www.hsl.fi/hsl/sahkobussit/ymparisto-lukuina',
-      sv: 'https://www.hsl.fi/sv/reseplaneraren_co2',
-      en: 'https://www.hsl.fi/en/journey_planner_co2',
+      sv: 'https://www.hsl.fi/sv/hrt/sahkobussit/ymparisto-lukuina',
+      en: 'https://www.hsl.fi/en/hsl/electric-buses/environmental-performance-in-figures',
     },
     HOLIDAYS_AND_EXCEPTIONS: {
       fi: 'https://www.hsl.fi/matkustaminen/juhlapyhat-ja-poikkeusaikataulut',
@@ -112,6 +112,8 @@ export default {
 
   feedIds: ['HSL', 'HSLlautta', 'Sipoo'],
   externalFeedIds: ['HSLlautta'],
+  // TODO add when enabling Uber taxis
+  // externalFeedIds: ['HSLlautta', 'Uber'],
   externalFerryByStopCode: true, // no stop code means external ferry
 
   allowLogin: true,
@@ -123,7 +125,7 @@ export default {
     walkSpeed: 1.28,
     showBikeAndParkItineraries: true,
     transferPenalty: 180,
-    // TODO: flex disabled for now, proper configuration coming in the future
+    // TODO add when enabling Uber taxis
     // includeTaxiSuggestions: true,
   },
 
@@ -336,65 +338,6 @@ export default {
     en: 'HSL',
   },
 
-  staticMessages: [
-    // {
-    //   id: '2',
-    //   priority: -1,
-    //   content: {
-    //     fi: [
-    //       {
-    //         type: 'text',
-    //         content:
-    //           'Käytämme evästeitä palveluidemme kehitykseen. Käyttämällä sivustoa hyväksyt evästeiden käytön. Lue lisää: ',
-    //       },
-    //       {
-    //         type: 'a',
-    //         content: 'Käyttöehdot',
-    //         href: 'https://www.hsl.fi/kayttoehdot',
-    //       },
-    //       {
-    //         type: 'a',
-    //         content: 'Tietosuojaseloste',
-    //         href: 'https://www.hsl.fi/tietosuojaseloste',
-    //       },
-    //     ],
-    //     en: [
-    //       {
-    //         type: 'text',
-    //         content:
-    //           'We use cookies to improve our services. By using this site, you agree to its use of cookies. Read more: ',
-    //       },
-    //       {
-    //         type: 'a',
-    //         content: 'Terms of use',
-    //         href: 'https://www.hsl.fi/en/terms-of-use',
-    //       },
-    //       {
-    //         type: 'a',
-    //         content: 'Privacy Statement',
-    //         href: 'https://www.hsl.fi/en/description-of-the-file',
-    //       },
-    //     ],
-    //     sv: [
-    //       {
-    //         type: 'text',
-    //         content:
-    //           'Vi använder cookies för att utveckla våra tjänster. Genom att använda webbplatsen godkänner du att vi använder cookies. Läs mer: ',
-    //       },
-    //       {
-    //         type: 'a',
-    //         content: 'Användarvillkor',
-    //         href: 'https://www.hsl.fi/sv/anvandarvillkor',
-    //       },
-    //       {
-    //         type: 'a',
-    //         content: 'Dataskyddsbeskrivning',
-    //         href: 'https://www.hsl.fi/sv/dataskyddsbeskrivning',
-    //       },
-    //     ],
-    //   },
-    // },
-  ],
   geoJson: {
     layers: [
       {
@@ -729,11 +672,7 @@ export default {
   ],
 
   replacementBusNotification: {
-    header: {
-      fi: 'Korvaava bussi',
-      en: 'Replacement bus',
-      sv: 'Ersättande buss',
-    },
+    // Header is displayed via translation key 'replacement-bus'.
     content: {
       fi: [
         'Voit nousta kyytiin myös bussin keskiovista.',
@@ -803,10 +742,7 @@ export default {
 
   showStopStatusMarkers: true,
 
-  // TODO: flex disabled for now, proper configuration coming in the future
-  // taxiOptionLabelOverride: 'demand-responsive-traffic',
-
-  // TODO: flex disabled for now, proper configuration coming in the future
+  // TODO add when enabling Uber taxis
   /* flex: {
     internalFlexEnabled: IS_DEV,
     allowTaxiJourneys: IS_DEV,
@@ -815,8 +751,10 @@ export default {
     externalAgencies: ['Uber:agency-mog2skf5-1'],
     allowedExternalFlexRouteTypes: [1501],
     infoLanguage: 'fi',
+    taxiSettingLabelOverride: 'demand-responsive-traffic',
   }, */
 
   showRouteDescNotification: IS_DEV,
   personalization: false,
+  showNewRoutePage: true,
 };

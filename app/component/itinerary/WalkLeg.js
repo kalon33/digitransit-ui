@@ -66,6 +66,7 @@ function WalkLeg({
     intl.formatNumber,
   );
   const duration = durationToString(
+    intl,
     leg.mode !== 'WALK' ? 0 : leg.duration * 1000,
   );
   const startMs = legTime(leg.start);

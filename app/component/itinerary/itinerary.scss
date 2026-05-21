@@ -373,7 +373,7 @@ $itinerary-tab-switch-height: 48px;
   white-space: normal;
   margin-bottom: 5px;
   margin-top: 9px;
-  border-left: 4px solid $primary-color;
+  border-left: 4px solid $theme-primary-color;
   box-shadow: 0 2px 4px 0 rgba(51, 51, 51, 0.2);
   max-width: 350px;
   line-height: 16px;
@@ -383,7 +383,7 @@ $itinerary-tab-switch-height: 48px;
 
     .icon {
       &.info {
-        color: $primary-color;
+        color: $theme-primary-color;
         width: 16px;
         height: 16px;
       }
@@ -424,7 +424,7 @@ $itinerary-tab-switch-height: 48px;
       color: #fff;
       margin-top: var(--space-xs);
       border-radius: var(--radius-radius-pill, 999px);
-      background: $primary-color;
+      background: $theme-primary-color;
 
       .icon-container {
         padding-left: var(--space-xxs);
@@ -749,7 +749,25 @@ $itinerary-tab-switch-height: 48px;
   z-index: 10;
 
   &.start {
-    top: 12px;
+    top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .icon-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon {
+      position: relative;
+      top: 0;
+      margin-left: 0;
+      margin-top: 0;
+      width: 16px;
+      height: 16px;
+    }
   }
 
   &.bike-park {
@@ -805,8 +823,6 @@ $itinerary-tab-switch-height: 48px;
 
   &.from-it {
     @include itineraryTableIcons;
-
-    top: -4px;
   }
 
   &.via-it {
@@ -2621,7 +2637,7 @@ $itinerary-tab-switch-height: 48px;
       }
 
       .intermediate-steps-message {
-        color: $primary-color;
+        color: $theme-primary-color;
         font-weight: $font-weight-medium;
         line-height: 1.2;
         border-bottom: none;
@@ -2802,7 +2818,10 @@ div.itinerary-container-content {
       a {
         font-weight: $font-weight-medium;
         color: $link-button-color;
+        display: block;
         max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .external-link-icon-outer {

@@ -61,6 +61,7 @@ const RestoreDefaultSettings = ({}, { executeAction }) => {
 
   const restoreDefaultSettings = () => {
     const customizedSettings = getCustomizedSettings(config);
+    const { personalization } = customizedSettings;
     const defaultSettings = getDefaultSettings(config);
     const restoredSettings = Object.keys(customizedSettings).reduce(
       (acc, setting) => ({
@@ -69,10 +70,10 @@ const RestoreDefaultSettings = ({}, { executeAction }) => {
       }),
       {},
     );
-
-    executeAction(saveRoutingSettings, {
-      ...restoredSettings,
-    });
+    if (personalization) {
+      restoredSettings.personalization = true;
+    }
+    executeAction(saveRoutingSettings, restoredSettings);
     setShowSnackbar(true);
     setSnackBarLiveRegionMessage(
       intl.formatMessage({

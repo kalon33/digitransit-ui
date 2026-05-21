@@ -100,21 +100,16 @@ export default {
     cancel: 'Cancel',
     canceled: 'Canceled',
     'capacity-modal.crushed-standing-room-only-body':
-      'Only a little standing room available',
-    'capacity-modal.crushed-standing-room-only-heading': 'Very crowded',
+      'Only limited standing room available',
     'capacity-modal.few-seats-available-body': 'Some seats available',
-    'capacity-modal.few-seats-available-heading': 'Not too crowded',
     'capacity-modal.full-capacity-body': 'No seats or standing room available',
-    'capacity-modal.full-capacity-heading': 'Full',
-    'capacity-modal.heading': 'Is there room in the vehicle?',
+    'capacity-modal.heading': 'Is there room on board?',
     'capacity-modal.legend': 'Legend for the symbols',
     'capacity-modal.many-seats-available-body': 'Plenty of seats available',
-    'capacity-modal.many-seats-available-heading': 'Not crowded',
     'capacity-modal.standing-room-only-body':
-      'Only a few seats and little standing room available',
-    'capacity-modal.standing-room-only-heading': 'Nearly full',
+      'Only a few seats and limited standing room available',
     'capacity-modal.subheading':
-      'Real-time capacity information is available for some vehicles',
+      'A real-time capacity estimate is available for some vehicles',
     car: 'Car',
     'car-distance-duration': 'Drive {duration} ({distance})',
     'car-distance-no-duration': 'Drive {distance}',
@@ -232,6 +227,7 @@ export default {
     'from-bus': 'bus',
     'from-ferry': 'ferry',
     'from-ferrypier': 'ferry pier',
+    'from-place': 'location',
     'from-rail': 'train',
     'from-scooter-location': 'the scooter location',
     'from-station': 'station',
@@ -277,7 +273,7 @@ export default {
       '{co2value} g of carbondioxide emissions will be generated on this journey.',
     'itinerary-co2.description-sr':
       '{co2value} g of carbondioxide emissions will be generated on this journey. A car would generate {carCo2Value} g of carbondioxide on the same journey.',
-    'itinerary-co2.link': 'This is how we reduce emissions ›',
+    'itinerary-co2.link': 'How are emissions calculated ›',
     'itinerary-co2.title': 'CO₂ emissions of the journey',
     'itinerary-co2.title-sr': 'Carbondioxide emissions of the journey',
     'itinerary-details.biking-leg':
@@ -292,6 +288,8 @@ export default {
     'itinerary-details.route-has-warning-alert': 'Route has disruptions.',
     'itinerary-details.scooter-leg':
       'At {time} travel by scooter {distance} from {origin} to {destination}. Estimated time {duration}',
+    'itinerary-details.taxi-leg':
+      'At {time} travel by taxi {distance} from {origin} to {to} {destination}. Estimated time {duration}',
     'itinerary-details.transit-leg-part-1': 'At {time} {realtime} take',
     'itinerary-details.transit-leg-part-2':
       'from stop {startStop} {startZoneInfo} {trackInfo} to stop {endStop} {endZoneInfo}. Estimated duration {duration}. ',
@@ -326,6 +324,8 @@ export default {
       'Departure at {firstDepartureTime} from {firstDepartureStop} bike station',
     'itinerary-summary-row.first-leg-start-time-scooter':
       'Departure at {firstDepartureTime} by a scooter',
+    'itinerary-summary-row.first-leg-start-time-taxi':
+      'Departure at {firstDepartureTime} by taxi from {firstDepartureStop}',
     'itinerary-summary-row.no-transit-legs': 'Leave when it suits you',
     'itinerary-summary-row.transfers':
       'Transfer to {vehicle} on stop {stopName}',
@@ -400,7 +400,7 @@ export default {
     'modes.to-scooter': 'to scooter',
     'modes.to-stop': 'stop',
     'modes.to-subway': 'subway station',
-    'modes.to-taxi': 'to taxi',
+    'modes.to-taxi': 'destination',
     'modes.to-tram': 'tram stop',
     'more-departures': 'More departures',
     'move-on-map': 'Move on the map',
@@ -516,6 +516,7 @@ export default {
       'No route suggestions were found with the your settings. However, we found the following route options:',
     'no-route-start': 'Please select origin',
     'no-route-start-end': 'Please select origin and destination',
+    'no-trips-found': 'No journeys found for the selected date {selectedDate}.',
     'notification-minimize': 'Close message',
     'notification-open': 'Open message',
     'number-of-intermediate-stops':
@@ -629,9 +630,11 @@ export default {
     'route-page-vehicle-position-between':
       '{mode} {shortName} is between the {stopName} stop and the {nextStopName} stop.',
     'route-page-vehicle-selected': 'Current selection.',
+    'route-page.alternative-routes': 'Alternative routes',
     'route-page.choose-direction': 'Choose direction and route',
     'route-page.description': 'Route {shortName} - {longName}',
     'route-page.future-routes': 'Future routes',
+    'route-page.main-routes': 'Directions',
     'route-page.pattern-chosen': 'Selected',
     'route-page.pattern-select-title': 'Select the route to be viewed',
     'route-page.select-time': 'Select time',
@@ -639,6 +642,8 @@ export default {
     'route-page.special-routes': 'Other routes',
     'route-page.title': 'Route {shortName}',
     'route-page.title-short': 'Route',
+    'route-pattern-select-tooltip': 'Show routes',
+    'route-pattern-swap-tooltip': 'Change direction',
     'route-to-ferry': 'Route to the pier',
     'route-to-park': 'Route to the park',
     'route-to-station': 'Route to the station',
