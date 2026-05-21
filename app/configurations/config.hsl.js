@@ -754,6 +754,6 @@ export default {
   }, */
 
   showRouteDescNotification: IS_DEV,
-  personalization: false,
+  personalization: IS_DEV,
   showNewRoutePage: true,
 };

@@ -1,7 +1,7 @@
 .feedback-animated {
   overflow: hidden;
   max-height: 0;
-  transition: max-height 500ms ease;
+  transition: max-height 600ms ease;
 }
 
 .feedback-animated.open {
@@ -9,7 +9,7 @@
 }
 
 .feedback-animated.open .feedback-motion {
-  animation: feedbackBounce 550ms forwards;
+  animation: feedbackBounce 650ms forwards;
 }
 
 .feedback-motion {
@@ -24,12 +24,12 @@
   }
 
   70% {
-    opacity: 1;
-    transform: translateY(-8px);
+    opacity: 0.6;
+    transform: translateY(-3px);
   }
 
-  85% {
-    transform: translateY(2px);
+  90% {
+    transform: translateY(0);
   }
 
   100% {
