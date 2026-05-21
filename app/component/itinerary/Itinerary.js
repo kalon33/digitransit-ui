@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { createRef, useLayoutEffect, useState } from 'react';
+import React, { createRef, useLayoutEffect, useEffect, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useRouter } from 'found';
@@ -689,6 +689,16 @@ const Itinerary = ({
 
   const itineraryContainerOverflowRef = createRef();
   const [showOverflowIcon, setShowOverflowIcon] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsExpanded(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   useLayoutEffect(() => {
     // If the itinerary length exceeds its boundaries an icon with dots is displayed.
     if (
@@ -843,12 +853,16 @@ const Itinerary = ({
                 ))}
             </div>
             {props.giveFeedback && props.recommended && (
-              <div className="feedback-frame">
-                <Feedback
-                  recommended={props.recommended}
-                  feedback={props.feedback}
-                  giveFeedback={props.giveFeedback}
-                />
+              <div className={`feedback-animated ${isExpanded ? 'open' : ''}`}>
+                <div className="feedback-motion">
+                  <div className="feedback-frame">
+                    <Feedback
+                      recommended={props.recommended}
+                      feedback={props.feedback}
+                      giveFeedback={props.giveFeedback}
+                    />
+                  </div>
+                </div>
               </div>
             )}
             <div className="summary-separator" />

@@ -1,3 +1,43 @@
+.feedback-animated {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 500ms ease;
+}
+
+.feedback-animated.open {
+  max-height: 200px;
+}
+
+.feedback-animated.open .feedback-motion {
+  animation: feedbackBounce 550ms forwards;
+}
+
+.feedback-motion {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+@keyframes feedbackBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+
+  70% {
+    opacity: 1;
+    transform: translateY(-8px);
+  }
+
+  85% {
+    transform: translateY(2px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .feedback-frame {
   border: 1px solid;
   border-color: var(--color-border-weak);
