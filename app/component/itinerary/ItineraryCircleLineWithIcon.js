@@ -8,24 +8,20 @@ import { ViaLocationType, IndoorLegType } from '../../constants';
 function ItineraryCircleLineWithIcon({
   index,
   modeClassName,
-  viaType,
-  indoorLegType,
-  showIntermediateSteps,
-  bikePark,
-  carPark,
-  color,
+  viaType = null,
+  indoorLegType = IndoorLegType.NoStepsInside,
+  showIntermediateSteps = false,
+  bikePark = false,
+  carPark = false,
+  color = null,
   appendClass,
   icon,
-  style,
+  style = {},
   isNotFirstLeg,
-  isStop,
-  hasPreviousTransitLeg,
-  indoorStepsLength,
+  isStop = false,
+  hasPreviousTransitLeg = false,
+  indoorStepsLength = 0,
 }) {
-  const isFirstChild = () => {
-    return !isNotFirstLeg && index === 0 && !viaType;
-  };
-
   const getMarker = top => {
     if (top && hasPreviousTransitLeg) {
       return null;
@@ -37,7 +33,9 @@ function ItineraryCircleLineWithIcon({
         </div>
       );
     }
-    if (isFirstChild()) {
+
+    // Check if this is the first leg with no via point to show origin marker
+    if (!isNotFirstLeg && index === 0 && !viaType) {
       return (
         <div className="itinerary-icon-container start">
           <Icon
@@ -167,22 +165,6 @@ ItineraryCircleLineWithIcon.propTypes = {
   isStop: PropTypes.bool,
   hasPreviousTransitLeg: PropTypes.bool,
   indoorStepsLength: PropTypes.number,
-};
-
-ItineraryCircleLineWithIcon.defaultProps = {
-  viaType: null,
-  indoorLegType: IndoorLegType.NoStepsInside,
-  showIntermediateSteps: false,
-  color: null,
-  bikePark: false,
-  carPark: false,
-  appendClass: undefined,
-  icon: undefined,
-  style: {},
-  isNotFirstLeg: undefined,
-  isStop: false,
-  hasPreviousTransitLeg: false,
-  indoorStepsLength: 0,
 };
 
 export default ItineraryCircleLineWithIcon;
