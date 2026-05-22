@@ -4,12 +4,10 @@
 // Shared SCSS constants and component-level CSS custom properties.
 
 // Font weight definitions must be set before typography import in main.scss
-$font-family-narrow: 450;
 $font-weight-book: 350;
 $font-weight-medium: 500;
 
 :root {
-  --font-family-narrow: #{$font-family-narrow};
   --font-weight-book: #{$font-weight-book};
   --font-weight-medium: #{$font-weight-medium};
 }
