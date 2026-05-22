@@ -689,7 +689,7 @@ const Itinerary = ({
 
   const itineraryContainerOverflowRef = createRef();
   const [showOverflowIcon, setShowOverflowIcon] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(props.feedback !== undefined);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -853,8 +853,14 @@ const Itinerary = ({
                 ))}
             </div>
             {props.giveFeedback && props.recommended && (
-              <div className={`feedback-animated ${isExpanded ? 'open' : ''}`}>
-                <div className="feedback-motion">
+              <div
+                className={
+                  isExpanded
+                    ? ''
+                    : `feedback-animated ${isExpanded ? 'open' : ''}`
+                }
+              >
+                <div className={isExpanded ? '' : 'feedback-motion'}>
                   <div className="feedback-frame">
                     <Feedback
                       recommended={props.recommended}
