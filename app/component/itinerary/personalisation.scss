@@ -38,6 +38,81 @@
   }
 }
 
+@keyframes leaveShift {
+  0% {
+    transform: translateX(0);
+  }
+
+  90% {
+    transform: translateX(-94%);
+  }
+
+  100% {
+    transform: translateX(-91%);
+  }
+}
+
+@keyframes leaveMain {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes leaveThumbs {
+  0%,
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes enterSlide {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+
+  40% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+
+  75% {
+    opacity: 1;
+    transform: translateX(5px);
+  }
+
+  80% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes iconWobble {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  40% {
+    transform: rotate(-30deg);
+  }
+
+  60% {
+    transform: rotate(-30deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
 .feedback-frame {
   border: 1px solid;
   border-color: var(--color-border-weak);
@@ -46,14 +121,57 @@
   margin-top: 8px;
 }
 
+.feedback-panel {
+  display: grid;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.feedback-layer {
+  width: 100%;
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: center;
+  opacity: 1;
+}
+
+.feedback-layer.enter {
+  pointer-events: none;
+  animation: enterSlide 1200ms ease forwards;
+}
+
+.feedback-layer.enter .feedback-section:first-child svg {
+  transform-origin: center;
+  animation: iconWobble 300ms ease 900ms forwards;
+}
+
+.feedback-layer.leave {
+  pointer-events: none;
+}
+
+.feedback-layer.leave .feedback-container {
+  animation: leaveShift 500ms ease forwards;
+}
+
+.feedback-layer.leave .feedback-section:first-child {
+  animation: leaveMain 500ms ease forwards;
+}
+
+.feedback-layer.leave .feedback-section:last-child {
+  animation: leaveThumbs 200ms linear 600ms forwards;
+}
+
 .feedback-container {
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 100%;
   min-height: 3.5em;
+  box-sizing: border-box;
   justify-content: space-between;
   font-size: $font-size-xsmall;
+  overflow: hidden;
 
   .feedback-text-posted {
     font-weight: $font-weight-book;
