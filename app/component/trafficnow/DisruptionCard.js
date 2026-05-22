@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '@hsl-fi/button';
+import { ButtonLink } from '@hsl-fi/layout-primitives';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
@@ -13,11 +13,6 @@ import Icon from '../Icon';
 import RouteBadges from './RouteBadges';
 
 const DATE_FORMAT = 'd.L.yyyy';
-
-const handleExtraInfoClick = url => e => {
-  e.stopPropagation();
-  window.location.href = url;
-};
 
 export default function DisruptionCard({ alert, isOpen, onClick = () => {} }) {
   const {
@@ -103,17 +98,17 @@ export default function DisruptionCard({ alert, isOpen, onClick = () => {} }) {
         </div>
         {alertUrl && isOpen && (
           <div className="disruption-card__body-row-info">
-            <Button
-              size="small"
-              fullWidth
-              variant="white"
-              value={
-                <FormattedMessage id="extra-info" default="Details">
-                  {msg => <span className="link-small">{msg}</span>}
-                </FormattedMessage>
-              }
-              onClick={handleExtraInfoClick(alertUrl)}
-            />
+            <ButtonLink
+              size="s"
+              href={alertUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="secondary"
+            >
+              <FormattedMessage id="extra-info" default="Details">
+                {msg => <span className="link-small">{msg}</span>}
+              </FormattedMessage>
+            </ButtonLink>
           </div>
         )}
       </div>
