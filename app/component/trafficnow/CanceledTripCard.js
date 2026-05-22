@@ -2,18 +2,19 @@ import React from 'react';
 import { useRouter } from 'found';
 import { DateTime } from 'luxon';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { useIntl } from 'react-intl';
 import { useConfigContext } from '../../configurations/ConfigContext';
-import { PREFIX_TIMETABLE, routePagePath } from '../../util/path';
+import { PREFIX_TIMETABLE, TRAFFICNOW, routePagePath } from '../../util/path';
 import Card from '../Card';
 import Icon from '../Icon';
-import CancelledDepartures from './components/CancelledDepartures';
+import CanceledDepartures from './components/CanceledDepartures';
 import RouteBadgeGroup from './components/RouteBadgeGroup';
 import DisruptionBadge from './DisruptionBadge';
 
 const CanceledTripCard = ({ mode, totalCount, trips }) => {
   const { router } = useRouter();
   const { colors } = useConfigContext();
+  const intl = useIntl();
 
   const handleRouteBadgeClick = url => e => {
     e.preventDefault();
@@ -56,7 +57,7 @@ const CanceledTripCard = ({ mode, totalCount, trips }) => {
   return (
     <Card
       className="disruption-card clickable"
-      onClick={handleRouteBadgeClick(`/liikenne/peruutukset/${mode}`)}
+      onClick={handleRouteBadgeClick(`/${TRAFFICNOW}/peruutukset/${mode}`)}
     >
       <header>
         <DisruptionBadge showIcon variant="WARNING" label="NO_SERVICE" />
@@ -83,7 +84,7 @@ const CanceledTripCard = ({ mode, totalCount, trips }) => {
           )}
           renderRouteSuffix={({ trips: groupedRouteTrips }) =>
             isSingleRoute ? (
-              <CancelledDepartures
+              <CanceledDepartures
                 departures={groupedRouteTrips.map(
                   ({ tripId, departureTime }) => ({
                     tripId,
@@ -104,7 +105,7 @@ const CanceledTripCard = ({ mode, totalCount, trips }) => {
       </div>
       <div className="disruption-card__body-row-validity-icon text-xs">
         <Icon img="icon_clock" />
-        <FormattedMessage id="valid" default="Active" />
+        {intl.formatMessage({ id: 'valid', defaultMessage: 'Active' })}
       </div>
     </Card>
   );

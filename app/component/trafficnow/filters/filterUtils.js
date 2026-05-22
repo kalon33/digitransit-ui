@@ -42,7 +42,7 @@ const favouriteFilter = ({ entities }, { favourites }) =>
   !favourites || entities.some(e => favourites.has(e.gtfsId));
 
 /**
- * If this filter is present, only cancelledTrips should be shown
+ * If this filter is present, only canceledTrips should be shown
  */
 const cancellationsFilter = ({ __typename }, { cancellations }) =>
   !cancellations || __typename !== 'Alert';

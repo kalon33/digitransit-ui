@@ -28,7 +28,7 @@ const CanceledTripsModal = ({
       isOpen={!!detailsKey}
       shouldCloseOnEsc
       shouldCloseOnOverlayClick
-      contentLabel="Foobar"
+      contentLabel="Canceled trips modal"
       onRequestClose={onClose}
       variant="large"
       className="traffic-now traffic-now__modal sheet design-system"
@@ -65,15 +65,7 @@ const CanceledTripsModal = ({
         {Object.entries(trips[detailsKey].patterns).map(
           ([patternCode, pattern], i, arr) => (
             <React.Fragment key={`${patternCode}-${pattern.trip.tripId}`}>
-              <div
-                className="foobar"
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 'var(--space-xs)',
-                  padding: 'var(--space-xs) 0',
-                }}
-              >
+              <div className="traffic-now__modal-cancellations-pattern">
                 <PatternWithCancellations
                   pattern={pattern}
                   withDepartureBadges

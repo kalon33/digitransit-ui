@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const CancelledDepartures = ({ departures }) => (
+const CanceledDepartures = ({ departures }) => (
   <div className="badges__departure-group">
     {departures.map(({ tripId, departureTime }) => (
       <span
@@ -14,7 +14,7 @@ const CancelledDepartures = ({ departures }) => (
   </div>
 );
 
-CancelledDepartures.propTypes = {
+CanceledDepartures.propTypes = {
   departures: PropTypes.arrayOf(
     PropTypes.shape({
       tripId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
@@ -24,4 +24,4 @@ CancelledDepartures.propTypes = {
   ).isRequired,
 };
 
-export default CancelledDepartures;
+export default CanceledDepartures;

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 import Icon from '../../Icon';
-import CancelledDepartures from './CancelledDepartures';
+import CanceledDepartures from './CanceledDepartures';
 
 import './PatternWithCancellations.scss';
 
@@ -13,7 +13,7 @@ const PatternWithCancellations = ({
   withDeparturesAmount = false,
 }) => {
   const { colors } = useConfigContext();
-  const { start, end, trip, cancelledDepartures } = pattern;
+  const { start, end, trip, canceledDepartures } = pattern;
 
   return (
     <div
@@ -31,13 +31,13 @@ const PatternWithCancellations = ({
         <div className="routes-s warning">
           <FormattedMessage
             id="traffic-now_canceled-trips--simple"
-            values={{ amount: cancelledDepartures.length }}
+            values={{ amount: canceledDepartures.length }}
           />
         </div>
       )}
       {withDepartureBadges && (
-        <CancelledDepartures
-          departures={cancelledDepartures.map(departureTime => ({
+        <CanceledDepartures
+          departures={canceledDepartures.map(departureTime => ({
             tripId: trip.tripId,
             departureTime,
           }))}
@@ -65,7 +65,7 @@ PatternWithCancellations.propTypes = {
         headsign: PropTypes.string,
       }),
     }),
-    cancelledDepartures: PropTypes.arrayOf(PropTypes.shape({})),
+    canceledDepartures: PropTypes.arrayOf(PropTypes.shape({})),
   }).isRequired,
   withDepartureBadges: PropTypes.bool,
   withDeparturesAmount: PropTypes.bool,

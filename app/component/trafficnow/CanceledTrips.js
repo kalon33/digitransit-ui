@@ -58,7 +58,7 @@ const CanceledTrips = ({ query, isMobile = false, ...props }) => {
         if (routeGroups[routeShortName].patterns[patternCode]) {
           routeGroups[routeShortName].patterns[
             patternCode
-          ].cancelledDepartures.push(
+          ].canceledDepartures.push(
             DateTime.fromISO(start?.schedule.time.departure).toFormat('HH:mm'),
           );
         } else {
@@ -66,7 +66,7 @@ const CanceledTrips = ({ query, isMobile = false, ...props }) => {
             start,
             end,
             trip,
-            cancelledDepartures: [
+            canceledDepartures: [
               DateTime.fromISO(start?.schedule.time.departure).toFormat(
                 'HH:mm',
               ),
