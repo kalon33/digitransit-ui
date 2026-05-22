@@ -827,6 +827,7 @@ export default {
     'traffic-now_filters_vehicle-mode': 'Filtrera efter fordonsläge',
     'traffic-now_filters_view-results': 'Visa resultat',
     'traffic-now_go-back': 'Gå tillbaka',
+    'traffic-now_go-to-route-page': 'Visa linje',
     'traffic-now_link': 'Trafikläget nu',
     'traffic-now_link-description': 'Se störningar och förändringar',
     trafficnow: 'Trafikläget nu',

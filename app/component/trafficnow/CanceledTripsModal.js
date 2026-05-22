@@ -2,6 +2,7 @@ import React from 'react';
 import Button from '@hsl-fi/button';
 import Modal from '@hsl-fi/modal';
 import PropTypes from 'prop-types';
+import { useIntl } from 'react-intl';
 import { useRouter } from 'found';
 import { PREFIX_TIMETABLE, routePagePath } from '../../util/path';
 import Icon from '../Icon';
@@ -15,6 +16,7 @@ const CanceledTripsModal = ({
   trips,
   onClose,
 }) => {
+  const intl = useIntl();
   const { router } = useRouter();
 
   const handleRouteBadgeClick = url => e => {
@@ -75,7 +77,9 @@ const CanceledTripsModal = ({
                   size="small"
                   fullWidth={false}
                   variant="white"
-                  value="Siirry linjasivulle"
+                  value={intl.formatMessage({
+                    id: 'traffic-now_go-to-route-page',
+                  })}
                   href={routePagePath(
                     trips[detailsKey].routeGtfsId,
                     PREFIX_TIMETABLE,

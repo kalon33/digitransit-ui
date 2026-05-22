@@ -85,7 +85,7 @@ const CanceledTrips = ({ query, isMobile = false, ...props }) => {
         <DisruptionBadge showIcon variant="WARNING" label="NO_SERVICE" />
         <div className="validity-container text-s-bold">
           <Icon img="icon_clock" />
-          <FormattedMessage id="valid" default="Active" />
+          {intl.formatMessage({ id: 'valid', defaultMessage: 'Active' })}
         </div>
       </header>
       <div className="canceled-trips__body">

@@ -834,6 +834,7 @@ export default {
     'traffic-now_filters_vehicle-mode': 'Filter by vehicle mode',
     'traffic-now_filters_view-results': 'View results',
     'traffic-now_go-back': 'Go back',
+    'traffic-now_go-to-route-page': 'View route',
     'traffic-now_link': 'Services now',
     'traffic-now_link-description': 'See changes and disruptions',
     trafficnow: 'Traffic now',

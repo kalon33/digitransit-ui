@@ -819,6 +819,7 @@ export default {
     'traffic-now_filters_vehicle-mode': 'Näytä liikennevälineen mukaan',
     'traffic-now_filters_view-results': 'Näytä tulokset',
     'traffic-now_go-back': 'Palaa takaisin',
+    'traffic-now_go-to-route-page': 'Siirry linjasivulle',
     'traffic-now_link': 'Liikennetilanne nyt',
     'traffic-now_link-description': 'Katso häiriöt ja poikkeukset',
     trafficnow: 'Liikenne nyt',
