@@ -42,8 +42,8 @@ const RouteBadgeGroup = ({
       />
       <div className={cx('badges__headsign-group', headsignGroupClassName)}>
         {routes.map(route => {
-          const { id, name, url, gtfsId } = route;
-          const routeKey = id || `${name}-${url}`;
+          const { name, url, gtfsId } = route;
+          const routeKey = gtfsId || `${name}-${url}`;
           const link = (
             <a
               onClick={handleRouteBadgeClick(url)}
