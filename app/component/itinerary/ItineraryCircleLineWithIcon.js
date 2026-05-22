@@ -20,6 +20,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
     style: PropTypes.shape({}),
     isNotFirstLeg: PropTypes.bool,
     isStop: PropTypes.bool,
+    hasPreviousTransitLeg: PropTypes.bool,
     indoorStepsLength: PropTypes.number,
   };
 
@@ -35,6 +36,7 @@ class ItineraryCircleLineWithIcon extends React.Component {
     style: {},
     isNotFirstLeg: undefined,
     isStop: false,
+    hasPreviousTransitLeg: false,
     indoorStepsLength: 0,
   };
 
@@ -45,6 +47,9 @@ class ItineraryCircleLineWithIcon extends React.Component {
   };
 
   getMarker = top => {
+    if (top && this.props.hasPreviousTransitLeg) {
+      return null;
+    }
     if (this.props.viaType === ViaLocationType.Visit && !this.props.isStop) {
       return (
         <div className="itinerary-icon-container">
