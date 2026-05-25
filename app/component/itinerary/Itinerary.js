@@ -687,9 +687,10 @@ const Itinerary = ({
     co2value >= 0 &&
     !containsScooterLeg;
 
+  const gotFeedback = props.feedback !== undefined;
   const itineraryContainerOverflowRef = createRef();
   const [showOverflowIcon, setShowOverflowIcon] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(props.feedback !== undefined);
+  const [isExpanded, setIsExpanded] = useState(gotFeedback);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -855,12 +856,12 @@ const Itinerary = ({
             {props.giveFeedback && props.recommended && (
               <div
                 className={
-                  isExpanded
+                  gotFeedback
                     ? ''
                     : `feedback-animated ${isExpanded ? 'open' : ''}`
                 }
               >
-                <div className={isExpanded ? '' : 'feedback-motion'}>
+                <div className={gotFeedback ? '' : 'feedback-motion'}>
                   <div className="feedback-frame">
                     <Feedback
                       recommended={props.recommended}
