@@ -93,6 +93,7 @@ export default function Feedback({
 }) {
   const [isAnimating, setIsAnimating] = useState(false);
   const timerRef = useRef(null);
+  const panelRef = useRef(null);
 
   useEffect(() => {
     return () => {
@@ -110,6 +111,7 @@ export default function Feedback({
     setIsAnimating(true);
     timerRef.current = setTimeout(() => {
       setIsAnimating(false);
+      panelRef.current?.focus();
     }, ANIMATION_MS);
     giveFeedback(value);
   };
@@ -124,7 +126,7 @@ export default function Feedback({
   }
 
   return (
-    <div className="feedback-panel">
+    <div ref={panelRef} className="feedback-panel" tabIndex="-1">
       {(status !== 'personalization-ask' || isAnimating) && (
         <FeedbackLayer
           key="knownstate"
@@ -143,6 +145,14 @@ export default function Feedback({
           animationClass={isAnimating ? 'leave' : ''}
         />
       )}
+      <div
+        className="sr-only"
+        aria-live="polite"
+        aria-atomic="true"
+        role="status"
+      >
+        <FormattedMessage id={status} />
+      </div>
     </div>
   );
 }
