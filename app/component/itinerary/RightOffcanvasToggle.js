@@ -1,18 +1,20 @@
 import PropTypes from 'prop-types';
 import React, { useState, useCallback } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { configShape } from '../../util/shapes';
 import Icon from '../Icon';
 import { isKeyboardSelectionEvent } from '../../util/browser';
 import { hasCustomizedSettings } from '../../util/planParamUtil';
 import Popover from '../Popover';
 import { getDialogState, setDialogState } from '../../store/localStorage';
+import { useConfigContext } from '../../configurations/ConfigContext';
 
-export default function RightOffcanvasToggle(
-  { onToggleClick, defaultMessage, translationId },
-  { config },
-) {
+export default function RightOffcanvasToggle({
+  onToggleClick,
+  defaultMessage = 'Settings',
+  translationId = 'settings',
+}) {
   const { formatMessage } = useIntl();
+  const config = useConfigContext();
   const userHasCustomizedSettings = hasCustomizedSettings(config);
   const [isSettingChangeInfoDismissed, setSettingChangeInfoDismissed] =
     useState(getDialogState('setting-change-acknowledged', config));
@@ -85,14 +87,3 @@ RightOffcanvasToggle.propTypes = {
   defaultMessage: PropTypes.string,
   translationId: PropTypes.string,
 };
-
-RightOffcanvasToggle.defaultProps = {
-  defaultMessage: 'Settings',
-  translationId: 'settings',
-};
-
-RightOffcanvasToggle.contextTypes = {
-  config: configShape,
-};
-
-RightOffcanvasToggle.displayName = 'RightOffcanvasToggle';
