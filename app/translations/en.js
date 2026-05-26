@@ -585,6 +585,8 @@ export default {
     'personalization-modal-highlight-details':
       'We emphasize your favorite routes in personalization. So add the routes you use as favorites.',
     'personalization-modal-link': 'Add or edit your favorites',
+    'personalization-new-feature':
+      'Discover new personalized route recommendations in settings',
     'personalization-open-info': 'Read how recommendations work',
     'phone-number': 'Phone number',
     'pick-mode': 'Transport modes',

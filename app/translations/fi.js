@@ -572,6 +572,8 @@ export default {
     'personalization-modal-highlight-details':
       'Painotamme personoinnissa suosikkilinjojasi. Lisää siis käyttämäsi linjat suosikeiksi.',
     'personalization-modal-link': 'Lisää tai muokkaa suosikkejasi',
+    'personalization-new-feature':
+      'Tutustu uusiin yksilöllisiin reittisuosituksiin asetuksissa',
     'personalization-open-info': 'Lue, miten suositukset toimivat',
     'phone-number': 'Puhelinnumero',
     'pick-mode': 'Liikennevälineet',

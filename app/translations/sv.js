@@ -577,6 +577,8 @@ export default {
     'personalization-modal-highlight-details':
       'Vi betonar dina favoritlinjer i personaliseringen. Så lägg till de linjer du använder som favoriter.',
     'personalization-modal-link': 'Lägg till eller redigera dina favoriter',
+    'personalization-new-feature':
+      'Upptäck nya personliga ruttrekommendationer i inställningarna',
     'personalization-open-info': 'Läs hur rekommendationer fungerar',
     'phone-number': 'Telefonnummer',
     'pick-mode': 'Trafikslag',

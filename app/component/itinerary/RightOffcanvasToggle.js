@@ -18,6 +18,9 @@ export default function RightOffcanvasToggle({
   const userHasCustomizedSettings = hasCustomizedSettings(config);
   const [isSettingChangeInfoDismissed, setSettingChangeInfoDismissed] =
     useState(getDialogState('setting-change-acknowledged', config));
+  const [isPersonalizationInfoDismissed, setPersonalizationInfoDismissed] =
+    useState(getDialogState('personalization-acknowledged', config));
+
   const label = userHasCustomizedSettings
     ? formatMessage({
         id: 'settings-changed-by-you',
@@ -27,31 +30,45 @@ export default function RightOffcanvasToggle({
         id: 'settings-label-change',
         defaultMessage: 'Change settings',
       });
+
+  const dismissTarget = isPersonalizationInfoDismissed
+    ? 'setting-change-acknowledged'
+    : 'personalization-acknowledged';
   const dismissPopover = useCallback(() => {
     // wait 1 second before dismissing to allow user to see the popover disappearing
     const timeoutId = setTimeout(() => {
-      setSettingChangeInfoDismissed(true);
-      setDialogState('setting-change-acknowledged');
+      if (dismissTarget === 'setting-change-acknowledged') {
+        setSettingChangeInfoDismissed(true);
+      } else {
+        setPersonalizationInfoDismissed(true);
+      }
+      setDialogState(dismissTarget);
     }, 1000);
     return () => clearTimeout(timeoutId);
   }, []);
 
   return (
     <div className="right-offcanvas-toggle">
-      {userHasCustomizedSettings && !isSettingChangeInfoDismissed && (
+      {!isPersonalizationInfoDismissed && (
         <Popover
           onClose={dismissPopover}
-          message={
-            <FormattedMessage
-              id="settings-changed-by-you"
-              defaultMessage="Settings changed"
-            />
-          }
-          buttonText={
-            <FormattedMessage id="acknowledged" defaultMessage="OK" />
-          }
+          message={<FormattedMessage id="personalization-new-feature" />}
         />
       )}
+      {userHasCustomizedSettings &&
+        !isSettingChangeInfoDismissed &&
+        isPersonalizationInfoDismissed && (
+          <Popover
+            icon={<Icon img="icon_checkmark" className="checkmark" />}
+            onClose={dismissPopover}
+            message={
+              <FormattedMessage
+                id="settings-changed-by-you"
+                defaultMessage="Settings changed"
+              />
+            }
+          />
+        )}
       <div
         role="button"
         tabIndex="0"
