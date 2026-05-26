@@ -4,10 +4,9 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import Icon from './Icon';
 import { isKeyboardSelectionEvent } from '../util/browser';
 
-export default function Popover({ onClose, message, buttonText }) {
+export default function Popover({ onClose, message, buttonText = null }) {
   const intl = useIntl();
-  const [isSettingChangeInfoDismissed, setSettingChangeInfoDismissed] =
-    useState(false);
+  const [isPopoverDismissed, setPopoverDismissed] = useState(false);
 
   const closeLabel = intl.formatMessage({
     id: 'close',
@@ -15,7 +14,7 @@ export default function Popover({ onClose, message, buttonText }) {
   });
   return (
     <div
-      className={`popover ${isSettingChangeInfoDismissed ? 'fade-away' : ''}`}
+      className={`popover ${isPopoverDismissed ? 'fade-away' : ''}`}
       aria-live="polite"
       role="alert"
     >
@@ -28,13 +27,13 @@ export default function Popover({ onClose, message, buttonText }) {
             tabIndex="0"
             onClick={e => {
               e.stopPropagation();
-              setSettingChangeInfoDismissed(true);
+              setPopoverDismissed(true);
               onClose();
             }}
             onKeyDown={e => {
               if (isKeyboardSelectionEvent(e)) {
                 e.stopPropagation();
-                setSettingChangeInfoDismissed(true);
+                setPopoverDismissed(true);
                 onClose();
               }
             }}
@@ -50,14 +49,14 @@ export default function Popover({ onClose, message, buttonText }) {
           tabIndex="0"
           onClick={e => {
             e.stopPropagation();
-            setSettingChangeInfoDismissed(true);
-            onClose(true);
+            setPopoverDismissed(true);
+            onClose();
           }}
           onKeyDown={e => {
             if (isKeyboardSelectionEvent(e)) {
               e.stopPropagation();
-              setSettingChangeInfoDismissed(true);
-              onClose(true);
+              setPopoverDismissed(true);
+              onClose();
             }
           }}
           className="popover-acknowledge-button"
@@ -80,9 +79,3 @@ Popover.propTypes = {
   message: PropTypes.node.isRequired,
   buttonText: PropTypes.node,
 };
-
-Popover.defaultProps = {
-  buttonText: null,
-};
-
-Popover.displayName = 'Popover';
