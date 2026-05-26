@@ -4,7 +4,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import Icon from './Icon';
 import { isKeyboardSelectionEvent } from '../util/browser';
 
-export default function Popover({ onClose, message, buttonText = null }) {
+export default function Popover({ icon, onClose, message, buttonText = null }) {
   const intl = useIntl();
   const [isPopoverDismissed, setPopoverDismissed] = useState(false);
 
@@ -18,7 +18,7 @@ export default function Popover({ onClose, message, buttonText = null }) {
       aria-live="polite"
       role="alert"
     >
-      <Icon img="icon_checkmark" className="checkmark" />
+      {icon}
       <div className="popover-content">
         <div className="popover-message-content">
           {message}
@@ -75,6 +75,7 @@ export default function Popover({ onClose, message, buttonText = null }) {
 }
 
 Popover.propTypes = {
+  icon: PropTypes.node,
   onClose: PropTypes.func.isRequired,
   message: PropTypes.node.isRequired,
   buttonText: PropTypes.node,
