@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Fragment } from 'react';
 import connectToStores from 'fluxible-addons-react/connectToStores';
-import { configShape, mapLayerOptionsShape } from '../../util/shapes';
+import { FormattedMessage } from 'react-intl';
+import { mapLayerOptionsShape } from '../../util/shapes';
 import { isKeyboardSelectionEvent } from '../../util/browser';
 import Icon from '../Icon';
 import Checkbox from '../Checkbox';
@@ -15,6 +16,7 @@ import {
   showRentalVehiclesOfType,
 } from '../../util/modeUtils';
 import { TransportMode } from '../../constants';
+import { useConfigContext } from '../../configurations/ConfigContext';
 
 const transportModeconfigShape = PropTypes.shape({
   availableForSelection: PropTypes.bool,
@@ -77,266 +79,261 @@ const sendLayerChangeAnalytic = (name, enable) => {
   });
 };
 
-class MapLayersDialogContent extends React.Component {
-  static propTypes = {
-    mapLayers: mapLayerShape.isRequired,
-    mapLayerOptions: mapLayerOptionsShape,
-    setOpen: PropTypes.func.isRequired,
-    updateMapLayers: PropTypes.func.isRequired,
-    lang: PropTypes.string.isRequired,
-    geoJson: geoJsonConfigShape,
-  };
+function MapLayersDialogContent({
+  mapLayers,
+  mapLayerOptions,
+  setOpen,
+  updateLayers,
+  geoJson,
+}) {
+  const config = useConfigContext();
 
-  static defaultProps = {
-    mapLayerOptions: null,
-    geoJson: undefined,
-  };
-
-  updateSetting = newSetting => {
-    this.props.updateMapLayers({
+  const updateSetting = newSetting => {
+    updateLayers({
       ...newSetting,
     });
   };
 
-  updateStopSetting = newSetting => {
+  const updateStopSetting = newSetting => {
     const stop = {
       ...newSetting,
     };
-    this.updateSetting({ stop });
+    updateSetting({ stop });
   };
 
-  updateGeoJsonSetting = newSetting => {
-    const geoJson = {
-      ...this.props.mapLayers.geoJson,
+  const updateGeoJsonSetting = newSetting => {
+    const nextGeoJson = {
+      ...mapLayers.geoJson,
       ...newSetting,
     };
-    this.updateSetting({ geoJson });
+    updateSetting({ geoJson: nextGeoJson });
   };
 
-  render() {
-    const {
-      citybike,
-      parkAndRide,
-      parkAndRideForBikes,
-      stop,
-      geoJson,
-      vehicles,
-      scooter,
-    } = this.props.mapLayers;
-    let arr;
-    if (this.props.geoJson) {
-      arr = Object.entries(this.props.geoJson)?.map(([k, v]) => {
-        return { url: k, ...v };
-      });
-    }
-    const isTransportModeEnabled = transportMode =>
-      transportMode && transportMode.availableForSelection;
-    const { config } = this.context;
-    const transportModes = getTransportModes(config);
-    return (
-      <Fragment>
-        <button
-          className="panel-close"
-          onClick={this.props.setOpen}
-          onKeyDown={e => isKeyboardSelectionEvent(e) && this.props.setOpen}
-          type="button"
-        >
-          <Icon img="icon_close" />
-        </button>
-        <span className="map-layer-header">
-          {this.context.intl.formatMessage({
-            id: 'select-map-layers-header',
-            defaultMessage: 'Bubble Dialog Header',
-          })}
-        </span>
-        <div className="checkbox-grouping" />
-        {config.vehicles && (
-          <div className="checkbox-grouping">
+  const arr = geoJson
+    ? Object.entries(geoJson).map(([k, v]) => ({
+        url: k,
+        ...v,
+      }))
+    : undefined;
+
+  const isTransportModeEnabled = transportMode =>
+    transportMode && transportMode.availableForSelection;
+
+  const transportModes = getTransportModes(config);
+
+  return (
+    <Fragment>
+      <button
+        className="panel-close"
+        onClick={setOpen}
+        onKeyDown={e => isKeyboardSelectionEvent(e) && setOpen()}
+        type="button"
+      >
+        <Icon img="icon_close" />
+      </button>
+
+      <span className="map-layer-header">
+        <FormattedMessage id="select-map-layers-header" />
+      </span>
+
+      <div className="checkbox-grouping" />
+
+      {config.vehicles && (
+        <div className="checkbox-grouping">
+          <Checkbox
+            large
+            checked={
+              !mapLayerOptions
+                ? mapLayers.vehicles
+                : !!mapLayerOptions?.vehicles?.isLocked &&
+                  !!mapLayerOptions?.vehicles?.isSelected
+            }
+            disabled={!!mapLayerOptions?.vehicles?.isLocked}
+            defaultMessage="Moving vehicles"
+            labelId="map-layer-vehicles"
+            onChange={e => {
+              updateSetting({ vehicles: e.target.checked });
+              sendLayerChangeAnalytic('Vehicles', e.target.checked);
+            }}
+          />
+        </div>
+      )}
+
+      <div className="checkbox-grouping">
+        {isTransportModeEnabled(transportModes.bus) && (
+          <Checkbox
+            large
+            checked={mapLayers.stop.bus}
+            disabled={!!mapLayerOptions?.stop?.bus?.isLocked}
+            defaultMessage="Bus stop"
+            labelId="map-layer-stop-bus"
+            onChange={e => {
+              updateStopSetting({ bus: e.target.checked });
+              sendLayerChangeAnalytic('BusStop', e.target.checked);
+            }}
+          />
+        )}
+
+        {isTransportModeEnabled(transportModes.tram) && (
+          <Checkbox
+            large
+            checked={mapLayers.stop.tram}
+            disabled={!!mapLayerOptions?.stop?.tram?.isLocked}
+            defaultMessage="Tram stop"
+            labelId="map-layer-stop-tram"
+            onChange={e => {
+              updateStopSetting({ tram: e.target.checked });
+              sendLayerChangeAnalytic('TramStop', e.target.checked);
+            }}
+          />
+        )}
+
+        {isTransportModeEnabled(transportModes.ferry) && (
+          <Checkbox
+            large
+            checked={mapLayers.stop.ferry}
+            disabled={!!mapLayerOptions?.stop?.ferry?.isLocked}
+            defaultMessage="Ferry"
+            labelId="map-layer-stop-ferry"
+            onChange={e => {
+              updateStopSetting({ ferry: e.target.checked });
+              sendLayerChangeAnalytic('FerryStop', e.target.checked);
+            }}
+          />
+        )}
+
+        {showRentalVehiclesOfType(
+          config.vehicleRental?.networks,
+          TransportMode.Citybike,
+        ) && (
+          <Checkbox
+            large
+            checked={mapLayers.citybike}
+            disabled={!!mapLayerOptions?.citybike?.isLocked}
+            defaultMessage="Citybike station"
+            labelId="map-layer-citybike"
+            onChange={e => {
+              updateSetting({ citybike: e.target.checked });
+              sendLayerChangeAnalytic('Citybike', e.target.checked);
+            }}
+          />
+        )}
+
+        {showRentalVehiclesOfType(
+          config.vehicleRental?.networks,
+          TransportMode.Scooter,
+        ) && (
+          <Checkbox
+            large
+            checked={mapLayers.scooter}
+            disabled={!!mapLayerOptions?.scooter?.isLocked}
+            defaultMessage="Scooters"
+            labelId="map-layer-scooter"
+            onChange={e => {
+              updateSetting({ scooter: e.target.checked });
+              sendLayerChangeAnalytic('Scooter', e.target.checked);
+            }}
+          />
+        )}
+
+        {isTransportModeEnabled(transportModes.funicular) && (
+          <Checkbox
+            large
+            checked={mapLayers.stop.funicular}
+            disabled={!!mapLayerOptions?.stop?.funicular?.isLocked}
+            defaultMessage="Funicular"
+            labelId="map-layer-stop-funicular"
+            onChange={e => {
+              updateStopSetting({ funicular: e.target.checked });
+              sendLayerChangeAnalytic('FunicularStop', e.target.checked);
+            }}
+          />
+        )}
+
+        {isTransportModeEnabled(transportModes.airplane) && (
+          <Checkbox
+            large
+            checked={mapLayers.stop.airplane}
+            disabled={!!mapLayerOptions?.stop?.airplane?.isLocked}
+            defaultMessage="Airport"
+            labelId="map-layer-stop-airplane"
+            onChange={e => {
+              updateStopSetting({ airplane: e.target.checked });
+              sendLayerChangeAnalytic('AirplaneStop', e.target.checked);
+            }}
+          />
+        )}
+
+        {config.parkAndRide?.showParkAndRide && (
+          <Checkbox
+            large
+            checked={mapLayers.parkAndRide}
+            disabled={!!mapLayerOptions?.parkAndRide?.isLocked}
+            defaultMessage="Park &amp; ride"
+            labelId="map-layer-park-and-ride"
+            onChange={e => {
+              updateSetting({ parkAndRide: e.target.checked });
+              sendLayerChangeAnalytic('ParkAndRide', e.target.checked);
+            }}
+          />
+        )}
+
+        {config.parkAndRide?.showParkAndRideForBikes && (
+          <Checkbox
+            large
+            checked={mapLayers.parkAndRideForBikes}
+            disabled={!!mapLayerOptions?.parkAndRideForBikes?.isLocked}
+            defaultMessage="Park &amp; ride bike parking"
+            labelId="map-layer-park-and-ride-bike"
+            onChange={e => {
+              updateSetting({ parkAndRideForBikes: e.target.checked });
+              sendLayerChangeAnalytic('ParkAndRideForBikes', e.target.checked);
+            }}
+          />
+        )}
+      </div>
+
+      {arr && Array.isArray(arr) && (
+        <div className="checkbox-grouping">
+          {arr.map(gj => (
             <Checkbox
               large
               checked={
-                !this.props.mapLayerOptions
-                  ? vehicles
-                  : !!this.props.mapLayerOptions?.vehicles?.isLocked &&
-                    !!this.props.mapLayerOptions?.vehicles?.isSelected
+                (gj.isOffByDefault && mapLayers.geoJson[gj.url] === true) ||
+                (!gj.isOffByDefault && mapLayers.geoJson[gj.url] !== false)
               }
-              disabled={!!this.props.mapLayerOptions?.vehicles?.isLocked}
-              defaultMessage="Moving vehicles"
-              labelId="map-layer-vehicles"
+              defaultMessage={gj.name[config.language]}
+              key={gj.url}
               onChange={e => {
-                this.updateSetting({ vehicles: e.target.checked });
-                sendLayerChangeAnalytic('Vehicles', e.target.checked);
+                const newSetting = {};
+                newSetting[gj.url] = e.target.checked;
+                updateGeoJsonSetting(newSetting);
+                sendLayerChangeAnalytic('Zones', e.target.checked);
               }}
             />
-          </div>
-        )}
-        <div className="checkbox-grouping">
-          {isTransportModeEnabled(transportModes.bus) && (
-            <Checkbox
-              large
-              checked={stop.bus}
-              disabled={!!this.props.mapLayerOptions?.stop?.bus?.isLocked}
-              defaultMessage="Bus stop"
-              labelId="map-layer-stop-bus"
-              onChange={e => {
-                this.updateStopSetting({ bus: e.target.checked });
-                sendLayerChangeAnalytic('BusStop', e.target.checked);
-              }}
-            />
-          )}
-          {isTransportModeEnabled(transportModes.tram) && (
-            <Checkbox
-              large
-              checked={stop.tram}
-              disabled={!!this.props.mapLayerOptions?.stop?.tram?.isLocked}
-              defaultMessage="Tram stop"
-              labelId="map-layer-stop-tram"
-              onChange={e => {
-                this.updateStopSetting({ tram: e.target.checked });
-                sendLayerChangeAnalytic('TramStop', e.target.checked);
-              }}
-            />
-          )}
-          {isTransportModeEnabled(transportModes.ferry) && (
-            <Checkbox
-              large
-              checked={stop.ferry}
-              disabled={!!this.props.mapLayerOptions?.stop?.ferry?.isLocked}
-              defaultMessage="Ferry"
-              labelId="map-layer-stop-ferry"
-              onChange={e => {
-                this.updateStopSetting({ ferry: e.target.checked });
-                sendLayerChangeAnalytic('FerryStop', e.target.checked);
-              }}
-            />
-          )}
-          {showRentalVehiclesOfType(
-            config.vehicleRental?.networks,
-            TransportMode.Citybike,
-          ) && (
-            <Checkbox
-              large
-              checked={citybike}
-              disabled={!!this.props.mapLayerOptions?.citybike?.isLocked}
-              defaultMessage="Citybike station"
-              labelId="map-layer-citybike"
-              onChange={e => {
-                this.updateSetting({ citybike: e.target.checked });
-                sendLayerChangeAnalytic('Citybike', e.target.checked);
-              }}
-            />
-          )}
-          {showRentalVehiclesOfType(
-            config.vehicleRental?.networks,
-            TransportMode.Scooter,
-          ) && (
-            <Checkbox
-              large
-              checked={scooter}
-              disabled={!!this.props.mapLayerOptions?.scooter?.isLocked}
-              defaultMessage="Scooters"
-              labelId="map-layer-scooter"
-              onChange={e => {
-                this.updateSetting({ scooter: e.target.checked });
-                sendLayerChangeAnalytic('Scooter', e.target.checked);
-              }}
-            />
-          )}
-          {isTransportModeEnabled(transportModes.funicular) && (
-            <Checkbox
-              large
-              checked={stop.funicular}
-              disabled={!!this.props.mapLayerOptions?.stop?.funicular?.isLocked}
-              defaultMessage="Funicular"
-              labelId="map-layer-stop-funicular"
-              onChange={e => {
-                this.updateStopSetting({ funicular: e.target.checked });
-                sendLayerChangeAnalytic('FunicularStop', e.target.checked);
-              }}
-            />
-          )}
-          {isTransportModeEnabled(transportModes.airplane) && (
-            <Checkbox
-              large
-              checked={stop.airplane}
-              disabled={!!this.props.mapLayerOptions?.stop?.airplane?.isLocked}
-              defaultMessage="Airport"
-              labelId="map-layer-stop-airplane"
-              onChange={e => {
-                this.updateStopSetting({ airplane: e.target.checked });
-                sendLayerChangeAnalytic('AirplaneStop', e.target.checked);
-              }}
-            />
-          )}
-          {config.parkAndRide?.showParkAndRide && (
-            <Checkbox
-              large
-              checked={parkAndRide}
-              disabled={!!this.props.mapLayerOptions?.parkAndRide?.isLocked}
-              defaultMessage="Park &amp; ride"
-              labelId="map-layer-park-and-ride"
-              onChange={e => {
-                this.updateSetting({ parkAndRide: e.target.checked });
-                sendLayerChangeAnalytic('ParkAndRide', e.target.checked);
-              }}
-            />
-          )}
-          {config.parkAndRide?.showParkAndRideForBikes && (
-            <Checkbox
-              large
-              checked={parkAndRideForBikes}
-              disabled={
-                !!this.props.mapLayerOptions?.parkAndRideForBikes?.isLocked
-              }
-              defaultMessage="Park &amp; ride bike parking"
-              labelId="map-layer-park-and-ride-bike"
-              onChange={e => {
-                this.updateSetting({ parkAndRideForBikes: e.target.checked });
-                sendLayerChangeAnalytic(
-                  'ParkAndRideForBikes',
-                  e.target.checked,
-                );
-              }}
-            />
-          )}
+          ))}
         </div>
-        {arr && Array.isArray(arr) && (
-          <div className="checkbox-grouping">
-            {arr.map(gj => (
-              <Checkbox
-                large
-                checked={
-                  (gj.isOffByDefault && geoJson[gj.url] === true) ||
-                  (!gj.isOffByDefault && geoJson[gj.url] !== false)
-                }
-                defaultMessage={gj.name[this.props.lang]}
-                key={gj.url}
-                onChange={e => {
-                  const newSetting = {};
-                  newSetting[gj.url] = e.target.checked;
-                  this.updateGeoJsonSetting(newSetting);
-                  sendLayerChangeAnalytic('Zones', e.target.checked);
-                }}
-              />
-            ))}
-          </div>
-        )}
-      </Fragment>
-    );
-  }
+      )}
+    </Fragment>
+  );
 }
-MapLayersDialogContent.contextTypes = {
-  config: configShape.isRequired,
-  intl: PropTypes.object.isRequired,
+
+MapLayersDialogContent.propTypes = {
+  mapLayers: mapLayerShape.isRequired,
+  mapLayerOptions: mapLayerOptionsShape,
+  setOpen: PropTypes.func.isRequired,
+  updateLayers: PropTypes.func.isRequired,
+  geoJson: geoJsonConfigShape,
 };
+
 /**
  * Retrieves the list of geojson layers in use from the configuration or
  * the geojson store. If no layers exist in these sources, the
  * defaultValue is returned.
  *
- * @param {*} config the configuration for the software installation.
+ * @param {*} config the configuration
  * @param {*} store the geojson store.
- * @param {*} defaultValue the default value, defaults to undefined.
+ * @param {*} defaultValue
  */
 export const getGeoJsonLayersOrDefault = (
   config,
@@ -352,7 +349,7 @@ export const getGeoJsonLayersOrDefault = (
 
 const connectedComponent = connectToStores(
   withGeojsonObjects(MapLayersDialogContent),
-  [GeoJsonStore, MapLayerStore, 'PreferencesStore'],
+  [GeoJsonStore, MapLayerStore],
   ({ config, executeAction, getStore }) => ({
     config: {
       ...config,
@@ -360,9 +357,7 @@ const connectedComponent = connectToStores(
         layers: getGeoJsonLayersOrDefault(config, getStore(GeoJsonStore)),
       },
     },
-    updateMapLayers: mapLayers =>
-      executeAction(updateMapLayers, { ...mapLayers }),
-    lang: getStore('PreferencesStore').getLanguage(),
+    updateLayers: mapLayers => executeAction(updateMapLayers, { ...mapLayers }),
   }),
   {
     config: mapLayersconfigShape,
