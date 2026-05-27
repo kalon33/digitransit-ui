@@ -15,12 +15,12 @@
   right: -50px;
   border-radius: 16px;
   background: #fff;
-  border: 1px solid #ddd;
+  border: 1px solid $light-gray;
   box-shadow: 0 4px 4px 0 var(--color-shadow-weak, rgba(0, 52, 86, 0.25));
-  padding: var(--space-s, 16px) !important;
+  padding: 10px !important;
   gap: 10px;
   align-items: flex-start;
-  min-width: 220px;
+  max-width: 320px;
   z-index: 2000;
   animation: fadeInSlidePopover 1s forwards;
 
@@ -53,54 +53,49 @@
   .popover-content {
     display: flex;
     flex-direction: column;
-    gap: 10px;
     align-items: flex-start;
     align-self: stretch;
+    min-width: 222px;
+    padding-top: 4px;
 
-    .popover-message-content {
-      display: inline-flex;
-      align-items: center;
-      align-self: stretch;
-
+    .message {
       span {
-        display: inline-flex;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 325;
-        line-height: 18px;
+        font-size: $font-size-normal;
+        font-weight: $font-weight-book;
         letter-spacing: -0.5px;
-        color: #000;
-        width: max-content;
-      }
-
-      .popover-close-button {
-        width: 24px;
-        height: 24px;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-        border-radius: 999px;
-        margin-left: 20px;
-
-        .icon {
-          width: 16px;
-          height: 16px;
-          color: $theme-primary-color;
-        }
+        color: $black;
+        display: block;
+        text-align: left;
       }
     }
+  }
 
-    .popover-acknowledge-button {
-      display: flex;
-      height: 28px;
-      min-width: 60px;
-      padding: 0 var(--space-m, 24px);
-      justify-content: center;
-      align-items: center;
-      border-radius: 999px;
-      border: 1px solid #888;
-      background: #fff;
+  .popover-close-button {
+    width: 24px;
+    height: 24px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 999px;
+
+    .icon {
+      width: 16px;
+      height: 16px;
+      color: $theme-primary-color;
     }
+  }
+
+  .popover-acknowledge-button {
+    display: flex;
+    height: 28px;
+    min-width: 80px;
+    margin-top: 12px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 999px;
+    border: 1px solid $control-border-color;
+    background: #fff;
+    font-weight: $font-weight-book;
+    color: $theme-primary-color;
   }
 
   .icon-container {
@@ -113,7 +108,6 @@
         color: $attention-color;
         width: 16px;
         height: 16px;
-        flex-shrink: 0;
       }
     }
   }

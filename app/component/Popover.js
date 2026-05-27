@@ -20,30 +20,7 @@ export default function Popover({ icon, onClose, message, buttonText = null }) {
     >
       {icon}
       <div className="popover-content">
-        <div className="popover-message-content">
-          {message}
-          <button
-            type="button"
-            tabIndex="0"
-            onClick={e => {
-              e.stopPropagation();
-              setPopoverDismissed(true);
-              onClose();
-            }}
-            onKeyDown={e => {
-              if (isKeyboardSelectionEvent(e)) {
-                e.stopPropagation();
-                setPopoverDismissed(true);
-                onClose();
-              }
-            }}
-            aria-label={closeLabel}
-            title={closeLabel}
-            className="noborder cursor-pointer popover-close-button"
-          >
-            <Icon img="icon_close" />
-          </button>
-        </div>
+        <span className="message">{message}</span>
         <button
           type="button"
           tabIndex="0"
@@ -70,6 +47,27 @@ export default function Popover({ icon, onClose, message, buttonText = null }) {
           )}
         </button>
       </div>
+      <button
+        type="button"
+        tabIndex="0"
+        onClick={e => {
+          e.stopPropagation();
+          setPopoverDismissed(true);
+          onClose();
+        }}
+        onKeyDown={e => {
+          if (isKeyboardSelectionEvent(e)) {
+            e.stopPropagation();
+            setPopoverDismissed(true);
+            onClose();
+          }
+        }}
+        aria-label={closeLabel}
+        title={closeLabel}
+        className="noborder cursor-pointer popover-close-button"
+      >
+        <Icon img="icon_close" />
+      </button>
     </div>
   );
 }
