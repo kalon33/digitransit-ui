@@ -104,7 +104,7 @@ const CanceledTripCard = ({ mode, totalCount, trips }) => {
         />
       </div>
       <div className="disruption-card__body-row-validity-icon text-xs">
-        <Icon img="icon_clock" />
+        <Icon img="icon_status" />
         {intl.formatMessage({ id: 'valid', defaultMessage: 'Active' })}
       </div>
     </Card>

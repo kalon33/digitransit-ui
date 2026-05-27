@@ -1,6 +1,7 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef } from 'react';
 import cx from 'classnames';
 import { FormattedMessage } from 'react-intl';
+import { useRouter } from 'found';
 import { useLazyLoadQuery } from 'react-relay/hooks';
 import { useConfigContext } from '../../configurations/ConfigContext';
 import { TransportMode } from '../../constants';
@@ -12,18 +13,19 @@ import { useFilterContext } from './filters/FiltersContext';
 import { filterAndSortAlerts } from './filters/filterUtils';
 import AlertsQuery from './queries/AlertsQuery';
 import CanceledTripsOverviewQuery from './queries/CanceledTripsOverviewQuery';
+import { TRAFFICNOW } from '../../util/path';
 
 const CANCELED_TRIPS_OVERVIEW_QUERY_AMOUNT = 20;
 
 export default function Disruptions() {
   const breakpoint = useBreakpoint();
   const config = useConfigContext();
-  const [activeAlertId, setActiveAlertId] = useState();
   const ref = useRef();
+  const { router } = useRouter();
   const { selectedFilters } = useFilterContext();
 
   const handleCardClick = id => {
-    setActiveAlertId(id);
+    router.push(`/${TRAFFICNOW}/hairio/${id}`);
   };
 
   const { alerts } = useLazyLoadQuery(AlertsQuery, {
@@ -109,12 +111,7 @@ export default function Disruptions() {
                 ),
             )}
             {disruptions.map(a => (
-              <DisruptionCard
-                key={a.id}
-                alert={a}
-                isOpen={activeAlertId === a.id}
-                onClick={handleCardClick}
-              />
+              <DisruptionCard key={a.id} alert={a} onClick={handleCardClick} />
             ))}
           </div>
         </>

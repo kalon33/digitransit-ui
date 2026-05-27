@@ -157,8 +157,8 @@ const CanceledTrips = ({ query, isMobile = false, ...props }) => {
   return (
     <>
       <div
-        className={cx('canceled-trips__cta-container', {
-          'canceled-trips__cta-container--mobile': isMobile,
+        className={cx('detail-view__cta-container', {
+          'detail-view__cta-container--mobile': isMobile,
         })}
       >
         <Link to="/liikenne" className="cta-small">

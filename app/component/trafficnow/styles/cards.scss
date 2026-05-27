@@ -5,10 +5,12 @@
 
 .traffic-now {
   &__body {
-    .canceled-trips {
+    .detail-view {
       &__cta-container {
         padding: var(--space-xl) var(--space-xxl);
         background-color: var(--white);
+        border-right: 1px solid $light-gray;
+        min-width: 258px;
 
         .cta-small {
           display: flex;
@@ -38,7 +40,9 @@
           color: $link-color;
         }
       }
+    }
 
+    .canceled-trips {
       &__header {
         display: flex;
         flex-direction: row;
@@ -206,6 +210,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        width: 100%;
 
         &-validity {
           display: flex;

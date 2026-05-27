@@ -78,7 +78,7 @@ export default function DisruptionCard({ alert, isOpen, onClick = () => {} }) {
           <div className="disruption-card__body-row-validity-icon">
             {isValid ? (
               <>
-                <Icon img="icon_clock" />
+                <Icon img="icon_status" />
                 <FormattedMessage id="valid" default="Active" />
               </>
             ) : (
