@@ -8,7 +8,7 @@ import { mockContext, mockChildContextTypes } from '../helpers/mock-context';
 import {
   Component as MapLayersDialogContent,
   getGeoJsonLayersOrDefault,
-} from '../../../app/component/MapLayersDialogContent';
+} from '../../../app/component/map/MapLayersDialogContent';
 
 describe('<MapLayersDialogContent />', () => {
   it('should render', () => {

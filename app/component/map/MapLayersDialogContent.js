@@ -1,19 +1,20 @@
-/* eslint react/forbid-prop-types: 0 */
 import PropTypes from 'prop-types';
 import React, { Fragment } from 'react';
-import { matchShape, routerShape } from 'found';
 import connectToStores from 'fluxible-addons-react/connectToStores';
-import { configShape, mapLayerOptionsShape } from '../util/shapes';
-import { isKeyboardSelectionEvent } from '../util/browser';
-import Icon from './Icon';
-import Checkbox from './Checkbox';
-import GeoJsonStore from '../store/GeoJsonStore';
-import MapLayerStore, { mapLayerShape } from '../store/MapLayerStore';
-import { updateMapLayers } from '../action/MapLayerActions';
-import { addAnalyticsEvent } from '../util/analyticsUtils';
-import withGeojsonObjects from './map/withGeojsonObjects';
-import { getTransportModes, showRentalVehiclesOfType } from '../util/modeUtils';
-import { TransportMode } from '../constants';
+import { configShape, mapLayerOptionsShape } from '../../util/shapes';
+import { isKeyboardSelectionEvent } from '../../util/browser';
+import Icon from '../Icon';
+import Checkbox from '../Checkbox';
+import GeoJsonStore from '../../store/GeoJsonStore';
+import MapLayerStore, { mapLayerShape } from '../../store/MapLayerStore';
+import { updateMapLayers } from '../../action/MapLayerActions';
+import { addAnalyticsEvent } from '../../util/analyticsUtils';
+import withGeojsonObjects from './withGeojsonObjects';
+import {
+  getTransportModes,
+  showRentalVehiclesOfType,
+} from '../../util/modeUtils';
+import { TransportMode } from '../../constants';
 
 const transportModeconfigShape = PropTypes.shape({
   availableForSelection: PropTypes.bool,
@@ -83,7 +84,6 @@ class MapLayersDialogContent extends React.Component {
     setOpen: PropTypes.func.isRequired,
     updateMapLayers: PropTypes.func.isRequired,
     lang: PropTypes.string.isRequired,
-    open: PropTypes.bool.isRequired,
     geoJson: geoJsonConfigShape,
   };
 
@@ -91,13 +91,6 @@ class MapLayersDialogContent extends React.Component {
     mapLayerOptions: null,
     geoJson: undefined,
   };
-
-  handlePanelState(open) {
-    if (open === this.props.open) {
-      return;
-    }
-    this.props.setOpen(open);
-  }
 
   updateSetting = newSetting => {
     this.props.updateMapLayers({
@@ -144,10 +137,8 @@ class MapLayersDialogContent extends React.Component {
       <Fragment>
         <button
           className="panel-close"
-          onClick={() => this.handlePanelState(false)}
-          onKeyDown={e =>
-            isKeyboardSelectionEvent(e) && this.handlePanelState(false)
-          }
+          onClick={this.props.setOpen}
+          onKeyDown={e => isKeyboardSelectionEvent(e) && this.props.setOpen}
           type="button"
         >
           <Icon img="icon_close" />
@@ -337,8 +328,6 @@ class MapLayersDialogContent extends React.Component {
 MapLayersDialogContent.contextTypes = {
   config: configShape.isRequired,
   intl: PropTypes.object.isRequired,
-  router: routerShape.isRequired,
-  match: matchShape.isRequired,
 };
 /**
  * Retrieves the list of geojson layers in use from the configuration or
