@@ -88,27 +88,6 @@ function MapLayersDialogContent({
 }) {
   const config = useConfigContext();
 
-  const updateSetting = newSetting => {
-    updateLayers({
-      ...newSetting,
-    });
-  };
-
-  const updateStopSetting = newSetting => {
-    const stop = {
-      ...newSetting,
-    };
-    updateSetting({ stop });
-  };
-
-  const updateGeoJsonSetting = newSetting => {
-    const nextGeoJson = {
-      ...mapLayers.geoJson,
-      ...newSetting,
-    };
-    updateSetting({ geoJson: nextGeoJson });
-  };
-
   const arr = geoJson
     ? Object.entries(geoJson).map(([k, v]) => ({
         url: k,
@@ -152,7 +131,7 @@ function MapLayersDialogContent({
             defaultMessage="Moving vehicles"
             labelId="map-layer-vehicles"
             onChange={e => {
-              updateSetting({ vehicles: e.target.checked });
+              updateLayers({ vehicles: e.target.checked });
               sendLayerChangeAnalytic('Vehicles', e.target.checked);
             }}
           />
@@ -168,7 +147,7 @@ function MapLayersDialogContent({
             defaultMessage="Bus stop"
             labelId="map-layer-stop-bus"
             onChange={e => {
-              updateStopSetting({ bus: e.target.checked });
+              updateLayers({ stop: { bus: e.target.checked } });
               sendLayerChangeAnalytic('BusStop', e.target.checked);
             }}
           />
@@ -182,7 +161,7 @@ function MapLayersDialogContent({
             defaultMessage="Tram stop"
             labelId="map-layer-stop-tram"
             onChange={e => {
-              updateStopSetting({ tram: e.target.checked });
+              updateLayers({ stop: { tram: e.target.checked } });
               sendLayerChangeAnalytic('TramStop', e.target.checked);
             }}
           />
@@ -196,7 +175,7 @@ function MapLayersDialogContent({
             defaultMessage="Ferry"
             labelId="map-layer-stop-ferry"
             onChange={e => {
-              updateStopSetting({ ferry: e.target.checked });
+              updateLayers({ stop: { ferry: e.target.checked } });
               sendLayerChangeAnalytic('FerryStop', e.target.checked);
             }}
           />
@@ -213,7 +192,7 @@ function MapLayersDialogContent({
             defaultMessage="Citybike station"
             labelId="map-layer-citybike"
             onChange={e => {
-              updateSetting({ citybike: e.target.checked });
+              updateLayers({ citybike: e.target.checked });
               sendLayerChangeAnalytic('Citybike', e.target.checked);
             }}
           />
@@ -230,7 +209,7 @@ function MapLayersDialogContent({
             defaultMessage="Scooters"
             labelId="map-layer-scooter"
             onChange={e => {
-              updateSetting({ scooter: e.target.checked });
+              updateLayers({ scooter: e.target.checked });
               sendLayerChangeAnalytic('Scooter', e.target.checked);
             }}
           />
@@ -244,7 +223,7 @@ function MapLayersDialogContent({
             defaultMessage="Funicular"
             labelId="map-layer-stop-funicular"
             onChange={e => {
-              updateStopSetting({ funicular: e.target.checked });
+              updateLayers({ stop: { funicular: e.target.checked } });
               sendLayerChangeAnalytic('FunicularStop', e.target.checked);
             }}
           />
@@ -258,7 +237,7 @@ function MapLayersDialogContent({
             defaultMessage="Airport"
             labelId="map-layer-stop-airplane"
             onChange={e => {
-              updateStopSetting({ airplane: e.target.checked });
+              updateLayers({ stop: { airplane: e.target.checked } });
               sendLayerChangeAnalytic('AirplaneStop', e.target.checked);
             }}
           />
@@ -272,7 +251,7 @@ function MapLayersDialogContent({
             defaultMessage="Park &amp; ride"
             labelId="map-layer-park-and-ride"
             onChange={e => {
-              updateSetting({ parkAndRide: e.target.checked });
+              updateLayers({ parkAndRide: e.target.checked });
               sendLayerChangeAnalytic('ParkAndRide', e.target.checked);
             }}
           />
@@ -286,7 +265,7 @@ function MapLayersDialogContent({
             defaultMessage="Park &amp; ride bike parking"
             labelId="map-layer-park-and-ride-bike"
             onChange={e => {
-              updateSetting({ parkAndRideForBikes: e.target.checked });
+              updateLayers({ parkAndRideForBikes: e.target.checked });
               sendLayerChangeAnalytic('ParkAndRideForBikes', e.target.checked);
             }}
           />
@@ -307,7 +286,7 @@ function MapLayersDialogContent({
               onChange={e => {
                 const newSetting = {};
                 newSetting[gj.url] = e.target.checked;
-                updateGeoJsonSetting(newSetting);
+                updateLayers({ geoJson: newSetting });
                 sendLayerChangeAnalytic('Zones', e.target.checked);
               }}
             />
