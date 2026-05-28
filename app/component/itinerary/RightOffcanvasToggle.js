@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Icon from '../Icon';
 import { isKeyboardSelectionEvent } from '../../util/browser';
@@ -20,6 +20,7 @@ export default function RightOffcanvasToggle({
     useState(getDialogState('setting-change-acknowledged', config));
   const [isPersonalizationInfoDismissed, setPersonalizationInfoDismissed] =
     useState(getDialogState('personalization-acknowledged', config));
+  const buttonRef = useRef(null);
 
   const label = userHasCustomizedSettings
     ? formatMessage({
@@ -49,16 +50,19 @@ export default function RightOffcanvasToggle({
 
   return (
     <div className="right-offcanvas-toggle">
-      {!isPersonalizationInfoDismissed && (
+      {!isPersonalizationInfoDismissed && config.personalization && (
         <Popover
+          targetRef={buttonRef}
           onClose={dismissPopover}
           message={<FormattedMessage id="personalization-new-feature" />}
+          highlight
         />
       )}
       {userHasCustomizedSettings &&
         !isSettingChangeInfoDismissed &&
         isPersonalizationInfoDismissed && (
           <Popover
+            targetRef={buttonRef}
             icon={<Icon img="icon_checkmark" className="checkmark" />}
             onClose={dismissPopover}
             message={
@@ -70,6 +74,7 @@ export default function RightOffcanvasToggle({
           />
         )}
       <div
+        ref={buttonRef}
         role="button"
         tabIndex="0"
         onClick={onToggleClick}

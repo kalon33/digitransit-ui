@@ -10,9 +10,7 @@
 
 .popover {
   display: flex;
-  position: absolute;
-  top: 160%;
-  right: -50px;
+  position: relative;
   border-radius: 16px;
   background: #fff;
   border: 1px solid $light-gray;
@@ -20,19 +18,20 @@
   padding: 10px !important;
   gap: 10px;
   align-items: flex-start;
+  width: fit-content;
   max-width: 320px;
   z-index: 2000;
   animation: fadeInSlidePopover 1s forwards;
 
   // Popover arrow
-  &::before {
+  .popover::before {
     content: '';
+    position: absolute;
+    top: -13px;
+    right: 20px;
     width: 24px;
     height: 24px;
-    position: absolute;
-    right: 113px;
-    top: -13px;
-    transform: translateX(-50%) rotate(45deg);
+    transform: rotate(45deg);
     z-index: 2500;
     border: 1px solid #ddd;
     border-bottom: none;
@@ -139,4 +138,29 @@
     opacity: 0;
     transform: translateY(-20%);
   }
+}
+
+.popover-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
+.popover-highlight {
+  position: fixed;
+  border-radius: 999px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  pointer-events: none;
+}
+
+.popover-layer {
+  position: fixed;
+  z-index: 1002;
+}
+
+.open-advanced-settings-window-button {
+  position: relative;
+  z-index: 1003;
 }
