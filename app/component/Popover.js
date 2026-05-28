@@ -13,7 +13,7 @@ export default function Popover({
   highlight = false,
 }) {
   const intl = useIntl();
-  const [isPopoverDismissed, setPopoverDismissed] = useState(false);
+  const [isDismissed, setDismissed] = useState(false);
   const [rect, setRect] = useState(null);
 
   const closeLabel = intl.formatMessage({
@@ -40,7 +40,7 @@ export default function Popover({
   const popoverLeft = Math.max(16, rect.left - 160);
 
   const dismiss = () => {
-    setPopoverDismissed(true);
+    setDismissed(true);
     onClose();
   };
 
@@ -55,9 +55,11 @@ export default function Popover({
     <>
       {highlight && (
         <>
-          <div className="popover-overlay" />
           <div
-            className="popover-highlight"
+            className={`popover-overlay ${isDismissed ? 'fade-away' : ''}`}
+          />
+          <div
+            className={`popover-highlight ${isDismissed ? 'fade-away' : ''}`}
             style={{
               top: rect.top,
               left: rect.left,
@@ -76,12 +78,11 @@ export default function Popover({
         }}
       >
         <div
-          className={`popover ${isPopoverDismissed ? 'fade-away' : ''}`}
+          className={`popover ${isDismissed ? 'fade-away' : ''}`}
           aria-live="polite"
           role="alert"
         >
           {icon}
-
           <div className="popover-content">
             <span className="message">
               <span>{message}</span>
@@ -136,10 +137,4 @@ Popover.propTypes = {
     current: PropTypes.instanceOf(Element),
   }).isRequired,
   highlight: PropTypes.bool,
-};
-
-Popover.defaultProps = {
-  icon: null,
-  buttonText: null,
-  highlight: false,
 };
