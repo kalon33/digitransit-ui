@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Icon from './Icon';
@@ -9,23 +9,47 @@ export default function Popover({
   onClose,
   message,
   buttonText = null,
-  targetRef, // element to which popover points at
+  targetRef,
   highlight = false,
 }) {
   const intl = useIntl();
   const [isPopoverDismissed, setPopoverDismissed] = useState(false);
+  const [rect, setRect] = useState(null);
 
   const closeLabel = intl.formatMessage({
     id: 'close',
     defaultMessage: 'Close',
   });
-  const rect = targetRef.current?.getBoundingClientRect();
+
+  useLayoutEffect(() => {
+    const id = requestAnimationFrame(() => {
+      const nextRect = targetRef.current?.getBoundingClientRect();
+      if (nextRect && nextRect.width && nextRect.height) {
+        setRect(nextRect);
+      }
+    });
+
+    return () => cancelAnimationFrame(id);
+  }, [targetRef]);
 
   if (!rect) {
     return null;
   }
-  const popoverTop = rect.bottom + 30;
-  const popoverRight = Math.max(16, window.innerWidth - rect.right + 12);
+
+  const popoverTop = rect.bottom + 28;
+  const popoverRight = Math.max(16, window.innerWidth - rect.right - 12);
+
+  const dismiss = () => {
+    setPopoverDismissed(true);
+    onClose();
+  };
+
+  const handleKeyboardClose = e => {
+    if (isKeyboardSelectionEvent(e)) {
+      e.stopPropagation();
+      dismiss();
+    }
+  };
 
   return (
     <>
@@ -43,12 +67,12 @@ export default function Popover({
           />
         </>
       )}
+
       <div
         className="popover-layer"
         style={{
           top: popoverTop,
           right: popoverRight,
-          transform: 'translateX(-50%)',
         }}
       >
         <div
@@ -57,23 +81,20 @@ export default function Popover({
           role="alert"
         >
           {icon}
+
           <div className="popover-content">
-            <span className="message">{message}</span>
+            <span className="message">
+              <span>{message}</span>
+            </span>
+
             <button
               type="button"
               tabIndex="0"
               onClick={e => {
                 e.stopPropagation();
-                setPopoverDismissed(true);
-                onClose();
+                dismiss();
               }}
-              onKeyDown={e => {
-                if (isKeyboardSelectionEvent(e)) {
-                  e.stopPropagation();
-                  setPopoverDismissed(true);
-                  onClose();
-                }
-              }}
+              onKeyDown={handleKeyboardClose}
               className="popover-acknowledge-button"
               aria-label={intl.formatMessage({
                 id: 'acknowledged',
@@ -85,21 +106,15 @@ export default function Popover({
               )}
             </button>
           </div>
+
           <button
             type="button"
             tabIndex="0"
             onClick={e => {
               e.stopPropagation();
-              setPopoverDismissed(true);
-              onClose();
+              dismiss();
             }}
-            onKeyDown={e => {
-              if (isKeyboardSelectionEvent(e)) {
-                e.stopPropagation();
-                setPopoverDismissed(true);
-                onClose();
-              }
-            }}
+            onKeyDown={handleKeyboardClose}
             aria-label={closeLabel}
             title={closeLabel}
             className="noborder cursor-pointer popover-close-button"
@@ -121,4 +136,10 @@ Popover.propTypes = {
     current: PropTypes.instanceOf(Element),
   }).isRequired,
   highlight: PropTypes.bool,
+};
+
+Popover.defaultProps = {
+  icon: null,
+  buttonText: null,
+  highlight: false,
 };

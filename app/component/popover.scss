@@ -1,9 +1,39 @@
+.popover-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
+.popover-highlight {
+  position: fixed;
+  border-radius: 999px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  pointer-events: none;
+}
+
+.popover-layer {
+  position: fixed;
+  z-index: 1002;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.open-advanced-settings-window-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #fff;
+  position: relative;
+  z-index: 1004;
+}
+
 .mobile {
   .popover {
-    right: 0;
-
-    &::before {
-      right: 64px;
+    .popover-close-button {
+      margin-left: auto;
     }
   }
 }
@@ -11,6 +41,7 @@
 .popover {
   display: flex;
   position: relative;
+  pointer-events: auto;
   border-radius: 16px;
   background: #fff;
   border: 1px solid $light-gray;
@@ -18,21 +49,20 @@
   padding: 10px !important;
   gap: 10px;
   align-items: flex-start;
-  width: fit-content;
   max-width: 320px;
+  box-sizing: border-box;
   z-index: 2000;
   animation: fadeInSlidePopover 1s forwards;
 
-  // Popover arrow
-  .popover::before {
+  &::before {
     content: '';
     position: absolute;
     top: -13px;
-    right: 20px;
+    right: 50px;
     width: 24px;
     height: 24px;
     transform: rotate(45deg);
-    z-index: 2500;
+    z-index: 1;
     border: 1px solid #ddd;
     border-bottom: none;
     border-right: none;
@@ -54,7 +84,7 @@
     flex-direction: column;
     align-items: flex-start;
     align-self: stretch;
-    min-width: 222px;
+    min-width: 0;
     padding-top: 4px;
 
     .message {
@@ -75,6 +105,7 @@
     justify-content: center;
     align-items: center;
     border-radius: 999px;
+    flex-shrink: 0;
 
     .icon {
       width: 16px;
@@ -88,6 +119,7 @@
     height: 28px;
     min-width: 80px;
     margin-top: 12px;
+    padding: 0 12px;
     justify-content: center;
     align-items: center;
     border-radius: 999px;
@@ -95,6 +127,7 @@
     background: #fff;
     font-weight: $font-weight-book;
     color: $theme-primary-color;
+    white-space: nowrap;
   }
 
   .icon-container {
@@ -138,29 +171,4 @@
     opacity: 0;
     transform: translateY(-20%);
   }
-}
-
-.popover-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 1000;
-}
-
-.popover-highlight {
-  position: fixed;
-  border-radius: 999px;
-  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
-  z-index: 1001;
-  pointer-events: none;
-}
-
-.popover-layer {
-  position: fixed;
-  z-index: 1002;
-}
-
-.open-advanced-settings-window-button {
-  position: relative;
-  z-index: 1003;
 }

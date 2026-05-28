@@ -83,22 +83,20 @@ export default function RightOffcanvasToggle({
         title={label}
         className="noborder cursor-pointer open-advanced-settings-window-button"
       >
-        <div>
-          <div className="icon-holder">
-            <Icon img="icon_settings" />
-            {userHasCustomizedSettings && (
-              <span className="customized-settings-indicator">
-                <Icon img="icon_checkmark" />
-              </span>
-            )}
-          </div>
-          <span className="settings-button-text">
-            <FormattedMessage
-              id={translationId}
-              defaultMessage={defaultMessage}
-            />
-          </span>
+        <div className="icon-holder">
+          <Icon img="icon_settings" />
+          {userHasCustomizedSettings && (
+            <span className="customized-settings-indicator">
+              <Icon img="icon_checkmark" />
+            </span>
+          )}
         </div>
+        <span className="settings-button-text">
+          <FormattedMessage
+            id={translationId}
+            defaultMessage={defaultMessage}
+          />
+        </span>
       </div>
     </div>
   );
