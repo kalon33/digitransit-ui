@@ -378,6 +378,7 @@ export default {
     'map-layer-vehicles': 'Fordon',
     'map-zoom-in-button': 'Zooma in',
     'map-zoom-out-button': 'Zooma ut',
+    maplayers: 'Kartlager',
     'menu-feedback': 'Skicka respons',
     'messagebar-label-close-message-bar': 'Stäng banner',
     'min-transfer-time': 'Bytestid',

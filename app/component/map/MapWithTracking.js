@@ -337,6 +337,9 @@ class MapWithTrackingStateHandler extends React.Component {
                   img="icon_map-layers"
                   handleClick={this.setSettingsOpen}
                   color={config.colors.primary}
+                  ariaLabel={this.context.intl.formatMessage({
+                    id: 'maplayers',
+                  })}
                 />
               )}
               {renderCustomButtons && renderCustomButtons()}

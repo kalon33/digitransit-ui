@@ -372,6 +372,7 @@ export default {
     'map-layer-vehicles': 'Liikennevälineet',
     'map-zoom-in-button': 'Lähennä',
     'map-zoom-out-button': 'Loitonna',
+    maplayers: 'Karttatasot',
     'menu-feedback': 'Anna palautetta',
     'messagebar-label-close-message-bar': 'Sulje banneri',
     'min-transfer-time': 'Vaihtoaika',

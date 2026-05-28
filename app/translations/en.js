@@ -383,6 +383,7 @@ export default {
     'map-layer-vehicles': 'Vehicles',
     'map-zoom-in-button': 'Zoom in',
     'map-zoom-out-button': 'Zoom out',
+    maplayers: 'Map layers',
     'menu-feedback': 'Submit feedback',
     'messagebar-label-close-message-bar': 'Close banner',
     'min-transfer-time': 'Interchange time',
