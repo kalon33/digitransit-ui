@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import RightOffcanvasToggle from './RightOffcanvasToggle';
+import SettingsToggle from './SettingsToggle';
 import DatetimepickerContainer from '../DatetimepickerContainer';
 import { useConfigContext } from '../../configurations/ConfigContext';
 
@@ -14,7 +14,7 @@ export default function SearchSettings({ toggleSettings }) {
         embedWhenClosed={
           !config.hideItinerarySettings && (
             <div className="open-advanced-settings">
-              <RightOffcanvasToggle onToggleClick={toggleSettings} />
+              <SettingsToggle onToggleClick={toggleSettings} />
             </div>
           )
         }
@@ -22,7 +22,7 @@ export default function SearchSettings({ toggleSettings }) {
           <div className="open-embed-container">
             <div className="open-advanced-settings open-embed">
               {!config.hideItinerarySettings && (
-                <RightOffcanvasToggle onToggleClick={toggleSettings} />
+                <SettingsToggle onToggleClick={toggleSettings} />
               )}
             </div>
           </div>

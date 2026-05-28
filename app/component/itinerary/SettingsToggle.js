@@ -8,7 +8,7 @@ import Popover from '../Popover';
 import { getDialogState, setDialogState } from '../../store/localStorage';
 import { useConfigContext } from '../../configurations/ConfigContext';
 
-export default function RightOffcanvasToggle({
+export default function SettingsToggle({
   onToggleClick,
   defaultMessage = 'Settings',
   translationId = 'settings',
@@ -102,7 +102,7 @@ export default function RightOffcanvasToggle({
   );
 }
 
-RightOffcanvasToggle.propTypes = {
+SettingsToggle.propTypes = {
   onToggleClick: PropTypes.func.isRequired,
   defaultMessage: PropTypes.string,
   translationId: PropTypes.string,
