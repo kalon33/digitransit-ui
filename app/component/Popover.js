@@ -36,8 +36,8 @@ export default function Popover({
     return null;
   }
 
-  const popoverTop = rect.bottom + 28;
-  const popoverRight = Math.max(16, window.innerWidth - rect.right - 12);
+  const popoverTop = rect.bottom + 20;
+  const popoverLeft = Math.max(16, rect.left - 160);
 
   const dismiss = () => {
     setPopoverDismissed(true);
@@ -59,10 +59,10 @@ export default function Popover({
           <div
             className="popover-highlight"
             style={{
-              top: rect.top - 8,
-              left: rect.left - 8,
-              width: rect.width + 16,
-              height: rect.height + 16,
+              top: rect.top,
+              left: rect.left,
+              width: rect.width,
+              height: rect.height,
             }}
           />
         </>
@@ -72,7 +72,7 @@ export default function Popover({
         className="popover-layer"
         style={{
           top: popoverTop,
-          right: popoverRight,
+          left: popoverLeft,
         }}
       >
         <div

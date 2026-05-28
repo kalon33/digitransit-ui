@@ -20,16 +20,6 @@
   overflow: visible;
 }
 
-.open-advanced-settings-window-button {
-  display: inline-flex;
-  align-items: center;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: #fff;
-  position: relative;
-  z-index: 1004;
-}
-
 .mobile {
   .popover {
     .popover-close-button {
@@ -49,7 +39,7 @@
   padding: 10px !important;
   gap: 10px;
   align-items: flex-start;
-  max-width: 320px;
+  max-width: 280px;
   box-sizing: border-box;
   z-index: 2000;
   animation: fadeInSlidePopover 1s forwards;
@@ -84,7 +74,6 @@
     flex-direction: column;
     align-items: flex-start;
     align-self: stretch;
-    min-width: 0;
     padding-top: 4px;
 
     .message {
