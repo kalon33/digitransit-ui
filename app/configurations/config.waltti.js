@@ -286,7 +286,6 @@ export default {
   },
   analyticsClass: 'plausible-event-name=Ticket+Purchase+Link',
 
-  hideNaviTickets: true, // TODO: temporary force switch
   navigation: true,
 
   // TODO: flex disabled for now, proper configuration coming in the future
