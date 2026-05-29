@@ -596,7 +596,7 @@ export default {
     realtime: 'Reaaliaika',
     releases: 'Tiedotteet',
     'remove-favourite': 'Poista suosikkivalinta',
-    'rent-cycle-at': 'Nouda Kaupunkipyörä: ',
+    'rent-cycle-at': 'Nouda kaupunkipyörä: ',
     'rent-e-scooter-at': 'Ota sähköpotkulauta käyttöön sovelluksella',
     'replacement-bus': 'Korvaava bussi',
     'replacement-bus-with-route-number': 'Korvaava bussi {routeNumber}',
