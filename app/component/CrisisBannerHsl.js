@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useIntl } from 'react-intl';
 import { classList } from '@hsl-fi/utilities';
 import { Alert } from '@hsl-fi/icons';
 import { CrisisPriority } from '@hsl-fi/content-delivery-api-types';
@@ -7,8 +8,9 @@ import { useConfigContext } from '../configurations/ConfigContext';
 import { getJson } from '../util/xhrPromise';
 import './crisis-banner-hsl.scss';
 
-const CrisisBannerHsl = ({ lang = 'fi', initialBanners = null }) => {
+const CrisisBannerHsl = ({ initialBanners = null }) => {
   const config = useConfigContext();
+  const { locale } = useIntl();
   const [banners, setBanners] = useState(() => {
     if (initialBanners) {
       return initialBanners;
@@ -27,10 +29,10 @@ const CrisisBannerHsl = ({ lang = 'fi', initialBanners = null }) => {
     ) {
       return;
     }
-    getJson(`${config.URL.BANNERS}&language=${lang}`)
+    getJson(`${config.URL.BANNERS}&language=${locale}`)
       .then(data => setBanners(data))
       .catch(() => setBanners([]));
-  }, [lang]);
+  }, []);
 
   if (!banners.length) {
     return null;
@@ -62,7 +64,6 @@ const CrisisBannerHsl = ({ lang = 'fi', initialBanners = null }) => {
 };
 
 CrisisBannerHsl.propTypes = {
-  lang: PropTypes.string,
   initialBanners: PropTypes.arrayOf(
     PropTypes.shape({
       body: PropTypes.string,

@@ -28,7 +28,7 @@ const AppBarContainer = (
       </a>
       {style === 'hsl' ? (
         <div className="hsl-header-container" style={{ display: 'block' }}>
-          <CrisisBannerHsl lang={lang} />
+          <CrisisBannerHsl />
           <AppBarHsl user={user} lang={lang} favourites={favourites} />
           <MessageBar breakpoint={breakpoint} />
         </div>

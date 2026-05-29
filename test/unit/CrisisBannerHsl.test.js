@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { IntlProvider } from 'react-intl';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -16,9 +17,11 @@ const baseConfig = {
 
 const renderWithBanners = (banners = []) => {
   const { container } = render(
-    <ConfigProvider value={baseConfig}>
-      <CrisisBannerHsl lang="fi" initialBanners={banners} />
-    </ConfigProvider>,
+    <IntlProvider locale="fi" messages={{}}>
+      <ConfigProvider value={baseConfig}>
+        <CrisisBannerHsl initialBanners={banners} />
+      </ConfigProvider>
+    </IntlProvider>,
   );
   return container;
 };
