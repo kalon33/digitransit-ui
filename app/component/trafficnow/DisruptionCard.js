@@ -1,6 +1,4 @@
 import React from 'react';
-import { ButtonLink } from '@hsl-fi/layout-primitives';
-import cx from 'classnames';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { useConfigContext } from '../../configurations/ConfigContext';
@@ -14,17 +12,15 @@ import RouteBadges from './RouteBadges';
 
 const DATE_FORMAT = 'd.L.yyyy';
 
-export default function DisruptionCard({ alert, isOpen, onClick = () => {} }) {
+export default function DisruptionCard({ alert, onClick = () => {} }) {
   const {
     id,
     alertSeverityLevel,
     alertEffect,
     alertHeaderText,
     entities,
-    alertDescriptionText,
     effectiveStartDate,
     effectiveEndDate,
-    alertUrl,
   } = alert;
   const { colors } = useConfigContext();
 
@@ -45,7 +41,7 @@ export default function DisruptionCard({ alert, isOpen, onClick = () => {} }) {
     <Card
       className="disruption-card clickable"
       onClick={() => {
-        onClick(isOpen ? undefined : id);
+        onClick(id);
       }}
     >
       <header>
@@ -58,21 +54,12 @@ export default function DisruptionCard({ alert, isOpen, onClick = () => {} }) {
           <Icon
             img="icon_arrow-collapse--right"
             color={colors.primary}
-            className={cx('disruption-card__icon', {
-              'disruption-card__icon--inverted': isOpen,
-            })}
+            className="disruption-card__icon"
           />
         </button>
       </header>
       {entities && <RouteBadges entities={entities} />}
       <h2 className="cta-small">{alertHeaderText}</h2>
-      <div
-        className={cx('disruption-card__body', {
-          'disruption-card__body--open': isOpen,
-        })}
-      >
-        <p className="text-xs">{alertDescriptionText}</p>
-      </div>
       <div className="disruption-card__body-row">
         <div className="disruption-card__body-row-validity text-xs">
           <div className="disruption-card__body-row-validity-icon">
@@ -96,21 +83,6 @@ export default function DisruptionCard({ alert, isOpen, onClick = () => {} }) {
             </>
           )}
         </div>
-        {alertUrl && isOpen && (
-          <div className="disruption-card__body-row-info">
-            <ButtonLink
-              size="s"
-              href={alertUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              variant="secondary"
-            >
-              <FormattedMessage id="extra-info" default="Details">
-                {msg => <span className="link-small">{msg}</span>}
-              </FormattedMessage>
-            </ButtonLink>
-          </div>
-        )}
       </div>
     </Card>
   );
@@ -118,6 +90,5 @@ export default function DisruptionCard({ alert, isOpen, onClick = () => {} }) {
 
 DisruptionCard.propTypes = {
   alert: alertShape.isRequired,
-  isOpen: PropTypes.bool.isRequired,
   onClick: PropTypes.func,
 };

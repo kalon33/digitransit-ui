@@ -69,72 +69,67 @@ const DisruptionDetailsContainer = ({ alertId, isMobile = false }) => {
   );
   const endDate = getFormattedTimeDate(effectiveEndDate * 1000, DATE_FORMAT);
 
+  const checkedUrl =
+    alertUrl &&
+    (alertUrl.match(/^[a-zA-Z]+:\/\//) ? alertUrl : `http://${alertUrl}`);
+
+  const validity = (
+    <span className="disruption-details__validity">
+      {isMobile && <div className="separator vertical" />}
+      <Icon img={isValid ? 'icon_status' : 'icon_calendar'} />
+      <span className={isMobile ? 'routes-m-bold' : 'text-xs-bold'}>
+        {intl.formatMessage({
+          id: isValid ? 'valid' : 'upcoming',
+          defaultMessage: isValid ? 'Active' : 'Upcoming',
+        })}
+      </span>
+      {alertSeverityLevel !== AlertSeverityLevelType.Info && !isMobile && (
+        <>
+          <div className="separator vertical" />
+          <span>
+            {startDate}
+            {startDate !== endDate && ` - ${endDate}`}
+          </span>
+        </>
+      )}
+    </span>
+  );
+
   const content = (
     <>
+      <div className="disruption-details__header">
+        <DisruptionBadge
+          showIcon
+          variant={alertSeverityLevel}
+          label={alertEffect}
+        />
+        {validity}
+      </div>
       <div className="disruption-details__content">
-        <div className="disruption-details__header">
-          <DisruptionBadge
-            showIcon
-            variant={alertSeverityLevel}
-            label={alertEffect}
-          />
-        </div>
-
         {entities && (
           <div className="disruption-details__routes">
             <RouteBadges entities={entities} />
           </div>
         )}
-
-        <h2 className="heading-xs">{alertHeaderText}</h2>
-
-        <p className="text-m">{alertDescriptionText}</p>
-      </div>
-      <div className="disruption-details__footer">
-        <div className="disruption-details__validity text-xs">
-          <div className="disruption-details__validity-icon">
-            {isValid ? (
-              <>
-                <Icon img="icon_status" />
-                <span className="routes-s-bold">
-                  {intl.formatMessage({
-                    id: 'valid',
-                    defaultMessage: 'active',
-                  })}
-                </span>
-              </>
-            ) : (
-              <>
-                <Icon img="icon_calendar" />
-                <span className="routes-s-bold">
-                  {intl.formatMessage({
-                    id: 'upcoming',
-                    defaultMessage: 'Upcoming',
-                  })}
-                </span>
-              </>
-            )}
-            {alertSeverityLevel !== AlertSeverityLevelType.Info && (
-              <>
-                <div className="separator vertical" />
-                {startDate}
-                {startDate !== endDate && ` - ${endDate}`}
-              </>
-            )}
-          </div>
-        </div>
-        {alertUrl && (
+        <h2 className="disruption-details__title">{alertHeaderText}</h2>
+        <p className="disruption-details__description">
+          {alertDescriptionText}
+        </p>
+        {checkedUrl && (
           <div className="disruption-details__link">
             <ButtonLink
               size="s"
-              href={alertUrl}
+              href={checkedUrl}
               target="_blank"
               rel="noopener noreferrer"
               variant="secondary"
+              style={{
+                minWidth: isMobile ? '100%' : 'none',
+              }}
             >
               {intl.formatMessage({
                 id: 'extra-info',
-                defaultMessage: 'Details',
+                defaultMessage: 'More info',
               })}
             </ButtonLink>
           </div>
@@ -143,22 +138,33 @@ const DisruptionDetailsContainer = ({ alertId, isMobile = false }) => {
     </>
   );
 
+  if (isMobile) {
+    return (
+      <>
+        <div className="detail-view__cta-container detail-view__cta-container--mobile">
+          <Link to="/liikenne" className="cta-small">
+            <Icon img="icon_chevron-left" />
+            <FormattedMessage id="traffic-now_go-back" />
+            <div />
+          </Link>
+        </div>
+        <div className="disruption-details disruption-details--mobile">
+          {content}
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
-      <div
-        className={cx('detail-view__cta-container', {
-          'detail-view__cta-container--mobile': isMobile,
-        })}
-      >
+      <div className="detail-view__cta-container">
         <Link to="/liikenne" className="cta-small">
           <Icon img="icon_chevron-left" />
           <FormattedMessage id="traffic-now_go-back" />
-          {isMobile && <div />}
         </Link>
       </div>
-
       <div className="disruption-details__container">
-        {isMobile ? content : <Card>{content}</Card>}
+        <Card>{content}</Card>
       </div>
     </>
   );
