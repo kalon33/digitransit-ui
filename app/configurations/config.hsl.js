@@ -757,4 +757,15 @@ export default {
   showRouteDescNotification: IS_DEV,
   personalization: false,
   showNewRoutePage: true,
+  staticCrisisBanners: [
+    {
+      body: 'Dummy crisis alert — primary',
+      priority: 'Primary',
+    },
+    {
+      body: 'Dummy crisis alert — secondary',
+      priority: 'Secondary',
+    },
+  ],
+  showStaticCrisisBanners: false,
 };
