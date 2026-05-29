@@ -74,16 +74,15 @@ export default function NaviBottom({ setNavigation, arrival, time, legs }) {
       {SecondElement}
       {isTicketSaleActive && (
         /* TODO HSL hack, make link below configurable */
-        <button type="button" className="navi-ticket-button">
-          <a
-            onClick={handleTicketButtonClick}
-            href={localizedUrl(config.navigatorTicketLink, currentLanguage)}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FormattedMessage id="navigation-ticket" />
-          </a>
-        </button>
+        <a
+          className="navi-ticket-button"
+          href={localizedUrl(config.navigatorTicketLink, currentLanguage)}
+          onClick={handleTicketButtonClick}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <FormattedMessage id="navigation-ticket" />
+        </a>
       )}
     </div>
   );
