@@ -53,13 +53,6 @@
         @media screen and (max-width: $bp-tablet) {
           padding: var(--space-m);
         }
-
-        .validity-container {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          gap: var(--space-xxs);
-        }
       }
 
       &__body {
@@ -176,12 +169,16 @@
         align-items: center;
         width: 100%;
 
-        .validity-container {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          gap: var(--space-xxs);
+        .separator.vertical {
+          align-self: stretch;
         }
+      }
+
+      &__header-left {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-xs);
       }
 
       &__icon {
@@ -209,17 +206,6 @@
         justify-content: space-between;
         align-items: center;
         width: 100%;
-
-        &-validity {
-          display: flex;
-          gap: var(--space-xs);
-
-          &-icon {
-            display: flex;
-            gap: $gap-validity-icon;
-            align-items: center;
-          }
-        }
       }
     }
   }

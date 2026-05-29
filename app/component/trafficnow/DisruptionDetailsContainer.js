@@ -2,19 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { ButtonLink } from '@hsl-fi/layout-primitives';
-import cx from 'classnames';
 import Link from 'found/Link';
 import { useLazyLoadQuery } from 'react-relay/hooks';
 import { useConfigContext } from '../../configurations/ConfigContext';
-import { getFormattedTimeDate } from '../../util/timeUtils';
-import { AlertSeverityLevelType } from '../../constants';
 import Card from '../Card';
 import DisruptionBadge from './DisruptionBadge';
+import DisruptionStatus from './components/DisruptionStatus';
 import RouteBadges from './RouteBadges';
 import Icon from '../Icon';
 import AlertsQuery from './queries/AlertsQuery';
-
-const DATE_FORMAT = 'd.L.yyyy';
+import { AlertSeverityLevelType } from '../../constants';
 
 const DisruptionDetailsContainer = ({ alertId, isMobile = false }) => {
   const config = useConfigContext();
@@ -28,11 +25,7 @@ const DisruptionDetailsContainer = ({ alertId, isMobile = false }) => {
   if (!alert) {
     return (
       <>
-        <div
-          className={cx('detail-view__cta-container', {
-            'detail-view__cta-container--mobile': isMobile,
-          })}
-        >
+        <div className="detail-view__cta-container">
           <Link to="/liikenne" className="cta-small">
             <Icon img="icon_chevron-left" />
             <FormattedMessage id="traffic-now_go-back" />
@@ -59,41 +52,9 @@ const DisruptionDetailsContainer = ({ alertId, isMobile = false }) => {
     entities,
   } = alert;
 
-  const now = Date.now();
-  const isValid =
-    now > effectiveStartDate * 1000 && now < effectiveEndDate * 1000;
-
-  const startDate = getFormattedTimeDate(
-    effectiveStartDate * 1000,
-    DATE_FORMAT,
-  );
-  const endDate = getFormattedTimeDate(effectiveEndDate * 1000, DATE_FORMAT);
-
   const checkedUrl =
     alertUrl &&
     (alertUrl.match(/^[a-zA-Z]+:\/\//) ? alertUrl : `http://${alertUrl}`);
-
-  const validity = (
-    <span className="disruption-details__validity">
-      {isMobile && <div className="separator vertical" />}
-      <Icon img={isValid ? 'icon_status' : 'icon_calendar'} />
-      <span className={isMobile ? 'routes-m-bold' : 'text-xs-bold'}>
-        {intl.formatMessage({
-          id: isValid ? 'valid' : 'upcoming',
-          defaultMessage: isValid ? 'Active' : 'Upcoming',
-        })}
-      </span>
-      {alertSeverityLevel !== AlertSeverityLevelType.Info && !isMobile && (
-        <>
-          <div className="separator vertical" />
-          <span>
-            {startDate}
-            {startDate !== endDate && ` - ${endDate}`}
-          </span>
-        </>
-      )}
-    </span>
-  );
 
   const content = (
     <>
@@ -103,7 +64,24 @@ const DisruptionDetailsContainer = ({ alertId, isMobile = false }) => {
           variant={alertSeverityLevel}
           label={alertEffect}
         />
-        {validity}
+        {isMobile && (
+          <div className="disruption-details__header-validity">
+            <div className="separator vertical" />
+            <DisruptionStatus
+              effectiveStartDate={effectiveStartDate}
+              effectiveEndDate={effectiveEndDate}
+              showDates={false}
+            />
+          </div>
+        )}
+        {!isMobile && (
+          <DisruptionStatus
+            effectiveStartDate={effectiveStartDate}
+            effectiveEndDate={effectiveEndDate}
+            className="routes-s-bold"
+            showDates={alertSeverityLevel !== AlertSeverityLevelType.Info}
+          />
+        )}
       </div>
       <div className="disruption-details__content">
         {entities && (

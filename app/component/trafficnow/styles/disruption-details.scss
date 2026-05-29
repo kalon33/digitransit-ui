@@ -39,6 +39,16 @@
         flex-direction: row;
         align-items: center;
         gap: var(--space-s);
+
+        &-validity {
+          display: flex;
+          align-items: center;
+          gap: var(--space-s);
+
+          .separator.vertical {
+            align-self: stretch;
+          }
+        }
       }
 
       &__content {
@@ -46,21 +56,6 @@
         flex-direction: column;
         padding: var(--space-l);
         gap: var(--space-s);
-      }
-
-      &__validity {
-        display: flex;
-        align-items: center;
-        min-height: 24px;
-
-        .separator.vertical {
-          align-self: stretch;
-        }
-
-        .icon-container {
-          padding-left: var(--space-m);
-          padding-right: var(--space-xs);
-        }
       }
 
       &__routes {
