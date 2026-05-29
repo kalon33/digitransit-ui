@@ -371,6 +371,9 @@ export default {
   ticketPurchaseLink: function purchaseTicketLink(fare) {
     return `https://open.app.hsl.fi/zoneTicketWizard/TICKET_TYPE_SINGLE_TICKET/${fare.ticketName}/adult/-`;
   },
+  navigatorTicketLink: {
+    fi: 'https://open.app.hsl.fi/tickets', // shows existing ticket
+  },
   ticketLinkOperatorCode: 'hsl',
   // mapping fareId from OTP fare identifiers to human readable form
   // in the new HSL zone model, just strip off the prefix 'HSL:'
