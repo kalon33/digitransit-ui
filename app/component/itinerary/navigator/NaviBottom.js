@@ -28,7 +28,7 @@ export default function NaviBottom({ setNavigation, arrival, time, legs }) {
   };
 
   const isTicketSaleActive =
-    !config.hideNaviTickets &&
+    config.navigatorTicketLink &&
     shouldShowFareInfo(config, legs) &&
     getFaresFromLegs(legs, config)?.find(f => !f.isUnknown);
 
@@ -77,7 +77,7 @@ export default function NaviBottom({ setNavigation, arrival, time, legs }) {
         <button type="button" className="navi-ticket-button">
           <a
             onClick={handleTicketButtonClick}
-            href={localizedUrl(config.ticketLink, currentLanguage)}
+            href={localizedUrl(config.navigatorTicketLink, currentLanguage)}
             target="_blank"
             rel="noopener noreferrer"
           >
