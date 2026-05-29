@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Fragment } from 'react';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import { FormattedMessage } from 'react-intl';
+
 import { mapLayerOptionsShape } from '../../util/shapes';
 import { isKeyboardSelectionEvent } from '../../util/browser';
 import Icon from '../Icon';
@@ -17,58 +18,6 @@ import {
 } from '../../util/modeUtils';
 import { TransportMode } from '../../constants';
 import { useConfigContext } from '../../configurations/ConfigContext';
-
-const transportModeconfigShape = PropTypes.shape({
-  availableForSelection: PropTypes.bool,
-});
-
-const geoJsonConfigShape = PropTypes.shape({
-  layers: PropTypes.arrayOf(
-    PropTypes.shape({
-      url: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.arrayOf(PropTypes.string),
-      ]).isRequired,
-      name: PropTypes.shape({
-        en: PropTypes.string,
-        fi: PropTypes.string.isRequired,
-        sv: PropTypes.string,
-      }),
-    }),
-  ),
-});
-
-const mapLayersconfigShape = PropTypes.shape({
-  vehicleRental: PropTypes.shape({
-    networks: PropTypes.object,
-  }),
-  geoJson: geoJsonConfigShape,
-  parkAndRide: PropTypes.shape({
-    showParkAndRide: PropTypes.bool,
-  }),
-  parkAndRideForBikes: PropTypes.shape({
-    showParkAndRideForBikes: PropTypes.bool,
-  }),
-  transportModes: PropTypes.shape({
-    bus: transportModeconfigShape,
-    citybike: transportModeconfigShape,
-    ferry: transportModeconfigShape,
-    rail: transportModeconfigShape,
-    subway: transportModeconfigShape,
-    tram: transportModeconfigShape,
-    scooter: transportModeconfigShape,
-    funicular: transportModeconfigShape,
-    airplane: transportModeconfigShape,
-  }),
-  mapLayers: PropTypes.shape({
-    tooltip: PropTypes.shape({
-      en: PropTypes.string,
-      fi: PropTypes.string.isRequired,
-      sv: PropTypes.string,
-    }),
-  }),
-  vehicles: PropTypes.bool,
-});
 
 const sendLayerChangeAnalytic = (name, enable) => {
   const action = enable ? 'ShowMapLayer' : 'HideMapLayer';
@@ -87,6 +36,7 @@ function MapLayersDialogContent({
   geoJson,
 }) {
   const config = useConfigContext();
+  const transportModes = getTransportModes(config);
 
   const arr = geoJson
     ? Object.entries(geoJson).map(([k, v]) => ({
@@ -97,8 +47,6 @@ function MapLayersDialogContent({
 
   const isTransportModeEnabled = transportMode =>
     transportMode && transportMode.availableForSelection;
-
-  const transportModes = getTransportModes(config);
 
   return (
     <Fragment>
@@ -302,18 +250,9 @@ MapLayersDialogContent.propTypes = {
   mapLayerOptions: mapLayerOptionsShape,
   setOpen: PropTypes.func.isRequired,
   updateLayers: PropTypes.func.isRequired,
-  geoJson: geoJsonConfigShape,
+  geoJson: PropTypes.object /* eslint-disable-line */,
 };
 
-/**
- * Retrieves the list of geojson layers in use from the configuration or
- * the geojson store. If no layers exist in these sources, the
- * defaultValue is returned.
- *
- * @param {*} config the configuration
- * @param {*} store the geojson store.
- * @param {*} defaultValue
- */
 export const getGeoJsonLayersOrDefault = (
   config,
   store,
@@ -329,17 +268,10 @@ export const getGeoJsonLayersOrDefault = (
 const connectedComponent = connectToStores(
   withGeojsonObjects(MapLayersDialogContent),
   [GeoJsonStore, MapLayerStore],
-  ({ config, executeAction, getStore }) => ({
-    config: {
-      ...config,
-      geoJson: {
-        layers: getGeoJsonLayersOrDefault(config, getStore(GeoJsonStore)),
-      },
-    },
+  ({ executeAction }) => ({
     updateLayers: mapLayers => executeAction(updateMapLayers, { ...mapLayers }),
   }),
   {
-    config: mapLayersconfigShape,
     executeAction: PropTypes.func,
   },
 );
