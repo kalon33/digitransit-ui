@@ -1,28 +1,31 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import connectToStores from 'fluxible-addons-react/connectToStores';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
-import { configShape, legShape } from '../../../util/shapes';
+import { legShape } from '../../../util/shapes';
 import { epochToTime, durationToString } from '../../../util/timeUtils';
 import { getFaresFromLegs, shouldShowFareInfo } from '../../../util/fareUtils';
 import localizedUrl from '../../../util/urlUtils';
+import { useConfigContext } from '../../../configurations/ConfigContext';
 
-function NaviBottom(
-  { setNavigation, arrival, time, legs, currentLanguage },
-  { config },
-) {
-  const handleClose = useCallback(() => {
+export default function NaviBottom({ setNavigation, arrival, time, legs }) {
+  const intl = useIntl();
+  const config = useConfigContext();
+  const currentLanguage = config.language;
+
+  const handleClose = () => {
     addAnalyticsEvent({
       category: 'Itinerary',
       event: 'navigator',
       action: 'cancel_navigation',
     });
     setNavigation(false);
-  }, [setNavigation]);
-  const handleTicketButtonClick = useCallback(e => e.stopPropagation(), []);
-  const intl = useIntl();
+  };
+
+  const handleTicketButtonClick = e => {
+    e.stopPropagation();
+  };
 
   const isTicketSaleActive =
     !config.hideNaviTickets &&
@@ -70,10 +73,8 @@ function NaviBottom(
       {FirstElement}
       {SecondElement}
       {isTicketSaleActive && (
-        /* TODO HSL hack, make link below configurable */ <button
-          type="button"
-          className="navi-ticket-button"
-        >
+        /* TODO HSL hack, make link below configurable */
+        <button type="button" className="navi-ticket-button">
           <a
             onClick={handleTicketButtonClick}
             href={localizedUrl(config.ticketLink, currentLanguage)}
@@ -93,19 +94,4 @@ NaviBottom.propTypes = {
   arrival: PropTypes.number.isRequired,
   time: PropTypes.number.isRequired,
   legs: PropTypes.arrayOf(legShape).isRequired,
-  currentLanguage: PropTypes.string.isRequired,
 };
-
-NaviBottom.contextTypes = {
-  config: configShape.isRequired,
-};
-
-const connectedComponent = connectToStores(
-  NaviBottom,
-  ['PreferencesStore'],
-  context => ({
-    currentLanguage: context.getStore('PreferencesStore').getLanguage(),
-  }),
-);
-
-export { connectedComponent as default, NaviBottom as Component };
