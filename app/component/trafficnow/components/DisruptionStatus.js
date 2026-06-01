@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import Icon from '../../Icon';
 import { getFormattedTimeDate } from '../../../util/timeUtils';
+import { useConfigContext } from '../../../configurations/ConfigContext';
 
 const DATE_FORMAT = 'd.L.yyyy';
 
@@ -14,6 +15,9 @@ export default function DisruptionStatus({
   className,
 }) {
   const intl = useIntl();
+  const {
+    colors: { primary: primaryColor },
+  } = useConfigContext();
   const now = Date.now();
   const isValid =
     active !== undefined
@@ -31,7 +35,10 @@ export default function DisruptionStatus({
 
   return (
     <span className={`disruption-status ${className || ''}`}>
-      <Icon img={isValid ? 'icon_status' : 'icon_calendar'} />
+      <Icon
+        img={isValid ? 'icon_status' : 'icon_calendar'}
+        color={primaryColor}
+      />
       <span>
         {`${intl.formatMessage({
           id: isValid ? 'valid' : 'upcoming',
