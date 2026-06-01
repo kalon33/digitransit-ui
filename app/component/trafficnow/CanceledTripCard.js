@@ -11,7 +11,7 @@ import DisruptionStatus from './components/DisruptionStatus';
 import RouteBadgeGroup from './components/RouteBadgeGroup';
 import DisruptionBadge from './DisruptionBadge';
 
-const CanceledTripCard = ({ mode, totalCount, trips }) => {
+const CanceledTripCard = ({ mode, totalCount, trips, isMobile = false }) => {
   const { router } = useRouter();
   const { colors } = useConfigContext();
 
@@ -61,8 +61,17 @@ const CanceledTripCard = ({ mode, totalCount, trips }) => {
       <header>
         <span className="disruption-card__header-left">
           <DisruptionBadge showIcon variant="WARNING" label="NO_SERVICE" />
-          <div className="separator vertical" />
-          <DisruptionStatus active showDates={false} className="text-xs-bold" />
+          {!isMobile && (
+            <>
+              {' '}
+              <div className="separator vertical" />
+              <DisruptionStatus
+                active
+                showDates={false}
+                className="text-xs-bold"
+              />
+            </>
+          )}
         </span>
         <button type="button">
           <Icon
@@ -106,6 +115,9 @@ const CanceledTripCard = ({ mode, totalCount, trips }) => {
           }
         />
       </div>
+      {isMobile && (
+        <DisruptionStatus active showDates={false} className="text-xs-bold" />
+      )}
     </Card>
   );
 };
@@ -114,6 +126,7 @@ CanceledTripCard.propTypes = {
   mode: PropTypes.string.isRequired,
   totalCount: PropTypes.number.isRequired,
   trips: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  isMobile: PropTypes.bool,
 };
 
 export default CanceledTripCard;

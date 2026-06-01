@@ -9,7 +9,11 @@ import DisruptionStatus from './components/DisruptionStatus';
 import Icon from '../Icon';
 import RouteBadges from './RouteBadges';
 
-export default function DisruptionCard({ alert, onClick = () => {} }) {
+export default function DisruptionCard({
+  alert,
+  onClick = () => {},
+  isMobile = false,
+}) {
   const {
     id,
     alertSeverityLevel,
@@ -35,13 +39,17 @@ export default function DisruptionCard({ alert, onClick = () => {} }) {
             variant={alertSeverityLevel}
             label={alertEffect}
           />
-          <div className="separator vertical" />
-          <DisruptionStatus
-            effectiveStartDate={effectiveStartDate}
-            effectiveEndDate={effectiveEndDate}
-            className="text-xs-bold"
-            showDates={alertSeverityLevel !== AlertSeverityLevelType.Info}
-          />
+          {!isMobile && (
+            <>
+              <div className="separator vertical" />
+              <DisruptionStatus
+                effectiveStartDate={effectiveStartDate}
+                effectiveEndDate={effectiveEndDate}
+                className="text-xs-bold"
+                showDates={alertSeverityLevel !== AlertSeverityLevelType.Info}
+              />
+            </>
+          )}
         </span>
         <button type="button">
           <Icon
@@ -53,6 +61,14 @@ export default function DisruptionCard({ alert, onClick = () => {} }) {
       </header>
       {entities && <RouteBadges entities={entities} />}
       <h2 className="cta-small">{alertHeaderText}</h2>
+      {isMobile && (
+        <DisruptionStatus
+          effectiveStartDate={effectiveStartDate}
+          effectiveEndDate={effectiveEndDate}
+          className="text-xs-bold"
+          showDates={alertSeverityLevel !== AlertSeverityLevelType.Info}
+        />
+      )}
     </Card>
   );
 }
@@ -60,4 +76,5 @@ export default function DisruptionCard({ alert, onClick = () => {} }) {
 DisruptionCard.propTypes = {
   alert: alertShape.isRequired,
   onClick: PropTypes.func,
+  isMobile: PropTypes.bool,
 };

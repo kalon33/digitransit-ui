@@ -27,20 +27,24 @@ export default function DisruptionStatus({
     effectiveEndDate &&
     getFormattedTimeDate(effectiveEndDate * 1000, DATE_FORMAT);
 
+  const dates = showDates && startDate;
+
   return (
     <span className={`disruption-status ${className || ''}`}>
       <Icon img={isValid ? 'icon_status' : 'icon_calendar'} />
       <span>
-        {intl.formatMessage({
+        {`${intl.formatMessage({
           id: isValid ? 'valid' : 'upcoming',
           defaultMessage: isValid ? 'Active' : 'Upcoming',
-        })}
-        {showDates &&
-          startDate &&
-          `: ${startDate}${
+        })}${dates ? ':' : ''}`}
+      </span>
+      {dates && (
+        <span className="routes-s">
+          {`${startDate}${
             endDate && startDate !== endDate ? ` - ${endDate}` : ''
           }`}
-      </span>
+        </span>
+      )}
     </span>
   );
 }

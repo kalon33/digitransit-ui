@@ -103,6 +103,7 @@ export default function Disruptions() {
               ({ key, totalCount, edges }) =>
                 edges.length > 0 && (
                   <CanceledTripCard
+                    isMobile={mobile}
                     key={key}
                     mode={key}
                     totalCount={totalCount}
@@ -111,7 +112,12 @@ export default function Disruptions() {
                 ),
             )}
             {disruptions.map(a => (
-              <DisruptionCard key={a.id} alert={a} onClick={handleCardClick} />
+              <DisruptionCard
+                key={a.id}
+                alert={a}
+                onClick={handleCardClick}
+                isMobile={mobile}
+              />
             ))}
           </div>
         </>
