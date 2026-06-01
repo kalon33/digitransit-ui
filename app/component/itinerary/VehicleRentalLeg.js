@@ -194,7 +194,7 @@ VehicleRentalLeg.propTypes = {
   breakpoint: PropTypes.string,
   rentalVehicle: rentalVehicleShape,
   nextLegMode: PropTypes.string,
-  nearestScooters: PropTypes.array,
+  nearestScooters: PropTypes.arrayOf(rentalVehicleShape),
 };
 
 export default withBreakpoint(VehicleRentalLeg);
