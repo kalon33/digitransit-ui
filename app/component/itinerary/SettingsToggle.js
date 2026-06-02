@@ -8,11 +8,7 @@ import Popover from '../Popover';
 import { getDialogState, setDialogState } from '../../store/localStorage';
 import { useConfigContext } from '../../configurations/ConfigContext';
 
-export default function SettingsToggle({
-  onToggleClick,
-  defaultMessage = 'Settings',
-  translationId = 'settings',
-}) {
+export default function SettingsToggle({ onToggleClick }) {
   const { formatMessage } = useIntl();
   const config = useConfigContext();
   const userHasCustomizedSettings = hasCustomizedSettings(config);
@@ -92,18 +88,11 @@ export default function SettingsToggle({
           )}
         </div>
         <span className="settings-button-text">
-          <FormattedMessage
-            id={translationId}
-            defaultMessage={defaultMessage}
-          />
+          <FormattedMessage id="settings" />
         </span>
       </div>
     </div>
   );
 }
 
-SettingsToggle.propTypes = {
-  onToggleClick: PropTypes.func.isRequired,
-  defaultMessage: PropTypes.string,
-  translationId: PropTypes.string,
-};
+SettingsToggle.propTypes = { onToggleClick: PropTypes.func.isRequired };
