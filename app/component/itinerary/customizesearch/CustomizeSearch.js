@@ -21,16 +21,12 @@ import {
   useScooters,
 } from '../../../util/modeUtils';
 import ScrollableWrapper from '../../ScrollableWrapper';
-import { getDefaultSettings } from '../../../util/planParamUtil';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 
 function CustomizeSearch({ onToggleClick, settings, mobile }) {
   const config = useConfigContext();
   const intl = useIntl();
-  const defaultSettings = getDefaultSettings(config);
 
-  // Merge default and customized settings
-  const currentSettings = { ...defaultSettings, ...settings };
   const backIcon = mobile ? (
     <Icon img="icon_arrow-collapse--left" />
   ) : (
@@ -68,11 +64,11 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
       </div>
       <ScrollableWrapper>
         <div className="settings-section">
-          <WalkingOptions currentSettings={currentSettings} />
+          <WalkingOptions currentSettings={settings} />
         </div>
         {config.personalization && (
           <div className="settings-section">
-            <Personalization currentSettings={currentSettings} />
+            <Personalization currentSettings={settings} />
           </div>
         )}
         <div className="settings-section">
@@ -80,10 +76,10 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
           {config.minTransferTimeSelection && (
             <MinTransferTime
               minTransferTimeOptions={config.minTransferTimeSelection}
-              currentSettings={currentSettings}
+              currentSettings={settings}
             />
           )}
-          <TransferOptions currentSettings={currentSettings} />
+          <TransferOptions currentSettings={settings} />
         </div>
         {useCitybikes(config.vehicleRental?.networks, config) && (
           <div className="settings-section">
@@ -91,10 +87,10 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
           </div>
         )}
         <div className="settings-section">
-          <StreetModeSelector currentSettings={currentSettings} />
+          <StreetModeSelector currentSettings={settings} />
         </div>
         <div className="settings-section">
-          <AccessibilityOptions currentSettings={currentSettings} />
+          <AccessibilityOptions currentSettings={settings} />
         </div>
         {useScooters(config) && (
           <div className="settings-section">
@@ -104,7 +100,7 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
         {config.flex?.allowTaxiJourneys &&
           config.transportModes.taxi.availableForSelection && (
             <div className="settings-section">
-              <TaxiOptions currentSettings={currentSettings} />
+              <TaxiOptions currentSettings={settings} />
             </div>
           )}
         <RestoreDefaultSettings />
