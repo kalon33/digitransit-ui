@@ -466,6 +466,7 @@ export function getPlanParams(
       access = config.flex.internal.transit ? ['WALK', 'FLEX'] : null;
       egress = access;
       direct = config.flex.internal.direct ? ['WALK', 'FLEX'] : null;
+      transitOnly = false;
       filters = excludeAgencies(config.flex.external.agencies);
       minTransferTime = config.flex.internal.minTransferTime || minTransferTime;
       via = null;
