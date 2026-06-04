@@ -290,11 +290,12 @@ export default {
 
   // TODO: flex disabled for now, proper configuration coming in the future
   /* flex: {
-    internalFlexEnabled: false,
-    allowTaxiJourneys: IS_DEV,
-    directOnlyTaxiJourneys: false,
-    internalAgencies: [],
-    externalAgencies: ['02Taksi:02_taksi'],
+    external: {
+      enabled: true,
+      transit: true,
+      direct: false,
+      agencies: ['02Taksi:02_taksi'],
+    },
     infoLanguage: 'fi',
   }, */
 

@@ -445,19 +445,27 @@ export default {
 
   // TODO: flex + transit disabled for now, proper configuration coming in the future
   /* flex: {
-    internalFlexEnabled: IS_DEV,
-    allowTaxiJourneys: true,
-    directOnlyTaxiJourneys: !IS_DEV,
-    internalAgencies: ['KirkkonummiE:612', 'KirkkonummiP:612'],
-    externalAgencies: ['02Taksi:02_taksi'],
+    external: {
+      enabled: true,
+      transit: true,
+      direct: true,
+      agencies: ['02Taksi:02_taksi'],
+    },
+    internal: {
+      enabled: true,
+      transit: true,
+      direct: true,
+      agencies: ['KirkkonummiE:612', 'KirkkonummiP:612'],
+    },
     infoLanguage: 'fi',
   }, */
   flex: {
-    internalFlexEnabled: false,
-    allowTaxiJourneys: true,
-    directOnlyTaxiJourneys: true,
-    internalAgencies: [],
-    externalAgencies: ['02Taksi:02_taksi'],
+    external: {
+      enabled: true,
+      transit: false,
+      direct: true,
+      agencies: ['02Taksi:02_taksi'],
+    },
     infoLanguage: 'fi',
   },
 
