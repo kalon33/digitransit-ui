@@ -19,7 +19,7 @@ const SUGGESTION_URL = process.env.CONTENT_DOMAIN
   : 'https://content.hsl.fi/api/v1/search/suggestions'; // old url
 const travelersAccountUrl = process.env.TRAVELERS_ACCOUNT_URL;
 const staticAssetsUrl =
-  process.env.STATIC_ASSETS_URL || 'https://staticfiles.hsl.fi';
+  process.env.STATIC_ASSETS_URL || 'https://staticfiles-test.hslfi.hsldev.com/';
 
 const virtualMonitorBaseUrl = IS_DEV
   ? 'https://dev-hslmonitori.digitransit.fi'
@@ -771,5 +771,5 @@ export default {
       priority: 'Secondary',
     },
   ],
-  showStaticCrisisBanners: true,
+  showStaticCrisisBanners: false,
 };
