@@ -874,4 +874,5 @@ export default {
   },
   personalization: false,
   showNewRoutePage: false,
+  user: {},
 };

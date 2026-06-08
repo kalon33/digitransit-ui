@@ -37,7 +37,6 @@ import {
 } from './util/analyticsUtils';
 import { configureCountry } from './util/configureCountry';
 import { getUser } from './util/apiUtils';
-import setUser from './action/userActions';
 import {
   fetchFavourites,
   fetchFavouritesComplete,
@@ -183,14 +182,12 @@ async function init() {
   if (config.allowLogin) {
     getUser()
       .then(user => {
-        context.executeAction(setUser, {
-          ...user,
-        });
-        handleUserAnalytics(user, config);
+        config.user = user || {};
+        handleUserAnalytics(config);
         context.executeAction(fetchFavourites);
       })
       .catch(() => {
-        context.executeAction(setUser, { notLogged: true });
+        config.user = { notLogged: true };
         context.executeAction(fetchFavouritesComplete);
       });
   }
