@@ -82,11 +82,9 @@ export default function Popover({
           aria-live="polite"
           role="alert"
         >
-          {icon}
+          <span className="icon-area">{icon}</span>
           <div className="popover-content">
-            <span className="message">
-              <span>{message}</span>
-            </span>
+            <div className="message">{message}</div>
 
             <button
               type="button"
