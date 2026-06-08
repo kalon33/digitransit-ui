@@ -3,7 +3,7 @@ import React, { useState, useCallback, useRef } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Icon from '../Icon';
 import { isKeyboardSelectionEvent } from '../../util/browser';
-import { hasCustomizedSettings } from '../../util/planParamUtil';
+import { hasCustomizedSettings, getSettings } from '../../util/planParamUtil';
 import Popover from '../Popover';
 import { getDialogState, setDialogState } from '../../store/localStorage';
 import { useConfigContext } from '../../configurations/ConfigContext';
@@ -11,6 +11,7 @@ import { useConfigContext } from '../../configurations/ConfigContext';
 export default function SettingsToggle({ onToggleClick }) {
   const { formatMessage } = useIntl();
   const config = useConfigContext();
+  const settings = getSettings(config);
   const userHasCustomizedSettings = hasCustomizedSettings(config);
   const [isSettingChangeInfoDismissed, setSettingChangeInfoDismissed] =
     useState(getDialogState('setting-change-acknowledged', config));
@@ -44,13 +45,29 @@ export default function SettingsToggle({ onToggleClick }) {
     return () => clearTimeout(timeoutId);
   }, []);
 
+  let personalizationPopover;
+  const personalizationEnabled =
+    (config.user.sub || !config.allowLogin) && settings.personalization;
+  if (!isPersonalizationInfoDismissed && config.personalization) {
+    personalizationPopover = personalizationEnabled ? (
+      <div>
+        <div className="popover-header">
+          <FormattedMessage id="personalization-new-header" />
+        </div>
+        <FormattedMessage id="personalization-new-feature" />
+      </div>
+    ) : (
+      <FormattedMessage id="personalization-new-feature" />
+    );
+  }
+
   return (
     <div className="right-offcanvas-toggle">
-      {!isPersonalizationInfoDismissed && config.personalization && (
+      {personalizationPopover && (
         <Popover
           targetRef={buttonRef}
           onClose={dismissPopover}
-          message={<FormattedMessage id="personalization-new-feature" />}
+          message={personalizationPopover}
           highlight
         />
       )}

@@ -588,6 +588,7 @@ export default {
     'personalization-modal-link': 'Add or edit your favorites',
     'personalization-new-feature':
       'Discover new personalized route recommendations in settings',
+    'personalization-new-header': 'Route recommendations enabled',
     'personalization-open-info': 'Read how recommendations work',
     'phone-number': 'Phone number',
     'pick-mode': 'Transport modes',

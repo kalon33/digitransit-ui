@@ -580,6 +580,7 @@ export default {
     'personalization-modal-link': 'Lägg till eller redigera dina favoriter',
     'personalization-new-feature':
       'Upptäck nya personliga ruttrekommendationer i inställningarna',
+    'personalization-new-header': 'Ruttrekommendationer aktiverade',
     'personalization-open-info': 'Läs hur rekommendationer fungerar',
     'phone-number': 'Telefonnummer',
     'pick-mode': 'Trafikslag',

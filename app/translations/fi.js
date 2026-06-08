@@ -575,6 +575,7 @@ export default {
     'personalization-modal-link': 'Lisää tai muokkaa suosikkejasi',
     'personalization-new-feature':
       'Tutustu uusiin yksilöllisiin reittisuosituksiin asetuksissa',
+    'personalization-new-header': 'Reittisuositukset käytössä',
     'personalization-open-info': 'Lue, miten suositukset toimivat',
     'phone-number': 'Puhelinnumero',
     'pick-mode': 'Liikennevälineet',
