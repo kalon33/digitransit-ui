@@ -134,6 +134,7 @@
     "@hsl-fi/design-system-core": "^2.7.0",
     "@hsl-fi/design-tokens": "^1.24.0",
     "@hsl-fi/dialog": "^3.1.0",
+    "@hsl-fi/form": "^5.0.3",
     "@hsl-fi/hooks": "1.2.4",
     "@hsl-fi/icons": "^2.2.4",
     "@hsl-fi/layout-primitives": "^4.8.1",

@@ -29,10 +29,6 @@ const Filters = ({ onApplyClick = undefined, onResetClick = () => {} }) => {
       Component: VehicleModesFilter,
     },
     {
-      id: 'separator-1',
-      Component: Separator,
-    },
-    {
       id: 'validityPeriod',
       Component: ValidityPeriodFilter,
     },

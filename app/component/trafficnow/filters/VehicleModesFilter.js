@@ -46,8 +46,19 @@ const VehicleModesFilter = ({ filterId }) => {
         })}
       </legend>
       {availableModes.map(option => (
-        <div key={option} className="traffic-now__filters-mode-option">
-          <label htmlFor={`vehicleModes-${option}`} className="input-label">
+        <div
+          key={option}
+          role="checkbox"
+          aria-checked={selectedFilters[filterId]?.includes(option) || false}
+          aria-label={intl.formatMessage({ id: option.toLowerCase() })}
+          tabIndex={0}
+          className="traffic-now__filters-mode-option"
+          onClick={() => handleCheck(option)}
+          onKeyDown={e =>
+            (e.key === 'Enter' || e.key === ' ') && handleCheck(option)
+          }
+        >
+          <label className="input-label">
             <Icon
               img={`icon_${option.toLowerCase()}`}
               className={option.toLowerCase()}
@@ -56,13 +67,13 @@ const VehicleModesFilter = ({ filterId }) => {
             />
             {intl.formatMessage({ id: option.toLowerCase() })}
           </label>
-          <input
-            id={`vehicleModes-${option}`}
-            type="checkbox"
-            checked={selectedFilters[filterId]?.includes(option)}
-            value={option}
-            onChange={() => handleCheck(option)}
-          />
+          <span
+            className={`traffic-now__filters-mode-option-checkbox${
+              selectedFilters[filterId]?.includes(option) ? ' checked' : ''
+            }`}
+          >
+            <Icon img="icon_checkbox" height={1.5} width={1.5} />
+          </span>
         </div>
       ))}
     </fieldset>

@@ -1,5 +1,5 @@
 @function rem($px) {
-  @return #{$px / 16}rem;
+  @return #{calc($px / 16)}rem;
 }
 
 .design-system {
@@ -524,7 +524,7 @@
       color: #333;
       font-size: rem(15);
       font-style: normal;
-      font-weight: 350;
+      font-weight: 500;
       line-height: 24px;
       letter-spacing: -0.3px;
     }
