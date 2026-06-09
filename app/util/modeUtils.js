@@ -617,3 +617,11 @@ export function getSummaryDescriptionText(
     },
   );
 }
+
+export function isPersonalizationEnabled(config, settings) {
+  return !!(
+    settings.personalization &&
+    config.personalization &&
+    (config.user.sub || !config.allowLogin)
+  );
+}
