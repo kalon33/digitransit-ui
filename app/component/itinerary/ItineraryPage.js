@@ -46,6 +46,7 @@ import {
 import { mapLayerOptionsShape, relayShape } from '../../util/shapes';
 import { epochToTime } from '../../util/timeUtils';
 import { getAllNetworksOfType } from '../../util/vehicleRentalUtils';
+import { isPersonalizationEnabled } from '../../util/modeUtils';
 import DesktopView from '../DesktopView';
 import Loading from '../Loading';
 import MobileView from '../MobileView';
@@ -203,7 +204,7 @@ export default function ItineraryPage(props, context) {
   const { query } = location;
   const detailView = altTransitHash.includes(hash) ? secondHash : hash;
   const settings = getSettings(config);
-  const personalization = config.personalization && settings.personalization;
+  const personalization = isPersonalizationEnabled(config, settings);
 
   function altLoading() {
     return Object.values(altStates).some(
