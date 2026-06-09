@@ -8,16 +8,16 @@ import { settingsShape } from '../../../util/shapes';
 import Icon from '../../Icon';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 
-export default function TaxiOptions({ currentSettings }, { executeAction }) {
+export default function TaxiOptions({ settings }, { executeAction }) {
   const config = useConfigContext();
   const taxiLabelId =
     config.flex.settingLabelOverride || 'taxis-and-ride-hailing';
-  const taxiRoutingState = currentSettings.includeTaxiSuggestions
+  const taxiRoutingState = settings.includeTaxiSuggestions
     ? 'Disable'
     : 'Enable';
   const onToggle = () => {
     executeAction(saveRoutingSettings, {
-      includeTaxiSuggestions: !currentSettings.includeTaxiSuggestions,
+      includeTaxiSuggestions: !settings.includeTaxiSuggestions,
     });
     addAnalyticsEvent({
       category: 'ItinerarySettings',
@@ -43,12 +43,12 @@ export default function TaxiOptions({ currentSettings }, { executeAction }) {
             width={2}
           />
         }
-        toggled={!!currentSettings.includeTaxiSuggestions}
+        toggled={!!settings.includeTaxiSuggestions}
         onToggle={onToggle}
       />
     </>
   );
 }
 
-TaxiOptions.propTypes = { currentSettings: settingsShape.isRequired };
+TaxiOptions.propTypes = { settings: settingsShape.isRequired };
 TaxiOptions.contextTypes = { executeAction: PropTypes.func.isRequired };

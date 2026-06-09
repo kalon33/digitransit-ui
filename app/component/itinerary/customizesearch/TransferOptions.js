@@ -6,14 +6,11 @@ import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { settingsShape } from '../../../util/shapes';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 
-export default function TransferOptions(
-  { currentSettings },
-  { executeAction },
-) {
+export default function TransferOptions({ settings }, { executeAction }) {
   const { transferPenaltyHigh, minTransferTimeSelection, defaultSettings } =
     useConfigContext();
   const avoidTransfers =
-    currentSettings.transferPenalty !== defaultSettings.transferPenalty;
+    settings.transferPenalty !== defaultSettings.transferPenalty;
 
   const onToggle = () => {
     executeAction(saveRoutingSettings, {
@@ -39,10 +36,6 @@ export default function TransferOptions(
   );
 }
 
-TransferOptions.propTypes = {
-  currentSettings: settingsShape.isRequired,
-};
+TransferOptions.propTypes = { settings: settingsShape.isRequired };
 
-TransferOptions.contextTypes = {
-  executeAction: PropTypes.func.isRequired,
-};
+TransferOptions.contextTypes = { executeAction: PropTypes.func.isRequired };

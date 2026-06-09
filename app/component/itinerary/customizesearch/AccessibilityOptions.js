@@ -7,17 +7,17 @@ import Icon from '../../Icon';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { settingsShape } from '../../../util/shapes';
 
-const AccessibilityOptions = ({ currentSettings }, { executeAction }) => {
+const AccessibilityOptions = ({ settings }, { executeAction }) => {
   const onToggle = () => {
     addAnalyticsEvent({
       category: 'ItinerarySettings',
       action: `Settings${
-        currentSettings.accessibilityOption ? 'Disable' : 'Enable'
+        settings.accessibilityOption ? 'Disable' : 'Enable'
       }WheelChair`,
       name: null,
     });
     executeAction(saveRoutingSettings, {
-      accessibilityOption: !currentSettings.accessibilityOption,
+      accessibilityOption: !settings.accessibilityOption,
     });
   };
 
@@ -31,7 +31,7 @@ const AccessibilityOptions = ({ currentSettings }, { executeAction }) => {
         labelId="accessibility-limited"
         labelStyle="mode-label"
         leftElement={<Icon img="icon_wheelchair" height={2} width={2} />}
-        toggled={!!currentSettings.accessibilityOption}
+        toggled={!!settings.accessibilityOption}
         onToggle={onToggle}
       />
     </>
@@ -39,7 +39,7 @@ const AccessibilityOptions = ({ currentSettings }, { executeAction }) => {
 };
 
 AccessibilityOptions.propTypes = {
-  currentSettings: settingsShape.isRequired,
+  settings: settingsShape.isRequired,
 };
 
 AccessibilityOptions.contextTypes = {

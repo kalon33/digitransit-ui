@@ -64,11 +64,11 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
       </div>
       <ScrollableWrapper>
         <div className="settings-section">
-          <WalkingOptions currentSettings={settings} />
+          <WalkingOptions settings={settings} />
         </div>
         {config.personalization && (
           <div className="settings-section">
-            <Personalization currentSettings={settings} />
+            <Personalization settings={settings} />
           </div>
         )}
         <div className="settings-section">
@@ -76,10 +76,10 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
           {config.minTransferTimeSelection && (
             <MinTransferTime
               minTransferTimeOptions={config.minTransferTimeSelection}
-              currentSettings={settings}
+              settings={settings}
             />
           )}
-          <TransferOptions currentSettings={settings} />
+          <TransferOptions settings={settings} />
         </div>
         {useCitybikes(config.vehicleRental?.networks, config) && (
           <div className="settings-section">
@@ -87,10 +87,10 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
           </div>
         )}
         <div className="settings-section">
-          <StreetModeSelector currentSettings={settings} />
+          <StreetModeSelector settings={settings} />
         </div>
         <div className="settings-section">
-          <AccessibilityOptions currentSettings={settings} />
+          <AccessibilityOptions settings={settings} />
         </div>
         {useScooters(config) && (
           <div className="settings-section">
@@ -100,7 +100,7 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
         {config.flex.external.enabled &&
           config.transportModes.taxi.availableForSelection && (
             <div className="settings-section">
-              <TaxiOptions currentSettings={settings} />
+              <TaxiOptions settings={settings} />
             </div>
           )}
         <RestoreDefaultSettings />

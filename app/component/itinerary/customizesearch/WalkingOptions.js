@@ -22,7 +22,7 @@ const title = [
   'option-most',
 ];
 
-export default function WalkingOptions({ currentSettings }, { executeAction }) {
+export default function WalkingOptions({ settings }, { executeAction }) {
   const { defaultOptions, defaultSettings } = useConfigContext();
   const intl = useIntl();
 
@@ -33,15 +33,15 @@ export default function WalkingOptions({ currentSettings }, { executeAction }) {
   }));
 
   const currentWalkSelection =
-    options.find(option => option.value === currentSettings.walkSpeed) ||
+    options.find(option => option.value === settings.walkSpeed) ||
     options.find(
       option =>
         option.value ===
-        findNearestOption(currentSettings.walkSpeed, defaultOptions.walkSpeed),
+        findNearestOption(settings.walkSpeed, defaultOptions.walkSpeed),
     );
   const onToggle = () => {
     const newValue =
-      currentSettings.walkReluctance !== defaultOptions.highWalkReluctance
+      settings.walkReluctance !== defaultOptions.highWalkReluctance
         ? defaultOptions.highWalkReluctance
         : defaultSettings.walkReluctance;
     executeAction(saveRoutingSettings, { walkReluctance: newValue });
@@ -74,9 +74,7 @@ export default function WalkingOptions({ currentSettings }, { executeAction }) {
       <SettingsToggle
         id="settings-toggle-avoid-walking"
         labelId="avoid-walking"
-        toggled={
-          currentSettings.walkReluctance === defaultOptions.highWalkReluctance
-        }
+        toggled={settings.walkReluctance === defaultOptions.highWalkReluctance}
         onToggle={onToggle}
         borderStyle="top-border"
       />
@@ -84,10 +82,6 @@ export default function WalkingOptions({ currentSettings }, { executeAction }) {
   );
 }
 
-WalkingOptions.propTypes = {
-  currentSettings: settingsShape.isRequired,
-};
+WalkingOptions.propTypes = { settings: settingsShape.isRequired };
 
-WalkingOptions.contextTypes = {
-  executeAction: PropTypes.func.isRequired,
-};
+WalkingOptions.contextTypes = { executeAction: PropTypes.func.isRequired };

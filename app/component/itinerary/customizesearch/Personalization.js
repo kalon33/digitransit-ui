@@ -7,18 +7,19 @@ import Snackbar from '../../Snackbar';
 import { saveRoutingSettings } from '../../../action/SearchSettingsActions';
 import Icon from '../../Icon';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
+import { isPersonalizationEnabled } from '../../../util/modeUtils';
 import { settingsShape } from '../../../util/shapes';
+import { useConfigContext } from '../../../configurations/ConfigContext';
 
-export default function Personalization(
-  { currentSettings },
-  { executeAction },
-) {
+export default function Personalization({ settings }, { executeAction }) {
   const intl = useIntl();
+  const config = useConfigContext();
   const [modalOpen, setModalOpen] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState(null);
   const [snackbarLiveRegionMessage, setSnackBarLiveRegionMessage] =
     useState('');
   const snackbarTimeout = useRef(null);
+  const personalization = isPersonalizationEnabled(config, settings);
 
   useEffect(() => {
     return () => {
@@ -27,7 +28,7 @@ export default function Personalization(
   }, []);
 
   const onToggle = () => {
-    const newState = !currentSettings.personalization;
+    const newState = !personalization;
     addAnalyticsEvent({
       category: 'ItinerarySettings',
       action: `Settings${newState ? 'Enable' : 'Disable'}Personalization`,
@@ -80,7 +81,7 @@ export default function Personalization(
             width={2}
           />
         }
-        toggled={!!currentSettings.personalization}
+        toggled={personalization}
         onToggle={onToggle}
       />
       <div className="toggle-info">
@@ -107,7 +108,7 @@ export default function Personalization(
 }
 
 Personalization.propTypes = {
-  currentSettings: settingsShape.isRequired,
+  settings: settingsShape.isRequired,
 };
 
 Personalization.contextTypes = {

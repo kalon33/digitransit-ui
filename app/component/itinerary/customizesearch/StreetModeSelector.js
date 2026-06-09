@@ -9,20 +9,17 @@ import BikingSpeed from './BikingSpeed';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 
-export default function StreetModeSelector(
-  { currentSettings },
-  { executeAction },
-) {
+export default function StreetModeSelector({ settings }, { executeAction }) {
   const config = useConfigContext();
   const onToggle = (propName, eventName) => {
-    const state = currentSettings[propName] ? 'Disable' : 'Enable';
+    const state = settings[propName] ? 'Disable' : 'Enable';
     addAnalyticsEvent({
       category: 'ItinerarySettings',
       action: `Settings${state}${eventName}`,
       name: null,
     });
     const action = {};
-    action[propName] = !currentSettings[propName];
+    action[propName] = !settings[propName];
     executeAction(saveRoutingSettings, action);
   };
 
@@ -41,17 +38,17 @@ export default function StreetModeSelector(
         leftElement={
           <Icon color="#333" img="icon_bike" width={2.4} height={2.4} />
         }
-        toggled={!!currentSettings.includeBikeSuggestions}
+        toggled={!!settings.includeBikeSuggestions}
         onToggle={() => onToggle('includeBikeSuggestions', 'OwnBike')}
         borderStyle="bottom-border"
       />
-      <BikingSpeed bikeSpeed={currentSettings.bikeSpeed} />
+      <BikingSpeed bikeSpeed={settings.bikeSpeed} />
       {config.showBikeAndParkItineraries && (
         <SettingsToggle
           id="settings-toggle-bikeAndPark"
           labelId="park-and-ride"
           leftElement={<span style={{ width: '3em' }} />}
-          toggled={currentSettings.showBikeAndParkItineraries}
+          toggled={settings.showBikeAndParkItineraries}
           onToggle={() => onToggle('showBikeAndParkItineraries', 'BikeAndPark')}
         />
       )}
@@ -64,7 +61,7 @@ export default function StreetModeSelector(
           leftElement={
             <Icon color="#333" img="icon_car" width={2} height={2} />
           }
-          toggled={currentSettings.includeCarSuggestions}
+          toggled={settings.includeCarSuggestions}
           onToggle={() => onToggle('includeCarSuggestions', 'OwnCar')}
           borderStyle="top-border"
         />
@@ -74,7 +71,7 @@ export default function StreetModeSelector(
           id="settings-toggle-parkAndRide"
           labelId="park-and-ride"
           leftElement={<span style={{ width: '3em' }} />}
-          toggled={currentSettings.includeParkAndRideSuggestions}
+          toggled={settings.includeParkAndRideSuggestions}
           onToggle={() =>
             onToggle('includeParkAndRideSuggestions', 'ParkAndRide')
           }
@@ -85,9 +82,7 @@ export default function StreetModeSelector(
   );
 }
 
-StreetModeSelector.propTypes = {
-  currentSettings: settingsShape.isRequired,
-};
+StreetModeSelector.propTypes = { settings: settingsShape.isRequired };
 
 StreetModeSelector.contextTypes = {
   executeAction: PropTypes.func.isRequired,

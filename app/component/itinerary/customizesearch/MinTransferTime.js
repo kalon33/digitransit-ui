@@ -6,11 +6,11 @@ import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import SearchSettingsDropdown from './SearchSettingsDropdown';
 
 const MinTransferTime = (
-  { currentSettings, minTransferTimeOptions },
+  { settings, minTransferTimeOptions },
   { executeAction },
   options = minTransferTimeOptions,
   currentSelection = options.find(
-    option => option.value === currentSettings.minTransferTime,
+    option => option.value === settings.minTransferTime,
   ),
 ) => (
   <SearchSettingsDropdown
@@ -34,7 +34,7 @@ const MinTransferTime = (
 
 MinTransferTime.propTypes = {
   minTransferTimeOptions: minTransferTimeShape.isRequired,
-  currentSettings: settingsShape.isRequired,
+  settings: settingsShape.isRequired,
 };
 
 MinTransferTime.contextTypes = {
