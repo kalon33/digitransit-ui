@@ -21,11 +21,15 @@ import {
   useScooters,
 } from '../../../util/modeUtils';
 import ScrollableWrapper from '../../ScrollableWrapper';
+import { getDefaultSettings } from '../../../util/planParamUtil';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 
-function CustomizeSearch({ onToggleClick, settings, mobile }) {
+function CustomizeSearch({ onToggleClick, storedSettings, mobile }) {
   const config = useConfigContext();
   const intl = useIntl();
+  const defaultSettings = getDefaultSettings(config);
+  // Merge default and customized settings
+  const settings = { ...defaultSettings, ...storedSettings };
 
   const backIcon = mobile ? (
     <Icon img="icon_arrow-collapse--left" />
@@ -111,7 +115,7 @@ function CustomizeSearch({ onToggleClick, settings, mobile }) {
 
 CustomizeSearch.propTypes = {
   onToggleClick: PropTypes.func.isRequired,
-  settings: settingsShape.isRequired,
+  storedSettings: settingsShape.isRequired,
   mobile: PropTypes.bool,
 };
 
@@ -121,7 +125,9 @@ const withStore = connectToStores(
   CustomizeSearch,
   ['RoutingSettingsStore'],
   context => ({
-    settings: context.getStore('RoutingSettingsStore').getRoutingSettings(),
+    storedSettings: context
+      .getStore('RoutingSettingsStore')
+      .getRoutingSettings(),
   }),
 );
 
