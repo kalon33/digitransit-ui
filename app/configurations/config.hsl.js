@@ -18,7 +18,8 @@ const SUGGESTION_URL = process.env.CONTENT_DOMAIN
   ? `${process.env.CONTENT_DOMAIN}/api/v1/search/suggestions`
   : 'https://content.hsl.fi/api/v1/search/suggestions'; // old url
 const travelersAccountUrl = process.env.TRAVELERS_ACCOUNT_URL;
-const staticAssetsUrl = process.env.STATIC_ASSETS_URL;
+const staticAssetsUrl =
+  process.env.STATIC_ASSETS_URL || 'https://staticfiles-test.hslfi.hsldev.com/';
 
 const virtualMonitorBaseUrl = IS_DEV
   ? 'https://dev-hslmonitori.digitransit.fi'
@@ -124,6 +125,7 @@ export default {
   defaultSettings: {
     walkSpeed: 1.28,
     showBikeAndParkItineraries: true,
+    personalization: true, // user's own option
     transferPenalty: 180,
     // TODO add when enabling Uber taxis
     // includeTaxiSuggestions: true,

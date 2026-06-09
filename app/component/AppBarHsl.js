@@ -210,7 +210,7 @@ const AppBarHsl = ({ favourites = [] }, context) => {
       {!config.hideHeader && (
         <SiteHeader
           baseUrl={config.URL.ROOTLINK}
-          staticAssetsUrl="/static-assets"
+          staticAssetsUrl={config.URL.STATIC_ASSETS}
           lang={language}
           userMenu={userMenu}
           langMenu={languages}
