@@ -4,11 +4,12 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import Icon from '../Icon';
 import { isKeyboardSelectionEvent } from '../../util/browser';
 import { hasCustomizedSettings, getSettings } from '../../util/planParamUtil';
+import { isPersonalizationEnabled } from '../../util/modeUtils';
 import Popover from '../Popover';
 import { getDialogState, setDialogState } from '../../store/localStorage';
 import { useConfigContext } from '../../configurations/ConfigContext';
 
-export default function SettingsToggle({ onToggleClick }) {
+export default function SettingsButton({ onToggleClick }) {
   const { formatMessage } = useIntl();
   const config = useConfigContext();
   const settings = getSettings(config);
@@ -46,8 +47,7 @@ export default function SettingsToggle({ onToggleClick }) {
   }, []);
 
   let personalizationPopover;
-  const personalizationEnabled =
-    (config.user.sub || !config.allowLogin) && settings.personalization;
+  const personalizationEnabled = isPersonalizationEnabled(config, settings);
   if (!isPersonalizationInfoDismissed && config.personalization) {
     personalizationPopover = personalizationEnabled ? (
       <div>
@@ -112,4 +112,4 @@ export default function SettingsToggle({ onToggleClick }) {
   );
 }
 
-SettingsToggle.propTypes = { onToggleClick: PropTypes.func.isRequired };
+SettingsButton.propTypes = { onToggleClick: PropTypes.func.isRequired };
