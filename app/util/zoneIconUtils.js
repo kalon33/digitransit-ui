@@ -4,7 +4,7 @@ export default function getZoneId(config, propertiesZones, dataZones) {
   function zoneFilter(zones) {
     return Array.isArray(zones)
       ? zones.filter(
-          zone => zone && config.feedIds.includes(splitGtfsId(zone).entityId),
+          zone => zone && config.feedIds.includes(splitGtfsId(zone).feedId),
         )
       : [];
   }
