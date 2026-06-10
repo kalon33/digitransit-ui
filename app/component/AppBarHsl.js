@@ -11,7 +11,7 @@ import { useConfigContext } from '../configurations/ConfigContext';
 
 const clearStorages = context => {
   clearOldSearches(context);
-  clearFutureRoutes(context);
+  clearFutureRoutes();
   context.getStore('FavouriteStore').clearFavourites();
 };
 

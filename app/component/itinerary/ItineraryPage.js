@@ -13,7 +13,7 @@ import React, {
 import { FormattedMessage } from 'react-intl';
 import { fetchQuery } from 'react-relay';
 import { useRouter } from 'found';
-import { saveFutureRoute } from '../../action/FutureRoutesActions';
+import { saveFutureRoute } from '../../util/storeUtils';
 import { startLocationWatch } from '../../action/PositionActions';
 import { saveSearch } from '../../action/SearchActions';
 import { TransportMode } from '../../constants';
@@ -966,7 +966,7 @@ export default function ItineraryPage(props, context) {
       },
       ...query,
     };
-    executeAction(saveFutureRoute, itinerarySearch);
+    saveFutureRoute(itinerarySearch);
   }
 
   function showVehicles() {
