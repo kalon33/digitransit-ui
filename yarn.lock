@@ -3449,6 +3449,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hsl-fi/site-footer@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "@hsl-fi/site-footer@npm:5.1.1"
+  dependencies:
+    "@hsl-fi/assets": "npm:^2.1.0"
+    "@hsl-fi/i18n": "npm:^1.5.1"
+    "@hsl-fi/icons": "npm:^2.2.4"
+    "@hsl-fi/navigation": "npm:^3.0.0"
+    classnames: "npm:^2.3.2"
+  peerDependencies:
+    "@hsl-fi/design-tokens": ^1.20.0
+    "@hsl-fi/layout-primitives": ^4.4.0
+    react: ">=16"
+  checksum: 10/644324bd5015b06d784b7d013f184ec68bd2ccb506281585fd20bf3155e9b46c3ed7a3329a55adc054f808961870c05d5554707373ae5ea93d946ad27c4b452b
+  languageName: node
+  linkType: hard
+
 "@hsl-fi/site-header@npm:6.4.0":
   version: 6.4.0
   resolution: "@hsl-fi/site-header@npm:6.4.0"
@@ -12389,6 +12406,7 @@ __metadata:
     "@hsl-fi/modal": "npm: ^0.3.2"
     "@hsl-fi/sass": "npm: 1.0.0"
     "@hsl-fi/shimmer": "npm:0.1.2"
+    "@hsl-fi/site-footer": "npm:^5.1.1"
     "@hsl-fi/site-header": "npm:6.4.0"
     "@lerna/batch-packages": "npm:3.16.0"
     "@lerna/filter-packages": "npm:3.18.0"
