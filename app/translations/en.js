@@ -578,6 +578,9 @@ export default {
       'Find your favorite routes and travel according to your habits',
     'personalization-liked':
       'You will receive similar recommendations in the future.',
+    'personalization-login-description':
+      'You can enable personalized route recommendations when you are logged in.',
+    'personalization-login-title': 'Sign in to get recommendations',
     'personalization-modal-feedback': 'We learn from your feedback',
     'personalization-modal-feedback-details':
       'We use your feedback in itinerary recommendations. Tell us what you think about the recommendations and we will take your preferences into account in the future.',

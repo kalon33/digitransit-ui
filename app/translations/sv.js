@@ -570,6 +570,9 @@ export default {
       'Hitta dina favoritrutter och res utifrån dina vanor.',
     'personalization-liked':
       'Du kommer att få liknande rekommendationer i framtiden.',
+    'personalization-login-description':
+      'Du kan aktivera personliga ruttrekommendationer när du är inloggad.',
+    'personalization-login-title': 'Logga in för att få rekommendationer',
     'personalization-modal-feedback': 'Vi lär oss av er feedback',
     'personalization-modal-feedback-details':
       'Vi använder din feedback i våra ruttrekommendationer. Berätta vad du tycker om rekommendationerna så tar vi hänsyn till dina preferenser i framtiden.',

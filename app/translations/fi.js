@@ -565,6 +565,9 @@ export default {
     'personalization-info':
       'Löydä mieleiset reitit ja matkusta tottumustesi mukaan.',
     'personalization-liked': 'Saat jatkossa samankaltaisia suosituksia.',
+    'personalization-login-description':
+      'Voit ottaa yksilölliset reittisuositukset käyttöön, kun olet kirjautunut sisään.',
+    'personalization-login-title': 'Kirjaudu saadaksesi suosituksia',
     'personalization-modal-feedback': 'Opimme palautteestasi',
     'personalization-modal-feedback-details':
       'Hyödynnämme reittisuosituksissa palautettasi. Kerro mielipiteesi suosituksista, niin huomioimme mieltymyksesi jatkossa.',
