@@ -1,13 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { saveRoutingSettings } from '../../../action/SearchSettingsActions';
 import { settingsShape, minTransferTimeShape } from '../../../util/shapes';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import SearchSettingsDropdown from './SearchSettingsDropdown';
 
 const MinTransferTime = (
-  { settings, minTransferTimeOptions },
-  { executeAction },
+  { settings, minTransferTimeOptions, updateSettings },
   options = minTransferTimeOptions,
   currentSelection = options.find(
     option => option.value === settings.minTransferTime,
@@ -16,7 +14,7 @@ const MinTransferTime = (
   <SearchSettingsDropdown
     currentSelection={currentSelection}
     onOptionSelected={value => {
-      executeAction(saveRoutingSettings, {
+      updateSettings({
         minTransferTime: value,
       });
       addAnalyticsEvent({
@@ -35,10 +33,7 @@ const MinTransferTime = (
 MinTransferTime.propTypes = {
   minTransferTimeOptions: minTransferTimeShape.isRequired,
   settings: settingsShape.isRequired,
-};
-
-MinTransferTime.contextTypes = {
-  executeAction: PropTypes.func.isRequired,
+  updateSettings: PropTypes.func.isRequired,
 };
 
 export default MinTransferTime;

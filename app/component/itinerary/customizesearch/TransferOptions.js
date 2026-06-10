@@ -1,19 +1,18 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import SettingsToggle from './SettingsToggle';
-import { saveRoutingSettings } from '../../../action/SearchSettingsActions';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { settingsShape } from '../../../util/shapes';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 
-export default function TransferOptions({ settings }, { executeAction }) {
+export default function TransferOptions({ settings, updateSettings }) {
   const { transferPenaltyHigh, minTransferTimeSelection, defaultSettings } =
     useConfigContext();
   const avoidTransfers =
     settings.transferPenalty !== defaultSettings.transferPenalty;
 
   const onToggle = () => {
-    executeAction(saveRoutingSettings, {
+    updateSettings({
       transferPenalty: avoidTransfers
         ? defaultSettings.transferPenalty
         : transferPenaltyHigh,
@@ -36,6 +35,7 @@ export default function TransferOptions({ settings }, { executeAction }) {
   );
 }
 
-TransferOptions.propTypes = { settings: settingsShape.isRequired };
-
-TransferOptions.contextTypes = { executeAction: PropTypes.func.isRequired };
+TransferOptions.propTypes = {
+  settings: settingsShape.isRequired,
+  updateSettings: PropTypes.func.isRequired,
+};

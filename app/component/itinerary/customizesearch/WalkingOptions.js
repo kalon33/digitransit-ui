@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import React from 'react';
-import { saveRoutingSettings } from '../../../action/SearchSettingsActions';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import SearchSettingsDropdown from './SearchSettingsDropdown';
 import SettingsToggle from './SettingsToggle';
@@ -22,7 +21,7 @@ const title = [
   'option-most',
 ];
 
-export default function WalkingOptions({ settings }, { executeAction }) {
+export default function WalkingOptions({ settings, updateSettings }) {
   const { defaultOptions, defaultSettings } = useConfigContext();
   const intl = useIntl();
 
@@ -44,7 +43,7 @@ export default function WalkingOptions({ settings }, { executeAction }) {
       settings.walkReluctance !== defaultOptions.highWalkReluctance
         ? defaultOptions.highWalkReluctance
         : defaultSettings.walkReluctance;
-    executeAction(saveRoutingSettings, { walkReluctance: newValue });
+    updateSettings({ walkReluctance: newValue });
     addAnalyticsEvent({
       category: 'ItinerarySettings',
       action: 'ChangeAmountOfWalking',
@@ -58,7 +57,7 @@ export default function WalkingOptions({ settings }, { executeAction }) {
       <SearchSettingsDropdown
         currentSelection={currentWalkSelection}
         onOptionSelected={value => {
-          executeAction(saveRoutingSettings, {
+          updateSettings({
             walkSpeed: value,
           });
           addAnalyticsEvent({
@@ -82,6 +81,7 @@ export default function WalkingOptions({ settings }, { executeAction }) {
   );
 }
 
-WalkingOptions.propTypes = { settings: settingsShape.isRequired };
-
-WalkingOptions.contextTypes = { executeAction: PropTypes.func.isRequired };
+WalkingOptions.propTypes = {
+  settings: settingsShape.isRequired,
+  updateSettings: PropTypes.func.isRequired,
+};

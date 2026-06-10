@@ -4,12 +4,11 @@ import { FormattedMessage } from 'react-intl';
 import { settingsShape } from '../../../util/shapes';
 import SettingsToggle from './SettingsToggle';
 import Icon from '../../Icon';
-import { saveRoutingSettings } from '../../../action/SearchSettingsActions';
 import BikingSpeed from './BikingSpeed';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 
-export default function StreetModeSelector({ settings }, { executeAction }) {
+export default function StreetModeSelector({ settings, updateSettings }) {
   const config = useConfigContext();
   const onToggle = (propName, eventName) => {
     const state = settings[propName] ? 'Disable' : 'Enable';
@@ -20,7 +19,7 @@ export default function StreetModeSelector({ settings }, { executeAction }) {
     });
     const action = {};
     action[propName] = !settings[propName];
-    executeAction(saveRoutingSettings, action);
+    updateSettings(action);
   };
 
   return (
@@ -82,8 +81,7 @@ export default function StreetModeSelector({ settings }, { executeAction }) {
   );
 }
 
-StreetModeSelector.propTypes = { settings: settingsShape.isRequired };
-
-StreetModeSelector.contextTypes = {
-  executeAction: PropTypes.func.isRequired,
+StreetModeSelector.propTypes = {
+  settings: settingsShape.isRequired,
+  updateSettings: PropTypes.func.isRequired,
 };

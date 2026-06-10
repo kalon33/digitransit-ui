@@ -2,12 +2,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import SettingsToggle from './SettingsToggle';
-import { saveRoutingSettings } from '../../../action/SearchSettingsActions';
 import Icon from '../../Icon';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { settingsShape } from '../../../util/shapes';
 
-const AccessibilityOptions = ({ settings }, { executeAction }) => {
+export default function AccessibilityOptions({ settings, updateSettings }) {
   const onToggle = () => {
     addAnalyticsEvent({
       category: 'ItinerarySettings',
@@ -16,9 +15,7 @@ const AccessibilityOptions = ({ settings }, { executeAction }) => {
       }WheelChair`,
       name: null,
     });
-    executeAction(saveRoutingSettings, {
-      accessibilityOption: !settings.accessibilityOption,
-    });
+    updateSettings({ accessibilityOption: !settings.accessibilityOption });
   };
 
   return (
@@ -36,14 +33,9 @@ const AccessibilityOptions = ({ settings }, { executeAction }) => {
       />
     </>
   );
-};
+}
 
 AccessibilityOptions.propTypes = {
   settings: settingsShape.isRequired,
+  updateSettings: PropTypes.func.isRequired,
 };
-
-AccessibilityOptions.contextTypes = {
-  executeAction: PropTypes.func.isRequired,
-};
-
-export default AccessibilityOptions;

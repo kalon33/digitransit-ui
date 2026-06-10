@@ -5,14 +5,13 @@ import SettingsToggle from './SettingsToggle';
 import PrModal from './PrModal';
 import Snackbar from '../../Snackbar';
 import LoginPrompt from '../../LoginPrompt';
-import { saveRoutingSettings } from '../../../action/SearchSettingsActions';
 import Icon from '../../Icon';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { isPersonalizationEnabled } from '../../../util/modeUtils';
 import { settingsShape } from '../../../util/shapes';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 
-export default function Personalization({ settings }, { executeAction }) {
+export default function Personalization({ settings, updateSettings }) {
   const intl = useIntl();
   const config = useConfigContext();
   const [modalOpen, setModalOpen] = useState(false);
@@ -40,7 +39,7 @@ export default function Personalization({ settings }, { executeAction }) {
         action: `Settings${newState ? 'Enable' : 'Disable'}Personalization`,
         name: null,
       });
-      executeAction(saveRoutingSettings, { personalization: newState });
+      updateSettings({ personalization: newState });
       if (newState) {
         setShowSnackbar(true);
         setSnackBarLiveRegionMessage(
@@ -122,8 +121,5 @@ export default function Personalization({ settings }, { executeAction }) {
 
 Personalization.propTypes = {
   settings: settingsShape.isRequired,
-};
-
-Personalization.contextTypes = {
-  executeAction: PropTypes.func.isRequired,
+  updateSettings: PropTypes.func.isRequired,
 };
