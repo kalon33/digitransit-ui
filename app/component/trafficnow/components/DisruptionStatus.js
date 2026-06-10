@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
+import { DateTime } from 'luxon';
 import Icon from '../../Icon';
 import { getFormattedTimeDate } from '../../../util/timeUtils';
 import { useConfigContext } from '../../../configurations/ConfigContext';
@@ -24,9 +25,16 @@ export default function DisruptionStatus({
       ? active
       : now > effectiveStartDate * 1000 && now < effectiveEndDate * 1000;
 
+  const endsSameYear =
+    effectiveStartDate &&
+    DateTime.fromSeconds(effectiveStartDate).year === DateTime.now().year;
+
   const startDate =
     effectiveStartDate &&
-    getFormattedTimeDate(effectiveStartDate * 1000, DATE_FORMAT);
+    getFormattedTimeDate(
+      effectiveStartDate * 1000,
+      endsSameYear ? 'd.L.' : DATE_FORMAT,
+    );
   const endDate =
     effectiveEndDate &&
     getFormattedTimeDate(effectiveEndDate * 1000, DATE_FORMAT);
