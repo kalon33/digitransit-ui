@@ -68,9 +68,9 @@ export default function RestoreDefaultSettings({ updateSettings }) {
       }),
       {},
     );
-    if (personalization) {
-      restoredSettings.personalization = true;
-    }
+    // keep personalization state
+    restoredSettings.personalization = personalization;
+
     updateSettings(restoredSettings);
     setShowSnackbar(true);
     setSnackBarLiveRegionMessage(
