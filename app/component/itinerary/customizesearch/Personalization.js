@@ -4,6 +4,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import SettingsToggle from './SettingsToggle';
 import PrModal from './PrModal';
 import Snackbar from '../../Snackbar';
+import LoginPrompt from '../../LoginPrompt';
 import { saveRoutingSettings } from '../../../action/SearchSettingsActions';
 import Icon from '../../Icon';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
@@ -15,6 +16,7 @@ export default function Personalization({ settings }, { executeAction }) {
   const intl = useIntl();
   const config = useConfigContext();
   const [modalOpen, setModalOpen] = useState(false);
+  const [loginPromptOpen, setLoginPromptOpen] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState(null);
   const [snackbarLiveRegionMessage, setSnackBarLiveRegionMessage] =
     useState('');
@@ -28,22 +30,27 @@ export default function Personalization({ settings }, { executeAction }) {
   }, []);
 
   const onToggle = () => {
-    const newState = !personalization;
-    addAnalyticsEvent({
-      category: 'ItinerarySettings',
-      action: `Settings${newState ? 'Enable' : 'Disable'}Personalization`,
-      name: null,
-    });
-    executeAction(saveRoutingSettings, { personalization: newState });
-    if (newState) {
-      setShowSnackbar(true);
-      setSnackBarLiveRegionMessage(
-        intl.formatMessage({ id: 'personalization-activated' }),
-      );
-      snackbarTimeout.current = setTimeout(() => {
-        setSnackBarLiveRegionMessage('');
-        setShowSnackbar(false);
-      }, 4000);
+    const loginNeeded = config.allowLogin && !config.user.sub;
+    if (loginNeeded) {
+      setLoginPromptOpen(true);
+    } else {
+      const newState = !personalization;
+      addAnalyticsEvent({
+        category: 'ItinerarySettings',
+        action: `Settings${newState ? 'Enable' : 'Disable'}Personalization`,
+        name: null,
+      });
+      executeAction(saveRoutingSettings, { personalization: newState });
+      if (newState) {
+        setShowSnackbar(true);
+        setSnackBarLiveRegionMessage(
+          intl.formatMessage({ id: 'personalization-activated' }),
+        );
+        snackbarTimeout.current = setTimeout(() => {
+          setSnackBarLiveRegionMessage('');
+          setShowSnackbar(false);
+        }, 4000);
+      }
     }
   };
 
@@ -103,6 +110,12 @@ export default function Personalization({ settings }, { executeAction }) {
         </button>
       </div>
       {modalOpen && <PrModal closeModal={() => setModalOpen(false)} />}
+      <LoginPrompt
+        open={loginPromptOpen}
+        onClose={() => setLoginPromptOpen(false)}
+        titleId="personalization-login-title"
+        descriptionId="personalization-login-description"
+      />
     </>
   );
 }
