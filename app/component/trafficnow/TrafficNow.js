@@ -5,6 +5,7 @@ import Button from '@hsl-fi/button';
 import { useRouter } from 'found';
 import ReactModal from 'react-modal';
 import { useBreakpoint } from '../../util/withBreakpoint';
+import scrollTop from '../../util/scroll';
 import Gutterer from '../Gutterer';
 import Loading from '../Loading';
 import CanceledTripsContainer from './CanceledTripsContainer';
@@ -29,6 +30,10 @@ const TrafficNow = () => {
   const mobile = breakpoint !== 'large';
 
   useEffect(() => ReactModal.setAppElement(document.querySelector('#app')), []);
+
+  useEffect(() => {
+    scrollTop();
+  }, [mode, alertId]);
 
   const isMobileCanceledTripsView = !!mode && mobile;
   const isDetailsView = !!alertId;
