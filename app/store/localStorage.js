@@ -205,14 +205,6 @@ export function setOldSearchesStorage(data) {
   setItem('saved-searches', data);
 }
 
-export function getSearchSettingsStorage() {
-  return getItemAsJson('customizedSettings', '{}');
-}
-
-export function setSearchSettingsStorage(data) {
-  setItem('customizedSettings', data);
-}
-
 export function setGeolocationState(state) {
   setItem('geolocationPermission', { state });
 }
