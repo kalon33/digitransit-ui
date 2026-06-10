@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Modal, ModalContent } from '@hsl-fi/dialog';
 import { useIntl } from 'react-intl';
-import DialogModal from '@digitransit-component/digitransit-component-dialog-modal';
 import { useConfigContext } from '../configurations/ConfigContext';
 import { addAnalyticsEvent } from '../util/analyticsUtils';
 
 export default function LoginPrompt({
-  isModalOpen,
+  open,
   onClose,
-  onPrimaryClick,
-  onSecondaryClick,
+  titleId = 'login-header',
+  descriptionId = 'login-content',
 }) {
   const intl = useIntl();
   const config = useConfigContext();
@@ -18,21 +18,15 @@ export default function LoginPrompt({
     id: 'login',
     defaultMessage: 'Log in',
   });
-
   const cancel = intl.formatMessage({
     id: 'cancel',
     defaultMessage: 'cancel',
   });
-
-  const headerText = intl.formatMessage({
-    id: 'login-header',
+  const title = intl.formatMessage({
+    id: titleId,
     defaultMessage: 'Log in first',
   });
-
-  const dialogContent = intl.formatMessage({
-    id: 'login-content',
-    defaultMessage: 'Log in first',
-  });
+  const description = intl.formatMessage({ id: descriptionId });
 
   const handlePrimaryClick = () => {
     addAnalyticsEvent({
@@ -40,7 +34,7 @@ export default function LoginPrompt({
       action: 'login',
       name: null,
     });
-    onPrimaryClick?.();
+    window.location.assign('/login');
   };
 
   const handleSecondaryClick = () => {
@@ -49,30 +43,38 @@ export default function LoginPrompt({
       action: 'login cancelled',
       name: null,
     });
-    onSecondaryClick?.();
+    onClose();
   };
 
   return (
-    <DialogModal
-      appElement="#app"
-      headerText={headerText}
-      dialogContent={dialogContent}
-      handleClose={onClose}
+    <Modal
       lang={config.language}
-      isModalOpen={isModalOpen}
-      primaryButtonText={login}
-      href="/login"
-      primaryButtonOnClick={handlePrimaryClick}
-      secondaryButtonText={cancel}
-      secondaryButtonOnClick={handleSecondaryClick}
-      colors={config.colors}
-    />
+      onOpenChange={handleSecondaryClick}
+      open={open}
+    >
+      <ModalContent
+        title={title}
+        description={description}
+        lang={config.language}
+        buttons={[
+          {
+            children: login,
+            onClick: handlePrimaryClick,
+          },
+          {
+            children: cancel,
+            onClick: handleSecondaryClick,
+            variant: 'secondary',
+          },
+        ]}
+      />
+    </Modal>
   );
 }
 
 LoginPrompt.propTypes = {
-  isModalOpen: PropTypes.bool.isRequired,
+  open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  onPrimaryClick: PropTypes.func,
-  onSecondaryClick: PropTypes.func,
+  titleId: PropTypes.string,
+  descriptionId: PropTypes.string,
 };

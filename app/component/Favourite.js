@@ -68,14 +68,8 @@ export default function Favourite({
         />
       </button>
       <LoginPrompt
-        isModalOpen={loginModalOpen}
+        open={loginModalOpen}
         onClose={() => setLoginModalOpen(false)}
-        onPrimaryClick={() => {
-          setLoginModalOpen(false);
-        }}
-        onSecondaryClick={() => {
-          setLoginModalOpen(false);
-        }}
       />
     </>
   );
