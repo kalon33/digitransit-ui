@@ -10,6 +10,7 @@ import Loading from '../Loading';
 import CanceledTripsContainer from './CanceledTripsContainer';
 import DisruptionDetailsContainer from './DisruptionDetailsContainer';
 import Disruptions from './Disruptions';
+import TrafficNowFooter from './TrafficNowFooter';
 import TrafficNowHeader from './TrafficNowHeader';
 import Filters from './filters/Filters';
 import { FilterContextProvider } from './filters/FiltersContext';
@@ -104,6 +105,7 @@ const TrafficNow = () => {
           </FilterContextProvider>
         </div>
       </Gutterer>
+      <TrafficNowFooter />
     </div>
   );
 };
