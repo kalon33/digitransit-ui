@@ -34,6 +34,7 @@ const { CosmosClient } = require('@azure/cosmos');
 const { getJson } = require('../app/util/xhrPromise');
 const { retryFetch } = require('../app/util/fetchUtils');
 const configTools = require('../app/config');
+const { splitGtfsId } = require('../app/util/gtfs');
 
 const config = configTools.getConfiguration();
 
@@ -150,7 +151,7 @@ function processTicketTypeResult(result) {
   if (config.availableTickets) {
     if (resultData && Array.isArray(resultData.ticketTypes)) {
       resultData.ticketTypes.forEach(ticket => {
-        const ticketFeed = ticket.fareId.split(':')[0];
+        const { feedId: ticketFeed } = splitGtfsId(ticket.fareId);
         if (config.availableTickets[ticketFeed] === undefined) {
           config.availableTickets[ticketFeed] = {};
         }

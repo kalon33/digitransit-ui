@@ -34,6 +34,7 @@ import { unixTime, unixToYYYYMMDD } from '../../util/timeUtils';
 import { saveSearch } from '../../action/SearchActions';
 import Icon from '../Icon';
 import Notification from './Notification';
+import { splitGtfsId } from '../../util/gtfs';
 
 const Tab = {
   Disruptions: PREFIX_DISRUPTION,
@@ -192,8 +193,7 @@ function RouteControlPanel(
 
         const { realTime } = config;
         if (realTime && process.env.NODE_ENV !== 'test') {
-          const routeParts = route.gtfsId.split(':');
-          const feedId = routeParts[0];
+          const { feedId, entityId } = splitGtfsId(route.gtfsId);
           const source = realTime[feedId];
           if (source?.active && isActiveDate(selectedPattern)) {
             const id = source.routeSelector({ route, match, tripStartTime });
@@ -207,7 +207,7 @@ function RouteControlPanel(
                   route: id,
                   feedId,
                   mode: route.mode.toLowerCase(),
-                  gtfsId: routeParts[1],
+                  gtfsId: entityId,
                   headsign: selectedPattern?.headsign,
                   direction,
                   tripStartTime,
@@ -246,8 +246,7 @@ function RouteControlPanel(
         : route.patterns.filter(x => x.code === newPattern);
     const isActivePattern = isActiveDate(pattern[0]);
 
-    const routeParts = route.gtfsId.split(':');
-    const feedId = routeParts[0];
+    const { feedId, entityId: routeId } = splitGtfsId(route.gtfsId);
     // if config contains mqtt feed and old client has not been removed
     if (client) {
       const { realTime } = config;
@@ -263,7 +262,7 @@ function RouteControlPanel(
               route: id,
               feedId,
               mode: route.mode.toLowerCase(),
-              gtfsId: routeParts[1],
+              gtfsId: routeId,
               headsign: pattern[0].headsign,
             },
           ],
@@ -281,7 +280,7 @@ function RouteControlPanel(
         if (source?.active) {
           const id =
             pattern[0].code !== patternId
-              ? routeParts[1]
+              ? routeId
               : source.routeSelector({ route, match, tripStartTime });
           const patternIdSplit = patternId.split(':');
           const direction = patternIdSplit[patternIdSplit.length - 2];
@@ -293,7 +292,7 @@ function RouteControlPanel(
                 route: id,
                 feedId,
                 mode: route.mode.toLowerCase(),
-                gtfsId: routeParts[1],
+                gtfsId: routeId,
                 headsign: pattern[0].headsign,
                 direction,
                 tripStartTime,
