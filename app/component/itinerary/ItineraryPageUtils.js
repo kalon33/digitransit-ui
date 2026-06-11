@@ -402,22 +402,18 @@ export function filterItineraries(edges, modes) {
   );
 }
 
-export function filterItinerariesByRouteType(
-  edges,
-  types,
-  showBothDirectAndTransitResults,
-) {
+export function filterItinerariesByRouteType(edges, types) {
   if (!edges) {
     return [];
   }
-  const filtered = edges.filter(edge =>
+  return edges.filter(edge =>
     edge.node.legs.some(leg => types.includes(leg.route?.type)),
   );
-  const hasDirect = filtered.some(e => isDirectFlexItinerary(e.node, types));
-  return filtered.slice(
-    0,
-    hasDirect && showBothDirectAndTransitResults ? 2 : 1,
-  );
+}
+
+function selectFlexEdges(edges, types, showBothDirectAndTransitResults) {
+  const hasDirect = edges.some(e => isDirectFlexItinerary(e.node, types));
+  return edges.slice(0, hasDirect && showBothDirectAndTransitResults ? 2 : 1);
 }
 
 /**
@@ -505,7 +501,7 @@ export function getSortedEdges(edges, arriveBy) {
 }
 
 /**
- * Combine an external edge with the main transit edges.
+ * Combine additional edges with the main transit edges.
  */
 function sortAndMergePlans(additionalEdges, transitPlan, arriveBy) {
   const transitPlanEdges = transitPlan.edges || [];
@@ -562,12 +558,16 @@ export function mergeExternalFlexPlan(
   showBothDirectAndTransitResults,
   allowedExternalFlexRouteTypes,
 ) {
-  const externalFlexEdges = filterItinerariesByRouteType(
+  const filteredExternalFlexEdges = filterItinerariesByRouteType(
     externalPlan.edges,
+    allowedExternalFlexRouteTypes,
+  );
+  const selectedExternalFlexEdges = selectFlexEdges(
+    filteredExternalFlexEdges,
     allowedExternalFlexRouteTypes,
     showBothDirectAndTransitResults,
   );
-  return sortAndMergePlans(externalFlexEdges, transitPlan, arriveBy);
+  return sortAndMergePlans(selectedExternalFlexEdges, transitPlan, arriveBy);
 }
 
 /** Combine an internal flex plan with the main transit plan. */
@@ -577,12 +577,16 @@ export function mergeInternalFlexPlan(
   arriveBy,
   showBothDirectAndTransitResults,
 ) {
-  const internalFlexEdges = filterItinerariesByRouteType(
+  const filteredInternalFlexEdges = filterItinerariesByRouteType(
     flexPlan.edges,
+    [ExtendedRouteTypes.CallAgency],
+  );
+  const selectedInternalFlexEdges = selectFlexEdges(
+    filteredInternalFlexEdges,
     [ExtendedRouteTypes.CallAgency],
     showBothDirectAndTransitResults,
   );
-  return sortAndMergePlans(internalFlexEdges, plan, arriveBy);
+  return sortAndMergePlans(selectedInternalFlexEdges, plan, arriveBy);
 }
 
 /**
