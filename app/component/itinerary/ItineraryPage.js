@@ -1152,6 +1152,7 @@ export default function ItineraryPage(props, context) {
           externalFlexState.plan,
           plan,
           match.location.query.arriveBy === 'true',
+          config.flex.external.showBothDirectAndTransitResults,
           config.flex.external.allowedRouteTypes,
         );
       }
@@ -1161,6 +1162,7 @@ export default function ItineraryPage(props, context) {
           internalFlexState.plan,
           plan,
           match.location.query.arriveBy === 'true',
+          config.flex.internal.showBothDirectAndTransitResults,
         );
       }
       if (personalization) {
