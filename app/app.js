@@ -13,7 +13,6 @@ import MapLayerStore from './store/MapLayerStore';
 import GeoJsonStore from './store/GeoJsonStore';
 import ViaPointStore from './store/ViaPointStore';
 import FavouriteStore from './store/FavouriteStore';
-import CountryStore from './store/CountryStore';
 
 export default config => {
   const app = new Fluxible({
@@ -32,7 +31,6 @@ export default config => {
   app.registerStore(GeoJsonStore);
   app.registerStore(ViaPointStore);
   app.registerStore(FavouriteStore);
-  app.registerStore(CountryStore);
 
   app.plug({
     name: 'extra-context-plugin',
