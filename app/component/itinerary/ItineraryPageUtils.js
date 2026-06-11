@@ -342,7 +342,7 @@ export function transitEdges(edges) {
  * 2. only use scooters (unless allowed by allowDirectScooterJourneys)
  * 3. use scooters that are not vehicles
  */
-export function scooterEdges(edges, allowDirectScooterJourneys) {
+export function filterScooterEdges(edges, allowDirectScooterJourneys) {
   if (!edges) {
     return [];
   }
@@ -375,7 +375,7 @@ export function scooterEdges(edges, allowDirectScooterJourneys) {
     }
   });
 
-  return filteredEdges.slice(0, 1);
+  return filteredEdges;
 }
 
 /**
@@ -541,11 +541,12 @@ export function mergeScooterTransitPlan(
   arriveBy,
   allowDirectScooterJourneys,
 ) {
-  const scooterTransitEdges = scooterEdges(
+  const filteredScooterEdges = filterScooterEdges(
     scooterPlan.edges,
     allowDirectScooterJourneys,
   );
-  return sortAndMergePlans(scooterTransitEdges, transitPlan, arriveBy);
+  const selectedScooterEdges = filteredScooterEdges.slice(0, 1);
+  return sortAndMergePlans(selectedScooterEdges, transitPlan, arriveBy);
 }
 
 /**

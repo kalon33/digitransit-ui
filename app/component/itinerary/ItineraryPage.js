@@ -75,7 +75,7 @@ import {
   parseCarTransitPlan,
   quitIteration,
   reportError,
-  scooterEdges,
+  filterScooterEdges,
   setCurrentTimeToURL,
   settingsLimitRouting,
   sortAndMergeExternalPlans,
@@ -508,7 +508,7 @@ export default function ItineraryPage(props, context) {
         tunedParams,
         tunedParams.maxQueryIterations,
       );
-      const scooterPlan = { edges: scooterEdges(plan.edges) };
+      const scooterPlan = { edges: filterScooterEdges(plan.edges) };
       setRelaxScooterState({ plan: scooterPlan, loading: LOADSTATE.DONE });
     } catch (error) {
       setRelaxScooterState({ plan: {}, loading: LOADSTATE.DONE });
