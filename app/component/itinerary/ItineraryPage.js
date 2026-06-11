@@ -1143,8 +1143,8 @@ export default function ItineraryPage(props, context) {
       let plan = mergeScooterTransitPlan(
         scooterState.plan,
         mainState.plan,
-        config.vehicleRental.allowDirectScooterJourneys,
         match.location.query.arriveBy === 'true',
+        config.vehicleRental.allowDirectScooterJourneys,
       );
 
       if (externalFlexState.plan?.edges) {
