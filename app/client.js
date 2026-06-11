@@ -35,6 +35,7 @@ import {
   addAnalyticsEvent,
   handleUserAnalytics,
 } from './util/analyticsUtils';
+import { getCountries } from './store/localStorage';
 import { configureCountry } from './util/configureCountry';
 import { getUser } from './util/apiUtils';
 import {
@@ -69,8 +70,7 @@ const getParams = query => {
 async function init() {
   // Get additional feedIds and searchParams from localstorage
   if (config.mainMenu.countrySelection) {
-    const selectedCountries = context.getStore('CountryStore').getCountries();
-    configureCountry(config, selectedCountries);
+    configureCountry(config, getCountries());
   }
 
   // For Google Tag Manager
