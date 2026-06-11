@@ -1,5 +1,3 @@
-import { splitGtfsId } from '../util/gtfs';
-
 /* eslint-disable no-unused-vars */
 export default {
   HSL: {
@@ -9,7 +7,10 @@ export default {
       date,
       lang,
     ) {
-      const { entityId: routeId } = splitGtfsId(route.gtfsId);
+      const routeId = route.gtfsId.slice(
+        route.gtfsId.indexOf(':') + 1,
+        route.gtfsId.length,
+      );
 
       // From YYYYMMDD to YYYY-MM-DD
       const formattedDate = date.replace(/(\d{4})(\d{2})(\d{2})/g, '$1-$2-$3');
@@ -29,7 +30,10 @@ export default {
       date,
       lang,
     ) {
-      const { entityId: stopId } = splitGtfsId(stop.gtfsId);
+      const stopId = stop.gtfsId.slice(
+        stop.gtfsId.indexOf(':') + 1,
+        stop.gtfsId.length,
+      );
       const formattedDate = date.replace(/(\d{4})(\d{2})(\d{2})/g, '$1-$2-$3');
       const defaultSearchParams =
         'props[isSummerTimetable]=false&props[printTimetablesAsA4]=true&props[printTimetablesAsGreyscale]=false&props[template]=default&props[showAddressInfo]=false&props[showPrintButton]=true&props[redirect]=false&template=default';
@@ -56,7 +60,10 @@ export default {
       date,
       lang,
     ) {
-      const { entityId: stopId } = splitGtfsId(stop.gtfsId);
+      const stopId = stop.gtfsId.slice(
+        stop.gtfsId.indexOf(':') + 1,
+        stop.gtfsId.length,
+      );
       return new URL(`${baseURL}${parseInt(stopId, 10)}.pdf`);
     },
   },
