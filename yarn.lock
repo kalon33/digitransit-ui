@@ -12494,7 +12494,6 @@ __metadata:
     mockdate: "npm:3.0.5"
     morgan: "npm:1.10.0"
     mqtt: "npm:4.3.8"
-    node-fetch: "npm:2.6.7"
     node-gyp: "npm:12.1.0"
     nodemon: "npm:1.18.10"
     offline-plugin: "npm:5.0.7"
@@ -12536,7 +12535,7 @@ __metadata:
     sass: "npm:^1.97.2"
     sass-loader: "npm:^10.5.2"
     selenium-webdriver: "npm:4.0.0-alpha.1"
-    serialize-javascript: "npm:6.0.2"
+    serialize-javascript: "npm:7.0.5"
     sinon: "npm:19.0.5"
     stats-webpack-plugin: "npm:0.7.0"
     style-loader: "npm:1.2.1"
@@ -21202,20 +21201,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:2.6.7":
-  version: 2.6.7
-  resolution: "node-fetch@npm:2.6.7"
-  dependencies:
-    whatwg-url: "npm:^5.0.0"
-  peerDependencies:
-    encoding: ^0.1.0
-  peerDependenciesMeta:
-    encoding:
-      optional: true
-  checksum: 10/4bc9245383db92c35601a798c9a992fdf38d99920ceac11e0e6512ef3014d188b3807ccb060bc6c4bdb57a145030c73f5b5fd6730f665979f9264bc43ca3afea
-  languageName: node
-  linkType: hard
-
 "node-fetch@npm:^1.0.1":
   version: 1.7.3
   resolution: "node-fetch@npm:1.7.3"
@@ -26610,12 +26595,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"serialize-javascript@npm:6.0.2, serialize-javascript@npm:^6.0.2":
-  version: 6.0.2
-  resolution: "serialize-javascript@npm:6.0.2"
-  dependencies:
-    randombytes: "npm:^2.1.0"
-  checksum: 10/445a420a6fa2eaee4b70cbd884d538e259ab278200a2ededd73253ada17d5d48e91fb1f4cd224a236ab62ea7ba0a70c6af29fc93b4f3d3078bf7da1c031fde58
+"serialize-javascript@npm:7.0.5":
+  version: 7.0.5
+  resolution: "serialize-javascript@npm:7.0.5"
+  checksum: 10/6237c76ef6df3d1ad61dd4a393b71ca758c7654f4d1cf77529e513134c0f0660302e03b7ec88a8f3a3daa79e1f93d6de8218ecbc45e073d7cc6b66284a1d3e83
   languageName: node
   linkType: hard
 
@@ -26625,6 +26608,15 @@ __metadata:
   dependencies:
     randombytes: "npm:^2.1.0"
   checksum: 10/df6809168973a84facade7d73e2d6dc418f5dee704d1e6cbe79e92fdb4c10af55237e99d2e67881ae3b29aa96ba596a0dfec4e609bd289ab8ec93c5ae78ede8e
+  languageName: node
+  linkType: hard
+
+"serialize-javascript@npm:^6.0.2":
+  version: 6.0.2
+  resolution: "serialize-javascript@npm:6.0.2"
+  dependencies:
+    randombytes: "npm:^2.1.0"
+  checksum: 10/445a420a6fa2eaee4b70cbd884d538e259ab278200a2ededd73253ada17d5d48e91fb1f4cd224a236ab62ea7ba0a70c6af29fc93b4f3d3078bf7da1c031fde58
   languageName: node
   linkType: hard
 
