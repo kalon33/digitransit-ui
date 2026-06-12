@@ -411,6 +411,16 @@ export function filterItinerariesByRouteType(edges, types) {
   );
 }
 
+/**
+ * Usually selects the first flex edge from a pre-filtered list.
+ * If the showBothDirectAndTransitResults flag is true and a direct flex itinerary exists,
+ * this function selects 2 edges: the direct flex itinerary and the next transit itinerary (if it exists).
+ * OTP always returns the direct flex itinerary as the first result (if one exists).
+ *
+ * @param {Array} edges - Pre-filtered flex edges (must only contain flex itineraries of the given types).
+ * @param {number[]} types - Allowed route types used to identify direct flex itineraries (e.g. ExtendedRouteTypes.CallAgency).
+ * @param {boolean} showBothDirectAndTransitResults - When true, returns both a direct and transit itinerary if both exist; otherwise returns 1.
+ */
 function selectFlexEdges(edges, types, showBothDirectAndTransitResults) {
   const hasDirect = edges.some(e => isDirectFlexItinerary(e.node, types));
   return edges.slice(0, hasDirect && showBothDirectAndTransitResults ? 2 : 1);
@@ -501,11 +511,16 @@ export function getSortedEdges(edges, arriveBy) {
 }
 
 /**
- * Combine additional edges with the main transit edges.
+ * Merges a small set of additional edges (flex or scooter) with the main
+ * transit plan edges, sorts the combined result, and caps the total at 5.
+ *
+ * @param {Array} additionalEdges - Pre-selected flex or scooter edges to prepend (amount of edges should be 1 or 2).
+ * @param {Object} transitPlan - The main transit plan object with an `edges` array.
+ * @param {boolean} arriveBy - Whether the search is arrive-by (affects sort order).
  */
 function sortAndMergePlans(additionalEdges, transitPlan, arriveBy) {
   const transitPlanEdges = transitPlan.edges || [];
-  const maxTransitEdges = 5 - additionalEdges.length;
+  const maxTransitEdges = Math.max(5 - additionalEdges.length, 0);
 
   // special case: if transitplan only has one walk itinerary, don't show external plan if it arrives later.
   if (
