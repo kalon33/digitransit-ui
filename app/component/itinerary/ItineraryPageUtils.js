@@ -578,13 +578,14 @@ export function mergeInternalFlexPlan(
   arriveBy,
   showBothDirectAndTransitResults,
 ) {
+  const allowedInternalFlexRouteTypes = [ExtendedRouteTypes.CallAgency];
   const filteredInternalFlexEdges = filterItinerariesByRouteType(
     flexPlan.edges,
-    [ExtendedRouteTypes.CallAgency],
+    allowedInternalFlexRouteTypes,
   );
   const selectedInternalFlexEdges = selectFlexEdges(
     filteredInternalFlexEdges,
-    [ExtendedRouteTypes.CallAgency],
+    allowedInternalFlexRouteTypes,
     showBothDirectAndTransitResults,
   );
   return sortAndMergePlans(selectedInternalFlexEdges, plan, arriveBy);
