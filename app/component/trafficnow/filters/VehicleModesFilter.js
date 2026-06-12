@@ -1,16 +1,20 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import cx from 'classnames';
 import { useFilterContext } from './FiltersContext';
 import { useConfigContext } from '../../../configurations/ConfigContext';
 import { getTransportModes } from '../../../util/modeUtils';
 import { TrafficNowTransportModes } from '../../../constants';
 import Icon from '../../Icon';
+import { useBreakpoint } from '../../../util/withBreakpoint';
 
 const VehicleModesFilter = ({ filterId }) => {
   const config = useConfigContext();
   const intl = useIntl();
   const { selectedFilters, setFilter } = useFilterContext();
+  const breakpoint = useBreakpoint();
+  const isMobile = breakpoint !== 'large';
 
   const handleCheck = option => {
     const checked = selectedFilters[filterId] || [];
@@ -38,7 +42,7 @@ const VehicleModesFilter = ({ filterId }) => {
     [],
   );
   return (
-    <fieldset>
+    <fieldset className={isMobile && 'mobile'}>
       <legend className="input-legend">
         {intl.formatMessage({
           id: 'traffic-now_filters_vehicle-mode',
@@ -52,13 +56,16 @@ const VehicleModesFilter = ({ filterId }) => {
           aria-checked={selectedFilters[filterId]?.includes(option) || false}
           aria-label={intl.formatMessage({ id: option.toLowerCase() })}
           tabIndex={0}
-          className="traffic-now__filters-mode-option"
+          className={cx(
+            'traffic-now__filters-mode-option',
+            isMobile && 'mobile',
+          )}
           onClick={() => handleCheck(option)}
           onKeyDown={e =>
             (e.key === 'Enter' || e.key === ' ') && handleCheck(option)
           }
         >
-          <label className="input-label">
+          <label className="tag-normal">
             <Icon
               img={`icon_${option.toLowerCase()}`}
               className={option.toLowerCase()}

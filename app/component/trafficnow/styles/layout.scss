@@ -103,7 +103,8 @@
       gap: var(--space-s);
 
       &--mobile {
-        padding: 0 var(--space-s);
+        margin-top: var(--space-l);
+        padding: 0 var(--space-m);
         gap: var(--space-l);
       }
 
@@ -147,6 +148,10 @@
       flex-direction: row;
       cursor: pointer;
 
+      &.mobile {
+        padding: var(--space-s);
+      }
+
       &-checkbox {
         color: $theme-primary-color;
 
@@ -178,15 +183,21 @@
     }
 
     &-mobile {
-      padding: var(--space-xl) var(--space-m);
+      padding: var(--space-xl) var(--space-l);
+      position: relative;
     }
 
     &-button-container {
-      background-color: $background-color-lighter;
-      padding: var(--space-m) var(--space-s);
+      background-color: white;
+      padding: var(--space-m);
       position: sticky;
       top: 0;
       z-index: $z-index-sticky-button;
+      border-bottom: 1px solid $light-gray;
+
+      &.scrolled {
+        box-shadow: 0 10px 10px 0 var(--color-shadow-weaker);
+      }
 
       button {
         border-radius: var(--radius-pill);
@@ -239,6 +250,10 @@
       margin: 0;
       padding-block: 0;
 
+      &.mobile {
+        gap: var(--space-s);
+      }
+
       label {
         display: flex;
         flex-direction: row;
@@ -258,6 +273,19 @@
 
     button {
       border-radius: var(--radius-pill);
+    }
+
+    &-form-buttons {
+      padding: var(--space-m) var(--space-l);
+      z-index: 100;
+      background-color: white;
+      width: 100%;
+      position: sticky;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-s);
+      box-shadow: 0 -10px 10px 0 var(--color-shadow-weaker);
     }
   }
 }

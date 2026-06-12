@@ -3122,16 +3122,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hsl-fi/accessibility@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@hsl-fi/accessibility@npm:2.0.0"
-  peerDependencies:
-    "@hsl-fi/design-tokens": ^1.25.0
-    react: ">=16"
-  checksum: 10/faf7f057ee2457df83556d6febc7b6738c03e3769aeea555d8417e7f0278ff93ca7e3d9abcd9e2e31f8c51aa4efba047d6ffecf2501b5ffd63d1c798a5b24d2f
-  languageName: node
-  linkType: hard
-
 "@hsl-fi/animated-spinner@npm:^0.3.0":
   version: 0.3.0
   resolution: "@hsl-fi/animated-spinner@npm:0.3.0"
@@ -3153,20 +3143,6 @@ __metadata:
     classnames: ^2.3.2
     react: ">=16"
   checksum: 10/42d40598db7997d2a09f3288699f4eb3ccaae002b7ed72c1aa67a2fdbcd2d93ce1288cd774ff4fe797265fcd7d7830c4ba05e047ff56a94cec4044ab5a541cb9
-  languageName: node
-  linkType: hard
-
-"@hsl-fi/animations@npm:^1.11.1":
-  version: 1.11.1
-  resolution: "@hsl-fi/animations@npm:1.11.1"
-  dependencies:
-    "@hsl-fi/accessibility": "npm:^2.0.0"
-    react-animate-height: "npm:^3.2.3"
-  peerDependencies:
-    "@hsl-fi/design-tokens": ^1.25.0
-    classnames: ^2.3.2
-    react: ">=16"
-  checksum: 10/8048ec5198dedb05ab0b12ae862cd8cd5c9134ba2de4099785f82b3f515ea1525455394e0aa26f77122e764298da8c780f5d6d62173a2b5989a152fd0e9960d7
   languageName: node
   linkType: hard
 
@@ -3283,32 +3259,6 @@ __metadata:
     "@hsl-fi/layout-primitives": ^4.4.0
     react: ">=16"
   checksum: 10/cbaa2a8358dd70450393fd5556b6ae5150cfb7ec71805d5c233d3e6125aee441738f34e6c82d58b3b7ff764f7e6ebb1f70422d4a0be818a1b618c3ae70313328
-  languageName: node
-  linkType: hard
-
-"@hsl-fi/form@npm:^5.0.3":
-  version: 5.0.3
-  resolution: "@hsl-fi/form@npm:5.0.3"
-  dependencies:
-    "@hsl-fi/accessibility": "npm:^2.0.0"
-    "@hsl-fi/animations": "npm:^1.11.1"
-    "@hsl-fi/hooks": "npm:^1.2.4"
-    "@hsl-fi/i18n": "npm:^1.5.1"
-    "@hsl-fi/icons": "npm:^2.3.0"
-    "@hsl-fi/sass": "npm:^1.0.0"
-    "@hsl-fi/utilities": "npm:^0.4.0"
-    "@radix-ui/react-dropdown-menu": "npm:^2.1.16"
-    "@radix-ui/react-select": "npm:^2.2.6"
-    classnames: "npm:^2.3.2"
-    react-animate-height: "npm:^3.2.2"
-    react-imask: "npm:^7.6.1"
-    react-phone-number-input: "npm:^3.4.5"
-    uuid: "npm:^14.0.0"
-  peerDependencies:
-    "@hsl-fi/design-tokens": ^1.20.0
-    "@hsl-fi/layout-primitives": ^4.4.0
-    react: ">=16"
-  checksum: 10/aed489716740f62ee4cbf2c143e941320a9cf4e17966cb88219ab5a037013d17826839f837a919c79a876ce550ef3a9983fa98121fdaa8376f3cc4458eb34cc7
   languageName: node
   linkType: hard
 
@@ -12450,7 +12400,6 @@ __metadata:
     "@hsl-fi/design-system-core": "npm:^2.7.0"
     "@hsl-fi/design-tokens": "npm:^1.24.0"
     "@hsl-fi/dialog": "npm:^3.1.0"
-    "@hsl-fi/form": "npm:^5.0.3"
     "@hsl-fi/hooks": "npm:1.2.4"
     "@hsl-fi/icons": "npm:^2.2.4"
     "@hsl-fi/layout-primitives": "npm:^4.8.1"
@@ -29746,15 +29695,6 @@ __metadata:
   bin:
     uuid: dist-node/bin/uuid
   checksum: 10/567dddca18a8520796dd3cd1e4513f4c7c522f25602c15381615395d60c7892f330366680fc21373f19fb83c991f3da8413f57dbd85bf976069cf0818aa6c61c
-  languageName: node
-  linkType: hard
-
-"uuid@npm:^14.0.0":
-  version: 14.0.0
-  resolution: "uuid@npm:14.0.0"
-  bin:
-    uuid: dist-node/bin/uuid
-  checksum: 10/8ee9b98f9650e25555515f7a28d3c3ae9364e72f7bb19b9e08b681bc135338beba5509b2830f6ae1cfaba4d45401da0d16d4d109b977097bc3d6ba0c5583341b
   languageName: node
   linkType: hard
 

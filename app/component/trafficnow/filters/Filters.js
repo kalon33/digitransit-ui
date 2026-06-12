@@ -49,12 +49,41 @@ const Filters = ({ onApplyClick = undefined, onResetClick = () => {} }) => {
     }
   };
 
-  return (
-    <form
-      className={cx('traffic-now__filters', {
-        'traffic-now__filters-mobile': mobile,
-      })}
-    >
+  return mobile ? (
+    <div>
+      <form className="traffic-now__filters traffic-now__filters-mobile">
+        {components.map(({ id, Component }) => (
+          <Component key={id} filterId={id} />
+        ))}
+      </form>
+      <div className={cx('traffic-now__filters-form-buttons')}>
+        {onApplyClick && (
+          <Button
+            type="button"
+            size="medium"
+            fullWidth
+            variant="blue"
+            value={intl.formatMessage({
+              id: 'traffic-now_filters_view-results',
+            })}
+            onClick={onApplyClick}
+          />
+        )}
+        <Button
+          type="button"
+          size={mobile ? 'medium' : 'small'}
+          disabled={
+            JSON.stringify(selectedFilters) === JSON.stringify(DEFAULT_FILTERS)
+          }
+          fullWidth={false}
+          variant="white"
+          value={intl.formatMessage({ id: 'clear-button-label' })}
+          onClick={handleResetClick}
+        />
+      </div>
+    </div>
+  ) : (
+    <form className="traffic-now__filters">
       {components.map(({ id, Component }) => (
         <Component key={id} filterId={id} />
       ))}
@@ -64,13 +93,15 @@ const Filters = ({ onApplyClick = undefined, onResetClick = () => {} }) => {
           size="medium"
           fullWidth
           variant="blue"
-          value={intl.formatMessage({ id: 'traffic-now_filters_view-results' })}
+          value={intl.formatMessage({
+            id: 'traffic-now_filters_view-results',
+          })}
           onClick={onApplyClick}
         />
       )}
       <Button
         type="button"
-        size={mobile ? 'medium' : 'small'}
+        size="small"
         disabled={
           JSON.stringify(selectedFilters) === JSON.stringify(DEFAULT_FILTERS)
         }

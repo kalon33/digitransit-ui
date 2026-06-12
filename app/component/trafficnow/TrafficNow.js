@@ -38,6 +38,16 @@ const TrafficNow = () => {
   const isMobileCanceledTripsView = !!mode && mobile;
   const isDetailsView = !!alertId;
 
+  const [top, setTop] = useState(true);
+
+  useEffect(() => {
+    const scrollHandler = () => {
+      setTop(window.scrollY <= 320);
+    };
+    window.addEventListener('scroll', scrollHandler);
+    return () => window.removeEventListener('scroll', scrollHandler);
+  }, [top]);
+
   return (
     <div className="traffic-now design-system">
       {!isMobileCanceledTripsView && !(isDetailsView && mobile) && (
@@ -84,7 +94,12 @@ const TrafficNow = () => {
                     <Filters />
                   </div>
                 ) : (
-                  <div className="traffic-now__filters-button-container">
+                  <div
+                    className={cx(
+                      'traffic-now__filters-button-container',
+                      !top && 'scrolled',
+                    )}
+                  >
                     <FiltersModal
                       isOpen={showFiltersModal}
                       onClose={() => setShowFiltersModal(false)}
