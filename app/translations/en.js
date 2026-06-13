@@ -120,10 +120,11 @@ export default {
     'car-park-disclaimer':
       'You can park your car near a station or stop and continue your journey by public transport',
     'car-park-disclaimer-header': 'Park your car',
+    choose: 'Select',
     'choose-freely': 'Optional',
     'choose-stop': 'Select stop',
-    'choose-stop-or-vehicle': 'Select vehicle or stop',
-    'choose-vehicle': 'Select vehicle',
+    'choose-stop-or-vehicle': 'Select route or stop',
+    'choose-vehicle': 'Select route',
     citybike: 'City bike',
     'citybike-duration-general-header':
       'Extra charge applies to several sections of route to be completed by a city bike.',
@@ -571,9 +572,16 @@ export default {
     'personalization-ask': 'Do you like this route recommendation?',
     'personalization-beta':
       'Personalization is still in the testing phase, meaning we are trying out the service. We would love to hear about your experience. The survey will open in a new tab.',
+    'personalization-continue-choices':
+      'Choose whether we use your usage history for personalization or start over by deleting your usage history.',
+    'personalization-continue-query':
+      'How do you want to continue personalization?',
     'personalization-disliked':
       'You will receive fewer recommendations like this in the future.',
     'personalization-feedback': 'Give feedback',
+    'personalization-history-keep': 'Take advantage of usage history',
+    'personalization-history-remove':
+      'Delete personalization history and start over',
     'personalization-info':
       'Find your favorite routes and travel according to your habits',
     'personalization-liked':

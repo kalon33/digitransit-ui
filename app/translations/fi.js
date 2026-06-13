@@ -113,6 +113,7 @@ export default {
     'car-park-disclaimer':
       'Voit jättää auton parkkiin aseman tai pysäkin tuntumaan ja jatkaa matkaasi kätevästi julkisilla',
     'car-park-disclaimer-header': 'Jätä auto parkkiin',
+    choose: 'Valitse',
     'choose-freely': 'Vapaasti valittavat',
     'choose-stop': 'Valitse pysäkki',
     'choose-stop-or-vehicle': 'Valitse linja tai pysäkki',
@@ -559,9 +560,14 @@ export default {
     'personalization-ask': 'Pidätkö tästä reittisuosituksesta?',
     'personalization-beta':
       'Personointi on vielä testausvaiheessa, eli kokeilemme palvelua. Haluaisimme kuulla kokemuksestasi. Kysely avautuu uuteen välilehteen.',
+    'personalization-continue-choices':
+      'Valitse, käytämmekö personointiin käyttöhistoriaasi vai aloitammeko alusta, jolloin käyttöhistoria poistetaan.',
+    'personalization-continue-query': 'Miten haluat jatkaa personointia?',
     'personalization-disliked':
       'Saat jatkossa vähemmän tämänkaltaisia suosituksia.',
     'personalization-feedback': 'Anna palautetta',
+    'personalization-history-keep': 'Hyödynnä käyttöhistoriaa',
+    'personalization-history-remove': 'Poista käyttöhistoria ja aloita alusta',
     'personalization-info':
       'Löydä mieleiset reitit ja matkusta tottumustesi mukaan.',
     'personalization-liked': 'Saat jatkossa samankaltaisia suosituksia.',

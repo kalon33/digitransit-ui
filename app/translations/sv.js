@@ -117,10 +117,11 @@ export default {
     'car-park-disclaimer':
       'Du kan lämna bilen på parkeringen vid stationen eller hållplatsen och fortsätta din resa enkel med kollektivtrafiken',
     'car-park-disclaimer-header': 'Lämna din bil i parkeringen',
+    choose: 'Välj',
     'choose-freely': 'Valfria',
     'choose-stop': 'Välj hållplats',
-    'choose-stop-or-vehicle': 'Select vehicle or stop',
-    'choose-vehicle': 'Select vehicle',
+    'choose-stop-or-vehicle': 'Välj en linje eller hållplats',
+    'choose-vehicle': 'Välj en linje',
     citybike: 'Stadscykel',
     'citybike-duration-general-header':
       'Rutten har flera sträckor med stadscykel som inkluderar tilläggsavgifter.',
@@ -563,9 +564,16 @@ export default {
     'personalization-ask': 'Gillar du den här ruttrekommendationen?',
     'personalization-beta':
       'Personaliseringen är fortfarande i testfasen, vilket innebär att vi testar tjänsten. Vi vill gärna höra om din upplevelse. Undersökningen öppnas i en ny flik.',
+    'personalization-continue-choices':
+      'Välj om vi använder din användningshistorik för personalisering eller om vi ska börja om genom att radera din användningshistorik.',
+    'personalization-continue-query':
+      'Hur vill du fortsätta med personaliseringen?',
     'personalization-disliked':
       'Du kommer att få färre rekommendationer som denna i framtiden.',
     'personalization-feedback': 'Ge feedback',
+    'personalization-history-keep': 'Dra nytta av användningshistoriken',
+    'personalization-history-remove':
+      'Rensa personaliseringshistoriken och börja om',
     'personalization-info':
       'Hitta dina favoritrutter och res utifrån dina vanor.',
     'personalization-liked':
