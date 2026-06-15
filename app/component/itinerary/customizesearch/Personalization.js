@@ -23,6 +23,7 @@ export default function Personalization({ settings, updateSettings }) {
   const [snackbarLiveRegionMessage, setSnackBarLiveRegionMessage] =
     useState('');
   const snackbarTimeout = useRef(null);
+  const settingsToggleRef = useRef(null);
   const personalization = isPersonalizationEnabled(config, settings);
 
   useEffect(() => {
@@ -30,6 +31,14 @@ export default function Personalization({ settings, updateSettings }) {
       clearTimeout(snackbarTimeout.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (!modalOpen && !loginPromptOpen && !againModalOpen) {
+      requestAnimationFrame(() => {
+        settingsToggleRef.current?.focus?.();
+      });
+    }
+  }, [modalOpen, loginPromptOpen, againModalOpen]);
 
   const changePersonalization = newState => {
     addAnalyticsEvent({
@@ -70,6 +79,7 @@ export default function Personalization({ settings, updateSettings }) {
     setShowSnackbar(false);
   };
 
+  // prevent line wrapping to one short word only
   const linkText = intl.formatMessage({ id: 'personalization-open-info' });
   const words = linkText.split(' ');
   const lastWord = words.pop();
@@ -87,6 +97,7 @@ export default function Personalization({ settings, updateSettings }) {
         <FormattedMessage id="personalization" />
       </div>
       <SettingsToggle
+        ref={settingsToggleRef}
         id="settings-toggle-personalization"
         labelId="personal-itineraries"
         labelStyle="mode-label-upper"
