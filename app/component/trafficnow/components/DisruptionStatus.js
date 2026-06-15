@@ -30,7 +30,7 @@ export default function DisruptionStatus({
     effectiveStartDate &&
     effectiveEndDate &&
     DateTime.now().year === DateTime.fromSeconds(effectiveStartDate).year &&
-    DateTime.now().year === DateTime.fromSeconds(effectiveStartDate).year;
+    DateTime.now().year === DateTime.fromSeconds(effectiveEndDate).year;
 
   const startDate =
     effectiveStartDate &&
