@@ -24,6 +24,7 @@ export default function Personalization({ settings, updateSettings }) {
     useState('');
   const snackbarTimeout = useRef(null);
   const settingsToggleRef = useRef(null);
+  const wasAnyModalOpenRef = useRef(null);
   const personalization = isPersonalizationEnabled(config, settings);
 
   useEffect(() => {
@@ -33,11 +34,13 @@ export default function Personalization({ settings, updateSettings }) {
   }, []);
 
   useEffect(() => {
-    if (!modalOpen && !loginPromptOpen && !againModalOpen) {
+    const anyModalOpen = modalOpen || loginPromptOpen || againModalOpen;
+    if (wasAnyModalOpenRef.current && !anyModalOpen) {
       requestAnimationFrame(() => {
         settingsToggleRef.current?.focus?.();
       });
     }
+    wasAnyModalOpenRef.current = anyModalOpen;
   }, [modalOpen, loginPromptOpen, againModalOpen]);
 
   const changePersonalization = newState => {
