@@ -254,7 +254,7 @@ jobs:
             --account-name ${{ secrets.SBOM_STORAGE_ACCOUNT_NAME }}
             --container-name sbom-ingest
             --file ${{ github.repository }}-${{ github.sha }}.json
-            --name ${{ secrets.SBOM_ENV_KEY_DEV_V3 }}
+            --name ${{ secrets.SBOM_ENV_KEY_DEV_V3 }}/${{ github.sha }}.json
             --auth-mode login
             --overwrite true
           
@@ -266,7 +266,7 @@ jobs:
             --account-name ${{ secrets.SBOM_STORAGE_ACCOUNT_NAME }}
             --container-name sbom-ingest
             --file ${{ github.repository }}-${{ github.sha }}.json
-            --name ${{ secrets.SBOM_ENV_KEY_DEV_NEXT }}
+            --name ${{ secrets.SBOM_ENV_KEY_DEV_NEXT }}/${{ github.sha }}.json
             --auth-mode login
             --overwrite true
           
