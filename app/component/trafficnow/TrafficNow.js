@@ -17,6 +17,9 @@ import Filters from './filters/Filters';
 import { FilterContextProvider } from './filters/FiltersContext';
 import FiltersModal from './filters/FiltersModal';
 
+// defines the scroll position at which a drop shadow is applied to the header button on mobile
+const HEADER_HEIGHT = 320;
+
 const TrafficNow = () => {
   const {
     match: {
@@ -42,11 +45,11 @@ const TrafficNow = () => {
 
   useEffect(() => {
     const scrollHandler = () => {
-      setTop(window.scrollY <= 320);
+      setTop(window.scrollY <= HEADER_HEIGHT);
     };
     window.addEventListener('scroll', scrollHandler);
     return () => window.removeEventListener('scroll', scrollHandler);
-  }, [top]);
+  }, []);
 
   return (
     <div className="traffic-now design-system">

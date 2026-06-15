@@ -42,7 +42,7 @@ const VehicleModesFilter = ({ filterId }) => {
     [],
   );
   return (
-    <fieldset className={isMobile && 'mobile'}>
+    <fieldset className={cx({ mobile: isMobile })}>
       <legend className="input-legend">
         {intl.formatMessage({
           id: 'traffic-now_filters_vehicle-mode',
@@ -56,10 +56,10 @@ const VehicleModesFilter = ({ filterId }) => {
           aria-checked={selectedFilters[filterId]?.includes(option) || false}
           aria-label={intl.formatMessage({ id: option.toLowerCase() })}
           tabIndex={0}
-          className={cx(
+          className={cx([
             'traffic-now__filters-mode-option',
-            isMobile && 'mobile',
-          )}
+            { mobile: isMobile },
+          ])}
           onClick={() => handleCheck(option)}
           onKeyDown={e =>
             (e.key === 'Enter' || e.key === ' ') && handleCheck(option)

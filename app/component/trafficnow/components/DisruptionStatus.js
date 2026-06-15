@@ -25,15 +25,18 @@ export default function DisruptionStatus({
       ? active
       : now > effectiveStartDate * 1000 && now < effectiveEndDate * 1000;
 
-  const endsSameYear =
+  // We want to hide start year when both dates are the current year
+  const hideStartYear =
     effectiveStartDate &&
-    DateTime.fromSeconds(effectiveStartDate).year === DateTime.now().year;
+    effectiveEndDate &&
+    DateTime.now().year === DateTime.fromSeconds(effectiveStartDate).year &&
+    DateTime.now().year === DateTime.fromSeconds(effectiveStartDate).year;
 
   const startDate =
     effectiveStartDate &&
     getFormattedTimeDate(
       effectiveStartDate * 1000,
-      endsSameYear ? 'd.L.' : DATE_FORMAT,
+      hideStartYear ? 'd.L.' : DATE_FORMAT,
     );
   const endDate =
     effectiveEndDate &&

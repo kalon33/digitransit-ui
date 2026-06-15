@@ -2,7 +2,6 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 import Button from '@hsl-fi/button';
 import PropTypes from 'prop-types';
-import cx from 'classnames';
 import ValidityPeriodFilter from './ValidityPeriodFilter';
 import { useFilterContext } from './FiltersContext';
 import { useBreakpoint } from '../../../util/withBreakpoint';
@@ -49,44 +48,8 @@ const Filters = ({ onApplyClick = undefined, onResetClick = () => {} }) => {
     }
   };
 
-  return mobile ? (
-    <div>
-      <form className="traffic-now__filters traffic-now__filters-mobile">
-        {components.map(({ id, Component }) => (
-          <Component key={id} filterId={id} />
-        ))}
-      </form>
-      <div className={cx('traffic-now__filters-form-buttons')}>
-        {onApplyClick && (
-          <Button
-            type="button"
-            size="medium"
-            fullWidth
-            variant="blue"
-            value={intl.formatMessage({
-              id: 'traffic-now_filters_view-results',
-            })}
-            onClick={onApplyClick}
-          />
-        )}
-        <Button
-          type="button"
-          size={mobile ? 'medium' : 'small'}
-          disabled={
-            JSON.stringify(selectedFilters) === JSON.stringify(DEFAULT_FILTERS)
-          }
-          fullWidth={false}
-          variant="white"
-          value={intl.formatMessage({ id: 'clear-button-label' })}
-          onClick={handleResetClick}
-        />
-      </div>
-    </div>
-  ) : (
-    <form className="traffic-now__filters">
-      {components.map(({ id, Component }) => (
-        <Component key={id} filterId={id} />
-      ))}
+  const buttons = (
+    <>
       {onApplyClick && (
         <Button
           type="button"
@@ -101,7 +64,7 @@ const Filters = ({ onApplyClick = undefined, onResetClick = () => {} }) => {
       )}
       <Button
         type="button"
-        size="small"
+        size="medium"
         disabled={
           JSON.stringify(selectedFilters) === JSON.stringify(DEFAULT_FILTERS)
         }
@@ -110,6 +73,24 @@ const Filters = ({ onApplyClick = undefined, onResetClick = () => {} }) => {
         value={intl.formatMessage({ id: 'clear-button-label' })}
         onClick={handleResetClick}
       />
+    </>
+  );
+
+  return mobile ? (
+    <div>
+      <form className="traffic-now__filters traffic-now__filters-mobile">
+        {components.map(({ id, Component }) => (
+          <Component key={id} filterId={id} />
+        ))}
+      </form>
+      <div className="traffic-now__filters-form-buttons">{buttons}</div>
+    </div>
+  ) : (
+    <form className="traffic-now__filters">
+      {components.map(({ id, Component }) => (
+        <Component key={id} filterId={id} />
+      ))}
+      {buttons}
     </form>
   );
 };
