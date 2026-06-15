@@ -450,6 +450,7 @@ export default {
       transit: true,
       direct: true,
       agencies: ['02Taksi:02_taksi'],
+      showBothDirectAndTransitResults: true,
     },
     internal: {
       enabled: true,

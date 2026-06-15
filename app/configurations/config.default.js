@@ -870,6 +870,7 @@ export default {
       direct: false,
       agencies: [], // "FeedId:AgencyId"
       allowedRouteTypes: [1501],
+      showBothDirectAndTransitResults: false,
     },
     internal: {
       enabled: false,
@@ -877,6 +878,7 @@ export default {
       direct: false,
       agencies: [], // "FeedId:AgencyId"
       minTransferTime: 900, // seconds
+      showBothDirectAndTransitResults: false,
     },
   },
   personalization: false,
