@@ -573,7 +573,7 @@ export default {
     'personalization-feedback': 'Ge feedback',
     'personalization-history-keep': 'Dra nytta av användningshistoriken',
     'personalization-history-remove':
-      'Rensa personaliseringshistoriken och börja om',
+      'Rensa användningshistoriken och börja om',
     'personalization-info':
       'Hitta dina favoritrutter och res utifrån dina vanor.',
     'personalization-liked':

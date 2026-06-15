@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import SettingsToggle from './SettingsToggle';
 import PrModal from './PrModal';
+import PersonalizeAgainModal from './PersonalizeAgainModal';
 import Snackbar from '../../Snackbar';
 import LoginPrompt from '../../LoginPrompt';
 import Icon from '../../Icon';
@@ -10,12 +11,14 @@ import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import { isPersonalizationEnabled } from '../../../util/modeUtils';
 import { settingsShape } from '../../../util/shapes';
 import { useConfigContext } from '../../../configurations/ConfigContext';
+import { getPersonalization } from '../../../store/localStorage';
 
 export default function Personalization({ settings, updateSettings }) {
   const intl = useIntl();
   const config = useConfigContext();
   const [modalOpen, setModalOpen] = useState(false);
   const [loginPromptOpen, setLoginPromptOpen] = useState(false);
+  const [againModalOpen, setAgainModalOpen] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState(null);
   const [snackbarLiveRegionMessage, setSnackBarLiveRegionMessage] =
     useState('');
@@ -28,27 +31,35 @@ export default function Personalization({ settings, updateSettings }) {
     };
   }, []);
 
+  const changePersonalization = newState => {
+    addAnalyticsEvent({
+      category: 'ItinerarySettings',
+      action: `Settings${newState ? 'Enable' : 'Disable'}Personalization`,
+      name: null,
+    });
+    updateSettings({ personalization: newState });
+    if (newState) {
+      setShowSnackbar(true);
+      setSnackBarLiveRegionMessage(
+        intl.formatMessage({ id: 'personalization-activated' }),
+      );
+      snackbarTimeout.current = setTimeout(() => {
+        setSnackBarLiveRegionMessage('');
+        setShowSnackbar(false);
+      }, 4000);
+    }
+  };
+
   const onToggle = () => {
     const loginNeeded = config.allowLogin && !config.user.sub;
     if (loginNeeded) {
       setLoginPromptOpen(true);
     } else {
       const newState = !personalization;
-      addAnalyticsEvent({
-        category: 'ItinerarySettings',
-        action: `Settings${newState ? 'Enable' : 'Disable'}Personalization`,
-        name: null,
-      });
-      updateSettings({ personalization: newState });
-      if (newState) {
-        setShowSnackbar(true);
-        setSnackBarLiveRegionMessage(
-          intl.formatMessage({ id: 'personalization-activated' }),
-        );
-        snackbarTimeout.current = setTimeout(() => {
-          setSnackBarLiveRegionMessage('');
-          setShowSnackbar(false);
-        }, 4000);
+      if (newState && Object.keys(getPersonalization().weights || []).length) {
+        setAgainModalOpen(true);
+      } else {
+        changePersonalization(newState);
       }
     }
   };
@@ -114,6 +125,14 @@ export default function Personalization({ settings, updateSettings }) {
         onClose={() => setLoginPromptOpen(false)}
         titleId="personalization-login-title"
         descriptionId="personalization-login-description"
+      />
+      <PersonalizeAgainModal
+        open={againModalOpen}
+        onClose={() => setAgainModalOpen(false)}
+        onContinue={() => {
+          setAgainModalOpen(false);
+          changePersonalization(true);
+        }}
       />
     </>
   );

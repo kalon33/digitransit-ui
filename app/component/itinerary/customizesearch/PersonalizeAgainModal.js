@@ -19,8 +19,8 @@ export default function PersonalizeAgainModal({ open, onClose, onContinue }) {
     id: 'personalization-continue-choices',
   });
   const select = intl.formatMessage({ id: 'choose' });
-  const keep = intl.formatMessage({ id: 'personalization-keep-history' });
-  const remove = intl.formatMessage({ id: 'personalization-remove-history' });
+  const keep = intl.formatMessage({ id: 'personalization-history-keep' });
+  const remove = intl.formatMessage({ id: 'personalization-history-remove' });
 
   const handlePrimaryClick = () => {
     // if (!action) return;
@@ -32,7 +32,7 @@ export default function PersonalizeAgainModal({ open, onClose, onContinue }) {
     if (action === 'remove') {
       setPersonalization({});
     }
-    onContinue(action === 1);
+    onContinue();
   };
 
   const handleSecondaryClick = () => {
@@ -73,13 +73,15 @@ export default function PersonalizeAgainModal({ open, onClose, onContinue }) {
           label={select}
           items={[
             {
-              isChecked: false,
+              isChecked: action === 'keep',
+              id: 'keep',
               key: 'keep',
               label: keep,
               onChange: () => setAction('keep'),
             },
             {
-              isChecked: false,
+              isChecked: action === 'remove',
+              id: 'remove',
               key: 'remove',
               label: remove,
               onChange: () => setAction('remove'),
@@ -91,7 +93,7 @@ export default function PersonalizeAgainModal({ open, onClose, onContinue }) {
   );
 }
 
-PersonalizeAgainModal.js.propTypes = {
+PersonalizeAgainModal.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onContinue: PropTypes.func.isRequired,
