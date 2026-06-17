@@ -114,7 +114,7 @@ function ItineraryDetails({
     match.params.hash !== streetHash.bike;
 
   const shouldShowFeedback =
-    giveFeedback && itinerary.legs.some(l => l.transitLeg);
+    config.personalization && itinerary.legs.some(l => l.transitLeg);
 
   const fares = getFaresFromLegs(itinerary.legs, config);
   const extraProps = getExtraProps(itinerary, intl);
