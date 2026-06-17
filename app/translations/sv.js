@@ -580,6 +580,7 @@ export default {
       'Du kommer att få liknande rekommendationer i framtiden.',
     'personalization-login-description':
       'Du kan aktivera personliga ruttrekommendationer när du är inloggad.',
+    'personalization-login-for-voting': 'Logga in och ge feedback',
     'personalization-login-title': 'Logga in för att få rekommendationer',
     'personalization-modal-feedback': 'Vi lär oss av er feedback',
     'personalization-modal-feedback-details':

@@ -588,6 +588,7 @@ export default {
       'You will receive similar recommendations in the future.',
     'personalization-login-description':
       'You can enable personalized route recommendations when you are logged in.',
+    'personalization-login-for-voting': 'Log in and give feedback',
     'personalization-login-title': 'Sign in to get recommendations',
     'personalization-modal-feedback': 'We learn from your feedback',
     'personalization-modal-feedback-details':

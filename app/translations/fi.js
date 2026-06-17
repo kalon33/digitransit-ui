@@ -573,6 +573,7 @@ export default {
     'personalization-liked': 'Saat jatkossa samankaltaisia suosituksia.',
     'personalization-login-description':
       'Voit ottaa yksilölliset reittisuositukset käyttöön, kun olet kirjautunut sisään.',
+    'personalization-login-for-voting': 'Kirjaudu ja anna palautetta',
     'personalization-login-title': 'Kirjaudu saadaksesi suosituksia',
     'personalization-modal-feedback': 'Opimme palautteestasi',
     'personalization-modal-feedback-details':
