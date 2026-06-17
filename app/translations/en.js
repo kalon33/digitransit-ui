@@ -569,7 +569,7 @@ export default {
     'personalization-activated': 'Personalization has been enabled',
     'personalization-aria-dislike': 'I do not like this itinerary',
     'personalization-aria-like': 'I like this itinerary',
-    'personalization-ask': 'Do you like this route recommendation?',
+    'personalization-ask': 'Do you like this route suggestion?',
     'personalization-beta':
       'Personalization is still in the testing phase, meaning we are trying out the service. We would love to hear about your experience. The survey will open in a new tab.',
     'personalization-continue-choices':

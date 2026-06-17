@@ -559,9 +559,9 @@ export default {
     'personal-itineraries': 'Individuella ruttförslag',
     personalization: 'Personalisering',
     'personalization-activated': 'Personalisering har aktiverats',
-    'personalization-aria-dislike': 'Jag gillar den här ruttrekommendationen',
-    'personalization-aria-like': 'Jag gillar inte den här ruttrekommendationen',
-    'personalization-ask': 'Gillar du den här ruttrekommendationen?',
+    'personalization-aria-dislike': 'Jag gillar den här ruttförslaget',
+    'personalization-aria-like': 'Jag gillar inte den här ruttförslaget',
+    'personalization-ask': 'Gillar du den här ruttförslaget?',
     'personalization-beta':
       'Personaliseringen är fortfarande i testfasen, vilket innebär att vi testar tjänsten. Vi vill gärna höra om din upplevelse. Undersökningen öppnas i en ny flik.',
     'personalization-continue-choices':

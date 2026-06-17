@@ -555,9 +555,9 @@ export default {
     'personal-itineraries': 'Yksilölliset reittiehdotukset',
     personalization: 'Personointi',
     'personalization-activated': 'Personointi on otettu käyttöön',
-    'personalization-aria-dislike': 'En pidä tästä reittisuosituksesta',
-    'personalization-aria-like': 'Pidän tästä reittisuosituksesta',
-    'personalization-ask': 'Pidätkö tästä reittisuosituksesta?',
+    'personalization-aria-dislike': 'En pidä tästä reittiehdotuksesta',
+    'personalization-aria-like': 'Pidän tästä reittiehdotuksesta',
+    'personalization-ask': 'Pidätkö tästä reittiehdotuksesta?',
     'personalization-beta':
       'Personointi on vielä testausvaiheessa, eli kokeilemme palvelua. Haluaisimme kuulla kokemuksestasi. Kysely avautuu uuteen välilehteen.',
     'personalization-continue-choices':
