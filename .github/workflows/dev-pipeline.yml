@@ -236,7 +236,7 @@ jobs:
       - name: Save SBOM artifact
         uses: actions/upload-artifact@v7
         with:
-          name: sbom-artifact
+          name: sbom-artifact-${{ github.ref_name }}
           path: ${{ github.repository }}-${{ github.sha }}.json
 
       - name: 'Az CLI login for central SBOM server'
