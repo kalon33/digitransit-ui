@@ -124,18 +124,16 @@ export default function Feedback({
   }, []);
 
   const handleGiveFeedback = value => {
-    if (giveFeedback) {
-      if (isAnimating) {
-        return;
-      }
-
-      setIsAnimating(true);
-      timerRef.current = setTimeout(() => {
-        setIsAnimating(false);
-        panelRef.current?.focus();
-      }, ANIMATION_MS);
-      giveFeedback(value);
+    if (!giveFeedback || isAnimating) {
+      return;
     }
+
+    setIsAnimating(true);
+    timerRef.current = setTimeout(() => {
+      setIsAnimating(false);
+      panelRef.current?.focus();
+    }, ANIMATION_MS);
+    giveFeedback(value);
   };
 
   let status;
